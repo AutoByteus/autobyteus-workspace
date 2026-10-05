@@ -1,0 +1,1 @@
+export default async ({ page, shot, text, args }) => { await page.waitForTimeout(1000); await shot(args[0] ?? "look"); return { url: page.url(), text: (await text()).slice(0, Number(args[1] ?? 1500)) }; };

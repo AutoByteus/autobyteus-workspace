@@ -1,0 +1,72 @@
+import "reflect-metadata";
+import os from "node:os";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import WebSocket from "ws";
+import { describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+
+/**
+ * TEMPORARY API/E2E probe (agent-run-termination-extraction T-09): server shutdown (the SIGTERM path,
+ * fastify close → closeProcessResources → stopAll) while a Codex standalone run is busy in a long shell
+ * command. Measures the shutdown duration and leftover processes. Gate: RUN_BUSY_SHUTDOWN_PROBE=1.
+ */
+const enabled = process.env.RUN_BUSY_SHUTDOWN_PROBE === "1";
+const MODEL = process.env.PROBE_CODEX_MODEL ?? "gpt-6-astra";
+const BUSY = process.env.PROBE_BUSY !== "0";
+const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const log = (...a: unknown[]) => console.log("[BUSY-PROBE]", ...a);
+const sleepProcs = () => execFileSync("ps", ["-A", "-o", "pid=,ppid=,command="], { encoding: "utf-8" })
+  .split("\n").filter((l) => /\bsleep 300\b/.test(l) && !/grep/.test(l)).map((l) => l.trim());
+
+(enabled ? describe : describe.skip)("TEMP busy shutdown probe", () => {
+  it(`server close with a ${BUSY ? "busy" : "idle"} Codex run`, async () => {
+    const dataDir = await mkdtemp(path.join(os.tmpdir(), "busy-shutdown-appdata-"));
+    await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    const started = await startStudioE2eRuntimeServer();
+    const base = started.mainUrl;
+    const gql = async (query: string, variables: Record<string, unknown> = {}) => {
+      const r = await fetch(new URL("/graphql", base), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+      const b = await r.json() as { data?: any; errors?: Array<{ message: string }> };
+      if (b.errors?.length) throw new Error(b.errors.map((e) => e.message).join("; "));
+      return b.data;
+    };
+    const defId = (await gql("mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `Busy Probe ${Date.now()}`, description: "probe", instructions: "Follow the user's instructions exactly.", category: "probe", toolNames: [] } })).createAgentDefinition.id;
+    const ws = await mkdtemp(path.join(os.tmpdir(), "busy-shutdown-ws-"));
+    const run = (await gql("mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: defId, workspaceRootPath: ws, llmModelIdentifier: MODEL, autoExecuteTools: true, runtimeKind: "codex_app_server" } })).createAgentRun;
+    expect(run.success, run.message).toBe(true);
+    const socket = new WebSocket(`ws://${base.hostname}:${base.port}/ws/agent/${run.runId}`);
+    const msgs: Array<{ type: string; payload: any }> = [];
+    socket.on("message", (raw) => { try { const m = JSON.parse(raw.toString()); if (m.type) msgs.push(m); } catch { /* */ } });
+    await new Promise<void>((res) => socket.once("open", () => res()));
+    await wait(1500);
+    if (BUSY) {
+      sendE2eSendMessageCommand(socket, { content: "Run the shell command: sleep 300 (one command, wait for it to finish), then reply with the single word SLEPT." });
+      const t0 = Date.now();
+      while (Date.now() - t0 < 120_000 && sleepProcs().length === 0) await wait(1000);
+      log("busy: sleep processes before close", JSON.stringify(sleepProcs()));
+      expect(sleepProcs().length, "the run is busy in sleep 300").toBeGreaterThan(0);
+    } else {
+      sendE2eSendMessageCommand(socket, { content: "Reply with the single word READY. Do not call any tool." });
+      const t0 = Date.now();
+      while (Date.now() - t0 < 120_000 && !msgs.some((m) => m.type === "AGENT_STATUS" && m.payload?.status === "idle" && msgs.some((x) => x.type === "SEGMENT_CONTENT"))) await wait(1000);
+      log("idle: run finished its turn");
+    }
+    socket.close();
+    const c0 = Date.now();
+    const closed = await Promise.race([started.fastify.close().then(() => "closed", (e) => `close-error: ${e instanceof Error ? e.message : String(e)}`), wait(150_000).then(() => "TIMEOUT-150s")]);
+    const seconds = Math.round((Date.now() - c0) / 100) / 10;
+    await wait(3000);
+    const leftover = sleepProcs();
+    log("RESULT", JSON.stringify({ mode: BUSY ? "busy" : "idle", closed, seconds, leftoverSleeps: leftover }));
+    for (const l of leftover) { const pid = Number(l.split(/\s+/)[0]); try { process.kill(pid, "SIGKILL"); } catch { /* */ } }
+    await rm(ws, { recursive: true, force: true }); await rm(dataDir, { recursive: true, force: true });
+    expect(closed).toBe("closed");
+  }, 600_000);
+});

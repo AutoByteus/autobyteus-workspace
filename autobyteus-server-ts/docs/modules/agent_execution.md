@@ -7,6 +7,8 @@ Manages runtime agent runs and message execution flow.
 ## TS Source
 
 - `src/agent-execution/services/agent-run-manager.ts` (`AgentRunManager`)
+- `src/agent-execution/domain/agent-run.ts` (`AgentRun`)
+- `src/agent-execution/domain/agent-run-termination.ts` (`AgentRunTermination`, internal to `AgentRun`)
 - `src/agent-execution/services/agent-run-activation-candidate.ts`
 - `src/agent-execution/services/standalone-agent-run-lifecycle-service.ts`
 - `src/agent-execution/services/agent-run-command-coordinator.ts`
@@ -232,6 +234,15 @@ Mixed Team-member stop, and `stopAllAgentRuns()` all use the same exact-instance
 wrapper around `AgentRun.prepareTermination()`. Concurrent preparation and
 finish calls coalesce per exact run.
 
+Inside the run, `AgentRun` delegates its four termination methods
+(`prepareTermination`, `tryPrepareTerminationIfQuiescent`,
+`fenceInputAndInterruptForRootShutdown`, `terminate`) to its internal owner
+`AgentRunTermination` (`domain/agent-run-termination.ts`). That owner holds the
+termination lifecycle (preparation, cancel, commit, finish retry) and the
+root-shutdown fence attempts, and reaches the run's state only through the
+options `AgentRun` constructs it with. It is not used outside `agent-run.ts`;
+callers keep using `AgentRun`.
+
 Cancellation reopens the underlying run and removes the reusable preparation.
 A committed finish that returns `accepted: false` keeps the run current and the
 finish retryable. An accepted provider/runtime finish is not returned to the
@@ -249,10 +260,13 @@ When a Team, Org or standalone Agent root stops, every configured Agent
 execution it hosts (`ConfiguredAgentExecutionHandle`: members, collaborators
 and task copies; the standalone host stops separately) first calls
 `AgentRun.fenceInputAndInterruptForRootShutdown()`. On the run's serialized
-dispatch lane it fences new input admission and opens one
-`AgentRunRootShutdownFence` attempt
-(`domain/agent-run-root-shutdown-fence.ts`). The attempt interrupts an active
-turn at most once and settles `{ accepted: true }` only when the run is
+dispatch lane it fences new input admission and, through `AgentRunTermination`,
+selects one `AgentRunRootShutdownFence` attempt
+(`domain/agent-run-root-shutdown-fence.ts`): the current attempt is reused while
+pending or accepted and replaced once it ended. Run lifecycle changes schedule
+a microtask that evaluates whichever attempt is current when it runs. The
+attempt interrupts an active turn at most once and settles `{ accepted: true }`
+only when the run is
 quiescent. A rejected interrupt (for example "no active turn" because the turn
 completed between the snapshot and the interrupt) is not a result. The
 attempt stays open until the local turn-completion dispatch makes the run
@@ -260,6 +274,15 @@ quiescent, or until `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS`
 (5 s) expires, when it settles the original rejected result. Only acceptance
 is final; after a not-accepted or failed attempt, the next Stop opens a new
 attempt.
+
+**Known limit (server shutdown with a busy run).** Server shutdown
+(`closeProcessResources` → `stopAll`) does not interrupt an in-flight turn; it
+waits for the turn to finish. When the desktop app quits while an agent is
+mid-turn, Electron exits after about 30 s, but the embedded server, its runtime
+process (observed with the Codex app server) and the agent's commands keep
+running as orphans until the turn ends. That can be unbounded for a long or
+hung tool, and a relaunch can start a second server on the same data. This is
+the existing behavior, not a design guarantee.
 
 ## Stopped Model Configuration And Restore Serialization
 

@@ -1,0 +1,1390 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:91171) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-termination-extraction/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T04:14:20.961Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-Rcwi4e/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-05T04:14:21.499Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39m[2026-10-05T04:14:21.504Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:14:21.636916Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Added new agent definition with ID aic-helper-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition created successfully with ID: aic-helper-462300
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Added new agent definition with ID aic-twin-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition created successfully with ID: aic-twin-462300
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Added new agent definition with ID aic-twin-462300-2.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition created successfully with ID: aic-twin-462300-2
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Added new agent definition with ID aic-plain-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition created successfully with ID: aic-plain-462300
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Added new agent definition with ID aic-pm-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition created successfully with ID: aic-pm-462300
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-AqP2Hl
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-AqP2Hl.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreated and registered workspace ID: agent_ws_b421bc2e11acbd91e313a6207feba07d9a9bbbb0053a5f69202a081e39678c53
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-AqP2Hl
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-AqP2Hl.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mReusing registered workspace ID: agent_ws_b421bc2e11acbd91e313a6207feba07d9a9bbbb0053a5f69202a081e39678c53
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:14:21.947306Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mPublished codex_app_server agent run 'aic_plain_462300_21895657e135459fbf82fd7e15bb6f6b'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent websocket attached for run aic_plain_462300_21895657e135459fbf82fd7e15bb6f6b
+Created agent session 3e9e1af2-5420-4400-bca8-0d7950bc6a67 for run aic_plain_462300_21895657e135459fbf82fd7e15bb6f6b
+Agent WebSocket connected: session=3e9e1af2-5420-4400-bca8-0d7950bc6a67, run=aic_plain_462300_21895657e135459fbf82fd7e15bb6f6b
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreated and registered workspace ID: agent_ws_f74f2102439e564652476ab220640172e9ec0ffa5461a5fbb4ab2f6daff9f8bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mReusing registered workspace ID: agent_ws_f74f2102439e564652476ab220640172e9ec0ffa5461a5fbb4ab2f6daff9f8bb
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:14:27.599540Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mPublished codex_app_server agent run 'aic_pm_462300_2e4aa5a9e0f84d8188ee0372bdfbaabf'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent websocket attached for run aic_pm_462300_2e4aa5a9e0f84d8188ee0372bdfbaabf
+Created agent session 8b909722-fc2d-4ce6-b39e-d43b9b7424e7 for run aic_pm_462300_2e4aa5a9e0f84d8188ee0372bdfbaabf
+Agent WebSocket connected: session=8b909722-fc2d-4ce6-b39e-d43b9b7424e7, run=aic_pm_462300_2e4aa5a9e0f84d8188ee0372bdfbaabf
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mReusing registered workspace ID: agent_ws_f74f2102439e564652476ab220640172e9ec0ffa5461a5fbb4ab2f6daff9f8bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mPublished codex_app_server agent run 'aic_helper_462300_41f6104a94e5483189c36425261880b7'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xDZtvu.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mReusing registered workspace ID: agent_ws_f74f2102439e564652476ab220640172e9ec0ffa5461a5fbb4ab2f6daff9f8bb
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mPublished codex_app_server agent run 'aic_twin_462300_696c530d84e64b1db02d8e0928b0c9e4'.
+
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus_deepseek: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus_deepseek: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus_deepseek: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus_deepseek: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus_deepseek: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mautobyteus_deepseek: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mClosed agent session 8b909722-fc2d-4ce6-b39e-d43b9b7424e7
+Agent WebSocket disconnected: 8b909722-fc2d-4ce6-b39e-d43b9b7424e7
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mClosed agent session 3e9e1af2-5420-4400-bca8-0d7950bc6a67
+Agent WebSocket disconnected: 3e9e1af2-5420-4400-bca8-0d7950bc6a67
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Removed agent definition with ID aic-helper-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition with ID aic-helper-462300 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Removed agent definition with ID aic-twin-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition with ID aic-twin-462300 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Removed agent definition with ID aic-twin-462300-2.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition with ID aic-twin-462300-2 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Removed agent definition with ID aic-plain-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition with ID aic-plain-462300 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mIn-memory cache: Removed agent definition with ID aic-pm-462300.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+[22m[39mAgent Definition with ID aic-pm-462300 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:15:23.353297Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-lead-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Definition created successfully with ID: aic-lead-c7805d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-mate-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Definition created successfully with ID: aic-mate-c7805d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[2026-10-05T04:15:23.465Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Team Definition created successfully with ID: aic-squad-c7805d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-pm-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Definition created successfully with ID: aic-pm-c7805d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreated and registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:15:23.607607Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mPublished codex_app_server agent run 'aic_pm_c7805d_f03fb7923bb64dcd9f048fcc6567895d'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent websocket attached for run aic_pm_c7805d_f03fb7923bb64dcd9f048fcc6567895d
+Created agent session f20932c3-5634-4ea2-ba1d-add8c4059682 for run aic_pm_c7805d_f03fb7923bb64dcd9f048fcc6567895d
+Agent WebSocket connected: session=f20932c3-5634-4ea2-ba1d-add8c4059682, run=aic_pm_c7805d_f03fb7923bb64dcd9f048fcc6567895d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mPublished codex_app_server agent run 'aic_lead_c7805d_e86a7c5898b746a482930237d91e41f7'.
+Published codex_app_server agent run 'aic_mate_c7805d_6d23ccfa443a4a88826ced1fc02fe3a3'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'thread/started'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m4[39m,
+  paramKeys: [ [32m'thread'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mPublished codex_app_server agent run 'aic_lead_c7805d_1f63b538ad3e4a0ebc6709120e873d54'.
+Published codex_app_server agent run 'aic_mate_c7805d_9d6502c98b8149aeaaa4fdebaaf84c83'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mPublished codex_app_server agent run 'aic_lead_c7805d_0cb134e771df4909893b7ad3d2b6e135'.
+Published codex_app_server agent run 'aic_mate_c7805d_6d3ab89afbf64952b5dcaad47836a05b'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:15:59.411517Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mPublished codex_app_server agent run 'aic_pm_c7805d_f03fb7923bb64dcd9f048fcc6567895d'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-NOoiiO.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mReusing registered workspace ID: agent_ws_910c3874db8aad1f5bcf6ca49435515c98d84cc577cf32e1cc2f105664cb186f
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m2[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'account/updated'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m2[39m,
+  paramKeys: [ [32m'authMode'[39m, [32m'planType'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mPublished codex_app_server agent run 'aic_lead_c7805d_e86a7c5898b746a482930237d91e41f7'.
+
+ [32m✓[39m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mcodex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing[33m 61743[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mClosed agent session f20932c3-5634-4ea2-ba1d-add8c4059682
+Agent WebSocket disconnected: f20932c3-5634-4ea2-ba1d-add8c4059682
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39m[2026-10-05T04:16:06.195Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Team Definition with ID aic-squad-c7805d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-lead-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Definition with ID aic-lead-c7805d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-mate-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Definition with ID aic-mate-c7805d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-pm-c7805d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[22m[39mAgent Definition with ID aic-pm-c7805d deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:16:06.270859Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [32m✓[39m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mcodex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop[33m 42926[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-lead-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-lead-a0638d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-mate-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-mate-a0638d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39m[2026-10-05T04:16:06.370Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Team Definition created successfully with ID: aic-squad-a0638d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-echo-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-echo-a0638d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Added new agent definition with ID aic-pm-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition created successfully with ID: aic-pm-a0638d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreated and registered workspace ID: agent_ws_89690b8cdb3f126cb602832506d6e28446678308d6e5239409f2dcc321db47ef
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_89690b8cdb3f126cb602832506d6e28446678308d6e5239409f2dcc321db47ef
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:16:06.517970Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mPublished codex_app_server agent run 'aic_pm_a0638d_ac37ec0766ca4c1786bc09c52f340e81'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent websocket attached for run aic_pm_a0638d_ac37ec0766ca4c1786bc09c52f340e81
+Created agent session e3180f77-01b8-49fd-9808-e5307e348ef9 for run aic_pm_a0638d_ac37ec0766ca4c1786bc09c52f340e81
+Agent WebSocket connected: session=e3180f77-01b8-49fd-9808-e5307e348ef9, run=aic_pm_a0638d_ac37ec0766ca4c1786bc09c52f340e81
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_89690b8cdb3f126cb602832506d6e28446678308d6e5239409f2dcc321db47ef
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mPublished codex_app_server agent run 'aic_lead_a0638d_a5341b75b2ef4e8599e2fe1e31d40f8a'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_89690b8cdb3f126cb602832506d6e28446678308d6e5239409f2dcc321db47ef
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'thread/started'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m3[39m,
+  paramKeys: [ [32m'thread'[39m ]
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'warning'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m3[39m,
+  paramKeys: [ [32m'threadId'[39m, [32m'message'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mPublished codex_app_server agent run 'aic_mate_a0638d_c859f28b279845bd96f74e1c4d3efd50'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_89690b8cdb3f126cb602832506d6e28446678308d6e5239409f2dcc321db47ef
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mPublished codex_app_server agent run 'aic_echo_a0638d_171d3af93d294723bfe1f2e7d0b827c3'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mtEFFN.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mReusing registered workspace ID: agent_ws_89690b8cdb3f126cb602832506d6e28446678308d6e5239409f2dcc321db47ef
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mPublished codex_app_server agent run 'aic_mate_a0638d_917d11343e424fc6979894784225e1f1'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mClosed agent session e3180f77-01b8-49fd-9808-e5307e348ef9
+Agent WebSocket disconnected: e3180f77-01b8-49fd-9808-e5307e348ef9
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39m[2026-10-05T04:16:43.067Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Team Definition with ID aic-squad-a0638d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-lead-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition with ID aic-lead-a0638d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-mate-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition with ID aic-mate-a0638d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-echo-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition with ID aic-echo-a0638d deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mIn-memory cache: Removed agent definition with ID aic-pm-a0638d.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[22m[39mAgent Definition with ID aic-pm-a0638d deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:16:43.152380Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [32m✓[39m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mcodex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop[33m 36875[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-lead-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-lead-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-mate-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-mate-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[2026-10-05T04:16:43.252Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Team Definition created successfully with ID: aic-squad-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-helper-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-helper-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-racer-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-racer-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-echo-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-echo-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-coord-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-coord-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Added new agent definition with ID aic-worker-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition created successfully with ID: aic-worker-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[2026-10-05T04:16:43.339Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-host-team-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Team Definition created successfully with ID: aic-host-team-46da33
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreated and registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent team websocket attached for team run aic_host_team_46da33_07c9941c819b48818b995c2a3ce47b2d
+Created agent session 3f124993-8ae4-4b84-9e4f-7ea578a14435 for run aic_host_team_46da33_07c9941c819b48818b995c2a3ce47b2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Team WebSocket connected: session=3f124993-8ae4-4b84-9e4f-7ea578a14435, run=aic_host_team_46da33_07c9941c819b48818b995c2a3ce47b2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:16:43.791754Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_coord_46da33_dce1632e27b24401abfb71a35839c85a'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_lead_46da33_901aff874d1a4f3382e365aa02ec9767'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_lead_46da33_c5b33267eafd426b94a721fd7f073d77'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_mate_46da33_d770689d00954c95adfb0795a9d8ebd4'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_lead_46da33_c7d87e4e802247389b4d0b6fdcfa24ed'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_mate_46da33_e6e5471ac02847d3b2e2acfa12278f1b'.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:17:20.602837Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0minvalid agent id aic_mate_46da33_d770689d00954c95adfb0795a9d8ebd4: Error(ParseChar { character: 'i', index: 2 })
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_mate_46da33_6c8738ab67e64d44981ec319e3eac4ab'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_echo_46da33_b06e527007e6439a96a5e0d90bac4b77'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_echo_46da33_f5b88fe434a043c38cde040859939ed3'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_helper_46da33_080af30e5aad451abd45112a3fd4ad27'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_echo_46da33_11faef2c7f614babacffd592633c921e'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_mate_46da33_d784485951dc4e8993fda7a89c67b3c7'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_worker_46da33_4297c04468e24117b1b97bea99817e5b'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'thread/started'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m14[39m,
+  paramKeys: [ [32m'thread'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_racer_46da33_7c2681f9e8fe4aaf95518a04f2a9f8bc'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[LE-T1] race results: [["aic_coord_46da33_dce1632e27b24401abfb71a35839c85a","aic_racer_46da33_7c2681f9e8fe4aaf95518a04f2a9f8bc"],["aic_worker_46da33_4297c04468e24117b1b97bea99817e5b","aic_racer_46da33_7c2681f9e8fe4aaf95518a04f2a9f8bc"]]
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mClosed agent session 3f124993-8ae4-4b84-9e4f-7ea578a14435
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent team websocket attached for team run aic_host_team_46da33_07c9941c819b48818b995c2a3ce47b2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreated agent session a2a531ab-5833-4ad3-b22c-8c89875d5cdf for run aic_host_team_46da33_07c9941c819b48818b995c2a3ce47b2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Team WebSocket connected: session=a2a531ab-5833-4ad3-b22c-8c89875d5cdf, run=aic_host_team_46da33_07c9941c819b48818b995c2a3ce47b2d
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:18:22.086017Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_coord_46da33_dce1632e27b24401abfb71a35839c85a'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m2[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_lead_46da33_c7d87e4e802247389b4d0b6fdcfa24ed'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-mCMU6h.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mReusing registered workspace ID: agent_ws_f4d932d11b6b1b9ce66b4fe651751d8283bd833f262c2f1ad8e8285a9c74bd2d
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m3[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mPublished codex_app_server agent run 'aic_lead_46da33_901aff874d1a4f3382e365aa02ec9767'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mClosed agent session a2a531ab-5833-4ad3-b22c-8c89875d5cdf
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[2026-10-05T04:18:32.408Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Team Definition with ID aic-squad-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39m[2026-10-05T04:18:32.423Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-host-team-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Team Definition with ID aic-host-team-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-lead-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-lead-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-mate-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-mate-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-helper-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-helper-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-racer-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-racer-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-echo-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-echo-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-coord-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-coord-46da33 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mIn-memory cache: Removed agent definition with ID aic-worker-46da33.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[22m[39mAgent Definition with ID aic-worker-46da33 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:18:32.546893Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [32m✓[39m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mcodex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen[33m 109388[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Added new agent definition with ID aic-org-coord-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition created successfully with ID: aic-org-coord-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Added new agent definition with ID aic-org-lead-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition created successfully with ID: aic-org-lead-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Added new agent definition with ID aic-org-mate-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition created successfully with ID: aic-org-mate-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Added new agent definition with ID aic-helper-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition created successfully with ID: aic-helper-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[2026-10-05T04:18:32.699Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-org-squad-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Team Definition created successfully with ID: aic-org-squad-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreated and registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:18:33.223099Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:18:33.533856Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_coord_ad31be_873f31fece3d4c8db0a1a6f30e5555d9'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_lead_ad31be_6766009df8064783ab60dff9fcdd016c'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_mate_ad31be_59fea3e2f6e148d7bf96a55b24a0037a'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'thread/started'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m4[39m,
+  paramKeys: [ [32m'thread'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_lead_ad31be_51f6c7e37c0d415293ac2003f352af23'.
+Published codex_app_server agent run 'aic_org_mate_ad31be_4873707d45ff4dd7a9d87e9b485de787'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Added new agent definition with ID aic-lead-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition created successfully with ID: aic-lead-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Added new agent definition with ID aic-mate-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition created successfully with ID: aic-mate-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[2026-10-05T04:19:22.024Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Team Definition created successfully with ID: aic-squad-ad31be
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_lead_ad31be_2d39ba46eb304f6cb9125e62e442df1c'.
+Published codex_app_server agent run 'aic_mate_ad31be_8bd3b0f8a4df4029b2099bba0783d3b6'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_lead_ad31be_b8b1594599e64116b1c5160334928444'.
+Published codex_app_server agent run 'aic_mate_ad31be_6ff4bf40777042bca480513534069709'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_mate_ad31be_f54339b9bea04b81b77ef1b4fe30ba28'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_helper_ad31be_4e0a1171eea64aa586c273982c2fa0a9'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexAppServerClient] stderr: [2m2026-10-05T04:20:30.761117Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_coord_ad31be_873f31fece3d4c8db0a1a6f30e5555d9'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m2[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_org_lead_ad31be_6766009df8064783ab60dff9fcdd016c'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-J9KLH5.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mReusing registered workspace ID: agent_ws_c694648cc145920ca6c12250baeaa83da17d6d932c4cbf4186b52b842fc4c199
+
+[90mstderr[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[CodexClientThreadRouter] app-server message was not routed {
+  kind: [32m'notification'[39m,
+  method: [32m'deprecationNotice'[39m,
+  requestId: [90mundefined[39m,
+  threadCount: [33m3[39m,
+  paramKeys: [ [32m'summary'[39m, [32m'details'[39m ]
+}
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mPublished codex_app_server agent run 'aic_lead_ad31be_2d39ba46eb304f6cb9125e62e442df1c'.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[2026-10-05T04:20:46.304Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-org-squad-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Team Definition with ID aic-org-squad-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39m[2026-10-05T04:20:46.315Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Team Definition with ID aic-squad-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Removed agent definition with ID aic-org-coord-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition with ID aic-org-coord-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Removed agent definition with ID aic-org-lead-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition with ID aic-org-lead-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Removed agent definition with ID aic-org-mate-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition with ID aic-org-mate-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Removed agent definition with ID aic-helper-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition with ID aic-helper-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Removed agent definition with ID aic-lead-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition with ID aic-lead-ad31be deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mIn-memory cache: Removed agent definition with ID aic-mate-ad31be.
+
+[90mstdout[2m | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22m[2mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22m[2mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[22m[39mAgent Definition with ID aic-mate-ad31be deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mcodex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in[33m 133867[2mms[22m[39m
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mcodex_app_server: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mclaude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mclaude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mclaude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mclaude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mclaude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mclaude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mantigravity_cli: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mantigravity_cli: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mantigravity_cli: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mantigravity_cli: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mantigravity_cli: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mantigravity_cli: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mgrok_build: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mgrok_build: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mgrok_build: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mgrok_build: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mgrok_build: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ [2m[90m↓[39m[22m tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts[2m > [22mAgent-initiated collaborators on real runtimes (SR-005)[2m > [22mgrok_build: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[2m | [22m[33m31 skipped[39m[90m (36)[39m
+[2m   Start at [22m 06:14:12
+[2m   Duration [22m 393.50s[2m (transform 5.21s, setup 15ms, import 7.54s, tests 385.41s, environment 0ms)[22m
+
+EXIT=0
