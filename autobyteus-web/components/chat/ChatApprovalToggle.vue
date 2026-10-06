@@ -11,7 +11,7 @@
     :title="$t('chat.approval.agyLockedTooltip')"
   >
     <Icon icon="heroicons:shield-check" class="h-4 w-4" aria-hidden="true" />
-    <span>{{ $t('chat.approval.autoApprove') }}</span>
+    <span class="whitespace-nowrap">{{ $t('chat.approval.autoApprove') }}</span>
     <Icon icon="heroicons:lock-closed" class="h-3 w-3 text-gray-400" aria-hidden="true" data-test="chat-approval-lock" />
   </button>
   <button
@@ -26,7 +26,7 @@
     @click="emit('update:modelValue', !modelValue)"
   >
     <Icon :icon="modelValue ? 'heroicons:shield-check' : 'heroicons:shield-exclamation'" class="h-4 w-4" aria-hidden="true" />
-    <span>{{ modelValue ? $t('chat.approval.autoApprove') : $t('chat.approval.askFirst') }}</span>
+    <span class="whitespace-nowrap">{{ modelValue ? $t('chat.approval.autoApprove') : $t('chat.approval.askFirst') }}</span>
   </button>
 </template>
 

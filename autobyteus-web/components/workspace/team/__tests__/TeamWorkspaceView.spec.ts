@@ -43,6 +43,8 @@ vi.mock('~/stores/agentRunConfigStore', () => ({ useAgentRunConfigStore: () => a
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => selectionStoreMock }));
 vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock }));
 vi.mock('~/stores/agentTeamRunStore', () => ({ useAgentTeamRunStore: () => agentTeamRunStoreMock }));
+const copyTeamRun = vi.hoisted(() => vi.fn(async () => undefined));
+vi.mock('~/composables/runSettings/useRunStart', () => ({ useRunStart: () => ({ copyTeamRun }) }));
 
 const buildAgent = (address: string, displayName: string, agentRunId: string, agentDefinitionId: string) =>
   testAgentNode(address, { displayName, agentRunId, agentDefinitionId });
@@ -141,34 +143,17 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 
-  it('seeds an editable new Team configuration without sharing nested LLM config state', async () => {
-    const professor = testAgentNode('/Professor', {
-      displayName: 'Professor', agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def',
-      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4',
-      llmConfig: { reasoning_effort: 'xhigh', nested: { values: ['xhigh'] } },
-    });
-    const student = testAgentNode('/Student', {
-      displayName: 'Student', agentRunId: 'student-run', agentDefinitionId: 'agent-student-def',
-      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.3-codex',
-      llmConfig: { reasoning_effort: 'medium', nested: { values: ['medium'] } },
-    });
+  it('＋ opens New chat copied from this Team run (REQ-013), with the run’s workspaces as hints', async () => {
     state.activeTeamContext = buildTestTeamContext({
       teamRunId: 'team-1', teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
-      rootChildren: [professor, student], coordinatorAddress: '/Professor', isActive: true,
+      rootChildren: [buildAgent('/Professor', 'Professor', 'professor-run', 'agent-professor-def')],
+      coordinatorAddress: '/Professor', isActive: true,
       workspaceRootPath: '/workspace/team', configuration: { workspaceId: 'ws-1' },
     });
-    const sourceConfig = state.activeTeamContext.view.getConfigurationView();
     const wrapper = mountComponent();
     await wrapper.get('[data-test="new-agent"]').trigger('click');
     await flushPromises();
-    const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
-    expect(seed).toEqual(expect.objectContaining({ isLocked: false }));
-    seed.rootConfig.llmConfig.nested.values.push('mutated');
-    seed.agentOverrides['/Student'].llmConfig.nested.values.push('mutated');
-    expect((sourceConfig.root.effectiveConfig.llmConfig as any).nested.values).toEqual(['xhigh']);
-    expect((sourceConfig.agentsByAddress['/Student'].effectiveConfig.llmConfig as any).nested.values).toEqual(['medium']);
-    expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
-    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(copyTeamRun).toHaveBeenCalledWith(expect.objectContaining({ teamRunId: 'team-1', teamDefinitionId: 'team-def-1' }));
   });
 
   it('keeps configured Team placement non-focusable while retaining its exact Agent child focus', () => {

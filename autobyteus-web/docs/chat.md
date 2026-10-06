@@ -1,7 +1,10 @@
 # Chat
 
 Chat is the default entry surface of the web app and the only center view for
-standalone agent runs. Teams and Agent Orgs keep their own `/workspace` views.
+standalone agent runs. New chat is also the only start surface for Agents and
+Agent Teams: every Agent/Team **Run** and **+** opens it. Team and Agent Org runs
+keep their own `/workspace` views; Agent Orgs start on the Org launch page (see
+[Agent Orgs](./agent_orgs.md#org-launch-page)) and are never a chat target.
 
 ## Routes
 
@@ -22,13 +25,26 @@ and `/workspace` execution-link queries accept team links only.
 ## New Chat Draft
 
 `stores/chatDraftStore.ts` owns one New chat draft: an unregistered `temp-*`
-`AgentContext` plus the chat-only choices (target, workspace, auto-approve,
-`starting`). The draft defaults to the built-in Daily Assistant
-(`DEFAULT_CHAT_AGENT_DEFINITION_ID`, seeded by the server with
-`skillScope: ALL_INSTALLED`) and picks a model in this order: last-used chat
-model (`autobyteus.chat.lastModel`), the Daily Assistant default launch config,
-then the first model of the AutoByteus runtime. `startNewChat(preset)` resets
-the draft; the left panel pencil, the tree `+` and catalog Run actions use it.
+`AgentContext` (text, files, skills, mentions, runtime, model, model config)
+plus the chat-only choices: the target (an agent or a team; never an Org), a
+`RunWorkspaceChoice`, auto-approve, a Team's member overrides
+(`teamAgentOverrides`, by member address) and `starting`. It never sends or
+routes: `chatLaunchService` launches and `composables/runSettings/useRunStart.ts`
+routes. Every start intent goes through `useRunStart`:
+
+| Intent | `useRunStart` | Draft action | Initial settings |
+| --- | --- | --- | --- |
+| Chat nav, left-panel pencil | `newChat` | `startNewChat()` | Daily Assistant; last chat model (`autobyteus.chat.lastModel`) → Daily Assistant default launch config → the AutoByteus runtime's first model |
+| Workspace tree `+` | `newChatInWorkspace` | `startNewChat({ agentDefinitionId, workspaceRootPath })` | as above, in that workspace |
+| Agent / Team **Run** (list, detail) | `runAgent`, `runTeam` | `startForDefinition(target)` | the definition's default launch config → last chat model → default runtime's first model; temp workspace; Auto-approve |
+| **+** on an Agent run view | `copyAgentFromConfig(config)` | `startForDefinition(target, { copied })` | the displayed agent's workspace, runtime, model, model config and approval |
+| **+** on a Team run | `copyTeamRun` | `startForDefinition(target, { copied })` | the run's root settings and member overrides; team defaults if the run cannot be read |
+| Heading switcher | `switchTarget` | `retarget(target)` (or a new draft from the Org page) | workspace, approval and model config carried; member overrides reset |
+
+Copied and carried settings stay as they are; their runtimes' availability and
+catalogs load before Send is offered. The Agent **+** copies the agent on screen:
+the view passes its displayed `AgentRunConfig`, so the run's own agent and an
+`@` collaborator child copy alike, with no lookup by run id.
 
 The displayed name does not change the default definition ID
 `autobyteus-daily-assistant`. New Chat uses the current Daily Assistant definition
@@ -41,26 +57,38 @@ own available skills or direct tools; it is not required to delegate every reque
 Every draft model set records an explicit `llmConfig` (`explicitChatModelConfig`):
 the model schema's non-thinking defaults through
 `applyModelConfigSchemaDefaults` (`utils/llmConfigSchema.ts`, the same function
-the launch form's `ModelConfigSection` uses), plus the default thinking state
+`ModelConfigSection` uses), plus the default thinking state
 from `getDefaultThinkingConfig` (`utils/llmThinkingConfigAdapter.ts`) unless
 the preset already carries thinking keys. A model with a schema is never
 recorded as `{}` or `null`, so the live ⚙ shows the values the run started
-with; a model without a schema keeps `null`. The team quick path copies the
-same value to its root config.
+with; a model without a schema keeps `null`. A Team launch copies the same value
+to its root config. Changing the model resets thinking and the other model
+settings; changing either of those keeps the other.
 
 The composer (`ChatComposer.vue`) works on a `ComposerTarget`
 (`composables/agentInput/useComposerTarget.ts`). The New chat target has
 `access: 'draft'` and dispatches send to the agent or team launch path; a run
-target has `access: 'live'`. Footer order is: approval toggle, workspace menu,
-then model/thinking controls, mic and the primary send/stop action last.
+target has `access: 'live'`. Footer order is: workspace menu, approval toggle,
+then model menu, Thinking, one chip per other model setting (for example
+"⚡ Fast" for Codex `service_tier`, icon-only below `sm`), mic and the primary
+send/stop action last. Only the model name truncates; the other controls keep
+their size. Send is disabled with the shared launch readiness reason as its
+label (see [Agent Orgs](./agent_orgs.md#readiness)): the target is gone, a
+scope's runtime is unavailable, or a scope has no model ("Choose a model to
+start."). For a Team every member's effective settings are checked too.
 
 - `/` opens the skill menu. For an `ALL_INSTALLED` agent it lists enabled
   installed skills; otherwise the agent's configured `skillNames`. Chosen
   skills become removable chips on `AgentContext.requestedSkillNames` and are
   prefixed to the message by `utils/skills/skillRequestInstruction.ts`; sent
   user messages parse that prefix back into chips.
-- `@` opens the target menu: shared agents (except Daily Assistant) and shared
-  teams.
+- `@` is mention-only, as in a live run (below): it inserts a collaborator
+  mention ("Bring into this run") and never changes the target. Candidates come
+  from `utils/collaborators/draftMentionEligibility.ts`, which mirrors the
+  server's `CollaboratorCandidatePolicy` for the would-be run: shared,
+  non-built-in Agents, then shared Agent Teams, never Orgs, minus the target and,
+  for a Team, every definition placed in it. The first message keeps its
+  mentions.
 - The workspace menu accepts an existing workspace or an absolute folder path
   (`~` is rejected); the folder is loaded at send time. Its search box (the
   model-menu search styling, placeholder "Search workspaces") is always shown and
@@ -93,9 +121,37 @@ while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
 - **Other schemas** (for example Codex `reasoning_effort` with no switch) keep
   the per-parameter menu, and a pick changes only that parameter.
 
+## Start Surfaces
+
+New chat and the Org launch page share one vocabulary
+(`components/run-settings/*`, built on the chat controls):
+
+- **Heading switcher** (`RunTargetSwitcher`). The heading is the target name
+  (avatar only when the definition has one). Clicking it opens one "what to run"
+  menu: search "Search agents, teams and orgs", sections Agents (Daily Assistant
+  first), Agent teams and Agent orgs, with the current target checked. An Agent or
+  Team retargets New chat; an Org opens the Org launch page. Workspace, approval
+  and model config carry across; member overrides reset; typed text is kept only
+  between Agent and Team. The switcher is disabled while a run is starting.
+- **Members line and Member settings drawer** for a Team (and an Org). See
+  [Agent Orgs](./agent_orgs.md#member-settings). A Team member can override model
+  + runtime, thinking, other model settings and tool approval, but not the
+  workspace.
+- **Show tools.** One small icon in the top-right corner opens the right tools
+  (Files, Terminal, …), docked when there is room, otherwise as the drawer. They
+  are closed by default; the choice is remembered in
+  `autobyteus.chat.startToolsOpen` (`useStartSurfaceTools`), holds across
+  switches, and a run started from the page keeps the panel open. Files and
+  Terminal use the workspace chosen on the page. No icon strip is shown on start
+  surfaces (`WorkspaceToolShell start-surface`).
+
+There is no "Files are saved in …" line; the workspace control names the
+workspace (path on hover). While starting, the line under the composer reads
+"Starting {name} on {runtime}…".
+
 ### New chat placement
 
-`ChatNewSurface.vue` keeps the heading, composer and workspace hint line
+`ChatNewSurface.vue` keeps the heading, composer and the line under it
 flex-centred in a column with `pt-[14vh] pb-10` padding (previously
 `pt-10 pb-[6vh]`). The larger top padding moves the group down by 10vh − 40px
 (about 56px in a 952px-tall window), which leaves room above the composer for
@@ -110,7 +166,7 @@ Thinking menus always open upward and never flip down. Each menu passes
 
 - **Position.** `@` and `/` sit 6px above the composer card and may cover the
   heading and subtitle. Workspace, Model and Thinking sit above their trigger.
-  No menu covers the workspace hint line under the composer.
+  No menu covers the line under the composer.
 - **Height.** Max height = min(preferred height, space above the menu's
   containing block − 6px gap − 16px margin), measured when the menu opens.
   Preferred heights: `@`/`/` 300px, Workspace 420px, Model 360px, Thinking
@@ -132,7 +188,7 @@ Thinking menus always open upward and never flip down. Each menu passes
 
 ### Model labels
 
-Chat names models exactly as the launch form does (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:
+Chat names models the same way on every surface that uses the chat model menu (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:
 
 | Runtime | `label` | `secondary` |
 | --- | --- | --- |
@@ -158,12 +214,15 @@ permanent id and the model is remembered as last-used. A failed first send
 lands on `/chat?id=<temp>` with the message and error kept. A workspace failure
 before registration leaves the New chat untouched.
 
-Team quick path: a root-only team config (the draft's runtime, model, thinking
-config, auto-approve and workspace applied to every member), focus on the
-coordinator, `sendMessageToFocusedMember` with the chat draft as the explicit
-attachment owner, then `/workspace`. The team runtime model catalog is primed
-before launch. On failure the orphan team draft and selection are removed and
-the New chat stays intact.
+Team launch (`launchTeamChat`): a team config with the draft's runtime, model,
+model config, auto-approve and workspace for every member, plus each customized
+member's own settings (`buildChatTeamLaunchConfig(definition, root,
+teamAgentOverrides)`). The model catalog of every effective runtime is loaded
+before the Team launch draft is created in `teamRunConfigStore`, focused on the
+coordinator. The first message goes to the coordinator through
+`sendMessageToFocusedMember`, with its `@` mentions and the chat draft as the
+explicit attachment owner, then the app routes to `/workspace`. On failure the
+orphan team draft and selection are removed and the New chat stays intact.
 
 `composables/chat/useChatRouteRunSync.ts` (used by `pages/chat.vue`) replaces
 `/chat?id=temp-*` with the permanent id whenever the displayed context is
@@ -180,21 +239,22 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
 - **Header.** Avatar, the run title (the run summary: the first message, else
   the history summary, truncated to 42 characters via `useStandaloneRunTitle`),
   `AgentStatusDisplay`, ⚙ and ＋.
-  - ＋ calls `chatDraftStore.startNewChat({ agentDefinitionId, workspaceRootPath })`
-    and routes to `/chat`.
+  - ＋ calls `useRunStart().copyAgentFromConfig(displayed config)`: New chat
+    for the agent on screen (the run's own agent or an `@` collaborator child),
+    prefilled with its workspace (temp when it has none), runtime, model, model
+    config and approval.
 - **Box.** The product `AgentUserInputForm`, with mic and send/stop inside the
   textarea. `AgentWorkspaceView` passes a `skillTagging` capability
   (`composables/agentInput/useSkillTagMenu.ts`): `/` opens `ChatSkillMenu`, and
   a chip row (`SkillTagChips`) edits `requestedSkillNames`. Team and Org boxes
   receive no capability and are unchanged.
-- **⚙ run settings** (`RunConfigPanel`).
-  - A permanent id uses `ExistingRunConfigEditor`: runtime and workspace are
-    fixed; model and thinking are locked while the run is live and editable
-    when it is Offline; Save applies at the next resume.
-  - A `temp-*` draft (a catalog "Run agent" draft, or a New chat whose first
-    send failed) uses `DraftRunConfigEditor`. It edits `context.config`
-    directly (runtime, model, thinking, Auto approve tools), shows the workspace
-    fixed, and makes no server call; the next send uses the edited config.
+- **⚙ run settings** (`RunConfigPanel` → `ExistingRunConfigEditor` →
+  `ExistingRunSettings`): runtime, workspace and approval are fixed; model,
+  thinking and other model settings are locked while the run is live and
+  editable when it is Offline; Save applies at the next resume. See
+  [Settings](./settings.md#existing-run-configuration).
+  - A `temp-*` context (a New chat whose first send failed) has no saved
+    settings: ⚙ is hidden. It keeps its error and the composer retry.
 - **Right panel.** `useRightPanel` keeps one visibility preference, open by
   default and shared with the Team and Org views. The contextual default tab
   is owned by `useRightSideTabs`: Activity for a standalone run, Team members
@@ -208,8 +268,9 @@ the first message (`chatDraftModelControls.ts`).
 
 In every sendable live-run composer (standalone Agent run, Team member, Org
 member, and any task child), `@` at a word start opens the run variant of
-`ChatTargetMenu` above the box ("Bring into this run"). New chat `@` still picks
-the launch target and is unchanged.
+`ChatTargetMenu` above the box ("Bring into this run"). New chat `@` works the
+same way, with draft candidates (see New Chat Draft); there is no "Chat with"
+target mode.
 
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
@@ -226,7 +287,8 @@ the launch target and is unchanged.
   never draft content. It takes priority over custom/skill run placeholders;
   without mention capability the existing placeholder chain stays unchanged.
   Removing the slash cue does not remove actual `/` skills or skill chips.
-- **Choosing** (`useRunMentionMenu`) writes `@Name ` into the text and records
+- **Choosing** (`useComposerMentionMenu`, shared by New chat and run
+  composers; the caller supplies candidates through `useMentionCandidates`) writes `@Name ` into the text and records
   the chosen kind/definition id/name in `AgentContext.requestedMentions`, with
   the caret after the trailing space. There is one quiet highlighted inline
   `@Name`, no separate top mention row or remove button. ↑/↓, Enter/Tab and
@@ -239,8 +301,9 @@ the launch target and is unchanged.
   identities. `mentionsPresentInText` filters active identities for both
   highlighting and send; native edits do not prune retained choices or erase
   unrelated text/attachments.
-- **Renderer ownership.** `AgentUserInputTextArea.vue` owns a decorative,
-  `aria-hidden`, noninteractive background mirror using `splitMentionText` and
+- **Renderer ownership.** `ComposerMentionMirror.vue`, used by both
+  `AgentUserInputTextArea.vue` and New chat's `ChatMessageInput.vue`, is a
+  decorative, `aria-hidden`, noninteractive background mirror using `splitMentionText` and
   escaped Vue interpolation. The native textarea remains the only editor and
   accessibility surface, retaining caret, selection, paste, IME and undo.
   Shared typography/padding plus client dimensions (excluding scrollbars),
@@ -313,6 +376,16 @@ the launch target and is unchanged.
 
 - `stores/__tests__/chatDraftStore.spec.ts`
 - `services/chat/__tests__/chatLaunchService.spec.ts`
+- `composables/runSettings/__tests__/useRunStart.spec.ts`, `useRunStopAction.spec.ts`;
+  `utils/runSettings/__tests__/launchReadiness.spec.ts`, `modelOptions.spec.ts`,
+  `runMemberTree.spec.ts`, `startModelDefaults.spec.ts`;
+  `components/run-settings/__tests__/OrgLaunchPage.spec.ts`, `RunMembersLine.spec.ts`
+- Browser probe: `pnpm test:e2e:run-settings-live`
+  (`tests/e2e/run-settings-live-probe.mjs`): Agent/Team/Org Run and **+**,
+  member overrides, Fast mode, first-send `@`, saved-run stop/Cancel/Save with
+  server readback, start-surface tools and control geometry. It runs in an owned
+  temp data root and needs Chrome, logged-in `claude` and `codex` CLIs and a
+  prior `pnpm -C autobyteus-server-ts build`.
 - `composables/chat/__tests__/useChatRouteRunSync.spec.ts`
 - `components/chat/__tests__/ChatComposer.spec.ts`, `chatComposerMenus.spec.ts`
 - `components/chat/__tests__/ChatThinkingControl.spec.ts`, `chatThinkingMenu.spec.ts`,
@@ -326,7 +399,7 @@ the launch target and is unchanged.
 - `composables/chat/__tests__/useChatModelCatalog.spec.ts`
 - `components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts`
 - `components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts`
-- `components/workspace/config/__tests__/RunConfigPanel.spec.ts` (draft branch),
+- `components/workspace/config/__tests__/RunConfigPanel.spec.ts`,
   `ExistingRunConfigEditor.workspace.spec.ts`
 - `composables/__tests__/useRightSideTabs.contextualDefault.spec.ts`
 - `pages/__tests__/chat.spec.ts`, `pages/__tests__/workspace-chat-redirect.spec.ts`

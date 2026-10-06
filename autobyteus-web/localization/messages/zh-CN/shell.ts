@@ -147,6 +147,7 @@ const shellMessages = {
   'shell.components.app.AppUpdateNotice.version.unknown': '未知',
   'shell.components.app.AppUpdateNotice.version.currentToNew': '当前 {{current}} → 新版 {{next}}',
   'shell.components.app.AppUpdateNotice.version.currentOnly': '当前 {{current}}',
+  'shell.startTools.show': '显示工具',
 } satisfies TranslationCatalog;
 
 export default shellMessages;

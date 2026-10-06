@@ -72,31 +72,37 @@ mutates the Team's local handoffs.
 
 ## Standalone Team Launch
 
-`teamRunConfigStore` owns an immutable launch draft. The root Team form
-collects runtime/model/model-config, workspace, automatic-tool policy, and the
-existing direct-member override intent. Every exact configured Agent must be
-valid before launch; pending or failed runtime catalogs and invalid model
-configuration block launch with scoped feedback.
+On desktop, a Team starts from **New chat**: **Run** on an Agent Team (list or
+detail) opens New chat addressed to the Team, and **+** on a Team run opens it
+prefilled with that run's settings and member overrides (team defaults if the
+run cannot be read). The composer's workspace, approval, model and thinking (and
+other model settings such as Codex Fast mode) are the Team's settings. The
+members line under the composer opens the **Member settings** drawer, where a
+member can override model + runtime, thinking, other model settings and tool
+approval; only differing fields are stored. The first message starts the run and
+goes to the coordinator, with its `@` mentions. See
+[Chat](./chat.md#launch) and [Agent Orgs](./agent_orgs.md#member-settings).
 
-The shared runtime selector verifies each runtime independently; an available
-Codex need not wait for unrelated runtime discovery. Model catalogs and exact
-schemas remain separate launch gates. Root/inherited member views use current
-shared selected-kind evidence and targeted Retry without silently changing
-choices or overrides. Different-kind failures and explicit failed edits retain
-their own scope. See [Org readiness](./agent_orgs.md#readiness-and-runtime-catalog-failure)
-for the shared contract; this does not change Team coordinator/focus semantics.
+`chatLaunchService.launchTeamChat` builds the team config with the overrides,
+loads every effective runtime's catalog, and creates the immutable launch draft
+in `teamRunConfigStore` (which also backs mobile run setup). Send is blocked by
+the shared readiness rule (`utils/runSettings/launchReadiness.ts`) when the Team
+is gone, any member's effective runtime is unavailable, or any member has no
+model. See [Org readiness](./agent_orgs.md#readiness) for the shared rule; this
+does not change Team coordinator/focus semantics.
 
 Fresh definition-based standalone Team setup starts the root automatic-approval
-setting **on**, on desktop and mobile and after application restart. Members
+setting **on**, on desktop (New chat) and mobile and after application restart. Members
 without an approval override inherit the root value; an explicit member false
 still wins where its runtime permits it. The root can also be turned off where
 permitted. Ordinary model/workspace edits do not reset a deliberate opt-out.
 Antigravity retains its existing forced-on/locked policy, distinct from this
 fresh-template default. Saved settings and seeds copied from existing runs keep
 explicit root/member approval choices, including false; New Chat retains its
-existing on default. The shared frontend `useDefinitionLaunchDefaults.ts`
-constructor supplies the fresh value, not backend defaults or a migration.
-Agent Org defaults and direct API callers are unchanged. See
+existing on default. On mobile the shared frontend
+`useDefinitionLaunchDefaults.ts` constructor supplies the fresh value; on
+desktop `chatDraftStore` does. Neither is a backend default or a migration.
+The Org launch page also defaults to on; direct API callers are unchanged. See
 [Agent fresh-run automatic approval](agent_management.md#fresh-run-automatic-approval)
 for the trust boundary.
 
@@ -317,12 +323,14 @@ and launch config do not persist a Team-wide or task-Team eligibility flag.
 - `stores/agentTeamRunStore.ts`
 - `stores/agentTeamContextsStore.ts`
 - `services/agentStreaming/TeamStreamingService.ts`
-- `components/workspace/config/TeamRunConfigForm.vue`
+- `services/chat/chatLaunchService.ts`, `services/chat/chatTeamLaunchConfig.ts`
+- `components/chat/ChatNewSurface.vue`, `components/run-settings/RunMembersLine.vue`,
+  `RunMemberSettingsDrawer.vue`
 - `components/workspace/history/AgentTeamRunHistoryPanel.vue`
 
 ## Compatible Model Selection On Stopped Runs
 
-The existing-run form permits a stopped standalone Team root or exact direct
+Saved-run settings permit a stopped standalone Team root or exact direct
 Agent to edit its model/settings pair while runtime, workspace, approval policy,
 addresses, and execution/provider identities remain locked. Model options are
 advisory: Save revalidates every affected scope against its original saved model
@@ -403,20 +411,17 @@ independent Run/Edit policy for owned Teams.
 
 ### Copying a retained Team after Settings Save
 
-Header **New (+)** reads the source Team's current canonical resume configuration
-before installing an editable draft. The alternate existing-source group action
-in `RunningAgentsPanel` uses the same reader, but that component is not mounted
-by the current application host: `AppLeftPanel` uses
-`WorkspaceAgentRunsTreePanel`, which has no Team group Plus control. The alternate
-action's component/loader/seed tests are not a live-browser acceptance claim.
-A retained execution view is presentation state, not authoring authority after a
-successful stopped-run Settings Save. The reader correlates requested, response,
-and tree root IDs before cache publication; the copy also verifies its definition.
-Only matching read-only workspace metadata is reused or resolved. Missing metadata
-blocks the copy rather than changing the workspace or creating one implicitly.
-Loading and failure stay on the source screen; the same action retries. A changed
-selection, source association, or unmounted caller cannot publish a late draft.
-Copying does not replace the source's context, history, Activity or composer state.
+Header **New (+)** (`TeamWorkspaceView` → `useRunStart().copyTeamRun`) reads the
+source Team's current canonical resume configuration
+(`loadTeamRunLaunchSeed`) and opens New chat for the Team with the run's root
+settings and member overrides. A retained execution view is presentation state,
+not authoring authority after a successful stopped-run Settings Save. The reader
+correlates requested, response, and tree root IDs before cache publication; the
+copy also verifies its definition. Only matching read-only workspace metadata is
+reused or resolved. If the run cannot be read or copied, New chat opens with the
+Team's defaults instead. A copy that finishes after the user has moved on opens
+nothing. Copying does not replace the source's context, history, Activity or
+composer state.
 Source-free creation still uses definition defaults; ordinary Create allocates
 new runtime identities.
 

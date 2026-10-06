@@ -1,0 +1,298 @@
+{
+  "startedAt": "2026-10-05T21:34:13.353Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline selected mentions; send adds the collaborator Offline at once; send_message_to briefing; \"From\" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion",
+      "result": "Pass",
+      "ms": 90527,
+      "details": {
+        "runId": "research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb",
+        "packageBeforeMention": false,
+        "options": [
+          "code-reviewer",
+          "researcher",
+          "writer",
+          "analyst",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team",
+          "review-team"
+        ],
+        "menuText": "Bring into this run @ · ↑↓ to move, Enter to choose\n\nAgents\nCR\nCode Reviewer\nReviews text and code.\nR\nResearcher\nTeam researcher.\nW\nWriter\nTeam writer.\nA\nAnalyst\nOrg analyst.\nPP\nProduct Prototyper\nBuilds UI prototypes.\nPB\nPrototype Bootstrapper\nSets up prototype repositories.\nAgent teams\nPT\nProduct Team\n2 members · coordinator product_prototyper\nRT\nReview Team\n2 members · coordinator researcher\nResearch Assistant gets your message and brings them into this run",
+        "footer": "Research Assistant gets your message and brings them into this run",
+        "aria": {
+          "role": "combobox",
+          "expanded": "true",
+          "controls": "agent-mention-menu-v-0-4",
+          "active": "agent-mention-menu-v-0-4-option-0"
+        },
+        "geometry": {
+          "menuBottom": 855,
+          "textareaTop": 861,
+          "above": true
+        },
+        "emptyText": "No agents or teams match\nAgent Orgs can’t be mentioned.",
+        "textAfterChoose": "please ask @Code Reviewer ",
+        "textAfterRemove": "please ask Code Reviewer ",
+        "firstSeen": {
+          "rows": [
+            {
+              "kind": "task_agent",
+              "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+              "text": "CR\ncode reviewer",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 769
+        },
+        "entry": {
+          "address": "/code_reviewer",
+          "agentRunId": "code_reviewer_bf767cd56a404f0ba0ab668afc77d7b8",
+          "launch": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/temp_workspace"
+          }
+        },
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "cards": [
+          {
+            "text": "send_message_to",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "hostFrom": [
+          "From Code Reviewer:"
+        ],
+        "tabs": [
+          "Files",
+          "Team",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ],
+        "teamTabRows": [
+          "Message Oct 5, 11:34 PM from code reviewer \"Hello world\" is a simple, correct English phrase commonly used as the first test in programming tutorials to verify that a language or system works.",
+          "Message Oct 5, 11:34 PM to code reviewer Please review the phrase \"hello world\" and report back to me."
+        ],
+        "childTitle": "code reviewer",
+        "runRowHighlighted": false,
+        "childHeaderControls": {
+          "settings": true,
+          "newRun": true
+        },
+        "childPlaceholder": "Ask anything · @ for an agent or team",
+        "childFrom": [
+          "From Research Assistant:"
+        ],
+        "childHasNotice": false,
+        "backTitle": "Say hello in one short sentence.",
+        "teamFirstSeen": {
+          "rows": [
+            {
+              "kind": "task_agent",
+              "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+              "text": "CR\ncode reviewer",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team",
+              "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+              "text": "product team",
+              "avatar": false,
+              "dot": false,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+              "text": "PP\nproduct prototyper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+              "text": "PB\nprototype bootstrapper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 805
+        },
+        "di001": "coordinator messaged its teammate by its handoff",
+        "optionsAfter": [
+          "researcher",
+          "writer",
+          "analyst",
+          "review-team"
+        ],
+        "small": {
+          "top": 243,
+          "bottom": 543,
+          "vh": 640
+        }
+      }
+    },
+    "N01": {
+      "title": "New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target",
+      "result": "Pass",
+      "ms": 1840,
+      "details": {
+        "targets": [
+          "autobyteus-daily-assistant",
+          "analyst",
+          "autobyteus-project-task-manager",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team",
+          "launch-org"
+        ],
+        "mentions": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    },
+    "N02": {
+      "title": "AF-009 / REQ-012: an Agent New chat first send with an `@Team` mention starts the run and the server admits the collaborator Team; the host briefs it",
+      "result": "Pass",
+      "ms": 13553,
+      "details": {
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ],
+        "text": "please ask @Product Team to design a tiny settings page and report back.",
+        "runId": "research_assistant_c62350c3e0a7426ba0ec1d2e297e3520",
+        "entry": {
+          "kind": "agent_team",
+          "address": "/product_team",
+          "teamRunId": "product_team_f46a394e3c734a74aa082bf098409173",
+          "members": [
+            "/product_team/product_prototyper",
+            "/product_team/prototype_bootstrapper"
+          ]
+        },
+        "userMention": "@Product Team",
+        "briefed": true
+      }
+    },
+    "N03": {
+      "title": "AF-009 / AR-001: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run and the team root admits the collaborator",
+      "result": "Pass",
+      "ms": 18072,
+      "details": {
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "product-team"
+        ],
+        "footer": "researcher gets your message and brings them into this run",
+        "text": "please ask @Code Reviewer to review the phrase \"hello team\" and report back.",
+        "teamRunId": "review_team_cba198ca7500429183131a09bf230575",
+        "entry": {
+          "kind": "agent",
+          "address": "/code_reviewer",
+          "agentRunId": "code_reviewer_c1e3096a2c664f31b47f582e54502ad4"
+        },
+        "userMention": "@Code Reviewer",
+        "reported": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 23722
+    },
+    {
+      "label": "frontend",
+      "pid": 23750
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 23750,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 23722,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk"
+    }
+  ],
+  "observations": [
+    {
+      "text": "A01 DI-001: coordinator messaged its teammate by its handoff",
+      "details": null
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk",
+  "backendUrl": "http://127.0.0.1:61117",
+  "frontUrl": "http://127.0.0.1:61118",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 4,
+    "fail": 0,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-05T21:36:26.001Z"
+}

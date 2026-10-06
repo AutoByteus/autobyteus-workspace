@@ -33,8 +33,8 @@
       class="z-50 rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
       :class="popover.narrow.value
         ? 'fixed inset-x-2 bottom-2'
-        : ['absolute right-0 w-44 overflow-y-auto', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
-      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px` }"
+        : [align === 'left' ? 'absolute left-0' : 'absolute right-0', 'w-44 overflow-y-auto', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px`, ...inBoundary.style.value }"
       @keydown="onKeydown"
     >
       <template v-if="menu.mode === 'merged'">
@@ -92,6 +92,7 @@
 import { computed, nextTick, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
+import { useMenuInBoundary } from '~/composables/popover/useMenuInBoundary'
 import { useLocalization } from '~/composables/useLocalization'
 import { buildChatThinkingMenu, type ChatThinkingParameter } from '~/components/chat/chatThinkingMenu'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
@@ -101,17 +102,21 @@ import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
  * exposes are offered, and the control is hidden when there are none. Models with an on/off switch
  * get one merged list (Off · effort levels); picking any dependent setting turns thinking on.
  */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   schema: UiModelConfigSchema | null
   llmConfig: Record<string, unknown> | null
-}>()
+  /** Run-settings rows open menus where they fit and align them to the chip. */
+  placement?: 'above' | 'auto'
+  align?: 'left' | 'right'
+}>(), { placement: 'above', align: 'right' })
 const emit = defineEmits<{ (event: 'update', value: Record<string, unknown> | null): void }>()
 
 const { t } = useLocalization()
 const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
-const popover = useAnchoredPopover(rootRef, triggerRef, 240, { placement: 'above' })
+const popover = useAnchoredPopover(rootRef, triggerRef, 240, { placement: props.placement })
+const inBoundary = useMenuInBoundary(menuRef, computed(() => popover.open.value), computed(() => !popover.narrow.value))
 
 const menu = computed(() => buildChatThinkingMenu(props.schema, props.llmConfig, (key) => t(key)))
 const groups = computed<ChatThinkingParameter[]>(() => {

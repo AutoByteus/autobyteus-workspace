@@ -1,0 +1,140 @@
+{
+  "startedAt": "2026-10-05T21:47:50.864Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 7413,
+      "details": {
+        "model": "gpt-5.6-luna",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 15991,
+      "details": {
+        "runId": "daily_assistant_02023182d0c741049e255f2e11666244",
+        "exposure": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "GPT-5.6-Luna (default reasoning: medium) · Codex",
+        "triggerFirstSeen": "gpt-5.6-luna",
+        "triggerSettledAfterMs": 1056
+      }
+    },
+    "C05": {
+      "title": "Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)",
+      "result": "Fail",
+      "ms": 3548,
+      "error": "GraphQL: [{\"message\":\"Codex client generation for '/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts' has unresolved cleanup.\",\"locations\":[{\"line\":1,\"column\":18}],\"path\":[\"providerModelCatalogSnapshots\"]}]",
+      "details": null
+    },
+    "C06": {
+      "title": "Terminate → Offline → ⚙ save → reload → ⚙ save → resume uses the saved model (D-08 via run settings)",
+      "result": "Pass",
+      "ms": 5408,
+      "details": {
+        "saved": [
+          "gpt-5.6-sol",
+          "gpt-5.6-terra"
+        ],
+        "resumed": {
+          "llmModelIdentifier": "gpt-5.6-terra",
+          "llmConfig": null,
+          "runtimeKind": "codex_app_server",
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-KiED7g/server-data/temp_workspace"
+        }
+      }
+    },
+    "C11": {
+      "title": "RSK-005 redirects, missing and unregistered ids, tool strip collapsed",
+      "result": "Pass",
+      "ms": 7690,
+      "details": {
+        "orgRunId": "probe_org_c07f2725152d466bab0bd3e5f83a75ad"
+      }
+    },
+    "C18": {
+      "title": "AR-003 (run-settings-ui-unification): catalog Run starts in New chat (the draft ⚙ is removed) and its first send uses the chosen model; a failed first send lands on /chat?id=temp-* without ⚙, and the composer resend uses the chosen model",
+      "result": "Pass",
+      "ms": 12639,
+      "details": {
+        "catalogModel": "gpt-5.6-sol",
+        "tempSettingsButton": 0,
+        "resendModel": "gpt-5.6-terra"
+      }
+    },
+    "C23": {
+      "title": "DEC-017a: Agent Org agents use their own skills — org skills on the Skills page and in /, org agent and org team-local agent reply with their skill markers, links point to the org folders",
+      "result": "Pass",
+      "ms": 26714,
+      "details": {
+        "writerRun": "org_writer_7c4c01728fb548848072b6f44d9926c7",
+        "memberRun": "crew_member_aa82dee02a3b4db4a13148ac883089f4",
+        "slash": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill"
+        ],
+        "links": {
+          "writer": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-KiED7g/server-data/agent-orgs/probe-skill-org/agents/org-writer/skills/org-writer-skill",
+          "member": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-KiED7g/server-data/agent-orgs/probe-skill-org/agent-teams/org-crew/agents/member/skills/org-member-skill",
+          "shared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-KiED7g/server-data/agent-orgs/probe-skill-org/agent-teams/org-crew/skills/org-crew-shared"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 49116
+    },
+    {
+      "label": "frontend",
+      "pid": 49142
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 49142,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 49116,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-KiED7g"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-KiED7g",
+  "backendUrl": "http://127.0.0.1:64631",
+  "frontUrl": "http://127.0.0.1:64632",
+  "browserErrors": [],
+  "completedAt": "2026-10-05T21:49:18.213Z"
+}

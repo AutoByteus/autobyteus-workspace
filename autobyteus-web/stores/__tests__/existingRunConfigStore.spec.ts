@@ -6,6 +6,25 @@ import { useExistingRunConfigStore } from '../existingRunConfigStore'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
 const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'Provider', displayName: id, canonicalName: id, description: null, configSchema: null, recommended: false })
+const TEST_MODELS = ['larger', 'model-1', 'root-model', 'unknown']
+/**
+ * Save readiness is derived from each scope's model options (the run's runtime still offers the
+ * chosen model). A test marks a scope ready by giving it options that offer its models, unless the
+ * test already supplied its own options; or unavailable by failing them.
+ */
+const setSchemaState = (store: any, address: string, state: { status: 'ready' | 'unavailable' | 'invalid' | 'loading'; message: string | null }) => {
+  const draft = store.draft
+  const original = draft?.kind === 'agent' ? draft.metadata.llmModelIdentifier : draft?.planner.scopesByAddress[address]?.originalSelection.llmModelIdentifier
+  if (state.status !== 'ready') {
+    store.modelOptionsByAddress = { ...store.modelOptionsByAddress, [address]: { status: 'unavailable', options: null } }
+  } else if (!store.modelOptionsByAddress[address]) {
+    store.modelOptionsByAddress = { ...store.modelOptionsByAddress, [address]: { status: 'ready', options: {
+      currentModelIdentifier: original ?? '', currentModel: choice(original ?? ''),
+      replacements: TEST_MODELS.filter((model) => model !== original).map(choice), unavailableReason: null,
+    } } }
+  }
+  store.deriveSchemaStates()
+}
 
 const mocks = vi.hoisted(() => ({
   updateAgent: vi.fn(),
@@ -162,7 +181,7 @@ describe('existingRunConfigStore', () => {
           ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : '',
         currentModel: choice(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : ''), replacements: [], unavailableReason: null,
       } }
-      store.setSchemaState(address, { status: 'ready', message: null })
+      setSchemaState(store, address, { status: 'ready', message: null })
     }
     store.updateAgentOrgScopeModelConfig('/', {
       llmModelIdentifier: store.draft!.kind === 'agent_org'
@@ -197,7 +216,7 @@ describe('existingRunConfigStore', () => {
     await store.loadAgentOrgCanonical('org-run')
     if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
     for (const address of Object.keys(store.draft.planner.scopesByAddress)) {
-      store.setSchemaState(address, { status: 'ready', message: null })
+      setSchemaState(store, address, { status: 'ready', message: null })
     }
     const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
     const invalidRoot = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-root' } }
@@ -268,7 +287,7 @@ describe('existingRunConfigStore', () => {
       await store.loadAgentOrgCanonical('org-run')
       if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
       for (const address of Object.keys(store.draft.planner.scopesByAddress)) {
-        store.setSchemaState(address, { status: 'ready', message: null })
+        setSchemaState(store, address, { status: 'ready', message: null })
       }
       const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
       const attemptedRoot = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-root` } }
@@ -294,7 +313,7 @@ describe('existingRunConfigStore', () => {
     await store.loadAgentOrgCanonical('org-run')
     if (store.draft?.kind !== 'agent_org') throw new Error('Expected AgentOrg draft.')
     for (const address of Object.keys(store.draft.planner.scopesByAddress)) {
-      store.setSchemaState(address, { status: 'ready', message: null })
+      setSchemaState(store, address, { status: 'ready', message: null })
     }
     const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
     store.updateAgentOrgScopeModelConfig('/', { llmModelIdentifier: model, llmConfig: { effort: 'attempted' } })
@@ -361,7 +380,7 @@ describe('existingRunConfigStore', () => {
     const store = useExistingRunConfigStore()
     const payload = agentPayload()
     store.syncAgentCanonical(payload)
-    store.setSchemaState('/', { status: 'ready', message: null })
+    setSchemaState(store, '/', { status: 'ready', message: null })
     store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: { effort: 'high' } })
     mocks.updateAgent.mockResolvedValue({
       success: false,
@@ -395,8 +414,8 @@ describe('existingRunConfigStore', () => {
     store.modelOptionsByAddress['/'] = { status: 'ready', options: {
       currentModelIdentifier: 'root-model', currentModel: choice('root-model'), replacements: [choice('larger')], unavailableReason: null,
     } }
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.setSchemaState('/member', { status: 'ready', message: null })
+    setSchemaState(store, '/', { status: 'ready', message: null })
+    setSchemaState(store, '/member', { status: 'ready', message: null })
     store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'larger', llmConfig: { effort: 'high' } })
     expect(store.canSave).toBe(true)
     mocks.updateTeam.mockResolvedValue({ success: false, outcome: 'PERSISTENCE_INDETERMINATE',
@@ -441,7 +460,7 @@ describe('existingRunConfigStore', () => {
   it('fails closed when the server reports that the fixed model or schema is unavailable', async () => {
     const store = useExistingRunConfigStore()
     store.syncAgentCanonical(agentPayload())
-    store.setSchemaState('/', { status: 'ready', message: null })
+    setSchemaState(store, '/', { status: 'ready', message: null })
     store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: { effort: 'high' } })
     mocks.updateAgent.mockResolvedValue({
       success: false,
@@ -465,21 +484,30 @@ describe('existingRunConfigStore', () => {
   it('requires every configured Team scope to be representable before enabling Save', () => {
     const store = useExistingRunConfigStore()
     store.syncTeamCanonical(teamPayload() as never)
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.setSchemaState('/member', { status: 'unavailable', message: 'Unavailable' })
+    setSchemaState(store, '/', { status: 'ready', message: null })
+    // The member's saved model is no longer offered by its runtime (REQ-016): not representable.
+    const memberModel = (store.draft as any).planner.scopesByAddress['/member'].originalSelection.llmModelIdentifier
+    store.modelOptionsByAddress = { ...store.modelOptionsByAddress, '/member': { status: 'ready', options: {
+      currentModelIdentifier: memberModel, currentModel: null, replacements: [choice('larger')], unavailableReason: 'Retired',
+    } } }
+    store.deriveSchemaStates()
     store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
 
     expect(store.patches.map((patch) => patch.scopeAddress)).toEqual(['/'])
+    expect(store.schemaStateByAddress['/member']).toEqual({ status: 'invalid', message: 'Retired' })
     expect(store.canSave).toBe(false)
 
-    store.setSchemaState('/member', { status: 'ready', message: null })
+    store.modelOptionsByAddress = { ...store.modelOptionsByAddress, '/member': { status: 'ready', options: {
+      currentModelIdentifier: memberModel, currentModel: choice(memberModel), replacements: [], unavailableReason: null,
+    } } }
+    store.deriveSchemaStates()
     expect(store.canSave).toBe(true)
   })
 
   it('keeps an Agent RUN_ACTIVE draft locked without refresh, rebase, or revision input', async () => {
     const store = useExistingRunConfigStore()
     store.syncAgentCanonical(agentPayload())
-    store.setSchemaState('/', { status: 'ready', message: null })
+    setSchemaState(store, '/', { status: 'ready', message: null })
     store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: { effort: 'high' } })
     mocks.updateAgent.mockResolvedValue({
       success: false,
@@ -525,8 +553,8 @@ describe('existingRunConfigStore', () => {
     const store = useExistingRunConfigStore()
     const canonical = teamPayload()
     store.syncTeamCanonical(canonical as never)
-    store.setSchemaState('/', { status: 'ready', message: null })
-    store.setSchemaState('/member', { status: 'ready', message: null })
+    setSchemaState(store, '/', { status: 'ready', message: null })
+    setSchemaState(store, '/member', { status: 'ready', message: null })
     store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
     mocks.updateTeam.mockResolvedValue({
       success: false,
@@ -570,7 +598,7 @@ it('saves a model-only change and installs the canonical pair, not the submitted
   await Promise.resolve()
   store.modelOptionsByAddress['/'] = { status: 'ready', options: { currentModelIdentifier: 'model-1', currentModel: choice('model-1'), replacements: [choice('larger')], unavailableReason: null } }
   store.updateAgentModelConfig({ llmModelIdentifier: 'larger', llmConfig: null })
-  store.setSchemaState('/', { status: 'ready', message: null })
+  setSchemaState(store, '/', { status: 'ready', message: null })
   expect(store.dirty).toBe(true)
   expect(store.canSave).toBe(true)
   mocks.updateAgent.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
@@ -587,10 +615,37 @@ it('does not let missing replacement metadata block current-model settings', () 
   store.syncAgentCanonical(agentPayload())
   store.modelOptionsByAddress['/'] = { status: 'unavailable', options: null }
   store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: { effort: 'high' } })
-  store.setSchemaState('/', { status: 'ready', message: null })
+  setSchemaState(store, '/', { status: 'ready', message: null })
   expect(store.canSave).toBe(true)
   store.updateAgentModelConfig({ llmModelIdentifier: 'unknown', llmConfig: null })
   expect(store.canSave).toBe(false)
+})
+
+describe('Cancel and reload after a lifecycle change (REQ-014/015)', () => {
+  it('Cancel restores the saved model, thinking and member cascade without a request', () => {
+    setActivePinia(createPinia())
+    const store = useExistingRunConfigStore()
+    store.syncTeamCanonical(teamPayload() as never)
+    const planner = (store.draft as any).planner
+    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    expect(store.dirty).toBe(true)
+
+    store.discardChanges()
+    expect(store.dirty).toBe(false)
+    expect((store.draft as any).planner).toEqual(planner)
+    expect(mocks.refreshTeam).not.toHaveBeenCalled()
+  })
+
+  it('reloadCanonical re-reads the current run through its canonical loader', async () => {
+    setActivePinia(createPinia())
+    const store = useExistingRunConfigStore()
+    mocks.refreshAgent.mockResolvedValue(agentPayload({ isActive: true }))
+    await store.loadAgentCanonical('run-1')
+    mocks.refreshAgent.mockResolvedValue(agentPayload({ isActive: false }))
+    await store.reloadCanonical()
+    expect(mocks.refreshAgent).toHaveBeenLastCalledWith('run-1')
+    expect(store.draft).toMatchObject({ kind: 'agent', runId: 'run-1', isActive: false })
+  })
 })
 
 it('saves workspace-only and mixed Org intentions independently; invalid destination stays unsavable', async () => {
@@ -603,7 +658,7 @@ it('saves workspace-only and mixed Org intentions independently; invalid destina
   const ready = () => {
     if (store.draft?.kind !== 'agent_org') throw new Error('fixture')
     for (const [address, scope] of Object.entries(store.draft.planner.scopesByAddress)) {
-      store.setSchemaState(address, { status: 'ready', message: null })
+      setSchemaState(store, address, { status: 'ready', message: null })
       store.modelOptionsByAddress[address] = { status: 'ready', options: { currentModelIdentifier: scope.originalSelection.llmModelIdentifier,
         currentModel: choice(scope.originalSelection.llmModelIdentifier), replacements: [], unavailableReason: null } }
     }
@@ -695,7 +750,7 @@ describe('Org destination request guards', () => {
     const store = useExistingRunConfigStore(), pending = deferred<any>()
     store.syncAgentOrgCanonical(payload()); await Promise.resolve()
     if (store.draft?.kind !== 'agent_org') throw new Error('fixture')
-    for (const address of Object.keys(store.draft.planner.scopesByAddress)) store.setSchemaState(address, { status: 'ready', message: null })
+    for (const address of Object.keys(store.draft.planner.scopesByAddress)) setSchemaState(store, address, { status: 'ready', message: null })
     store.updateAgentOrgScopeModelConfig('/', { ...store.draft.planner.scopesByAddress['/']!.draftSelection, llmConfig: { effort: 'high' } })
     mocks.saveOrg.mockReturnValueOnce(pending.promise)
     const save = store.save()

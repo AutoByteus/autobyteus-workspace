@@ -75,8 +75,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { START_SURFACE_WORKSPACE } from '~/composables/layout/useStartSurfaceTools';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightPanelOpenFileAutoSwitch } from '~/composables/useRightPanelOpenFileAutoSwitch';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
@@ -101,14 +102,20 @@ const activeContextStore = useActiveContextStore();
 const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab, selectTabExplicitly, useContextualDefaultTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
+// REQ-020: on a start surface (New chat, the Org launch page) Files and Terminal use the workspace
+// chosen there, not the last selected run's.
+const startSurfaceWorkspace = inject(START_SURFACE_WORKSPACE, null);
 const activeWorkspaceId = computed(() => {
+  if (startSurfaceWorkspace?.value) return startSurfaceWorkspace.value.workspaceId;
   const target = activeContextStore.activeWorkspaceTarget;
   const id = target?.context.config.workspaceId;
   if (target && (target.kind === 'agent_org_direct_agent' || target.kind === 'agent_org_team_member'
     || target.kind === 'agent_org_task_agent' || target.kind === 'agent_org_task_team_member')) return id || null;
   return id ?? undefined;
 });
-const activeWorkspaceMetadata = computed(() => activeContextStore.activeWorkspaceTarget?.context.config.workspaceMetadata ?? null);
+const activeWorkspaceMetadata = computed(() => (startSurfaceWorkspace?.value
+  ? startSurfaceWorkspace.value.workspaceMetadata
+  : activeContextStore.activeWorkspaceTarget?.context.config.workspaceMetadata ?? null));
 const activeMessagesView = computed(() => {
   const target = activeContextStore.activeWorkspaceTarget;
   return target && 'collaborationMessages' in target ? target.collaborationMessages : null;

@@ -9,7 +9,7 @@
 //   U01 new-chat layout at 1512x952, 1280x720, 1024x520, 1024x440: `pt-[14vh] pb-10`, flex-centered,
 //       10vh − 40px lower than the previous padding, hint directly under the composer (REQ-002, AC-003)
 //   U02 `@` and `/` open above the composer card at those viewports: 6px gap, height rule, never
-//       below, on screen, hint uncovered, list scrolls; keyboard, choose, Escape, outside click
+//       below, on screen, composer uncovered, list scrolls; keyboard, choose, Escape, outside click
 //       (REQ-001, REQ-003, REQ-004, AC-001, AC-004, AC-005)
 //   U03 Workspace, Model (runtime flyout, search results) and Thinking open above their trigger at
 //       those viewports; focus and selection still work (REQ-001, REQ-003, REQ-004, AC-002, AC-004)
@@ -60,7 +60,9 @@ const MARGIN = 16
 const FLYOUT = { listMax: 320, overhang: 5, margin: 12, chrome: 10 }
 const WIDE = [{ width: 1512, height: 952 }, { width: 1280, height: 720 }, { width: 1024, height: 520 }, { width: 1024, height: 440 }]
 const NARROW = { width: 390, height: 844 }
-const HEADING_TOP = { '1512x952': 379, '1280x720': 246 }
+// Heading position in the run-settings-ui-unification New chat layout (VIS-001: the skills/@ hint sits between the
+// heading and the composer; the old "Files are saved in …" line under the composer is removed). Same padding rule.
+const HEADING_TOP = { '1512x952': 355, '1280x720': 223 }
 const AGENT_COUNT = 9
 const SKILL_COUNT = 12
 const WORKSPACE_COUNT = 14
@@ -147,6 +149,7 @@ const geometry = (page, menuSelector, { scrollToEnd = false } = {}) => page.eval
   while (positioned.parentElement && !['absolute', 'fixed'].includes(getComputedStyle(positioned).position)) positioned = positioned.parentElement
   const position = getComputedStyle(positioned).position
   const anchor = position === 'fixed' ? null : positioned.offsetParent
+  const anchorInComposer = Boolean(anchor?.closest('[data-test="chat-composer"]'))
   const submenu = menu.querySelector('[data-test="chat-model-submenu"]')
   const own = (e) => !submenu || !submenu.contains(e)
   const scroller = [positioned, ...positioned.querySelectorAll('*')].filter(own).find((e) => ['auto', 'scroll'].includes(getComputedStyle(e).overflowY) && e.scrollHeight > e.clientHeight + 1) ?? null
@@ -156,12 +159,12 @@ const geometry = (page, menuSelector, { scrollToEnd = false } = {}) => page.eval
   const footer = menu.querySelector('footer')
   const hint = q('[data-test="chat-new-hint"]')
   return {
-    vw: innerWidth, vh: innerHeight, position, classes: positioned.className, inlineMaxHeight: positioned.style.maxHeight,
+    vw: innerWidth, vh: innerHeight, anchorInComposer, position, classes: positioned.className, inlineMaxHeight: positioned.style.maxHeight,
     menu: box(positioned), anchor: anchor ? { test: anchor.getAttribute('data-test'), borderTop: anchor.clientTop, ...box(anchor) } : null,
     scroller: scroller ? { isMenu: scroller === menu, scrollHeight: scroller.scrollHeight, clientHeight: scroller.clientHeight, scrollTop: scroller.scrollTop, ...box(scroller) } : null,
     rowCount: rows.length, lastRow: lastRow ? box(lastRow) : null, rowBoxes: rows.map(box),
     header: menu.firstElementChild ? box(menu.firstElementChild) : null, footer: footer ? box(footer) : null,
-    hint: hint ? box(hint) : null, backdrop: !!q('.fixed.inset-0.bg-black\\/20'),
+    hint: hint ? box(hint) : null, composer: q('[data-test="chat-composer"]') ? box(q('[data-test="chat-composer"]')) : null, backdrop: !!q('.fixed.inset-0.bg-black\\/20'),
   }
 }, { menuSelector, scrollToEnd })
 
@@ -173,7 +176,9 @@ const aboveFails = (g, preferred, { anchorTest, rows = true } = {}) => {
   const fails = []
   if (g.position !== 'absolute') fails.push(`menu is ${g.position}, not an anchored popover`)
   if (!g.anchor) return [...fails, 'no positioning box']
-  if (anchorTest && g.anchor.test !== anchorTest) fails.push(`positioned against ${g.anchor.test}, not ${anchorTest}`)
+  // The menu must sit on the composer: its positioning box is the card or a box inside it. Since
+  // run-settings-ui-unification, `@` and `/` anchor on the composer's input area and overlap the card header (VIS-030).
+  if (anchorTest && g.anchor.test !== anchorTest && !(anchorTest === 'chat-composer' && g.anchorInComposer)) fails.push(`positioned against ${g.anchor.test}, not ${anchorTest}`)
   // `bottom-full mb-1.5`: 6px above the positioning box's padding edge (inside its top border).
   const gap = g.anchor.top + g.anchor.borderTop - g.menu.bottom
   if (!near(gap, GAP, 0.6)) fails.push(`menu bottom is ${gap.toFixed(1)}px above its positioning box, not ${GAP}px (it opened ${gap < 0 ? 'below' : 'elsewhere'})`)
@@ -213,13 +218,31 @@ const sheetFails = (g) => {
 }
 const tagged = (where, fails) => fails.map((f) => `${where}: ${f}`)
 
+/**
+ * Opens one runtime's model list in the open model menu and returns it. The desktop menu opens runtime flyouts on
+ * hover, and clicking a runtime row whose flyout is already open can toggle it shut; so hover, verify, and click
+ * only when needed. Then enter the flyout sideways at the row's height: a diagonal pointer path would cross the
+ * next runtime rows (e.g. an installed Grok Build) and open their flyouts instead. On phones the menu drills in.
+ */
+const openRuntimeList = async (page, runtimeKind) => {
+  const list = page.locator(sel(`chat-model-list-${runtimeKind}`))
+  const row = page.locator(sel(`chat-runtime-${runtimeKind}`))
+  for (let attempt = 0; attempt < 6 && !(await list.isVisible().catch(() => false)); attempt += 1) {
+    await row.hover().catch(() => {}); await delay(400)
+    if (!(await list.isVisible().catch(() => false))) { await row.click().catch(() => {}); await delay(700) }
+  }
+  await list.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
+  const rowBox = await row.boundingBox({ timeout: 1000 }).catch(() => null)
+  const listBox = await list.boundingBox({ timeout: 1000 }).catch(() => null)
+  if (rowBox && listBox && listBox.x > rowBox.x) await page.mouse.move(listBox.x + 12, Math.min(Math.max(rowBox.y + rowBox.height / 2, listBox.y + 6), listBox.y + listBox.height - 6), { steps: 5 })
+  return list
+}
 const pickModel = async (page, runtimeKind, model) => {
   await page.locator(sel('chat-model-trigger')).click()
-  await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
-  await page.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
-  const models = await page.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
+  const list = await openRuntimeList(page, runtimeKind)
+  const models = await list.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
   const chosen = model && models.includes(model) ? model : models[0]
-  await page.locator(sel(`chat-model-option-${chosen}`)).click()
+  await list.locator(sel(`chat-model-option-${chosen}`)).click()
   await page.locator(sel('chat-model-menu')).waitFor({ state: 'detached' })
   return chosen
 }
@@ -243,7 +266,8 @@ defineCase('U01', 'Layout at four wide viewports: pt-[14vh] pb-10, centered, 10v
       const root = document.querySelector('[data-test="chat-new"]'); const inner = root.firstElementChild
       const box = (e) => { const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom } }
       const style = getComputedStyle(inner)
-      const parts = ['h1', '[data-test="chat-new-subtitle"]', '[data-test="chat-composer"]', '[data-test="chat-new-hint"]'].map((s) => box(inner.querySelector(s)))
+      // run-settings-ui-unification: the hint line under the composer is gone (it only shows while starting).
+      const parts = ['h1', '[data-test="chat-new-subtitle"]', '[data-test="chat-composer"]'].map((s) => box(inner.querySelector(s)))
       return { paddingTop: parseFloat(style.paddingTop), paddingBottom: parseFloat(style.paddingBottom), justify: style.justifyContent, display: style.display, direction: style.flexDirection, parts, area: box(root), overflow: root.scrollHeight > root.clientHeight + 1 }
     })
     const now = await measure()
@@ -252,21 +276,20 @@ defineCase('U01', 'Layout at four wide viewports: pt-[14vh] pb-10, centered, 10v
     const before = await measure()
     await page.evaluate(() => { const s = document.querySelector('[data-test="chat-new"]').firstElementChild.style; s.paddingTop = ''; s.paddingBottom = '' })
     const moved = now.parts[0].top - before.parts[0].top
-    const [heading, , composer, hint] = now.parts
+    const [heading, , composer] = now.parts
     const f = []
     if (!near(now.paddingTop, 0.14 * vp.height, 1)) f.push(`padding-top ${now.paddingTop} is not 14vh (${(0.14 * vp.height).toFixed(1)})`)
     if (now.paddingBottom !== 40) f.push(`padding-bottom ${now.paddingBottom} is not 40px`)
     if (now.display !== 'flex' || now.direction !== 'column' || now.justify !== 'center') f.push('column is not flex-centered')
-    if (!now.parts.every((b, i) => i === 0 || b.top >= now.parts[i - 1].bottom - 0.5)) f.push('heading, subtitle, composer and hint overlap or are out of order')
-    if (!near(hint.top - composer.bottom, 10, 1)) f.push(`hint is ${(hint.top - composer.bottom).toFixed(1)}px under the composer, not 10px (mt-2.5)`)
+    if (!now.parts.every((b, i) => i === 0 || b.top >= now.parts[i - 1].bottom - 0.5)) f.push('heading, subtitle and composer overlap or are out of order')
     if (now.overflow) f.push('new-chat area overflows')
-    if (heading.top < now.area.top - 0.5 || hint.bottom > now.area.bottom + 0.5) f.push('group is clipped by the new-chat area')
+    if (heading.top < now.area.top - 0.5 || composer.bottom > now.area.bottom + 0.5) f.push('group is clipped by the new-chat area')
     if (!near(moved, 0.1 * vp.height - 40, 1.5)) f.push(`group moved ${moved.toFixed(1)}px versus pt-10 pb-[6vh], not 10vh−40px (${(0.1 * vp.height - 40).toFixed(1)})`)
     const reference = HEADING_TOP[label(vp)]
     if (reference && !near(heading.top, reference, 4)) f.push(`heading top ${heading.top.toFixed(1)} is not the reference ${reference}`)
     if (pageErrors.length) f.push(`page errors: ${pageErrors.join(' | ')}`)
     fails.push(...tagged(label(vp), f))
-    results[label(vp)] = { paddingTop: now.paddingTop, paddingBottom: now.paddingBottom, headingTop: +heading.top.toFixed(1), composerTop: +composer.top.toFixed(1), composerBottom: +composer.bottom.toFixed(1), hintTop: +hint.top.toFixed(1), movedDownPx: +moved.toFixed(1), expectedMovePx: +(0.1 * vp.height - 40).toFixed(1), overflow: now.overflow }
+    results[label(vp)] = { paddingTop: now.paddingTop, paddingBottom: now.paddingBottom, headingTop: +heading.top.toFixed(1), composerTop: +composer.top.toFixed(1), composerBottom: +composer.bottom.toFixed(1), movedDownPx: +moved.toFixed(1), expectedMovePx: +(0.1 * vp.height - 40).toFixed(1), overflow: now.overflow }
     await shot(page, `U01-layout-${label(vp)}`)
     await context.close()
   }
@@ -283,14 +306,14 @@ defineCase('U02', '@ and / open above the composer card at four wide viewports; 
 
     // `@` on the untouched composer (the state of the visual references).
     await typeTrigger(page, '@')
-    await page.locator(sel('chat-target-menu')).waitFor()
-    await page.locator(sel(`chat-target-option-${state.agents.at(-1).id}`)).waitFor()
-    let g = await geometry(page, sel('chat-target-menu'))
+    await page.locator(sel('run-mention-menu')).waitFor()
+    await page.locator(sel(`run-mention-option-${state.agents.at(-1).id}`)).waitFor()
+    let g = await geometry(page, sel('run-mention-menu'))
     f.push(...tagged('@', aboveFails(g, PREFERRED.target, { anchorTest: 'chat-composer' })))
     if (!g.scroller) f.push('@: the list does not scroll with a long agent list')
     await shot(page, `U02-at-${label(vp)}`)
     r.at = { menuTop: +g.menu.top.toFixed(1), menuBottom: +g.menu.bottom.toFixed(1), cardTop: +g.anchor.top.toFixed(1), maxHeight: g.inlineMaxHeight, limit: heightLimit(g, PREFERRED.target), rows: g.rowCount, scrolls: !!g.scroller }
-    const atEnd = await geometry(page, sel('chat-target-menu'), { scrollToEnd: true })
+    const atEnd = await geometry(page, sel('run-mention-menu'), { scrollToEnd: true })
     f.push(...tagged('@ scrolled', [...aboveFails(atEnd, PREFERRED.target), ...lastRowFails(atEnd)]))
     // Keyboard: the highlight follows the arrow keys and Escape closes (unchanged behavior).
     const expanded = await input.getAttribute('aria-expanded')
@@ -299,12 +322,12 @@ defineCase('U02', '@ and / open above the composer card at four wide viewports; 
     const second = await input.getAttribute('aria-activedescendant')
     if (expanded !== 'true' || !first || !second || first === second) f.push(`@: combobox state wrong (expanded ${expanded}, highlight ${first} → ${second})`)
     await page.keyboard.press('Escape')
-    if (await page.locator(sel('chat-target-menu')).count()) f.push('@: Escape did not close the menu')
-    // Outside click closes; the hint line is a place the menu never covers.
+    if (await page.locator(sel('run-mention-menu')).count()) f.push('@: Escape did not close the menu')
+    // Outside click closes.
     await typeTrigger(page, '@')
-    await page.locator(sel('chat-target-menu')).waitFor()
-    await page.locator(sel('chat-new-hint')).click()
-    if (await page.locator(sel('chat-target-menu')).count()) f.push('@: an outside click did not close the menu')
+    await page.locator(sel('run-mention-menu')).waitFor()
+    await page.locator(sel('chat-new')).click({ position: { x: 4, y: 4 } })
+    if (await page.locator(sel('run-mention-menu')).count()) f.push('@: an outside click did not close the menu')
 
     // `/` before choosing an agent: the chosen agent decides which skills are offered.
     await typeTrigger(page, '/')
@@ -323,13 +346,13 @@ defineCase('U02', '@ and / open above the composer card at four wide viewports; 
     if (!(await page.locator(sel(`chat-skill-chip-${state.skills.at(-1)}`)).count())) f.push('/: choosing a skill did not add its chip')
     if ((await input.inputValue()) !== '') f.push('/: the trigger text was not removed after choosing')
 
-    // Choose the last agent of the list.
+    // Mention the last agent of the list (`@` only mentions collaborators; the target is the heading switcher).
     await typeTrigger(page, '@')
-    await page.locator(sel('chat-target-menu')).waitFor()
-    await page.locator(sel(`chat-target-option-${state.agents.at(-1).id}`)).click()
-    await page.locator(sel('chat-target-menu')).waitFor({ state: 'detached' })
-    const chip = await page.locator(sel('chat-agent-chip')).innerText().catch(() => '')
-    if (!chip.includes(state.agents.at(-1).name)) f.push(`@: choosing an agent did not show its chip (${chip})`)
+    await page.locator(sel('run-mention-menu')).waitFor()
+    await page.locator(sel(`run-mention-option-${state.agents.at(-1).id}`)).click()
+    await page.locator(sel('run-mention-menu')).waitFor({ state: 'detached' })
+    const text = await input.inputValue()
+    if (!text.includes(`@${state.agents.at(-1).name}`)) f.push(`@: choosing an agent did not insert its mention (${text})`)
     if (pageErrors.length) f.push(`page errors: ${pageErrors.join(' | ')}`)
     fails.push(...tagged(label(vp), f)); results[label(vp)] = r
     await context.close()
@@ -347,7 +370,7 @@ const flyoutState = (page, runtime) => page.evaluate((runtime) => {
   const list = sub.firstElementChild
   const rows = [...sub.querySelectorAll('[role="menuitemradio"]')]
   list.scrollTop = list.scrollHeight
-  return { flyout: box(sub), row: box(row), menu: box(document.querySelector('[data-test="chat-model-menu"]')), styleBottom: sub.style.bottom, styleTop: sub.style.top, listMax: list.style.maxHeight, list: box(list), listScrolls: list.scrollHeight > list.clientHeight + 1, rows: rows.length, lastRow: rows.length ? box(rows.at(-1)) : null, hintTop: document.querySelector('[data-test="chat-new-hint"]').getBoundingClientRect().top, vw: innerWidth, vh: innerHeight }
+  return { flyout: box(sub), row: box(row), menu: box(document.querySelector('[data-test="chat-model-menu"]')), styleBottom: sub.style.bottom, styleTop: sub.style.top, listMax: list.style.maxHeight, list: box(list), listScrolls: list.scrollHeight > list.clientHeight + 1, rows: rows.length, lastRow: rows.length ? box(rows.at(-1)) : null, hintTop: document.querySelector('[data-test="chat-new-hint"]')?.getBoundingClientRect().top ?? Infinity, vw: innerWidth, vh: innerHeight }
 }, runtime)
 const flyoutFails = (f) => {
   if (!f) return ['flyout not open']
@@ -403,9 +426,15 @@ defineCase('U03', 'Workspace, Model (flyout, search) and Thinking open above the
     const runtimes = await page.locator(`${sel('chat-model-menu')} [data-runtime]:not([aria-disabled="true"])`).evaluateAll((els) => els.map((e) => e.getAttribute('data-runtime')))
     if (!runtimes.length) f.push('model: no enabled runtime')
     for (const runtime of runtimes) {
-      await page.locator(sel(`chat-runtime-${runtime}`)).hover()
-      // This runtime's own flyout (the previous one stays for the hover-intent delay), catalog loaded.
+      // This runtime's own flyout (the previous one stays for the hover-intent delay), catalog loaded. Re-hover
+      // from the menu edge when the pointer path left another runtime's flyout open.
       const own = page.locator(`${sel('chat-model-menu')} div:has(> [data-runtime="${runtime}"]) > ${sel('chat-model-submenu')}`)
+      for (let attempt = 0; attempt < 4 && !(await own.isVisible().catch(() => false)); attempt += 1) {
+        const menuBox = await page.locator(sel('chat-model-menu')).boundingBox()
+        const rowBox = await page.locator(sel(`chat-runtime-${runtime}`)).boundingBox()
+        if (menuBox && rowBox) await page.mouse.move(menuBox.x + 4, rowBox.y + rowBox.height / 2, { steps: 3 })
+        await page.locator(sel(`chat-runtime-${runtime}`)).hover(); await delay(600)
+      }
       await own.waitFor()
       const loaded = await own.locator(sel(`chat-model-list-${runtime}`)).waitFor({ timeout: 90000 }).then(() => true).catch(() => false)
       await delay(200)
@@ -483,7 +512,7 @@ defineCase('U04', 'Very short window, page scrolled: menus still open above and 
     await page.keyboard.press('Escape')
     if (constrained) {
       for (const [name, open, menu, preferred, anchorTest] of [
-        ['@', () => typeTrigger(page, '@'), 'chat-target-menu', PREFERRED.target, 'chat-composer'],
+        ['@', () => typeTrigger(page, '@'), 'run-mention-menu', PREFERRED.target, 'chat-composer'],
         ['workspace', () => page.locator(sel('chat-workspace-trigger')).click(), 'chat-workspace-menu', PREFERRED.workspace, undefined],
         ['model', () => page.locator(sel('chat-model-trigger')).click(), 'chat-model-menu', PREFERRED.model, undefined],
       ]) {
@@ -518,7 +547,7 @@ defineCase('U05', 'Narrow 390x844: @, /, Workspace, Model and Thinking are the u
   if (!near(layout.paddingTop, 0.14 * NARROW.height, 1) || layout.paddingBottom !== 40) f.push(`padding ${layout.paddingTop}/${layout.paddingBottom} is not 14vh/40px`)
   const thinkingVia = await ensureThinking(page).catch((e) => { f.push(`thinking: no Thinking control (${e.message})`); return null })
   const sheets = [
-    ['at', () => typeTrigger(page, '@'), 'chat-target-menu'],
+    ['at', () => typeTrigger(page, '@'), 'run-mention-menu'],
     ['slash', () => typeTrigger(page, '/'), 'chat-skill-menu'],
     ['workspace', () => page.locator(sel('chat-workspace-trigger')).click(), 'chat-workspace-menu'],
     ['model', () => page.locator(sel('chat-model-trigger')).click(), 'chat-model-menu'],

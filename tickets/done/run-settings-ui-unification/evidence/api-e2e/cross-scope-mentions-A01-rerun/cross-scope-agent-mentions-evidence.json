@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-10-05T20:55:04.239Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline selected mentions; send adds the collaborator Offline at once; send_message_to briefing; \"From\" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion",
+      "result": "Fail",
+      "ms": 12659,
+      "error": "collaborator did not take the root settings",
+      "details": {
+        "kind": "agent",
+        "address": "/code_reviewer",
+        "agentDefinitionId": "code-reviewer",
+        "agentRunId": "code_reviewer_d0d63eea37644d8c97eb1c630b0d6a25",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "grok_build",
+          "llmModelIdentifier": "grok-4.7",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-qNqSfg/server-data/temp_workspace"
+        },
+        "addedAt": "2026-10-05T20:55:24.215Z",
+        "addedViaAgentRunId": "research_assistant_6b208237a77346a29e595e2dc017c976"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 76437
+    },
+    {
+      "label": "frontend",
+      "pid": 76464
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 76464,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 76437,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-qNqSfg"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-qNqSfg",
+  "backendUrl": "http://127.0.0.1:57586",
+  "frontUrl": "http://127.0.0.1:57587",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 1,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-05T20:55:25.285Z"
+}

@@ -490,6 +490,44 @@ try {
     }
   })
 
+  // run-settings-ui-unification: saved-run settings are the shared settings card (root) plus member
+  // rows; model/thinking change only while stopped; the Save bar appears only after a change.
+  const sel = (t) => `[data-test="${t}"]`
+  const rootCard = () => page.locator(sel('existing-run-root-card'))
+  const memberRow = (address) => page.locator(sel(`run-member-${address}`))
+  const scopeCard = (address) => address === '/' ? rootCard() : memberRow(address).locator(sel('run-member-detail'))
+  const saveButton = () => page.locator(sel('save-existing-model-config'))
+  const openMember = async (address) => {
+    const row = memberRow(address)
+    await row.waitFor({ state: 'visible', timeout: timeoutMs })
+    if (!(await row.locator(sel('run-member-detail')).count())) await row.locator(sel('run-member-toggle')).click()
+    await row.locator(sel('run-member-detail')).waitFor({ state: 'visible', timeout: timeoutMs })
+  }
+  const closeMenus = async () => { for (let i = 0; i < 2; i += 1) if (await page.locator(`${sel('chat-thinking-menu')}, ${sel('chat-model-menu')}`).count()) await page.keyboard.press('Escape') }
+  const effortOf = async (address) => {
+    await scopeCard(address).locator(sel('chat-thinking-trigger')).click()
+    const checked = page.locator(`${sel('chat-thinking-menu')} [data-test^="chat-thinking-option-reasoning_effort-"][aria-checked="true"]`)
+    await checked.first().waitFor({ state: 'visible', timeout: timeoutMs })
+    const value = (await checked.first().getAttribute('data-test')).replace('chat-thinking-option-reasoning_effort-', '')
+    await closeMenus()
+    return value
+  }
+  const chooseEffort = async (address, effort) => {
+    await scopeCard(address).locator(sel('chat-thinking-trigger')).click()
+    await page.locator(sel(`chat-thinking-option-reasoning_effort-${effort}`)).click()
+    await closeMenus()
+  }
+  const chooseLockedModel = async (address, identifier) => {
+    await scopeCard(address).locator(sel('chat-model-trigger')).click()
+    await page.locator(sel('chat-model-locked-runtime')).waitFor({ state: 'visible', timeout: timeoutMs })
+    await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).fill(identifier)
+    await page.locator(sel(`chat-model-search-option-${identifier}`)).click()
+    await closeMenus()
+  }
+  const isLocked = async (address, field) => (await scopeCard(address).locator(`${sel(`run-setting-${field}`)} ${sel('run-setting-locked')}`).count()) > 0
+  const statusTexts = () => page.locator('[role="status"]').allTextContents()
+  const alertTexts = () => page.locator('[role="alert"]').allTextContents()
+
   await runScenario('API-E2E-004-A', 'Agent Settings loads network-fresh, locks runtime identity, and saves a same-model selection', async () => {
     await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs })
     await page.locator('[data-test="existing-run-model-config-probe"]').waitFor({ state: 'visible', timeout: timeoutMs })
@@ -497,23 +535,22 @@ try {
     const editor = page.locator('[data-test="editor-host"] > div')
     await editor.waitFor({ state: 'visible', timeout: timeoutMs })
     assert(await editor.getAttribute('aria-busy') === 'true', 'Agent Settings must remain busy while the network-fresh canonical read is delayed')
-    const save = page.locator('[data-test="save-existing-model-config"]')
-    assert(await save.isDisabled(), 'Save must be disabled during Agent canonical loading')
+    assert(await saveButton().count() === 0, 'No Save during Agent canonical loading')
     releaseInitialAgentRead()
-    const effort = page.locator('#agent-run-reasoning_effort')
-    await effort.waitFor({ state: 'visible', timeout: timeoutMs })
-    await waitFor('Agent schema readiness', async () => await effort.isEnabled())
-    assert(await page.locator('#agent-run-runtime-kind').isDisabled(), 'Existing Agent runtime must remain fixed')
-    // AC-004 (fresh approval defaults): normal canonical readers must retain saved false.
-    assert(await page.locator('#auto-execute').getAttribute('aria-checked') === 'false', 'Saved Agent opt-out must not be elevated by fresh defaults')
-    const modelButton = page.locator('#agent-run-runtime-kind').locator('xpath=../following-sibling::div[1]//button').first()
-    assert(await modelButton.isEnabled(), 'Stopped Agent model selection must be editable')
-    assert((await page.locator('[data-test="editor-host"]').innerText()).includes('This run is stopped.'), 'Agent stopped editability notice must render')
-    await effort.selectOption('high')
-    await waitFor('Agent Save enablement', async () => !(await save.isDisabled()))
-    await save.click()
-    await waitFor('Agent save completion', async () => (await page.locator('[role="status"]').allTextContents()).some((text) => text.includes('Agent model settings saved.')))
-    assert(await save.isDisabled(), 'Agent Save must return to a clean disabled baseline')
+    await rootCard().locator(sel('chat-thinking-trigger')).waitFor({ state: 'visible', timeout: timeoutMs })
+    // AC-004 (fresh approval defaults): normal canonical readers must retain saved false; approval and workspace are fixed.
+    assert(await isLocked('/', 'approval') && (await rootCard().locator(sel('run-setting-approval')).innerText()).includes('Ask first'), 'Saved Agent opt-out must stay Ask first and fixed')
+    assert(await isLocked('/', 'workspace'), 'Saved Agent workspace must be fixed')
+    assert(await page.locator(sel('existing-run-settings')).getAttribute('data-state') === 'stopped', 'Agent must read as stopped and editable')
+    await rootCard().locator(sel('chat-model-trigger')).click()
+    await page.locator(sel('chat-model-locked-runtime')).waitFor({ state: 'visible', timeout: timeoutMs })
+    assert(await page.locator(`${sel('chat-model-menu')} [data-runtime]`).count() === 0, 'Existing Agent runtime must remain fixed (no runtime list)')
+    await closeMenus()
+    await chooseEffort('/', 'high')
+    await waitFor('Agent Save enablement', async () => await saveButton().count() > 0 && await saveButton().isEnabled())
+    await saveButton().click()
+    await waitFor('Agent save completion', async () => (await statusTexts()).some((text) => text.includes('Saved. Changes apply when this run resumes.')))
+    assert(await saveButton().count() === 0, 'Agent Save must return to a clean baseline')
     assert(state.agentMutations.length === 1, 'Exactly one Agent mutation must be sent', state.agentMutations)
     assert(JSON.stringify(state.agentMutations[0]) === JSON.stringify({ input: {
       agentRunId: 'agent-run-browser-1',
@@ -528,50 +565,22 @@ try {
     await page.locator('[data-test="show-team"]').click()
     const editor = page.locator('[data-test="editor-host"] > div')
     await waitFor('Team canonical loading state', async () => await editor.getAttribute('aria-busy') === 'true')
-    const save = page.locator('[data-test="save-existing-model-config"]')
-    assert(await save.isDisabled(), 'Save must be disabled during Team canonical loading')
+    assert(await saveButton().count() === 0, 'No Save during Team canonical loading')
     releaseInitialTeamRead()
-    const form = page.locator('[data-test="team-run-config-form"]')
-    await form.waitFor({ state: 'visible', timeout: timeoutMs })
-    await waitFor('Saved Team false approval render', async () => await page.locator('[data-test="root-team-config-fields"] [role="switch"]').getAttribute('aria-checked') === 'false')
-    assert(await form.getAttribute('data-mode') === 'existing', 'Team must render in existing-run mode')
-    const rootWorkspace = page.locator('[data-test="root-team-config-fields"] [data-test="fixed-workspace-path"]')
-    assert(await rootWorkspace.count() === 1, 'Saved Team root must use one fixed workspace presentation')
-    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').innerText() === '/workspace/browser-probe', 'Root must show the exact canonical saved path')
-    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').getAttribute('aria-readonly') === 'true', 'Root path must be read-only')
-    await rootWorkspace.locator('[data-test="fixed-workspace-value"]').press('X')
-    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').innerText() === '/workspace/browser-probe', 'Typing must not alter the fixed root path')
-    assert((await rootWorkspace.innerText()).includes('Workspace is fixed for existing runs.'), 'Root must explain the fixed value neutrally')
-    assert(await rootWorkspace.locator('input, select, [role="tablist"]').count() === 0, 'Root fixed path must not expose a picker or editable input')
-    assert(await page.locator('[data-test="reset-team-scope"]').count() === 0, 'Existing Team Settings must expose no Reset affordance')
-    assert(await page.locator('#team-scope-root-runtime-kind').isDisabled(), 'Root Team runtime must remain fixed')
-    const disclosure = page.locator('[data-test="team-member-overrides-toggle"]')
-    assert(await disclosure.getAttribute('aria-expanded') === 'false', 'Team member hierarchy must begin collapsed')
-    await disclosure.click()
-    assert(await disclosure.getAttribute('aria-expanded') === 'true', 'Team member hierarchy disclosure must be operable')
-    assert(await page.locator('[data-test="member-override-item"]').count() === 3, 'Flat configured hierarchy must render coordinator, direct lead, and direct reviewer')
-    const savedMemberApproval = await page.locator('[data-test="member-override-item"] input[type="checkbox"]').evaluateAll(inputs => inputs.map(input => input.checked))
-    assert(savedMemberApproval.length === 3 && savedMemberApproval.every(checked => checked === false), 'Saved Team member opt-outs must remain false', savedMemberApproval)
-    const memberWorkspaces = page.locator('[data-test="member-override-item"] [data-test="fixed-workspace-path"]')
-    assert(await memberWorkspaces.count() === 3, 'Each saved Team member must use one fixed workspace presentation')
-    const displayedMemberPaths = await memberWorkspaces.locator('[data-test="fixed-workspace-value"]').allTextContents()
-    assert(JSON.stringify(displayedMemberPaths.map(value => value.trim())) === JSON.stringify([
-      '/workspace/browser-probe', '/workspace/member-not-registered', '—',
-    ]), 'Member paths must preserve exact distinct saved values and neutral null', displayedMemberPaths)
-    assert(await form.locator('[data-test="workspace-selector"], [role="tablist"]').count() === 0, 'Saved Team must not show a workspace picker')
-    assert(!(await form.innerText()).includes('Saved value is unavailable in current options.'), 'Saved Team must not claim unverified unavailability')
-    assert(!(await form.innerText()).includes('Workspace: '), 'Saved Team must not duplicate fixed paths as selection success')
-    assert(await page.locator('[data-test="root-team-config-fields"]').count() === 1, 'Exactly one root Team editor is present')
-    assert(await page.locator('[data-test="team-scope-config-editor"]').count() === 0, 'Flat Team settings expose no mounted-Team scope editor')
-    const reviewerEffort = page.locator('#existing--reviewer-reasoning_effort')
-    await reviewerEffort.waitFor({ state: 'visible', timeout: timeoutMs })
-    await waitFor('all Team schemas ready', async () => await reviewerEffort.isEnabled())
-    assert(await page.locator('#existing--reviewer-runtime-kind').isDisabled(), 'Direct reviewer runtime must remain fixed')
-    await reviewerEffort.selectOption('high')
-    await waitFor('Team Save enablement', async () => !(await save.isDisabled()))
-    await save.click()
-    await waitFor('Team save completion', async () => (await page.locator('[role="status"]').allTextContents()).some((text) => text.includes('Team model settings saved.')))
-    assert(await save.isDisabled(), 'Team Save must return to a clean disabled baseline')
+    await waitFor('Team members render', async () => await page.locator('[data-test^="run-member-/"]').count() === 3)
+    assert(await isLocked('/', 'approval') && (await rootCard().locator(sel('run-setting-approval')).innerText()).includes('Ask first'), 'Saved Team opt-out must stay Ask first and fixed')
+    const rootWorkspace = rootCard().locator(`${sel('run-setting-workspace')} ${sel('run-setting-locked')}`)
+    assert(await rootWorkspace.getAttribute('title') === '/workspace/browser-probe', 'Root must show the exact canonical saved path')
+    assert(await rootCard().locator(sel('chat-workspace-trigger')).count() === 0, 'Saved Team must not show a workspace picker')
+    const memberAddresses = await page.locator('[data-test^="run-member-/"]').evaluateAll((rows) => rows.map((row) => row.getAttribute('data-test').replace('run-member-', '')))
+    assert(JSON.stringify(memberAddresses) === JSON.stringify(['/coordinator', '/lead', '/reviewer']), 'Flat configured hierarchy must render coordinator, direct lead, and direct reviewer', memberAddresses)
+    await openMember('/reviewer')
+    assert(await isLocked('/reviewer', 'approval') && (await scopeCard('/reviewer').locator(sel('run-setting-approval')).innerText()).includes('Ask first'), 'Saved Team member opt-out must remain Ask first')
+    await chooseEffort('/reviewer', 'high')
+    await waitFor('Team Save enablement', async () => await saveButton().count() > 0 && await saveButton().isEnabled())
+    await saveButton().click()
+    await waitFor('Team save completion', async () => (await statusTexts()).some((text) => text.includes('Saved. Changes apply when this run resumes.')))
+    assert(await saveButton().count() === 0, 'Team Save must return to a clean baseline')
     assert(state.teamMutations.length === 1, 'Exactly one Team mutation must be sent', state.teamMutations)
     assert(JSON.stringify(state.teamMutations[0]) === JSON.stringify({ input: {
       teamRunId: 'team-run-browser-1',
@@ -582,15 +591,17 @@ try {
     assert(JSON.stringify(savedPaths) === JSON.stringify([
       '/workspace/browser-probe', '/workspace/browser-probe', '/workspace/member-not-registered', null,
     ]), 'Model Save must preserve every exact canonical root/member workspace path', savedPaths)
-    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').innerText() === '/workspace/browser-probe', 'Root fixed path must remain after Save')
+    assert(await rootWorkspace.getAttribute('title') === '/workspace/browser-probe', 'Root fixed path must remain after Save')
     await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-B-team-saved.png'), fullPage: true })
-    return { mutation: state.teamMutations[0], renderedMembers: 3, displayedMemberPaths, savedPaths, resumeReads: state.teamResumeReads }
+    return { mutation: state.teamMutations[0], memberAddresses, savedPaths, resumeReads: state.teamResumeReads }
   })
 
   await runScenario('API-E2E-004-C', 'Narrow browser viewport keeps the existing Team Settings editor usable without page overflow', async () => {
     await page.setViewportSize({ width: 390, height: 844 })
-    const save = page.locator('[data-test="save-existing-model-config"]')
-    await save.scrollIntoViewIfNeeded()
+    // The Save bar appears only after a change: make one, measure, then Cancel.
+    await chooseEffort('/', 'high')
+    await waitFor('narrow Save bar', async () => await saveButton().count() > 0)
+    await saveButton().scrollIntoViewIfNeeded()
     const layout = await page.evaluate(() => {
       const button = document.querySelector('[data-test="save-existing-model-config"]')
       const rect = button?.getBoundingClientRect()
@@ -600,65 +611,54 @@ try {
         saveRect: rect ? { left: rect.left, right: rect.right, width: rect.width, top: rect.top, bottom: rect.bottom } : null,
       }
     })
+    await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-C-team-narrow.png'), fullPage: false })
+    await page.locator(sel('existing-run-cancel')).click()
+    await waitFor('Cancel discards the change', async () => await saveButton().count() === 0)
     assert(layout.documentScrollWidth <= layout.viewportWidth + 1, 'Settings must not create page-level horizontal overflow', layout)
     assert(layout.saveRect && layout.saveRect.left >= 0 && layout.saveRect.right <= layout.viewportWidth + 1 && layout.saveRect.width > 0, 'Save action must remain horizontally reachable at narrow width', layout)
-    await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-C-team-narrow.png'), fullPage: false })
     return layout
   })
 
   await runScenario('API-E2E-004-D', 'A supported external activation makes an already-open Agent Save return RUN_ACTIVE and relock', async () => {
     await page.setViewportSize({ width: 1280, height: 900 })
     await page.locator('[data-test="show-agent"]').click()
-    const effort = page.locator('#agent-run-reasoning_effort')
-    await effort.waitFor({ state: 'visible', timeout: timeoutMs })
-    await waitFor('reopened Agent schema readiness', async () => await effort.isEnabled())
-    assert(await effort.inputValue() === 'high', 'A later fresh Settings load must use the previous successful canonical value')
-    await effort.selectOption('low')
-    const save = page.locator('[data-test="save-existing-model-config"]')
-    await waitFor('Agent Save re-enablement', async () => !(await save.isDisabled()))
+    await rootCard().locator(sel('chat-thinking-trigger')).waitFor({ state: 'visible', timeout: timeoutMs })
+    assert(await effortOf('/') === 'high', 'A later fresh Settings load must use the previous successful canonical value')
+    await chooseEffort('/', 'low')
+    await waitFor('Agent Save re-enablement', async () => await saveButton().count() > 0 && await saveButton().isEnabled())
     state.agentMutationMode = 'run-active'
     const resumeReadsBeforeSave = state.agentResumeReads
-    await save.click()
-    await waitFor('RUN_ACTIVE feedback and relock', async () => {
-      const alerts = await page.locator('[role="alert"]').allTextContents()
-      return alerts.some((text) => text.includes('A supported external workflow resumed this run.')) && await effort.isDisabled()
-    })
-    assert(await save.isDisabled(), 'RUN_ACTIVE must disable repeat Save')
+    await saveButton().click()
+    await waitFor('RUN_ACTIVE relock', async () => await page.locator(sel('existing-run-settings')).getAttribute('data-state') === 'active'
+      && await isLocked('/', 'thinking') && await isLocked('/', 'model'))
+    assert(!(await saveButton().count()) || await saveButton().isDisabled(), 'RUN_ACTIVE must disable repeat Save')
     assert(state.agentResumeReads === resumeReadsBeforeSave, 'RUN_ACTIVE must relock directly without an implicit canonical refresh', { resumeReadsBeforeSave, after: state.agentResumeReads })
-    assert((await page.locator('[data-test="editor-host"]').innerText()).includes('Stop this run before changing model settings.'), 'Active Agent notice must replace the stopped notice')
+    const runState = await page.locator(sel('existing-run-settings')).getAttribute('data-state')
+    assert(runState === 'active', 'The run must read as running after RUN_ACTIVE', runState)
     assert(JSON.stringify(state.agentMutations.at(-1)) === JSON.stringify({ input: {
       agentRunId: 'agent-run-browser-1',
       llmModelIdentifier: 'gpt-5.6-luna',
       llmConfig: modelConfig('low'),
     } }), 'RUN_ACTIVE attempt must remain revision-free and contain the required selection', state.agentMutations.at(-1))
     await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-D-agent-run-active.png'), fullPage: true })
-    return { mutation: state.agentMutations.at(-1), resumeReadsBeforeSave, resumeReadsAfterSave: state.agentResumeReads }
+    return { mutation: state.agentMutations.at(-1), resumeReadsBeforeSave, resumeReadsAfterSave: state.agentResumeReads, runState, alerts: await alertTexts() }
   })
 
-  await runScenario('API-E2E-004-E', 'Compatible Agent replacement uses keyboard selection, target defaults and the complete canonical pair', async () => {
+  await runScenario('API-E2E-004-E', 'Compatible Agent replacement uses the locked-runtime model menu, target defaults and the complete canonical pair', async () => {
     state.replacementsEnabled = true
     state.agentMutationMode = 'success'
     // Isolate this stopped-subject case from the explicit active lock asserted in D.
     await page.reload({ waitUntil: 'domcontentloaded' })
-    const runtime = page.locator('#agent-run-runtime-kind')
-    await runtime.waitFor({ state: 'visible' })
-    await waitFor('Agent replacement options', async () => !(await page.locator('[data-test="model-capacity-status"]').count()))
-    assert(await runtime.isDisabled(), 'Replacement must not unlock runtime')
-    const picker = runtime.locator('xpath=../following-sibling::div[1]//button').first()
+    await rootCard().locator(sel('chat-thinking-trigger')).waitFor({ state: 'visible', timeout: timeoutMs })
     const mutationsBefore = state.agentMutations.length
-    await picker.click()
-    const search = page.getByPlaceholder('Search models...')
-    await search.fill('browser-larger-model')
-    await page.locator('li[role="option"]').first().waitFor({ state: 'visible' })
-    await search.press('ArrowDown')
-    await page.keyboard.press('Enter')
-    const save = page.locator('[data-test="save-existing-model-config"]')
-    await waitFor('replacement dirty Save', async () => await save.isEnabled())
-    assert((await picker.innerText()).includes('browser-larger-model'), 'Picker must display target')
-    assert(await page.locator('#agent-run-reasoning_effort').inputValue() === 'low', 'Target default must replace old explicit effort')
-    await save.click()
-    await waitFor('canonical Agent replacement', async () => state.agentModel === 'browser-larger-model' && await save.isDisabled()
-      && (await page.locator('[role="status"]').allTextContents()).some(text => text.includes('Agent model settings saved.')))
+    await chooseLockedModel('/', 'browser-larger-model')
+    await waitFor('replacement dirty Save', async () => await saveButton().count() > 0 && await saveButton().isEnabled())
+    const trigger = rootCard().locator(sel('chat-model-trigger'))
+    assert(/browser.larger/i.test(await trigger.innerText()), 'Model menu must display the target', await trigger.innerText())
+    assert(await effortOf('/') === 'low', 'Target default must replace old explicit effort')
+    await saveButton().click()
+    await waitFor('canonical Agent replacement', async () => state.agentModel === 'browser-larger-model' && await saveButton().count() === 0
+      && (await statusTexts()).some(text => text.includes('Saved.')))
     assert(state.agentMutations.length === mutationsBefore + 1, 'One Agent replacement mutation')
     const mutation = state.agentMutations.at(-1)
     assert(mutation.input.llmModelIdentifier === 'browser-larger-model', 'Save must include target identifier')
@@ -667,48 +667,32 @@ try {
     return { mutation, canonicalModel: state.agentModel, canonicalConfig: state.agentConfig }
   })
 
-  await runScenario('API-E2E-004-F', 'Flat Team replacement preserves divergent and directly edited Agents and verifies one all-scope save with Retry', async () => {
+  await runScenario('API-E2E-004-F', 'Flat Team replacement preserves divergent and directly edited Agents and verifies one all-scope save with Refresh', async () => {
     state.teamMutationMode = 'indeterminate'
     await page.locator('[data-test="show-team"]').click()
-    const runtime = page.locator('#team-scope-root-runtime-kind')
-    await runtime.waitFor({ state: 'visible' })
-    await waitFor('Team replacement options', async () => !(await page.locator('[data-test="model-capacity-status"]').count()))
+    await waitFor('Team members render', async () => await page.locator('[data-test^="run-member-/"]').count() === 3)
     const beforeMutations = state.teamMutations.length
     const beforeReads = state.teamResumeReads
     const priorTree = clone(state.teamTree)
-    const disclosure = page.locator('[data-test="team-member-overrides-toggle"]')
-    assert(await disclosure.getAttribute('aria-expanded') === 'false', 'Fresh Team settings begin collapsed')
-    await disclosure.focus()
-    await page.keyboard.press('Enter')
-    const leadEffort = page.locator('#existing--lead-reasoning_effort')
-    await leadEffort.waitFor({ state: 'visible' })
-    assert(await leadEffort.inputValue() === 'low', 'Lead begins linked to the saved root')
-    await leadEffort.selectOption('high')
-    assert(await page.locator('#existing--reviewer-reasoning_effort').inputValue() === 'high', 'Reviewer begins divergent from its earlier saved edit')
-    const picker = runtime.locator('xpath=../following-sibling::div[1]//button').first()
-    await picker.click()
-    const search = page.getByPlaceholder('Search models...')
-    await search.fill('browser-larger-model')
-    await page.locator('li[role="option"]').first().waitFor({ state: 'visible' })
-    await search.press('ArrowDown')
-    await page.keyboard.press('Enter')
-    const save = page.locator('[data-test="save-existing-model-config"]')
-    await waitFor('Team replacement Save', async () => await save.isEnabled())
-    assert(await leadEffort.inputValue() === 'high', 'Directly edited lead must not inherit root replacement defaults')
-    assert(await page.locator('#existing--coordinator-reasoning_effort').inputValue() === 'low', 'Linked coordinator follows replacement defaults')
-    assert(await page.locator('#existing--reviewer-reasoning_effort').inputValue() === 'high', 'Divergent reviewer remains unchanged')
-    await save.click()
-    const retry = page.getByRole('button', {name:'Retry',exact:true})
-    await retry.waitFor({ state: 'visible' })
-    assert(await save.isDisabled() && await picker.isDisabled(), 'Unverified outcome must lock duplicate Save and model control')
-    await retry.click()
-    await waitFor('Team verification resolved', async () => await retry.count() === 0
-      && (await picker.innerText()).includes('browser-larger-model'))
-    assert(await picker.isDisabled(), 'Current-only target with no further eligible replacement must not be re-offered')
-    assert(await save.isDisabled(), 'Verified canonical pair must be clean')
-    assert((await picker.innerText()).includes('browser-larger-model'), 'Canonical replacement must be displayed')
-    assert(state.teamMutations.length === beforeMutations + 1, 'Retry must not repeat the mutation')
-    assert(state.teamResumeReads === beforeReads + 2, 'One failed and one successful canonical verification')
+    for (const address of ['/coordinator', '/lead', '/reviewer']) await openMember(address)
+    assert(await effortOf('/lead') === 'low', 'Lead begins linked to the saved root')
+    await chooseEffort('/lead', 'high')
+    assert(await effortOf('/reviewer') === 'high', 'Reviewer begins divergent from its earlier saved edit')
+    await chooseLockedModel('/', 'browser-larger-model')
+    await waitFor('Team replacement Save', async () => await saveButton().count() > 0 && await saveButton().isEnabled())
+    assert(await effortOf('/lead') === 'high', 'Directly edited lead must not inherit root replacement defaults')
+    assert(await effortOf('/coordinator') === 'low', 'Linked coordinator follows replacement defaults')
+    assert(await effortOf('/reviewer') === 'high', 'Divergent reviewer remains unchanged')
+    await saveButton().click()
+    const refresh = page.locator(sel('existing-run-refresh'))
+    await refresh.waitFor({ state: 'visible', timeout: timeoutMs })
+    assert((!(await saveButton().count()) || await saveButton().isDisabled()) && await isLocked('/', 'model'), 'Unverified outcome must lock duplicate Save and the model control')
+    await refresh.click()
+    await waitFor('Team verification resolved', async () => await refresh.count() === 0
+      && /browser.larger/i.test(await rootCard().locator(sel('chat-model-trigger')).innerText().catch(() => '')))
+    assert(!(await saveButton().count()), 'Verified canonical pair must be clean')
+    assert(state.teamMutations.length === beforeMutations + 1, 'Refresh must not repeat the mutation')
+    assert(state.teamResumeReads === beforeReads + 2, 'One failed and one successful canonical verification', { before: beforeReads, after: state.teamResumeReads })
     const patches = state.teamMutations.at(-1).input.patches
     assert(JSON.stringify(patches.map(p => p.scopeAddress).sort()) === JSON.stringify(['/', '/coordinator', '/lead'].sort()), 'One save includes root, linked coordinator and independently edited lead; saved divergent reviewer is excluded', patches)
     const expectedTree = clone(priorTree)
@@ -724,9 +708,10 @@ try {
       llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }), 'Directly edited lead retains its own model/settings pair', leadPatch)
     findConfigured(expectedTree, '/lead').launch_configuration.llm_config = modelConfig('high')
     assert(JSON.stringify(state.teamTree) === JSON.stringify(teamRunExecutionTreeDtoSchema.parse(expectedTree)), 'Canonical flat tree preserves divergent member, identities, task records and all fixed configuration', state.teamTree)
-    assert(await leadEffort.inputValue() === 'high', 'Verification restores directly edited member value')
-    assert(await page.locator('#existing--reviewer-reasoning_effort').inputValue() === 'high', 'Verification preserves divergent member value')
-    assert(!(await page.locator('[role="alert"]').allTextContents()).some(text => text.includes('Verify the saved outcome')), 'Verified feedback must clear obsolete error')
+    for (const address of ['/lead', '/reviewer']) await openMember(address)
+    assert(await effortOf('/lead') === 'high', 'Verification restores directly edited member value')
+    assert(await effortOf('/reviewer') === 'high', 'Verification preserves divergent member value')
+    assert(!(await alertTexts()).some(text => text.includes('Verify the saved outcome')), 'Verified feedback must clear obsolete error')
     await page.setViewportSize({ width: 390, height: 844 })
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Verified expanded flat members must fit the narrow viewport')
     await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-F-team-verified-narrow.png'), fullPage: true })

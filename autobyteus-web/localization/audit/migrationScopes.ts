@@ -15,7 +15,8 @@ export type LocalizationMigrationScope = {
     | 'M-013'
     | 'M-014'
     | 'M-015'
-    | 'M-016';
+    | 'M-016'
+    | 'M-017';
   status: 'closed';
   description: string;
   include: string[];
@@ -110,7 +111,6 @@ export const localizationMigrationScopes: LocalizationMigrationScope[] = [
       'components/agentOrgs/',
       'components/collaboration/handoffs/HandoffManager.vue',
       'components/agentTeams/AgentTeamDefinitionForm.vue',
-      'components/workspace/config/AgentOrgRunConfigPanel.vue',
       'components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue',
       'components/workspace/org/AgentOrgWorkspaceView.vue',
       'components/agentTeams/AgentTeamDetail.vue',
@@ -129,6 +129,18 @@ export const localizationMigrationScopes: LocalizationMigrationScope[] = [
     status: 'closed',
     description: 'Chat entry: New chat, chat view, and Chat box menus',
     include: ['pages/chat.vue', 'components/chat/'],
+    strictVueLiterals: true,
+  },
+  {
+    scopeId: 'M-017',
+    status: 'closed',
+    description: 'Run settings: the Org launch page, member settings, the heading switcher, start-surface tools and saved-run settings',
+    include: [
+      'components/run-settings/',
+      'components/layout/StartSurfaceToolsToggle.vue',
+      'components/workspace/config/ExistingRunConfigEditor.vue',
+      'components/workspace/config/RunConfigPanel.vue',
+    ],
     strictVueLiterals: true,
   },
 ];

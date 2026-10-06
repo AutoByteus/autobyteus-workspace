@@ -1,0 +1,108 @@
+{
+  "startedAt": "2026-10-05T20:36:02.349Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline selected mentions; send adds the collaborator Offline at once; send_message_to briefing; \"From\" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion",
+      "result": "Fail",
+      "ms": 12509,
+      "error": "collaborator did not take the root settings",
+      "details": {
+        "kind": "agent",
+        "address": "/code_reviewer",
+        "agentDefinitionId": "code-reviewer",
+        "agentRunId": "code_reviewer_93de40355cac418c9fd563883c3fa59b",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "grok_build",
+          "llmModelIdentifier": "grok-4.7",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-CiQ2YI/server-data/temp_workspace"
+        },
+        "addedAt": "2026-10-05T20:36:22.217Z",
+        "addedViaAgentRunId": "research_assistant_79772fb198714b749c8aa1d56a9d0821"
+      }
+    },
+    "N01": {
+      "title": "New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target",
+      "result": "Pass",
+      "ms": 1845,
+      "details": {
+        "targets": [
+          "autobyteus-daily-assistant",
+          "analyst",
+          "autobyteus-project-task-manager",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team",
+          "launch-org"
+        ],
+        "mentions": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 51240
+    },
+    {
+      "label": "frontend",
+      "pid": 51269
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 51269,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 51240,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-CiQ2YI"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-CiQ2YI",
+  "backendUrl": "http://127.0.0.1:54719",
+  "frontUrl": "http://127.0.0.1:54720",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 1,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-05T20:36:25.140Z"
+}

@@ -1,0 +1,2170 @@
+{
+  "startedAt": "2026-10-05T18:48:16.075Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/tests/e2e/fixtures/fresh-run-auto-approval.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-web/pages/api-e2e-fresh-run-auto-approval.vue",
+  "routePath": "/api-e2e-fresh-run-auto-approval",
+  "graphqlOperations": [
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "autobyteus",
+        "identifiers": [
+          "approval-model"
+        ]
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "autobyteus",
+        "identifiers": [
+          "approval-model"
+        ]
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "temp_ws_default",
+          "workspaceRootPath": "/workspace/temp",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": true,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "autobyteus",
+          "initialSummary": "Validate approval boundary"
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/workspace/approval-two"
+        }
+      }
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "approval-ws-two",
+          "workspaceRootPath": "/workspace/approval-two",
+          "llmModelIdentifier": "approval-model-two",
+          "autoExecuteTools": false,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "autobyteus",
+          "initialSummary": "Validate approval boundary"
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "temp_ws_default",
+          "workspaceRootPath": "/workspace/temp",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": true,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "antigravity_cli",
+          "initialSummary": "Validate approval boundary"
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "temp_ws_default",
+          "workspaceRootPath": "/workspace/temp",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": true,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "autobyteus",
+          "initialSummary": "Validate approval boundary"
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "PrepareAgentRun",
+      "variables": {
+        "input": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "temp_ws_default",
+          "workspaceRootPath": "/workspace/temp",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": false,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "autobyteus",
+          "initialSummary": "Validate approval boundary"
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "CreateAgentTeamRun",
+      "variables": {
+        "input": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {}
+    },
+    {
+      "operationName": "GetSkills",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    }
+  ],
+  "scenarios": {
+    "B08": {
+      "status": "Pass",
+      "description": "Dedicated mobile Agent/Team setup defaults and helper agree",
+      "details": [
+        {
+          "target": "agent",
+          "freshChecked": true,
+          "optOutChecked": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        },
+        {
+          "target": "team",
+          "freshChecked": true,
+          "optOutChecked": false,
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+        }
+      ]
+    },
+    "B01": {
+      "status": "Pass",
+      "description": "New chat Agent fresh true and first-send true",
+      "details": {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    },
+    "B02": {
+      "status": "Pass",
+      "description": "Narrow Agent opt-out survives model/workspace/permitted runtime edits",
+      "details": {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "approval-ws-two",
+        "workspaceRootPath": "/workspace/approval-two",
+        "llmModelIdentifier": "approval-model-two",
+        "autoExecuteTools": false,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    },
+    "B03": {
+      "status": "Pass",
+      "description": "Switcher to a Team: root and inherited members submit true",
+      "details": {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      }
+    },
+    "B04": {
+      "status": "Pass",
+      "description": "Team opt-out reaches every member; one member customized to Ask first",
+      "details": {
+        "off": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model-two",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        },
+        "explicit": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        }
+      }
+    },
+    "B05": {
+      "status": "Pass",
+      "description": "Antigravity keeps approval on and locked for Agent and Team",
+      "details": {
+        "agentInput": {
+          "agentDefinitionId": "approval-agent",
+          "workspaceId": "temp_ws_default",
+          "workspaceRootPath": "/workspace/temp",
+          "llmModelIdentifier": "approval-model",
+          "autoExecuteTools": true,
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          },
+          "runtimeKind": "antigravity_cli",
+          "initialSummary": "Validate approval boundary"
+        },
+        "teamInput": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": true,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        },
+        "missingWorkspaceCase": "not-applicable: New chat defaults to the temp workspace"
+      }
+    },
+    "B06": {
+      "status": "Pass",
+      "description": "Chat Agent/Team true defaults and deliberate opt-out reach launch boundaries",
+      "details": [
+        {
+          "target": "agent",
+          "expected": true,
+          "input": {
+            "agentDefinitionId": "approval-agent",
+            "workspaceId": "temp_ws_default",
+            "workspaceRootPath": "/workspace/temp",
+            "llmModelIdentifier": "approval-model",
+            "autoExecuteTools": true,
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "runtimeKind": "autobyteus",
+            "initialSummary": "Validate approval boundary"
+          }
+        },
+        {
+          "target": "agent",
+          "expected": false,
+          "input": {
+            "agentDefinitionId": "approval-agent",
+            "workspaceId": "temp_ws_default",
+            "workspaceRootPath": "/workspace/temp",
+            "llmModelIdentifier": "approval-model",
+            "autoExecuteTools": false,
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "runtimeKind": "autobyteus",
+            "initialSummary": "Validate approval boundary"
+          }
+        },
+        {
+          "target": "team",
+          "expected": true,
+          "input": {
+            "teamDefinitionId": "approval-team",
+            "teamConfigs": [
+              {
+                "teamAddress": "/",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ],
+            "memberConfigs": [
+              {
+                "memberAddress": "/lead",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/workspace/temp"
+              },
+              {
+                "memberAddress": "/reviewer",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": true,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ]
+          }
+        },
+        {
+          "target": "team",
+          "expected": false,
+          "input": {
+            "teamDefinitionId": "approval-team",
+            "teamConfigs": [
+              {
+                "teamAddress": "/",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ],
+            "memberConfigs": [
+              {
+                "memberAddress": "/lead",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/workspace/temp"
+              },
+              {
+                "memberAddress": "/reviewer",
+                "agentDefinitionId": "approval-agent",
+                "runtimeKind": "autobyteus",
+                "llmModelIdentifier": "approval-model",
+                "llmConfig": {
+                  "reasoning_effort": "low",
+                  "reasoning_summary": "auto"
+                },
+                "autoExecuteTools": false,
+                "workspaceRootPath": "/workspace/temp"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "B07": {
+      "status": "Pass",
+      "description": "Retarget keeps a deliberate opt-out; a fresh New chat resets to the default",
+      "details": {
+        "carried": {
+          "teamDefinitionId": "approval-team",
+          "teamConfigs": [
+            {
+              "teamAddress": "/",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ],
+          "memberConfigs": [
+            {
+              "memberAddress": "/lead",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            },
+            {
+              "memberAddress": "/reviewer",
+              "agentDefinitionId": "approval-agent",
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "approval-model",
+              "llmConfig": {
+                "reasoning_effort": "low",
+                "reasoning_summary": "auto"
+              },
+              "autoExecuteTools": false,
+              "workspaceRootPath": "/workspace/temp"
+            }
+          ]
+        },
+        "freshPageReloadTrue": true,
+        "desktopRestartClaim": false
+      }
+    }
+  },
+  "browserEvents": [],
+  "failures": [],
+  "cleanup": {
+    "browser": {
+      "status": "closed",
+      "pid": 51326
+    },
+    "devServer": {
+      "status": "terminated",
+      "pid": 51286,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "processGroupExited": true
+    },
+    "page": "removed"
+  },
+  "port": 59801,
+  "baseUrl": "http://127.0.0.1:59801",
+  "devServerPid": 51286,
+  "browserPid": 51326,
+  "browserVersion": "154.0.8037.97",
+  "mobileObservations": [
+    {
+      "target": "agent",
+      "freshChecked": true,
+      "optOutChecked": false,
+      "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+    },
+    {
+      "target": "team",
+      "freshChecked": true,
+      "optOutChecked": false,
+      "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run."
+    }
+  ],
+  "inputs": {
+    "agents": [
+      {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      },
+      {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "approval-ws-two",
+        "workspaceRootPath": "/workspace/approval-two",
+        "llmModelIdentifier": "approval-model-two",
+        "autoExecuteTools": false,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      },
+      {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "antigravity_cli",
+        "initialSummary": "Validate approval boundary"
+      },
+      {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": true,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      },
+      {
+        "agentDefinitionId": "approval-agent",
+        "workspaceId": "temp_ws_default",
+        "workspaceRootPath": "/workspace/temp",
+        "llmModelIdentifier": "approval-model",
+        "autoExecuteTools": false,
+        "llmConfig": {
+          "reasoning_effort": "low",
+          "reasoning_summary": "auto"
+        },
+        "runtimeKind": "autobyteus",
+        "initialSummary": "Validate approval boundary"
+      }
+    ],
+    "teams": [
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      },
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model-two",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model-two",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model-two",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      },
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      },
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      },
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      },
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      },
+      {
+        "teamDefinitionId": "approval-team",
+        "teamConfigs": [
+          {
+            "teamAddress": "/",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ],
+        "memberConfigs": [
+          {
+            "memberAddress": "/lead",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          },
+          {
+            "memberAddress": "/reviewer",
+            "agentDefinitionId": "approval-agent",
+            "runtimeKind": "autobyteus",
+            "llmModelIdentifier": "approval-model",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            },
+            "autoExecuteTools": false,
+            "workspaceRootPath": "/workspace/temp"
+          }
+        ]
+      }
+    ]
+  },
+  "finishedAt": "2026-10-05T18:49:08.036Z"
+}

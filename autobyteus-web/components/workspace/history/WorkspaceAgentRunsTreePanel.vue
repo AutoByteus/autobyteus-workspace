@@ -143,7 +143,7 @@ import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceH
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions';
 import { useLocalization } from '~/composables/useLocalization';
-import { useChatDraftStore } from '~/stores/chatDraftStore';
+import { useRunStart } from '~/composables/runSettings/useRunStart';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const emit = defineEmits<{
@@ -158,6 +158,7 @@ const agentOrgRunStore = useAgentOrgRunStore();
 const agentOrgContextsStore = useAgentOrgContextsStore();
 const route = useRoute() as ReturnType<typeof useRoute> | undefined;
 const router = useRouter();
+const runStart = useRunStart();
 const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
@@ -311,8 +312,7 @@ const {
     emit('run-selected', { type: 'team', runId: payload.runId });
   },
   startPresetChat: async (preset) => {
-    useChatDraftStore().startNewChat(preset);
-    await router.push('/chat');
+    await runStart.newChatInWorkspace(preset);
   },
   presentTeamStreamRecoveryFeedback: (feedback) => {
     const key = feedback === 'wait'

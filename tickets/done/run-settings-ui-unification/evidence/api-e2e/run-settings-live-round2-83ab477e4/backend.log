@@ -1,0 +1,416 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:65142
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:65142
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:56084) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T21:50:04.870Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-10-05T21:50:04.970Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-05T21:50:04.971Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1791237004976,"pid":56084,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65150"}
+{"level":30,"time":1791237004997,"pid":56084,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65142"}
+[2026-10-05T21:50:04.997Z] [INFO] [server.runtime] Server listening on 127.0.0.1:65142
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID planner.
+Agent Definition created successfully with ID: planner
+In-memory cache: Added new agent definition with ID drafter.
+Agent Definition created successfully with ID: drafter
+In-memory cache: Added new agent definition with ID checker.
+Agent Definition created successfully with ID: checker
+In-memory cache: Added new agent definition with ID scout.
+Agent Definition created successfully with ID: scout
+In-memory cache: Added new agent definition with ID fragile-helper.
+Agent Definition created successfully with ID: fragile-helper
+[2026-10-05T21:50:05.245Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID docs-team.
+Agent Team Definition created successfully with ID: docs-team
+[CodexAppServerClient] stderr: [2m2026-10-05T21:50:05.329216Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Created terminal session b6e3f8fc-3fe4-45bf-96e4-972acccd0017 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b6e3f8fc-3fe4-45bf-96e4-972acccd0017
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session b6e3f8fc-3fe4-45bf-96e4-972acccd0017
+Terminal WebSocket disconnected: b6e3f8fc-3fe4-45bf-96e4-972acccd0017
+[CodexAppServerClient] stderr: [2m2026-10-05T21:50:42.798527Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/planner_35c1e132f9494b579f2de94cad897b92/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session d3d54804-b336-4771-a350-15df0e43a6f4 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=d3d54804-b336-4771-a350-15df0e43a6f4, run=docs_team_7fc177df28b54bacb63f827d21419667
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/planner_35c1e132f9494b579f2de94cad897b92/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/planner_35c1e132f9494b579f2de94cad897b92/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+(node:56084) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Closed agent session d3d54804-b336-4771-a350-15df0e43a6f4
+{"level":40,"time":1791237051364,"pid":56084,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_XkhIiDLOsEeOb3Dp5pgLFgpU32VoYGdDKViXzRk22_A","statusCode":400,"elapsedMs":0.7875000238418579,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session bb248454-d125-4c24-a8d4-930f4ef65e21 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=bb248454-d125-4c24-a8d4-930f4ef65e21, run=docs_team_7fc177df28b54bacb63f827d21419667
+Closed agent session bb248454-d125-4c24-a8d4-930f4ef65e21
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session cbad884c-3718-4069-b0fb-ed362f4d0634 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=cbad884c-3718-4069-b0fb-ed362f4d0634, run=docs_team_7fc177df28b54bacb63f827d21419667
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:00.609897Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 6a87350b-df4a-43b4-9a37-5825a4a4eea4 for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=6a87350b-df4a-43b4-9a37-5825a4a4eea4, run=planner_89dec5a3e19f4e05923931065abf05ba
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:09.193937Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 6a87350b-df4a-43b4-9a37-5825a4a4eea4
+Agent WebSocket disconnected: 6a87350b-df4a-43b4-9a37-5825a4a4eea4
+Closed agent session cbad884c-3718-4069-b0fb-ed362f4d0634
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 6d717ce6-37ee-4035-b2fb-c82f20dd3131 for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=6d717ce6-37ee-4035-b2fb-c82f20dd3131, run=planner_89dec5a3e19f4e05923931065abf05ba
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session 476de194-f3a8-4217-816c-b473eb1f4cf6 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=476de194-f3a8-4217-816c-b473eb1f4cf6, run=docs_team_7fc177df28b54bacb63f827d21419667
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:12.341699Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 6d717ce6-37ee-4035-b2fb-c82f20dd3131
+Agent WebSocket disconnected: 6d717ce6-37ee-4035-b2fb-c82f20dd3131
+Closed agent session 476de194-f3a8-4217-816c-b473eb1f4cf6
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session f4a957ac-35be-44a7-b3e0-3cf5278bf053 for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=f4a957ac-35be-44a7-b3e0-3cf5278bf053, run=planner_89dec5a3e19f4e05923931065abf05ba
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agents/planner_89dec5a3e19f4e05923931065abf05ba/collaboration/scout_4a1e072e96d446bcbb150987ab75d2f0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session 322ca18a-a036-4568-a5ca-8965e0e95dc2 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=322ca18a-a036-4568-a5ca-8965e0e95dc2, run=docs_team_7fc177df28b54bacb63f827d21419667
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:24.251704Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session 21cc14d8-dbc1-47ad-ac73-91dd8210acb1 for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=21cc14d8-dbc1-47ad-ac73-91dd8210acb1, run=planner_81b92829ad664f43b095255b2275197a
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session f4a957ac-35be-44a7-b3e0-3cf5278bf053
+Agent WebSocket disconnected: f4a957ac-35be-44a7-b3e0-3cf5278bf053
+Closed agent session 21cc14d8-dbc1-47ad-ac73-91dd8210acb1
+Agent WebSocket disconnected: 21cc14d8-dbc1-47ad-ac73-91dd8210acb1
+Closed agent session 322ca18a-a036-4568-a5ca-8965e0e95dc2
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session b83cd957-c6dc-49a8-8ce4-f5bf280799fb for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=b83cd957-c6dc-49a8-8ce4-f5bf280799fb, run=planner_89dec5a3e19f4e05923931065abf05ba
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agents/planner_89dec5a3e19f4e05923931065abf05ba/collaboration/scout_4a1e072e96d446bcbb150987ab75d2f0/raw_traces_active.jsonl
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session aad65aff-9f6c-468a-b3bf-718691ad76da for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=aad65aff-9f6c-468a-b3bf-718691ad76da, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session e4ac0187-3641-433b-a848-dd9340d0cb02 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=e4ac0187-3641-433b-a848-dd9340d0cb02, run=docs_team_7fc177df28b54bacb63f827d21419667
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:35.138016Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+{"level":30,"time":1791237096413,"pid":56084,"hostname":"MacBookPro","reqId":"req-dn","err":{"type":"GraphQLError","message":"Run metadata not found for 'scout_4a1e072e96d446bcbb150987ab75d2f0'.","stack":"Error: Run metadata not found for 'scout_4a1e072e96d446bcbb150987ab75d2f0'.\n    at AgentRunResumeConfigService.getAgentRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/run-history/services/agent-run-resume-config-service.js:19:19)\n    at async StudioRunModelConfigService.getAgentRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/run-history/services/studio-run-model-config-service.js:13:27)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentRunResumeConfig"],"locations":[{"line":1,"column":20}],"extensions":{}},"msg":"Run metadata not found for 'scout_4a1e072e96d446bcbb150987ab75d2f0'."}
+Closed agent session b83cd957-c6dc-49a8-8ce4-f5bf280799fb
+Agent WebSocket disconnected: b83cd957-c6dc-49a8-8ce4-f5bf280799fb
+Closed agent session e4ac0187-3641-433b-a848-dd9340d0cb02
+Closed agent session aad65aff-9f6c-468a-b3bf-718691ad76da
+Agent WebSocket disconnected: aad65aff-9f6c-468a-b3bf-718691ad76da
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session 226987b4-9c07-4d73-8e93-5d9b4fa87828 for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=226987b4-9c07-4d73-8e93-5d9b4fa87828, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 5deecb9e-5ce9-45b7-b8d8-fc325162105c for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=5deecb9e-5ce9-45b7-b8d8-fc325162105c, run=planner_89dec5a3e19f4e05923931065abf05ba
+Created terminal session f71ca9af-f02f-4b62-b2af-eb10352e5556 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: f71ca9af-f02f-4b62-b2af-eb10352e5556
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session e362dee7-300c-45de-b6e7-11bcd48ad0e1 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=e362dee7-300c-45de-b6e7-11bcd48ad0e1, run=docs_team_7fc177df28b54bacb63f827d21419667
+Closed PTY session f71ca9af-f02f-4b62-b2af-eb10352e5556
+Terminal WebSocket disconnected: f71ca9af-f02f-4b62-b2af-eb10352e5556
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:44.732250Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 226987b4-9c07-4d73-8e93-5d9b4fa87828
+Agent WebSocket disconnected: 226987b4-9c07-4d73-8e93-5d9b4fa87828
+Closed agent session e362dee7-300c-45de-b6e7-11bcd48ad0e1
+Closed agent session 5deecb9e-5ce9-45b7-b8d8-fc325162105c
+Agent WebSocket disconnected: 5deecb9e-5ce9-45b7-b8d8-fc325162105c
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session a149afc9-0213-4fb5-8b6f-5dda3f2f06ff for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=a149afc9-0213-4fb5-8b6f-5dda3f2f06ff, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 6237ca3d-adfd-496d-b572-54d0a5315464 for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=6237ca3d-adfd-496d-b572-54d0a5315464, run=planner_89dec5a3e19f4e05923931065abf05ba
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session d1b36093-c0f1-4cca-90f3-05d404ddf289 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=d1b36093-c0f1-4cca-90f3-05d404ddf289, run=docs_team_7fc177df28b54bacb63f827d21419667
+[CodexAppServerClient] stderr: [2m2026-10-05T21:51:50.632383Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/docs-team-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/docs-team-folder.
+Created and registered workspace ID: agent_ws_6b4b63639ac1bf2b52eee93111e50b5744a9cefcee4ddc28f8d1bfab330d2859
+Resolved configured temp workspace root to TempWorkspace.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/docs-team-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/docs-team-folder.
+Reusing registered workspace ID: agent_ws_6b4b63639ac1bf2b52eee93111e50b5744a9cefcee4ddc28f8d1bfab330d2859
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Created terminal session 9f8caef8-945e-4b93-94a1-c9fbde64dee0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9f8caef8-945e-4b93-94a1-c9fbde64dee0
+Terminal websocket attached for cwd /Users/normy
+Closed agent session a149afc9-0213-4fb5-8b6f-5dda3f2f06ff
+Agent WebSocket disconnected: a149afc9-0213-4fb5-8b6f-5dda3f2f06ff
+Closed agent session d1b36093-c0f1-4cca-90f3-05d404ddf289
+Closed agent session 6237ca3d-adfd-496d-b572-54d0a5315464
+Agent WebSocket disconnected: 6237ca3d-adfd-496d-b572-54d0a5315464
+Closed PTY session 9f8caef8-945e-4b93-94a1-c9fbde64dee0
+Terminal WebSocket disconnected: 9f8caef8-945e-4b93-94a1-c9fbde64dee0
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session 207634a4-f4e8-40b5-b9fa-bf816420e3cc for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=207634a4-f4e8-40b5-b9fa-bf816420e3cc, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 8b96ed2f-a459-4002-922f-f74f912354ea for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=8b96ed2f-a459-4002-922f-f74f912354ea, run=planner_89dec5a3e19f4e05923931065abf05ba
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session c09ab80a-1d8d-48b8-aed1-3b83224aa554 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=c09ab80a-1d8d-48b8-aed1-3b83224aa554, run=docs_team_7fc177df28b54bacb63f827d21419667
+In-memory cache: Removed agent definition with ID fragile-helper.
+Agent Definition with ID fragile-helper deleted successfully.
+Closed agent session 207634a4-f4e8-40b5-b9fa-bf816420e3cc
+Agent WebSocket disconnected: 207634a4-f4e8-40b5-b9fa-bf816420e3cc
+Closed agent session c09ab80a-1d8d-48b8-aed1-3b83224aa554
+Closed agent session 8b96ed2f-a459-4002-922f-f74f912354ea
+Agent WebSocket disconnected: 8b96ed2f-a459-4002-922f-f74f912354ea
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session ede10976-cc7c-42c0-9aa9-8466f5525510 for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=ede10976-cc7c-42c0-9aa9-8466f5525510, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 7bd12a63-e8e7-492a-85c4-9e414bae146b for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=7bd12a63-e8e7-492a-85c4-9e414bae146b, run=planner_89dec5a3e19f4e05923931065abf05ba
+Created terminal session b17d9f20-d013-4108-8b3c-ef9501164bee using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b17d9f20-d013-4108-8b3c-ef9501164bee
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session e493f0f0-8d2a-4e94-a742-5e3b4e1425c9 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=e493f0f0-8d2a-4e94-a742-5e3b4e1425c9, run=docs_team_7fc177df28b54bacb63f827d21419667
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Closed PTY session b17d9f20-d013-4108-8b3c-ef9501164bee
+Terminal WebSocket disconnected: b17d9f20-d013-4108-8b3c-ef9501164bee
+[CodexAppServerClient] stderr: [2m2026-10-05T21:52:23.759168Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session ede10976-cc7c-42c0-9aa9-8466f5525510
+Agent WebSocket disconnected: ede10976-cc7c-42c0-9aa9-8466f5525510
+Closed agent session e493f0f0-8d2a-4e94-a742-5e3b4e1425c9
+Closed agent session 7bd12a63-e8e7-492a-85c4-9e414bae146b
+Agent WebSocket disconnected: 7bd12a63-e8e7-492a-85c4-9e414bae146b
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session a4da1077-69e2-47f4-83e7-a242bf49c74e for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=a4da1077-69e2-47f4-83e7-a242bf49c74e, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 26d889c8-cffd-4556-b774-1b8a93d7d71a for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=26d889c8-cffd-4556-b774-1b8a93d7d71a, run=planner_89dec5a3e19f4e05923931065abf05ba
+Created terminal session 4ebfa947-c208-4f43-8602-3cefa9a273a2 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 4ebfa947-c208-4f43-8602-3cefa9a273a2
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session dfb1732f-cbe7-4e18-baae-77a6615f9b69 for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=dfb1732f-cbe7-4e18-baae-77a6615f9b69, run=docs_team_7fc177df28b54bacb63f827d21419667
+[CodexAppServerClient] stderr: [2m2026-10-05T21:52:35.466479Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed PTY session 4ebfa947-c208-4f43-8602-3cefa9a273a2
+Terminal WebSocket disconnected: 4ebfa947-c208-4f43-8602-3cefa9a273a2
+Closed agent session dfb1732f-cbe7-4e18-baae-77a6615f9b69
+Closed agent session a4da1077-69e2-47f4-83e7-a242bf49c74e
+Agent WebSocket disconnected: a4da1077-69e2-47f4-83e7-a242bf49c74e
+Closed agent session 26d889c8-cffd-4556-b774-1b8a93d7d71a
+Agent WebSocket disconnected: 26d889c8-cffd-4556-b774-1b8a93d7d71a
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session 8a6eb56f-5ffb-463f-8709-6c31b8913a33 for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=8a6eb56f-5ffb-463f-8709-6c31b8913a33, run=planner_81b92829ad664f43b095255b2275197a
+Created terminal session 50bbae27-8d9d-4aab-a1ee-365259f5d321 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 50bbae27-8d9d-4aab-a1ee-365259f5d321
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session 46423694-ecf2-4bcc-ba11-dd78908bdae1 for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=46423694-ecf2-4bcc-ba11-dd78908bdae1, run=planner_89dec5a3e19f4e05923931065abf05ba
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Closed agent session 8a6eb56f-5ffb-463f-8709-6c31b8913a33
+Agent WebSocket disconnected: 8a6eb56f-5ffb-463f-8709-6c31b8913a33
+Closed agent session 46423694-ecf2-4bcc-ba11-dd78908bdae1
+Agent WebSocket disconnected: 46423694-ecf2-4bcc-ba11-dd78908bdae1
+Closed PTY session 50bbae27-8d9d-4aab-a1ee-365259f5d321
+Terminal WebSocket disconnected: 50bbae27-8d9d-4aab-a1ee-365259f5d321
+Agent websocket attached for run planner_81b92829ad664f43b095255b2275197a
+Created agent session c9a5367c-ee99-424f-83bd-6b711292a24c for run planner_81b92829ad664f43b095255b2275197a
+Agent WebSocket connected: session=c9a5367c-ee99-424f-83bd-6b711292a24c, run=planner_81b92829ad664f43b095255b2275197a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/drafter_20b4e44585804bd28c3490a6efdd2bc9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_teams/docs_team_7fc177df28b54bacb63f827d21419667/checker_b0c2e22df3b94559a296146a1e954896/raw_traces_active.jsonl
+Agent websocket attached for run planner_89dec5a3e19f4e05923931065abf05ba
+Created agent session ffe15904-f616-48bf-b6c4-a958398a9aa6 for run planner_89dec5a3e19f4e05923931065abf05ba
+Agent WebSocket connected: session=ffe15904-f616-48bf-b6c4-a958398a9aa6, run=planner_89dec5a3e19f4e05923931065abf05ba
+Created terminal session c7563478-02d6-477e-b92b-d647ccc35945 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c7563478-02d6-477e-b92b-d647ccc35945
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run docs_team_7fc177df28b54bacb63f827d21419667
+Created agent session b7b68b36-a7a3-4a89-8771-7032c461ce9a for run docs_team_7fc177df28b54bacb63f827d21419667
+Agent Team WebSocket connected: session=b7b68b36-a7a3-4a89-8771-7032c461ce9a, run=docs_team_7fc177df28b54bacb63f827d21419667
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/scout_daefcc1d755644febd3772d37b746cf2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/drafter_d7aa01e7595d4db49e2b91735336b609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/planner_cf8def000eb74ab7a09cdaeb067096aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-settings-live-ioOCli/server-data/memory/agent_orgs/docs_org_8640774b79854ff5a56ae525ad5f5aef/docs_team_2b5de4928f664e7bba638c542e0048c2/checker_489c30419c4645f8acda0931cdcc62e0/raw_traces_active.jsonl
+Closed PTY session c7563478-02d6-477e-b92b-d647ccc35945
+Terminal WebSocket disconnected: c7563478-02d6-477e-b92b-d647ccc35945
+[2026-10-05T21:53:09.340Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session b7b68b36-a7a3-4a89-8771-7032c461ce9a
+Closed agent session ffe15904-f616-48bf-b6c4-a958398a9aa6
+Agent WebSocket disconnected: ffe15904-f616-48bf-b6c4-a958398a9aa6
+Closed agent session c9a5367c-ee99-424f-83bd-6b711292a24c
+Agent WebSocket disconnected: c9a5367c-ee99-424f-83bd-6b711292a24c
+{"level":30,"time":1791237189702,"pid":56084,"hostname":"MacBookPro","reqId":"req-qp","res":{"statusCode":503},"msg":"request aborted - refusing to accept new requests as server is closing"}
+[2026-10-05T21:53:09.713Z] [INFO] [server.runtime] Server closed cleanly.

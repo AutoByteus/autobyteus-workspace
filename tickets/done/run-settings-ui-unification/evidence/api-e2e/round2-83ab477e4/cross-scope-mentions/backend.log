@@ -1,0 +1,288 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:61117
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:61117
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:23722) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T21:34:15.133Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-10-05T21:34:15.234Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-05T21:34:15.234Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1791236055239,"pid":23722,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61124"}
+{"level":30,"time":1791236055261,"pid":23722,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61117"}
+[2026-10-05T21:34:15.261Z] [INFO] [server.runtime] Server listening on 127.0.0.1:61117
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID research-assistant.
+Agent Definition created successfully with ID: research-assistant
+In-memory cache: Added new agent definition with ID code-reviewer.
+Agent Definition created successfully with ID: code-reviewer
+In-memory cache: Added new agent definition with ID researcher.
+Agent Definition created successfully with ID: researcher
+In-memory cache: Added new agent definition with ID writer.
+Agent Definition created successfully with ID: writer
+In-memory cache: Added new agent definition with ID analyst.
+Agent Definition created successfully with ID: analyst
+In-memory cache: Added new agent definition with ID product-prototyper.
+Agent Definition created successfully with ID: product-prototyper
+In-memory cache: Added new agent definition with ID prototype-bootstrapper.
+Agent Definition created successfully with ID: prototype-bootstrapper
+[2026-10-05T21:34:15.515Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID product-team.
+Agent Team Definition created successfully with ID: product-team
+[2026-10-05T21:34:15.529Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID review-team.
+Agent Team Definition created successfully with ID: review-team
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Created agent session 28863da7-fd9e-498e-bf0b-be7d6e016cc5 for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Agent WebSocket connected: session=28863da7-fd9e-498e-bf0b-be7d6e016cc5, run=research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236066883,"pid":23722,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_oQhEpafEr5HZPN6mei8X2t4uthsfxUlI3pkq-aDDBao","statusCode":400,"elapsedMs":0.7870419025421143,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236076415,"pid":23722,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/mcp/agent-tools/agtrun_H_bcw9xXCDfWjlBBH9fXBMbmRUPBacmlsOKmP9ZHlM0","statusCode":400,"elapsedMs":0.2218329906463623,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236100996,"pid":23722,"hostname":"MacBookPro","reqId":"req-21","method":"POST","url":"/mcp/agent-tools/agtrun_qK_S5DiqMKWC2-2Kqc-wZFyXfcYzpKRqfU2WC1Qs2SM","statusCode":400,"elapsedMs":0.2825000286102295,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236134458,"pid":23722,"hostname":"MacBookPro","reqId":"req-51","method":"POST","url":"/mcp/agent-tools/agtrun_Q_OaHw5bF0AMcTj7BJITeqO_No6Q7ifetdtlWZuxnNE","statusCode":400,"elapsedMs":0.2369999885559082,"msg":"http request completed"}
+Closed agent session 28863da7-fd9e-498e-bf0b-be7d6e016cc5
+Agent WebSocket disconnected: 28863da7-fd9e-498e-bf0b-be7d6e016cc5
+Agent websocket attached for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Created agent session f5076712-8bfe-4e81-b476-34149fef40c1 for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Agent WebSocket connected: session=f5076712-8bfe-4e81-b476-34149fef40c1, run=research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Closed agent session f5076712-8bfe-4e81-b476-34149fef40c1
+Agent WebSocket disconnected: f5076712-8bfe-4e81-b476-34149fef40c1
+Agent websocket attached for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Created agent session 710f3c4a-c418-4b2b-98ae-54fbf33e006f for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Agent WebSocket connected: session=710f3c4a-c418-4b2b-98ae-54fbf33e006f, run=research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_c62350c3e0a7426ba0ec1d2e297e3520
+Created agent session 0211228d-bd0e-463c-99ec-7a5f3f5bfa52 for run research_assistant_c62350c3e0a7426ba0ec1d2e297e3520
+Agent WebSocket connected: session=0211228d-bd0e-463c-99ec-7a5f3f5bfa52, run=research_assistant_c62350c3e0a7426ba0ec1d2e297e3520
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory/agents/research_assistant_c62350c3e0a7426ba0ec1d2e297e3520/collaboration/product_team_f46a394e3c734a74aa082bf098409173/product_prototyper_26cb4d75115443ed80429379850e87c2/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory/agents/research_assistant_c62350c3e0a7426ba0ec1d2e297e3520/collaboration/product_team_f46a394e3c734a74aa082bf098409173/prototype_bootstrapper_1fde7ccfdb8a4ee8a28b354239dc9367/raw_traces_active.jsonl
+{"level":40,"time":1791236158666,"pid":23722,"hostname":"MacBookPro","reqId":"req-7x","method":"POST","url":"/mcp/agent-tools/agtrun_e7aOuomd5AwioOPQ-S_EuoqtQUZ4UN4bihiCk04vQ1U","statusCode":400,"elapsedMs":0.28312504291534424,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236163981,"pid":23722,"hostname":"MacBookPro","reqId":"req-8u","method":"POST","url":"/mcp/agent-tools/agtrun_O2UkvRsoYYaHVsX9j0SQMoN9I4RB2WPDR_h7WoeN56g","statusCode":400,"elapsedMs":0.24254202842712402,"msg":"http request completed"}
+Closed agent session 710f3c4a-c418-4b2b-98ae-54fbf33e006f
+Agent WebSocket disconnected: 710f3c4a-c418-4b2b-98ae-54fbf33e006f
+Closed agent session 0211228d-bd0e-463c-99ec-7a5f3f5bfa52
+Agent WebSocket disconnected: 0211228d-bd0e-463c-99ec-7a5f3f5bfa52
+Agent websocket attached for run research_assistant_c62350c3e0a7426ba0ec1d2e297e3520
+Created agent session 68cfbd67-1915-4cc3-acb2-d38b9c00f9b2 for run research_assistant_c62350c3e0a7426ba0ec1d2e297e3520
+Agent WebSocket connected: session=68cfbd67-1915-4cc3-acb2-d38b9c00f9b2, run=research_assistant_c62350c3e0a7426ba0ec1d2e297e3520
+Agent websocket attached for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Created agent session 439606f0-9657-401e-bf37-76c9c3f8f7f2 for run research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Agent WebSocket connected: session=439606f0-9657-401e-bf37-76c9c3f8f7f2, run=research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236169889,"pid":23722,"hostname":"MacBookPro","reqId":"req-a1","method":"POST","url":"/mcp/agent-tools/agtrun_QUIzCurKRTUXf0SBdVg8K7Dyb6Ng3EKSAn0NlQz9kzA","statusCode":400,"elapsedMs":0.25745904445648193,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory/agent_teams/review_team_cba198ca7500429183131a09bf230575/researcher_636b58d35d974ddbba4c6b5a43580eae/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory/agent_teams/review_team_cba198ca7500429183131a09bf230575/writer_1b53e691650442df97e377ba0d7a42ba/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_cba198ca7500429183131a09bf230575
+Created agent session afc983c7-2b9a-4d4a-8801-b41526c378d8 for run review_team_cba198ca7500429183131a09bf230575
+Agent Team WebSocket connected: session=afc983c7-2b9a-4d4a-8801-b41526c378d8, run=review_team_cba198ca7500429183131a09bf230575
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory/agent_teams/review_team_cba198ca7500429183131a09bf230575/researcher_636b58d35d974ddbba4c6b5a43580eae/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LfXeUk/server-data/memory/agent_teams/review_team_cba198ca7500429183131a09bf230575/researcher_636b58d35d974ddbba4c6b5a43580eae/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236171756,"pid":23722,"hostname":"MacBookPro","reqId":"req-aj","method":"POST","url":"/mcp/agent-tools/agtrun_B3_2CiU3dn2UkiSllxSdC5HyeeDpW18c_UZE8-aW6g0","statusCode":400,"elapsedMs":0.25708305835723877,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+(node:23722) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236176707,"pid":23722,"hostname":"MacBookPro","reqId":"req-bs","method":"POST","url":"/mcp/agent-tools/agtrun_rKWgObxerc_7IYUOaUSTUMbhsDmVwearaOqc8DP3ykM","statusCode":400,"elapsedMs":0.24033403396606445,"msg":"http request completed"}
+Closed agent session afc983c7-2b9a-4d4a-8801-b41526c378d8
+Closed agent session 439606f0-9657-401e-bf37-76c9c3f8f7f2
+Agent WebSocket disconnected: 439606f0-9657-401e-bf37-76c9c3f8f7f2
+Closed agent session 68cfbd67-1915-4cc3-acb2-d38b9c00f9b2
+Agent WebSocket disconnected: 68cfbd67-1915-4cc3-acb2-d38b9c00f9b2
+[2026-10-05T21:36:25.432Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Claude process for run 'research_assistant_e6fa1201e31e4e16a3b4b1df255a01fb' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'prototype_bootstrapper_c05cab0c11fb416da430a43e55358718' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'research_assistant_c62350c3e0a7426ba0ec1d2e297e3520' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'product_prototyper_c2c37f0a270a4b1b88950a7393064fa2' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'product_prototyper_26cb4d75115443ed80429379850e87c2' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'code_reviewer_bf767cd56a404f0ba0ab668afc77d7b8' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at ChildProcess.onExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:227:18)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'researcher_636b58d35d974ddbba4c6b5a43580eae' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'prototype_bootstrapper_1fde7ccfdb8a4ee8a28b354239dc9367' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ClaudeSdkChildReceipt.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ClaudeSdkChildReceipt.emit (node:events:531:35)
+    at ClaudeSdkChildReceipt.deliverSdkExit (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:258:18)
+    at Socket.onStderrClose (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/claude/client/claude-sdk-process-owner.js:239:18)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+[2026-10-05T21:36:25.983Z] [INFO] [server.runtime] Server closed cleanly.

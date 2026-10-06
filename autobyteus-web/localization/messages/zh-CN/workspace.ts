@@ -4,33 +4,16 @@ const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
-  "workspace.teamCopy.failed": "无法复制此团队配置：{error}。请点击新建（+）重试。" ,
-  "workspace.runModelConfig.agyAutoApproveLocked": "Antigravity 始终自动批准工具，因此无法关闭此项。",
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
-  "workspace.agentOrg.runConfig.modelRequired": "启动前请为 {address} 选择模型。",
-  "workspace.agentOrg.runConfig.retryInitialization": "重试加载配置",
-
   "workspace.runModelConfig.orgOwnershipUnavailable": "此组织运行由应用管理，无法在此编辑模型设置。",
   "workspace.agentOrg.inspectionUnavailable": "无法读取已保存的智能体组织数据。未启动任何运行。",
   "workspace.runModelConfig.loading": "正在加载运行配置…",
-  "workspace.runModelConfig.runUnavailable": "此运行已不可用。",
-  "workspace.runModelConfig.save": "保存",
-  "workspace.runModelConfig.saving": "正在保存…",
-  "workspace.runModelConfig.verifying": "正在验证…",
   "workspace.runModelConfig.loadingModels": "正在加载模型选项…",
   "workspace.runModelConfig.catalogError": "无法加载模型选项。已保存的设置未更改。",
   "workspace.runModelConfig.selectedModelUnavailable": "所选模型在当前运行时中不可用。",
   "workspace.runModelConfig.retry": "重试",
-  "workspace.runModelConfig.refreshRequired": "编辑前必须刷新已保存的模型设置。",
   "workspace.runModelConfig.noAdjustableSettings": "此模型没有可调整的设置。",
   "workspace.runModelConfig.schemaUnavailable": "当前架构无法表示已保存的模型设置。",
-  "workspace.runModelConfig.agentStopped": "此运行已停止。下次恢复时将使用已保存的模型设置。",
-  "workspace.runModelConfig.agentActive": "请先停止此运行，再更改模型设置。",
-  "workspace.runModelConfig.teamStopped": "此团队已停止。下次恢复时将使用已保存的模型设置。",
-  "workspace.runModelConfig.orgStopped": "此组织已停止。保存模型设置和挂载团队的工作目录后，下次继续运行时生效。团队工作目录适用于其所有配置智能体；现有文件和历史记录不会移动。",
-  "workspace.runModelConfig.orgActive": "请先停止整个组织，再更改其设置。",
-  "workspace.runModelConfig.teamActive": "请先停止此团队，再更改模型设置。",
-  "workspace.runModelConfig.fixedRuntime": "此已保存运行的运行时不可更改。",
   "workspace.runModelConfig.nativeModelHelp": "请选择已验证且上下文容量不小于已保存模型的模型。",
   "workspace.runModelConfig.externalModelHelp": "可选择此运行时提供的任意模型。恢复运行时由该运行时处理上下文限制。",
   "workspace.runModelConfig.unknownModelHelp": "此运行时的替换模型不可用。",
@@ -39,7 +22,6 @@ const messages = {
   "workspace.runModelConfig.replacementInvalid": "此替换模型已不再提供或不符合条件。保存前请刷新选项。",
   "workspace.runModelConfig.noNativeReplacements": "没有已验证的上下文容量相等或更大的替换模型。",
   "workspace.runModelConfig.noCatalogReplacements": "此运行时目前未提供其他模型。",
-  "workspace.runModelConfig.fixedWorkspace": "现有运行的工作区已固定。",
   "workspace.runModelConfig.validation.required": "此项为必填项。",
   "workspace.runModelConfig.validation.type": "请输入 {expected} 类型的值。",
   "workspace.runModelConfig.validation.enum": "请选择支持的选项。",
@@ -94,25 +76,6 @@ const messages = {
   "workspace.agentOrg.history.relativeHours": "{{count}} 小时",
   "workspace.agentOrg.history.relativeDays": "{{count}} 天",
   "workspace.agentOrg.runConfig.orgLabel": "智能体组织",
-  "workspace.agentOrg.runConfig.runtimeHelp": "选择此组织运行所使用的运行时。",
-  "workspace.agentOrg.runConfig.modelLabel": "默认大语言模型",
-  "workspace.agentOrg.runConfig.modelHelp": "应用于整个组织，除非某个位置已自定义。",
-  "workspace.agentOrg.runConfig.loading": "正在加载智能体组织…",
-  "workspace.agentOrg.runConfig.starting": "正在启动智能体组织…",
-  "workspace.agentOrg.runConfig.run": "运行智能体组织",
-  "workspace.agentOrg.runConfig.autoApprove": "自动批准工具",
-  "workspace.agentOrg.runConfig.autoApproveHelp":
-    "自动允许本次运行中的工具调用和访问请求。",
-  "workspace.agentOrg.runConfig.workspaceRequired": "运行智能体组织需要工作区。",
-  "workspace.agentOrg.runConfig.memberOverrides": "成员覆盖",
-  "workspace.agentOrg.runConfig.referencesLoading": "正在加载组织成员…",
-  "workspace.agentOrg.runConfig.referencesUnavailable": "无法加载组织成员：{references}",
-  "workspace.agentOrg.runConfig.schemaLoading": "正在验证 {address} 的模型配置…",
-  "workspace.agentOrg.runConfig.schemaBlocked": "{address} 的模型配置尚未就绪：{error}",
-  "workspace.agentOrg.runConfig.schemaUnavailable": "有效模型配置不可用。",
-  "workspace.agentOrg.runConfig.workspaceUnavailable": "工作区“{{workspaceId}}”不可用。",
-  "workspace.agentOrg.runConfig.workspacePathRequired": "必须提供工作区路径。",
-  "workspace.agentOrg.runConfig.workspacePathUnavailable": "所选工作区没有可用的根路径。",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram":
     "放大图表",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.viewer":
@@ -131,74 +94,16 @@ const messages = {
     "此文件仅在主机工作区中可用。",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "无法打开文件预览。",
-  "workspace.components.workspace.config.RunConfigPanel.runTeamButton":
-    "运行团队",
-  "workspace.components.workspace.config.RunConfigPanel.runAgentButton":
-    "运行智能体",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "智能体配置",
-  "workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration":
-    "新建智能体配置",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":
     "团队配置",
-  "workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration":
-    "新建团队配置",
   "workspace.components.workspace.config.RunConfigPanel.title.configuration":
     "配置",
-  "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
-    "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
-  "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
-    "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
-  "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
-    "团队成员覆盖",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
     "{{count}} 个已覆盖",
-  "workspace.components.workspace.config.TeamRunConfigForm.topology_repaired":
-    "团队拓扑已更改，过期设置已移除。请检查以下地址后重试：",
-  "workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable": "已保存的值在当前选项中不可用。",
-  "workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration": "已保存的模型配置",
   "workspace.components.workspace.config.TeamScopeConfigEditor.customized": "已自定义",
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "已继承",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.team_marker": "团队",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.reset": "重置",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria": "重置 {{name}}（{{address}}）的设置",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help": "此团队范围使用的运行时。",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model": "默认 LLM 模型",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.model_help": "嵌套团队和智能体会继承此值，除非另行自定义。",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.flat_model_help": "此团队中的智能体会继承该值，除非另行自定义。",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve": "自动批准工具",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_help": "未覆盖的后代范围会继承此设置。",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading": "正在为 {{address}} 加载模型…",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error": "无法为 {{address}} 加载模型：{{error}}",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.retry": "重试",
-  "workspace.components.workspace.config.MemberOverrideItem.coordinator":
-    "协调者",
-  "workspace.components.workspace.config.MemberOverrideItem.overridden":
-    "已覆盖",
-  "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
-    "运行时",
-  "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
-    "全局默认",
-  "workspace.components.workspace.config.MemberOverrideItem.llm_model_override":
-    "LLM 模型",
-  "workspace.components.workspace.config.MemberOverrideItem.use_global_model_default":
-    "全局默认",
-  "workspace.components.workspace.config.MemberOverrideItem.search_models":
-    "搜索模型...",
-  "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
-    "选择兼容的成员模型",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_approve":
-    "自动批准",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "全局默认",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
-    "开启",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
-    "关闭",
-  "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
-    "智能体",
-  "workspace.components.workspace.running.RunningRunRow.newRunLabel":
-    "新建 - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
   "workspace.components.progress.BackgroundTaskPanel.title":
@@ -247,12 +152,6 @@ const messages = {
     "由 AutoByteus 提供 · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "由 AutoByteus 提供的系统指令",
-  "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
-    "智能体",
-  "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":
-    "团队",
-  "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
-    "暂无描述",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",
   "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
     "消息",

@@ -1,18 +1,20 @@
 <template>
-  <div ref="rootRef" class="relative">
+  <div ref="rootRef" class="relative min-w-0 max-w-[20rem]">
+    <!-- CR-005: this wrapper carries the 20rem cap and shrinks in a flex row (min-w-0); the trigger is
+         bounded by it at every width, so a long model name truncates instead of overlapping its neighbours. -->
     <button
       ref="triggerRef"
       type="button"
       data-test="chat-model-trigger"
-      class="inline-flex max-w-[20rem] items-center gap-1.5 rounded-md px-2 py-1 text-[0.8125rem] leading-5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+      class="inline-flex max-w-full items-center gap-1.5 rounded-md px-2 py-1 text-[0.8125rem] leading-5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
       :class="['hover:bg-gray-100', popover.open.value ? 'bg-gray-100' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"
       :aria-label="$t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel })"
-      :title="`${modelLabel} · ${runtimeLabel}`"
+      :title="popover.open.value ? undefined : `${modelLabel} · ${runtimeLabel}`"
       @click="onToggle"
     >
-      <span class="truncate whitespace-nowrap font-medium text-gray-800">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
+      <span class="truncate whitespace-nowrap font-medium" :class="modelLabel ? 'text-gray-800' : 'text-amber-700'">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
       <span class="truncate whitespace-nowrap text-gray-400 max-sm:hidden">{{ runtimeShortLabel }}</span>
       <Icon icon="heroicons:chevron-down" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
     </button>
@@ -28,10 +30,66 @@
       class="z-50 flex flex-col rounded-lg border border-gray-200 bg-white text-left shadow-lg"
       :class="popover.narrow.value
         ? 'fixed inset-x-2 bottom-2 max-h-[80vh]'
-        : ['absolute right-0 w-[19rem] max-w-[calc(100vw-1rem)]', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
-      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px` }"
+        : [align === 'left' ? 'absolute left-0' : 'absolute right-0', 'w-[19rem] max-w-[calc(100vw-1rem)]', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px`, ...inBoundary.style.value }"
       @keydown="onMenuKeydown"
     >
+      <!-- A saved run keeps its runtime: search, the runtime as a locked label, and that runtime's models. -->
+      <template v-if="runtimeLocked">
+        <div class="flex items-center gap-2 border-b border-gray-100 px-3 py-2">
+          <Icon icon="heroicons:magnifying-glass" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+          <input
+            ref="searchRef"
+            v-model="query"
+            data-test="chat-model-search"
+            type="text"
+            class="w-full border-0 bg-transparent p-0 text-[0.8125rem] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0"
+            :placeholder="$t('chat.model.search')"
+            :aria-label="$t('chat.model.search')"
+            @keydown.down.prevent="focusRow(0)"
+          >
+        </div>
+        <div class="max-h-[22rem] min-h-0 overflow-y-auto p-1">
+          <p
+            class="flex items-center gap-1 px-2 pb-0.5 pt-1.5 text-[0.6875rem] font-medium text-gray-400"
+            :title="$t('runSettings.model.lockedRuntimeTooltip')"
+            data-test="chat-model-locked-runtime"
+          >
+            {{ runtimeLabel }}<Icon icon="heroicons:lock-closed" class="h-3 w-3" :aria-label="$t('runSettings.model.lockedRuntimeTooltip')" />
+          </p>
+          <template v-if="query.trim()">
+            <p v-if="!lockedSearchResults.length" class="px-2 py-3 text-center text-[0.8125rem] text-gray-500" data-test="chat-model-search-empty">{{ $t('chat.model.noMatch', { query: query.trim() }) }}</p>
+            <button
+              v-for="model in lockedSearchResults"
+              :key="`${model.runtimeKind}:${model.llmModelIdentifier}`"
+              type="button"
+              role="menuitemradio"
+              data-row
+              :aria-checked="isCurrent(model) ? 'true' : 'false'"
+              :data-test="`chat-model-search-option-${model.llmModelIdentifier}`"
+              :title="optionFullText(model)"
+              :aria-label="optionFullText(model)"
+              class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+              @click="choose(model)"
+            >
+              <ChatModelOptionLabel :option="model" />
+              <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center">
+                <Icon v-if="isCurrent(model)" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
+              </span>
+            </button>
+          </template>
+          <ChatModelList
+            v-else
+            :runtime-kind="runtimeKind"
+            :state="lockedState"
+            :groups="lockedGroups"
+            :current-model-identifier="llmModelIdentifier"
+            @choose="choose"
+            @retry="catalog.ensureCatalog(runtimeKind)"
+          />
+        </div>
+      </template>
+      <template v-else>
       <button
         v-if="drilledRuntime"
         type="button"
@@ -105,7 +163,7 @@
             v-for="runtime in catalog.runtimes.value"
             :key="runtime.runtimeKind"
             class="relative"
-            @mouseenter="!popover.narrow.value && (runtime.enabled ? openSubmenu(runtime.runtimeKind, false) : closeSubmenu(false))"
+            @mouseenter="!drillIn && (runtime.enabled ? openSubmenu(runtime.runtimeKind, false) : closeSubmenu(false))"
           >
             <button
               type="button"
@@ -135,7 +193,7 @@
 
             <!-- Desktop side submenu -->
             <div
-              v-if="submenuRuntime === runtime.runtimeKind && !popover.narrow.value"
+              v-if="submenuRuntime === runtime.runtimeKind && !drillIn"
               role="menu"
               :aria-label="$t('chat.model.runtimeModelsAria', { runtime: runtime.label })"
               class="absolute z-50 w-[17rem] rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
@@ -158,7 +216,7 @@
           </div>
         </template>
       </div>
-
+      </template>
     </div>
   </div>
 </template>
@@ -170,16 +228,40 @@ import ChatModelList from '~/components/chat/ChatModelList.vue'
 import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
 import { chatModelOptionFullText as optionFullText } from '~/components/chat/chatModelOptionText'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
-import { useChatModelCatalog, type ChatModelOption } from '~/composables/chat/useChatModelCatalog'
+import { useMenuInBoundary } from '~/composables/popover/useMenuInBoundary'
+import {
+  matchesModelQuery,
+  useChatModelCatalog,
+  type ChatCatalogState,
+  type ChatModelGroup,
+  type ChatModelOption,
+} from '~/composables/chat/useChatModelCatalog'
 import type { ChatModelSelection } from '~/stores/chatDraftStore'
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import { runtimeShortLabel as toRuntimeShortLabel } from '~/utils/chat/chatDefaults'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   runtimeKind: string
   llmModelIdentifier: string
   modelLabel: string
-}>()
+  /** Run-settings rows open menus where they fit and align them to the chip. */
+  placement?: 'above' | 'auto'
+  align?: 'left' | 'right'
+  /** A saved run keeps its runtime: the menu lists only that runtime's models. */
+  runtimeLocked?: boolean
+  /** With `runtimeLocked`: the models this run may switch to (otherwise the runtime's catalog). */
+  lockedModels?: readonly ChatModelOption[] | null
+  lockedModelsState?: ChatCatalogState
+  /** Open a runtime's models in place instead of a side flyout (narrow side panels). */
+  drillIn?: boolean
+}>(), {
+  placement: 'above',
+  align: 'right',
+  runtimeLocked: false,
+  lockedModels: null,
+  lockedModelsState: 'ready',
+  drillIn: false,
+})
 const emit = defineEmits<{
   (event: 'select', value: ChatModelSelection): void
 }>()
@@ -196,12 +278,27 @@ const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 const searchRef = ref<HTMLInputElement | null>(null)
-const popover = useAnchoredPopover(rootRef, triggerRef, 360, { placement: 'above' })
+const popover = useAnchoredPopover(rootRef, triggerRef, 360, { placement: props.placement })
+const inBoundary = useMenuInBoundary(menuRef, computed(() => popover.open.value), computed(() => !popover.narrow.value))
 const query = ref('')
 const submenuRuntime = ref<string | null>(null)
 const flyoutSide = ref<'left' | 'right'>('right')
 const flyoutListMaxHeight = ref(FLYOUT_LIST_MAX_PX)
-const drilledRuntime = computed(() => (popover.narrow.value ? submenuRuntime.value : null))
+// Inside a narrow side panel the runtime list drills in place.
+const drillIn = computed(() => popover.narrow.value || props.drillIn)
+const drilledRuntime = computed(() => (drillIn.value ? submenuRuntime.value : null))
+
+const lockedGroups = computed<ChatModelGroup[]>(() => {
+  if (!props.lockedModels) return catalog.modelGroups(props.runtimeKind)
+  const groups = new Map<string, ChatModelOption[]>()
+  for (const model of props.lockedModels) groups.set(model.providerName, [...(groups.get(model.providerName) ?? []), model])
+  return [...groups.entries()].map(([providerName, models]) => ({ providerName, models }))
+})
+const lockedState = computed<ChatCatalogState>(() => (props.lockedModels ? props.lockedModelsState : catalog.catalogState(props.runtimeKind)))
+const lockedSearchResults = computed<ChatModelOption[]>(() => {
+  const terms = query.value.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  return lockedGroups.value.flatMap((group) => group.models).filter((model) => matchesModelQuery(model, terms))
+})
 
 const runtimeLabelFor = (runtimeKind: string) => runtimeKindToLabel(runtimeKind)
 const runtimeShortLabelFor = (runtimeKind: string) => toRuntimeShortLabel(runtimeKind)
@@ -235,7 +332,16 @@ const openSubmenu = (runtimeKind: string, immediate: boolean) => {
     const menu = menuRef.value
     if (menu) {
       const rect = menu.getBoundingClientRect()
-      flyoutSide.value = rect.right + 290 > window.innerWidth ? 'left' : 'right'
+      // A menu inside a scrolling panel flips before the panel edge.
+      let boundaryRight = window.innerWidth
+      for (let node = menu.parentElement; node; node = node.parentElement) {
+        const style = getComputedStyle(node)
+        if (style.overflowY !== 'visible' || style.overflowX !== 'visible') {
+          boundaryRight = Math.min(boundaryRight, node.getBoundingClientRect().right)
+          break
+        }
+      }
+      flyoutSide.value = rect.right + 290 > boundaryRight ? 'left' : 'right'
       const row = menu.querySelector<HTMLElement>(`[data-runtime="${runtimeKind}"]`)
       // The submenu grows upward from its row, so its list is limited by the space above that row.
       const rowBottom = row?.getBoundingClientRect().bottom ?? rect.bottom
