@@ -1,0 +1,444 @@
+{
+  "source": "autobyteus-web/composables/useEventMonitorFilePreview.ts",
+  "assertions": "passed: 20 controlled historical owner cases",
+  "boundary": "Historical production source via git show; controlled dependencies, same inputs. Not a packaged app, native IPC or user-runtime reproduction.",
+  "entries": [
+    {
+      "ref": "3d59992a4^",
+      "commit": "2ae61a11f90cdf5e90786a6ff313af082a21cce8",
+      "commitMetadata": "2026-09-01T12:45:00Z | 2026-09-01T12:45:00Z | docs(architecture-review): pass org workspace presentation",
+      "sourceSha256": "a2bc09300d385c052fc203fcd35b7a015ae85591f8bfc10746863a52c744a292",
+      "rows": [
+        {
+          "name": "Embedded: config ID known, target metadata absent, getter resolves",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Embedded: target ID/metadata absent, getter resolves",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Embedded success control: target metadata complete",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Remote refusal control: path outside workspace",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 1,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        }
+      ]
+    },
+    {
+      "ref": "3d59992a4",
+      "commit": "3d59992a404766a9636cd809e0ace7af0801e5e0",
+      "commitMetadata": "2026-09-01T14:10:47Z | 2026-09-01T14:10:47Z | feat: restore agent org workspace presentation",
+      "sourceSha256": "d229777ececdffa596e704abea202bada876739de3a39d6f19c009f21eb8227f",
+      "rows": [
+        {
+          "name": "Embedded: config ID known, target metadata absent, getter resolves",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 0,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        },
+        {
+          "name": "Embedded: target ID/metadata absent, getter resolves",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 0,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        },
+        {
+          "name": "Embedded success control: target metadata complete",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Remote refusal control: path outside workspace",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 1,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        }
+      ]
+    },
+    {
+      "ref": "v1.4.69",
+      "commit": "17d4f2327329cee3509062fd823b8e049f563682",
+      "commitMetadata": "2026-09-11T00:31:41Z | 2026-09-11T00:31:41Z | chore(release): bump workspace release version to 1.4.69",
+      "sourceSha256": "a2bc09300d385c052fc203fcd35b7a015ae85591f8bfc10746863a52c744a292",
+      "rows": [
+        {
+          "name": "Embedded: config ID known, target metadata absent, getter resolves",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Embedded: target ID/metadata absent, getter resolves",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Embedded success control: target metadata complete",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Remote refusal control: path outside workspace",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 1,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        }
+      ]
+    },
+    {
+      "ref": "v1.4.70",
+      "commit": "d68fc0f7ba354dcad9d486dc39458feab7f77088",
+      "commitMetadata": "2026-09-21T11:54:11+02:00 | 2026-09-21T11:54:11+02:00 | chore(release): bump workspace release version to 1.4.70",
+      "sourceSha256": "d229777ececdffa596e704abea202bada876739de3a39d6f19c009f21eb8227f",
+      "rows": [
+        {
+          "name": "Embedded: config ID known, target metadata absent, getter resolves",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 0,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        },
+        {
+          "name": "Embedded: target ID/metadata absent, getter resolves",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 0,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        },
+        {
+          "name": "Embedded success control: target metadata complete",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Remote refusal control: path outside workspace",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 1,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        }
+      ]
+    },
+    {
+      "ref": "HEAD",
+      "commit": "30c3f40d5721124c466d464004b004053173280c",
+      "commitMetadata": "2026-10-06T18:27:16+02:00 | 2026-10-06T18:27:16+02:00 | chore(release): bump workspace release version to 1.4.95-beta.8",
+      "sourceSha256": "d229777ececdffa596e704abea202bada876739de3a39d6f19c009f21eb8227f",
+      "rows": [
+        {
+          "name": "Embedded: config ID known, target metadata absent, getter resolves",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 0,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        },
+        {
+          "name": "Embedded: target ID/metadata absent, getter resolves",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 0,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        },
+        {
+          "name": "Embedded success control: target metadata complete",
+          "result": {
+            "status": "opened",
+            "path": "/Users/test-owned/project/publish-brief.md"
+          },
+          "calls": {
+            "capabilityChecks": 1,
+            "mappingChecks": 0,
+            "previews": [
+              [
+                "/Users/test-owned/project/publish-brief.md",
+                "owned-ws",
+                {
+                  "accessIntent": {
+                    "source": "event-monitor",
+                    "readOnly": true
+                  }
+                }
+              ]
+            ],
+            "panels": 1,
+            "tabs": [
+              "files"
+            ]
+          }
+        },
+        {
+          "name": "Remote refusal control: path outside workspace",
+          "result": {
+            "status": "unavailable",
+            "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+          },
+          "calls": {
+            "capabilityChecks": 0,
+            "mappingChecks": 1,
+            "previews": [],
+            "panels": 0,
+            "tabs": []
+          }
+        }
+      ]
+    }
+  ]
+}

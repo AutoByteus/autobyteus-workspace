@@ -1,0 +1,1905 @@
+{
+  "instanceId": "iso-49845-cc35",
+  "fixture": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg",
+  "rootA": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/A",
+  "rootB": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+  "files": {
+    "brief": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+    "user": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+    "missing": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/missing.md",
+    "directory": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/directory.md"
+  },
+  "selectedId": "agent-task-lead",
+  "boundaries": "Saved Org inspection/member projections controlled over GraphQL; initial metadata I/O refused, later metadata query real; native preload/main/bytes and rendered components real; no model/provider/user data.",
+  "requests": [
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "org-run"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetServerSettings",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/A"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-director"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-lead-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-team-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-worker-task"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-task-lead"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "org-run",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-task-worker"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "org-run"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B"
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B"
+        }
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    }
+  ],
+  "errors": [],
+  "observations": [
+    {
+      "at": "2026-10-06T17:16:28.776Z",
+      "command": {
+        "action": "navigate"
+      },
+      "result": {
+        "navigated": true
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:38.297Z",
+      "command": {
+        "action": "observe"
+      },
+      "result": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=org-run&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+        "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nL\nlead\nOffline\nL\nlead\n\nOwned task member file inspection.\n\nOpen brief\n\nOpen user tab\n\nMissing file\n\nDirectory file",
+        "buttons": [
+          {
+            "text": "Chat",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "New chat",
+            "label": "New chat",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Collapse left panel",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agents",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Teams",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Orgs",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Skills",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Memory",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Nodes",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Add workspace",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Temp Workspace",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Settings",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Files",
+            "label": "Files",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Agent Org",
+            "label": "Agent Org",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Terminal",
+            "label": "Terminal",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Activity",
+            "label": "Activity",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Token",
+            "label": "Token",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Artifacts",
+            "label": "Artifacts",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Browser",
+            "label": "Browser",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "VNC Viewer",
+            "label": "VNC Viewer",
+            "actionId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:38.301Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": null,
+            "workspaceMetadata": null,
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": null,
+        "activeFile": null,
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "controls": []
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:48.264Z",
+      "command": {
+        "action": "metadata",
+        "enabled": true
+      },
+      "result": {
+        "metadataEnabled": true
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:48.322Z",
+      "command": {
+        "action": "click",
+        "selector": "text=Open brief"
+      },
+      "result": {
+        "clicked": "text=Open brief"
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:51.459Z",
+      "command": {
+        "action": "observe"
+      },
+      "result": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=org-run&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+        "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nL\nlead\nOffline\nL\nlead\n\nOwned task member file inspection.\n\nOpen brief\n\nOpen user tab\n\nMissing file\n\nDirectory file",
+        "buttons": [
+          {
+            "text": "Chat",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "New chat",
+            "label": "New chat",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Collapse left panel",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agents",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Teams",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Orgs",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Skills",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Memory",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Nodes",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Add workspace",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Temp Workspace",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Settings",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Files",
+            "label": "Files",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Agent Org",
+            "label": "Agent Org",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Terminal",
+            "label": "Terminal",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Activity",
+            "label": "Activity",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Token",
+            "label": "Token",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Artifacts",
+            "label": "Artifacts",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Browser",
+            "label": "Browser",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "VNC Viewer",
+            "label": "VNC Viewer",
+            "actionId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:51.461Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "controls": []
+      }
+    },
+    {
+      "at": "2026-10-06T17:16:51.702Z",
+      "command": {
+        "action": "screenshot",
+        "name": "native-recovered-brief"
+      },
+      "result": {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/native-recovered-brief.png"
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:13.467Z",
+      "command": {
+        "action": "click",
+        "selector": "button[aria-label=\"Files\"]"
+      },
+      "result": {
+        "clicked": "button[aria-label=\"Files\"]"
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:20.650Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "rendered": "brief.md\nNATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.",
+        "controls": [
+          {
+            "text": "brief.md",
+            "title": ""
+          },
+          {
+            "text": "",
+            "title": "Maximize view"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:20.656Z",
+      "command": {
+        "action": "observe"
+      },
+      "result": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=org-run&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+        "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nB\nTemp Workspace\nSettings\nL\nlead\nOffline\nL\nlead\n\nOwned task member file inspection.\n\nOpen brief\n\nOpen user tab\n\nMissing file\n\nDirectory file\n\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\ndirectory.md\nbrief.md\nuser.md\nbrief.md\nNATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.",
+        "buttons": [
+          {
+            "text": "Chat",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "New chat",
+            "label": "New chat",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Collapse left panel",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agents",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Teams",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Orgs",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Skills",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Memory",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Nodes",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Add workspace",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "B",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Remove from Workspaces",
+            "label": "Remove from Workspaces",
+            "actionId": null
+          },
+          {
+            "text": "Temp Workspace",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Settings",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Files",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Org",
+            "title": "Agent Org",
+            "label": "Agent Org",
+            "actionId": null
+          },
+          {
+            "text": "Terminal",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Activity",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Token",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Artifacts",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Browser",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "VNC Viewer",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "brief.md",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Maximize view",
+            "label": null,
+            "actionId": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:20.742Z",
+      "command": {
+        "action": "screenshot",
+        "name": "native-after-manual-files"
+      },
+      "result": {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/native-after-manual-files.png"
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:27.643Z",
+      "command": {
+        "action": "key",
+        "key": "Escape"
+      },
+      "result": {
+        "key": "Escape"
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:27.733Z",
+      "command": {
+        "action": "click",
+        "selector": "text=Open user tab"
+      },
+      "result": {
+        "clicked": "text=Open user tab"
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:27.739Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# SECOND OWNED TAB\n\nPreserve alongside the linked preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "controls": []
+      }
+    },
+    {
+      "at": "2026-10-06T17:17:27.909Z",
+      "command": {
+        "action": "click",
+        "selector": "button[aria-label=\"Files\"]"
+      },
+      "result": {
+        "clicked": "button[aria-label=\"Files\"]"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:02.389Z",
+      "command": {
+        "action": "key",
+        "key": "Meta+s"
+      },
+      "result": {
+        "key": "Meta+s"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:02.399Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# SECOND OWNED TAB\n\nPreserve alongside the linked preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "rendered": "brief.md\nuser.md\nSECOND OWNED TAB\n\nPreserve alongside the linked preview.",
+        "controls": [
+          {
+            "text": "brief.md",
+            "title": ""
+          },
+          {
+            "text": "user.md",
+            "title": ""
+          },
+          {
+            "text": "",
+            "title": "Maximize view"
+          },
+          {
+            "text": "",
+            "title": "Close all files"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:02.517Z",
+      "command": {
+        "action": "screenshot",
+        "name": "native-readonly-deduped"
+      },
+      "result": {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/native-readonly-deduped.png"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:40.790Z",
+      "command": {
+        "action": "key",
+        "key": "Escape"
+      },
+      "result": {
+        "key": "Escape"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:40.810Z",
+      "command": {
+        "action": "click",
+        "selector": "text=Open brief"
+      },
+      "result": {
+        "clicked": "text=Open brief"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:40.812Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# SECOND OWNED TAB\n\nPreserve alongside the linked preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "controls": []
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:40.842Z",
+      "command": {
+        "action": "click",
+        "selector": "button[aria-label=\"Files\"]"
+      },
+      "result": {
+        "clicked": "button[aria-label=\"Files\"]"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:40.845Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# SECOND OWNED TAB\n\nPreserve alongside the linked preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "rendered": "brief.md\nuser.md\nNATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.",
+        "controls": [
+          {
+            "text": "brief.md",
+            "title": ""
+          },
+          {
+            "text": "user.md",
+            "title": ""
+          },
+          {
+            "text": "",
+            "title": "Maximize view"
+          },
+          {
+            "text": "",
+            "title": "Close all files"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:47.089Z",
+      "command": {
+        "action": "key",
+        "key": "Escape"
+      },
+      "result": {
+        "key": "Escape"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:47.110Z",
+      "command": {
+        "action": "click",
+        "selector": "text=Missing file"
+      },
+      "result": {
+        "clicked": "text=Missing file"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:47.141Z",
+      "command": {
+        "action": "click",
+        "selector": "button[aria-label=\"Files\"]"
+      },
+      "result": {
+        "clicked": "button[aria-label=\"Files\"]"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:47.144Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# SECOND OWNED TAB\n\nPreserve alongside the linked preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/missing.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": null,
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": "local-file-preview:unavailable"
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/missing.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "rendered": "brief.md\nuser.md\nmissing.md\nError!The local file is unavailable.",
+        "controls": [
+          {
+            "text": "brief.md",
+            "title": ""
+          },
+          {
+            "text": "user.md",
+            "title": ""
+          },
+          {
+            "text": "missing.md",
+            "title": ""
+          },
+          {
+            "text": "",
+            "title": "Maximize view"
+          },
+          {
+            "text": "",
+            "title": "Close all files"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:47.227Z",
+      "command": {
+        "action": "screenshot",
+        "name": "native-missing-file-error"
+      },
+      "result": {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/native-missing-file-error.png"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:50.848Z",
+      "command": {
+        "action": "key",
+        "key": "Escape"
+      },
+      "result": {
+        "key": "Escape"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:50.869Z",
+      "command": {
+        "action": "click",
+        "selector": "text=Directory file"
+      },
+      "result": {
+        "clicked": "text=Directory file"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:50.900Z",
+      "command": {
+        "action": "click",
+        "selector": "button[aria-label=\"Files\"]"
+      },
+      "result": {
+        "clicked": "button[aria-label=\"Files\"]"
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:50.903Z",
+      "command": {
+        "action": "state"
+      },
+      "result": {
+        "target": {
+          "kind": "agent_org_task_team_member",
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+          "config": {
+            "agentDefinitionId": "definition-agent-lead-configured",
+            "agentDefinitionName": "lead",
+            "llmModelIdentifier": "gpt-5.6-sol",
+            "runtimeKind": "codex_app_server",
+            "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+            "workspaceMetadata": {
+              "workspaceId": "agent_ws_f78e32803e6edb6820f7317c87e9dea137962e9ef30f1177b05c8bd4d02d8a2b",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            },
+            "autoExecuteTools": false,
+            "llmConfig": null,
+            "isLocked": true
+          }
+        },
+        "files": [
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B EVIDENCE\n\nReal IPC bytes. Read-only selected member preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/user.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# SECOND OWNED TAB\n\nPreserve alongside the linked preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/missing.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": null,
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": "local-file-preview:unavailable"
+          },
+          {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/directory.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": null,
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": "local-file-preview:not-regular-file"
+          }
+        ],
+        "activeFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-l6LMjg/B/directory.md",
+        "node": {
+          "windowId": 1,
+          "nodeId": "embedded-local",
+          "nodeBaseUrl": "http://127.0.0.1:49846",
+          "bindingRevision": 1,
+          "initialized": true,
+          "lastReadyError": null
+        },
+        "rendered": "brief.md\nuser.md\nmissing.md\ndirectory.md\nError!The selected local path is not a regular file.",
+        "controls": [
+          {
+            "text": "brief.md",
+            "title": ""
+          },
+          {
+            "text": "user.md",
+            "title": ""
+          },
+          {
+            "text": "missing.md",
+            "title": ""
+          },
+          {
+            "text": "directory.md",
+            "title": ""
+          },
+          {
+            "text": "",
+            "title": "Maximize view"
+          },
+          {
+            "text": "",
+            "title": "Close all files"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-06T17:18:51.167Z",
+      "command": {
+        "action": "screenshot",
+        "name": "native-directory-error"
+      },
+      "result": {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/native-directory-error.png"
+      }
+    }
+  ],
+  "cleanup": {
+    "fixtureRemoved": true
+  }
+}

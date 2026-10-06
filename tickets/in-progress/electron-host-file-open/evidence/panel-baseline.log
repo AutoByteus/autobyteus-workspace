@@ -1,0 +1,131 @@
+
+> autobyteus@1.4.95-beta.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (2 tests | 2 failed) 1218ms
+   × retains A while canonical B metadata fails; prior consumers mounted: false 630ms
+     → expected [] to have a length of 1 but got +0
+   × retains A while canonical B metadata fails; prior consumers mounted: true 588ms
+     → expected [] to have a length of 1 but got +0
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts:187:104
+    185|     expect(workspace.workspaces.B).toBeUndefined()
+    186|     expect(registration.mock.calls.filter(([target]) => target.workspa…
+    187|     expect(io.mutate.mock.calls.filter(([call]) => call.variables.inpu…
+       |                                                                                                        ^
+    188|     completeRegistration({ data: { createWorkspace: { workspaceId: 'B'…
+    189|       workspaceRootPath: '/workspace/B', config: { rootPath: '/workspa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  19:09:51
+   Duration  7.20s (transform 3.47s, setup 4.70s, collect 751ms, tests 1.22s, environment 168ms, prepare 127ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+BASELINE_EXIT 1

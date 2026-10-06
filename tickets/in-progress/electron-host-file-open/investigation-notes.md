@@ -1,0 +1,98 @@
+# Investigation Notes — Electron host file preview
+
+## Meta And Authorities
+- Package: electron-host-file-open; current revision SR-003; phase Architecture; status investigation sufficient for baseline approval, exact app reproduction pending.
+- Git workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open`; branch codex/electron-host-file-open; refreshed base origin/personal `30c3f40d5721124c466d464004b004053173280c`; target origin/personal.
+- Bootstrap: `git fetch origin` succeeded (personal advanced from 96dc5a25f to 30c3f40d5); dedicated worktree created. Dirty original checkout was inspected read-only and left unchanged.
+- Authorities read in full before respective work: solution-designer SKILL; requirements-engineering reference and requirements/investigation/revision templates; root AGENTS.md, DESIGN.md and TESTING.md; package web/server AGENTS.md. Date 2026-10-06. Architecture gate subsequently passed at SR-003 after explicit R1 approval; original bootstrap phase had no design approval.
+
+## Request And User Evidence
+User asks to analyze, possibly reproduce and fix a recently introduced bug: clicking a file says it can only be opened on host, even though macOS Electron/server are local/native, not Docker.
+Screenshot `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_5f305ef437574859b26f46b8bf36740b/solution_designer_d8f96b3e1cb04d7a932d86e4fcc75eda/context_files/ctx_dce19a48b3ee__image.png` shows selected `tutorial video producer`, a Team communication surface and an Event Monitor absolute link ending `tutorial-videos/teams-launch/youtube/publish-brief.md`; amber notice says “This file is available only on the host workspace.” The image does not expose selected target workspace metadata, embedded node identity, preload bridge or installed version. Those are unknowns, not observed facts.
+
+## Findings And Sources
+| ID | Exact source / command | Finding / implication |
+| --- | --- | --- |
+| E-001 | `rg` warning text in web localization; `autobyteus-web/localization/messages/en/workspace.ts` | Exact message maps to MarkdownRenderer.file_available_on_host, used by the Event Monitor preview launcher. It is not a Docker diagnostic. |
+| E-002 | `autobyteus-web/composables/useEventMonitorFilePreview.ts:92–104` | If activeWorkspaceTarget exists, only context.config.workspaceMetadata is used and activeWorkspace is forced null. context.config.workspaceId is ignored. Empty derived ID returns host-only warning before embedded Electron/trusted-bridge checks. |
+| E-003 | `git show 3d59992a4 -- autobyteus-web/composables/useEventMonitorFilePreview.ts`; `git log` | Active-target-specific branch arrived in Sep 1 2026 `feat: restore agent org workspace presentation`. File launcher unchanged since. Recent collaborator/task-member paths exercise nullable metadata, but no proof of exact screenshot regression commit. |
+| E-004 | `autobyteus-web/stores/workspace.ts:413–458` | Legacy workspace getter can resolve direct config ID via metadata cache/registry and Team root fallback. Launcher bypasses this whenever a target exists. Reusing it blindly for Org/task members can target the wrong workspace, so it is not automatically the desired fix. |
+| E-005 | `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts:219–235`, child context factory; `services/agentOrgExecution/agentOrgExecutionContext.ts:285–307` | Dynamically appearing task/collaborator contexts are published with null metadata/ID when not already known; metadata resolution is asynchronous and may return null. This is a real supported context producer, not solely a manufactured state. |
+| E-006 | `services/agentCollaboration/agentRunCollaborationHydration.ts`; `services/agentOrgExecution/agentOrgContextHydration.ts`; `services/runHydration/teamRunContextHydrationService.ts`; `stores/runHistoryLoadActions.ts:439–450` | Hydration allows nullable workspace metadata; history metadata helper catches lookup failures and returns null. Missing metadata can be retained rather than causing hydration to fail. No precise source failure observed in user's runtime. |
+| E-007 | `autobyteus-web/utils/fileExplorer/localFileCapability.ts`, `stores/windowNodeContextStore.ts`, `electron/preload.ts:102` | Trusted local capability is readLocalTextFile bridge plus embedded node window; a browser bootstrap sentinel alone is insufficient. No Docker check on this path. |
+| E-008 | `stores/fileExplorerContentActions.ts:51–144`; `stores/fileExplorer.ts`; `components/layout/RightSideTabs.vue:105–118`; `components/fileExplorer/FileExplorerTabs.vue:235–236` | Store/tab presentation is workspace-scoped. Native text uses read-local-text-file; binary uses shared local-file URL. Correcting refusal must also ensure visible selected-context Files presentation, not just return opened. Empty ID is not supported by store. |
+| E-009 | `electron/application/electronApplication.ts:309–318`; `utils/fileExplorer/absoluteWorkspacePathMapping.ts`; server `src/api/graphql/types/workspace.ts:89–110` | Native reader validates regular readable absolute files. Remote path must map within workspace. Server metadata query derives canonical root-based identity; it is not restricted solely to registered workspace rows. No new endpoint or persisted-data change proven necessary. |
+| E-010 | `autobyteus-web/docs/file_explorer.md:122–178`, `docs/content_rendering.md:82–157` | Supported embedded/native absolute-path and remote/mobile relative-path preview contracts; incidental previews read-only/transient. Product scenario authority distinct from synthetic probe. |
+| E-011 | `composables/__tests__/useEventMonitorFilePreview.spec.ts` | Existing focused test covers mapped SVG success, lacks explicit active-target-null-metadata regression coverage. No claim of comprehensive tests executed. |
+
+## Supported Product Paths
+- BEH-001 / SCN-001: selected execution/member Event Monitor → explicit linked-file activation → read-only Files preview; user screenshot and documented native preview establish normal support. Internal missing metadata is a failure condition of this normal path.
+- BEH-002 / SCN-002/003: remote/mobile activation maps selected workspace, or refuses unmapped host path. Documented access contract supports unusual outside-workspace refusal.
+- BEH-003 / SCN-004: native unreadable/missing/non-regular file shows normal viewer error. Native validation contract supports it.
+- Mechanically possible arbitrary browser host reads / use of unrelated workspace: unsupported and excluded.
+
+## Controlled Reproduction
+Command from task worktree: `node tickets/in-progress/electron-host-file-open/evidence/baseline-owner-probe.cjs`.
+Result: **all baseline assertions passed** at base 30c3f40d5. Script transpiles unchanged production launcher using existing local TypeScript and runs it with controlled stores/runtime/panel dependencies. Does not modify production, access user's live app/data, read file bytes, call model or bind network ports.
+
+1. Trusted embedded runtime, config.workspaceId known, config.workspaceMetadata null: exact host-only message; zero capability checks and zero preview calls.
+2. Trusted embedded runtime, target metadata/ID null while legacy workspace getter still resolves: same early rejection. This models fallback suppression, not proof that the legacy getter is safe for every target.
+3. Complete target metadata/native control: opens absolute path read-only, selects Files and opens panel.
+4. Browser mapped control: opens relative workspace path without native capability check.
+5. Remote unmapped control: unavailable, no preview.
+
+Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/baseline-owner-probe.cjs` and `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/baseline-owner-probe.json`. This proves the frontend false-refusal class, **not** the precise state in the user's app, actual Electron IPC bytes, rendered Files, or a fixed build. No isolated desktop reproduction/build has run; those belong to downstream validation after approved design.
+
+## Payload/Structural Inventory And Data Facts
+- Payload: eligible absolute-path descriptor; selected AgentRunConfig workspaceId/metadata; transient per-workspace file tab state.
+- Readers: Event Monitor launcher, active-context facade, workspace metadata owner, Files store/UI, existing native/server byte boundaries.
+- Structural surfaces: selected-context resolution, presentation scope, runtime/local capability. API/security/persistence changes not established as needed. Existing native and relative server boundaries must survive.
+- Persisted data affected: none expected; no schema/invariant change proposed. App histories/files/references must remain intact. Migration conventions investigation not required unless later design introduces persisted-data changes.
+
+## Supplemental Inventory
+| Artifact | Owner / purpose | Related IDs / approval |
+| --- | --- | --- |
+| requirements-doc.md | Solution Designer; intended baseline R1 | BEH-001–003, REQ-001–004, AC-001–006; pending explicit approval |
+| evidence/baseline-owner-probe.cjs and .json | Solution Designer; baseline controlled evidence | BEH-001/002, AC-002/004/005; non-behavior-defining |
+| User screenshot at supplied absolute path | User; symptom context | SCN-001; non-normative visual evidence |
+| solution-revision-record.md | Solution Designer; cumulative baseline index | SR-001 |
+
+## Unknowns / Risks
+- U-001: Exact screenshot bound node, installed bridge and target metadata unavailable. Reproduced false refusal is credible, not conclusively attributed to this individual instance.
+- U-002: Local Electron window can be bound to separately configured node; being on the same Mac alone does not establish embedded local identity. Preserve remote behavior until evidence/user scope establishes otherwise.
+- U-003: Both ID and metadata may be absent for live/saved dynamic members. Fix must provide correct selected-context Files scope rather than trusting unrelated global fallback; technical decision deferred to architecture.
+- U-004: Rapid execution switching is normal; any newly asynchronous resolution must not publish into a different selected execution. Investigate existing lifecycle ownership after approval, without adding speculative coordination.
+- Product Design requested: Not stated; no Product handoff or competing UI spec.
+
+## Requirement Implications / Architecture Input
+Restore native local preview despite metadata false rejection; preserve read-only transient presentation and runtime containment; distinguish actual byte failure from host-only refusal. The approved scenario basis must govern the smallest correction. No authoritative target design exists yet. Next action: user approval of requirements baseline R1/SR-001, then pass architecture gate and investigate exact selected-context/presentation ownership.
+
+## SR-002 — Historical Regression Investigation (2026-10-06)
+User asked when the bug appeared, not approval to begin design. Read current canonical package/approval hold first. Requirements reading gate remains satisfied in current conversation. New factual findings E-012–E-015:
+- E-012: git blame and exact diff identify 3d59992a4 (Sept 1 2026, 16:10 Europe/Berlin) as the source edit dropping workspace fallback when selected target exists. No later launcher edit at current base.
+- E-013: first-personal-line ancestor containing it is merge 92b5d8c4b (Sept 21 10:23 Europe/Berlin). Earliest containing release tag ordered by creator date: v1.4.70 (Sept 21 11:54). v1.4.69 does not contain it. Tag/source dating is not user installation or published-binary proof.
+- E-014: historical-owner-probe compares the parent, introducing commit, v1.4.69/v1.4.70 and current HEAD, under identical controlled runtime inputs. Twenty owner-level cases pass: missing-target-metadata changes opened → unavailable at introducing commit, while full metadata success and remote outside-workspace refusal stay unchanged.
+- E-015: blame/diff identify bcff48200 (Oct 1 07:51 Europe/Berlin) as adding dynamic child contexts with null metadata followed by asynchronous resolution. Earliest containing tag by creator date is v1.4.92-beta.5 (Oct 1 11:55). Plausible recent exposure path, not proven exact user symptom cause.
+Commands: git log --follow, git blame -L 92,104, git show 3d59992a4 -- launcher, git for-each-ref --contains=... --sort=creatordate refs/tags, git merge-base --is-ancestor, first-parent ancestry search to v1.4.70, node evidence/historical-owner-probe.cjs. A linear ancestry search was replaced by a bounded binary search; no repository state changed.
+New evidence-only supplements owned by Solution Designer: evidence/historical-owner-probe.cjs, evidence/historical-owner-probe.json, evidence/introducing-commit.diff; related BEH-001, SCN-001, REQ-001 and AC-002. No behavior-defining approval applicability.
+Full result: historical-investigation-result.md in this same canonical ticket directory. No intended behavior changes; R1 approval pending; target architecture not selected.
+
+## SR-003 Architecture Investigation And Approval (2026-10-06)
+Approval: user follow-up “...go ahead because it's very clear,” conditioned on reproduction. Exact source owner and historical reproduction confirmed; actual installed Electron session unverified and disclosed. See user-approval-r1.md. R1 intended behavior unchanged, now Approved.
+
+Authorities read fully before architecture investigation: references/architecture-design.md, design-principles.md, design-spec-template.md; applicable root DESIGN.md/TESTING.md/root+web+server AGENTS.md already read in this conversation. No closer web DESIGN.md located. Workspace isolation reconfirmed at base 30c3f40d5 on codex/electron-host-file-open; only this task's docs/evidence are untracked; production untouched.
+
+| Evidence | Exact source / command | Observation |
+| --- | --- | --- |
+| E-016 | activeContextStore.ts activeWorkspaceTarget construction; types/workspace/activeAgentWorkspaceTarget.ts | Current public target exposes context/browse identity but not source root when config projection is missing. Facade owns selected-context resolution; standalone Agent normal hydration requires metadata, Team/root members allow null projections. |
+| E-017 | agentRunCollaborationStore.ts:264–290; agentRunCollaborationContext.ts:117–120; agentOrgExecutionContext.ts:134–151 | Target producers already have exact selected source launch root through public getChild or owned index selected Agent. No launcher tree walk/global-parent inference is necessary. |
+| E-018 | services/teamExecution/teamExecutionViewState.ts public interface/location/getters; services/collaborators/agentSourceSelectors.ts | Public Team view owns current tree/AgentRun identity. Existing teamAgentSourceAt correctly selects configured/collaborator/catalog source by actual address; a narrow public per-Agent root getter can encapsulate it. |
+| E-019 | stores/workspaceMetadataActions.ts; workspace.ts metadata caches; utils/workspaceMetadata.ts; server api/graphql/types/workspace.ts and workspaces/workspace-path-utils.ts/workspace-registry-store.ts | Metadata owner supports cached same-ID/root descriptors and metadata-only root query; server canonicalizes lexically and returns deterministic full SHA256 identity, with no requirement to register a tree first. Do not duplicate hashing or direct Apollo query in launcher. |
+| E-020 | RightSideTabs.vue:105–118; FileExplorerLayout.vue; FileExplorerTabs.vue:227–287; fileExplorerContentActions.ts:51–144 | Visible Files is driven by selected context.config.workspaceId. Known ID can display native preview with null metadata. Filling recovered ID/metadata on that same current context binds existing Files UI, avoiding new synthetic scopes. Store needs nonempty ID. Native read path independent of metadata/tree registration. |
+| E-021 | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (read full) | Existing real store/panel tests prove selected Org B metadata may fail while unrelated launch A is intentionally preserved. Tests reject cross-target fallback, preserve drafts/content, and show restored B registration/Files after canonical retry. This governing contract rules out simple revert to global fallback. |
+| E-022 | windowNodeContextStore.ts bindingRevision; context target factories; AgentEventMonitor.vue:85–93 | Existing binding revision and stable context/run/source semantics provide bounded async currentness evidence. Computed target wrapper identity can change after config updates; use semantic/context checks. Event monitor launches only on explicit action. |
+| E-023 | standalone-agent-run-root-manager.ts metadataLaunch; collaborator-entry-builder.ts build; collaboration-launch-configuration-resolver.ts merge; team-run-service.ts activateWorkspace; native IPC/protocol and Files read-only host sources | Normal source attachments are copied from root/current launch facts. Source can be nullable by contract, so do not derive a missing root from linked path/process cwd/client parent. No user-approved workspace-less preview framework or new remote permission. Existing native byte validation/read-only presentation remains the owner. |
+
+Design D1 resolves selected ID first and adds bounded exact-source metadata recovery behind active-context boundary; technical decisions are authoritative only in design-spec.md. No production implementation executed in this role. Data Not Affected; no migration design. Completed design classification Medium/Low based on six bounded web production files/current public owners/no changed external contracts or native permissions; see design escalation triggers.
+
+New supplements: user-approval-r1.md (approval evidence), architecture-design-complete.md (cumulative result). Historical and baseline probes retained unchanged as evidence, not post-change tests. Product/review artifacts N/A on configured direct route. Native product proof remains required downstream.

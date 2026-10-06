@@ -1,0 +1,309 @@
+
+> autobyteus@1.4.95-beta.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useEventMonitorFilePreview.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentRunCollaborationStore.spec.ts services/teamExecution/__tests__/teamExecutionViewState.spec.ts components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts stores/__tests__/fileExplorerStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useEventMonitorFilePreview.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useEventMonitorFilePreview.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (11 tests) 8ms
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children GraphQL errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace root is unavailable
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:25:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:125:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children payload errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace not found
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:25:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:142:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ✓ stores/__tests__/fileExplorerStore.spec.ts (5 tests) 11ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (10 tests) 18ms
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 11ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (11 tests) 24ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > retains isolated standalone Agent drafts across new and existing run selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > retains isolated Team member drafts across new and existing root selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > publishes only exact selected source metadata into existing config fields
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: root
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: node
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: wrong-metadata
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: conflicting-id
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > gets a standalone root only from its own known ID cache
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ❯ stores/__tests__/activeContextStore.spec.ts (15 tests | 1 failed) 47ms
+   ✓ activeContextStore interrupt routing > targets the focused team member route key at click time 10ms
+   ✓ activeContextStore interrupt routing > preserves single-agent interrupt routing 2ms
+   ✓ activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target 2ms
+   ✓ activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back 2ms
+   ✓ activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes 3ms
+   ✓ activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion 2ms
+   ✓ activeContextStore interrupt routing > retains isolated standalone Agent drafts across new and existing run selection 2ms
+   ✓ activeContextStore interrupt routing > retains isolated Team member drafts across new and existing root selection 4ms
+   ✓ activeContextStore selected workspace recovery > publishes only exact selected source metadata into existing config fields 4ms
+   ✓ activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: selection 2ms
+   × activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: root 7ms
+     → expected { workspaceId: 'B', …(3) } to be null
+   ✓ activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: node 2ms
+   ✓ activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: wrong-metadata 2ms
+   ✓ activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: conflicting-id 1ms
+   ✓ activeContextStore selected workspace recovery > gets a standalone root only from its own known ID cache 1ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests | 2 failed) 1233ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  635ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: true  591ms
+   × binds native preview visibly to selected B with null metadata; known ID: false 5ms
+     → Cannot read properties of undefined (reading 'agentRunId')
+   × binds native preview visibly to selected B with null metadata; known ID: true 1ms
+     → Cannot read properties of undefined (reading 'agentRunId')
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: root
+AssertionError: expected { workspaceId: 'B', …(3) } to be null
+
+- Expected: 
+null
+
++ Received: 
+{
+  "displayName": "B",
+  "kind": "filesystem",
+  "workspaceId": "B",
+  "workspaceRootPath": "/owned/B",
+}
+
+ ❯ stores/__tests__/activeContextStore.spec.ts:375:29
+    373|       if (change === 'conflicting-id') target.context.config.workspace…
+    374|       complete(change === 'wrong-metadata' ? { ...metadata, workspaceR…
+    375|       expect(await pending).toBeNull();
+       |                             ^
+    376|       expect(target.context.config.workspaceMetadata).toBeNull();
+    377|       expect(team.view.getAgentContext('member-C')!.config.workspaceId…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+Error: Cannot read properties of undefined (reading 'agentRunId')
+ ❯ Object.execute composables/useWorkspaceHistorySubjectActions.ts:31:15
+     29|       if (intent && !intent.isCurrent()) return { disposition: 'supers…
+     30|       if (historyStore.historyFamilyErrors.agentOrg) {
+     31|         throw new Error(historyStore.historyFamilyErrors.agentOrg)
+       |               ^
+     32|       }
+     33|       run = historyStore.agentOrgHistory.find((item) => item.rootRunId…
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts:240:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  2 failed | 5 passed (7)
+      Tests  3 failed | 57 passed (60)
+   Start at  19:10:50
+   Duration  10.76s (transform 4.91s, setup 53.61s, collect 2.42s, tests 1.35s, environment 2.76s, prepare 1.49s)
+
+ ELIFECYCLE  Command failed with exit code 1.

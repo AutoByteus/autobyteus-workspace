@@ -1,0 +1,37 @@
+{
+  "base": "30c3f40d5721124c466d464004b004053173280c",
+  "branch": "codex/electron-host-file-open",
+  "files": [
+    {
+      "path": "autobyteus-web/composables/useEventMonitorFilePreview.ts",
+      "sha256": "207a47688a7674d14a7f8a85dcae4e7d0ffc5a44e9d214e2da93c2ec40de73fe",
+      "nonemptyLines": 164
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "sha256": "09b358311bc294324ac67e21514d1c3993f4c714abb83533b200613827304406",
+      "nonemptyLines": 365
+    },
+    {
+      "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "sha256": "91d9a30e3614a6875f2131df86119447637cd534106c69c4716fd961342989a5",
+      "nonemptyLines": 484
+    },
+    {
+      "path": "autobyteus-web/stores/activeContextStore.ts",
+      "sha256": "40f86def29b18cdf1edb1afa6f61779247c00a64093950cfbb48121d0b5d613a",
+      "nonemptyLines": 315
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "sha256": "4d54cd362db3778da8f77069d8597cff68024cd992c178eb199f6b2165d518fd",
+      "nonemptyLines": 292
+    },
+    {
+      "path": "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+      "sha256": "2f6407da41084bd3020544d90078a8467ac845ac34277cd07ff41d6db1a13fe5",
+      "nonemptyLines": 94
+    }
+  ],
+  "appAsarSha256": "4873b6476e72eb33bc0f78cffcffd43272fa5d15b7b20afd9e05059c58697fed"
+}

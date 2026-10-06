@@ -1,0 +1,563 @@
+
+> autobyteus@1.4.95-beta.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useEventMonitorFilePreview.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentRunCollaborationStore.spec.ts services/teamExecution/__tests__/teamExecutionViewState.spec.ts components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts stores/__tests__/fileExplorerStore.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts utils/eventMonitorFilePaths components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useEventMonitorFilePreview.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useEventMonitorFilePreview.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (13 tests) 9ms
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Opening file: /tmp/diagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Determined file type for "/tmp/diagram.SVG": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.SVG',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.SVG": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.SVG
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.svg',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+[FileExplorer] Constructed local media URL: local-file://local/tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Opening file: /tmp/notes.md
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Determined file type for "/tmp/notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "/tmp/notes.md" via GraphQL.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Opening file: /tmp/diagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Determined file type for "/tmp/diagram.svg": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/diagram.svg',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/diagram.svg": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fdiagram.svg
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Opening file: /tmp/archive.zip
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Determined file type for "/tmp/archive.zip": Unsupported
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/archive.zip',
+  type: 'Unsupported',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > does not read, construct a URL, or fetch workspace content for Unsupported files
+[FileExplorer] Unsupported local file type "Unsupported" for "/tmp/archive.zip".
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Opening file: /tmp/script.lua
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > routes supported Lua code through the text reader instead of Unsupported
+[FileExplorer] Determined file type for "/tmp/script.lua": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/script.lua',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+ ✓ stores/__tests__/fileExplorerNodeRouting.spec.ts (6 tests) 10ms
+ ✓ services/teamExecution/__tests__/teamExecutionViewState.spec.ts (10 tests) 27ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests) 178ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > targets the focused team member route key at click time
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves single-agent interrupt routing
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > routes only the exact focused AgentRun through the team target
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > keeps composer context on the visible focused member even when active-execution display falls back
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > observes exact-member Team composer mutations and keeps a captured voice target isolated across focus changes
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > preserves observable standalone Agent draft clearing and transcript insertion
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > retains isolated standalone Agent drafts across new and existing run selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore interrupt routing > retains isolated Team member drafts across new and existing root selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (12 tests) 31ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > publishes only exact selected source metadata into existing config fields
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: selection
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 17ms
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: root
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: node
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: wrong-metadata
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > does not fill a stale or mismatched projection: conflicting-id
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | stores/__tests__/activeContextStore.spec.ts > activeContextStore selected workspace recovery > gets a standalone root only from its own known ID cache
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ stores/__tests__/activeContextStore.spec.ts (15 tests) 72ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (4 tests) 32ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: false
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: A.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "A.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'A.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "A.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: C.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "C.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'C.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "C.txt" via GraphQL.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts (46 tests) 6ms
+stdout | stores/__tests__/fileExplorerStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts (2 tests) 2ms
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children GraphQL errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace root is unavailable
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:25:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:125:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > throws folder-children payload errors instead of converting them to an empty tree
+Error fetching folder children: Error: Workspace not found
+    at createFolderChildrenError (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:25:3)
+    at Proxy.fetchFolderChildren (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerTreeActions.ts:142:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+ ✓ stores/__tests__/fileExplorerStore.spec.ts (5 tests) 8ms
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Opening file: B.txt
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > retains A while canonical B metadata fails; prior consumers mounted: true
+[FileExplorer] Determined file type for "B.txt": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'B.txt',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "B.txt" via GraphQL.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/user.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Determined file type for "/workspace/B/user.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/user.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+Core file write operation failed: TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+    at Proxy._writeFileCore (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:295:15)
+    at Proxy.saveFileContentFromEditor (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:325:7)
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+Save operation failed: TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+    at Proxy._writeFileCore (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:295:15)
+    at Proxy.saveFileContentFromEditor (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:325:7)
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/user.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Determined file type for "/workspace/B/user.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/user.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+Core file write operation failed: TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+    at Proxy._writeFileCore (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:295:15)
+    at Proxy.saveFileContentFromEditor (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:325:7)
+
+stderr | components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+Save operation failed: TypeError: Cannot destructure property 'data' of '(intermediate value)' as it is undefined.
+    at Proxy._writeFileCore (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:295:15)
+    at Proxy.saveFileContentFromEditor (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/stores/fileExplorerContentActions.ts:325:7)
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (4 tests | 2 failed) 1277ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: false  655ms
+   ✓ retains A while canonical B metadata fails; prior consumers mounted: true  590ms
+   × binds native preview visibly to selected B with null metadata; known ID: false 18ms
+     → expected "wrappedAction" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st wrappedAction call:
+
+    Array [
+      "B",
+      "/workspace/B/brief.md",
+      "owned native content: /workspace/B/brief.md",
+    ]
+
+
+Number of calls: 1
+
+   × binds native preview visibly to selected B with null metadata; known ID: true 13ms
+     → expected "wrappedAction" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st wrappedAction call:
+
+    Array [
+      "B",
+      "/workspace/B/brief.md",
+      "owned native content: /workspace/B/brief.md",
+    ]
+
+
+Number of calls: 1
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: false
+ FAIL  components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts > binds native preview visibly to selected B with null metadata; known ID: true
+AssertionError: expected "wrappedAction" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st wrappedAction call:
+
+    Array [
+      "B",
+      "/workspace/B/brief.md",
+      "owned native content: /workspace/B/brief.md",
+    ]
+
+
+Number of calls: 1
+
+ ❯ components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts:278:44
+    276|       else expect(resolve).toHaveBeenCalledWith('/workspace/B');
+    277|       expect(acquire).not.toHaveBeenCalled();
+    278|       await pressSave(); expect(write).not.toHaveBeenCalled();
+       |                                            ^
+    279|       expect(errors).toEqual([]);
+    280|     } finally { window.electronAPI = previousBridge; }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 11 passed (12)
+      Tests  2 failed | 138 passed (140)
+   Start at  19:15:00
+   Duration  11.83s (transform 6.12s, setup 73.46s, collect 7.51s, tests 1.67s, environment 3.78s, prepare 2.17s)
+
+ ELIFECYCLE  Command failed with exit code 1.
