@@ -100,12 +100,16 @@ const harness = (options: { invalid?: boolean; addFails?: boolean } = {}) => {
 describe("collaborator policy and admission", () => {
   const admission = harness().admission;
 
-  it("offers shared Agents then shared Teams, minus built-ins, non-shared and configured definitions", async () => {
+  it("offers shared Agents then shared Teams, in the run or not, minus built-ins, non-shared and the run's own definition (REQ-001)", async () => {
     const list = await admission.policy.listCandidates(port({ configuredAgents: ["lead"] }));
     expect(list.availability).toBe("AVAILABLE");
+    // `lead` is a configured member: it is still offered (AC-002).
     expect(list.candidates.map((candidate) => `${candidate.kind}:${candidate.definitionId}`))
-      .toEqual(["agent:reviewer", "agent:designer", "agent_team:product"]);
-    expect(list.candidates[2]).toMatchObject({ memberCount: 2, coordinatorName: "lead" });
+      .toEqual(["agent:reviewer", "agent:lead", "agent:designer", "agent_team:product"]);
+    expect(list.candidates[3]).toMatchObject({ memberCount: 2, coordinatorName: "lead" });
+    const ownReviewer = { ...port(), rootDefinition: () => ({ kind: "agent" as const, definitionId: "reviewer" }) };
+    expect((await admission.policy.listCandidates(ownReviewer)).candidates.map((candidate) => candidate.definitionId))
+      .toEqual(["lead", "designer", "product"]);
     expect(await admission.policy.listCandidates(port({ applicationBound: true })))
       .toEqual({ availability: "UNAVAILABLE_APPLICATION_ROOT", candidates: [] });
   });
@@ -115,19 +119,27 @@ describe("collaborator policy and admission", () => {
     const reviewerEntry = { kind: "agent", address: "/reviewer_in_run", agentDefinitionId: "reviewer" } as unknown as CollaboratorEntry;
     const result = await run.admission.resolveMentions(port({ collaborators: [reviewerEntry] }),
       [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }]);
-    // An in-run definition resolves to its entry's address; any other to its catalog address.
+    // An in-run definition resolves to its entry's address and is marked; any other to its catalog address.
     expect(result).toEqual({ admitted: true, collaborators: [
-      { name: "Code Reviewer", kind: "agent", address: "/reviewer_in_run" },
-      { name: "Product Team", kind: "agent_team", address: "/product_team" },
+      { name: "Code Reviewer", kind: "agent", address: "/reviewer_in_run", inRun: true },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false },
     ] });
     // Runnability is checked when the agent delegates, not here; nothing is allocated or added.
     expect(run.steps).toEqual([]);
     expect(run.added).toEqual([]);
     const note = composeCollaboratorMentionNote("please review", result.admitted ? result.collaborators : []);
-    expect(note).toContain("[Mentioned collaborators]\n- Code Reviewer (Agent) at /reviewer_in_run");
+    expect(note).toContain("[Mentioned collaborators]\n- Code Reviewer (Agent) at /reviewer_in_run, already in this run\n- Product Team (Agent Team) at /product_team\n");
     expect(note).toContain("delegate_task");
-    expect(note).not.toContain("send_message_to");
+    expect(note).toContain("messaged directly with send_message_to at its address");
     await expect(run.admission.resolveMentions(port(), [])).resolves.toEqual({ admitted: true, collaborators: [] });
+  });
+
+  it("`@` of the run's own definition fails, like an ineligible one", async () => {
+    const run = harness();
+    const ownReviewer = { ...port(), rootDefinition: () => ({ kind: "agent" as const, definitionId: "reviewer" }) };
+    await expect(run.admission.resolveMentions(ownReviewer, [{ kind: "agent", definitionId: "reviewer" }]))
+      .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer",
+        message: "Code Reviewer is this run's own definition." });
   });
 
   it("`@` of an ineligible definition fails with its name and adds nothing", async () => {
@@ -148,8 +160,8 @@ describe("collaborator policy and admission", () => {
     expect(result).toEqual({
       admitted: true,
       collaborators: [
-        { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
-        { name: "Product Team", kind: "agent_team", address: "/product_team" },
+        { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: false },
+        { name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false },
       ],
     });
     expect(run.added).toEqual([
@@ -199,14 +211,27 @@ describe("collaborator policy and admission", () => {
     expect(result).toMatchObject({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer" }] });
   });
 
-  it("counts every entry and its Team members as in the run; a failed add is still offered", async () => {
+  it("`@` addresses an in-run configured member or collaborator-Team member; bring-in never admits a second instance (REQ-002, AC-006)", async () => {
     const run = harness();
     await run.admission.ensure(port(), {
       senderRunId: "f", definitions: [{ kind: "agent_team", definitionId: "product" }],
       identities: run.identities, addEntries: run.addEntries,
     });
-    const after = await admission.policy.listCandidates(port({ collaborators: run.added }));
-    expect(after.candidates.map((candidate) => candidate.definitionId)).toEqual(["reviewer"]);
+    const inRun = port({ collaborators: run.added, configuredAgents: ["reviewer"] });
+    expect((await admission.policy.listCandidates(inRun)).candidates.map((candidate) => candidate.definitionId))
+      .toEqual(["reviewer", "lead", "designer", "product"]);
+    await expect(admission.resolveMentions(inRun, [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent", definitionId: "lead" }]))
+      .resolves.toEqual({ admitted: true, collaborators: [
+        { name: "Code Reviewer", kind: "agent", address: "/reviewer", inRun: true },
+        { name: "Lead", kind: "agent", address: "/product_team/lead", inRun: true },
+      ] });
+    // Bring-in keeps the in-run rule: a configured member or a collaborator-Team member is not added again.
+    await expect(admission.policy.requireAdmissible(inRun, { kind: "agent", definitionId: "reviewer" }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "Code Reviewer is already in this run." });
+    await expect(admission.policy.requireAdmissible(inRun, { kind: "agent", definitionId: "lead" }))
+      .rejects.toMatchObject({ message: "Lead is already in this run." });
+    // A collaborator entry stays admissible: admission reuses it.
+    await expect(admission.policy.requireAdmissible(inRun, { kind: "agent_team", definitionId: "product" })).resolves.toMatchObject({ kind: "agent_team" });
     const failed = harness({ invalid: true });
     await failed.admission.ensure(port(), {
       senderRunId: "f", definitions: [{ kind: "agent_team", definitionId: "product" }],

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { draftMentionCandidates, draftInRunDefinitionIds } from '../draftMentionEligibility'
+import { draftMentionCandidates, draftOwnDefinitionIds } from '../draftMentionEligibility'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 
 // Mirrors the server's CollaboratorCandidatePolicy (collaborator-candidate-policy.ts).
@@ -40,10 +40,12 @@ describe('draftMentionCandidates (New chat `@`)', () => {
     expect(offered).not.toContain('agent:autobyteus-retrospective-skill-improver')
   })
 
-  it('excludes a Team target and every definition placed in it, team-local members included', () => {
-    expect(ids({ kind: 'team', teamDefinitionId: 'engineering' })).toEqual(['agent:researcher', 'agent_team:product'])
-    expect(draftInRunDefinitionIds({ kind: 'team', teamDefinitionId: 'engineering' }, { agents, teams }).agentDefinitionIds)
-      .toEqual(new Set(['designer', 'reviewer', buildTeamLocalAgentDefinitionId('engineering', 'helper')]))
+  it('excludes only a Team target itself: its shared members are offered, team-local ones never are (REQ-005, AC-007)', () => {
+    expect(ids({ kind: 'team', teamDefinitionId: 'engineering' })).toEqual([
+      'agent:designer', 'agent:reviewer', 'agent:researcher', 'agent_team:product',
+    ])
+    expect(draftOwnDefinitionIds({ kind: 'team', teamDefinitionId: 'engineering' }))
+      .toEqual({ agentDefinitionIds: new Set(), teamDefinitionIds: new Set(['engineering']) })
   })
 
   it('describes a team candidate with its member count and coordinator, like the server', () => {

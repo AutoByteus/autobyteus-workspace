@@ -17,7 +17,7 @@ const mentionKey = (mention: Pick<RequestedCollaboratorMention, 'kind' | 'defini
 
 /**
  * `@` in any composer (New chat and running Agent/Team chats): an `@query` token before the caret
- * opens "Bring into this run" over the candidates the caller provides. Choosing one replaces the
+ * opens "Delegate to an agent or team" over the candidates the caller provides. Choosing one replaces the
  * token with `@Name ` and records the mention on the composer's AgentContext. It never changes who
  * the message goes to.
  */

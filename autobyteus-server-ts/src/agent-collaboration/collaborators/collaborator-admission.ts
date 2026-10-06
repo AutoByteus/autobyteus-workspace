@@ -17,7 +17,7 @@ import type { CollaboratorRootPort } from "./collaborator-root-port.js";
 import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
 import type { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
 import { CollaboratorIdentityAllocator, type CollaboratorIdentityPorts } from "./collaborator-identity-allocator.js";
-import type { CatalogDefinitionRef } from "./catalog-address-map.js";
+import { catalogDefinitionKey, type CatalogDefinitionRef } from "./catalog-address-map.js";
 
 /**
  * The outcome of ensuring collaborators: every requested definition, in order, at its
@@ -103,21 +103,24 @@ export class CollaboratorAdmission {
   }
 
   /**
-   * `@`: each mentioned definition, in order, with its name, kind and address: the address of its
-   * entry when it is already in the run, otherwise its catalog address. Never writes, allocates or
-   * publishes. An ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
+   * `@`: each mentioned definition, in order, with its name, kind, address and whether it is
+   * already in the run. An in-run definition resolves to its collaborator entry's address, else
+   * its preferred in-run placement address; any other to its catalog address. Never writes,
+   * allocates or publishes. An ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
    */
   async resolveMentions(port: CollaboratorRootPort, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
     if (definitions.length === 0) return Object.freeze({ admitted: true, collaborators: Object.freeze([]) });
     try {
-      const admissible: AdmissibleCollaboratorDefinition[] = [];
-      for (const ref of definitions) admissible.push(await this.admissible(port, ref));
+      const eligible: AdmissibleCollaboratorDefinition[] = [];
+      for (const ref of definitions) eligible.push(await this.checked(() => this.dependencies.policy.requireEligible(port, ref), ref));
       const addresses = await this.dependencies.policy.catalogAddressMap(port);
-      const collaborators = admissible.map((definition) => {
-        const address = port.collaborators().find(sameDefinitionAs(definition))?.address
-          ?? addresses.addressFor({ kind: definition.kind, definitionId: definition.definition.id });
+      const inRunKeys = port.inRunPlacementsByDefinition();
+      const collaborators = eligible.map((definition) => {
+        const entry = port.collaborators().find(sameDefinitionAs(definition));
+        const address = entry?.address ?? addresses.addressFor({ kind: definition.kind, definitionId: definition.definition.id });
         if (!address) throw new CollaboratorAddError(definition.definition.name, "It has no address in this run.");
-        return Object.freeze({ name: definition.definition.name, kind: definition.kind, address });
+        const inRun = Boolean(entry) || inRunKeys.has(catalogDefinitionKey({ kind: definition.kind, definitionId: definition.definition.id }));
+        return Object.freeze({ name: definition.definition.name, kind: definition.kind, address, inRun });
       });
       return Object.freeze({ admitted: true, collaborators: Object.freeze(collaborators) });
     } catch (error) {
@@ -172,13 +175,20 @@ export class CollaboratorAdmission {
         newPlans.push(await this.buildPlan(definition, port, { address: allocated, senderRunId: input.senderRunId, now: input.now }));
         address = allocated;
       }
-      resolved.push(Object.freeze({ name: definition.definition.name, kind: definition.kind, address }));
+      // An existing collaborator entry is reused (in the run); a planned one is new.
+      resolved.push(Object.freeze({ name: definition.definition.name, kind: definition.kind, address,
+        inRun: port.collaborators().some(sameDefinition) }));
     }
     return Object.freeze({ newPlans: Object.freeze(newPlans), resolved: Object.freeze(resolved) });
   }
 
-  private async admissible(port: CollaboratorRootPort, ref: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
-    try { return await this.dependencies.policy.requireAdmissible(port, ref); }
+  /** Bring-in and catalog copies: never a second instance of a definition already in the run. */
+  private admissible(port: CollaboratorRootPort, ref: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
+    return this.checked(() => this.dependencies.policy.requireAdmissible(port, ref), ref);
+  }
+
+  private async checked(check: () => Promise<AdmissibleCollaboratorDefinition>, ref: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
+    try { return await check(); }
     catch (error) {
       if (error instanceof CollaboratorMentionError) throw new CollaboratorAddError(error.collaboratorName ?? ref.definitionId, error.message);
       throw error;
