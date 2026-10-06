@@ -9,7 +9,7 @@
 - Execution coverage report: `<T>/api-e2e-execution-coverage-report.md`
 - API/E2E revision record: `<T>/api-e2e-revision-record.md`
 - Scope: multiple browser journeys on one owned stack plus a temporary source swap
-- Last updated: 2026-10-06 (round 1)
+- Last updated: 2026-10-06 (round 2, merged HEAD `dc552c3ab`)
 
 ## Planned Cases
 
@@ -44,11 +44,18 @@
 | 12 | M-001 | 08:20 | Completed | base `autobyteus-web` hot-reloaded; repeat B-007 and the B-008 nested member | empty (defect) | both "No touched files yet", 0 rows | Pass (defect detected) | DOM | restore |
 | 13 | M-001 | 08:21 | Completed | `git checkout HEAD -- autobyteus-web`; 0 diff vs HEAD; repeat B-007 | 3 rows | 3 rows | Pass | DOM | — |
 | 14 | cleanup | 08:22 | Completed | launcher SIGTERM by PID; tab closed | owned processes/dirs gone | `CLEANED /tmp/cmah-browser-main-PvRbmp`; user server `:8000` untouched | N/A | — | — |
+| 15 | R-001 (r2) | round 2 | Completed | 17 specs + `runHydration`/`runOpen`/`agentOrgExecution` on `dc552c3ab` | only pre-existing failures | 344 pass, 19 fail (18 `teamTaskApprovalHydration`, 1 `workspaceSelectionComposition`); same 19 fail on merged base `3c8e49ad5` (temporary web checkout, restored) | Pass | `round2/web-merged-*.log` | — |
+| 16 | B-001, B-002 (r2) | round 2 | Completed | stack `r2`, fresh load, Team `b` | 3/3; lead empty | 3/3 (`60bd2354`); lead empty | Pass | DOM | — |
+| 17 | B-003 (r2) | round 2 | Completed | Org `b` active | 3/3 + 3/3 | 3/3 (`fd8218d2`), 3/3 (`17b23858`) | Pass | DOM | — |
+| 18 | B-004 (r2) | round 2 | Completed | standalone | 3/3 | 3/3 (`0fccb294`) | Pass | DOM | — |
+| 19 | B-006 (r2) | round 2 | Completed | gated Team `d` | live growth, no duplicates | `1` → `2,1` → `3,2,1`; Idle | Pass | `round2/send-r2d.out` | — |
+| 20 | B-007, B-008 (r2) | round 2 | Completed | terminate Team `b`/Org `b`; fresh loads | 3/3 each | Offline; 3/3 Team creator; 3/3 designer; 3/3 nested creator | Pass | `round2/r2-ac004-*.png` | — |
+| 21 | cleanup (r2) | round 2 | Completed | launcher SIGTERM by PID; tab closed | gone | `CLEANED /tmp/cmah-browser-r2-1ogrLM`; 0 content-route warnings | N/A | `round2/r2-backend.log` | — |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 14
-- Last completed case and result: M-001, Pass
+- Last durably recorded event: 21 (round 2 cleanup)
+- Last completed case and result: B-007/B-008 (r2), Pass
 - Cases still running, interrupted, or not started: none
 - Next action: none
 - Interruption note: none

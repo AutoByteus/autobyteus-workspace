@@ -11,19 +11,19 @@
 - Supplemental Task Artifacts: `<T>/design-principles-recheck.md`; predecessor folder (evidence only)
 - Design Review Report: `<T>/design-review-report.md` (ARCH-REV-001)
 - Architecture Review Revision Record: `<T>/architecture-review-revision-record.md`
-- Implementation Handoff: `<T>/implementation-handoff.md` (IR-001)
+- Implementation Handoff: `<T>/implementation-handoff.md` (IR-002)
 - Implementation Revision Record: `<T>/implementation-revision-record.md`
-- Code Review Report: `<T>/code-review-report.md` (CRR-001)
+- Code Review Report: `<T>/code-review-report.md` (CRR-003)
 - Code Review Revision Record: `<T>/code-review-revision-record.md`
-- Delivery Revision Record: N/A
+- Delivery Revision Record: `<T>/delivery-revision-record.md` (DR-001)
 - Coverage Investigation: `<T>/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `<T>/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `<T>/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
-- Trigger: CRR-001 Pass
-- Prior Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2
+- Trigger: CRR-003 Pass after delivery merged `origin/personal@3c8e49ad5` (`692509f83`) and IR-002 (`dc552c3ab`, mock-only fix for DR-001)
+- Prior Round Reviewed: Round 1 (API-REV-001, Pass 95%)
+- Latest Authoritative Round: 2 (HEAD `dc552c3ab`)
 
 ## Routing Classification
 
@@ -207,10 +207,50 @@ None beyond the investigation's table.
 
 N/A (Pass).
 
+## Round 2: Re-validation On The Merged Branch (`dc552c3ab`)
+
+**Why.** The merged base changes server source (29 files) and Team resume-config parsing and sidebar visibility (`closedTaskExecutions`). The ticket's web patch is unchanged (CRR-003). The Team-member and Org journeys depend on that parsing, so I re-ran every in-scope browser journey on the merged HEAD rather than carrying round 1 forward.
+
+**Repository checks**
+- I ran the 17 changed specs plus `services/runHydration`, `services/runOpen` and `services/agentOrgExecution`: 36 files, 344 passed and 19 failed.
+- The 19 failures are 18 in `teamTaskApprovalHydration.spec.ts` and 1 in `workspaceSelectionComposition.spec.ts`.
+- The same two files fail the same 19 tests on merged base `3c8e49ad5` without this ticket. I checked by temporarily checking out base `autobyteus-web` (`git checkout 3c8e49ad5 -- autobyteus-web`), then restored it (0 diff). Pre-existing; no new failure.
+- Evidence: `api-e2e-evidence/round2/web-merged-specs.log`, `web-merged-base-preexisting.log`
+
+**Stack**
+- Server rebuilt on the merged HEAD (`prebuild`, `build`; exit 0).
+- New owned stack `harness/launch.mjs … r2` on ports 35229 (web).
+- Fresh fixtures through public GraphQL and real WebSocket turns: 3 images each for Team `/creator`, Org `/designer`, Org `/eng/creator` and the standalone run.
+
+**Browser journeys** (each from a fresh page load)
+
+| Case | Journey | Result |
+| --- | --- | --- |
+| B-001 / AC-001 | active Team → `creator` | 3 listed; 3/3 blob, 64 px, own conversation `60bd2354`; no "File not found" |
+| B-002 / RU-001 | `lead` | "No touched files yet" |
+| B-003 / AC-003 | active Org → `/designer`; nested `/eng/creator` (`mode=active`) | 3/3 (`fd8218d2`); 3/3 (`17b23858`) |
+| B-004 / AC-006 | standalone | 3/3 (`0fccb294`) |
+| B-006 / REQ-003 | gated Team `d`; creator hydrated with image 1 (Running); images 2, 3 live | timeline `1` → `2,1` → `3,2,1`; 3/3 preview; Idle |
+| B-007 / AC-002 | terminate Team `b` (server inactive, 3 entries); creator | Offline; 3/3 (`60bd2354`) |
+| B-008 / AC-004 | terminate Org `b`; `/designer`, `/eng/creator` (`mode=history`) | Offline; 3/3 and 3/3 |
+| logs | backend content route | 0 warnings |
+
+**Not repeated in round 2**
+- B-005 (near-concurrent reload): the artifact merge path is unchanged, and the deterministic proof is unit-level.
+- M-001 (base-frontend mutation): the ticket's web patch is unchanged since round 1.
+- Evidence: `api-e2e-evidence/round2/` (`r2-*.log`, `r2-agy-launches.jsonl`, `send-r2d.out`, `r2-ac004-org-historical-eng-creator.png`)
+
+**Cleanup**
+- `CLEANED /tmp/cmah-browser-r2-1ogrLM`; no owned processes left; tab closed.
+- `autobyteus-web` restored (0 diff).
+- The user's server on `:8000` was untouched.
+
+**Round 2 confidence:** unchanged at 95%. Every category is ≥ 90%, and the in-scope journeys are re-proven on the merged code.
+
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: 95%
+- Final validation confidence: 95% (round 2 on merged HEAD `dc552c3ab`)
 - Default `95%` target met: `Yes`
 - Any final applicable category below `90%`: `No`
 - Broader validation decision: `Required`; executed (Browser)

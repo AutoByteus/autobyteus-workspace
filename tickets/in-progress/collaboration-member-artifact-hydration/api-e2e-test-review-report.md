@@ -44,10 +44,24 @@ All checks are `N/A` because no durable test code changed.
 
 None.
 
+## Round 2 (CRR-004)
+
+- Trigger: API/E2E `Pass` (API-REV-002, round 2) on the merged HEAD `dc552c3ab`, after IR-002 / CRR-003 and delivery DR-001
+- Final validation confidence: 95%
+- All in-scope browser journeys were re-run on the rebuilt merged stack:
+  - AC-001..AC-004 and AC-006
+  - REQ-003 live updates after hydration
+  - isolation of a member that produced nothing
+- The 19 repository failures (`teamTaskApprovalHydration` ×18, `workspaceSelectionComposition` ×1) were shown pre-existing on merged base `3c8e49ad5` (`api-e2e-evidence/round2/web-merged-base-preexisting.log`).
+- Changed durable test scope this round: none from API/E2E. Reviewer-verified: `git status` and `git diff HEAD` show changes only under the ticket folder, plus the untracked SDK `dist/` folders. HEAD is `dc552c3ab`.
+- The only durable test change since round 1 is the IR-002 fixture line. It is implementation-owned and was reviewed in CRR-003.
+- `api-e2e-evidence/round2/` is execution evidence only.
+- Result: `Not Applicable`
+
 ## Latest Authoritative Result
 
-- Result: `Not Applicable`
-- Changed durable test paths reviewed: none
+- Result: `Not Applicable` (round 2, CRR-004)
+- Changed durable test paths reviewed: none (API/E2E-owned)
 - Unresolved finding IDs: None
 - Recommended Recipient: `/delivery_engineer`
 - Notes:

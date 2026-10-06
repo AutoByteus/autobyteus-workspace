@@ -214,13 +214,37 @@ N/A (Pass).
 - The equal-`updatedAt` transient `content` edge case is pre-existing.
 - Pre-existing failure in `workspaceSelectionComposition.spec.ts` (fails on base too).
 
+## Implementation Review Round 2 (CRR-003) — Targeted Delta Review After Base Merge
+
+- Review Entry Point: `Implementation Review`
+- Trigger: IR-002 from `/implementation_engineer`, a Local Fix requested by delivery in DR-001 (merge-introduced spec failure)
+- Relevant revision IDs: SR-003, ARCH-REV-001, IR-002, API-REV-001, DR-001
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence:
+  - `git diff 692509f83..dc552c3ab -- autobyteus-web` is a single line in `services/runHydration/__tests__/teamRunContextHydrationService.spec.ts`. The Team open artifact mock adds `closedTaskExecutions: []`.
+  - No production source changed.
+- Merge integrity (reviewer-verified):
+  - The ticket's `autobyteus-web` change set is identical before and after the merge. I compared the `+`/`−` lines of `db39803d4..404ec96da` against `3c8e49ad5..692509f83`, and the difference is empty.
+  - Delivery reported no textual conflicts.
+- Base interaction (reviewer-verified):
+  - The base (`3c8e49ad5`) adds a required `closedTaskExecutions` field to `teamRunContextHydrationService.ts`. It is parsed after the resume-config read and passed only to `createTeamExecutionViewState`.
+  - It does not touch member location, `fetchMemberRunState`, `memberRunStates`, `commitTeamRunHydration` or `markCommittedTeamRunHydrationAuthority`. Org staging is untouched by the base.
+  - The fixture change mirrors the base's own mock updates in the same spec, so it is the correct and minimal fix.
+- Behavior basis: BEH-001..BEH-005 are unchanged and `Confirmed`. No new candidates; the scenario and material-premise gates are unchanged.
+- Verification on the merged tree (`dc552c3ab`): the ticket's 17 changed spec files pass 228/229. The only failure is the pre-existing `workspaceSelectionComposition.spec.ts` case (CRR-001). All Team open artifact tests pass.
+- Structural checks, source audit, legacy verdict and scorecard: carried forward from round 1, since the production source is unchanged. Score 9.4/10.
+- Findings: none.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Pass` (round 2, Targeted Delta Review, CRR-003)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10; every category ≥ 9.2
+- Score Summary: 9.4/10 (carried forward); every category ≥ 9.2
 - Failure Origin: N/A
 - Recommended Recipient: `/api_e2e_engineer` (primary), `/implementation_engineer` (informational)
-- Notes: the implementation faithfully realizes SR-003 / ARCH-REV-001 with no findings.
+- Notes:
+  - No production code changed since API-REV-001.
+  - The merged base changes only Team sidebar visibility for closed Task runs, which is independent of member artifact hydration.
+  - API/E2E decides how much re-validation the merged branch needs.
