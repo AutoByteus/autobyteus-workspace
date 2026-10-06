@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { parseArgs } from "../../../../../src/runtime-management/codex/client/codex-app-server-launch-config.js";
+import { parseArgs, resolveLaunchCommand } from "../../../../../src/runtime-management/codex/client/codex-app-server-launch-config.js";
 
-const OVERRIDES = ["-c", "features.multi_agent=false", "-c", "features.multi_agent_v2=false"];
+const OVERRIDES = ["-c", "agents.enabled=false"];
 
-describe("Codex app-server launch args (REQ-014 / AC-017)", () => {
+describe("Codex app-server launch config (REQ-006–008 / AC-007)", () => {
   afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 
-  it("launches the default app-server with Codex multi-agent features disabled", () => {
+  it("appends only the native-agent disable policy to the default app-server args", () => {
     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "");
     vi.stubEnv("CODEX_APP_SERVER_ARGS", "");
     expect(parseArgs()).toEqual(["app-server", ...OVERRIDES]);
@@ -25,6 +25,10 @@ describe("Codex app-server launch args (REQ-014 / AC-017)", () => {
     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(["app-server", "-c", "model=\"o3\""]));
     vi.stubEnv("CODEX_APP_SERVER_ARGS", "ignored");
     expect(parseArgs()).toEqual(["app-server", "-c", "model=\"o3\"", ...OVERRIDES]);
+    const first = parseArgs();
+    first[0] = "mutated";
+    first[first.length - 1] = "agents.enabled=true";
+    expect(parseArgs()).toEqual(["app-server", "-c", "model=\"o3\"", ...OVERRIDES]);
   });
 
   it("falls back as before for invalid CODEX_APP_SERVER_ARGS_JSON and still appends the overrides", () => {
@@ -38,10 +42,48 @@ describe("Codex app-server launch args (REQ-014 / AC-017)", () => {
     expect(parseArgs()).toEqual(["app-server", "--verbose", ...OVERRIDES]);
   });
 
-  it("keeps the overrides last even when a customization tries to enable the features", () => {
-    vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(["app-server", "-c", "features.multi_agent=true"]));
+  it.each(["string", "JSON"])("keeps the disable policy last when %s args try to enable native agents", (format) => {
+    const baseArgs = ["app-server", "-c", "agents.enabled=true"];
+    vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", format === "JSON" ? JSON.stringify(baseArgs) : "");
+    vi.stubEnv("CODEX_APP_SERVER_ARGS", baseArgs.join(" "));
     const args = parseArgs();
-    expect(args.slice(-4)).toEqual(OVERRIDES);
-    expect(args.lastIndexOf("features.multi_agent=false")).toBeGreaterThan(args.indexOf("features.multi_agent=true"));
+    expect(args).toEqual([...baseArgs, ...OVERRIDES]);
+    expect(args.slice(-2)).toEqual(OVERRIDES);
+    expect(args.lastIndexOf("agents.enabled=false")).toBeGreaterThan(args.indexOf("agents.enabled=true"));
+  });
+
+  it("preserves old feature keys when supplied as custom base args, not as AutoByteus policy", () => {
+    const baseArgs = ["app-server", "-c", "features.multi_agent=true", "-c", "features.multi_agent_v2=false"];
+    vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(baseArgs));
+    vi.stubEnv("CODEX_APP_SERVER_ARGS", "ignored");
+    expect(parseArgs()).toEqual([...baseArgs, ...OVERRIDES]);
+  });
+
+  it.each([null, {}, "app-server"])("falls back to string args for a non-array JSON value: %j", (value) => {
+    vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(value));
+    vi.stubEnv("CODEX_APP_SERVER_ARGS", "app-server --verbose");
+    expect(parseArgs()).toEqual(["app-server", "--verbose", ...OVERRIDES]);
+  });
+
+  it("preserves an explicitly empty JSON args array instead of using the string or default base", () => {
+    vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "[]");
+    vi.stubEnv("CODEX_APP_SERVER_ARGS", "ignored");
+    expect(parseArgs()).toEqual(OVERRIDES);
+  });
+
+  it("preserves custom command selection independently from args and leaves environment inputs unchanged", () => {
+    vi.stubEnv("CODEX_APP_SERVER_COMMAND", "  /test-owned/bin/custom-codex  ");
+    vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "");
+    vi.stubEnv("CODEX_APP_SERVER_ARGS", "  app-server -c agents.enabled=true  ");
+    expect(resolveLaunchCommand()).toBe("/test-owned/bin/custom-codex");
+    expect(parseArgs()).toEqual(["app-server", "-c", "agents.enabled=true", ...OVERRIDES]);
+    expect(process.env.CODEX_APP_SERVER_COMMAND).toBe("  /test-owned/bin/custom-codex  ");
+    expect(process.env.CODEX_APP_SERVER_ARGS_JSON).toBe("");
+    expect(process.env.CODEX_APP_SERVER_ARGS).toBe("  app-server -c agents.enabled=true  ");
+  });
+
+  it("preserves the default command when the command override is blank", () => {
+    vi.stubEnv("CODEX_APP_SERVER_COMMAND", "  ");
+    expect(resolveLaunchCommand()).toBe("codex");
   });
 });
