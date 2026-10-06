@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-06T16:09:05.562997+00:00",
+  "deliveryDocsWhitespaceChecks": [
+    {
+      "path": "autobyteus-server-ts/docs/modules/codex_integration.md",
+      "exitCode": 1,
+      "output": "",
+      "result": "Pass"
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/docs-sync-report.md",
+      "exitCode": 1,
+      "output": "",
+      "result": "Pass"
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/handoff-summary.md",
+      "exitCode": 1,
+      "output": "",
+      "result": "Pass"
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/release-deployment-report.md",
+      "exitCode": 1,
+      "output": "",
+      "result": "Pass"
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/delivery-revision-record.md",
+      "exitCode": 1,
+      "output": "",
+      "result": "Pass"
+    }
+  ],
+  "trackedDocsDiffCheckExit": 0,
+  "credentialLiveSessionPatternMatches": [],
+  "deliveryEvidenceFilesScanned": [
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/integration-provenance.json",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/repository.log",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/repository-result.json",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/fetch.log",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/integration.log",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/validation-summary.json",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/native-surface/custom-json.json",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/native-surface/positive-control.json",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/native-surface/production-default.json",
+    "tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-001/native-surface/custom-string.json"
+  ],
+  "scope": "Delivery-owned evidence only; API-owned scan preserved; regex check is not a universal secret detector",
+  "runtimeDiffFromAPIEmpty": true,
+  "wholePackageWhitespace": "Not claimed clean \u2014 upstream raw logs and literal patch whitespace retained; new raw Vitest log preserved too",
+  "selfCheckOracleCorrection": "Initial no-index check expected exit0, but exit1/no diagnostics denotes a clean differing file; corrected wrapper, no runtime defect or source/docs change",
+  "gitStatus": [
+    " M autobyteus-server-ts/docs/modules/codex_integration.md",
+    "?? autobyteus-application-backend-sdk/dist/",
+    "?? autobyteus-application-sdk-contracts/dist/",
+    "?? tickets/in-progress/codex-disable-multi-agent/delivery-revision-record.md",
+    "?? tickets/in-progress/codex-disable-multi-agent/docs-sync-report.md",
+    "?? tickets/in-progress/codex-disable-multi-agent/evidence/delivery/",
+    "?? tickets/in-progress/codex-disable-multi-agent/handoff-message-receipt-api001.json",
+    "?? tickets/in-progress/codex-disable-multi-agent/handoff-message-receipt-ir001.json",
+    "?? tickets/in-progress/codex-disable-multi-agent/handoff-summary.md",
+    "?? tickets/in-progress/codex-disable-multi-agent/release-deployment-report.md"
+  ]
+}

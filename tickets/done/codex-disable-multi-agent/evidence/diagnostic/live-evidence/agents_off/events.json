@@ -1,0 +1,1378 @@
+[
+  {
+    "id": 1,
+    "result": {
+      "userAgent": "autobyteus-server-ts/0.160.1 (Mac OS 26.5.2; arm64) unknown (autobyteus-server-ts; 0.1.1)",
+      "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex",
+      "platformFamily": "unix",
+      "platformOs": "macos"
+    }
+  },
+  {
+    "method": "remoteControl/status/changed",
+    "params": {
+      "status": "disabled",
+      "serverName": "MacBookPro",
+      "installationId": "9ec7f303-482c-484a-942f-31700583876f",
+      "environmentId": null
+    },
+    "emittedAtMs": 1791300385691
+  },
+  {
+    "id": 2,
+    "result": {
+      "config": {
+        "model": "gpt-6.1-sol",
+        "review_model": null,
+        "model_context_window": null,
+        "model_auto_compact_token_limit": null,
+        "model_auto_compact_token_limit_scope": null,
+        "model_provider": null,
+        "approval_policy": "never",
+        "approvals_reviewer": null,
+        "sandbox_mode": null,
+        "sandbox_workspace_write": null,
+        "forced_chatgpt_workspace_id": null,
+        "forced_login_method": null,
+        "web_search": "disabled",
+        "tools": null,
+        "instructions": null,
+        "developer_instructions": null,
+        "compact_prompt": null,
+        "model_reasoning_effort": "low",
+        "model_reasoning_summary": null,
+        "model_verbosity": null,
+        "service_tier": null,
+        "analytics": {
+          "enabled": false
+        },
+        "apps": null,
+        "browser_use": null,
+        "computer_use": null,
+        "desktop": null,
+        "mcp_oauth_callback_port": null,
+        "project_doc_fallback_filenames": [],
+        "background_terminal_max_timeout": 300000,
+        "log_dir": null,
+        "experimental_realtime_ws_base_url": null,
+        "features": {
+          "network_proxy": null,
+          "apps": false,
+          "hooks": false,
+          "plugins": false,
+          "api_key_model_discovery": false,
+          "auth_elicitation": true,
+          "background_paginated_rollout_migration": false,
+          "codex_apps_mcp_2026_07_28": false,
+          "mcp_2026_07_28": false,
+          "memories": false,
+          "mentions_v2": true,
+          "remote_control": false,
+          "remote_plugin": true,
+          "tool_suggest": true,
+          "windows_sandbox_service": false
+        },
+        "hooks": null,
+        "goals": null,
+        "experimental_use_unified_exec_tool": null,
+        "hide_agent_reasoning": false,
+        "mcp_servers": {},
+        "thread_unload_delay_secs": null,
+        "marketplaces": {},
+        "project_root_markers": [
+          ".git"
+        ],
+        "auto_review": null,
+        "memories": null,
+        "plugins": {},
+        "model_providers": {},
+        "windows": null,
+        "show_raw_agent_reasoning": null,
+        "openai_base_url": null,
+        "experimental_compact_prompt_file": null,
+        "sqlite_home": null,
+        "mcp_enterprise_managed_auth": null,
+        "experimental_realtime_start_instructions": null,
+        "mcp_oauth_credentials_store": "auto",
+        "model_catalog_json": null,
+        "notify": null,
+        "feedback": {
+          "enabled": false
+        },
+        "disable_paste_burst": null,
+        "cloud": null,
+        "permissions": null,
+        "apps_mcp_product_sku": null,
+        "experimental_realtime_ws_backend_prompt": null,
+        "notice": null,
+        "mcp_oauth_callback_url": null,
+        "js_repl_node_path": null,
+        "agents": {
+          "enabled": false,
+          "max_concurrent_threads_per_session": null,
+          "max_depth": null,
+          "default_subagent_model": null,
+          "default_subagent_reasoning_effort": null,
+          "job_max_runtime_seconds": null,
+          "interrupt_message": null
+        },
+        "suppress_unstable_features_warning": null,
+        "include_apps_instructions": true,
+        "model_post_turn_compact_threshold_percent": null,
+        "tool_suggest": null,
+        "experimental_thread_store_endpoint": null,
+        "responses_api_metadata": null,
+        "audio": null,
+        "js_repl_node_module_dirs": null,
+        "check_for_update_on_startup": null,
+        "skills": null,
+        "ghost_snapshot": null,
+        "shell_environment_policy": {
+          "inherit": null,
+          "ignore_default_excludes": null,
+          "exclude": null,
+          "set": null,
+          "include_only": null,
+          "filters": null,
+          "experimental_use_profile": null
+        },
+        "project_doc_max_bytes": 32768,
+        "orchestrator": null,
+        "allow_symlinked_codex_home": null,
+        "mcp_optional_startup_grace_ms": null,
+        "profile": null,
+        "history": {
+          "persistence": "save-all",
+          "max_bytes": null
+        },
+        "plan_mode_reasoning_effort": null,
+        "file_opener": "vscode",
+        "experimental_realtime_ws_model": null,
+        "oss_provider": null,
+        "include_permissions_instructions": true,
+        "tool_output_token_limit": null,
+        "include_environment_context": true,
+        "allow_login_shell": true,
+        "cli_auth_credentials_store": "file",
+        "tui": null,
+        "realtime": null,
+        "experimental_thread_store": null,
+        "personality": null,
+        "experimental_realtime_webrtc_call_base_url": null,
+        "default_permissions": null,
+        "model_instructions_file": null,
+        "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+        "projects": null,
+        "include_collaboration_mode_instructions": true,
+        "experimental_realtime_ws_startup_context": null,
+        "otel": null,
+        "profiles": {}
+      },
+      "origins": {
+        "model_reasoning_effort": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "model": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "cli_auth_credentials_store": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "analytics.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "features.plugins": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+        },
+        "features.apps": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+        },
+        "web_search": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "approval_policy": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "agents.enabled": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+        },
+        "features.hooks": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+        },
+        "feedback.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        }
+      },
+      "layers": [
+        {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305",
+          "config": {
+            "features": {
+              "apps": false,
+              "plugins": false,
+              "hooks": false
+            },
+            "agents": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0",
+          "config": {
+            "model": "gpt-6.1-sol",
+            "model_reasoning_effort": "low",
+            "approval_policy": "never",
+            "cli_auth_credentials_store": "file",
+            "web_search": "disabled",
+            "analytics": {
+              "enabled": false
+            },
+            "feedback": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "name": {
+            "type": "system",
+            "file": "/etc/codex/config.toml"
+          },
+          "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "config": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "result": {
+      "thread": {
+        "id": "01a111d2-bba0-7790-964e-a1c168891b8b",
+        "environments": [
+          {
+            "environmentId": "local",
+            "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+            "runtimeWorkspaceRoots": [
+              "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace"
+            ]
+          }
+        ],
+        "extra": null,
+        "sessionId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+        "forkedFromId": null,
+        "parentThreadId": null,
+        "preview": "",
+        "ephemeral": true,
+        "section": null,
+        "sectionEnteredAt": null,
+        "projectId": null,
+        "historyMode": "paginated",
+        "modelProvider": "openai",
+        "model": "gpt-6.1-sol",
+        "reasoningEffort": "low",
+        "createdAt": 1791300385,
+        "updatedAt": 1791300385,
+        "recencyAt": 1791300385,
+        "status": {
+          "type": "idle"
+        },
+        "path": null,
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+        "cliVersion": "0.160.1",
+        "originator": "autobyteus-server-ts",
+        "source": "vscode",
+        "canAcceptDirectInput": true,
+        "threadSource": null,
+        "agentNickname": null,
+        "agentRole": null,
+        "gitInfo": null,
+        "name": null,
+        "daybreakEnabled": null,
+        "turns": []
+      },
+      "model": "gpt-6.1-sol",
+      "modelProvider": "openai",
+      "serviceTier": null,
+      "disabledPluginIds": [],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+      "runtimeWorkspaceRoots": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace"
+      ],
+      "instructionSources": [],
+      "approvalPolicy": "never",
+      "approvalsReviewer": "user",
+      "sandbox": {
+        "type": "readOnly",
+        "networkAccess": false
+      },
+      "activePermissionProfile": null,
+      "reasoningEffort": "low",
+      "multiAgentMode": "explicitRequestOnly"
+    }
+  },
+  {
+    "method": "thread/started",
+    "params": {
+      "thread": {
+        "id": "01a111d2-bba0-7790-964e-a1c168891b8b",
+        "environments": [
+          {
+            "environmentId": "local",
+            "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+            "runtimeWorkspaceRoots": [
+              "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace"
+            ]
+          }
+        ],
+        "extra": null,
+        "sessionId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+        "forkedFromId": null,
+        "parentThreadId": null,
+        "preview": "",
+        "ephemeral": true,
+        "section": null,
+        "sectionEnteredAt": null,
+        "projectId": null,
+        "historyMode": "paginated",
+        "modelProvider": "openai",
+        "model": "gpt-6.1-sol",
+        "reasoningEffort": "low",
+        "createdAt": 1791300385,
+        "updatedAt": 1791300385,
+        "recencyAt": 1791300385,
+        "status": {
+          "type": "idle"
+        },
+        "path": null,
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+        "cliVersion": "0.160.1",
+        "originator": "autobyteus-server-ts",
+        "source": "vscode",
+        "canAcceptDirectInput": true,
+        "threadSource": null,
+        "agentNickname": null,
+        "agentRole": null,
+        "gitInfo": null,
+        "name": null,
+        "daybreakEnabled": null,
+        "turns": []
+      }
+    },
+    "emittedAtMs": 1791300385719
+  },
+  {
+    "id": 4,
+    "result": {
+      "turn": {
+        "id": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "inProgress",
+        "error": null,
+        "startedAt": null,
+        "completedAt": null,
+        "durationMs": null
+      }
+    }
+  },
+  {
+    "method": "thread/status/changed",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      }
+    },
+    "emittedAtMs": 1791300385721
+  },
+  {
+    "method": "turn/started",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turn": {
+        "id": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "inProgress",
+        "error": null,
+        "startedAt": 1791300385,
+        "completedAt": null,
+        "durationMs": null
+      }
+    },
+    "emittedAtMs": 1791300385721
+  },
+  {
+    "method": "account/updated",
+    "params": {
+      "authMode": "chatgpt",
+      "planType": "pro"
+    },
+    "emittedAtMs": 1791300386025
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "userMessage",
+        "id": "01a111d2-c238-76a1-aeab-7cec0b12204e",
+        "clientId": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+            "text_elements": []
+          }
+        ]
+      },
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "startedAtMs": 1791300387384
+    },
+    "emittedAtMs": 1791300387384
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "userMessage",
+        "id": "01a111d2-c238-76a1-aeab-7cec0b12204e",
+        "clientId": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+            "text_elements": []
+          }
+        ]
+      },
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "completedAtMs": 1791300387384
+    },
+    "emittedAtMs": 1791300387384
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "reasoning",
+        "id": "rs_0bcfcb52bb6eda6d016ac51325c1cc87d2a30fed4e02c2a858",
+        "summary": [],
+        "content": []
+      },
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "startedAtMs": 1791300389755
+    },
+    "emittedAtMs": 1791300389755
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "reasoning",
+        "id": "rs_0bcfcb52bb6eda6d016ac51325c1cc87d2a30fed4e02c2a858",
+        "summary": [],
+        "content": []
+      },
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "completedAtMs": 1791300392996
+    },
+    "emittedAtMs": 1791300392996
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+        "text": "",
+        "phase": "final_answer",
+        "memoryCitation": null,
+        "delivery": null,
+        "questions": null
+      },
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "startedAtMs": 1791300392996
+    },
+    "emittedAtMs": 1791300392996
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "{\""
+    },
+    "emittedAtMs": 1791300392998
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "tools"
+    },
+    "emittedAtMs": 1791300393002
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\":[\""
+    },
+    "emittedAtMs": 1791300393007
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300393181
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".wait"
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".request"
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_user"
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_input"
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300393184
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".request"
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_user"
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_input"
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_async"
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300393364
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".exec"
+    },
+    "emittedAtMs": 1791300393428
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300393428
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "clock"
+    },
+    "emittedAtMs": 1791300393429
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".sleep"
+    },
+    "emittedAtMs": 1791300393429
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\"],"
+    },
+    "emittedAtMs": 1791300393429
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\""
+    },
+    "emittedAtMs": 1791300393429
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300393429
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300393429
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_tools"
+    },
+    "emittedAtMs": 1791300393573
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\":[]"
+    },
+    "emittedAtMs": 1791300393573
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ",\""
+    },
+    "emittedAtMs": 1791300393573
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "note"
+    },
+    "emittedAtMs": 1791300393578
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "\":\""
+    },
+    "emittedAtMs": 1791300393578
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "No"
+    },
+    "emittedAtMs": 1791300393578
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " built"
+    },
+    "emittedAtMs": 1791300393578
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "-in"
+    },
+    "emittedAtMs": 1791300393583
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " multi"
+    },
+    "emittedAtMs": 1791300393685
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "-agent"
+    },
+    "emittedAtMs": 1791300393697
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "/c"
+    },
+    "emittedAtMs": 1791300393888
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "oll"
+    },
+    "emittedAtMs": 1791300393888
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300393888
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300393888
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " are"
+    },
+    "emittedAtMs": 1791300393888
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " available"
+    },
+    "emittedAtMs": 1791300393888
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "."
+    },
+    "emittedAtMs": 1791300393988
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " The"
+    },
+    "emittedAtMs": 1791300393990
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " request"
+    },
+    "emittedAtMs": 1791300394132
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_user"
+    },
+    "emittedAtMs": 1791300394132
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "_input"
+    },
+    "emittedAtMs": 1791300394132
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300394132
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " ask"
+    },
+    "emittedAtMs": 1791300394135
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " the"
+    },
+    "emittedAtMs": 1791300394137
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " user"
+    },
+    "emittedAtMs": 1791300394137
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " questions"
+    },
+    "emittedAtMs": 1791300394139
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ";"
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " they"
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " do"
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " not"
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " coordinate"
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " agents"
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "."
+    },
+    "emittedAtMs": 1791300394505
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " Tools"
+    },
+    "emittedAtMs": 1791300394551
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " exposed"
+    },
+    "emittedAtMs": 1791300394565
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " inside"
+    },
+    "emittedAtMs": 1791300394710
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " functions"
+    },
+    "emittedAtMs": 1791300394711
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".exec"
+    },
+    "emittedAtMs": 1791300394712
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " are"
+    },
+    "emittedAtMs": 1791300394714
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " not"
+    },
+    "emittedAtMs": 1791300394714
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " directly"
+    },
+    "emittedAtMs": 1791300394833
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " callable"
+    },
+    "emittedAtMs": 1791300394935
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300394969
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": ".\""
+    },
+    "emittedAtMs": 1791300395110
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "itemId": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+      "delta": "}"
+    },
+    "emittedAtMs": 1791300395111
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+        "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\"],\"collaboration_tools\":[],\"note\":\"No built-in multi-agent/collaboration tools are available. The request_user_input tools ask the user questions; they do not coordinate agents. Tools exposed inside functions.exec are not directly callable tools.\"}",
+        "phase": "final_answer",
+        "memoryCitation": null,
+        "delivery": null,
+        "questions": null
+      },
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "completedAtMs": 1791300395223
+    },
+    "emittedAtMs": 1791300395223
+  },
+  {
+    "method": "thread/tokenUsage/updated",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "tokenUsage": {
+        "total": {
+          "totalTokens": 9367,
+          "inputTokens": 9198,
+          "cachedInputTokens": 0,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 169,
+          "reasoningOutputTokens": 86
+        },
+        "last": {
+          "totalTokens": 9367,
+          "inputTokens": 9198,
+          "cachedInputTokens": 0,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 169,
+          "reasoningOutputTokens": 86
+        },
+        "modelContextWindow": 258400
+      }
+    },
+    "emittedAtMs": 1791300395228
+  },
+  {
+    "method": "account/rateLimits/updated",
+    "params": {
+      "rateLimits": {
+        "limitId": "codex",
+        "limitName": null,
+        "normalModelSlug": null,
+        "primary": {
+          "usedPercent": 79,
+          "windowDurationMins": 10080,
+          "resetsAt": 1791602554
+        },
+        "secondary": null,
+        "credits": {
+          "hasCredits": true,
+          "unlimited": false,
+          "balance": "52468.2486640000"
+        },
+        "individualLimit": null,
+        "spendControlReached": null,
+        "planType": "pro",
+        "rateLimitReachedType": null
+      }
+    },
+    "emittedAtMs": 1791300395228
+  },
+  {
+    "method": "thread/status/changed",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "status": {
+        "type": "idle"
+      }
+    },
+    "emittedAtMs": 1791300395228
+  },
+  {
+    "method": "turn/completed",
+    "params": {
+      "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+      "turn": {
+        "id": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+        "items": [
+          {
+            "type": "agentMessage",
+            "id": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+            "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\"],\"collaboration_tools\":[],\"note\":\"No built-in multi-agent/collaboration tools are available. The request_user_input tools ask the user questions; they do not coordinate agents. Tools exposed inside functions.exec are not directly callable tools.\"}",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "summary",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791300385,
+        "completedAt": 1791300395,
+        "durationMs": 9507
+      }
+    },
+    "emittedAtMs": 1791300395228
+  }
+]

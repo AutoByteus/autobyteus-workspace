@@ -561,21 +561,67 @@ conversation is being applied.
 - Raw-trace-only Codex memory appends active raw traces for normal user/assistant/tool records. Dynamic tools, MCP tool calls, and built-in tool-like items such as `search_web` are recorded from normalized lifecycle events as a strict call plus minimal terminal result; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Existing historical raw rows are read directly and are not rewritten or backfilled, and Memory Sync behavior is unchanged. The required startup migration removes only exact current-metadata-classified pre-cutover Codex/Claude snapshot copies; native, imported, unclassified, invalid-metadata, and task-like copies are preserved, and reported failures remain retryable without blocking current raw recording. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or current external snapshot path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
-### Codex built-in multi-agent override (REQ-014, partially delivered)
+### Codex built-in multi-agent override
 
-`parseArgs()` in `src/runtime-management/codex/client/codex-app-server-launch-config.ts` builds the app-server launch arguments. It takes the default `app-server`, or the `CODEX_APP_SERVER_ARGS_JSON` / `CODEX_APP_SERVER_ARGS` override, and always appends:
+`parseArgs()` in
+`src/runtime-management/codex/client/codex-app-server-launch-config.ts` builds
+the arguments for each new AutoByteus-owned Codex app-server. It selects the
+default `app-server`, a valid string-array `CODEX_APP_SERVER_ARGS_JSON`, or the
+existing whitespace-split `CODEX_APP_SERVER_ARGS` fallback, then appends exactly:
 
+```text
+-c agents.enabled=false
 ```
--c features.multi_agent=false -c features.multi_agent_v2=false
-```
 
-- **Why `-c`.** It overrides the user's `~/.codex/config.toml` without editing the file, so the user's own Codex usage is unchanged. It also tolerates feature keys that an installed Codex version doesn't know. `--disable` would reject an unknown feature and stop the app-server from starting.
-- **Delivered.** The user's Codex config can no longer switch multi-agent on for AutoByteus runs. This covers models without a catalog `multi_agent_version`.
-- **Known open limit (FAPI-013; AC-017 not met; deferred by the user).** Codex's server-side model catalog still enables built-in multi-agent for models whose entry sets `multi_agent_version`. That includes gpt-6.x and gpt-5.6 (v2) and some v1 models (upstream openai/codex#50880).
-  - On those models, AutoByteus Codex threads still receive Codex's `<multi_agent_role>` prompt and its `send_message` / `list_agents` / `spawn_agent` tools, even though the feature flags read `false`.
-  - A worker may then reply through Codex's `send_message` instead of AutoByteus `send_message_to`, and the reply never arrives.
-  - The real control for `multi_agent_version` (or a `thread/start` parameter) is still to be found. Do not treat the launch flags as proof that multi-agent is off.
-- **Observed, outside this change.** MCP servers declared in the user's `~/.codex/config.toml` also start inside AutoByteus-launched Codex app-servers.
+- **Policy precedence.** The final pair overrides conflicting file settings
+  and earlier custom arguments such as `-c agents.enabled=true`. JSON selection,
+  custom command/base arguments and request timeout behavior are unchanged.
+  AutoByteus does not write the user's Codex config or authentication files;
+  standalone Codex usage keeps its own settings.
+- **Native versus external collaboration.** This suppresses Codex's native
+  `collaboration.*` tools and accompanying native multi-agent role/mode prompt
+  in the tested contexts. AutoByteus's thread-scoped MCP collaboration,
+  including `get_handoff_rules`, `send_message_to` and `delegate_task`, remains
+  separately exposed under existing grants. It does not remove external MCP
+  servers inherited from Codex configuration or change provider authentication.
+- **Lifecycle boundary.** The policy applies when ordinary acquisition launches
+  a new workspace-scoped client generation, including after Stop/restore.
+  Reused, already-running clients are not retrofitted or forcibly restarted.
+  Stored AgentRun/Codex thread IDs and history are unchanged; no migration or
+  configuration reset is required. A raw explicit per-thread
+  `agents.enabled=true` can override a process default; the supported product
+  materializer currently supplies MCP configuration only.
+- **Historical failure, not a compatibility fallback.** The previous appended
+  `features.multi_agent=false` / `features.multi_agent_v2=false` controls were
+  accepted but still exposed native collaboration in measured contexts,
+  contributing to the prior FAPI-013 worker-message failure. They are replaced,
+  not combined with the effective control. The prior completed ticket's
+  deferred AC-017 receipt remains historical; this correction does not rewrite
+  it or claim an upstream issue/version fix.
+- **Measured support and limits (2026-10-06).** Changed-source production-manager
+  captures on Codex 0.160.1 / GPT-6.1-Sol show zero native collaboration
+  declarations/role tags for default, string and JSON launches with enabled
+  conflicts, while the positive control exposes six native tools and the same
+  ordinary definitions. A current-built Studio/public HTTP/WS Team lifecycle
+  completes fresh/restored live inventories with no native collaboration;
+  actual same-thread MCP definitions and read-only calls establish preserved
+  external tools, not the model's deferred-tool self-report. Historical 0.160.0
+  evidence is controlled request capture only. These checks do not certify
+  native spawn enforcement, successful AutoByteus delegation/message delivery,
+  every binary/model/OS, packaged restart/upgrade or explicit user verification.
+
+The durable no-auth regression is
+`tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts`:
+enable `RUN_CODEX_NATIVE_SURFACE_TESTS=1` and run it with the documented Vitest
+command. It captures actual provider declarations, deliberately returns HTTP
+400 without inference, checks workspace leases and closes its owned resources;
+an ungated skip is not suppression proof. The separate
+`tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts` requires current
+prebuild/build, explicit `RUN_CODEX_E2E=1` and
+`RUN_CODEX_NATIVE_POLICY_LIVE=1`, plus `CODEX_NATIVE_POLICY_AUTH_FILE` pointing
+to a logged-in external Codex auth file. It uses a protected temporary auth
+copy, disposable Studio data and two bounded live model turns; never substitute
+the user's running app/data. Follow `TESTING.md` isolation and exact cleanup.
 
 ## Validation Notes
 

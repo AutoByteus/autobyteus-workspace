@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-06T16:25:21.994169+00:00",
+  "integratedHEAD": "95b387c0707094d65eb402da2eb2acae8ff318db",
+  "checkedRemoteBase": "96dc5a25f5b4f88d9bb8896596536af5e1f7dbf3",
+  "productionPrebuildBuild": "Pass",
+  "repository": "7 files, 66/66 Pass, zero skips",
+  "live": "1/1 Pass, two completed GPT-6.1-Sol low inventories; native collaboration absent; actual scoped MCP/Stop/restore/exact identity/new generation/physical closes pass",
+  "sourceSHA256": "f84ffbdc8b1d4b0733c5f4622762426199e1993a6a5389bd0d79db4d66e78a47",
+  "sourceUnchanged": true,
+  "nativeCaptureCleanup": "Pass all 4 cases",
+  "liveCleanup": {
+    "binaryVersion": "codex-cli 0.160.1",
+    "childExited": true,
+    "exitCode": 0,
+    "signal": null,
+    "privateRootAndAuthRemoved": true,
+    "sourceAuthUnchanged": true,
+    "sourceConfigUnchanged": true
+  },
+  "testDBAbsent": true,
+  "scopeLimits": "No native spawn, successful AutoByteus delegation/message delivery, universal versions/models/OS or packaged upgrade certified",
+  "renewedUserVerification": "Not required: no material native correction handoff change, check acceptance-integration.json"
+}

@@ -1,0 +1,20 @@
+{
+  "filesSHA256": {
+    "acceptance-integration.json": "a2cd3687935e2741ea611c6d2ccfb20b4b0cea40e4be136b031816bfc1d1c4a0",
+    "build.log": "75ac5fcbe13504256340169692492827093d563f1a04964ae506fd3d3471ffea",
+    "commands.json": "8a047c5202dbe2fc30330c84a6049f3fb78bbaaeb17c4705bf863ba3cbd82047",
+    "live/system.json": "b8767c4d0702d95b9fcc19c41e3a95b061f3498aab0333dbd1d8e29b36a4be7e",
+    "live/system.log": "28b6156a4a4b6a1abef1983745354e7b1f28761a7d5f677f28a62b51324c3e22",
+    "live.log": "111144887a09bee898ede19e1f42a827a5869196c67bc26a0b445ff5ae678687",
+    "native-surface/custom-json.json": "e3095edcd2b7bb029cf46e6abcba739056ec6ed70843002498e7b98e2725ee38",
+    "native-surface/custom-string.json": "89303034846b2c8e48948f6f23377f2a5a7fc37e89b7dbd228877bda98ea6dba",
+    "native-surface/positive-control.json": "30ba3e8f3d326f678dcb262a40a08fc6472a9c874d04c7ada77a1f1c5eba9455",
+    "native-surface/production-default.json": "f0b10d7502eca78d22260d66e6fa0715c0fa1cb9590c523180c426d7af2a625c",
+    "prebuild.log": "edd81ca4b9ac3bc5425e68759e0c92a76295e67a1ac4b00dfc7b935c362c0695",
+    "repository.log": "91b37f9623866cc034aecd058c4f77f190ccb41cce08e289533dc80df00cb023",
+    "test-db-cleanup.json": "608fcdd3636884bff79cec5da2a766d49b93a152051c5a2dab58d59e4ea22980",
+    "validation-summary.json": "c4ce5fd2535235c1ebd1f45629966dd5bc0d075d716768e4451de6a6ce0e4369"
+  },
+  "integratedHEAD": "95b387c0707094d65eb402da2eb2acae8ff318db",
+  "sourceCommit": "ce028688bb452500578d5e8ff3633e72ac72b54e"
+}

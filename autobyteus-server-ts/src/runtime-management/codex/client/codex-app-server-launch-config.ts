@@ -1,19 +1,19 @@
 const DEFAULT_APP_SERVER_COMMAND = "codex";
 const DEFAULT_APP_SERVER_ARGS = ["app-server"];
 /**
- * AutoByteus-launched Codex never runs Codex's own multi-agent features, whatever the user's
- * `~/.codex/config.toml` says (REQ-014). `-c` overrides config and tolerates keys an installed Codex
- * version doesn't know; `--disable` would reject an unknown feature and stop the app-server starting.
+ * Disable Codex's native collaboration tools on new AutoByteus app-server processes.
+ * Append the config override last so it wins over user config and custom base args.
+ * External AutoByteus MCP collaboration remains independently configured per thread.
  */
-const AUTOBYTEUS_FEATURE_OVERRIDES = ["-c", "features.multi_agent=false", "-c", "features.multi_agent_v2=false"];
+const AUTOBYTEUS_CONFIG_OVERRIDES = ["-c", "agents.enabled=false"];
 export const DEFAULT_REQUEST_TIMEOUT_MS = 120_000;
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-/** App-server launch arguments: the default or env override, always followed by the AutoByteus feature overrides. */
-export const parseArgs = (): string[] => [...parseBaseArgs(), ...AUTOBYTEUS_FEATURE_OVERRIDES];
+/** App-server launch arguments: the default or env override, always followed by the AutoByteus config overrides. */
+export const parseArgs = (): string[] => [...parseBaseArgs(), ...AUTOBYTEUS_CONFIG_OVERRIDES];
 
 const parseBaseArgs = (): string[] => {
   const jsonArgs = process.env.CODEX_APP_SERVER_ARGS_JSON?.trim();

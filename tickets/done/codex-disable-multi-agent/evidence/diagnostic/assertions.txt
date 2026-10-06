@@ -1,0 +1,6 @@
+PASS: 9/9 cases captured actual app-server requests.
+PASS: default, legacy -c flags, --disable flags, and explicit thread re-enable expose exactly six collaboration tools.
+PASS: agents.enabled=false via CLI or TOML, combined flags, CLI over file true, and per-thread false expose no collaboration tools.
+PASS: five non-collaboration direct tool definitions remain present in every valid case.
+PASS: all started app-server processes exited, local mock servers were closed, private roots were removed.
+No model inference, model output, actual subagent spawn, AutoByteus product E2E, or older-Codex compatibility certified.

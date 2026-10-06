@@ -1,0 +1,348 @@
+{
+  "config": {
+    "model": "gpt-6.1-sol",
+    "review_model": null,
+    "model_context_window": null,
+    "model_auto_compact_token_limit": null,
+    "model_auto_compact_token_limit_scope": null,
+    "model_provider": "local_probe",
+    "approval_policy": "never",
+    "approvals_reviewer": null,
+    "sandbox_mode": null,
+    "sandbox_workspace_write": null,
+    "forced_chatgpt_workspace_id": null,
+    "forced_login_method": null,
+    "web_search": "disabled",
+    "tools": null,
+    "instructions": null,
+    "developer_instructions": null,
+    "compact_prompt": null,
+    "model_reasoning_effort": null,
+    "model_reasoning_summary": null,
+    "model_verbosity": null,
+    "service_tier": null,
+    "analytics": {
+      "enabled": false
+    },
+    "apps": null,
+    "browser_use": null,
+    "computer_use": null,
+    "desktop": null,
+    "model_post_turn_compact_threshold_percent": null,
+    "experimental_realtime_start_instructions": null,
+    "tool_output_token_limit": null,
+    "marketplaces": {},
+    "hide_agent_reasoning": false,
+    "features": {
+      "multi_agent_v2": false,
+      "network_proxy": null,
+      "apps": false,
+      "enable_request_compression": false,
+      "hooks": false,
+      "multi_agent": false,
+      "plugins": false,
+      "api_key_model_discovery": false,
+      "auth_elicitation": true,
+      "background_paginated_rollout_migration": false,
+      "codex_apps_mcp_2026_07_28": false,
+      "mcp_2026_07_28": false,
+      "memories": false,
+      "mentions_v2": true,
+      "remote_control": false,
+      "remote_plugin": true,
+      "tool_suggest": true,
+      "windows_sandbox_service": false
+    },
+    "mcp_oauth_callback_url": null,
+    "oss_provider": null,
+    "cli_auth_credentials_store": "file",
+    "mcp_enterprise_managed_auth": null,
+    "log_dir": null,
+    "default_permissions": null,
+    "js_repl_node_module_dirs": null,
+    "include_apps_instructions": true,
+    "feedback": {
+      "enabled": false
+    },
+    "allow_login_shell": true,
+    "personality": null,
+    "agents": null,
+    "auto_review": null,
+    "hooks": null,
+    "mcp_optional_startup_grace_ms": null,
+    "project_doc_max_bytes": 32768,
+    "goals": null,
+    "include_permissions_instructions": true,
+    "experimental_use_unified_exec_tool": null,
+    "check_for_update_on_startup": null,
+    "model_catalog_json": null,
+    "experimental_realtime_ws_base_url": null,
+    "mcp_servers": {},
+    "audio": null,
+    "project_doc_fallback_filenames": [],
+    "profile": null,
+    "sqlite_home": null,
+    "experimental_compact_prompt_file": null,
+    "history": {
+      "persistence": "save-all",
+      "max_bytes": null
+    },
+    "experimental_realtime_ws_backend_prompt": null,
+    "apps_mcp_product_sku": null,
+    "mcp_oauth_callback_port": null,
+    "file_opener": "vscode",
+    "orchestrator": null,
+    "otel": null,
+    "allow_symlinked_codex_home": null,
+    "tool_suggest": null,
+    "model_providers": {
+      "local_probe": {
+        "name": "Local diagnostic mock",
+        "base_url": "http://127.0.0.1:60082/v1",
+        "model_catalog_url": null,
+        "env_key": null,
+        "env_key_instructions": null,
+        "experimental_bearer_token": null,
+        "auth": null,
+        "gateway_oauth": null,
+        "aws": null,
+        "wire_api": "responses",
+        "query_params": null,
+        "http_headers": null,
+        "env_http_headers": null,
+        "request_max_retries": null,
+        "stream_max_retries": null,
+        "stream_idle_timeout_ms": null,
+        "websocket_connect_timeout_ms": null,
+        "requires_openai_auth": false,
+        "supports_websockets": false,
+        "supports_standalone_web_search": false
+      }
+    },
+    "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+    "experimental_realtime_ws_model": null,
+    "memories": null,
+    "experimental_realtime_ws_startup_context": null,
+    "cloud": null,
+    "notify": null,
+    "include_environment_context": true,
+    "tui": null,
+    "js_repl_node_path": null,
+    "shell_environment_policy": {
+      "inherit": null,
+      "ignore_default_excludes": null,
+      "exclude": null,
+      "set": null,
+      "include_only": null,
+      "filters": null,
+      "experimental_use_profile": null
+    },
+    "plan_mode_reasoning_effort": null,
+    "responses_api_metadata": null,
+    "projects": null,
+    "openai_base_url": null,
+    "skills": null,
+    "permissions": null,
+    "model_instructions_file": null,
+    "plugins": {},
+    "ghost_snapshot": null,
+    "show_raw_agent_reasoning": null,
+    "disable_paste_burst": null,
+    "include_collaboration_mode_instructions": true,
+    "experimental_thread_store_endpoint": null,
+    "suppress_unstable_features_warning": null,
+    "project_root_markers": [
+      ".git"
+    ],
+    "realtime": null,
+    "windows": null,
+    "profiles": {},
+    "notice": null,
+    "experimental_thread_store": null,
+    "mcp_oauth_credentials_store": "auto",
+    "background_terminal_max_timeout": 300000,
+    "experimental_realtime_webrtc_call_base_url": null,
+    "thread_unload_delay_secs": null
+  },
+  "origins": {
+    "features.multi_agent_v2.enabled": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57"
+    },
+    "model": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "features.hooks": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57"
+    },
+    "model_provider": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "analytics.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "model_providers.local_probe.base_url": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "features.apps": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57"
+    },
+    "features.plugins": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57"
+    },
+    "features.multi_agent": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57"
+    },
+    "model_providers.local_probe.wire_api": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "approval_policy": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "model_providers.local_probe.name": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "web_search": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "feedback.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "model_providers.local_probe.requires_openai_auth": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    },
+    "features.enable_request_compression": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57"
+    },
+    "model_providers.local_probe.supports_websockets": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7"
+    }
+  },
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:4b4e3e03be260a8ac0e1ba7a4496133a5b3d0115090c4b1596a86ffb62ce4b57",
+      "config": {
+        "features": {
+          "enable_request_compression": false,
+          "apps": false,
+          "plugins": false,
+          "hooks": false,
+          "multi_agent": false,
+          "multi_agent_v2": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-b6pw9wgy/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:e1cf5fccb068caaca96e0dda10e4a38d026e108f937eec4441eab7acb0c3adc7",
+      "config": {
+        "model": "gpt-6.1-sol",
+        "model_provider": "local_probe",
+        "approval_policy": "never",
+        "web_search": "disabled",
+        "model_providers": {
+          "local_probe": {
+            "name": "Local diagnostic mock",
+            "base_url": "http://127.0.0.1:60082/v1",
+            "wire_api": "responses",
+            "requires_openai_auth": false,
+            "supports_websockets": false
+          }
+        },
+        "analytics": {
+          "enabled": false
+        },
+        "feedback": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "/etc/codex/config.toml"
+      },
+      "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "config": {}
+    }
+  ]
+}

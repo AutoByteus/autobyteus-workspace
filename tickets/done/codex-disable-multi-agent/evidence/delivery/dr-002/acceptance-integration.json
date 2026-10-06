@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-10-06T16:24:01.063104+00:00",
+  "userMessage": "finalize and release a new beta please",
+  "meaning": "Explicit acceptance of presented DR-001 verification basis plus one new beta release request; no manual product-testing assertion inferred",
+  "postAcceptanceTarget": "96dc5a25f5b4f88d9bb8896596536af5e1f7dbf3",
+  "priorVerifiedBase": "f48dbfbf39bbf9ed76116943e304248ca387dc7f",
+  "baseAdvanced": true,
+  "checkpoint": "131b5cce3d3f8c1c1e8b92728e53478c73218aa4",
+  "integrationMerge": "95b387c0707094d65eb402da2eb2acae8ff318db",
+  "baseCommits": 7,
+  "newBaseScope": "Separately finalized @ in-run mention eligibility/docs/tests plus beta.7 release version; unchanged Codex launch/thread/MCP source and canonical override doc",
+  "reverificationRequired": false,
+  "rationale": "The approved native-suppression correction/preserved Codex contracts and relevant source/docs/tests are unchanged by integration; integrated executable checks/build/live lifecycle rerun before finalization. No material change to this user-facing ticket handoff; unrelated upstream feature is not new scope/reclassification.",
+  "betaVersionPreview": "1.4.95-beta.8",
+  "versionSelection": "Release helper will fetch tags and recompute at execution; preview not reservation",
+  "releaseNotesMode": "Beta uses GitHub generated notes; curated/ticket release notes not required by beta method. Ticket summary retained for audit."
+}

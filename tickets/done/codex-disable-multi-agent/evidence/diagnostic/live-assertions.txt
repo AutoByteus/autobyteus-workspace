@@ -1,0 +1,6 @@
+PASS: 3/3 authenticated gpt-6.1-sol turns on codex-cli 0.160.1 completed.
+PASS: default and old feature-off flags reported six collaboration tools; agents.enabled=false reported none.
+PASS: reported tool inventories (union of tools and collaboration_tools) exactly match corresponding mock-provider request captures.
+PASS: no tools executed and no agents spawned.
+PASS: all owned processes exited; private roots and temporary auth copies removed; original auth/config bytes unchanged in every case.
+Limits: no packaged AutoByteus journey, saved-thread resume, older version, other model or actual spawn-enforcement test.

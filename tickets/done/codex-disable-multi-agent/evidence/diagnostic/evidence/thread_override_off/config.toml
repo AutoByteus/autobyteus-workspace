@@ -1,0 +1,14 @@
+model = "gpt-6.1-sol"
+model_provider = "local_probe"
+approval_policy = "never"
+web_search = "disabled"
+[model_providers.local_probe]
+name = "Local diagnostic mock"
+base_url = "http://127.0.0.1:60088/v1"
+wire_api = "responses"
+requires_openai_auth = false
+supports_websockets = false
+[analytics]
+enabled = false
+[feedback]
+enabled = false

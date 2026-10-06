@@ -1,0 +1,363 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.20                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts (13 tests | 12 failed) 12ms
+     × appends only the native-agent disable policy to the default app-server args 5ms
+     × appends the overrides after a CODEX_APP_SERVER_ARGS customization 1ms
+     × appends the overrides after a valid CODEX_APP_SERVER_ARGS_JSON customization, which wins over CODEX_APP_SERVER_ARGS 1ms
+     × falls back as before for invalid CODEX_APP_SERVER_ARGS_JSON and still appends the overrides 1ms
+     × keeps the disable policy last when string args try to enable native agents 1ms
+     × keeps the disable policy last when JSON args try to enable native agents 0ms
+     × preserves old feature keys when supplied as custom base args, not as AutoByteus policy 1ms
+     × falls back to string args for a non-array JSON value: null 0ms
+     × falls back to string args for a non-array JSON value: {} 1ms
+     × falls back to string args for a non-array JSON value: "app-server" 1ms
+     × preserves an explicitly empty JSON args array instead of using the string or default base 0ms
+     × preserves custom command selection independently from args and leaves environment inputs unchanged 0ms
+     ✓ preserves the default command when the command override is blank 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > appends only the native-agent disable policy to the default app-server args
+AssertionError: expected [ 'app-server', '-c', …(3) ] to deeply equal [ 'app-server', '-c', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:12:25
+     10|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "");
+     11|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "");
+     12|     expect(parseArgs()).toEqual(["app-server", ...OVERRIDES]);
+       |                         ^
+     13|     // Each call builds a fresh array; callers can't mutate a shared d…
+     14|     const first = parseArgs(); first.push("mutated");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > appends the overrides after a CODEX_APP_SERVER_ARGS customization
+AssertionError: expected [ 'app-server', '--listen', …(5) ] to deeply equal [ 'app-server', '--listen', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "--listen",
+    "stdio://",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:21:25
+     19|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "");
+     20|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "  app-server   --listen stdio…
+     21|     expect(parseArgs()).toEqual(["app-server", "--listen", "stdio://",…
+       |                         ^
+     22|   });
+     23| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > appends the overrides after a valid CODEX_APP_SERVER_ARGS_JSON customization, which wins over CODEX_APP_SERVER_ARGS
+AssertionError: expected [ 'app-server', '-c', …(5) ] to deeply equal [ 'app-server', '-c', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "-c",
+    "model=\"o3\"",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:27:25
+     25|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(["app-serv…
+     26|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "ignored");
+     27|     expect(parseArgs()).toEqual(["app-server", "-c", "model=\"o3\"", .…
+       |                         ^
+     28|     const first = parseArgs();
+     29|     first[0] = "mutated";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > falls back as before for invalid CODEX_APP_SERVER_ARGS_JSON and still appends the overrides
+AssertionError: expected [ 'app-server', '-c', …(3) ] to deeply equal [ 'app-server', '-c', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:38:25
+     36|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "");
+     37|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "{ not json");
+     38|     expect(parseArgs()).toEqual(["app-server", ...OVERRIDES]);
+       |                         ^
+     39|     expect(warn).toHaveBeenCalledWith(expect.stringContaining("Failed …
+     40|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(["app-serv…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > keeps the disable policy last when string args try to enable native agents
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > keeps the disable policy last when JSON args try to enable native agents
+AssertionError: expected [ 'app-server', '-c', …(5) ] to deeply equal [ 'app-server', '-c', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "-c",
+    "agents.enabled=true",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:50:18
+     48|     vi.stubEnv("CODEX_APP_SERVER_ARGS", baseArgs.join(" "));
+     49|     const args = parseArgs();
+     50|     expect(args).toEqual([...baseArgs, ...OVERRIDES]);
+       |                  ^
+     51|     expect(args.slice(-2)).toEqual(OVERRIDES);
+     52|     expect(args.lastIndexOf("agents.enabled=false")).toBeGreaterThan(a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > preserves old feature keys when supplied as custom base args, not as AutoByteus policy
+AssertionError: expected [ 'app-server', '-c', …(7) ] to deeply equal [ 'app-server', '-c', …(5) ]
+
+- Expected
++ Received
+
+@@ -3,7 +3,9 @@
+    "-c",
+    "features.multi_agent=true",
+    "-c",
+    "features.multi_agent_v2=false",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:59:25
+     57|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(baseArgs));
+     58|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "ignored");
+     59|     expect(parseArgs()).toEqual([...baseArgs, ...OVERRIDES]);
+       |                         ^
+     60|   });
+     61| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > falls back to string args for a non-array JSON value: null
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > falls back to string args for a non-array JSON value: {}
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > falls back to string args for a non-array JSON value: "app-server"
+AssertionError: expected [ 'app-server', '--verbose', …(4) ] to deeply equal [ 'app-server', '--verbose', …(2) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "--verbose",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:65:25
+     63|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", JSON.stringify(value));
+     64|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "app-server --verbose");
+     65|     expect(parseArgs()).toEqual(["app-server", "--verbose", ...OVERRID…
+       |                         ^
+     66|   });
+     67| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > preserves an explicitly empty JSON args array instead of using the string or default base
+AssertionError: expected [ '-c', …(3) ] to deeply equal [ '-c', 'agents.enabled=false' ]
+
+- Expected
++ Received
+
+  [
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:71:25
+     69|     vi.stubEnv("CODEX_APP_SERVER_ARGS_JSON", "[]");
+     70|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "ignored");
+     71|     expect(parseArgs()).toEqual(OVERRIDES);
+       |                         ^
+     72|   });
+     73| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts > Codex app-server launch config (REQ-006–008 / AC-007) > preserves custom command selection independently from args and leaves environment inputs unchanged
+AssertionError: expected [ 'app-server', '-c', …(5) ] to deeply equal [ 'app-server', '-c', …(3) ]
+
+- Expected
++ Received
+
+  [
+    "app-server",
+    "-c",
+    "agents.enabled=true",
+    "-c",
+-   "agents.enabled=false",
++   "features.multi_agent=false",
++   "-c",
++   "features.multi_agent_v2=false",
+  ]
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts:79:25
+     77|     vi.stubEnv("CODEX_APP_SERVER_ARGS", "  app-server -c agents.enable…
+     78|     expect(resolveLaunchCommand()).toBe("/test-owned/bin/custom-codex"…
+     79|     expect(parseArgs()).toEqual(["app-server", "-c", "agents.enabled=t…
+       |                         ^
+     80|     expect(process.env.CODEX_APP_SERVER_COMMAND).toBe("  /test-owned/b…
+     81|     expect(process.env.CODEX_APP_SERVER_ARGS_JSON).toBe("");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 1 passed (13)
+   Start at  17:43:29
+   Duration  867ms (transform 20ms, setup 13ms, import 17ms, tests 12ms, environment 0ms)
+

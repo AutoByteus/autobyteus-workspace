@@ -1,0 +1,1 @@
+{"tools":["functions.wait","functions.request_user_input","functions.request_user_input_async","functions.exec","clock.sleep"],"collaboration_tools":[],"note":"No built-in multi-agent/collaboration tools are available. The request_user_input tools ask the user questions; they do not coordinate agents. Tools exposed inside functions.exec are not directly callable tools."}

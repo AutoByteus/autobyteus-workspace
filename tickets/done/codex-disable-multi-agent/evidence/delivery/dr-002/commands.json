@@ -1,0 +1,76 @@
+[
+  {
+    "name": "prebuild",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "prebuild"
+    ],
+    "started": "2026-10-06T16:24:01.063707+00:00",
+    "completed": "2026-10-06T16:24:06.789596+00:00",
+    "exitCode": 0,
+    "environmentOverrides": {}
+  },
+  {
+    "name": "build",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "build"
+    ],
+    "started": "2026-10-06T16:24:06.790130+00:00",
+    "completed": "2026-10-06T16:24:22.211575+00:00",
+    "exitCode": 0,
+    "environmentOverrides": {}
+  },
+  {
+    "name": "repository",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts",
+      "tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts",
+      "tests/unit/runtime-management/codex/client/codex-app-server-client-manager.test.ts",
+      "tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts",
+      "tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts",
+      "tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts",
+      "tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts",
+      "--no-watch"
+    ],
+    "started": "2026-10-06T16:24:22.212332+00:00",
+    "completed": "2026-10-06T16:24:28.155561+00:00",
+    "exitCode": 0,
+    "environmentOverrides": {
+      "RUN_CODEX_NATIVE_SURFACE_TESTS": "1",
+      "CODEX_NATIVE_SURFACE_EVIDENCE_DIR": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-002/native-surface"
+    }
+  },
+  {
+    "name": "live",
+    "command": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts",
+      "--no-watch"
+    ],
+    "started": "2026-10-06T16:24:28.155999+00:00",
+    "completed": "2026-10-06T16:24:53.218970+00:00",
+    "exitCode": 0,
+    "environmentOverrides": {
+      "RUN_CODEX_E2E": "1",
+      "RUN_CODEX_NATIVE_POLICY_LIVE": "1",
+      "CODEX_NATIVE_POLICY_AUTH_FILE": "/Users/normy/.codex/auth.json",
+      "CODEX_NATIVE_POLICY_EVIDENCE_DIR": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/tickets/in-progress/codex-disable-multi-agent/evidence/delivery/dr-002/live"
+    }
+  }
+]

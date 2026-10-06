@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+const { parseArgs, resolveLaunchCommand, resolveRequestTimeoutMs } = await import(pathToFileURL(path.resolve('autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-launch-config.js')).href);
+// Run from the worktree root. All env changes are local to this process.
+process.env.CODEX_APP_SERVER_ARGS_JSON = '';
+process.env.CODEX_APP_SERVER_ARGS = '';
+process.env.CODEX_APP_SERVER_COMMAND = '';
+process.env.CODEX_APP_SERVER_REQUEST_TIMEOUT_MS = '';
+assert.deepEqual(parseArgs(), ['app-server', '-c', 'agents.enabled=false']);
+assert.equal(resolveLaunchCommand(), 'codex');
+assert.equal(resolveRequestTimeoutMs(), 120_000);
+process.env.CODEX_APP_SERVER_ARGS_JSON = JSON.stringify(['app-server', '-c', 'agents.enabled=true']);
+process.env.CODEX_APP_SERVER_ARGS = 'ignored';
+process.env.CODEX_APP_SERVER_COMMAND = '  /test-owned/custom-codex  ';
+process.env.CODEX_APP_SERVER_REQUEST_TIMEOUT_MS = '2500.75';
+assert.deepEqual(parseArgs(), ['app-server', '-c', 'agents.enabled=true', '-c', 'agents.enabled=false']);
+assert.equal(resolveLaunchCommand(), '/test-owned/custom-codex');
+assert.equal(resolveRequestTimeoutMs(), 2500);
+console.log('PASS: current worktree emitted launch-config default/conflict/command/timeout composition. No upstream tool-surface claim.');

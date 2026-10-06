@@ -1,0 +1,533 @@
+{
+  "cases": [
+    {
+      "case": "default",
+      "model": "gpt-6.1-sol",
+      "overrides": [],
+      "prompt": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+      "private_root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt",
+      "temporary_auth_copy": true,
+      "private_catalog_copy": true,
+      "command": [
+        "/Users/normy/.local/bin/codex",
+        "app-server",
+        "--listen",
+        "stdio://",
+        "-c",
+        "features.apps=false",
+        "-c",
+        "features.plugins=false",
+        "-c",
+        "features.hooks=false"
+      ],
+      "binary_version": "codex-cli 0.160.1",
+      "pid": 44764,
+      "initialize": {
+        "userAgent": "autobyteus-server-ts/0.160.1 (Mac OS 26.5.2; arm64) unknown (autobyteus-server-ts; 0.1.1)",
+        "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex",
+        "platformFamily": "unix",
+        "platformOs": "macos"
+      },
+      "effective_agents": null,
+      "effective_multi_agent_features": {},
+      "thread_start": {
+        "thread": {
+          "id": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+              "runtimeWorkspaceRoots": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": true,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791300356,
+          "updatedAt": 1791300356,
+          "recencyAt": 1791300356,
+          "status": {
+            "type": "idle"
+          },
+          "path": null,
+          "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+          "cliVersion": "0.160.1",
+          "originator": "autobyteus-server-ts",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+        "runtimeWorkspaceRoots": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "never",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      },
+      "turn_id": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "turn_completed": {
+        "id": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+        "items": [
+          {
+            "type": "agentMessage",
+            "id": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+            "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\",\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"collaboration_tools\":[\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"note\":\"Listed the direct callable definitions visible in this conversation. Collaboration tools are also included in tools. Nested tools accessible through functions.exec are not direct callable tools. No tools were executed.\"}",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "summary",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791300356,
+        "completedAt": 1791300367,
+        "durationMs": 10539
+      },
+      "answer": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\",\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"collaboration_tools\":[\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"note\":\"Listed the direct callable definitions visible in this conversation. Collaboration tools are also included in tools. Nested tools accessible through functions.exec are not direct callable tools. No tools were executed.\"}",
+      "answer_json": {
+        "tools": [
+          "functions.wait",
+          "functions.request_user_input",
+          "functions.request_user_input_async",
+          "functions.exec",
+          "clock.sleep",
+          "collaboration.followup_task",
+          "collaboration.interrupt_agent",
+          "collaboration.list_agents",
+          "collaboration.send_message",
+          "collaboration.spawn_agent",
+          "collaboration.wait_agent"
+        ],
+        "collaboration_tools": [
+          "collaboration.followup_task",
+          "collaboration.interrupt_agent",
+          "collaboration.list_agents",
+          "collaboration.send_message",
+          "collaboration.spawn_agent",
+          "collaboration.wait_agent"
+        ],
+        "note": "Listed the direct callable definitions visible in this conversation. Collaboration tools are also included in tools. Nested tools accessible through functions.exec are not direct callable tools. No tools were executed."
+      },
+      "tool_events": [],
+      "token_usage_events": [
+        {
+          "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+          "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 11014,
+              "inputTokens": 10765,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 249,
+              "reasoningOutputTokens": 106
+            },
+            "last": {
+              "totalTokens": 11014,
+              "inputTokens": 10765,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 249,
+              "reasoningOutputTokens": 106
+            },
+            "modelContextWindow": 258400
+          }
+        }
+      ],
+      "process_exit_code": 0,
+      "cleanup": {
+        "process_exited": true,
+        "private_root_and_auth_removed": true,
+        "source_auth_unchanged": true,
+        "source_config_unchanged": true
+      }
+    },
+    {
+      "case": "legacy_off",
+      "model": "gpt-6.1-sol",
+      "overrides": [
+        "-c",
+        "features.multi_agent=false",
+        "-c",
+        "features.multi_agent_v2=false"
+      ],
+      "prompt": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+      "private_root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c",
+      "temporary_auth_copy": true,
+      "private_catalog_copy": true,
+      "command": [
+        "/Users/normy/.local/bin/codex",
+        "app-server",
+        "--listen",
+        "stdio://",
+        "-c",
+        "features.apps=false",
+        "-c",
+        "features.plugins=false",
+        "-c",
+        "features.hooks=false",
+        "-c",
+        "features.multi_agent=false",
+        "-c",
+        "features.multi_agent_v2=false"
+      ],
+      "binary_version": "codex-cli 0.160.1",
+      "pid": 51184,
+      "initialize": {
+        "userAgent": "autobyteus-server-ts/0.160.1 (Mac OS 26.5.2; arm64) unknown (autobyteus-server-ts; 0.1.1)",
+        "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c/home/.codex",
+        "platformFamily": "unix",
+        "platformOs": "macos"
+      },
+      "effective_agents": null,
+      "effective_multi_agent_features": {
+        "multi_agent_v2": false,
+        "multi_agent": false
+      },
+      "thread_start": {
+        "thread": {
+          "id": "01a111d2-90f3-7150-bcb5-73e4536c74be",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c/workspace",
+              "runtimeWorkspaceRoots": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c/workspace"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a111d2-90f3-7150-bcb5-73e4536c74be",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": true,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791300374,
+          "updatedAt": 1791300374,
+          "recencyAt": 1791300374,
+          "status": {
+            "type": "idle"
+          },
+          "path": null,
+          "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c/workspace",
+          "cliVersion": "0.160.1",
+          "originator": "autobyteus-server-ts",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c/workspace",
+        "runtimeWorkspaceRoots": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-xmsq9z7c/workspace"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "never",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      },
+      "turn_id": "01a111d2-910c-7e80-bb9a-e561fad73eac",
+      "turn_completed": {
+        "id": "01a111d2-910c-7e80-bb9a-e561fad73eac",
+        "items": [
+          {
+            "type": "agentMessage",
+            "id": "msg_042c281eb911c8c3016ac5131f200087d2b423325efd1a6587",
+            "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\"],\"collaboration_tools\":[\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"note\":\"These are the direct callable tool definitions visible in this conversation. Collaboration tools are listed separately. Tools exposed only through functions.exec are not direct callable tools. No tools were executed.\"}",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "summary",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791300374,
+        "completedAt": 1791300385,
+        "durationMs": 10703
+      },
+      "answer": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\"],\"collaboration_tools\":[\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"note\":\"These are the direct callable tool definitions visible in this conversation. Collaboration tools are listed separately. Tools exposed only through functions.exec are not direct callable tools. No tools were executed.\"}",
+      "answer_json": {
+        "tools": [
+          "functions.wait",
+          "functions.request_user_input",
+          "functions.request_user_input_async",
+          "functions.exec",
+          "clock.sleep"
+        ],
+        "collaboration_tools": [
+          "collaboration.followup_task",
+          "collaboration.interrupt_agent",
+          "collaboration.list_agents",
+          "collaboration.send_message",
+          "collaboration.spawn_agent",
+          "collaboration.wait_agent"
+        ],
+        "note": "These are the direct callable tool definitions visible in this conversation. Collaboration tools are listed separately. Tools exposed only through functions.exec are not direct callable tools. No tools were executed."
+      },
+      "tool_events": [],
+      "token_usage_events": [
+        {
+          "threadId": "01a111d2-90f3-7150-bcb5-73e4536c74be",
+          "turnId": "01a111d2-910c-7e80-bb9a-e561fad73eac",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 10971,
+              "inputTokens": 10771,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 200,
+              "reasoningOutputTokens": 89
+            },
+            "last": {
+              "totalTokens": 10971,
+              "inputTokens": 10771,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 200,
+              "reasoningOutputTokens": 89
+            },
+            "modelContextWindow": 258400
+          }
+        }
+      ],
+      "process_exit_code": 0,
+      "cleanup": {
+        "process_exited": true,
+        "private_root_and_auth_removed": true,
+        "source_auth_unchanged": true,
+        "source_config_unchanged": true
+      }
+    },
+    {
+      "case": "agents_off",
+      "model": "gpt-6.1-sol",
+      "overrides": [
+        "-c",
+        "agents.enabled=false"
+      ],
+      "prompt": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+      "private_root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw",
+      "temporary_auth_copy": true,
+      "private_catalog_copy": true,
+      "command": [
+        "/Users/normy/.local/bin/codex",
+        "app-server",
+        "--listen",
+        "stdio://",
+        "-c",
+        "features.apps=false",
+        "-c",
+        "features.plugins=false",
+        "-c",
+        "features.hooks=false",
+        "-c",
+        "agents.enabled=false"
+      ],
+      "binary_version": "codex-cli 0.160.1",
+      "pid": 56249,
+      "initialize": {
+        "userAgent": "autobyteus-server-ts/0.160.1 (Mac OS 26.5.2; arm64) unknown (autobyteus-server-ts; 0.1.1)",
+        "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex",
+        "platformFamily": "unix",
+        "platformOs": "macos"
+      },
+      "effective_agents": {
+        "enabled": false,
+        "max_concurrent_threads_per_session": null,
+        "max_depth": null,
+        "default_subagent_model": null,
+        "default_subagent_reasoning_effort": null,
+        "job_max_runtime_seconds": null,
+        "interrupt_message": null
+      },
+      "effective_multi_agent_features": {},
+      "thread_start": {
+        "thread": {
+          "id": "01a111d2-bba0-7790-964e-a1c168891b8b",
+          "environments": [
+            {
+              "environmentId": "local",
+              "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+              "runtimeWorkspaceRoots": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace"
+              ]
+            }
+          ],
+          "extra": null,
+          "sessionId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+          "forkedFromId": null,
+          "parentThreadId": null,
+          "preview": "",
+          "ephemeral": true,
+          "section": null,
+          "sectionEnteredAt": null,
+          "projectId": null,
+          "historyMode": "paginated",
+          "modelProvider": "openai",
+          "model": "gpt-6.1-sol",
+          "reasoningEffort": "low",
+          "createdAt": 1791300385,
+          "updatedAt": 1791300385,
+          "recencyAt": 1791300385,
+          "status": {
+            "type": "idle"
+          },
+          "path": null,
+          "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+          "cliVersion": "0.160.1",
+          "originator": "autobyteus-server-ts",
+          "source": "vscode",
+          "canAcceptDirectInput": true,
+          "threadSource": null,
+          "agentNickname": null,
+          "agentRole": null,
+          "gitInfo": null,
+          "name": null,
+          "daybreakEnabled": null,
+          "turns": []
+        },
+        "model": "gpt-6.1-sol",
+        "modelProvider": "openai",
+        "serviceTier": null,
+        "disabledPluginIds": [],
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace",
+        "runtimeWorkspaceRoots": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/workspace"
+        ],
+        "instructionSources": [],
+        "approvalPolicy": "never",
+        "approvalsReviewer": "user",
+        "sandbox": {
+          "type": "readOnly",
+          "networkAccess": false
+        },
+        "activePermissionProfile": null,
+        "reasoningEffort": "low",
+        "multiAgentMode": "explicitRequestOnly"
+      },
+      "turn_id": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+      "turn_completed": {
+        "id": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+        "items": [
+          {
+            "type": "agentMessage",
+            "id": "msg_0bcfcb52bb6eda6d016ac51328fe7c87d28fac2088e8192c22",
+            "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\"],\"collaboration_tools\":[],\"note\":\"No built-in multi-agent/collaboration tools are available. The request_user_input tools ask the user questions; they do not coordinate agents. Tools exposed inside functions.exec are not directly callable tools.\"}",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "summary",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791300385,
+        "completedAt": 1791300395,
+        "durationMs": 9507
+      },
+      "answer": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\"],\"collaboration_tools\":[],\"note\":\"No built-in multi-agent/collaboration tools are available. The request_user_input tools ask the user questions; they do not coordinate agents. Tools exposed inside functions.exec are not directly callable tools.\"}",
+      "answer_json": {
+        "tools": [
+          "functions.wait",
+          "functions.request_user_input",
+          "functions.request_user_input_async",
+          "functions.exec",
+          "clock.sleep"
+        ],
+        "collaboration_tools": [],
+        "note": "No built-in multi-agent/collaboration tools are available. The request_user_input tools ask the user questions; they do not coordinate agents. Tools exposed inside functions.exec are not directly callable tools."
+      },
+      "tool_events": [],
+      "token_usage_events": [
+        {
+          "threadId": "01a111d2-bba0-7790-964e-a1c168891b8b",
+          "turnId": "01a111d2-bbb8-73a1-add2-9f988f1be434",
+          "tokenUsage": {
+            "total": {
+              "totalTokens": 9367,
+              "inputTokens": 9198,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 169,
+              "reasoningOutputTokens": 86
+            },
+            "last": {
+              "totalTokens": 9367,
+              "inputTokens": 9198,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 169,
+              "reasoningOutputTokens": 86
+            },
+            "modelContextWindow": 258400
+          }
+        }
+      ],
+      "process_exit_code": 0,
+      "cleanup": {
+        "process_exited": true,
+        "private_root_and_auth_removed": true,
+        "source_auth_unchanged": true,
+        "source_config_unchanged": true
+      }
+    }
+  ],
+  "assertions": "PASS: 3/3 real turns completed; native tool inventories match captured requests; zero tool execution; cleanup and personal file preservation pass"
+}
