@@ -1,0 +1,642 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/autobyteus-server-ts
+App data directory: /tmp/cmah-browser-main-PvRbmp/data
+Config file path: /tmp/cmah-browser-main-PvRbmp/data/.env
+Loading environment from: /tmp/cmah-browser-main-PvRbmp/data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/cmah-browser-main-PvRbmp/data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:35065
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:35065
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/cmah-browser-main-PvRbmp/data
+DB DIRECTORY: /tmp/cmah-browser-main-PvRbmp/data/db
+LOGS DIRECTORY: /tmp/cmah-browser-main-PvRbmp/data/logs
+DOWNLOAD DIRECTORY: /tmp/cmah-browser-main-PvRbmp/data/download
+MEMORY DIRECTORY: /tmp/cmah-browser-main-PvRbmp/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/tmp/cmah-browser-main-PvRbmp/data/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.20                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:16855) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T08:04:37.254Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/cmah-browser-main-PvRbmp/data/workspaces
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/data/workspaces.
+Initialized TempWorkspace at /tmp/cmah-browser-main-PvRbmp/data/workspaces with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-10-06T08:04:37.494Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-06T08:04:37.494Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1791273877504,"pid":16855,"hostname":"6f0cad5fe95a","msg":"Server listening at http://127.0.0.1:39741"}
+{"level":30,"time":1791273877549,"pid":16855,"hostname":"6f0cad5fe95a","msg":"Server listening at http://127.0.0.1:35065"}
+[2026-10-06T08:04:37.549Z] [INFO] [server.runtime] Server listening on 127.0.0.1:35065
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID lead-a.
+Agent Definition created successfully with ID: lead-a
+In-memory cache: Added new agent definition with ID creator-a.
+Agent Definition created successfully with ID: creator-a
+In-memory cache: Added new agent definition with ID designer-a.
+Agent Definition created successfully with ID: designer-a
+[2026-10-06T08:04:54.574Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID content-team-a.
+Agent Team Definition created successfully with ID: content-team-a
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Created and registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+{"level":30,"time":1791273902400,"pid":16855,"hostname":"6f0cad5fe95a","reqId":"req-a","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1791273902401,"pid":16855,"hostname":"6f0cad5fe95a","reqId":"req-a","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":9.023874998092651,"msg":"http request completed"}
+In-memory cache: Added new agent definition with ID lead-b.
+Agent Definition created successfully with ID: lead-b
+In-memory cache: Added new agent definition with ID creator-b.
+Agent Definition created successfully with ID: creator-b
+In-memory cache: Added new agent definition with ID designer-b.
+Agent Definition created successfully with ID: designer-b
+[2026-10-06T08:05:06.311Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID content-team-b.
+Agent Team Definition created successfully with ID: content-team-b
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_b_30390530460b483ba65a801babbd5106: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 7b0ecf40-b9cb-4811-847a-04573eab1a0e for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=7b0ecf40-b9cb-4811-847a-04573eab1a0e, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_b_37201f395f424d839d4284fab9880fbf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 7b0ecf40-b9cb-4811-847a-04573eab1a0e
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 26110759-1e6d-4428-a74c-528589c04668 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=26110759-1e6d-4428-a74c-528589c04668, run=creator_b_30390530460b483ba65a801babbd5106
+Closed agent session 26110759-1e6d-4428-a74c-528589c04668
+Agent WebSocket disconnected: 26110759-1e6d-4428-a74c-528589c04668
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run designer_b_dad89e7112924b65aa5de7be5eb13233: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_b_d3a6d79a3fc8411887187c1d44d610c7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 7a43222c-9fb7-4870-8551-fd8e283ab43b using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 7a43222c-9fb7-4870-8551-fd8e283ab43b
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 2ea30c07-b03c-4f80-9b0f-d29db8066c86 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=2ea30c07-b03c-4f80-9b0f-d29db8066c86, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 0a758dee-769f-49ff-9dc8-c00f5189f83e for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=0a758dee-769f-49ff-9dc8-c00f5189f83e, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session 0a758dee-769f-49ff-9dc8-c00f5189f83e
+Closed agent session 2ea30c07-b03c-4f80-9b0f-d29db8066c86
+Agent WebSocket disconnected: 2ea30c07-b03c-4f80-9b0f-d29db8066c86
+Closed PTY session 7a43222c-9fb7-4870-8551-fd8e283ab43b
+Terminal WebSocket disconnected: 7a43222c-9fb7-4870-8551-fd8e283ab43b
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 2f507ff4-1908-4e22-8834-76d223021bbe for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=2f507ff4-1908-4e22-8834-76d223021bbe, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Created terminal session 280ac184-51b5-40a4-8142-f3a2ffc9e100 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 280ac184-51b5-40a4-8142-f3a2ffc9e100
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 2d0f5c76-3e74-4c53-9c4e-fe6aff741cd8 for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=2d0f5c76-3e74-4c53-9c4e-fe6aff741cd8, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 7992814e-8bf9-4d15-ad55-f443e802a22c for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=7992814e-8bf9-4d15-ad55-f443e802a22c, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 71eb079d-3041-491e-9443-2f64823e7695 for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=71eb079d-3041-491e-9443-2f64823e7695, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+In-memory cache: Added new agent definition with ID lead-c.
+Agent Definition created successfully with ID: lead-c
+In-memory cache: Added new agent definition with ID creator-c.
+Agent Definition created successfully with ID: creator-c
+In-memory cache: Added new agent definition with ID designer-c.
+Agent Definition created successfully with ID: designer-c
+[2026-10-06T08:10:24.091Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID content-team-c.
+Agent Team Definition created successfully with ID: content-team-c
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_c_2766e1db66a04c47bb740a744593eb77: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 280417e2-5ea4-4294-8778-42460543b5f3 for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=280417e2-5ea4-4294-8778-42460543b5f3, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_c_c06bfd17b83945d0b74d91ccf34a5a5f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session 2ec1daf8-e669-44ae-be6d-e0a8bcfecfbb for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=2ec1daf8-e669-44ae-be6d-e0a8bcfecfbb, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 36577d0e-1a68-4b9c-9bca-e388afe1f8d7 for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=36577d0e-1a68-4b9c-9bca-e388afe1f8d7, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 3c71a23c-31b4-416b-b57d-7ccf29fcdd56 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=3c71a23c-31b4-416b-b57d-7ccf29fcdd56, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session f0ffdf6f-32d7-42ed-9c00-f5e00370a65f for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=f0ffdf6f-32d7-42ed-9c00-f5e00370a65f, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Created terminal session 3eeda703-cf73-4507-98dc-17a1ea7ea0ae using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 3eeda703-cf73-4507-98dc-17a1ea7ea0ae
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session d87a1209-1f43-416e-9b98-c994464ea1a3 for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=d87a1209-1f43-416e-9b98-c994464ea1a3, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session d570dd47-18e0-4756-98aa-f600eaabb730 for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=d570dd47-18e0-4756-98aa-f600eaabb730, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session d570dd47-18e0-4756-98aa-f600eaabb730
+Closed agent session d87a1209-1f43-416e-9b98-c994464ea1a3
+Closed agent session f0ffdf6f-32d7-42ed-9c00-f5e00370a65f
+Agent WebSocket disconnected: f0ffdf6f-32d7-42ed-9c00-f5e00370a65f
+Closed agent session 3c71a23c-31b4-416b-b57d-7ccf29fcdd56
+Agent WebSocket disconnected: 3c71a23c-31b4-416b-b57d-7ccf29fcdd56
+Closed PTY session 3eeda703-cf73-4507-98dc-17a1ea7ea0ae
+Terminal WebSocket disconnected: 3eeda703-cf73-4507-98dc-17a1ea7ea0ae
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 8f444da3-ae46-42ca-9ac4-e0e7bdb36156 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=8f444da3-ae46-42ca-9ac4-e0e7bdb36156, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session 75117fab-49d8-40e2-98a7-6f151cec59f9 for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=75117fab-49d8-40e2-98a7-6f151cec59f9, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Created terminal session 426d2f6c-dd71-4eef-9152-0fef0b7e07e8 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 426d2f6c-dd71-4eef-9152-0fef0b7e07e8
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 255b74f2-9691-4bd1-9fb8-b6084bc10d35 for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=255b74f2-9691-4bd1-9fb8-b6084bc10d35, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 14c177d1-1812-4c55-91f6-3b38c88631ad for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=14c177d1-1812-4c55-91f6-3b38c88631ad, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session 14c177d1-1812-4c55-91f6-3b38c88631ad
+Closed agent session 255b74f2-9691-4bd1-9fb8-b6084bc10d35
+Closed agent session 75117fab-49d8-40e2-98a7-6f151cec59f9
+Agent WebSocket disconnected: 75117fab-49d8-40e2-98a7-6f151cec59f9
+Closed agent session 8f444da3-ae46-42ca-9ac4-e0e7bdb36156
+Agent WebSocket disconnected: 8f444da3-ae46-42ca-9ac4-e0e7bdb36156
+Closed PTY session 426d2f6c-dd71-4eef-9152-0fef0b7e07e8
+Terminal WebSocket disconnected: 426d2f6c-dd71-4eef-9152-0fef0b7e07e8
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 5ab30f20-a198-497e-bf24-e499cab80003 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=5ab30f20-a198-497e-bf24-e499cab80003, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session d9b7f35e-9702-499e-8107-eb8d44c43e51 for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=d9b7f35e-9702-499e-8107-eb8d44c43e51, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Created terminal session 607913c4-4489-4af3-89b7-a062fc415a48 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 607913c4-4489-4af3-89b7-a062fc415a48
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session b6149f45-b1a5-4c0b-a08b-67602f45b63f for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=b6149f45-b1a5-4c0b-a08b-67602f45b63f, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 4b4ac65a-e76d-495d-b5c6-76c71b09982f for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=4b4ac65a-e76d-495d-b5c6-76c71b09982f, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session 280417e2-5ea4-4294-8778-42460543b5f3
+In-memory cache: Added new agent definition with ID lead-d.
+Agent Definition created successfully with ID: lead-d
+In-memory cache: Added new agent definition with ID creator-d.
+Agent Definition created successfully with ID: creator-d
+In-memory cache: Added new agent definition with ID designer-d.
+Agent Definition created successfully with ID: designer-d
+[2026-10-06T08:11:45.246Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID content-team-d.
+Agent Team Definition created successfully with ID: content-team-d
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session 9e18132f-79d5-456c-9247-b1da36489632 for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=9e18132f-79d5-456c-9247-b1da36489632, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Creating new workspace for rootPath: /tmp/cmah-browser-main-PvRbmp/workspace
+Created metadata-only FileSystemWorkspace at /tmp/cmah-browser-main-PvRbmp/workspace.
+Reusing registered workspace ID: agent_ws_942477a5608abbd139dc2f8619debd72f33f343b5fa52d24eb215bcd4933882e
+AGY compaction detection off for run creator_d_def743a0f8a54780a95512d7b925e8a6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session cf6b5dbb-dfc0-478f-9ae2-bd55e90c64d7 for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=cf6b5dbb-dfc0-478f-9ae2-bd55e90c64d7, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session 9df7a316-f9c1-4acd-bbac-b749bbdb83b6 for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=9df7a316-f9c1-4acd-bbac-b749bbdb83b6, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Closed agent session b6149f45-b1a5-4c0b-a08b-67602f45b63f
+Closed agent session d9b7f35e-9702-499e-8107-eb8d44c43e51
+Agent WebSocket disconnected: d9b7f35e-9702-499e-8107-eb8d44c43e51
+Closed agent session 5ab30f20-a198-497e-bf24-e499cab80003
+Agent WebSocket disconnected: 5ab30f20-a198-497e-bf24-e499cab80003
+Closed agent session 9df7a316-f9c1-4acd-bbac-b749bbdb83b6
+Closed agent session cf6b5dbb-dfc0-478f-9ae2-bd55e90c64d7
+Agent WebSocket disconnected: cf6b5dbb-dfc0-478f-9ae2-bd55e90c64d7
+Closed agent session 4b4ac65a-e76d-495d-b5c6-76c71b09982f
+Closed PTY session 607913c4-4489-4af3-89b7-a062fc415a48
+Terminal WebSocket disconnected: 607913c4-4489-4af3-89b7-a062fc415a48
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session e53b37ef-a6b4-4c74-a885-961c2a7d4677 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=e53b37ef-a6b4-4c74-a885-961c2a7d4677, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session cfd42bf2-f397-4ab3-868e-010f234359fc for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=cfd42bf2-f397-4ab3-868e-010f234359fc, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session 7bdbadbf-f2f6-4f8c-9834-ee9fdeea4264 for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=7bdbadbf-f2f6-4f8c-9834-ee9fdeea4264, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Created terminal session 875a01f3-d92b-4c29-8802-b5440e24e709 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 875a01f3-d92b-4c29-8802-b5440e24e709
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session 610115e2-e74f-4c95-bac3-dc5dc453fe85 for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=610115e2-e74f-4c95-bac3-dc5dc453fe85, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 8656a137-5875-4bfc-bdc9-35bd4b6f47db for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=8656a137-5875-4bfc-bdc9-35bd4b6f47db, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Created agent session 8b2fd49f-1ce3-4f54-ab2f-4e1ed0e99408 for run content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Agent Team WebSocket connected: session=8b2fd49f-1ce3-4f54-ab2f-4e1ed0e99408, run=content_team_b_1c05a5e5d6364608aeef3a4a767ccee1
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session 9e18132f-79d5-456c-9247-b1da36489632
+Closed agent session 8b2fd49f-1ce3-4f54-ab2f-4e1ed0e99408
+Closed agent session 610115e2-e74f-4c95-bac3-dc5dc453fe85
+Closed agent session 7bdbadbf-f2f6-4f8c-9834-ee9fdeea4264
+Agent WebSocket disconnected: 7bdbadbf-f2f6-4f8c-9834-ee9fdeea4264
+Closed agent session cfd42bf2-f397-4ab3-868e-010f234359fc
+Agent WebSocket disconnected: cfd42bf2-f397-4ab3-868e-010f234359fc
+Closed agent session e53b37ef-a6b4-4c74-a885-961c2a7d4677
+Agent WebSocket disconnected: e53b37ef-a6b4-4c74-a885-961c2a7d4677
+Closed PTY session 875a01f3-d92b-4c29-8802-b5440e24e709
+Closed agent session 8656a137-5875-4bfc-bdc9-35bd4b6f47db
+Terminal WebSocket disconnected: 875a01f3-d92b-4c29-8802-b5440e24e709
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 9084f20c-894e-45cb-a1f2-df97b93cb63c for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=9084f20c-894e-45cb-a1f2-df97b93cb63c, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session be3e6205-cc5e-48bf-a541-1553e30fe25c for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=be3e6205-cc5e-48bf-a541-1553e30fe25c, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session e18f6ab1-7812-4c22-98e8-fc2d9165e239 for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=e18f6ab1-7812-4c22-98e8-fc2d9165e239, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Created terminal session 22da684b-1685-4725-bff1-81f1647383d9 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 22da684b-1685-4725-bff1-81f1647383d9
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session 5846d4ee-aeb4-4958-9743-021956d02b7c for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=5846d4ee-aeb4-4958-9743-021956d02b7c, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 982d5e30-9a7e-4a13-a8cf-d59dfa26a1b4 for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=982d5e30-9a7e-4a13-a8cf-d59dfa26a1b4, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session be3e6205-cc5e-48bf-a541-1553e30fe25c
+Agent WebSocket disconnected: be3e6205-cc5e-48bf-a541-1553e30fe25c
+Closed agent session 9084f20c-894e-45cb-a1f2-df97b93cb63c
+Agent WebSocket disconnected: 9084f20c-894e-45cb-a1f2-df97b93cb63c
+Closed PTY session 22da684b-1685-4725-bff1-81f1647383d9
+Closed agent session 982d5e30-9a7e-4a13-a8cf-d59dfa26a1b4
+Closed agent session 5846d4ee-aeb4-4958-9743-021956d02b7c
+Closed agent session e18f6ab1-7812-4c22-98e8-fc2d9165e239
+Agent WebSocket disconnected: e18f6ab1-7812-4c22-98e8-fc2d9165e239
+Terminal WebSocket disconnected: 22da684b-1685-4725-bff1-81f1647383d9
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session e4b8b44a-0e6a-4cb7-925f-7ceecd61dbd2 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=e4b8b44a-0e6a-4cb7-925f-7ceecd61dbd2, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session 47be7d46-0ff7-4c5d-88b7-bc0fe7cb7c14 for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=47be7d46-0ff7-4c5d-88b7-bc0fe7cb7c14, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session 3f0de35f-f483-4c2c-a71a-3a659e83f6ed for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=3f0de35f-f483-4c2c-a71a-3a659e83f6ed, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created terminal session 5fdb0357-54e3-4f11-88a7-27ce38bd1d95 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 5fdb0357-54e3-4f11-88a7-27ce38bd1d95
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session 233bf0df-ba18-4631-9796-1a5952299b38 for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=233bf0df-ba18-4631-9796-1a5952299b38, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 67491b38-1e6c-4ce2-9391-ac54c0841342 for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=67491b38-1e6c-4ce2-9391-ac54c0841342, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Closed PTY session 5fdb0357-54e3-4f11-88a7-27ce38bd1d95
+Terminal WebSocket disconnected: 5fdb0357-54e3-4f11-88a7-27ce38bd1d95
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session ff7614a4-76ff-4997-9f98-531bf0e439ae for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=ff7614a4-76ff-4997-9f98-531bf0e439ae, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Created terminal session ba63a9b4-12cb-4b20-826f-ac2aeccd360a using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: ba63a9b4-12cb-4b20-826f-ac2aeccd360a
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session a77bf4c0-415d-449f-886f-820e6d74aa7d for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=a77bf4c0-415d-449f-886f-820e6d74aa7d, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session bac4d153-e6ce-4bdf-a995-5926c6152b87 for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=bac4d153-e6ce-4bdf-a995-5926c6152b87, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session d536d67e-fa7a-4b03-a6c0-10979199455c for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=d536d67e-fa7a-4b03-a6c0-10979199455c, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 52b7c7df-ea6c-42ea-887d-d8791cca869c for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=52b7c7df-ea6c-42ea-887d-d8791cca869c, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Closed PTY session ba63a9b4-12cb-4b20-826f-ac2aeccd360a
+Terminal WebSocket disconnected: ba63a9b4-12cb-4b20-826f-ac2aeccd360a
+Closed agent session ff7614a4-76ff-4997-9f98-531bf0e439ae
+Agent WebSocket disconnected: ff7614a4-76ff-4997-9f98-531bf0e439ae
+Closed agent session d536d67e-fa7a-4b03-a6c0-10979199455c
+Closed agent session bac4d153-e6ce-4bdf-a995-5926c6152b87
+Agent WebSocket disconnected: bac4d153-e6ce-4bdf-a995-5926c6152b87
+Closed agent session a77bf4c0-415d-449f-886f-820e6d74aa7d
+Agent WebSocket disconnected: a77bf4c0-415d-449f-886f-820e6d74aa7d
+Closed agent session 52b7c7df-ea6c-42ea-887d-d8791cca869c
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_orgs/studio_org_b_36edfce223f0477a93428dddb9557886/content_team_b_dc98354a59b642fba860f8c08cd0dc56/lead_b_ca5e5c224cde4b2db172ccaf9e9cafe4/raw_traces_active.jsonl
+Created terminal session 395c4802-5411-414c-a410-1d63336419e9 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: 395c4802-5411-414c-a410-1d63336419e9
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session 688bbd4a-ffb4-4134-b38f-879b623bfb6f for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=688bbd4a-ffb4-4134-b38f-879b623bfb6f, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session d5ee1ace-ae76-44e8-8ce3-ffbce262690a for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=d5ee1ace-ae76-44e8-8ce3-ffbce262690a, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session 5c22da28-d050-45a9-9e28-97d7d2a6b201 for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=5c22da28-d050-45a9-9e28-97d7d2a6b201, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session c748d561-4f6c-49ce-86d0-985c3880d8f0 for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=c748d561-4f6c-49ce-86d0-985c3880d8f0, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 14581aac-392a-43ba-bc92-9a65e76836fa for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=14581aac-392a-43ba-bc92-9a65e76836fa, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Agent websocket attached for run creator_b_30390530460b483ba65a801babbd5106
+Created agent session f5c015fb-8b34-4d4a-b616-dc02a469f7e9 for run creator_b_30390530460b483ba65a801babbd5106
+Agent WebSocket connected: session=f5c015fb-8b34-4d4a-b616-dc02a469f7e9, run=creator_b_30390530460b483ba65a801babbd5106
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_c_2766e1db66a04c47bb740a744593eb77/raw_traces_active.jsonl
+Agent websocket attached for run creator_c_2766e1db66a04c47bb740a744593eb77
+Created agent session b35bd536-9b12-43d6-979d-0c42c3632964 for run creator_c_2766e1db66a04c47bb740a744593eb77
+Agent WebSocket connected: session=b35bd536-9b12-43d6-979d-0c42c3632964, run=creator_c_2766e1db66a04c47bb740a744593eb77
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agents/creator_d_a2e0f2902d8b408b84c05dca705ab2d4/raw_traces_active.jsonl
+Agent websocket attached for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Created agent session 8dfaaf70-6b5a-4362-adf9-abd1f593bdbb for run creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Agent WebSocket connected: session=8dfaaf70-6b5a-4362-adf9-abd1f593bdbb, run=creator_d_a2e0f2902d8b408b84c05dca705ab2d4
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Created terminal session b29ad489-43d9-44bb-ad0c-76e6c673a6f4 using backend PtySession for target /tmp/cmah-browser-main-PvRbmp/home
+Terminal WebSocket connected: b29ad489-43d9-44bb-ad0c-76e6c673a6f4
+Terminal websocket attached for cwd /tmp/cmah-browser-main-PvRbmp/home
+Agent team websocket attached for team run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Created agent session 2031f3e6-9074-4cca-9143-ed1828c6f2bb for run content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Agent Team WebSocket connected: session=2031f3e6-9074-4cca-9143-ed1828c6f2bb, run=content_team_d_c347b4f3a79b471c97c0403bb3d61e18
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_d_c347b4f3a79b471c97c0403bb3d61e18/lead_d_0cfc204d091744f6a11868e9f4bfaa37/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Created agent session 3ccb9714-ba10-4a82-9c57-036bd18a0eed for run content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Agent Team WebSocket connected: session=3ccb9714-ba10-4a82-9c57-036bd18a0eed, run=content_team_c_9b39897a375a42468a86fdd1a5ea95a8
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_c_9b39897a375a42468a86fdd1a5ea95a8/lead_c_ab6f459fa65041f382332383877889a1/raw_traces_active.jsonl
+Memory file missing: /tmp/cmah-browser-main-PvRbmp/data/memory/agent_teams/content_team_b_1c05a5e5d6364608aeef3a4a767ccee1/lead_b_69aee769781a41cca56c6157379bfab3/raw_traces_active.jsonl
+Closed agent session 71eb079d-3041-491e-9443-2f64823e7695
+Closed agent session 36577d0e-1a68-4b9c-9bca-e388afe1f8d7
+Closed agent session 3ccb9714-ba10-4a82-9c57-036bd18a0eed
+Closed agent session 3f0de35f-f483-4c2c-a71a-3a659e83f6ed
+Agent WebSocket disconnected: 3f0de35f-f483-4c2c-a71a-3a659e83f6ed
+Closed agent session 688bbd4a-ffb4-4134-b38f-879b623bfb6f
+Agent WebSocket disconnected: 688bbd4a-ffb4-4134-b38f-879b623bfb6f
+Closed agent session 2ec1daf8-e669-44ae-be6d-e0a8bcfecfbb
+Agent WebSocket disconnected: 2ec1daf8-e669-44ae-be6d-e0a8bcfecfbb
+Closed agent session 14581aac-392a-43ba-bc92-9a65e76836fa
+Closed agent session 5c22da28-d050-45a9-9e28-97d7d2a6b201
+Agent WebSocket disconnected: 5c22da28-d050-45a9-9e28-97d7d2a6b201
+Closed PTY session b29ad489-43d9-44bb-ad0c-76e6c673a6f4
+Closed agent session e4b8b44a-0e6a-4cb7-925f-7ceecd61dbd2
+Agent WebSocket disconnected: e4b8b44a-0e6a-4cb7-925f-7ceecd61dbd2
+Closed agent session 2d0f5c76-3e74-4c53-9c4e-fe6aff741cd8
+Closed agent session 7992814e-8bf9-4d15-ad55-f443e802a22c
+Agent WebSocket disconnected: 7992814e-8bf9-4d15-ad55-f443e802a22c
+Closed agent session 233bf0df-ba18-4631-9796-1a5952299b38
+Closed agent session f5c015fb-8b34-4d4a-b616-dc02a469f7e9
+Agent WebSocket disconnected: f5c015fb-8b34-4d4a-b616-dc02a469f7e9
+Closed agent session 2031f3e6-9074-4cca-9143-ed1828c6f2bb
+Closed agent session 2f507ff4-1908-4e22-8834-76d223021bbe
+Agent WebSocket disconnected: 2f507ff4-1908-4e22-8834-76d223021bbe
+Closed agent session c748d561-4f6c-49ce-86d0-985c3880d8f0
+Closed agent session d5ee1ace-ae76-44e8-8ce3-ffbce262690a
+Agent WebSocket disconnected: d5ee1ace-ae76-44e8-8ce3-ffbce262690a
+Closed agent session 67491b38-1e6c-4ce2-9391-ac54c0841342
+Closed agent session 47be7d46-0ff7-4c5d-88b7-bc0fe7cb7c14
+Agent WebSocket disconnected: 47be7d46-0ff7-4c5d-88b7-bc0fe7cb7c14
+Closed agent session 8dfaaf70-6b5a-4362-adf9-abd1f593bdbb
+Agent WebSocket disconnected: 8dfaaf70-6b5a-4362-adf9-abd1f593bdbb
+Closed agent session b35bd536-9b12-43d6-979d-0c42c3632964
+Agent WebSocket disconnected: b35bd536-9b12-43d6-979d-0c42c3632964
+Closed PTY session 395c4802-5411-414c-a410-1d63336419e9
+Closed PTY session 280ac184-51b5-40a4-8142-f3a2ffc9e100
+Terminal WebSocket disconnected: b29ad489-43d9-44bb-ad0c-76e6c673a6f4
+Terminal WebSocket disconnected: 280ac184-51b5-40a4-8142-f3a2ffc9e100
+Terminal WebSocket disconnected: 395c4802-5411-414c-a410-1d63336419e9
+[2026-10-06T08:14:53.141Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-06T08:14:53.187Z] [INFO] [server.runtime] Server closed cleanly.
