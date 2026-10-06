@@ -1,0 +1,13 @@
+{
+  "result": "Blocked",
+  "classification": "Unclear \u2014 explicit final user-verification evidence absent (non-deployment gate), not a code/design defect",
+  "selectedRule": {
+    "when": "When delivery discovers a Design Impact, Requirement Gap, or Unclear issue, or final handoff is blocked by a non-deployment issue that requires upstream classification.",
+    "recipient_address": "/solution_designer"
+  },
+  "reason": "No implementation Local Fix found; Delivery Completed condition is false. Missing final-verification evidence is routed only to Solution Designer for coordination/acceptance capture, not technical redesign.",
+  "otherRules": "Not matched",
+  "successfulTerminalEligible": false,
+  "userQuestionAccepted": true,
+  "userAcceptanceReceived": false
+}

@@ -1,0 +1,10 @@
+Command: git diff --check -- autobyteus-web/docs/file_explorer.md autobyteus-web/docs/content_rendering.md
+Result: exit 0 / Pass
+
+Documentation source-contract review: current selected-ID/recovery owner, local typed capability, mounted shell and launcher inspected.
+Local Markdown document links resolve: autobyteus-web/docs/file_explorer.md
+Local Markdown document links resolve: autobyteus-web/docs/content_rendering.md
+Delivery reports/DR-001 and cumulative current authorities exist: Pass
+No runtime/test changes by Delivery; reports describe only executed checks and pending gates.
+First-native-activation.png reviewed visually; correct selected B preview visible. Supporting evidence, not human acceptance.
+No stage/add/commit/push/archive/tag/release/task cleanup executed after docs sync.
