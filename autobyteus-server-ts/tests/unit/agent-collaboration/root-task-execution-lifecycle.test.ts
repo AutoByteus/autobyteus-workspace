@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
 import type {
   PreparedTaskExecutionActivation,
   RootTaskExecutionAdapter,
@@ -118,18 +119,31 @@ const setup = (overrides: Partial<RootTaskExecutionAdapter<string>> = {}, grace 
   const timers = new ManualTimers();
   const fake = createFakeAdapter(overrides);
   let currentGrace = grace;
-  const lifecycle = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => currentGrace, timers });
-  return { ...fake, timers, lifecycle, setGrace: (value: number) => { currentGrace = value; } };
+  // Production always binds the Task side; every delegated copy belongs to a Task.
+  const resources = new InMemoryTaskAgentResources();
+  const lifecycle = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => currentGrace, timers, taskAgentResources: resources });
+  return { ...fake, timers, lifecycle, resources, setGrace: (value: number) => { currentGrace = value; } };
 };
 
 const child: TaskExecutionReference = { agentRunId: "child-run" };
 const team: TaskExecutionReference = { teamRunId: "task-team-run" };
 
 describe("RootTaskExecutionLifecycle delegation result", () => {
-  it("returns only the spawned ingress run ID on success", async () => {
-    const { lifecycle } = setup();
+  it("returns the spawned ingress run ID and the task_id of the Task with no Project it created (REQ-003/004)", async () => {
+    const { lifecycle, resources } = setup();
     await expect(lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
-      .resolves.toEqual({ target_agent_run_id: "child-run" });
+      .resolves.toEqual({ target_agent_run_id: "child-run", task_id: "ad_hoc_task_1" });
+    expect(resources.links).toEqual([expect.objectContaining({ role: "assigned", assignedBy: "coordinator-run",
+      adHocTask: { description: "Do it", referenceFiles: [] }, agentRun: { agentRunId: "child-run" } })]);
+    expect(resources.tasks.get("ad_hoc_task_1")).toEqual({ description: "Do it", referenceFiles: [], done: false, adHoc: true });
+  });
+
+  it("rejects description-only delegation before any planning when no Task side is bound", async () => {
+    const fake = createFakeAdapter();
+    const unbound = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => GRACE, timers: new ManualTimers() });
+    await expect(unbound.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
+      .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" });
+    expect(fake.adapter.planActivation).not.toHaveBeenCalled();
   });
 
   it("returns a null run ID with a message when nothing started, aborting the preparation", async () => {

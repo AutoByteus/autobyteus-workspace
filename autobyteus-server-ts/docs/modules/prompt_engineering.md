@@ -241,6 +241,9 @@ copy. Every call spawns another copy, so copies can work in parallel.
   coordinator). If `target_agent_run_id` is null, nothing was started and
   `message` explains why; correct the problem and delegate again, or report
   the failure.
+- A description-only delegation that creates a Task also returns its
+  `task_id`. When the work is finished, call `create_or_update_task` with that
+  `task_id` and status `DONE`; this stops the copy and removes it from the run.
 
 Follow up on a copy only through `send_message_to` with its
 `target_agent_run_id`, in both directions. A copy that stays quiet is shut

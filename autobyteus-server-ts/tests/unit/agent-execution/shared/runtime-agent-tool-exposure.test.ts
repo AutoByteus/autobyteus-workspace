@@ -95,6 +95,12 @@ describe("runtime-agent-tool-exposure", () => {
     expect(exposure.publishArtifactsEnabled).toBe(true);
   });
 
+  it("adds no Task tool to an agent without a member context (no delegate_task either)", () => {
+    const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["run_bash"] }, null);
+    expect(exposure.requestedToolNames).toEqual(["run_bash"]);
+    expect(exposure.enabledProjectTaskToolNames).toEqual([]);
+  });
+
   it("resolves missing agent definitions to an empty exposure", () => {
     expect(resolveRuntimeAgentToolExposure(null)).toEqual({
       requestedToolNames: [],
@@ -109,7 +115,7 @@ describe("runtime-agent-tool-exposure", () => {
     });
   });
 
-  it("deduplicates configured names and automatically adds the three Team runtime tools", () => {
+  it("deduplicates configured names and automatically adds the four Team runtime tools", () => {
     const exposure = resolveRuntimeAgentToolExposure(
       { toolNames: [" run_bash ", "run_bash", "send_message_to"] },
       memberExecutionContext,
@@ -119,23 +125,28 @@ describe("runtime-agent-tool-exposure", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
+      "create_or_update_task",
     ]);
     expect(exposure.requestedToolNames).toEqual([
       "run_bash",
       "send_message_to",
       "get_handoff_rules",
       "delegate_task",
+      "create_or_update_task",
     ]);
     expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
+    // REQ-007: wherever delegate_task is, the Task it creates can be marked DONE (every runtime reads this list).
+    expect(exposure.enabledProjectTaskToolNames).toEqual(["create_or_update_task"]);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(exposure.getHandoffRulesEnabled).toBe(true);
   });
 
-  it("gives a member that belongs to no Team send_message_to and delegate_task but not get_handoff_rules", () => {
+  it("gives a member that belongs to no Team send_message_to, delegate_task and create_or_update_task but not get_handoff_rules", () => {
     const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false });
-    expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task"]);
+    expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task", "create_or_update_task"]);
     const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["delegate_task", "run_bash"] }, host);
-    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to"]);
+    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to", "create_or_update_task"]);
+    expect(exposure.enabledProjectTaskToolNames).toEqual(["create_or_update_task"]);
     expect(exposure.getHandoffRulesEnabled).toBe(false);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(automaticCollaborationToolNames(null)).toEqual([]);

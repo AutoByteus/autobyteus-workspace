@@ -122,7 +122,8 @@ describe("list_available_agents (REQ-001/002)", () => {
     expect(JSON.parse(await (tool as unknown as { _execute(): Promise<string> })._execute())).toEqual({ agents: listed });
     expect(resolve(withoutLister(), [LIST_AVAILABLE_AGENTS_TOOL_NAME]).actualToolNames).not.toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
     expect(resolve(withLister(), []).actualToolNames).not.toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
-    expect(logger.warn).toHaveBeenCalledOnce();
+    // Only the unlistable sender is warned about (other automatic tools are not registered in this unit test).
+    expect(logger.warn.mock.calls.filter(([message]) => String(message).includes(LIST_AVAILABLE_AGENTS_TOOL_NAME))).toHaveLength(1);
   });
 
   it("is an Agent Tools MCP adapter for the other runtimes, available only to a sender that can list", async () => {

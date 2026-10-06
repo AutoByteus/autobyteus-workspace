@@ -174,12 +174,12 @@ export class AgentTeamStreamHandler {
     let content = payload.content;
     if (payload.mentions?.length) {
       try {
-        const admission = await root.admitCollaboratorMentions({
+        const admission = await root.resolveCollaboratorMentions({
           focusedAgentRunId: agentRunId,
           mentions: toCollaboratorMentions(payload.mentions),
         });
         if (!admission.admitted) {
-          // Nothing was added or posted; the client keeps the draft and shows the notice.
+          // Nothing was posted; the client keeps the draft and shows the notice.
           sink?.send("collaboratorName" in admission
             ? errorMessage(admission.code, admission.message, agentRunId, undefined, admission.collaboratorName)
             : errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));

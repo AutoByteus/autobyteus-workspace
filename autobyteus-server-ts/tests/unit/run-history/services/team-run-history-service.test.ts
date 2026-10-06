@@ -36,16 +36,19 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
     isActive: input.active ?? false,
     memberStatusSnapshots: input.active ? [{ agentRunId: "worker-run", status: "running" }] : [],
   })) };
+  const adHocTasks = { deleteAdHocTasksHostedBy: vi.fn(async () => undefined) };
   return {
     catalog,
     treeStore,
     manager,
     live,
+    adHocTasks,
     service: new TeamRunHistoryService("/tmp/memory", {
       catalogService: catalog as never,
       executionTreeStore: treeStore as never,
       teamRunManager: manager as never,
       liveProjectionService: live as never,
+      adHocTasks,
     }),
   };
 };
@@ -96,11 +99,20 @@ describe("TeamRunHistoryService current execution tree", () => {
       .rejects.toThrow("execution tree not found");
   });
 
-  it("delegates archive and delete to the current catalog owner", async () => {
-    const { service, catalog } = harness();
+  it("delegates archive and delete to the current catalog owner; a committed delete removes the run's ad-hoc Tasks", async () => {
+    const { service, catalog, adHocTasks } = harness();
     await expect(service.archiveStoredTeamRun("team-1")).resolves.toMatchObject({ success: true });
+    expect(adHocTasks.deleteAdHocTasksHostedBy).not.toHaveBeenCalled();
     await expect(service.deleteStoredTeamRun("team-1")).resolves.toMatchObject({ success: true });
     expect(catalog.archiveTeamRun).toHaveBeenCalledWith("team-1");
     expect(catalog.deleteTeamRun).toHaveBeenCalledWith("team-1");
+    expect(adHocTasks.deleteAdHocTasksHostedBy).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent_team", rootRunId: "team-1" });
+  });
+
+  it("a refused delete keeps the run's ad-hoc Tasks", async () => {
+    const { service, catalog, adHocTasks } = harness();
+    catalog.deleteTeamRun.mockResolvedValueOnce({ success: false, message: "Team run is active." });
+    await expect(service.deleteStoredTeamRun("team-1")).resolves.toEqual({ success: false, message: "Team run is active." });
+    expect(adHocTasks.deleteAdHocTasksHostedBy).not.toHaveBeenCalled();
   });
 });

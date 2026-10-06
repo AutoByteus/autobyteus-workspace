@@ -51,8 +51,18 @@ describe("projects subsystem boundaries", () => {
     const runtimeRoots = ["agent-team-execution", "agent-collaboration", "agent-execution", "agent-org-execution", "standalone-agent-run-root"]
       .map((folder) => join(SRC, folder))
       .filter((root) => { try { return statSync(root).isDirectory(); } catch { return false; } });
-    for (const root of [...runtimeRoots, join(SRC, "run-history")]) {
-      expect(filesImporting(root, /(^|\/)projects\//)).toEqual([]);
+    // The one allowed direction from run lifecycle to Projects: each permanent-delete owner removes the
+    // deleted run's ad-hoc Tasks through the Task service, and nothing else of Projects (REQ-009).
+    const deleteOwners = [
+      "agent-org-execution/services/agent-org-run-service.ts",
+      "run-history/services/agent-run-history-catalog-service.ts",
+      "run-history/services/team-run-history-service.ts",
+    ];
+    const projectsImporters = [...runtimeRoots, join(SRC, "run-history")].flatMap((root) => filesImporting(root, /(^|\/)projects\//));
+    expect(projectsImporters.sort()).toEqual(deleteOwners);
+    for (const owner of deleteOwners) {
+      expect(importSpecifiers(join(SRC, owner)).filter((specifier) => /(^|\/)projects\//.test(specifier)))
+        .toEqual(["../../projects/services/project-task-service.js"]);
     }
     // Only the one composition binding knows both sides.
     expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//)).toEqual(["compositions/project-task-agent-resource-composition.ts"]);

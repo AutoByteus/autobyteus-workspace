@@ -10,6 +10,8 @@ import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
+import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 import { compactSummary } from "./run-history-service-helpers.js";
 import {
   createStandaloneRunLiveness,
@@ -108,6 +110,7 @@ export class AgentRunHistoryCatalogService {
   private readonly liveness: StandaloneRunLiveness;
   private readonly state: CatalogState;
   private readonly definitionNameCache = new Map<string, string>();
+  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
 
   constructor(
     private readonly memoryDir: string,
@@ -118,8 +121,10 @@ export class AgentRunHistoryCatalogService {
       agentDefinitionService?: AgentDefinitionLookup;
       agentRunManager?: AgentRunActivityLookup;
       collaborationRoots?: StandaloneRunCollaborationRoots;
+      adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">; // default: the process Task service
     } = {},
   ) {
+    this.adHocTasks = dependencies.adHocTasks;
     this.indexStore =
       dependencies.indexStore ?? new AgentRunHistoryIndexStore(memoryDir);
     this.metadataStore =
@@ -304,7 +309,11 @@ export class AgentRunHistoryCatalogService {
       };
     }
 
-    return this.removeCatalogRowAndDirectory(identity.runId, identity.runDirPath, "deleted permanently");
+    const result = await this.removeCatalogRowAndDirectory(identity.runId, identity.runDirPath, "deleted permanently");
+    // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
+    if (result.success) await (this.adHocTasks ?? getProjectTaskService())
+      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: identity.runId }));
+    return result;
   }
 
   async cancelPreparedRun(rawRunId: string): Promise<CatalogMutationResultMessage> {

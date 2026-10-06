@@ -125,12 +125,12 @@ export class AgentOrgStreamHandler {
       if (!run) throw new Error(`AgentOrg run '${session.orgRunId}' is not active.`);
       let content = message.type === "SEND_MESSAGE" ? message.payload.content : "";
       if (message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
-        const admission = await run.admitCollaboratorMentions({
+        const admission = await run.resolveCollaboratorMentions({
           focusedAgentRunId: message.payload.target_agent_run_id,
           mentions: toCollaboratorMentions(message.payload.mentions),
         });
         if (!admission.admitted) {
-          // Nothing was added or posted; the client keeps the draft and shows the notice.
+          // Nothing was posted; the client keeps the draft and shows the notice.
           session.connection.send(serialize(commandAck(
             message, "rejected", admission.code, admission.message,
             "collaboratorName" in admission ? admission.collaboratorName : undefined,

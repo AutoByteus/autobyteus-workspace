@@ -32,10 +32,11 @@ export const standaloneRootCollaboratorPortFor = (
 });
 
 /**
- * Agent-root collaborators. The root runs `ensure` inside its operation gate (for `@` and for a
- * first message to a catalog address); this owner prepares the hosted handles, commits the new
- * entries in one tree write (the first commit creates the run's collaboration package), then
- * publishes the handles (Offline) and `collaborator_added`. Its catalog questions never write.
+ * Agent-root collaborators. For `@` it only resolves the mentioned definitions' addresses (nothing
+ * is added). For a first message to a catalog address the root runs `bringInAt` inside its
+ * operation gate; this owner prepares the hosted handles, commits the new entries in one tree
+ * write (the first commit creates the run's collaboration package), then publishes the handles
+ * (Offline) and `collaborator_added`. Its catalog questions never write.
  */
 export class StandaloneRootCollaborators {
   private readonly queue = new CollaboratorAdmissionQueue();
@@ -53,9 +54,9 @@ export class StandaloneRootCollaborators {
     publish(event: StandaloneRootEvent): void;
   }>) {}
 
-  /** `@`: ensures the mentioned definitions. Call only inside the root gate. */
-  ensure(input: Readonly<{ senderRunId: string; definitions: readonly CollaboratorMention[] }>): Promise<CollaboratorAdmissionResult> {
-    return this.queue.run(() => this.ensureNow(input));
+  /** `@`: each mentioned definition's name, kind and address; adds nothing. Call only inside the root gate. */
+  resolveMentions(definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
+    return this.queue.run(() => this.admission.resolveMentions(this.port(), definitions));
   }
 
   /**

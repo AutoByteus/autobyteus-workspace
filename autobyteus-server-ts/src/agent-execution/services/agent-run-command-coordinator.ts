@@ -111,7 +111,7 @@ export class AgentRunCommandCoordinator {
   }
 
   /**
-   * An eligible standalone run is activated, admits its mentions and posts inside its root's
+   * An eligible standalone run is activated, resolves its mentions (adds nothing) and posts inside its root's
    * gate; any other run posts directly to its command-ready AgentRun (it hosts no collaborators).
    */
   private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {

@@ -44,7 +44,7 @@ describe("autobyteus runtime tool exposure", () => {
     ]);
   });
 
-  it("keeps the automatic team collaboration trio additive to the native baseline", () => {
+  it("keeps the automatic team collaboration tools additive to the native baseline", () => {
     const exposure = resolveAutoByteusRuntimeAgentToolExposure(
       { toolNames: [] },
       { teamBackendKind: TeamBackendKind.MIXED, teamScoped: true } as any,
@@ -58,10 +58,11 @@ describe("autobyteus runtime tool exposure", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
+      "create_or_update_task",
     ]);
   });
 
-  it("gives a standalone Agent-root host both collaboration tools but no handoff rules", () => {
+  it("gives a standalone Agent-root host the collaboration tools and create_or_update_task but no handoff rules", () => {
     const exposure = resolveAutoByteusRuntimeAgentToolExposure({ toolNames: [] }, { teamScoped: false } as any);
     expect(exposure.requestedToolNames).toEqual([
       "run_bash",
@@ -70,6 +71,7 @@ describe("autobyteus runtime tool exposure", () => {
       "write_file",
       "send_message_to",
       "delegate_task",
+      "create_or_update_task",
     ]);
   });
 

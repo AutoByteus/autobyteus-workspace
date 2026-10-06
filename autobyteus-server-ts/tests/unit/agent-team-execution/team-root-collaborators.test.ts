@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
-import { ROOT, admitBoth, cleanupDirectories, entriesOf, harness } from "./helpers/team-root-collaborator-harness.js";
+import { ROOT, bringInBoth, cleanupDirectories, entriesOf, harness, mentionBoth } from "./helpers/team-root-collaborator-harness.js";
 
 afterEach(async () => {
   vi.restoreAllMocks();
@@ -10,7 +10,7 @@ afterEach(async () => {
 
 describe("collaborators hosted in a Team root (AR-006)", () => {
   it("includes a hosted collaborator Team's live input snapshots in the root package", async () => {
-    const f = await harness(); await admitBoth(f.root);
+    const f = await harness(); await bringInBoth(f.root);
     const { lead } = entriesOf(f.root);
     await f.root.executeAgentCommand(lead.agentRunId, { kind: "post_message", message: { content: "Work" } as never });
     const state = { run_instance_id: 'instance', revision: 1, entries: [], recoverableBlock: null };
@@ -20,16 +20,33 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     connection.close();
   });
 
-  it("adds each collaborator once at admission, Offline, persisted with its run IDs and published", async () => {
+  it("`@` resolves each mentioned definition's address without writing, hosting or publishing anything (REQ-001)", async () => {
     const f = await harness();
     const events: TeamRunEvent[] = [];
     f.root.subscribeToEvents(({ event }) => events.push(event));
-    const result = await admitBoth(f.root);
-    expect(result).toMatchObject({ admitted: true });
-    expect(result.admitted && result.collaborators).toEqual([
+    await expect(mentionBoth(f.root)).resolves.toEqual({ admitted: true, collaborators: [
       { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
       { name: "Product Team", kind: "agent_team", address: "/product_team" },
-    ]);
+    ] });
+    expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toEqual([]);
+    expect((await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!.rootTeam.collaborators).toEqual([]);
+    expect(events).toEqual([]);
+    expect(f.handles.size).toBe(0);
+    // An unknown run is still refused.
+    await expect(f.root.resolveCollaboratorMentions({ focusedAgentRunId: "nobody", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
+      .resolves.toMatchObject({ admitted: false, code: "RUN_NOT_FOUND" });
+  });
+
+  it("brings each collaborator in once, Offline, persisted with its run IDs and published", async () => {
+    const f = await harness();
+    const events: TeamRunEvent[] = [];
+    f.root.subscribeToEvents(({ event }) => events.push(event));
+    const [reviewerResult, productResult] = await bringInBoth(f.root);
+    expect(reviewerResult).toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer" }] });
+    expect(productResult).toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team" }] });
+    // `@` now resolves to the in-run collaborator addresses and adds nothing more.
+    await expect(mentionBoth(f.root)).resolves.toMatchObject({ admitted: true });
+    expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toHaveLength(2);
     const { reviewer, product, lead, designer } = entriesOf(f.root);
     const stored = await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT);
     expect(stored!.rootTeam.collaborators).toEqual(f.root.getExecutionTreeSnapshot().rootTeam.collaborators);
@@ -49,7 +66,7 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
 
   it("starts a collaborator on a user send, serves interrupt and tool approval, and delivers by address both ways", async () => {
     const f = await harness();
-    await admitBoth(f.root);
+    await bringInBoth(f.root);
     const { reviewer, lead, designer } = entriesOf(f.root);
     await expect(f.root.executeAgentCommand(reviewer.agentRunId, { kind: "post_message", message: { content: "Review this" } as never }))
       .resolves.toMatchObject({ accepted: true });
@@ -85,7 +102,7 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
 
   it("starts an extra copy on delegate_task, hosted by the delegator's Team (REQ-013)", async () => {
     const f = await harness();
-    await admitBoth(f.root);
+    await bringInBoth(f.root);
     const { product, lead } = entriesOf(f.root);
     const coordinator = { identity: f.identity("/coordinator", "run-coordinator") };
     await expect(f.root.delegateTask(coordinator, { recipient_address: "/code_reviewer", description: "Review too" }))
@@ -102,7 +119,7 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
 
   it("restores collaborators with the root after Stop, in restore mode with the same run IDs", async () => {
     const f = await harness();
-    await admitBoth(f.root);
+    await bringInBoth(f.root);
     const { reviewer, lead } = entriesOf(f.root);
     await f.root.executeAgentCommand(reviewer.agentRunId, { kind: "post_message", message: { content: "x" } as never });
     await f.message(f.identity("/coordinator", "run-coordinator"), "/product_team", "Design it");
@@ -121,11 +138,13 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     await reopened.terminate();
   });
 
-  it("rejects an unrunnable mention without writing, hosting or publishing anything", async () => {
+  it("an unrunnable definition still resolves for `@` (delegation checks it) and its bring-in fails without writing, hosting or publishing", async () => {
     const f = await harness({ runnable: false });
     const events: TeamRunEvent[] = [];
     f.root.subscribeToEvents(({ event }) => events.push(event));
-    await expect(admitBoth(f.root)).resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer" });
+    await expect(mentionBoth(f.root)).resolves.toMatchObject({ admitted: true });
+    const [reviewerResult] = await bringInBoth(f.root);
+    expect(reviewerResult).toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer" });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toEqual([]);
     expect((await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!.rootTeam.collaborators).toEqual([]);
     expect(events).toEqual([]);

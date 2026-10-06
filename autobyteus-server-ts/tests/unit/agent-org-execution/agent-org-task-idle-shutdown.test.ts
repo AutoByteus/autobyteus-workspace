@@ -18,6 +18,7 @@ import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/loca
 import type { FlatTeamExecutionCallbacks } from "../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
 import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
@@ -90,6 +91,7 @@ const buildOrg = async (kind: "agent" | "team") => {
     } as never,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
+    taskAgentResources: new InMemoryTaskAgentResources(),
   });
   run.activate();
   const owner = run;
@@ -112,7 +114,7 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
 
     const delegated = await f.owner.delegateTask(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Complete the task" });
     const childId = kind === "agent" ? "task-agent-1" : "task-team-1-lead";
-    expect(delegated).toEqual({ target_agent_run_id: childId });
+    expect(delegated).toEqual({ target_agent_run_id: childId, task_id: expect.stringMatching(/^ad_hoc_task_/) });
     await f.drain();
 
     // One durable tree write carries the execution and its delegator; no records sidecar exists.

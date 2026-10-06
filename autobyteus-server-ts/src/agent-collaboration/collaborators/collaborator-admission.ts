@@ -50,13 +50,14 @@ export type CollaboratorAdmissionPlan = Readonly<{
 export type CatalogTaskSource = Readonly<{ name: string; source: TaskExecutionSource }>;
 
 /**
- * Stateless admission coordinator, shared by `@` and by agent-initiated bring-in. The root
- * calls `ensure` inside the operation gate it already holds (never re-entering it): it plans
- * every definition (reusing the entry of one that is already a collaborator), checks that
- * each new collaborator can run with the root settings, allocates its run IDs at its catalog
- * address, and lets the root commit and publish the new entries. All or nothing: any failure
- * returns `COLLABORATOR_ADD_FAILED` and nothing is added. The `@` mention note is composed by
- * the `@` callers, not here.
+ * Stateless collaborator coordinator. `@` only resolves: `resolveMentions` validates each
+ * mentioned definition and answers its address without adding anything. Agent-initiated
+ * bring-in admits: the root calls `ensure` inside the operation gate it already holds (never
+ * re-entering it): it plans every definition (reusing the entry of one that is already a
+ * collaborator), checks that each new collaborator can run with the root settings, allocates
+ * its run IDs at its catalog address, and lets the root commit and publish the new entries.
+ * All or nothing: any failure returns `COLLABORATOR_ADD_FAILED` and nothing is added. The `@`
+ * mention note is composed by the `@` callers, not here.
  */
 export class CollaboratorAdmission {
   constructor(private readonly dependencies: Readonly<{
@@ -101,6 +102,30 @@ export class CollaboratorAdmission {
     return Object.freeze({ admitted: true, collaborators: plan.resolved });
   }
 
+  /**
+   * `@`: each mentioned definition, in order, with its name, kind and address: the address of its
+   * entry when it is already in the run, otherwise its catalog address. Never writes, allocates or
+   * publishes. An ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
+   */
+  async resolveMentions(port: CollaboratorRootPort, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
+    if (definitions.length === 0) return Object.freeze({ admitted: true, collaborators: Object.freeze([]) });
+    try {
+      const admissible: AdmissibleCollaboratorDefinition[] = [];
+      for (const ref of definitions) admissible.push(await this.admissible(port, ref));
+      const addresses = await this.dependencies.policy.catalogAddressMap(port);
+      const collaborators = admissible.map((definition) => {
+        const address = port.collaborators().find(sameDefinitionAs(definition))?.address
+          ?? addresses.addressFor({ kind: definition.kind, definitionId: definition.definition.id });
+        if (!address) throw new CollaboratorAddError(definition.definition.name, "It has no address in this run.");
+        return Object.freeze({ name: definition.definition.name, kind: definition.kind, address });
+      });
+      return Object.freeze({ admitted: true, collaborators: Object.freeze(collaborators) });
+    } catch (error) {
+      if (error instanceof CollaboratorAddError) return addFailed(error);
+      throw error;
+    }
+  }
+
   /** The eligible catalog definition at `address` that is not in the run; null otherwise. */
   async catalogDefinitionAt(port: CollaboratorRootPort, address: string): Promise<CatalogDefinitionRef | null> {
     if (port.isApplicationBound) return null;
@@ -139,8 +164,7 @@ export class CollaboratorAdmission {
     const newPlans: CollaboratorEntryPlan[] = [];
     const resolved: MentionedCollaborator[] = [];
     for (const definition of admissible) {
-      const sameDefinition = (entry: CollaboratorEntry | CollaboratorEntryPlan) => entry.kind === definition.kind
-        && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === definition.definition.id;
+      const sameDefinition = sameDefinitionAs(definition);
       let address = (port.collaborators().find(sameDefinition) ?? newPlans.find(sameDefinition))?.address;
       if (!address) {
         const allocated = addresses.addressFor({ kind: definition.kind, definitionId: definition.definition.id });
@@ -178,6 +202,11 @@ export class CollaboratorAdmission {
     }
   }
 }
+
+/** An entry (or planned entry) of the same definition as the mention. */
+const sameDefinitionAs = (definition: AdmissibleCollaboratorDefinition) =>
+  (entry: CollaboratorEntry | CollaboratorEntryPlan): boolean => entry.kind === definition.kind
+    && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === definition.definition.id;
 
 const toTaskExecutionSource = (plan: CollaboratorEntryPlan): TaskExecutionSource => plan.kind === "agent"
   ? Object.freeze({ kind: "agent", agentDefinitionId: plan.agentDefinitionId, launchConfiguration: plan.launchConfiguration })

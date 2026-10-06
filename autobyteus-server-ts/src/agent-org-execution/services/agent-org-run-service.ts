@@ -17,6 +17,8 @@ import { AgentOrgRunManager } from "./agent-org-run-manager.js";
 import { AgentOrgRunPlanner } from "./agent-org-run-planner.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
+import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 
 export type AgentOrgLaunchConfigurationInput = Readonly<{
   runtimeKind: RuntimeKind | string;
@@ -52,6 +54,8 @@ export class AgentOrgRunService {
     modelSelectionValidator: RunModelSelectionValidator;
     modelSelectionOptions: Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
     history: Pick<AgentOrgRunHistoryCatalogService, "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
+    /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
+    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
   }>) {}
 
   getRunConfig(orgRunId: string) {
@@ -177,8 +181,13 @@ export class AgentOrgRunService {
     return this.dependencies.history.archiveStored(required(orgRunId, "orgRunId"));
   }
 
-  deleteStoredRun(orgRunId: string) {
-    return this.dependencies.history.deleteStored(required(orgRunId, "orgRunId"));
+  async deleteStoredRun(orgRunId: string) {
+    const normalized = required(orgRunId, "orgRunId");
+    const result = await this.dependencies.history.deleteStored(normalized);
+    // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
+    if (result.success) await (this.dependencies.adHocTasks ?? getProjectTaskService())
+      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: normalized }));
+    return result;
   }
 
   getActive(agentOrgRunId: string): AgentOrgRun | null {

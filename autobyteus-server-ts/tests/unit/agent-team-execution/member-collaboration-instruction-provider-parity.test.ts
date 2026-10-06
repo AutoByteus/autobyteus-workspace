@@ -57,7 +57,7 @@ const agentDefinition = new AgentDefinition({
 });
 
 describe("member collaboration instruction provider parity", () => {
-  it("composes one exact provider-shared block and the three intrinsic Team tools", () => {
+  it("composes one exact provider-shared block and the intrinsic Team tools", () => {
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "root-classroom-run",
       teamRunId: "study-group-task-run",
@@ -136,6 +136,7 @@ describe("member collaboration instruction provider parity", () => {
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
+      "create_or_update_task",
     ]);
   });
 

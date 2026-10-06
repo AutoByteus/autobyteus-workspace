@@ -34,7 +34,7 @@ export function useMentionCandidates(source: Ref<MentionCandidateSource | null>)
     return entry?.available === false ? [] : entry?.candidates ?? []
   })
 
-  /** The agent that receives the message and brings the collaborator in (the menu footer). */
+  /** The agent that receives the message and delegates to the mentioned address (the menu footer). */
   const focusedName = computed(() => {
     const current = source.value
     if (!current) return ''

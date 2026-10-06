@@ -91,7 +91,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     if (Object.keys(input).some(key => !allowed.includes(key))) throw new TaskDelegationError("VALIDATION_ERROR", "Delegation accepts exactly one work source.");
     const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
     let description: string, referenceFiles: readonly string[];
-    let join: TaskAgentResourceJoin | undefined;
+    let join: TaskAgentResourceJoin;
     if (linked) {
       if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "Task workers delegate sub-work without task_id.");
       const taskId = requireTaskString(input.task_id, "task_id");
@@ -105,11 +105,14 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       if (!owner) this.resourceScope.assertResourceDataReadable();
       description = requireTaskString(input.description, "description");
       referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
-      if (owner) join = { role: "delegated", creator: owner.agentRun };
+      // Sub-work of Task work stays that Task's; otherwise the copy gets its own Task with no Project.
+      join = owner
+        ? { role: "delegated", creator: owner.agentRun }
+        : { role: "assigned", assignedBy: context.identity.agentRunId, adHocTask: { description, referenceFiles } };
     }
     return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
       workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, description, referenceFiles }),
-      ...(join ? { join, resources: this.resourceScope.port() } : {}),
+      join, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
   }

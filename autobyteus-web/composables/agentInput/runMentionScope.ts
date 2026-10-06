@@ -6,7 +6,7 @@ import type { CollaboratorRootKind } from '~/services/collaborators/collaborator
 export type RunMentionScope = Readonly<{
   rootKind: CollaboratorRootKind
   rootRunId: string
-  /** The agent the user is talking to; it receives the message and brings the collaborator in. */
+  /** The agent the user is talking to; it receives the message and delegates to the mentioned address. */
   focusedName: string
 }>
 

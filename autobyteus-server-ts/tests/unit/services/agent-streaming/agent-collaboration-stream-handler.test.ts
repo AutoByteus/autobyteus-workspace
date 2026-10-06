@@ -19,7 +19,7 @@ const fakeRoot = (hostLive = true) => ({
     subscribe: vi.fn(() => () => undefined),
     close: vi.fn(),
   })),
-  admitCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer" }] })),
+  resolveCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer" }] })),
   executeAgentCommand: vi.fn(async (agentRunId: string) => agentRunId === HOST
     ? { accepted: false, code: "AGENT_ROOT_HOST_COMMAND_REJECTED", message: "host" }
     : { accepted: true }),
@@ -68,12 +68,12 @@ describe("AgentCollaborationStreamHandler", () => {
     }
   });
 
-  it("admits mentions for the focused child, posts the composed content, and rejects host targets and wrong roots", async () => {
+  it("resolves mentions for the focused child, posts the composed content, and rejects host targets and wrong roots", async () => {
     const root = fakeRoot();
     const { handler, sessionId, wire } = await connect({ resolveRoot: async () => root as never, getActive: () => root as never });
     await handler.handleMessage(sessionId!, send({ mentions: [{ kind: "agent", definition_id: "code-reviewer" }] }));
-    expect(root.admitCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "child-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    expect(root.executeAgentCommand).toHaveBeenCalledWith("child-run", expect.objectContaining({ kind: "post_message", message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned collaborators\]\n- Code Reviewer \(Agent\) at \/code_reviewer\n/) }) }));
+    expect(root.resolveCollaboratorMentions).toHaveBeenCalledWith({ focusedAgentRunId: "child-run", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    expect(root.executeAgentCommand).toHaveBeenCalledWith("child-run", expect.objectContaining({ kind: "post_message", message: expect.objectContaining({ content: expect.stringMatching(/^hello\n\n\[Mentioned collaborators\]\n- Code Reviewer \(Agent\) at \/code_reviewer\nDelegate the work with delegate_task to its address; /) }) }));
     expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { root_subject_kind: "agent", state: "accepted" } });
 
     await handler.handleMessage(sessionId!, send({ target_agent_run_id: HOST, command_id: "c2" }));

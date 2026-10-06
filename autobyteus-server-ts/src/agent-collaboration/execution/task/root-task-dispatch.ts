@@ -1,32 +1,37 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { RootTaskExecutionAdapter, TaskExecutionActivationOperation, TaskExecutionActivationPlan } from "./root-task-execution-adapter.js";
 import type { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
-import type { TaskAgentResourcePort } from "./task-agent-resource-port.js";
+import type { TaskAgentResourceAssignmentTarget, TaskAgentResourcePort } from "./task-agent-resource-port.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { asTaskDelegationError } from "./root-task-agent-resource-scope.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError, TaskDispatchIndeterminateError, type TaskDelegationContext, type DelegateTaskResult } from "./task-delegation-command.js";
 
-/** How the new copy joins a Task, decided by the lifecycle from the sender's ownership. */
+/**
+ * How the new copy joins a Task, decided by the lifecycle from the sender's ownership: an assignment
+ * to an existing Task or to a new Task with no Project (`adHocTask`), or inherited sub-work.
+ */
 export type TaskAgentResourceJoin =
-  | Readonly<{ role: "assigned"; taskId: string; assignedBy: string }>
+  | (Readonly<{ role: "assigned"; assignedBy: string }> & TaskAgentResourceAssignmentTarget)
   | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>;
 
 /**
  * One staged dispatch on the root lifecycle's queue. A Task copy is linked after identity planning
  * and before registration, so DONE always reaches it; every await is followed by an open check.
+ * The accepted result carries `task_id` only when the join created a Task with no Project.
  */
 export async function dispatchTaskCopy<T>(input: {
   adapter: RootTaskExecutionAdapter<T>; queue: RootTaskExecutionCommandQueue;
   context: TaskDelegationContext; placement: T; workPacket?: AgentInputUserMessage;
-  join?: TaskAgentResourceJoin; resources?: TaskAgentResourcePort;
+  join: TaskAgentResourceJoin; resources: TaskAgentResourcePort;
   assertAdmitting(): void;
 }): Promise<DelegateTaskResult> {
   let plan: TaskExecutionActivationPlan<T> | null = null;
   let operation: TaskExecutionActivationOperation | null = null;
   let linked = false, committed = false, accepted = false;
+  let createdTaskId: string | null = null;
   const assertOpen = () => {
     input.assertAdmitting();
-    if (linked && !input.resources!.isOpen(plan!.target.execution)) {
+    if (linked && !input.resources.isOpen(plan!.target.execution)) {
       throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task was marked DONE; its new work was not started.");
     }
   };
@@ -36,13 +41,13 @@ export async function dispatchTaskCopy<T>(input: {
       startedAt: new Date().toISOString(), ...(input.workPacket ? { workPacket: input.workPacket } : {}) });
     input.assertAdmitting();
     const exact = plan;
-    if (input.join) {
-      const target = exact.target;
-      await input.resources!.linkAgentRun({ ...input.join, hostRoot: target.root, agentRun: target.execution,
-        ...("teamRunId" in target.execution ? { coordinatorAgentRunId: target.ingressAgentRunId } : {}) })
-        .catch(error => { throw asTaskDelegationError(error); });
-      linked = true;
-    }
+    const target = exact.target;
+    const link = await input.resources.linkAgentRun({ ...input.join, hostRoot: target.root, agentRun: target.execution,
+      ...("teamRunId" in target.execution ? { coordinatorAgentRunId: target.ingressAgentRunId } : {}) })
+      .catch(error => { throw asTaskDelegationError(error); });
+    linked = true;
+    // The join variant decides, not the returned id: a link to an existing Task returns its id too.
+    if (input.join.role === "assigned" && input.join.adHocTask) createdTaskId = link.taskId;
     operation = await input.queue.submit({ kind: "activate", executeAtQueueHead: async () => {
       assertOpen(); return input.adapter.beginActivation(exact);
     } });
@@ -59,15 +64,17 @@ export async function dispatchTaskCopy<T>(input: {
       if (!receipt.accepted) throw new Error(receipt.message ?? "Task seed was not accepted.");
       accepted = true;
     }
-    if (linked) await input.resources!.markStarted(exact.target.execution);
-    return { target_agent_run_id: exact.target.ingressAgentRunId };
+    await input.resources.markStarted(exact.target.execution);
+    return createdTaskId
+      ? { target_agent_run_id: exact.target.ingressAgentRunId, task_id: createdTaskId }
+      : { target_agent_run_id: exact.target.ingressAgentRunId };
   } catch (error) {
     operation?.cancel();
     let released = true;
     try { if (operation && !(await operation.release()).accepted) released = false; }
     catch { released = false; }
     if (linked && plan && !accepted) {
-      try { await input.resources!.markFailed(plan.target.execution, { code: "TASK_DISPATCH_FAILED", message: errorMessage(error) }); }
+      try { await input.resources.markFailed(plan.target.execution, { code: "TASK_DISPATCH_FAILED", message: errorMessage(error) }); }
       catch (recordError) { throw new TaskDispatchIndeterminateError(plan.target.execution, new AggregateError([error, recordError])); }
     }
     if (error instanceof RootTaskPersistenceFinalizationIndeterminateError) throw error;

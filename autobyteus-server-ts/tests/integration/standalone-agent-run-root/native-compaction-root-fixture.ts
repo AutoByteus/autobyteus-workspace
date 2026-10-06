@@ -1,3 +1,4 @@
+import type { StandaloneRootCollaborators } from "../../../src/standalone-agent-run-root/services/standalone-root-collaborators.js";
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -117,10 +118,14 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
       },
     });
     const root = (await manager.resolveRoot(HOST))!;
-    expect((await root.admitCollaboratorMentions({
-      focusedAgentRunId: HOST, content: 'Please help',
-      mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
-    })).admitted).toBe(true);
+    // The collaborator is hosted Offline: the bring-in step of the host's first send_message_to its catalog
+    // address, without delivering that message (`@` only resolves the address).
+    const resolved = await root.resolveCollaboratorMentions({
+      focusedAgentRunId: HOST, mentions: [{ kind, definitionId: kind === 'agent' ? 'reviewer' : 'team' }],
+    });
+    if (!resolved.admitted) throw new Error(resolved.message);
+    const collaborators = (root as unknown as { collaborators: StandaloneRootCollaborators }).collaborators;
+    expect((await collaborators.bringInAt({ address: resolved.collaborators[0]!.address, senderRunId: HOST }))?.admitted).toBe(true);
     handler = new AgentCollaborationStreamHandler(manager);
     const streamHandler = handler;
     const rootManager = manager;

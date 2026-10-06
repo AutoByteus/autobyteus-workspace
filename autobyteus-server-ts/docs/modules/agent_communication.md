@@ -210,8 +210,11 @@ relevant surviving files inside editable skill roots.
 Runtime adapters expose one logical `send_message_to` capability through their
 native tool surfaces when effective runtime exposure includes it. Standalone
 runs require explicit configuration; every valid team member context receives
-`get_handoff_rules`, `send_message_to`, and `delegate_task` automatically, with
-duplicates removed. The root topology resolver and active delivery binding
+`get_handoff_rules`, `send_message_to`, `delegate_task` and `create_or_update_task`
+automatically (a member with no Team scope, such as a standalone host, gets all
+but `get_handoff_rules`), with duplicates removed. `create_or_update_task` is
+there so an agent can mark DONE the Task its delegation created (see
+[Collaborators](#collaborators)). The root topology resolver and active delivery binding
 still authorize each team-route call:
 
 - AutoByteus uses the server-owned local `BaseTool` wrapper.
@@ -250,9 +253,8 @@ context.
 `send_message_to(recipient_address)` reaches **the one instance at that
 address**: a configured member, a collaborator or its member, or a teammate
 inside the sender's own team instance. An available catalog Agent or Agent Team
-that is not yet in the run is brought in on its first message with the same
-admission as `@` (see [Collaborators](#collaborators)); later messages reach that
-same instance. `send_message_to(target_agent_run_id)` reaches existing
+that is not yet in the run is brought in on its first message (see
+[Collaborators](#collaborators)); later messages reach that same instance. `send_message_to(target_agent_run_id)` reaches existing
 executions only and never brings anything in. `delegate_task` instead always
 spawns one new task copy (an Agent or AgentTeam) and delivers the complete work
 packet during that same call. The `recipient_address` identifies what to copy; it
@@ -263,8 +265,12 @@ identically on every runtime (REQ-009).
 ### Task-linked message scope
 
 The ordinary one-instance/run-wide behavior below is unchanged for unowned
-senders. Unowned agents (configured members, hosts, `@` collaborators) are
-never checked against Task data.
+senders. Unowned agents (configured members, hosts, collaborators) are
+never checked against Task data. Every delegated copy is Task-owned: a linked
+copy by its Project Task, sub-work by its creator's Task, and a description-only
+copy of an unowned sender by the Task with no Project that its delegation
+created. So two copies owned by different Tasks cannot message each other by
+run ID; messages to and from their delegators and configured members work.
 
 A Task-owned sender resolves an address in this order:
 1. Its deepest own Team instance, with no fall-through on a miss.
@@ -314,8 +320,8 @@ operation gate:
    mutexes: they let operations run concurrently and only drain them on
    termination. Collaborator admissions are serialized by a per-root
    `CollaboratorAdmissionQueue` (`collaborator-admission-queue.ts`, a promise
-   chain inside each root's `*Collaborators` service). It serializes `@`
-   admissions (`ensure`) and catalog bring-ins (`bringInAt`) alike, and
+   chain inside each root's `*Collaborators` service). It serializes catalog
+   bring-ins (`bringInAt`) and `@` mention resolutions alike, and
    `bringInAt` re-reads the catalog map against the current tree inside the
    queue. So when two first messages to the same new address arrive together,
    the second finds the instance the first committed and reuses it; no second
@@ -334,9 +340,11 @@ active. See
 ## Collaborators
 
 A collaborator is a shared Agent or Agent Team definition brought into a live run
-by the user's `@` or by an agent's first `send_message_to` to its catalog address
-(Team runs, Org runs, and standalone Agent runs). Both triggers produce and reuse
-the same single instance (REQ-010). The run hosts **one instance per
+by an agent's first `send_message_to` to its catalog address (Team runs, Org runs,
+and standalone Agent runs); later messages reuse the same single instance. The
+user's `@` no longer adds collaborators: it steers the focused agent to
+`delegate_task` (see `@` below). Stored runs keep, restore and message the
+collaborators that earlier releases added on `@`; nothing is migrated. The run hosts **one instance per
 collaborator**, recorded as a root-level entry in the run's execution tree
 (`collaborators`), at its root-level catalog address. An entry snapshots the run's root launch settings,
 and for a Team, its member layout and Team-local handoffs. Its runs are recorded
@@ -352,31 +360,40 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   every colliding definition. Listing twice with an unchanged catalog gives the
   same addresses; an address that maps to nothing is the normal not found.
   Stored collaborator addresses never change.
-- **Admission (DS-001).** `CollaboratorAdmission.ensure`
-  (`collaborator-admission.ts`) is shared by `@` and by agent-initiated bring-in.
-  A user message with `mentions` (`{kind, definition_id}[]`, at most 8) is
-  admitted by the root, inside its operation gate, before it is posted:
-  1. every mention is re-validated by the shared candidate policy (shared, not
-     an Org, not a built-in, not already in the run); a definition that already
-     has an entry reuses it;
+- **`@` (mention resolution).** A user message with `mentions`
+  (`{kind, definition_id}[]`, at most 8) is resolved by the root
+  (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
+  inside its operation gate, before it is posted. Every mention is re-validated
+  by the shared candidate policy (shared, not an Org, not a built-in, not
+  already in the run) and answered with its name, kind and address: its entry's
+  address when the definition is already a collaborator, otherwise its catalog
+  address. **Nothing is written, allocated, hosted or published.** The `@` caller
+  (Team, Org and collaboration stream handlers, and the standalone host path
+  `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
+  `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned collaborators]`
+  note with each name, kind and address, telling the agent to `delegate_task` to
+  the address, follow up by the returned run ID and, when the result also has a
+  `task_id`, mark that Task DONE with `create_or_update_task` once the work is
+  finished. Runnability is checked when the agent delegates. An ineligible
+  mention returns `COLLABORATOR_ADD_FAILED` with its name and reason: nothing is
+  posted and the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`,
+  Team-stream `ERROR`, collaboration-stream ack; each carries
+  `collaborator_name`). The note wording is owned by
+  `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`), which
+  still parses the guidance lines of notes saved by earlier releases.
+- **Admission (agent-initiated bring-in, DS-001).** `CollaboratorAdmission.ensure`
+  (`collaborator-admission.ts`), run by the root's `*Collaborators.bringInAt`:
+  1. the definition is re-validated by the shared candidate policy;
   2. each new placement (an Agent, or every member of a Team) is checked with
      `RunModelSelectionValidator.validateMany` against the run's runtime, model,
      model settings and workspace;
   3. run IDs are allocated (`agentRunId`, `teamRunId`, member run IDs);
-  4. the root prepares the hosted executions, commits all new entries in one
+  4. the root prepares the hosted executions, commits the new entry in one
      tree write, publishes the executions (Offline) and emits
-     `collaborator_added`;
-  5. the `@` caller (Team, Org and Agent-root stream handlers and
-     `AgentRunCommandCoordinator`) appends a `[Mentioned collaborators]` note with
-     each name, kind and address, and posts the message. Agent-initiated
-     bring-in runs steps 1–4 only; `addedViaAgentRunId` is the sender.
+     `collaborator_added`. `addedViaAgentRunId` is the sender.
 
   Admission is all-or-nothing. Any failure returns `COLLABORATOR_ADD_FAILED`
-  with the collaborator's name and the reason: nothing is written or posted and
-  the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`, Team-stream
-  `ERROR`, collaboration-stream ack; each carries `collaborator_name`). The note
-  wording is owned by `@autobyteus/agent-presentation-contracts`
-  (`collaboratorMentionNote`).
+  with the collaborator's name and the reason, and nothing is written.
 - **Reaching a collaborator.** A collaborator and the members of a collaborator
   Team are reachable with `send_message_to` by address, like configured members:
   a collaborator Agent, a collaborator Team (its coordinator), or a member of a
@@ -409,7 +426,11 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   publishes the released runs that are closed and in the tree as the sequenced
   `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE
   re-publishes them. The Workspaces tree leaves those executions and their
-  subtrees out; messages and contexts keep them.
+  subtrees out; messages and contexts keep them. The same holds for a Task with
+  no Project: a description-only `delegate_task` by an unowned sender returns
+  its `task_id`, and `create_or_update_task({task_id, status: "DONE"})` closes,
+  stops and hides that copy and its sub-work (see
+  [Projects](projects.md#tasks-with-no-project-ad-hoc)).
 - **Discovery (REQ-001/002).** The opt-in tool `list_available_agents` (see
   [Agent Tools](./agent_tools.md)) asks the sender's root
   (`listAvailableAgents`), which returns `{name, kind, address, description}` for

@@ -212,7 +212,7 @@ extension, microphone/permission/device or live transcription capability.
 ## Agent Tools / Scope Exclusions
 
 Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_or_update_task` are selected
-independently per agent/node. Project authoring uses a required name to create
+independently per agent/node; `create_or_update_task` is also added automatically wherever `delegate_task` is. Project authoring uses a required name to create
 or a known project_id to patch: omitted fields persist, blank description clears.
 Optional workspaces [{workspace_id, description?}] reference known registered IDs:
 a supplied list replaces all links, [] unlinks only, omission preserves. Retained
@@ -220,8 +220,11 @@ link descriptions persist if omitted. No workspace discovery/registration is
 provided; the Manager asks for real IDs/the complete desired list when unknown.
 The saved Project acknowledgement contains metadata and link IDs/descriptions,
 not Task counts or filesystem paths. List requires explicit Project ID after discovery;
-omitted Task ID creates TODO with text and no status, known Task ID patches text
-and/or exact status, unknown ID fails. Full text and saved context references
+create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
+the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
+A description-only `delegate_task` creates a Task with no Project for its copy; such
+Tasks are never shown on the Projects page or in `list_project_tasks`, and marking
+one DONE by its ID removes the copy from the run tree. Full text and saved context references
 are available from listing. Each Task also carries its current (open)
 assignments `{targetAgentRunId, kind, assignedBy, outcome}` for follow-up, or
 `assignmentsUnavailable: true` if that Task's run file is damaged. Omitted

@@ -264,7 +264,7 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
 The New chat footer (model, thinking, workspace, approval) exists only before
 the first message (`chatDraftModelControls.ts`).
 
-## `@` In A Live Run (Collaborators)
+## `@` In A Live Run (Delegation)
 
 In every sendable live-run composer (standalone Agent run, Team member, Org
 member, and any task child), `@` at a word start opens the run variant of
@@ -314,9 +314,14 @@ target mode.
   text. The former `MentionChipRow` and chip-only removal helpers are deleted;
   no rich-text model, persisted spans or migration replaces them.
 - **Sending.** The Agent, Team, Org and Agent-collaboration stores send
-  `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds the
-  collaborator on send and appends a `[Mentioned collaborators]` note to the
-  stored message; `UserMessage` strips it and shows each `@Name` as an inline
+  `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds
+  **nothing** to the run on send: it resolves each mention's address and appends
+  a `[Mentioned collaborators]` note to the stored message that tells the
+  focused agent to `delegate_task` to that address. When the agent delegates, a
+  delegated (task) row appears; it disappears once the agent marks that
+  delegation's Task DONE with `create_or_update_task` (for example when the user
+  asks it to), live and after reopen. Notes saved by earlier releases still
+  parse; `UserMessage` strips it and shows each `@Name` as an inline
   chip, and run summaries drop it (`utils/collaborators/collaboratorMentionText.ts`).
   **Only a send with mentions is held** (AR-007,
   `services/runSubmission/localUserSubmission.ts`): the composer keeps the draft
@@ -332,18 +337,21 @@ target mode.
   `CollaboratorAddFailureNotice` (above the box) shows
   "Couldn't add <name> to this run" with the reason from
   `AgentContext.collaboratorAddFailure`. It can be dismissed and is replaced by
-  the next send. Success has no notice; the tree shows the result.
-- **Collaborator rows.** Each collaborator is one hosted instance, shown with
+  the next send. Success has no notice. The notice now only appears for a
+  definition that is not eligible in the run; whether the agent can run it is
+  checked when it delegates, and the agent gets the reason.
+- **Collaborator rows.** Collaborators now come only from an agent's first
+  `send_message_to` to a catalog address, and from stored runs that earlier
+  releases filled on `@`. Each collaborator is one hosted instance, shown with
   the product's task rows from the run's `collaborators` (Offline until its first
   message), before any extra copies: Team runs
   (`teamExecutionTreeSelectors.withCollaboratorExecutions`), Org runs and
   standalone runs (`collaboratorExecutionNodes`). A collaborator Team opens once
-  when it appears (F-02). `collaborator_added` adds the contexts in place, so the
-  pending send that added it keeps its acknowledgement.
+  when it appears (F-02). `collaborator_added` adds the contexts in place.
 - **Agent-initiated collaborators and catalog copies.** An agent can bring a listed
   catalog Agent or Team in with its first `send_message_to`, or start catalog copies
   with `delegate_task` (server: `list_available_agents`, see the server
-  `agent_communication.md`). These look the same as user-added ones:
+  `agent_communication.md`). These look the same as collaborators of stored runs:
   - collaborator rows arrive through the same `collaborator_added`;
   - catalog copies are ordinary task rows whose task DTO carries `source`, read by
     `services/collaborators/agentSourceSelectors.ts`;

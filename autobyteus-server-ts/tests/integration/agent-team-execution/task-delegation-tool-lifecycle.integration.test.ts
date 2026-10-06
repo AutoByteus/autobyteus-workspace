@@ -11,6 +11,8 @@ import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../sr
 import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
+import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
+import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
@@ -291,8 +293,9 @@ const createHarness = async (linked = false) => {
   const projectsLayout = new ProjectsLayout(path.join(memoryDir, "projects"));
   const projectStore = new ProjectStore(projectsLayout);
   const contextStore = new ProjectTaskContextStore(projectsLayout);
-  const tasks = new ProjectTaskService({ store: projectStore, contextStore,
-    taskAgentResources: new TaskAgentResourceService(new TaskAgentResourceStore(projectsLayout)),
+  const adHocTasks = new AdHocTaskStore(new AdHocTasksLayout(path.join(memoryDir, "ad-hoc-tasks")));
+  const tasks = new ProjectTaskService({ store: projectStore, contextStore, adHocTasks,
+    taskAgentResources: new TaskAgentResourceService(new TaskAgentResourceStore(projectsLayout, adHocTasks.layout)),
     requestRelease: (identity, agentRuns) => {
       expect(identity).toEqual(createTeamRootExecutionIdentity(rootTeamRunId));
       return root!.releaseTaskAgentResources(agentRuns);
@@ -319,7 +322,8 @@ const createHarness = async (linked = false) => {
       allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
-    ...(linked ? { taskAgentResources: tasks } : {}),
+    // Production always binds the Task side: every copy belongs to a Task (an ad-hoc one when unowned).
+    taskAgentResources: tasks,
     // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
     collaboratorHost: {
       prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
@@ -472,7 +476,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       description: "Solve the assigned classroom exercise and return evidence.",
       reference_files: [],
     });
-    expect(created).toEqual({ target_agent_run_id: expect.any(String) });
+    expect(created).toEqual({ target_agent_run_id: expect.any(String), task_id: expect.stringMatching(/^ad_hoc_task_/) });
     const taskAgentRunId = (created as { target_agent_run_id: string }).target_agent_run_id;
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/worker",

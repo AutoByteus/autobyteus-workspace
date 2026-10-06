@@ -404,7 +404,7 @@ try {
   await runCase('PT-E2E-007', 'External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status', async obs => {
     await search().fill('Browser'); const before = page.url();
     const created = await toolWrite({ project_id: project.projectId, description: 'Browser external' });
-    await toolWrite({ project_id: project.projectId, task_id: task.taskId, status: 'DONE' });
+    await toolWrite({ task_id: task.taskId, status: 'DONE' });
     assert(await row(created.taskId).count() === 0, 'No invented automatic refresh');
     let physical = 0; const countRequest = req => { if (req.url().endsWith('/graphql') && req.postData()?.includes('projectTasks(')) physical++; }; page.on('request', countRequest);
     const handler = async route => { if (route.request().postDataJSON().query?.includes('projectTasks(')) { await sleep(500); } await route.continue(); };

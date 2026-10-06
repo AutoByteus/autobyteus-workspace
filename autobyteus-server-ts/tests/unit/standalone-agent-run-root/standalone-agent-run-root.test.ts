@@ -96,7 +96,8 @@ const hostRun = () => {
   return { run, reserved, published, crash: () => { active = false; }, restore: () => { active = true; } };
 };
 
-const buildManager = async (taskAgentResources?: InMemoryTaskAgentResources) => {
+/** Production always binds the Task side; every delegated copy belongs to a Task. */
+const buildManager = async (taskAgentResources: InMemoryTaskAgentResources = new InMemoryTaskAgentResources()) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
@@ -154,11 +155,11 @@ const hostContextOf = async (f: Awaited<ReturnType<typeof buildManager>>): Promi
 };
 
 describe("Agent root of a standalone run", () => {
-  it("gives eligible hosts send_message_to and delegate_task but no handoff rules; helpers and application runs get nothing", async () => {
+  it("gives eligible hosts send_message_to, delegate_task and create_or_update_task but no handoff rules; helpers and application runs get nothing", async () => {
     const f = await buildManager();
     const context = await hostContextOf(f);
     expect(context?.identity).toMatchObject({ memberAddress: "/research_assistant", agentRunId: HOST, root: { rootSubjectKind: "agent" } });
-    expect(automaticCollaborationToolNames(context)).toEqual(["send_message_to", "delegate_task"]);
+    expect(automaticCollaborationToolNames(context)).toEqual(["send_message_to", "delegate_task", "create_or_update_task"]);
     await f.manager.stopRoot(HOST);
     expect(await context!.tasks.delegateTask(context!.identity, { recipient_address: "/x", description: "d" }))
       .toEqual({ target_agent_run_id: null, message: "The collaboration root of this run is not active." });
@@ -173,8 +174,7 @@ describe("Agent root of a standalone run", () => {
   it("captures hosted Agent/Team live inputs only, deduplicates recursive leaves, and keeps inspection non-restoring", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "Review",
-      mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }] });
+    await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: '/code_reviewer' as never, content: 'Review' });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: '/product_team' as never, content: 'Wake team' });
     const block = { operationId: "op", failureEpoch: 1, position: { kind: "held_turn", turnId: "A" },
       state: "awaiting_user", code: "failed", message: "retry required" };
@@ -196,7 +196,7 @@ describe("Agent root of a standalone run", () => {
     await expect(root.openPackageSnapshotConnection()).rejects.toThrow('not an Agent-root child');
   });
 
-  it("creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores", async () => {
+  it("`@` resolves addresses and adds nothing; first messages host each collaborator once, then it is messaged, copied and restored", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
     expect(f.directory.resolve(createAgentRootExecutionIdentity(HOST))).toBe(root);
@@ -210,14 +210,31 @@ describe("Agent root of a standalone run", () => {
     expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
 
-    const admitted = await root.admitCollaboratorMentions({
+    // REQ-001: `@` answers each mentioned definition's address; nothing is added, written or hosted.
+    const resolved = await root.resolveCollaboratorMentions({
       focusedAgentRunId: HOST,
       mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
     });
-    expect(admitted).toMatchObject({ admitted: true, collaborators: [
+    expect(resolved).toEqual({ admitted: true, collaborators: [
       { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
       { name: "Product Team", kind: "agent_team", address: "/product_team" },
     ] });
+    expect(await f.store.readTree(dir, HOST)).toBeNull();
+    expect(f.catalogFlag).not.toHaveBeenCalled();
+    expect(root.getExecutionTreeSnapshot().collaborators).toEqual([]);
+    expect(f.handles.size).toBe(0);
+
+    // send_message_to by address brings the one instance in and starts it (agent-initiated bring-in).
+    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Please review" }))
+      .resolves.toMatchObject({ accepted: true });
+    const reviewerHandle = f.handles.get("code-reviewer-run-1")!;
+    expect(reviewerHandle.input.physicalScope).toEqual({ root: createAgentRootExecutionIdentity(HOST), ancestorTeamRunIds: [] });
+    expect(reviewerHandle.input.memberExecutionContext.teamScoped).toBe(false);
+    expect(reviewerHandle.handle.reserveInput).toHaveBeenCalledOnce();
+    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/product_team" as never, content: "Design it" }))
+      .resolves.toMatchObject({ accepted: true });
+    const lead = f.handles.get("lead-run-2")!;
+    expect(lead.handle.reserveInput).toHaveBeenCalledOnce();
     const stored = (await f.store.readTree(dir, HOST))!;
     expect(stored.collaborators).toMatchObject([
       { address: "/code_reviewer", agentRunId: "code-reviewer-run-1", platformAgentRunId: null },
@@ -226,13 +243,12 @@ describe("Agent root of a standalone run", () => {
       ], taskExecutions: [] },
     ]);
     expect(stored.taskExecutions).toEqual([]);
-    expect(await f.store.readMessages(dir, HOST)).toMatchObject({ subjectKind: "agent", hostRunId: HOST, messages: [] });
     expect(f.catalogFlag).toHaveBeenCalledOnce();
     // Entries (and a Team's member Agents) are in the run.
     expect((await policy.listCandidates(root.collaboratorPort())).candidates).toEqual([]);
-    // Every collaborator execution is Offline until its first message.
+    // A collaborator execution that got no message yet is Offline.
     expect(root.getAgentStatusSnapshots().map((snapshot) => [snapshot.execution.memberAddress, snapshot.details.status])).toEqual(
-      expect.arrayContaining([["/code_reviewer", "offline"], ["/product_team/lead", "offline"], ["/product_team/designer", "offline"]]),
+      expect.arrayContaining([["/product_team/designer", "offline"]]),
     );
 
     for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
@@ -247,17 +263,6 @@ describe("Agent root of a standalone run", () => {
     expect(CollaborationStreamServerMessageSchema.safeParse({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: projected }).success).toBe(true);
     snapshotConnection.close();
 
-    // send_message_to by address reaches the one hosted instance and starts it.
-    const reviewerHandle = f.handles.get("code-reviewer-run-1")!;
-    expect(reviewerHandle.input.physicalScope).toEqual({ root: createAgentRootExecutionIdentity(HOST), ancestorTeamRunIds: [] });
-    expect(reviewerHandle.input.memberExecutionContext.teamScoped).toBe(false);
-    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Please review" }))
-      .resolves.toMatchObject({ accepted: true });
-    expect(reviewerHandle.handle.reserveInput).toHaveBeenCalledOnce();
-    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/product_team" as never, content: "Design it" }))
-      .resolves.toMatchObject({ accepted: true });
-    const lead = f.handles.get("lead-run-2")!;
-    expect(lead.handle.reserveInput).toHaveBeenCalledOnce();
     expect(lead.input.memberExecutionContext).toMatchObject({ teamScoped: true, authoredEnclosingScopeInstruction: "Ship the product UI." });
     expect(lead.input.memberExecutionContext.collaboration.outgoingHandoffs).toEqual([{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }]);
     // DI-001: the coordinator's authored handoff reaches its teammate's own instance.
@@ -268,7 +273,8 @@ describe("Agent root of a standalone run", () => {
 
     // delegate_task to a collaborator address starts an extra copy (REQ-013).
     const copy = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review it too" });
-    expect(copy).toEqual({ target_agent_run_id: "code-reviewer-run-4" });
+    // The copy belongs to its own Task with no Project, which the host can mark DONE (REQ-003/004).
+    expect(copy).toEqual({ target_agent_run_id: "code-reviewer-run-4", task_id: expect.stringMatching(/^ad_hoc_task_/) });
     // A collaborator Team member's copy of a teammate stays in that Team's entry (host rule).
     await expect(root.delegateTask({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
       .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
@@ -297,7 +303,6 @@ describe("Agent root of a standalone run", () => {
   it("stops every collaborator only on an explicit Stop, serves the stored view without restoring, and restores it on command", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
@@ -334,7 +339,6 @@ describe("Agent root of a standalone run", () => {
   it("history delete after a host crash ends the lingering root and its children first, then deletes (CR-001/CR-002)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
@@ -445,8 +449,8 @@ describe("agent-initiated collaborators of a standalone run", () => {
     ]);
     expect(f.catalogFlag).toHaveBeenCalledOnce();
     expect(f.handles.get("code-reviewer-run-1")!.handle.reserveInput).toHaveBeenCalledTimes(2);
-    // `@` after the agent's bring-in reuses the instance (AC-010).
-    await expect(root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
+    // `@` after the agent's bring-in resolves to the instance's address and adds nothing (AC-010).
+    await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
       .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer" }] });
     expect(root.getExecutionTreeSnapshot().collaborators).toHaveLength(1);
   });
@@ -517,7 +521,6 @@ describe("agent-initiated collaborators of a standalone run", () => {
   it("a collaborator-Team member's top-level copy goes to the root; a copy stored under a Team restores in place (REQ-012, AC-013)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/product_team" as never, content: "Start" });
     const [product] = root.getExecutionTreeSnapshot().collaborators;
     if (product?.kind !== "agent_team") throw new Error("not added");
@@ -606,7 +609,6 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
   it("Stop ends every child before the host, then unregisters; the host-ready port answers again afterwards", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
@@ -662,7 +664,6 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const root = (await f.manager.resolveRoot(HOST))!;
     await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/research_assistant", description: "Do it" }))
       .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An Agent cannot delegate a task to its own logical placement." });
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     const reviewer = f.handles.get("code-reviewer-run-1")!.input.identity;
     await expect(root.delegateTask({ identity: reviewer }, { recipient_address: "/code_reviewer", description: "Copy me" }))

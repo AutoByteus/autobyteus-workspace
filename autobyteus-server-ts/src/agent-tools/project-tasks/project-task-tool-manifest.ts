@@ -1,6 +1,6 @@
 import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
-import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput } from "../../projects/domain/models.js";
+import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput, TaskAcknowledgementView } from "../../projects/domain/models.js";
 import type { TaskAssignment } from "../../projects/domain/task-agent-resources.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
@@ -10,11 +10,11 @@ const projectAcknowledgement = ({projectId, name, description, workspaces}: Proj
   workspaces: workspaces.map(({workspaceId, description}) => ({workspaceId, description})),
 });
 
-type TaskAcknowledgement = Pick<ProjectTaskView, "projectId" | "taskId" | "status">;
 /** Business read: current (open) assignments, or a marker when this Task's assignments can't be read. */
 type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles">
   & ({ assignments: TaskAssignment[] } | { assignmentsUnavailable: true });
-const taskAcknowledgement = ({ projectId, taskId, status }: ProjectTaskView): TaskAcknowledgement => ({ projectId, taskId, status });
+/** `projectId` is null for a Task with no Project. */
+const taskAcknowledgement = ({ projectId, taskId, status }: TaskAcknowledgementView): TaskAcknowledgementView => ({ projectId, taskId, status });
 const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles }: ProjectTaskView,
   assignments: TaskAssignment[] | "unavailable" | undefined): TaskBusinessRead => ({
   projectId, taskId, description, status, contextFiles,
@@ -57,8 +57,8 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
       throw new ProjectMutationUnconfirmed("Project", error);
     }
   }
-  const projectId = input.project_id as string;
   if (name === "list_project_tasks") {
+    const projectId = input.project_id as string;
     const tasks = await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined);
     const assignments = await getProjectTaskService().currentAssignments(tasks.map(task => task.taskId));
     return { projectId, tasks: tasks.map(task => taskBusinessRead(task, assignments.get(task.taskId))) };
@@ -67,10 +67,10 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
   // fabricated acknowledgement nor a rollback claim is safe without its result.
   try {
     const task = Object.hasOwn(input, "task_id")
-      ? await getProjectTaskService().updateTask({ projectId, taskId: input.task_id as string,
+      ? await getProjectTaskService().updateTaskById({ taskId: input.task_id as string,
         ...(Object.hasOwn(input, "description") ? { description: input.description as string } : {}),
         ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}) })
-      : await getProjectTaskService().createTask({ projectId, description: input.description as string });
+      : await getProjectTaskService().createTask({ projectId: input.project_id as string, description: input.description as string });
     return { task: taskAcknowledgement(task) };
   } catch (error) {
     if (error instanceof ProjectError) throw error;

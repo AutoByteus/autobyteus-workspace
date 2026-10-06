@@ -282,7 +282,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
 
     // 2. DONE through the Manager's real tool call: the root publishes the closed refs (Task A only) before stopping.
     const doneFrom = view.frames.length;
-    send(callTool("create_or_update_task", { project_id: projectId, task_id: taskA, status: "DONE" }));
+    send(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
     const closedFrame = (frame: Frame) => kind === "team" ? frame.type === "TASK_EXECUTIONS_CLOSED"
       : frame.type === "ROOT_EXECUTION_EVENT" && frame.payload.event?.kind === "task_executions_closed";
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
@@ -310,7 +310,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     expect(memoryHits.length, "closed run's conversation/run history files are kept on disk").toBeGreaterThan(0);
 
     // 4. Reopen and delegate again (AC-006): the new run is open; the old Task A runs stay closed.
-    send(callTool("create_or_update_task", { project_id: projectId, task_id: taskA, status: "IN_PROGRESS" }));
+    send(callTool("create_or_update_task", { task_id: taskA, status: "IN_PROGRESS" }));
     await until(async () => (await statusOf(projectId, taskA)) === "IN_PROGRESS", "Task A reopened");
     send(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskA }));
     const reopened = await waitForNodes("redelegated Task A run", (nodes) => nodes.filter((n) => n.delegatorAgentRunId === managerRunId).length >= 4);
@@ -323,7 +323,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
 
     // 4b. Repeated DONE on the reopened Task: the live event carries the new run; the closed set is the union.
     const redoneFrom = view.frames.length;
-    send(callTool("create_or_update_task", { project_id: projectId, task_id: taskA, status: "DONE" }));
+    send(callTool("create_or_update_task", { task_id: taskA, status: "DONE" }));
     await until(() => view.frames.slice(redoneFrom).some(closedFrame), "live closure for the repeated DONE", 60_000);
     const redone = view.frames.slice(redoneFrom).find(closedFrame)!;
     const redonePayload = kind === "team" ? redone.payload.task_executions : redone.payload.event.task_executions;
@@ -363,7 +363,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     active.push({ kind: "agent", rootId: other.runId });
     const otherInput = await connect("agent", other.runId, (frames) => frames.some((f) => f.type === "CONNECTED"));
     sendE2eSendMessageCommand(otherInput.socket, { agent_run_id: other.runId,
-      content: callTool("create_or_update_task", { project_id: projectId, task_id: taskB, status: "DONE" }) });
+      content: callTool("create_or_update_task", { task_id: taskB, status: "DONE" }) });
     await until(async () => (await statusOf(projectId, taskB)) === "DONE", "Task B DONE by another Manager", 60_000);
     otherInput.socket.close();
     await terminate("agent", other.runId);

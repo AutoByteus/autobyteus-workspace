@@ -21,6 +21,16 @@ export interface ProjectTask {
   updatedAt: string;
 }
 
+/** Where a Task lives: under its Project, or (`projectId: null`) as an ad-hoc Task with no Project. */
+export type TaskLocation = Readonly<{ projectId: string | null; taskId: string }>;
+
+/** The recorded identity and status of a Task after an update by its unique id. */
+export interface TaskAcknowledgementView {
+  projectId: string | null;
+  taskId: string;
+  status: ProjectTaskStatus;
+}
+
 /** A Project as persisted in `<appDataDir>/projects/<projectId>/project.json`; its Tasks live in their own folders. */
 export interface Project {
   projectId: string;
@@ -104,6 +114,13 @@ export interface UpdateProjectTaskCommand {
   description?: string;
   status?: ProjectTaskStatus;
   contextChanges?: ProjectTaskContextChanges | null;
+}
+
+/** A patch of any Task (Project or ad-hoc) by its unique id; never touches saved context. */
+export interface UpdateTaskByIdCommand {
+  taskId: string;
+  description?: string;
+  status?: ProjectTaskStatus;
 }
 
 export interface DeleteProjectTaskCommand {
