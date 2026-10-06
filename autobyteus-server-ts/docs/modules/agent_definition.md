@@ -153,6 +153,14 @@ imported nor deleted. The optional current model/config tuple is server-owned,
 not an AgentDefinition selector. The Daily Assistant is not auto-featured;
 featured placement stays an operator choice in Settings.
 
+The bootstrapper only writes registry-listed ids; it never deletes app-data
+agent folders. Retiring a built-in therefore means removing its registry row and
+template and, when its installed copy must disappear, adding a registered
+startup app-data migration that deletes that copy once. Do not add a
+retired-id list or cleanup loop to the bootstrapper. The built-in Project Task
+Manager (`autobyteus-project-task-manager`) was retired this way by migration
+`20261006_remove_built_in_project_task_manager` (see the server README).
+
 ## Notes
 
 - Canonical ids encode ownership provenance so callers can resolve application-owned and team-local agents deterministically.
