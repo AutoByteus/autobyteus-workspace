@@ -340,6 +340,17 @@ target mode.
   standalone runs (`collaboratorExecutionNodes`). A collaborator Team opens once
   when it appears (F-02). `collaborator_added` adds the contexts in place, so the
   pending send that added it keeps its acknowledgement.
+- **Collaborator Artifacts.**
+  - When a standalone run's collaborators are hydrated, after a reload or on a
+    historical run, each collaborator's recorded Agent Artifacts
+    (`getRunFileChanges(collaboratorRunId)`) are fetched with its projection.
+  - They are committed with its Activity when the collaboration context is
+    published. This goes through
+    `services/agentCollaboration/agentRunCollaborationHydration.ts` (`commit`)
+    and the shared `services/runHydration/memberRunStateHydration.ts`.
+  - Newer live `FILE_CHANGE` rows are kept.
+  - An artifact fetch failure fails the collaboration hydration, as a
+    projection failure does.
 - **Agent-initiated collaborators and catalog copies.** An agent can bring a listed
   catalog Agent or Team in with its first `send_message_to`, or start catalog copies
   with `delegate_task` (server: `list_available_agents`, see the server
