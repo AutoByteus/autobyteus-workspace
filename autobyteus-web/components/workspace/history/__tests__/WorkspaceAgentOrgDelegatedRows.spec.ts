@@ -62,6 +62,22 @@ describe('Org history delegated rows', () => {
     expect(teamRow.attributes('aria-label')).not.toMatch(/Task:/);
   });
 
+  it('draws delegated rows in the clean row style: focus ring, and a slate-500 bolt with a semibold name for a Team (delegated-row-clean-style AC-001)', () => {
+    const wrapper = mountOrg(false);
+    const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
+    const teamRow = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
+    for (const row of [agentRow, teamRow]) {
+      expect(row.classes()).toEqual(expect.arrayContaining(['text-gray-600', 'hover:bg-gray-50', 'focus:outline-none', 'focus-visible:ring-2', 'focus-visible:ring-indigo-500']));
+      expect(row.classes()).not.toContain('border-dashed');
+      expect(row.classes()).not.toContain('bg-indigo-50/40');
+    }
+    const icon = teamRow.get('[data-team-icon="temporary-task-team"]');
+    expect(icon.attributes('data-icon')).toBe('heroicons:bolt-20-solid');
+    expect(icon.classes()).toEqual(expect.arrayContaining(['h-4', 'w-4', 'text-slate-500']));
+    expect(teamRow.find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(false);
+    expect(teamRow.get('.font-semibold').text()).toContain('team');
+  });
+
   it('gives task-Team members no spawner line because the Team row carries it', () => {
     const wrapper = mountOrg(false);
     for (const member of ['agent-task-lead', 'agent-task-worker']) {

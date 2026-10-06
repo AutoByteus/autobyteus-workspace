@@ -132,7 +132,7 @@
                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
                 <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
               </button>
-              <button type="button" v-else-if="display.row.kind === 'task_agent'" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
+              <button type="button" v-else-if="display.row.kind === 'task_agent'" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
                 <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
                 <!-- A task Agent shows the same solid status dot and initials as a member; no visible
@@ -141,12 +141,13 @@
                 <span class="mr-1.5 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600" data-test="agent-org-task-agent-avatar">{{ initials(display.row.address) }}</span>
                 <span class="truncate">{{ label(display.row.address) }}</span>
               </button>
-              <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
+              <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
                 <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
                 <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-                <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-3.5 w-3.5 flex-none text-indigo-600" />
-                <span class="truncate">{{ label(display.row.address) }}</span>
+                <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
+                <Icon icon="heroicons:bolt-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
+                <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
               </button>
             </template>
           </div>
