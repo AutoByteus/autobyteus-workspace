@@ -2,6 +2,7 @@ import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/ag
 import type { ConfiguredAgentExecutionNode, ConfiguredExecutionNode, TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunHistoryItem, TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
@@ -18,6 +19,8 @@ export interface TeamRunResumeConfig {
   teamRunId: string;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeSnapshot;
+  /** Task executions of `executionTree` whose Task is DONE. */
+  closedTaskExecutions: readonly TaskExecutionReference[];
   modelConfigEditability: RunModelConfigEditability;
 }
 
@@ -62,6 +65,7 @@ export class TeamRunHistoryService {
       teamRunId,
       isActive,
       executionTree: tree,
+      closedTaskExecutions: this.manager.closedTaskExecutionsFor(teamRunId, tree),
       modelConfigEditability: runModelConfigEditability({
         isActive,
         available: Boolean(row),

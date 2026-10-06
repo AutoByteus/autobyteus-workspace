@@ -33,6 +33,18 @@ const getArg = (name, fallback = undefined) => {
     : fallback;
 };
 const timeoutMs = Number(getArg('timeout-ms', '90000'));
+
+// Rows removed by a collapse leave the tree with the 200 ms `tree-row` transition (aria-hidden and inert at
+// once; see components/workspace/history/treeRowLeave.css). Absence is asserted once that leave has settled.
+const LEAVE_SETTLE_MS = 1500;
+const afterLeave = async (predicate) => {
+  const deadline = Date.now() + LEAVE_SETTLE_MS;
+  while (Date.now() < deadline) {
+    if (await predicate()) return true;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  return Boolean(await predicate());
+};
 const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/agent-org-task-team-disclosure'));
 const explicitPort = getArg('port');
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
@@ -266,8 +278,8 @@ try {
     await taskTeam('ssg-task-1').click();
     await waitFor('ssg-task-1 collapse', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'false');
     await expectExpanded('ssg-task-1', false);
-    for (const id of SSG1_DESCENDANTS) assert(await taskMember(id).count() === 0, `Descendant ${id} still rendered`);
-    assert(await taskTeam('reviewers-task-nested').count() === 0, 'Nested delegated Team still rendered');
+    for (const id of SSG1_DESCENDANTS) assert(await afterLeave(async () => await taskMember(id).count() === 0), `Descendant ${id} still rendered`);
+    assert(await afterLeave(async () => await taskTeam('reviewers-task-nested').count() === 0), 'Nested delegated Team still rendered');
     const order = await rowOrder();
     const index = order.indexOf('agent-org-task-team-row-ssg-task-1');
     assert(order[index + 1] === 'agent-org-task-team-row-ssg-task-2', 'Collapsed row is not followed by its sibling', { order });
@@ -296,7 +308,7 @@ try {
     await page.keyboard.press('Enter');
     await waitFor('Enter collapse', async () => await row.getAttribute('aria-expanded') === 'false');
     await expectExpanded('ssg-task-2', false);
-    assert(await taskMember('ssg2-s1').count() === 0 && await taskMember('ssg2-s2').count() === 0, 'Enter did not hide members');
+    assert(await afterLeave(async () => await taskMember('ssg2-s1').count() === 0 && await taskMember('ssg2-s2').count() === 0), 'Enter did not hide members');
     await screenshot('b03-keyboard-collapsed');
     await page.keyboard.press('Space');
     await waitFor('Space expand', async () => await row.getAttribute('aria-expanded') === 'true');
@@ -316,7 +328,7 @@ try {
     await waitFor('nested collapse', async () => await taskTeam('reviewers-task-nested').getAttribute('aria-expanded') === 'false');
     await expectExpanded('reviewers-task-nested', false);
     await expectExpanded('ssg-task-1', true);
-    assert(await taskMember('reviewers-nested-chair').count() === 0, 'Nested member still visible');
+    assert(await afterLeave(async () => await taskMember('reviewers-nested-chair').count() === 0), 'Nested member still visible');
     assert(await visible(taskMember('ssg1-s1')) && await visible(taskMember('ssg1-s2')), 'Outer members hidden by nested collapse');
     assert(await followingSibling(taskTeam('reviewers-task-nested')) === 'false', 'Collapsed nested row has a stray connector');
     assert(await followingSibling(taskMember('ssg1-s2')) === 'true', 'Outer member connector to nested row missing');
@@ -327,7 +339,7 @@ try {
     await taskTeam('ssg-task-1').click();
     await waitFor('outer re-expanded', async () => await taskTeam('ssg-task-1').getAttribute('aria-expanded') === 'true');
     await expectExpanded('reviewers-task-nested', false);
-    assert(await taskMember('reviewers-nested-chair').count() === 0, 'Nested state lost across outer collapse');
+    assert(await afterLeave(async () => await taskMember('reviewers-nested-chair').count() === 0), 'Nested state lost across outer collapse');
     const snapshot = await state(page);
     assert(snapshot.taskTeams['reviewers-task-nested'] === false && snapshot.taskTeams['ssg-task-1'] === true, 'Tree state mismatch', snapshot);
     await taskTeam('reviewers-task-nested').click();
@@ -345,7 +357,7 @@ try {
     assert(await visible(taskMember('ssg2-s1')), 'Second delegation hidden by first delegation collapse');
     await mountedTeam('ssg-configured').click();
     await waitFor('mounted collapse', async () => await mountedTeam('ssg-configured').getAttribute('aria-expanded') === 'false');
-    assert(await agentRow('ssg-configured-s1').count() === 0, 'Mounted Team did not collapse');
+    assert(await afterLeave(async () => await agentRow('ssg-configured-s1').count() === 0), 'Mounted Team did not collapse');
     await expectExpanded('ssg-task-1', false);
     await expectExpanded('ssg-task-2', true);
     await screenshot('b05-independent-state');

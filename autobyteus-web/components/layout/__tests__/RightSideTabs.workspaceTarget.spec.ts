@@ -124,7 +124,7 @@ for (const previouslyMounted of [false, true]) {
     const retainedDraft = draftStore.config
     await files.openFile('A.txt', 'A')
     // The normal History action retains the unrelated launch draft.
-    history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree }] as any
+    history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run',
       action: 'select', memberAddress: '/team/lead' })
     const orgStore = useAgentOrgContextsStore(), org = orgStore.contextFor('org-run')!

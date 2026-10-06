@@ -1,0 +1,544 @@
+{
+  "finding": "AC-010 Team root: leaving Task A rows vanish without the 200 ms fade/collapse",
+  "reproduced": "4/4 BR-002 runs (06:15, 06:35, 06:45, 06:47Z), Agent 3/3 and Org 3/3 animate",
+  "team": {
+    "root": {
+      "kind": "team",
+      "rootId": "delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+      "managerRunId": "manager_brteam_94d9_499eb4ada8c2414db967045bb6af6be2"
+    },
+    "aRefs": [
+      {
+        "agentRunId": "release_notes_writer_brteam_94d9_25c0686ce471443e944e8068e94df170"
+      },
+      {
+        "agentRunId": "fact_checker_brteam_94d9_c7f0511006994032b25e90825b9144e6"
+      },
+      {
+        "agentRunId": "researcher_brteam_94d9_3e62f8645bc8488884676d8f9be4ff2c"
+      }
+    ],
+    "leaveMs": 190,
+    "midOpacityFrames": 0,
+    "hiddenAndInertAtOnce": true,
+    "activeAtFirstHidden": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+    "classHistory": [
+      {
+        "t": 2472,
+        "id": "release_notes_writer_brteam_94d9_25c0686ce471443e944e8068e94df170",
+        "c": "tree-row-move"
+      },
+      {
+        "t": 2472,
+        "id": "fact_checker_brteam_94d9_c7f0511006994032b25e90825b9144e6",
+        "c": "tree-row-move"
+      },
+      {
+        "t": 2472,
+        "id": "researcher_brteam_94d9_3e62f8645bc8488884676d8f9be4ff2c",
+        "c": "tree-row-move"
+      },
+      {
+        "t": 2808,
+        "id": "release_notes_writer_brteam_94d9_25c0686ce471443e944e8068e94df170",
+        "c": "tree-row-move tree-row-leave-from tree-row-leave-active"
+      },
+      {
+        "t": 2808,
+        "id": "fact_checker_brteam_94d9_c7f0511006994032b25e90825b9144e6",
+        "c": "tree-row-move tree-row-leave-from tree-row-leave-active"
+      },
+      {
+        "t": 2808,
+        "id": "researcher_brteam_94d9_3e62f8645bc8488884676d8f9be4ff2c",
+        "c": "tree-row-move tree-row-leave-from tree-row-leave-active"
+      },
+      {
+        "t": 2818,
+        "id": "release_notes_writer_brteam_94d9_25c0686ce471443e944e8068e94df170",
+        "c": "tree-row-move tree-row-leave-active tree-row-leave-to"
+      },
+      {
+        "t": 2818,
+        "id": "fact_checker_brteam_94d9_c7f0511006994032b25e90825b9144e6",
+        "c": "tree-row-move tree-row-leave-active tree-row-leave-to"
+      },
+      {
+        "t": 2819,
+        "id": "researcher_brteam_94d9_3e62f8645bc8488884676d8f9be4ff2c",
+        "c": "tree-row-move tree-row-leave-active tree-row-leave-to"
+      },
+      {
+        "t": 3000,
+        "id": "release_notes_writer_brteam_94d9_25c0686ce471443e944e8068e94df170",
+        "c": "tree-row-leave-active tree-row-leave-to"
+      },
+      {
+        "t": 3001,
+        "id": "release_notes_writer_brteam_94d9_25c0686ce471443e944e8068e94df170",
+        "c": ""
+      },
+      {
+        "t": 3001,
+        "id": "fact_checker_brteam_94d9_c7f0511006994032b25e90825b9144e6",
+        "c": "tree-row-leave-active tree-row-leave-to"
+      },
+      {
+        "t": 3001,
+        "id": "fact_checker_brteam_94d9_c7f0511006994032b25e90825b9144e6",
+        "c": ""
+      },
+      {
+        "t": 3001,
+        "id": "researcher_brteam_94d9_3e62f8645bc8488884676d8f9be4ff2c",
+        "c": "tree-row-leave-active tree-row-leave-to"
+      },
+      {
+        "t": 3001,
+        "id": "researcher_brteam_94d9_3e62f8645bc8488884676d8f9be4ff2c",
+        "c": ""
+      }
+    ],
+    "frames": [
+      {
+        "t": 2,
+        "active": "workspace-team-transient-execution-row",
+        "rows": [
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": null,
+            "inert": false,
+            "cls": "tree-row-move",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": null,
+            "inert": false,
+            "cls": "tree-row-move",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": null,
+            "inert": false,
+            "cls": "tree-row-move",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 19,
+        "active": "workspace-team-transient-execution-row",
+        "rows": [
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": null,
+            "inert": false,
+            "cls": "tree-row-move",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": null,
+            "inert": false,
+            "cls": "tree-row-move",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": null,
+            "inert": false,
+            "cls": "tree-row-move",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 46,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-from tree-row-leave-active",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-from tree-row-leave-active",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-from tree-row-leave-active",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 52,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-from tree-row-leave-active",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-from tree-row-leave-active",
+            "tr": "transform"
+          },
+          {
+            "op": 1,
+            "h": 28,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-from tree-row-leave-active",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 68,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 85,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 102,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 119,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 134,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 159,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 168,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 185,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 201,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      },
+      {
+        "t": 219,
+        "active": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+        "rows": [
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          },
+          {
+            "op": 0,
+            "h": 0,
+            "hidden": "true",
+            "inert": true,
+            "cls": "tree-row-move tree-row-leave-active tree-row-leave-to",
+            "tr": "transform"
+          }
+        ]
+      }
+    ],
+    "selection": "true",
+    "focus": "workspace-team-row-delivery_team_brteam_94d9_a58f8767364045dc8f99c25ef4574f5c",
+    "findings": [
+      "Task A rows: no visible fade/collapse frames (AC-010)"
+    ]
+  },
+  "agentComparison": {
+    "leaveMs": 230,
+    "midOpacityFrames": 9,
+    "hiddenAndInertAtOnce": true,
+    "activeAtFirstHidden": "workspace-agent-run-row"
+  },
+  "orgComparison": {
+    "leaveMs": 229,
+    "midOpacityFrames": 9,
+    "hiddenAndInertAtOnce": true,
+    "activeAtFirstHidden": "agent-org-run-open-delivery_org_brorg_938d_4ac22dda1370422c8cc482b079d6eaad"
+  },
+  "cssCause": ".tree-row-move { transition: transform 200ms ease-out; } is declared after .tree-row-leave-active { transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out; } in components/workspace/history/treeRowLeave.css (same specificity, scoped). A row carrying both classes computes transition-property: transform only, so opacity and max-height jump to the leave-to values (frame 143: op 0, h 0).",
+  "trigger": "Clicking a delegated Team-tree row adds the inspection/loading line (row 28→50→28 px), which FLIP-moves the following rows. In the Team tree the move class stayed on the rows (no transitionend) until the DONE leave began 400+ ms later."
+}

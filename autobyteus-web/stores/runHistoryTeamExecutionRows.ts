@@ -38,7 +38,9 @@ export const buildRunHistoryTeamExecutionRows = (
   if (team.teamRunId !== rootTeamRunId) {
     throw new Error(`Team history root '${team.teamRunId}' does not match execution root '${rootTeamRunId}'.`);
   }
-  const navigationRows = context.view.listNavigationRows();
+  // The Workspaces tree lists live work only: closed task executions (Task DONE) and their subtrees
+  // leave it, while the shared navigation rows (members panel, running list, token usage) stay complete.
+  const navigationRows = context.view.listNavigationRows().filter((row) => context.view.isTaskExecutionRowListed(row));
   const rootRowKey = `team:${rootTeamRunId}`;
   const rootRows = navigationRows.filter((row) => row.key === rootRowKey);
   const rootRow = rootRows[0];

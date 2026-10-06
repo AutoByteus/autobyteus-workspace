@@ -90,7 +90,8 @@
             {{ terminationError(run.rootRunId) }}
           </p>
 
-          <div v-if="isRunExpanded(run.rootRunId)" :id="hierarchyId(run.rootRunId)" :data-test="`agent-org-run-children-${run.rootRunId}`" class="team-execution-tree ml-3 space-y-0.5" role="tree" :aria-label="t('workspace.agentOrg.history.executionHierarchy', { name: group.name })">
+          <!-- Rows of a DONE Task leave with motion. -->
+          <TransitionGroup v-if="isRunExpanded(run.rootRunId)" :id="hierarchyId(run.rootRunId)" tag="div" name="tree-row" :data-test="`agent-org-run-children-${run.rootRunId}`" class="team-execution-tree ml-3 space-y-0.5" role="tree" :aria-label="t('workspace.agentOrg.history.executionHierarchy', { name: group.name })" @before-leave="onBeforeLeave" @after-leave="onLeaveSettled" @leave-cancelled="onLeaveSettled">
             <template v-for="display in rowsFor(run)" :key="display.row.key">
               <button
                 v-if="display.row.kind === 'agent'"
@@ -150,7 +151,7 @@
                 <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
               </button>
             </template>
-          </div>
+          </TransitionGroup>
         </div>
       </div>
     </div>
@@ -167,6 +168,7 @@ import type { WorkspaceHistoryAvatarBindings, WorkspaceHistorySectionActions, Wo
 import { useLocalization } from '~/composables/useLocalization'
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import type { AgentStatus } from '~/types/agent/AgentStatus'
+import { useLeavingTreeRows } from './useLeavingTreeRows'
 import { projectAgentOrgHistoryRows, type AgentOrgHistoryAgentRow, type AgentOrgHistoryDelegator, type AgentOrgHistoryTaskAgentRow, type AgentOrgHistoryTaskTeamRow, type AgentOrgHistoryTeamRow } from '~/utils/agentOrgHistoryRows'
 
 const props = defineProps<{
@@ -177,6 +179,9 @@ const props = defineProps<{
   actions: WorkspaceHistorySectionActions
 }>()
 const { t } = useLocalization()
+// The Org run's open button sits in the row above this tree.
+const { onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
+  (tree) => tree.parentElement?.querySelector<HTMLElement>('[data-test^="agent-org-run-open-"]') ?? null)
 const hierarchyId = (rootRunId: string) => `org-hierarchy-${encodeURIComponent(props.workspaceId)}-${encodeURIComponent(rootRunId)}`
 const isDefinitionExpanded = (definitionId: string) => props.state.isAgentOrgDefinitionExpanded?.(props.workspaceId, definitionId) ?? false
 const toggleDefinition = (definitionId: string) => props.state.toggleAgentOrgDefinition?.(props.workspaceId, definitionId)
@@ -230,6 +235,7 @@ const selectTaskTeam = (run: AgentOrgRunHistoryItem, row: AgentOrgHistoryTaskTea
 }
 </script>
 
+<style scoped src="./treeRowLeave.css"></style>
 <style scoped>
 .org-execution-row { isolation: isolate; }
 .org-execution-row > :not(.hierarchy-branches) { position: relative; z-index: 2; }

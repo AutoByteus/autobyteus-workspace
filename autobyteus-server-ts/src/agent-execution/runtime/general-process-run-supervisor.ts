@@ -255,6 +255,7 @@ export class GeneralProcessRunSupervisor {
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         workspaces: workspaceManager,
         memoryDir,
+        taskAgentResources: input.taskAgentResources,
         modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
@@ -296,6 +297,7 @@ export class GeneralProcessRunSupervisor {
           readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
           recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
         },
+        taskAgentResources: input.taskAgentResources,
         rootDependencies: {
           flatTeamExecutionFactory,
           taskExecutionIdentity,

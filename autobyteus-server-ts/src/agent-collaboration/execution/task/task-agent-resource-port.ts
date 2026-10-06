@@ -30,6 +30,8 @@ export interface TaskAgentResourcePort {
   ownerOf(chain: readonly TaskExecutionReference[]): TaskAgentResourceOwner | null;
   isOpen(agentRun: TaskExecutionReference): boolean;
   openAgentRuns(taskId: string, role: TaskAgentResourceRole): readonly TaskExecutionReference[];
+  /** Every closed (Task DONE) agent run hosted by this root; an unreadable Task contributes none. Never throws. */
+  closedAgentRunsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */
   assertResourceDataReadable(): void;
 }

@@ -54,7 +54,7 @@ async function setup() {
   const snapshot = (ids: string[] = [], base = 0) => {
     const tree = structuredClone(team.view.getExecutionTree());
     tree.root_team.task_executions = ids.map(execution);
-    return { root_team_run_id: ROOT, base_change_sequence: base, execution_tree: tree,
+    return { root_team_run_id: ROOT, base_change_sequence: base, closed_task_executions: [], execution_tree: tree,
       messages: [], agent_input_states: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
   };
   emit('CONNECTED', { session_id: 'initial', root_team_run_id: ROOT });

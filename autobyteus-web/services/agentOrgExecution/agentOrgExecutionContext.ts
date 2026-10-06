@@ -30,6 +30,14 @@ import { collaboratorAgentSourceAt, collaboratorTeamSourceAt, catalogAgentSource
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
 import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
+import { collaboratorExecutionNodes } from '~/services/collaborators/agentSourceSelectors'
+import {
+  agentRunKey,
+  collaborationTreeWalk,
+  collectClosedSubtrees,
+  mergeClosedTaskExecutions,
+  type CollaborationTreeNode,
+} from '~/utils/collaboration/taskExecutionClosure'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -115,6 +123,12 @@ export class AgentOrgExecutionContext {
   select(selection: OrgWorkspaceSelection | string | null): void {
     const candidate = typeof selection === 'string' ? this.index.configuredSelection(selection) : selection
     this.selection = this.index.selectedAgent(candidate) ? candidate : null
+    this.leaveClosedSelection()
+  }
+
+  /** An agent is listed in the Workspaces tree unless it is in a closed task execution (Task DONE). */
+  isListed(agentRunId: string): boolean {
+    return this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId))
   }
 
   selectedTarget(): ActiveAgentWorkspaceTarget | null {
@@ -214,6 +228,15 @@ export class AgentOrgExecutionContext {
       // A new delegated child needs new contexts; reload through a checkpoint.
       this.validateTaskExecutionStarted(event)
       return 'checkpoint_required'
+    } else if (event.kind === 'task_executions_closed') {
+      // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
+      if (event.task_executions.some((reference) => 'agentRunId' in reference
+        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task' : !this.index.teams.get(reference.teamRunId)?.delegation)) {
+        this.correlationFailure('A closed task execution is not a task execution of this AgentOrg.')
+      }
+      this.view = { ...this.view,
+        closed_task_executions: mergeClosedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
+      this.leaveClosedSelection()
     } else if (event.kind === 'collaborator_added') {
       // One hosted instance per entry: its executions get contexts now, Offline. Applied in
       // place (no checkpoint) so the pending send that added it keeps its acknowledgement.
@@ -282,6 +305,24 @@ export class AgentOrgExecutionContext {
         }).catch(() => undefined)
       }
     }
+  }
+
+  private closedSubtrees() {
+    const root = this.view.execution_tree.rootOrg
+    return collectClosedSubtrees<CollaborationTreeNode>([...root.members, ...collaboratorExecutionNodes(root.collaborators ?? []), ...root.taskExecutions],
+      this.view.closed_task_executions, collaborationTreeWalk)
+  }
+
+  /**
+   * A selected agent whose Task became DONE leaves the main view: selection moves to the agent
+   * that delegated the outermost closed execution when it is still listed, else it is cleared.
+   */
+  private leaveClosedSelection(): void {
+    const selected = this.index.selectedAgent(this.selection)
+    const hiddenBy = selected ? this.closedSubtrees().get(agentRunKey(selected.agentRunId)) : undefined
+    if (!hiddenBy) return
+    const delegator = hiddenBy.delegatorAgentRunId
+    this.selection = delegator && this.isListed(delegator) ? { kind: 'agent_execution', agentRunId: delegator } : null
   }
 
   private commitView(view: AgentOrgExecutionViewDto): void {

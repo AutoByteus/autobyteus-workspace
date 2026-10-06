@@ -185,6 +185,19 @@ sending to it from the composer (or a peer `send_message_to` by run ID) wakes
 it with its conversation. Nothing distinguishes a shut-down child from a
 configured member that has not started other than the row kind.
 
+When the Project Task that a child was delegated for becomes DONE, the child
+(and, for a task Team, its members and nested delegations) leaves the Team's
+Workspaces tree. The rows fade and collapse in 200 ms, or go at once under
+reduced motion. The root Team stream publishes `TASK_EXECUTIONS_CLOSED` before
+the child runs are stopped, so the rows leave even if a stop fails. The view
+snapshot and the Team resume config carry `closed_task_executions` beside the
+unfiltered execution tree, so closed rows stay hidden after reload, restart and
+Task deletion. A selected or focused closed row hands selection and focus to the
+delegating Manager. Messages with closed runs stay in the Team tab, and nothing
+is deleted from disk. Reopening the Task and delegating again shows the new runs
+only. Other Team surfaces (the members panel, running list and token usage)
+still list closed members.
+
 ## Workspace History Sidebar Task Peers
 
 In an expanded Team run, available task Agents appear immediately after their

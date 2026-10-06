@@ -9,6 +9,8 @@ export type AgentOrgRunEvent =
   | Readonly<{ kind: "agent_presentation"; execution: CollaborationMemberExecutionIdentity; message: AgentPresentationMessage }>
   /** A delegated child was committed to the execution tree under its host. */
   | Readonly<{ kind: "task_execution_started"; host: TaskExecutionHostIdentity; taskExecution: TaskExecutionReference }>
+  /** These task executions' Task became DONE; published before they are stopped. */
+  | Readonly<{ kind: "task_executions_closed"; taskExecutions: readonly TaskExecutionReference[] }>
   | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessageV1 }>
   /** Committed at the root before any task execution references its address. */
   | Readonly<{ kind: "collaborator_added"; collaborator: CollaboratorEntry }>

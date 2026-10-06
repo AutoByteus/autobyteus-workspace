@@ -1,0 +1,128 @@
+{
+  "team": {
+    "ids": {
+      "manager": "manager-xteam-baec",
+      "worker": "release-notes-writer-xteam-baec",
+      "helper": "fact-checker-xteam-baec",
+      "assistant": "researcher-xteam-baec",
+      "squad": "docs-review-team-xteam-baec",
+      "team": "delivery-team-xteam-baec",
+      "org": "delivery-org-xteam-baec"
+    },
+    "names": {
+      "manager": "Manager Xteam baec",
+      "worker": "Release Notes Writer Xteam baec",
+      "helper": "Fact Checker Xteam baec",
+      "assistant": "Researcher Xteam baec",
+      "squad": "Docs Review Team Xteam baec",
+      "team": "Delivery Team Xteam baec",
+      "org": "Delivery Org Xteam baec"
+    },
+    "projectId": "project_ee7bd0ea-95cf-49e1-9f8d-480cd6442eb1",
+    "taskA": "project_task_aacbaee4-5468-4684-aa6d-f59e46f21d4d",
+    "taskB": "project_task_e0ada1a5-4025-4006-a9b4-9ec8236e2b6f",
+    "root": {
+      "kind": "team",
+      "rootId": "delivery_team_xteam_baec_e4d40f53d33e426db41a1fa841ca7f53",
+      "managerRunId": "manager_xteam_baec_b59dffcbd89c40fbbc575c707e4c014c"
+    },
+    "nodes": [
+      {
+        "agentRunId": "release_notes_writer_xteam_baec_920e762cae414190bf12081237c025ce",
+        "address": "/worker",
+        "delegatorAgentRunId": "manager_xteam_baec_b59dffcbd89c40fbbc575c707e4c014c",
+        "members": []
+      },
+      {
+        "agentRunId": "fact_checker_xteam_baec_cdf77710993844a6a835e8c8f3d2a9d7",
+        "address": "/helper",
+        "delegatorAgentRunId": "release_notes_writer_xteam_baec_920e762cae414190bf12081237c025ce",
+        "members": []
+      },
+      {
+        "agentRunId": "researcher_xteam_baec_f37fab403c9f4bd7ae8acd2ba9b81900",
+        "address": "/researcher_xteam_baec",
+        "delegatorAgentRunId": "fact_checker_xteam_baec_cdf77710993844a6a835e8c8f3d2a9d7",
+        "members": []
+      },
+      {
+        "teamRunId": "docs_review_team_xteam_baec_873de0cc5f18491386ba97f845b940a7",
+        "address": "/docs_review_team_xteam_baec",
+        "delegatorAgentRunId": "manager_xteam_baec_b59dffcbd89c40fbbc575c707e4c014c",
+        "members": [
+          "release_notes_writer_xteam_baec_77160bf21e0a4017bc9ba01f68e65b94",
+          "fact_checker_xteam_baec_812f171f11624f4db9f57d6a46724021"
+        ]
+      },
+      {
+        "agentRunId": "release_notes_writer_xteam_baec_d0f5d86d416646b1b6f6278f89ed30ca",
+        "address": "/worker",
+        "delegatorAgentRunId": "manager_xteam_baec_b59dffcbd89c40fbbc575c707e4c014c",
+        "members": []
+      }
+    ]
+  },
+  "org": {
+    "ids": {
+      "manager": "manager-xorg-a47f",
+      "worker": "release-notes-writer-xorg-a47f",
+      "helper": "fact-checker-xorg-a47f",
+      "assistant": "researcher-xorg-a47f",
+      "squad": "docs-review-team-xorg-a47f",
+      "team": "delivery-team-xorg-a47f",
+      "org": "delivery-org-xorg-a47f"
+    },
+    "names": {
+      "manager": "Manager Xorg a47f",
+      "worker": "Release Notes Writer Xorg a47f",
+      "helper": "Fact Checker Xorg a47f",
+      "assistant": "Researcher Xorg a47f",
+      "squad": "Docs Review Team Xorg a47f",
+      "team": "Delivery Team Xorg a47f",
+      "org": "Delivery Org Xorg a47f"
+    },
+    "projectId": "project_a8292726-0517-476e-b618-45dfaf0b9b60",
+    "taskA": "project_task_d2ed5384-5668-4e92-a219-9ea012960859",
+    "taskB": "project_task_17f648e6-8a75-4f6c-b973-e97fae06b858",
+    "root": {
+      "kind": "org",
+      "rootId": "delivery_org_xorg_a47f_f693d92d1a4449068bf21fc845502265",
+      "managerRunId": "manager_xorg_a47f_77d6678cfe1a47359844ec6f95b251f5"
+    },
+    "nodes": [
+      {
+        "agentRunId": "release_notes_writer_xorg_a47f_56f5212dc533406f8583c7c7355a6c9d",
+        "address": "/worker",
+        "delegatorAgentRunId": "manager_xorg_a47f_77d6678cfe1a47359844ec6f95b251f5",
+        "members": []
+      },
+      {
+        "agentRunId": "fact_checker_xorg_a47f_5dffdd35c2ad405bbaa723d0a962ffa3",
+        "address": "/helper",
+        "delegatorAgentRunId": "release_notes_writer_xorg_a47f_56f5212dc533406f8583c7c7355a6c9d",
+        "members": []
+      },
+      {
+        "agentRunId": "researcher_xorg_a47f_e00e064ad6df4cb5929734a839c81ba6",
+        "address": "/researcher_xorg_a47f",
+        "delegatorAgentRunId": "fact_checker_xorg_a47f_5dffdd35c2ad405bbaa723d0a962ffa3",
+        "members": []
+      },
+      {
+        "teamRunId": "docs_review_team_xorg_a47f_54d0c12f0aa54c67aa949f53e019d167",
+        "address": "/squad",
+        "delegatorAgentRunId": "manager_xorg_a47f_77d6678cfe1a47359844ec6f95b251f5",
+        "members": [
+          "release_notes_writer_xorg_a47f_7a4c0b7374064c158f78714fcf579027",
+          "fact_checker_xorg_a47f_f33ca3c6034e41b19a256b8213f2198c"
+        ]
+      },
+      {
+        "agentRunId": "release_notes_writer_xorg_a47f_736a2da130fa4103a25f8cb213107cf4",
+        "address": "/worker",
+        "delegatorAgentRunId": "manager_xorg_a47f_77d6678cfe1a47359844ec6f95b251f5",
+        "members": []
+      }
+    ]
+  }
+}

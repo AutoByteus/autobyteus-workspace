@@ -12,6 +12,7 @@ export const ListCollaborationRootHistory = gql`
         is_active
         summary
         org
+        closed_task_executions
       }
       ... on AgentTeamRootHistoryObject {
         root_subject_kind
@@ -24,7 +25,7 @@ export const ListCollaborationRootHistory = gql`
 export const GetAgentOrgRootHistory = gql`
   query GetAgentOrgRootHistory($orgRunId: String!) {
     getAgentOrgRootHistory(orgRunId: $orgRunId) {
-      root_subject_kind root_run_id created_at archived_at is_active summary org
+      root_subject_kind root_run_id created_at archived_at is_active summary org closed_task_executions
     }
   }
 `

@@ -1,9 +1,15 @@
 <template>
-  <div
+  <!-- Rows of a DONE Task leave with motion. -->
+  <TransitionGroup
+    tag="div"
+    name="tree-row"
     class="team-execution-tree ml-3 space-y-0.5"
     role="tree"
     :aria-label="t('workspace.history.hierarchy.tree_label', { name: treeLabel })"
     data-test="workspace-team-execution-tree"
+    @before-leave="onBeforeLeave"
+    @after-leave="onLeaveSettled"
+    @leave-cancelled="onLeaveSettled"
   >
     <template v-for="displayRow in visibleRows" :key="displayRow.row.rowKey">
       <WorkspaceStableExecutionRow
@@ -32,13 +38,14 @@
         @toggle="$emit('toggle', $event)"
       />
     </template>
-  </div>
+  </TransitionGroup>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
+import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows';
 import { aggregateTeamBranchAgentStatus } from '~/components/workspace/history/workspaceHistoryTeamBranchStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useLocalization } from '~/composables/useLocalization';
@@ -71,6 +78,9 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useLocalization();
+// The Team run row (its open button) directly precedes this tree.
+const { onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
+  (tree) => tree.previousElementSibling?.querySelector<HTMLElement>('button') ?? null);
 
 const visibleRows = computed<VisibleTeamExecutionRow[]>(() => {
   const uncollapsedRows: Array<Pick<VisibleTeamExecutionRow, 'row' | 'hasChildren'>> = [];
@@ -120,3 +130,5 @@ const activateStableRow = (row: RunHistoryStableExecutionRow): void => {
   if (row.agentRunId) emit('select', row);
 };
 </script>
+
+<style scoped src="./treeRowLeave.css"></style>

@@ -7,6 +7,7 @@ import type { CollaboratorEntry } from "../../run-history/domain/run-execution-t
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   TASK_EXECUTION = "TASK_EXECUTION",
+  TASK_EXECUTIONS_CLOSED = "TASK_EXECUTIONS_CLOSED",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
   COLLABORATOR = "COLLABORATOR",
@@ -41,6 +42,11 @@ export type TeamRunEvent =
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTION;
       taskExecution: TaskExecutionReference;
       payload: TeamRunTaskExecutionEvent;
+    }>
+  | Readonly<{
+      /** These task executions' Task became DONE; published before they are stopped. */
+      eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED;
+      taskExecutions: readonly TaskExecutionReference[];
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.COMMUNICATION;

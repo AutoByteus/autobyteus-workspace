@@ -20,7 +20,7 @@ const packageSnapshot = <T>(tree: T, kind: "agent" | "agent_org") => ({
   tree, messages: kind === "agent"
     ? { schemaVersion: 1 as const, subjectKind: "agent" as const, hostRunId: "manager", messages: [] }
     : { schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId: "org-root", messages: [] },
-  statuses: [], inputStates: [],
+  closedTaskExecutions: [], statuses: [], inputStates: [],
 });
 const setup = (kind: "agent" | "agent_org", linked = true) => {
   const tree = kind === "agent" ? agentProjectionTree(linked) : orgProjectionTree(linked);

@@ -1,0 +1,283 @@
+{
+  "startedAt": "2026-10-06T07:19:31.251Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "description": "Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_bragent_0f3f_429fe4f724ce4dc19a92dab1ca638c6f",
+          "managerRunId": "manager_bragent_0f3f_429fe4f724ce4dc19a92dab1ca638c6f"
+        },
+        "latencyMs": 312,
+        "leave": {
+          "firstHiddenAt": 54,
+          "goneAt": 280,
+          "leaveMs": 226,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "bLeave": {
+          "firstHiddenAt": 53,
+          "goneAt": 287,
+          "leaveMs": 234,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "rgb(238, 242, 255)",
+        "active": "workspace-agent-run-row"
+      }
+    },
+    "BR-002": {
+      "result": "Pass",
+      "description": "Agent Team root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_brteam_ca34_4456cea8a81d4011a0ff77c66e77ffd9",
+          "managerRunId": "manager_brteam_ca34_42533f77a8d14075ab6c00be009f4dc6"
+        },
+        "latencyMs": 308,
+        "leave": {
+          "firstHiddenAt": 37,
+          "goneAt": 266,
+          "leaveMs": 229,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "workspace-team-row-delivery_team_brteam_ca34_4456cea8a81d4011a0ff77c66e77ffd9"
+        },
+        "bLeave": {
+          "firstHiddenAt": 53,
+          "goneAt": 286,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "workspace-team-row-delivery_team_brteam_ca34_4456cea8a81d4011a0ff77c66e77ffd9"
+      }
+    },
+    "BR-003": {
+      "result": "Pass",
+      "description": "Agent Org root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_brorg_b223_fd458454155d4441ab914f9c3f81a853",
+          "managerRunId": "manager_brorg_b223_11c1da52be3b473393a39cf701e8e0f6"
+        },
+        "latencyMs": 308,
+        "leave": {
+          "firstHiddenAt": 50,
+          "goneAt": 283,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "agent-org-run-open-delivery_org_brorg_b223_fd458454155d4441ab914f9c3f81a853"
+        },
+        "bLeave": {
+          "firstHiddenAt": 52,
+          "goneAt": 286,
+          "leaveMs": 234,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "agent-org-run-open-delivery_org_brorg_b223_fd458454155d4441ab914f9c3f81a853"
+      }
+    },
+    "BR-004": {
+      "result": "Pass",
+      "description": "Reduced motion (Agent and Team trees): removed at once; focus to the run row",
+      "details": {
+        "agent": {
+          "root": {
+            "kind": "agent",
+            "rootId": "manager_rmagent_a572_5517c34f0dc9450a9a0b1b10e9f9eba1",
+            "managerRunId": "manager_rmagent_a572_5517c34f0dc9450a9a0b1b10e9f9eba1"
+          },
+          "leave": {
+            "firstHiddenAt": 135,
+            "goneAt": 168,
+            "leaveMs": 33,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-agent-run-row"
+          },
+          "active": "workspace-agent-run-row"
+        },
+        "team": {
+          "root": {
+            "kind": "team",
+            "rootId": "delivery_team_rmteam_0400_c9278fec84f8423faefe50b790100604",
+            "managerRunId": "manager_rmteam_0400_a9cbe17c4f414dd882d3317cfcfccabb"
+          },
+          "leave": {
+            "firstHiddenAt": 39,
+            "goneAt": 73,
+            "leaveMs": 34,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-team-row-delivery_team_rmteam_0400_c9278fec84f8423faefe50b790100604"
+          },
+          "active": "workspace-team-row-delivery_team_rmteam_0400_c9278fec84f8423faefe50b790100604"
+        }
+      }
+    },
+    "BR-005": {
+      "result": "Pass",
+      "description": "Reload, then real backend restart + reload: closed rows never render",
+      "details": {
+        "reload": {
+          "agent": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "team": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "org": {
+            "closedIds": 6,
+            "seen": []
+          }
+        },
+        "restart": {
+          "before": 22551,
+          "after": 24455,
+          "starts": 2
+        },
+        "afterRestart": {
+          "agent": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "team": {
+            "closedIds": 6,
+            "seen": []
+          },
+          "org": {
+            "closedIds": 6,
+            "seen": []
+          }
+        }
+      }
+    },
+    "BR-006": {
+      "result": "Pass",
+      "description": "CR-001: the last task rows under an Agent run fade; the empty tree then disappears",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_lastrows_89aa_ce93d16a20d848709723d6ddb3487305",
+          "managerRunId": "manager_lastrows_89aa_ce93d16a20d848709723d6ddb3487305"
+        },
+        "leave": {
+          "firstHiddenAt": 134,
+          "goneAt": 365,
+          "leaveMs": 231,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "active": "workspace-agent-run-row"
+      }
+    },
+    "BR-007": {
+      "result": "Pass",
+      "description": "SP-3: stopped Org run expanded from history before hydration renders no closed rows",
+      "details": {
+        "closedIds": 6,
+        "seen": [],
+        "historyItemClosed": [
+          {
+            "teamRunId": "docs_review_team_brorg_b223_dc78554d101840fd831b5120dc6307f2"
+          },
+          {
+            "agentRunId": "release_notes_writer_brorg_b223_8cfaaeebb269472c9be8b41f876c0978"
+          },
+          {
+            "agentRunId": "fact_checker_brorg_b223_29df205a239c4068be60a1460f8e55c1"
+          },
+          {
+            "agentRunId": "researcher_brorg_b223_d36001c6182b45e0b99e835db2c7c224"
+          }
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 22892,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 24455,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:55829",
+    "frontendUrl": "http://127.0.0.1:55830",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-5OSvCU"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-06T07:20:40.103Z"
+}

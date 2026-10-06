@@ -30,7 +30,7 @@ const status = (member_address: string, agent_run_id: string) => ({
 export const taskBearingView = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 8,
   is_active: true,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org',
     createdAt: '2026-09-01T00:00:00.000Z',
     archivedAt: null,

@@ -124,6 +124,8 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   releaseTaskAgentResources(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
     return this.resourceScope.releaseTaskAgentResources(agentRuns);
   }
+  /** Closed (Task DONE) task executions of the root's current tree, for its package snapshot. */
+  closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
 
   /** One seedless brought-in copy per Task/address among the Task's open helpers. */
   async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<DelegateTaskResult> {

@@ -25,6 +25,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
     base_change_sequence: input.baseChangeSequence,
     is_active: input.isActive,
     execution_tree: projectAgentCollaborationTree(input.snapshot.tree),
+    closed_task_executions: input.snapshot.closedTaskExecutions,
     communication_messages: input.snapshot.messages,
     agent_input_states: input.snapshot.inputStates,
     agent_statuses: input.snapshot.statuses.map((status) => ({
@@ -72,6 +73,9 @@ export const projectAgentCollaborationEvent = (
       break;
     case "collaborator_added":
       event = { kind: "collaborator_added" as const, collaborator: projectCollaborationCollaborator(source.collaborator) };
+      break;
+    case "task_executions_closed":
+      event = { kind: "task_executions_closed" as const, task_executions: source.taskExecutions };
       break;
   }
   return RootExecutionEventDtoSchema.parse({

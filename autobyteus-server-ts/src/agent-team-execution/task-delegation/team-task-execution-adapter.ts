@@ -36,7 +36,7 @@ import type { TeamDelegationPlacement } from "../services/resolved-team-recipien
 import type { TeamRunRegistrationReservation } from "../services/team-run-resolver.js";
 import { requirePreparedTaskTeamNode } from "./task-delegation-execution-resolution.js";
 import { TeamTaskSourceResolver } from "./team-task-source-resolver.js";
-import { taskExecutionStartedEvent } from "./task-execution-event-factory.js";
+import { taskExecutionStartedEvent, taskExecutionsClosedEvent } from "./task-execution-event-factory.js";
 import type { TeamTaskExecutionServiceOptions } from "./team-task-execution-service-contract.js";
 
 const referenceOf = (execution: IndexedTaskExecution): TaskExecutionReference =>
@@ -153,6 +153,9 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const host = resolveTaskCopyHost(this.options.getIndex(), delegatorAgentRunId, address);
     return host.hostKind === "team" ? host.hostRunId : this.options.rootTeamRunId;
   }
+
+  containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
+  publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void { this.options.publish(taskExecutionsClosedEvent(references)); }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);

@@ -69,6 +69,28 @@ type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 /** Shared by every collaboration root view (Org and Agent roots). */
 export declare const taskExecutionDtoSchema: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
 export type CollaborationTaskExecutionDto = TaskExecutionDto;
+/** Identity of one task execution node (a task Agent or a task Team) of a root's execution tree. */
+export declare const taskExecutionReferenceDtoSchema: z.ZodUnion<readonly [z.ZodObject<{
+    agentRunId: z.ZodString;
+}, z.core.$strict>, z.ZodObject<{
+    teamRunId: z.ZodString;
+}, z.core.$strict>]>;
+export type TaskExecutionReferenceDto = Readonly<z.infer<typeof taskExecutionReferenceDtoSchema>>;
+/** Task executions whose Task is DONE: the tree keeps them, the Workspaces listing leaves them out. */
+export declare const closedTaskExecutionsDtoSchema: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+    agentRunId: z.ZodString;
+}, z.core.$strict>, z.ZodObject<{
+    teamRunId: z.ZodString;
+}, z.core.$strict>]>>;
+/** Live: these task executions of the root were closed (their Task became DONE). */
+export declare const taskExecutionsClosedEventDtoSchema: z.ZodObject<{
+    kind: z.ZodLiteral<"task_executions_closed">;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
 /**
  * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
  * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
@@ -492,6 +514,11 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
             taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         }, z.core.$strict>;
     }, z.core.$strict>;
+    closed_task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
     communication_messages: z.ZodObject<{
         schemaVersion: z.ZodLiteral<1>;
         subjectKind: z.ZodLiteral<"agent_org">;
@@ -668,6 +695,13 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         addedAt: z.ZodString;
         addedViaAgentRunId: z.ZodString;
     }, z.core.$strict>], "kind">;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"task_executions_closed">;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
 }, z.core.$strict>], "kind">;
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;
 export type AgentOrgExecutionViewDto = Readonly<z.infer<typeof agentOrgExecutionViewDtoSchema>>;

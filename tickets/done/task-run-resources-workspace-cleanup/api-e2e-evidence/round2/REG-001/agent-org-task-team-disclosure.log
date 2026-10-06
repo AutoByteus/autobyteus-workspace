@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.95-beta.3 test:e2e:agent-org-task-team-disclosure /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-web
+> node tests/e2e/agent-org-task-team-disclosure-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/tickets/in-progress/task-run-resources-workspace-cleanup/api-e2e-evidence/round2/REG-001/agent-org-task-team-disclosure
+
+Agent Org delegated Team disclosure browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/tickets/in-progress/task-run-resources-workspace-cleanup/api-e2e-evidence/round2/REG-001/agent-org-task-team-disclosure/evidence.json

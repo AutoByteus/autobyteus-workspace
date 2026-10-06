@@ -116,6 +116,7 @@ describe("first mixed collaboration history after restart", () => {
 
     const teamManager = {
       hasManagedTeamRun: vi.fn(() => false),
+      closedTaskExecutionsFor: vi.fn(() => []),
       withInactiveHistoryMutation: vi.fn(),
     };
     const teamCatalog = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: teamManager });
@@ -126,7 +127,7 @@ describe("first mixed collaboration history after restart", () => {
         getCatalogListLiveProjection: () => ({ isActive: false, memberStatusSnapshots: [] }),
       } as never,
     });
-    const orgManager = { getActive: vi.fn(() => null) };
+    const orgManager = { getActive: vi.fn(() => null), closedTaskExecutionsFor: () => [] };
     const orgHistory = new AgentOrgRunHistoryCatalogService(memoryDir, orgManager as never);
     const mixedHistory = new CollaborationRootHistoryService({
       memoryDir,

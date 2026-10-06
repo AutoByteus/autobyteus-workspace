@@ -90,10 +90,11 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('Task-free %s tree 
   });
 });
 
-function adapterFor(kind: Kind, h: ReturnType<typeof subject>, teams: { getManaged: unknown; getActive: unknown } = { getManaged: () => null, getActive: () => null }) {
+function adapterFor(kind: Kind, h: ReturnType<typeof subject>, teams: { getManaged: unknown; getActive: unknown } = { getManaged: () => null, getActive: () => null },
+  publishers: { publish?: unknown; publishTaskExecutionsClosed?: unknown } = {}) {
   const common = { root: { rootSubjectKind: kind, rootRunId: 'root' }, getTree: () => h.tree, getIndex: () => h.index,
     teams: { getManaged: teams.getManaged, get: teams.getActive }, tokenUsageReadiness: {}, memoryLocator: {},
-    config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {} };
+    config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {}, ...publishers };
   return kind === 'agent_team' ? new TeamTaskExecutionAdapter({ ...common, rootTeamRunId: 'root',
     teamRunResolver: teams, config: {}, tokenUsageMigrationReadiness: {} } as never)
     : kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(common as never)
@@ -112,7 +113,7 @@ it('invokes every retained exact authority regardless of liveness; one failed ta
     }) } }]));
   const physical = vi.fn(async (ref: { agentRunId: string }) => { if (ref.agentRunId === 'owned-A') await pending; return { accepted: true }; });
   const adapter = { registrationFor: (ref: { agentRunId: string }) => registrations.get(ref.agentRunId) ?? null,
-    cancelOwnedExecution: vi.fn(), releaseOwnedExecution: physical };
+    cancelOwnedExecution: vi.fn(), releaseOwnedExecution: physical, containsTaskExecution: () => true, publishTaskExecutionsClosed: vi.fn() };
   const { resources, scope } = scopeOver(adapter);
   resources.addTask('A');
   await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, agentRun: { agentRunId: 'owned-A' } });
@@ -130,7 +131,7 @@ it('invokes every retained exact authority regardless of liveness; one failed ta
 });
 
 it('reports stopped when the root holds no authority at all, and refuses runs that are not closed', async () => {
-  const adapter = { registrationFor: () => null, cancelOwnedExecution: vi.fn(),
+  const adapter = { registrationFor: () => null, cancelOwnedExecution: vi.fn(), containsTaskExecution: () => true, publishTaskExecutionsClosed: vi.fn(),
     releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' })) };
   const { resources, scope } = scopeOver(adapter);
   resources.addTask('A');
@@ -190,4 +191,64 @@ it('fences owned input and messages in every root from the Task side alone, with
   const unbound = new RootTaskAgentResourceScope(rootAdapter as never);
   expect(() => unbound.assertInputAllowed('A-lead')).not.toThrow();
   expect(unbound.ownerOf('A-lead')).toBeNull();
+});
+
+describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: Task closure is published before stopping (task_executions_closed)', kind => {
+  it('publishes the released runs that are closed and in this tree, first; a failed stop does not withhold it; repeated DONE re-publishes', async () => {
+    const h = subject(kind);
+    const order: string[] = [];
+    const publish = vi.fn(() => { order.push('publish'); }), publishTaskExecutionsClosed = vi.fn(() => { order.push('publish'); });
+    const adapter = adapterFor(kind, h, undefined, { publish, publishTaskExecutionsClosed });
+    vi.spyOn(adapter, 'cancelOwnedExecution').mockImplementation(() => { order.push('cancel'); });
+    vi.spyOn(adapter, 'releaseOwnedExecution').mockImplementation(async (ref: any) => {
+      order.push('release');
+      if (ref.agentRunId === 'A-child') throw new Error('stop failed');
+      return { accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' };
+    });
+    const published = () => kind === 'agent_team'
+      ? publish.mock.calls.map(([event]: any) => { expect(event.eventSourceType).toBe('TASK_EXECUTIONS_CLOSED'); return event.taskExecutions; })
+      : publishTaskExecutionsClosed.mock.calls.map(([references]: any) => references);
+    const resources = new InMemoryTaskAgentResources();
+    resources.addTask('A'); resources.addTask('B');
+    const hostRoot = { rootSubjectKind: kind, rootRunId: 'root' };
+    await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot, agentRun: { teamRunId: 'A-team' }, coordinatorAgentRunId: 'A-lead' });
+    await resources.linkAgentRun({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-child' } });
+    await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-helper' } });
+    // Linked but never committed to this tree (e.g. its start failed): closed, yet not a node to hide.
+    await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-never-committed' } });
+    await resources.linkAgentRun({ role: 'assigned', taskId: 'B', assignedBy: 'manager', hostRoot, agentRun: { agentRunId: 'B-worker' } });
+    const scope = new RootTaskAgentResourceScope(adapter as never, resources);
+    expect(scope.closedTaskExecutions()).toEqual([]);
+
+    const closedA = [{ teamRunId: 'A-team' }, { agentRunId: 'A-child' }, { agentRunId: 'A-helper' }];
+    const results = await scope.releaseTaskAgentResources([...resources.close('A'), { agentRunId: 'B-worker' }]);
+    expect(published()).toEqual([closedA]);
+    expect(order[0]).toBe('publish');
+    expect(results.find(r => 'agentRunId' in r.agentRun && r.agentRun.agentRunId === 'A-child')).toMatchObject({ stopped: false, error: { code: 'TASK_RELEASE_FAILED' } });
+    expect(results.find(r => 'agentRunId' in r.agentRun && r.agentRun.agentRunId === 'B-worker')).toMatchObject({ error: { code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' } });
+    // Snapshots read the root's cumulative closure; other Tasks' runs stay open.
+    expect(scope.closedTaskExecutions()).toEqual(closedA);
+
+    await scope.releaseTaskAgentResources(resources.close('A'));
+    expect(published()).toEqual([closedA, closedA]);
+    // Only open work released: nothing is published.
+    await scope.releaseTaskAgentResources([{ agentRunId: 'B-worker' }]);
+    expect(published()).toHaveLength(2);
+  });
+});
+
+it('listClosedTaskExecutions keeps only the port refs present in the tree, and is empty without a Task side', async () => {
+  const { listClosedTaskExecutions } = await import('../../../src/agent-collaboration/execution/task/task-execution-closure.js');
+  const resources = new InMemoryTaskAgentResources();
+  resources.addTask('A');
+  const root = { rootSubjectKind: 'agent' as const, rootRunId: 'root' };
+  const other = { rootSubjectKind: 'agent_org' as const, rootRunId: 'org' };
+  await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: root, agentRun: { agentRunId: 'in-tree' } });
+  await resources.linkAgentRun({ role: 'delegated', creator: { agentRunId: 'in-tree' }, hostRoot: root, agentRun: { agentRunId: 'not-in-tree' } });
+  await resources.linkAgentRun({ role: 'delegated', creator: { agentRunId: 'in-tree' }, hostRoot: other, agentRun: { agentRunId: 'other-root' } });
+  const contains = (ref: { agentRunId?: string }) => ref.agentRunId !== 'not-in-tree';
+  expect(listClosedTaskExecutions({ port: resources, root, contains: contains as never })).toEqual([]);
+  resources.close('A');
+  expect(listClosedTaskExecutions({ port: resources, root, contains: contains as never })).toEqual([{ agentRunId: 'in-tree' }]);
+  expect(listClosedTaskExecutions({ root, contains: () => true })).toEqual([]);
 });

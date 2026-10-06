@@ -6,6 +6,9 @@ import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-exec
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { taskExecutionsClosedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
+import { AgentTeamRunManager } from "../../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
 import {
@@ -30,6 +33,33 @@ const root = {
 };
 
 describe("Team execution view strict projection", () => {
+  it("carries closed task executions beside the unfiltered tree, and maps the sequenced closed event", () => {
+    const closed = [{ teamRunId: "task-team-run-qa-001" }, { agentRunId: "nested-task-agent-run-001" }];
+    const projected = projectTeamExecutionViewSnapshot("team-run-root", {
+      tree, closedTaskExecutions: closed, messages, statuses: [], inputStates: [],
+    }, 3);
+    expect(projected.type === "TEAM_EXECUTION_VIEW_SNAPSHOT" && projected.payload.closed_task_executions)
+      .toEqual([{ team_run_id: "task-team-run-qa-001" }, { agent_run_id: "nested-task-agent-run-001" }]);
+    expect(projected.type === "TEAM_EXECUTION_VIEW_SNAPSHOT" && projected.payload.execution_tree.root_team.task_executions)
+      .toHaveLength(tree.rootTeam.taskExecutions.length);
+    expect(projectSequencedTeamRunEvent(root as never, { event: taskExecutionsClosedEvent(closed), changeSequence: 4 })).toEqual({
+      type: "TASK_EXECUTIONS_CLOSED",
+      payload: { change_sequence: 4, task_executions: [{ team_run_id: "task-team-run-qa-001" }, { agent_run_id: "nested-task-agent-run-001" }] },
+    });
+  });
+
+  it("the Team manager reads a root's closed task executions of a given tree through the Task port", async () => {
+    const resources = new InMemoryTaskAgentResources();
+    resources.addTask("A");
+    const hostRoot = createTeamRootExecutionIdentity("team-run-root");
+    await resources.linkAgentRun({ role: "assigned", taskId: "A", assignedBy: "agent-run-product-manager", hostRoot, agentRun: { teamRunId: "task-team-run-qa-001" } });
+    await resources.linkAgentRun({ role: "delegated", creator: { teamRunId: "task-team-run-qa-001" }, hostRoot, agentRun: { agentRunId: "not-in-tree" } });
+    resources.close("A");
+    const closedFor = AgentTeamRunManager.prototype.closedTaskExecutionsFor;
+    expect(closedFor.call({ taskAgentResources: resources } as never, "team-run-root", tree)).toEqual([{ teamRunId: "task-team-run-qa-001" }]);
+    expect(closedFor.call({} as never, "team-run-root", tree)).toEqual([]);
+  });
+
   it("projects one atomic initial execution/message/status snapshot with delegators and no task records", () => {
     const status = createTeamAgentStatusSnapshot({
       execution: createTeamAgentExecutionBinding({
@@ -40,7 +70,7 @@ describe("Team execution view strict projection", () => {
       details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
     });
     const projected = projectTeamExecutionViewSnapshot("team-run-root", {
-      tree, messages, statuses: [status], inputStates: [],
+      tree, closedTaskExecutions: [], messages, statuses: [status], inputStates: [],
     }, 17);
 
     expect(projected).toMatchObject({
@@ -82,8 +112,8 @@ describe("Team execution view strict projection", () => {
     const nested = parent.members.find((member: { teamRunId?: string }) => member.teamRunId === "task-team-run-automation-001");
     nested.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
     const current = validateTeamRunExecutionTreePayload(stamped, "team-run-root"), before = JSON.stringify(current);
-    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, messages, statuses: [], inputStates: [] }, 17))
-      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, messages, statuses: [], inputStates: [] }, 17));
+    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17))
+      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, closedTaskExecutions: [], messages, statuses: [], inputStates: [] }, 17));
     const event = { changeSequence: 19, event: {
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTION,
       taskExecution: { agentRunId: "nested-task-agent-run-001" },

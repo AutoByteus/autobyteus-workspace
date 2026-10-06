@@ -98,6 +98,10 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   cancelOwnedExecution(reference: TaskExecutionReference): void;
   /** Exact release of a committed copy; `EXACT_RELEASE_AUTHORITY_UNAVAILABLE` when the root holds none. */
   releaseOwnedExecution(reference: TaskExecutionReference): Promise<AgentOperationResult>;
+  /** The reference is a task execution node of this root's current tree (at any depth). */
+  containsTaskExecution(reference: TaskExecutionReference): boolean;
+  /** Publishes the root's sequenced "task executions closed" event (Task DONE) into its publisher. */
+  publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void;
   /** Index-only containment chain for idle shutdown and restore. */
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[];
   isLive(reference: TaskExecutionReference): boolean;

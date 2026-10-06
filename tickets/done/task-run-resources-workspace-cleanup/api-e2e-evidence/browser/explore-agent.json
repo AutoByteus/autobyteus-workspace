@@ -1,0 +1,63 @@
+{
+  "ids": {
+    "manager": "manager-explore-8e8e",
+    "worker": "release-notes-writer-explore-8e8e",
+    "helper": "fact-checker-explore-8e8e",
+    "assistant": "researcher-explore-8e8e",
+    "squad": "docs-review-team-explore-8e8e",
+    "team": "delivery-team-explore-8e8e",
+    "org": "delivery-org-explore-8e8e"
+  },
+  "names": {
+    "manager": "Manager Explore 8e8e",
+    "worker": "Release Notes Writer Explore 8e8e",
+    "helper": "Fact Checker Explore 8e8e",
+    "assistant": "Researcher Explore 8e8e",
+    "squad": "Docs Review Team Explore 8e8e",
+    "team": "Delivery Team Explore 8e8e",
+    "org": "Delivery Org Explore 8e8e"
+  },
+  "projectId": "project_263d6d0d-c271-499d-b576-b10d0c921fd6",
+  "taskA": "project_task_6ac93abb-9a55-40f6-b0b7-21a7dd0132c3",
+  "taskB": "project_task_6271994f-2795-4a60-b4fb-068db7b1aa30",
+  "root": {
+    "kind": "agent",
+    "rootId": "manager_explore_8e8e_c38fa7923c0447db98968fd849051453",
+    "managerRunId": "manager_explore_8e8e_c38fa7923c0447db98968fd849051453"
+  },
+  "nodes": [
+    {
+      "agentRunId": "release_notes_writer_explore_8e8e_a522bc22f21d4032a5b1385d1967fd17",
+      "address": "/release_notes_writer_explore_8e8e",
+      "delegatorAgentRunId": "manager_explore_8e8e_c38fa7923c0447db98968fd849051453",
+      "members": []
+    },
+    {
+      "agentRunId": "fact_checker_explore_8e8e_dca0d8bc29d84314bcc9de8ae35ea21a",
+      "address": "/fact_checker_explore_8e8e",
+      "delegatorAgentRunId": "release_notes_writer_explore_8e8e_a522bc22f21d4032a5b1385d1967fd17",
+      "members": []
+    },
+    {
+      "agentRunId": "researcher_explore_8e8e_11326d9df9444ce69d9efca8bd190c1a",
+      "address": "/researcher_explore_8e8e",
+      "delegatorAgentRunId": "fact_checker_explore_8e8e_dca0d8bc29d84314bcc9de8ae35ea21a",
+      "members": []
+    },
+    {
+      "teamRunId": "docs_review_team_explore_8e8e_cf7d395205784c93b780a4fbbbfdbf4e",
+      "address": "/docs_review_team_explore_8e8e",
+      "delegatorAgentRunId": "manager_explore_8e8e_c38fa7923c0447db98968fd849051453",
+      "members": [
+        "release_notes_writer_explore_8e8e_5656da16590f451795611a2d88e918e3",
+        "fact_checker_explore_8e8e_a2c46fbc7a0b4d0c962d8b948e5345b2"
+      ]
+    },
+    {
+      "agentRunId": "release_notes_writer_explore_8e8e_15a80eec8d0f4b27a445e963dd56f1d8",
+      "address": "/release_notes_writer_explore_8e8e",
+      "delegatorAgentRunId": "manager_explore_8e8e_c38fa7923c0447db98968fd849051453",
+      "members": []
+    }
+  ]
+}

@@ -290,6 +290,32 @@ What these suites cover:
   packages and `autobyteus-web/electron-dist/` are untracked build output.
   Stage paths explicitly; never `git add -A`.
 
+Task closure in the Workspaces tree (a Task's runs leave the tree when it
+becomes DONE, for Agent, Team and Org roots) has two durable checks beyond the
+unit suites. The server E2E is gated like the sibling scripted-AGY suites and
+skips cleanly when not gated, so it is part of `tests/e2e/projects` but needs
+the variables to actually run. The browser probe drives a probe-owned built
+backend and Nuxt dev server, so rebuild the server first.
+
+```bash
+RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-closure-root-visibility.e2e.test.ts --no-watch
+pnpm -C autobyteus-web test:e2e:task-closure-tree --output-dir <fresh evidence dir>
+```
+
+- **`task-closure-root-visibility.e2e.test.ts`.** At the real server/wire
+  boundary for all three roots: `task_executions_closed` /
+  `TASK_EXECUTIONS_CLOSED` is published before the first stop frame, the
+  snapshot and stored reads carry `closed_task_executions`, a repeated DONE
+  re-publishes, a root that was stopped at DONE shows the closure on its next
+  read, and Task delete keeps the closure. Conversations and files stay on disk.
+- **`test:e2e:task-closure-tree`.** In a real browser: the leave motion (fade and
+  collapse, instant under reduced motion), selection and focus hand-off (to the
+  Agent run row, or to the delegating Manager in a Team or Org), the last task
+  rows under an Agent run, the Team tab keeping messages, and closed runs staying absent after
+  reload and a real backend restart. The probe cleans up its own processes and
+  data root; check `cleanup` in its `evidence.json`.
+
 If you change `ProjectsLayout`, `readProjectFile` or `readTaskFile`, first
 repoint `projects-per-folder-v1` to frozen copies (data_migration_guideline §4),
 then rerun the migration tests.

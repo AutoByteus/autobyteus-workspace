@@ -38,7 +38,7 @@ const retainedView = (active: boolean) => {
 }
 const historyResponse = (view: ReturnType<typeof retainedView>) => ({ data: { listCollaborationRootHistory: [{
   root_subject_kind: 'agent_org', root_run_id: 'org-run', is_active: view.is_active,
-  created_at: view.execution_tree.createdAt, archived_at: null, summary: 'Mixed Org', org: view.execution_tree,
+  created_at: view.execution_tree.createdAt, archived_at: null, summary: 'Mixed Org', org: view.execution_tree, closed_task_executions: [],
 }] } })
 let wrapper: VueWrapper | undefined
 beforeEach(() => {

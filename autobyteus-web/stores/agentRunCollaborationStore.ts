@@ -72,8 +72,13 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     setContext(hostRunId, context)
     errors[hostRunId] = null
     openNewTaskTeams(hostRunId, context)
+    returnToHostWhenUnlisted(hostRunId, context)
+  }
+
+  /** A selected child that left the listing (absent, or its Task is DONE) returns the view to the run's own agent. */
+  const returnToHostWhenUnlisted = (hostRunId: string, context: AgentRunCollaborationContext) => {
     const selected = selection[hostRunId]
-    if (selected && !context.getChild(selected)) selection[hostRunId] = null
+    if (selected && !context.isListed(selected)) selection[hostRunId] = null
   }
 
   const attach = (hostRunId: string): AgentRunCollaborationStreamingService => {
@@ -93,6 +98,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
       reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
       onCollaboratorAdded: (context) => { if (isCurrent()) openNewTaskTeams(hostRunId, context) },
+      onTaskExecutionsClosed: (context) => { if (isCurrent()) returnToHostWhenUnlisted(hostRunId, context) },
     })
     services.set(hostRunId, service)
     service.connect()
@@ -198,7 +204,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const contextFor = (hostRunId: string): AgentRunCollaborationContext | null => contexts.value[hostRunId] ?? null
 
   const selectChild = (hostRunId: string, agentRunId: string | null) => {
-    selection[hostRunId] = agentRunId && contextFor(hostRunId)?.getChild(agentRunId) ? agentRunId : null
+    selection[hostRunId] = agentRunId && contextFor(hostRunId)?.isListed(agentRunId) ? agentRunId : null
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 

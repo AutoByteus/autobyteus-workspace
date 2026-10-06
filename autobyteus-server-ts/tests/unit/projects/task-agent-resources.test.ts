@@ -192,6 +192,66 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     await recovered.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
   });
 
+  it("closedAgentRunsIn answers a root's closed runs from the view: per host root, after restart and delete, never for a damaged Task", async () => {
+    const a = await tasks.createTask({ projectId, description: "A" });
+    const b = await tasks.createTask({ projectId, description: "B" });
+    const c = await tasks.createTask({ projectId, description: "C" });
+    await tasks.linkAgentRun({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, agentRun: { teamRunId: "a-team" }, coordinatorAgentRunId: "a-lead" });
+    await tasks.linkAgentRun({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, agentRun: { agentRunId: "a-sub" } });
+    await tasks.linkAgentRun({ role: "broughtIn", creator: { teamRunId: "a-team" }, hostRoot, agentRun: { agentRunId: "a-helper" } });
+    await assign(b.taskId, "b-worker");
+    await assign(c.taskId, "c-elsewhere", otherRoot);
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([]);
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
+    await tasks.updateTask({ projectId, taskId: c.taskId, status: "DONE" });
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
+    expect(tasks.closedAgentRunsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
+    // Reopen and delegate again: the old runs stay closed, the new one is open.
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
+    await assign(a.taskId, "a-new");
+    await tasks.deleteTask({ projectId, taskId: a.taskId });
+    const restarted = await boot();
+    expect(restarted.closedAgentRunsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
+    // A damaged Task contributes nothing (its runs stay listed) and the read never throws.
+    await fs.writeFile(layout.agentRunResourcesFile(projectId, a.taskId), "{ truncated");
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const damaged = await boot();
+    expect(() => damaged.closedAgentRunsIn(hostRoot)).not.toThrow();
+    expect(damaged.closedAgentRunsIn(hostRoot)).toEqual([]);
+    expect(damaged.closedAgentRunsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
+  });
+
+  it("keeps the per-root closed index in step with every committed swap: link, DONE, reopen + new link, repeated DONE, damaged file (SR-009)", async () => {
+    /** What the index must equal: a scan of the committed files of one Task, in file order. */
+    const scan = async (taskId: string, root = hostRoot) => (await resourcesFile(taskId)).agentRunResources
+      .filter((entry: any) => entry.closedAt !== null && entry.hostRoot.runId === root.rootRunId)
+      .map((entry: any) => entry.agentRun.kind === "agent" ? { agentRunId: entry.agentRun.agentRunId } : { teamRunId: entry.agentRun.teamRunId });
+    const a = await tasks.createTask({ projectId, description: "A" });
+    const b = await tasks.createTask({ projectId, description: "B" });
+    await assign(a.taskId, "a-first");
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([]);
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual(await scan(a.taskId));
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }]);
+    // Reopen and link again: the new open run is not in the index, the old closed one stays once.
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
+    await assign(a.taskId, "a-second");
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }]);
+    // A second DONE re-swaps Task A: its previous contributions are replaced, never duplicated.
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual(await scan(a.taskId));
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }, { agentRunId: "a-second" }]);
+    await assign(b.taskId, "b-worker");
+    await tasks.updateTask({ projectId, taskId: b.taskId, status: "DONE" });
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([...await scan(a.taskId), ...await scan(b.taskId)]);
+    expect(tasks.closedAgentRunsIn(otherRoot)).toEqual([]);
+    // After restart the index is rebuilt by the same swaps; a damaged file never reaches swap().
+    await fs.writeFile(layout.agentRunResourcesFile(projectId, b.taskId), "{ truncated");
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const restarted = await boot();
+    expect(restarted.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }, { agentRunId: "a-second" }]);
+  });
+
   it("serializes assignment linking and DONE per Task, without blocking other Tasks", async () => {
     const service = new TaskAgentResourceService(new TaskAgentResourceStore(layout));
     const gate = latch(), order: string[] = [];

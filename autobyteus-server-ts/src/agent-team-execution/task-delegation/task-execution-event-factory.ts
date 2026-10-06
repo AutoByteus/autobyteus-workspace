@@ -13,3 +13,9 @@ export const taskExecutionStartedEvent = (input: {
     details: { parentTeamRunId: input.parentTeamRunId },
   },
 });
+
+/** These task executions' Task became DONE (before they are stopped). */
+export const taskExecutionsClosedEvent = (taskExecutions: readonly TaskExecutionReference[]): TeamRunEvent => ({
+  eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED,
+  taskExecutions,
+});
