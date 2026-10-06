@@ -23,13 +23,13 @@ Inside `RunFileChangeService`, live projections exist only for attached runs. `a
 
 - Implementation cycle: `Initial`
 - Implementation revision record: `<T>/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-002` (confirmation only: SR-002 narrowed AC-003/AC-004, and the implementation is unchanged from IR-001 / `061d4698b`)
+- Related solution revision IDs: `SR-001`, `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (Requirement Gap, resolved by SR-002)
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (advisory REC-001 and REC-002 adopted)
+- Triggering finding IDs: IR-001 `N/A` (advisory REC-001 and REC-002 adopted). IR-002: CRR-002 / API-REV-001 B-003, B-004 (resolved by SR-002 scope narrowing; no code change)
 
 ## Routing Classification (Mandatory)
 
@@ -47,8 +47,8 @@ Inside `RunFileChangeService`, live projections exist only for attached runs. `a
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 | Every recorded artifact of an active run previews; 409/404 kept | REST route → `RunFileChangeProjectionService.resolveEntry` → `changes()` = bound process authority → attached live projection (`run-file-change-service.ts` `load`) | Integration regression: A read, then B, C recorded → A, B, C all 200 with bytes. Streaming D without file → 409. Unknown path → 404 "File change not found". Route code unchanged. |
-| BEH-002 | Active-run list contains every recorded entry | GraphQL resolver → module projection service → per-call `changes()` → live projection | Integration (GraphQL) plus unit: second list contains A, B, C for a standalone run and a Team member. |
-| BEH-003 | Inactive runs unchanged | `readProjectionContext` inactive branches untouched (store reads) | Existing historical/legacy/404 cases pass. The historical team-member case fails identically on base (see Known Risks). |
+| BEH-002 | Active-run list contains every recorded entry (SR-002: server API for any run plus the standalone UI; Team-member UI hydration is out of scope) | GraphQL resolver → module projection service → per-call `changes()` → live projection | Integration (GraphQL) plus unit: second list contains A, B, C for a standalone run and a Team member. |
+| BEH-003 | Inactive runs unchanged (SR-002: server API for any run plus the standalone UI) | `readProjectionContext` inactive branches untouched (store reads) | Existing historical/legacy/404 cases pass. The historical team-member case fails identically on base (see Known Risks). |
 | BEH-004 | Writer persists every `FILE_CHANGE` unchanged | `attachToRun` → `enqueue` → `handle` → `projectionStore.writeProjection` (still writes after detach) | Existing writer tests pass; file format untouched. |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
