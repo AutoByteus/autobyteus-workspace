@@ -1,0 +1,60 @@
+8d9d22adb chore(release): bump workspace release version to 1.4.95-beta.9
+689d80138 docs(delivery): accept and archive verified Electron host file preview
+aecc87532 test: validate real Event Monitor file preview shell and native boundaries
+3d8395bb3 fix: reveal selected file previews through the mounted workspace shell
+17e1e201a fix: retain selected workspace identity for native file previews
+30c3f40d5 chore(release): bump workspace release version to 1.4.95-beta.8
+131b5cce3 docs(delivery): checkpoint Codex verification candidate before base refresh
+96dc5a25f chore(release): bump workspace release version to 1.4.95-beta.7
+e2064977a test(codex): verify native agent suppression across launch and restore
+ce028688b fix(codex): disable native agents with effective launch setting
+59095f798 docs(delivery): sync docs and checkpoint DR-001 for mention-candidates-in-run (awaiting verification)
+ee8d0b6f0 test(mentions): add API/E2E coverage and artifacts for mention-candidates-in-run (delivery checkpoint)
+e08c4a8c5 fix(mentions): let @ address agents and teams already in the run
+c879b9ece chore(release): bump workspace release version to 1.4.95-beta.6
+9ca13012f test(collaboration): add API/E2E durable coverage and review artifacts for mention-delegation-dismissal (delivery checkpoint)
+a2a7b37bc feat(collaboration): make @ delegate and every delegated copy closable
+5fa1aa5f6 docs(delivery): sync web docs for standalone collaborator artifacts and archive standalone-collaborator-artifact-hydration after user verification
+f92a55439 fix(web): hydrate standalone-run collaborator artifacts with their run state
+0dd5722d7 chore(release): bump workspace release version to 1.4.95-beta.5
+1a67854c5 docs(delivery): sync web docs for member artifact hydration and archive collaboration-member-artifact-hydration after user verification
+db77f6035 docs(delivery): checkpoint removal delivery before resumed integration
+dc552c3ab test(web): add closedTaskExecutions to the Team open artifact fixture after base merge
+3c8e49ad5 chore(release): bump workspace release version to 1.4.95-beta.4
+a98049516 docs(delivery): archive task-run-resources-workspace-cleanup after user verification
+404ec96da fix(web): hydrate Team and AgentOrg member artifacts with their run state
+be480b5fb test(built-in-agents): add API/E2E durable coverage and review artifacts (delivery checkpoint)
+a3c3abec5 test(task-closure): add API/E2E durable coverage and review artifacts (delivery checkpoint)
+50b08001d feat(server): per-root closed index for Task closure; document the closure protocol
+3570b8c10 fix(web): a row leaving mid-move still fades and collapses
+62af418df feat(built-in-agents): remove built-in Project Task Manager
+bf9ec5168 test(run-file-changes): add API/E2E durable coverage and review artifacts (delivery checkpoint)
+061d4698b fix(run-file-changes): serve active-run artifacts from the bound process authority
+489268fc7 fix(web): keep the Agent task tree mounted while its last rows leave
+af690af33 feat: closed Task runs leave the Workspaces tree (Agent, Team, Org roots)
+5c74fed71 chore(release): bump workspace release version to 1.4.95-beta.3
+e13f31bdc docs(delivery): archive delegated-row-clean-style and sync tree-row docs
+c21d312c0 feat(web): clean delegated-row style in the Workspaces tree
+23d6c877a chore(release): bump workspace release version to 1.4.95-beta.2
+a74bccabe docs(delivery): finalize verified Project authoring tool and archive ticket
+2253c6ee2 test(projects): validate selected project mutations over HTTP and isolated nodes
+3124a8bf6 feat(projects): add omission-preserving project authoring tool
+e3339d154 docs(run-settings-ui-unification): sync docs to unified run settings and archive ticket after user verification
+636af064d test(web): durable run-settings live probes and ticket review artifacts (delivery checkpoint)
+a92004c9e fix(web): keep the model trigger bounded by its wrapper at every width (CR-005, IR-005)
+83ab477e4 fix(web): copied and carried starts load their runtimes' availability and catalogs (CR-004, IR-004)
+6db76da75 docs(delivery): archive verified task page copy simplification without release
+437575242 Extend task form Projects E2E coverage and record independent validation
+81f9ff178 refactor(web): SR-010 — one New chat intent, built-in id contract pin, one launch readiness rule (IR-003)
+f5b1caa48 Simplify task authoring copy and preserve editor controls
+c37b81de5 fix(web): Agent "+" copies the agent on screen (host or @ collaborator) — IR-002
+396591a37 fix(web): decouple the Org launch draft from the chat draft store; log a blocked Org topology once
+d45fe62bc feat(web): unify run settings across New chat, Org launch and saved runs
+19dee40b3 chore(release): bump workspace release version to 1.4.95-beta.1
+43d95677f docs(project-task-manager-linked-delegation): sync docs to REQ-BL-009/REQ-BL-010 and archive ticket after user verification
+335f78c20 fix(codex): launch AutoByteus Codex app-servers with Codex multi-agent features disabled
+b6755585a test(projects): replace startup no-write e2e with per-folder startup migration e2e (API-REV-020)
+b61b8452f refactor(projects): Task agent run resources, Task-free runtime, per-Project folders
+edeb5db9a feat(built-in-agents): restore Daily Assistant display name for the default agent
+4b04d9097 refactor(task-lifetimes): single closure gate, one composition binding, receiver-only acceptance
+028cca231 chore(delivery): checkpoint reviewed linked-delegation candidate before latest-base refresh

@@ -1,7 +1,7 @@
 # Delivery / Release / Deployment Report — electron-host-file-open
 
 ## Current Result / Scope
-**DR-004 — Beta v1.4.95-beta.9 verified on all four workflows; stable 1.4.95 authorized and preparing. Cleanup and terminal pending.** Approved R1 / Ready D2 / SR-004 / IR-002 / API-REV-001 Pass95%; Medium / Low direct low-risk route. Architecture/source/test-code review artifacts N/A — not applicable. User direct “finalize and release a new beta version” accepted the evidence-based package and authorized this beta; no manual user test claimed. Prior DR-001/002 verification hold was superseded by this submitted signal, not by preselection.
+**DR-003 — Repository finalized; v1.4.95-beta.9 published for Desktop/Android and iOS upload succeeded; Docker publication and cleanup pending. Not Delivery Completed yet.** Approved R1 / Ready D2 / SR-004 / IR-002 / API-REV-001 Pass95%; Medium / Low direct low-risk route. Architecture/source/test-code review artifacts N/A — not applicable. User direct “finalize and release a new beta version” accepted the evidence-based package and authorized this beta; no manual user test claimed. Prior DR-001/002 verification hold was superseded by this submitted signal, not by preselection.
 
 ## Authorities
 - Handoff summary: handoff-summary.md, Updated; revision record delivery-revision-record.md current DR-003.
@@ -67,6 +67,3 @@ If beta regresses selected binding/readOnly/visible errors or containment, halt 
 
 ## Fresh status after user interruption
 Current gh run list confirms Desktop/Android/iOS successful; Docker still in progress. Exact status recorded in evidence/delivery/dr-003/status-after-interruption.json. No replay of finalized commits, tag or workflows; no cleanup or successful terminal claimed.
-
-## DR-004 stable scope (supersedes earlier pending beta statuses)
-Direct “now release a stable version thanks” authorizes one stable release via documented helper. Fresh target unchanged8d9d22adb; no source/behavior delta beyond already accepted beta, receipt/notes/version edits only. Beta four workflows completed/success; registry version+beta match and latest stayed unchanged before stable, all receipts under dr-003. Stable curated release-notes.md replaces the initial ticket beta summary (retained historically), including accumulated beta features and upgrade cautions. Stable publication/rollout and safe cleanup Pending; no Delivery Completed sent.

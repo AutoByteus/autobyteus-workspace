@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-06T19:44:00.194355+00:00",
+  "exactUserMessage": "now release a stable version thanks",
+  "authority": "Direct submitted user message; stable publication authorization and evidence-based continuation of accepted finalized candidate",
+  "chosenVersion": "1.4.95",
+  "baseRef": "origin/personal",
+  "baseCommit": "8d9d22adb5ae33b32e1b19b989b3ad9b64b6d08f",
+  "headCommit": "8d9d22adb5ae33b32e1b19b989b3ad9b64b6d08f",
+  "targetAdvanced": false,
+  "effectiveRuntimeDeltaSinceAcceptedBeta": "None; only delivery receipts, curated notes and upcoming release version bump",
+  "renewedInteractiveVerificationRequired": false,
+  "manualUserTestClaimed": false,
+  "notesSources": [
+    "v1.4.94..HEAD non-merge production log",
+    "run-settings-ui-unification/release-notes.md",
+    "mention-delegation-dismissal/release-notes.md",
+    "mention-candidates-in-run/release-notes.md",
+    "task-run-resources-workspace-cleanup/release-notes.md",
+    "create-or-update-project-tool/release-notes.md",
+    "remove-built-in-project-task-manager/release-notes.md",
+    "codex-disable-multi-agent/release-notes.md",
+    "electron-host-file-open validated package"
+  ],
+  "method": "Documented desktop-release.sh release 1.4.95 --release-notes archived canonical file; no manual workflow dispatch"
+}

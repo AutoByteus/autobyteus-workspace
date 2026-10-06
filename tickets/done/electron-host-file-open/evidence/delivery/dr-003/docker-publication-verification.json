@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-06T19:43:26.753333+00:00",
+  "result": "Pass",
+  "digests": {
+    "1.4.95-beta.9": "sha256:8e60ac085e12b6e5ba1e6c275d23160bd3a0e9bfe388ba4df22819e8f1666531",
+    "beta": "sha256:8e60ac085e12b6e5ba1e6c275d23160bd3a0e9bfe388ba4df22819e8f1666531",
+    "latest": "sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477"
+  },
+  "betaAliasMatchesVersion": true,
+  "stableLatestUnchanged": true,
+  "method": "Read-only remote registry manifest inspection; no pull, launch or deployment"
+}

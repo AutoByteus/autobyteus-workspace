@@ -1,0 +1,12 @@
+Command: python3 -m unittest discover -s scripts/tests -p test_desktop_release_beta.py
+....
+----------------------------------------------------------------------
+Ran 4 tests in 3.355s
+
+OK
+Command: python3 -m unittest discover -s scripts/tests -p test_release_channel_workflow_steps.py
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 4.887s
+
+OK

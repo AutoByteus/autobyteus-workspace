@@ -15,3 +15,9 @@
 
 ## Historical Hold
 DR-001/DR-002 and solution-coordination-hold.md accurately record the earlier missing signal. They are retained as history, not current hold authorities. No manual verification is inferred from R1 go-ahead/drawer clarification or this evidence-based completion instruction.
+
+## User reports desktop already running
+Direct subsequent user statement: “but i am already running the latest version you know”. This confirms reported desktop availability/use; no application inspection, exact binary version, fixed-flow manual test or Docker completion is inferred. Desktop release/publication was already verified independently. Remaining release/housekeeping gates do not block using the published desktop beta.
+
+## Stable publication continuation — DR-004
+Exact direct user request: “now release a stable version thanks”. This authorizes stable 1.4.95 publication of the already accepted/finalized candidate. Fresh remote personal remains release8d9d22adb; no runtime/base advancement or renewed interactive acceptance required. This is not retroactive manual testing of the installed application. Curated stable notes summarize accumulated beta changes and upgrade cautions.

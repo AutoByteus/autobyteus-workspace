@@ -8,7 +8,9 @@ Latest docs-sync-report.md, handoff-summary.md and release-deployment-report.md 
 | DR-001 | API-REV-001 Pass / IR-002 cumulative direct package | N/A | Integrated docs ready; **Blocked — explicit user verification pending** | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, release-notes.md, user-verification.md; two long-lived docs |
 | DR-002 | Solution Designer coordination hold return | DR-001 verification hold / upstream coordination | **Blocked — User/External Prerequisite**, no technical reroute | delivery reports, user-verification.md, cumulative package; solution-coordination-hold.md added |
 
-| DR-003 | Direct user finalize/new-beta instruction | DR-002 external verification hold | Acceptance received; finalization/publication in progress (not yet complete) | user-verification.md, delivery reports, archive and release evidence |
+| DR-003 | Direct user finalize/new-beta instruction | DR-002 external verification hold | Repository finalized; beta publication verified; cleanup deferred for stable request | user-verification.md, delivery reports, archive and release evidence |
+| DR-004 | Direct user stable-release instruction | DR-003 beta verified, cleanup pending | Stable authorized/in progress; no terminal yet | Release notes, acceptance, final reports, stable publication evidence |
+
 ## Revision Entries
 ### DR-001 — Checked latest-base integration and truthful docs, verification hold
 - Round/trigger: initial delivery result, 2026-10-06; /api_e2e_engineer API-REV-001 Pass95%, Approved R1 / D2 / SR-004 / IR-002. No previous delivery record existed; prior result **N/A**, not inferred success.
@@ -54,3 +56,15 @@ Latest docs-sync-report.md, handoff-summary.md and release-deployment-report.md 
 - Current work: archive before final ticket commit; push ticket, update safe separate personal context, merge/push target, run one documented beta helper, verify tag/package/CI/publication and safe task cleanup.
 - Docs Pass/Updated retained, release-notes prepared before acceptance. Source/test implementation unchanged.
 - Terminal return not eligible yet; finalization/release/cleanup outcomes must be recorded before completion. Initial DR-001/002 histories retained.
+
+### DR-003 — Publication gate completion audit
+- Repository finalization and beta tag/push remain as recorded; no operations replayed.
+- All four beta workflows now completed/success, exact SHA8d9d22adb; ci-final.json. GitHub17 assets/updater metadata/Android checksum Pass. Docker version and beta alias match sha256:8e60ac085e12b6e5ba1e6c275d23160bd3a0e9bfe388ba4df22819e8f1666531; stable latest unchanged. docker-publication-verification.json.
+- User requested stable publication before cleanup/terminal, so no beta Delivery Completed sent. Owned cleanup remains deferred to final stable publication result.
+
+### DR-004 — Stable release continuation
+- Trigger: direct user “now release a stable version thanks”, 2026-10-06. Prior DR-003 beta publication verified, cleanup not yet complete.
+- Classification unchanged Medium/Low direct; R1/D2/SR-004/IR-002/API-REV-001; independent reviews N/A.
+- Fresh origin/personal remains accepted beta release8d9d22adb; no runtime delta, no additional product validation or renewed verification required for receipt/notes/version-only work.
+- Beta publication completed, no replay. Stable curated release-notes.md prepared from v1.4.94..HEAD production changes and archived upstream notes, including Task call-shape and removed built-in cautions. Original beta note retained under dr-003.
+- Current result: Stable publication authorized/in progress; cleanup and successful terminal remain Pending. Authorities: docs-sync-report.md, handoff-summary.md, release-deployment-report.md, user-verification.md; evidence/delivery/dr-004/stable-authorization-and-base.json.

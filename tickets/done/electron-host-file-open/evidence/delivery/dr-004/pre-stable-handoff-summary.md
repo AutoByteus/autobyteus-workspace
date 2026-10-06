@@ -21,6 +21,3 @@ Verify all applicable workflows, GitHub pre-release/assets/update metadata and r
 
 ## Current publication update
 Desktop/Android release assets verified (17 uploaded assets; four updater files), iOS archive/upload CI successful, stable GitHub latest unchanged. Docker37509851534 still in progress on fresh query; safe task cleanup/final receipt therefore pending. Not Delivery Completed.
-
-## DR-004 continuation (current)
-Beta publication fully verified including Docker, ci-final.json and docker-publication-verification.json. Direct stable authorization received; unchanged current origin/personal8d9d22adb. Stable1.4.95 uses curated archived release-notes.md with accumulated beta changes. Stable publication and safe cleanup now owning unfinished gates; no terminal claimed.

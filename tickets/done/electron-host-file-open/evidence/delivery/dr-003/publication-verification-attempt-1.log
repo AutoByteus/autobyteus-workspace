@@ -1,0 +1,3 @@
+Delivery publication verifier attempt 1 failed with KeyError: 'size' while reading a Windows updater files entry.
+Exact downloaded latest.yml retained: it supplies url/sha512 without size. GitHub uploaded asset supplies nonzero size/digest. This was a new verifier's unsupported mandatory-field assumption, not a product/CI failure; no source, metadata or assertion workaround in the product.
+Corrected verifier compares size wherever metadata supplies it; explicitly reports absent Windows size, verifies uploaded asset existence/nonzero size and sha512 shape, and verifies the downloaded metadata/checksum hashes against GitHub upload digests. Final full publication set is rechecked.

@@ -1,0 +1,12 @@
+Name:      docker.io/autobyteus/autobyteus-server:latest
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:d7b21034aff5899b0a74ccb116deb39789bfc6fa9aba40527dfa8213c995739a
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:f120d88be5ebff0e2a83f1410af70c799f73cd4817565c2795c18d2832375eb6
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64

@@ -1,0 +1,1 @@
+35 release-policy tests Pass. Initial git diff --cached --check flagged only verbatim remote/registry trailing whitespace in raw logs; preserved as evidence, not a source/docs defect. Source/docs hygiene uses explicit evidence exclusion.
