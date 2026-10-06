@@ -466,14 +466,14 @@ Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.
 A task Agent row shows the member marker (solid status dot and initials); the
 starter is kept in the accessible label, not as a visible line. Collaborators
-(shared Agents and Agent Teams brought in with `@` or by an agent's first
-message to a listed address) are one hosted instance per
+(shared Agents and Agent Teams brought in by an agent's first message to a
+listed address, or with `@` in runs saved by earlier releases; `@` itself adds
+nothing) are one hosted instance per
 entry in `rootOrg.collaborators`. `AgentOrgExecutionViewIndex` lists them with
 the task-row look (`collaboratorExecutionNodes`), Offline until their first
 message, ahead of the delegated children, and resolves their source from the
 entry. The Org context applies `collaborator_added` in place (no checkpoint
-reload, so the pending mention send keeps its acknowledgement), adds the new
-contexts and invalidates the `@` candidates. An extra copy that `delegate_task`
+reload), adds the new contexts and invalidates the `@` candidates. An extra copy that `delegate_task`
 starts at a collaborator address is an ordinary task row. A catalog copy
 (`delegate_task` to a listed catalog Agent or Team) carries `source` on its task
 DTO; `AgentOrgExecutionViewIndex` and the Org history rows resolve it with

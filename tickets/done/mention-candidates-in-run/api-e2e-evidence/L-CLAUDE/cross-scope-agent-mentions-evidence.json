@@ -1,0 +1,772 @@
+{
+  "startedAt": "2026-10-06T15:19:45.043Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "SCN-001 standalone run: menu (VIS-011, a11y), inline mention; the send adds no collaborator and no row (AC-001); stored delegate_task note, chip in the UI (AC-002); the host delegates (delegate_task card) and gets an ad-hoc Task, text only (AC-003, AC-015); the delegated row appears; the copy reports \"From Code Reviewer:\" (Task-linked scope allows its delegator); the host may close it on its own (SCN-002); a non-reporting copy and a Team copy are delegated the same way",
+      "result": "Pass",
+      "ms": 55888,
+      "details": {
+        "runId": "research_assistant_be0fe282e14c4d2195a853bc6202a8e5",
+        "options": [
+          "code-reviewer",
+          "researcher",
+          "writer",
+          "analyst",
+          "note-taker",
+          "temp-helper",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team",
+          "review-team"
+        ],
+        "menuText": "Delegate to an agent or team @ · ↑↓ to move, Enter to choose\n\nAgents\nCR\nCode Reviewer\nReviews text and code.\nR\nResearcher\nTeam researcher.\nW\nWriter\nTeam writer.\nA\nAnalyst\nOrg analyst.\nNT\nNote Taker\nNotes things down.\nTH\nTemp Helper\nA definition that F01 deletes while a draft mentions it.\nPP\nProduct Prototyper\nBuilds UI prototypes.\nPB\nPrototype Bootstrapper\nSets up prototype repositories.\nAgent teams\nPT\nProduct Team\n2 members · coordinator product_prototyper\nRT\nReview Team\n2 members · coordinator researcher\nResearch Assistant gets your message and delegates the work",
+        "footer": "Research Assistant gets your message and delegates the work",
+        "aria": {
+          "role": "combobox",
+          "expanded": "true",
+          "controls": "agent-mention-menu-v-0-4",
+          "active": "agent-mention-menu-v-0-4-option-0"
+        },
+        "rowsRightAfterSend": [],
+        "collaboratorsRightAfterSend": 0,
+        "delegation": {
+          "copyRunId": "code_reviewer_011c66e677f645029e23856449206731",
+          "taskId": "ad_hoc_task_108d4753-4b46-4f45-a951-bf3d120c1fc3",
+          "task": {
+            "taskId": "ad_hoc_task_108d4753-4b46-4f45-a951-bf3d120c1fc3",
+            "description": "Review the phrase \"hello world\" and report back with your findings.",
+            "referenceFiles": [],
+            "status": "TODO",
+            "createdAt": "2026-10-06T15:20:16.735Z",
+            "updatedAt": "2026-10-06T15:20:16.735Z"
+          },
+          "files": [
+            "agent_run_resources.json",
+            "task.json"
+          ],
+          "maxCollaborators": 0
+        },
+        "rowSeen": {
+          "kind": "task_agent",
+          "label": "Temporary task agent, code reviewer, level 1, running, Started by research assistant, /code_reviewer",
+          "text": "CR\ncode reviewer",
+          "avatar": true,
+          "dot": true,
+          "startedByVisible": false
+        },
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "create_or_update_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "reviewerClosedByAgent": true,
+        "rowsAfterReport": [],
+        "notes": {
+          "copyRunId": "note_taker_0959f8741d25453090b8f42748d7bd53",
+          "taskId": "ad_hoc_task_2e6ff3dc-7d8a-4214-802a-df0953b5e394",
+          "maxCollaborators": 0
+        },
+        "childTitle": "note taker",
+        "teamDelegation": {
+          "copyRunId": "product_team_9bade59c794c42d5973ed43e4f184d82",
+          "kind": "team",
+          "taskId": "ad_hoc_task_9fed91b4-6f8d-4f11-a8b8-5c291d6b0c20",
+          "maxCollaborators": 0
+        },
+        "teamClosedByAgent": false,
+        "optionsAfter": [
+          "code-reviewer",
+          "researcher",
+          "writer",
+          "analyst",
+          "note-taker",
+          "temp-helper",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team",
+          "review-team"
+        ],
+        "small": {
+          "top": 243,
+          "bottom": 543,
+          "vh": 640
+        }
+      }
+    },
+    "A02": {
+      "title": "SCN-002 / AC-007 / AC-009: the user tells the host the notes are finished; the host (no Project tool selected) calls create_or_update_task by task_id alone; Task DONE, copy closed, its row leaves live; history kept",
+      "result": "Pass",
+      "ms": 7217,
+      "details": {
+        "closed": [
+          "code_reviewer_011c66e677f645029e23856449206731",
+          "note_taker_0959f8741d25453090b8f42748d7bd53"
+        ],
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "create_or_update_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "create_or_update_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "closedConversationEntries": 4
+      }
+    },
+    "A03": {
+      "title": "AC-008 / SCN-004: Stop → reopen: closed copies stay hidden, viewing does not restore; a second @Note Taker is delegated to a new copy (never the closed one)",
+      "result": "Pass",
+      "ms": 15255,
+      "details": {
+        "rowsAfterReopen": [
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "storedClosed": [
+          "code_reviewer_011c66e677f645029e23856449206731",
+          "note_taker_0959f8741d25453090b8f42748d7bd53"
+        ],
+        "second": {
+          "copyRunId": "note_taker_cddd1c95b96f4b2485140dc6f02fe595",
+          "taskId": "ad_hoc_task_30d317d2-a14b-4552-a365-0a76e91eebc8",
+          "maxCollaborators": 0
+        }
+      }
+    },
+    "A04": {
+      "title": "AR-001 (prior feature): viewing a stopped run's open delegated copy (clicking it, or reloading with it selected) does not restore the host; only a send does",
+      "result": "Pass",
+      "ms": 26531,
+      "details": {
+        "afterReloadHostSelected": false,
+        "afterClickingCopy": false,
+        "afterReloadWithCopySelected": false
+      }
+    },
+    "A05": {
+      "title": "AC-008 real backend restart: closed copies stay hidden, the open copy is listed, statuses are kept; after the restart the user has the host mark the second notes DONE and its row leaves",
+      "result": "Pass",
+      "ms": 17345,
+      "details": {
+        "rows": [
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, note taker, level 1, offline, Started by research assistant, /note_taker",
+            "text": "NT\nnote taker",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "closedAfterRestart": [
+          "code_reviewer_011c66e677f645029e23856449206731",
+          "note_taker_0959f8741d25453090b8f42748d7bd53"
+        ],
+        "statuses": {
+          "ad_hoc_task_108d4753-4b46-4f45-a951-bf3d120c1fc3": "DONE",
+          "ad_hoc_task_2e6ff3dc-7d8a-4214-802a-df0953b5e394": "DONE",
+          "ad_hoc_task_30d317d2-a14b-4552-a365-0a76e91eebc8": "TODO",
+          "ad_hoc_task_9fed91b4-6f8d-4f11-a8b8-5c291d6b0c20": "TODO"
+        },
+        "closedFinal": [
+          "code_reviewer_011c66e677f645029e23856449206731",
+          "note_taker_0959f8741d25453090b8f42748d7bd53",
+          "note_taker_cddd1c95b96f4b2485140dc6f02fe595"
+        ]
+      }
+    },
+    "A06": {
+      "title": "AC-016 (prior feature): a stored delivery without a recorded sender (an old trace) keeps the user-style presentation; the user message is unchanged",
+      "result": "Pass",
+      "ms": 6585,
+      "details": {
+        "traceFiles": [
+          "raw_traces_active.jsonl",
+          "collaboration/product_team_9bade59c794c42d5973ed43e4f184d82/product_prototyper_f8c1b1b66dd24d669e9a0a5c066f8061/raw_traces_active.jsonl",
+          "collaboration/note_taker_cddd1c95b96f4b2485140dc6f02fe595/raw_traces_active.jsonl",
+          "collaboration/note_taker_0959f8741d25453090b8f42748d7bd53/raw_traces_active.jsonl",
+          "collaboration/code_reviewer_011c66e677f645029e23856449206731/raw_traces_active.jsonl"
+        ],
+        "strippedTraces": 1,
+        "from": [],
+        "userStyle": true,
+        "userMention": 4
+      }
+    },
+    "S01": {
+      "title": "AC-012 / SCN-007: a collaborator added by the agent's own first send_message_to to a catalog address (the remaining producer of collaborator entries) is stored; after Stop and reopen its row loads, direct chat restores it with the same run ID",
+      "result": "Pass",
+      "ms": 43271,
+      "details": {
+        "runId": "research_assistant_d55c5ccc15e543c7bdbe4c7d0f539d1e",
+        "entry": {
+          "kind": "agent",
+          "address": "/code_reviewer",
+          "agentRunId": "code_reviewer_14626169e48b4803aa8dc6c8331a39cb"
+        },
+        "tasksForRun": [],
+        "rowsAfterReopen": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "sameRunId": true,
+        "hostActive": true,
+        "collaboratorsAfter": [
+          "code_reviewer_14626169e48b4803aa8dc6c8331a39cb"
+        ],
+        "menuWithCollaborator": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "temp-helper",
+          "writer",
+          "product-team",
+          "review-team"
+        ],
+        "collaboratorsAfterInRunMention": [
+          "code_reviewer_14626169e48b4803aa8dc6c8331a39cb"
+        ],
+        "hostChoice": "messaged the existing collaborator (send_message_to)"
+      }
+    },
+    "F01": {
+      "title": "AC-001 alternate (ineligible mention): a mention whose definition no longer exists is refused — notice, draft and highlight kept, nothing sent, no row, no Task",
+      "result": "Pass",
+      "ms": 9242,
+      "details": {
+        "runId": "research_assistant_11cb2e6d8e074d6fbac6b89093d1b34e",
+        "deleted": {
+          "success": true,
+          "message": "Agent definition deleted successfully."
+        },
+        "notice": "Couldn’t mention temp-helper\n\n'temp-helper' is not a shared Agent that can be mentioned.",
+        "draft": "F01-1791300174846 please ask @Temp Helper to check the release notes.",
+        "highlightKept": true,
+        "messageSent": false,
+        "collaborators": 0,
+        "copies": 0,
+        "tasksAdded": 0
+      }
+    },
+    "T01": {
+      "title": "SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); \"From Product Prototyper:\"; the next send with @Note Taker (CR-003) delegates an Agent copy",
+      "result": "Pass",
+      "ms": 50854,
+      "details": {
+        "teamRunId": "review_team_38431f7e37094a169abcab4d3675ba0d",
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team"
+        ],
+        "collaboratorsRightAfterSend": 0,
+        "teamDelegation": {
+          "copyRunId": "product_team_0829c355add14bb69713efb5360b8cb0",
+          "kind": "team",
+          "taskId": "ad_hoc_task_9b4a139d-15be-4215-9389-822f80367df0",
+          "maxCollaborators": 0
+        },
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "create_or_update_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "teamClosedByAgent": true,
+        "rowsBoth": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, note taker, level 1, idle, Started by researcher, /note_taker",
+            "text": "NT\nnote taker",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ]
+      }
+    },
+    "T02": {
+      "title": "Team run: the delegated Note Taker copy view; direct chat",
+      "result": "Pass",
+      "ms": 34146,
+      "details": {
+        "title": null
+      }
+    },
+    "T03": {
+      "title": "AC-007 / AC-009 Team member: the user has the researcher mark the Note Taker work DONE by task_id; the row leaves live and stays hidden after reload",
+      "result": "Pass",
+      "ms": 15979,
+      "details": {
+        "closed": [
+          "product_team_0829c355add14bb69713efb5360b8cb0",
+          "note_taker_9b5f3e537df24d10b339909493d8594f"
+        ],
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "create_or_update_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "create_or_update_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "rowsAfterReload": []
+      }
+    },
+    "O01": {
+      "title": "SCN-001 Org run: VIS-008 menu; two mentions → no Org collaborator (AC-001), stored note with both entries (AC-002); the analyst delegates an Agent and a Team copy, each with an ad-hoc Task (AC-003); \"From Product Prototyper:\"",
+      "result": "Pass",
+      "ms": 38465,
+      "details": {
+        "orgRunId": "launch_org_0c680cfc35c546839bd5834c1278777f",
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ],
+        "collaboratorsRightAfterSend": 0,
+        "delegations": {
+          "notes": {
+            "runId": "note_taker_7c79e4cfe2644e8fa1376405534ad8d6",
+            "taskId": "ad_hoc_task_2f810ad7-b2a7-424e-9c60-2f5948c8282f"
+          },
+          "productTeam": {
+            "runId": "product_team_6bf6cae3d3e34d4e9b4d8c059deabf82",
+            "kind": "team",
+            "taskId": "ad_hoc_task_4eddca8c-2431-4259-b929-1e08e65d1878"
+          }
+        },
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "teamClosedByAgent": false
+      }
+    },
+    "O02": {
+      "title": "Org run: the delegated Note Taker copy view; direct chat",
+      "result": "Pass",
+      "ms": 4133,
+      "details": {}
+    },
+    "O03": {
+      "title": "AC-007 / AC-009 Org member: the user has the analyst mark the delegated work DONE; the rows leave live and stay hidden after reload",
+      "result": "Pass",
+      "ms": 15912,
+      "details": {
+        "rowsAfterReload": 0
+      }
+    },
+    "L01": {
+      "title": "Host crash keeps the root and its delegated child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Not Applicable",
+      "ms": 1,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "L02": {
+      "title": "Host crash without delegated copies: Archive succeeds and the lingering root is ended",
+      "result": "Not Applicable",
+      "ms": 0,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "P01": {
+      "title": "Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`",
+      "result": "Pass",
+      "ms": 39031,
+      "details": {
+        "teamRunId": "review_team_3c542a7fc3f040e5a23a41c87358c62d",
+        "teamHadCollaboratorsKey": true,
+        "orgRunId": "launch_org_57b533b95ade4f1bb8aa6fef27d93ac3",
+        "orgHadCollaboratorsKey": true,
+        "teamMenu": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team"
+        ],
+        "orgCollaboratorsAfterContinue": []
+      }
+    },
+    "N01": {
+      "title": "New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target",
+      "result": "Pass",
+      "ms": 1813,
+      "details": {
+        "targets": [
+          "autobyteus-daily-assistant",
+          "analyst",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team",
+          "launch-org"
+        ],
+        "mentions": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    },
+    "N02": {
+      "title": "AF-009 + AC-001/003: an Agent New chat first send with an `@Team` mention starts the run; no collaborator; the host delegates a Team copy with an ad-hoc Task",
+      "result": "Pass",
+      "ms": 13246,
+      "details": {
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ],
+        "text": "please ask @Product Team to design a tiny settings page and report back.",
+        "runId": "research_assistant_5d3fd7d42d8e4b5ebc7674e416ca58fd",
+        "delegation": {
+          "runId": "product_team_4a7fe68523b940218bb1013a9fe78d31",
+          "kind": "team",
+          "taskId": "ad_hoc_task_1c9145e5-c5c0-4a9a-9791-a4063022ba4c",
+          "maxCollaborators": 0
+        },
+        "userMention": "@Product Team"
+      }
+    },
+    "N03": {
+      "title": "AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; \"From Code Reviewer:\"",
+      "result": "Pass",
+      "ms": 22245,
+      "details": {
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "note-taker",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team"
+        ],
+        "text": "please ask @Code Reviewer to review the phrase \"hello team\" and report back.",
+        "teamRunId": "review_team_17bd3277879f412484ad401ac5721abf",
+        "delegation": {
+          "runId": "code_reviewer_c290cf396cea42c6826f4d4cebf2bf83",
+          "taskId": "ad_hoc_task_75edc27d-a18c-479f-9b5e-209b6e2394f8",
+          "maxCollaborators": 0
+        },
+        "userMention": "@Code Reviewer"
+      }
+    },
+    "D01": {
+      "title": "SCN-005 / AC-010: permanently deleting the standalone run from history removes its ad-hoc Tasks; the Team and Org runs' ad-hoc Tasks stay",
+      "result": "Pass",
+      "ms": 4379,
+      "details": {
+        "before": {
+          "own": [
+            "ad_hoc_task_108d4753-4b46-4f45-a951-bf3d120c1fc3",
+            "ad_hoc_task_2e6ff3dc-7d8a-4214-802a-df0953b5e394",
+            "ad_hoc_task_9fed91b4-6f8d-4f11-a8b8-5c291d6b0c20",
+            "ad_hoc_task_30d317d2-a14b-4552-a365-0a76e91eebc8"
+          ],
+          "others": [
+            "ad_hoc_task_9b4a139d-15be-4215-9389-822f80367df0",
+            "ad_hoc_task_0f9d40c0-e8a9-46b6-8532-e7c6cc8797d4",
+            "ad_hoc_task_2f810ad7-b2a7-424e-9c60-2f5948c8282f",
+            "ad_hoc_task_4eddca8c-2431-4259-b929-1e08e65d1878"
+          ],
+          "presentOwn": [
+            "ad_hoc_task_108d4753-4b46-4f45-a951-bf3d120c1fc3",
+            "ad_hoc_task_2e6ff3dc-7d8a-4214-802a-df0953b5e394",
+            "ad_hoc_task_9fed91b4-6f8d-4f11-a8b8-5c291d6b0c20",
+            "ad_hoc_task_30d317d2-a14b-4552-a365-0a76e91eebc8"
+          ],
+          "presentOthers": [
+            "ad_hoc_task_9b4a139d-15be-4215-9389-822f80367df0",
+            "ad_hoc_task_0f9d40c0-e8a9-46b6-8532-e7c6cc8797d4",
+            "ad_hoc_task_2f810ad7-b2a7-424e-9c60-2f5948c8282f",
+            "ad_hoc_task_4eddca8c-2431-4259-b929-1e08e65d1878"
+          ]
+        },
+        "othersAfter": [
+          "ad_hoc_task_9b4a139d-15be-4215-9389-822f80367df0",
+          "ad_hoc_task_0f9d40c0-e8a9-46b6-8532-e7c6cc8797d4",
+          "ad_hoc_task_2f810ad7-b2a7-424e-9c60-2f5948c8282f",
+          "ad_hoc_task_4eddca8c-2431-4259-b929-1e08e65d1878"
+        ],
+        "viewAfterDelete": null
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 95571
+    },
+    {
+      "label": "frontend",
+      "pid": 96241
+    },
+    {
+      "label": "backend-restart",
+      "pid": 42134
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 95571,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 42134,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 96241,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 95571,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-3i7OAq"
+    }
+  ],
+  "observations": [
+    {
+      "text": "A01: the host marked the Code Reviewer work DONE on its own after the report (SCN-002, agent decides)",
+      "details": null
+    },
+    {
+      "text": "A01 menu after delegations (SCN-004: the definitions stay mentionable)",
+      "details": [
+        "code-reviewer",
+        "researcher",
+        "writer",
+        "analyst",
+        "note-taker",
+        "temp-helper",
+        "product-prototyper",
+        "prototype-bootstrapper",
+        "product-team",
+        "review-team"
+      ]
+    },
+    {
+      "text": "S01 in-run mention: the host messaged the existing collaborator (send_message_to)",
+      "details": null
+    },
+    {
+      "text": "T01: the researcher marked the Product Team work DONE on its own after the report (SCN-002, agent decides)",
+      "details": null
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-3i7OAq",
+  "backendUrl": "http://127.0.0.1:59967",
+  "frontUrl": "http://127.0.0.1:59968",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 19,
+    "fail": 0,
+    "notApplicable": 2
+  },
+  "completedAt": "2026-10-06T15:26:58.697Z"
+}

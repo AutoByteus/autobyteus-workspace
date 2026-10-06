@@ -33,6 +33,7 @@ const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_")
 const keyOf = (ref: Record<string, any>) => ref.teamRunId ?? ref.team_run_id ? `team:${ref.teamRunId ?? ref.team_run_id}` : `agent:${ref.agentRunId ?? ref.agent_run_id}`;
 const keys = (refs: readonly Record<string, any>[]) => refs.map(keyOf).sort();
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
+const IN_RUN_GUIDANCE = "One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.";
 
 /** Every task execution node (Agent or Team; nested anywhere), identified by its recorded start. */
 const taskNodes = (tree: unknown): TaskNode[] => {
@@ -84,7 +85,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
   const ids = { manager: "", worker: "", reviewer: "", helper: "", assistant: "", team: "", org: "" };
-  const names = { reviewer: "", helper: "", assistant: "" };
+  const names = { reviewer: "", helper: "", assistant: "", worker: "" };
   const savedEnv = new Map<string, string | undefined>();
   const evidence: Record<string, unknown> = {};
 
@@ -154,7 +155,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     ids.reviewer = await agentDefinition(names.reviewer);
     ids.helper = await agentDefinition(names.helper);
     ids.assistant = await agentDefinition(names.assistant);
-    const worker = ids.worker = await agentDefinition(`AHT Worker ${suffix}`);
+    names.worker = `AHT Worker ${suffix}`;
+    const worker = ids.worker = await agentDefinition(names.worker);
     ids.team = (await graphql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`,
       { input: { name: `AHT Team ${suffix}`, description: "Team root", instructions: "Follow requests.", coordinatorMemberName: "manager",
         nodes: [{ memberName: "manager", ref: ids.manager, refScope: "SHARED" }, { memberName: "worker", ref: worker, refScope: "SHARED" }] } },
@@ -325,6 +327,9 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     expect(managerText).toContain(`- ${names.reviewer} (Agent) at ${reviewerAddress}`);
     expect(managerText).toContain("Delegate the work with delegate_task to its address");
     expect(managerText).not.toContain("Message a collaborator with send_message_to");
+    // mention-candidates-in-run AC-004: a mention of a definition not in the run carries no in-run marker or guidance.
+    expect(managerText).not.toContain("already in this run");
+    expect(managerText).not.toContain(IN_RUN_GUIDANCE);
 
     // 2. Ad-hoc Tasks are not Project Tasks (AC-010 listing half).
     expect((await projectTasks(projectId)).map((task) => task.taskId)).toEqual([projectTaskId]);
@@ -386,6 +391,29 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     await until(async () => { collaborators = collaboratorsIn(await liveTree()); return collaborators.length === 1; }, "bring-in collaborator", 30_000);
     const collaboratorRunId = collaborators[0]!.agentRunId ?? collaborators[0]!.agent_run_id;
     expect(collaboratorRunId).toBeTruthy();
+
+    // 6b. mention-candidates-in-run: definitions already in the run are mentionable (AC-001..003, AC-006).
+    // The run's own definition is not; a Team/Org run's configured shared members are.
+    const rootSubjectKind = kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org";
+    const candidates = ((await graphql(`query($k:String!,$id:String!){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id){availability candidates{kind definitionId}}}`,
+      { k: rootSubjectKind, id: rootId })).collaboratorMentionCandidates.candidates as any[]).map((candidate) => candidate.definitionId);
+    expect(candidates).toContain(ids.assistant); // an in-run collaborator (the reported case)
+    if (kind === "agent") expect(candidates).not.toContain(ids.manager); // the standalone host's own definition
+    else expect(candidates).toContain(ids.worker); // a configured shared member
+    if (kind === "team") expect(candidates).not.toContain(ids.team);
+    expect(candidates).not.toContain(ids.org);
+    const inRunMentions = [{ kind: "agent" as const, definition_id: ids.assistant },
+      ...(kind === "agent" ? [] : [{ kind: "agent" as const, definition_id: ids.worker }])];
+    send("Reply OK.", inRunMentions);
+    const assistantEntry = `- ${names.assistant} (Agent) at ${assistantAddress}, already in this run`;
+    let inRunText = "";
+    await until(async () => { inRunText = JSON.stringify(await managerConversation()); return inRunText.includes(assistantEntry); },
+      "in-run mention note stored", 30_000);
+    expect(inRunText).toContain(IN_RUN_GUIDANCE);
+    if (kind !== "agent") expect(inRunText).toContain(`- ${names.worker} (Agent) at /worker, already in this run`);
+    // Nothing is added: the in-run collaborator stays the single instance (no duplicate, AC-006).
+    expect(collaboratorsIn(await liveTree()).map((entry) => entry.agentRunId ?? entry.agent_run_id)).toEqual([collaboratorRunId]);
+    record.inRunCandidates = candidates;
 
     // 7. REQ-012 / AC-013: with the Projects migration pending, delegation and DONE still work; Projects reject.
     let pendingTaskId: string | undefined;

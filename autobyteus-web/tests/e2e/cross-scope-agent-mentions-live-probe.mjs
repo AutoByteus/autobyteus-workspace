@@ -503,7 +503,9 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   assert(r.options.includes(ids.reviewer) && r.options.includes(ids.productTeam) && r.options.indexOf(ids.productTeam) > r.options.indexOf(ids.reviewer), 'candidate order wrong', r.options)
   r.menuText = await page.locator(sel('run-mention-menu')).innerText()
   r.footer = await page.locator(sel('run-mention-menu-footer')).innerText()
-  note('A01 menu copy (unchanged by scope)', { menuText: r.menuText, footer: r.footer })
+  // mention-candidates-in-run REQ-006: the menu describes delegating, not "bring into this run".
+  assert(/Delegate to an agent or team/.test(r.menuText) && !/Bring into this run/i.test(r.menuText), 'menu header copy', r.menuText)
+  assert(/Research Assistant gets your message and delegates the work/.test(r.footer), 'menu footer copy', r.footer)
   const input = runComposer(page)
   r.aria = await input.evaluate((e) => ({ role: e.getAttribute('role'), expanded: e.getAttribute('aria-expanded'), controls: e.getAttribute('aria-controls'), active: e.getAttribute('aria-activedescendant') }))
   assert(r.aria.role === 'combobox' && r.aria.expanded === 'true' && r.aria.controls && r.aria.active, 'combobox attributes', r.aria)
@@ -749,6 +751,29 @@ defineCase('S01', 'AC-012 / SCN-007: a collaborator added by the agent\'s own fi
   assert(r.collaboratorsAfter.length === 1 && r.collaboratorsAfter[0] === entry.agentRunId, 'messaging by address created another collaborator', r)
   await waitHostIdle(page)
   await shot(page, 'S01-stored-collaborator-restored')
+  // mention-candidates-in-run (the reported case): the agent's own collaborator is mentionable with `@`; the note marks it
+  // as already in this run and offers send_message_to or a separate copy; nothing is added (no duplicate collaborator).
+  await openMenu(page)
+  r.menuWithCollaborator = await menuOptions(page)
+  assert(r.menuWithCollaborator.includes(ids.reviewer) && !r.menuWithCollaborator.includes(ids.research), 'in-run collaborator not offered, or the host offered', r.menuWithCollaborator)
+  await page.keyboard.press('Escape')
+  const beforeInRun = (await agentRootView(runId))?.communication_messages.messages.length ?? 0
+  await mentionAndSend(page, 'please ask @', 'code', ids.reviewer, 'to reply with the single word READY.')
+  await waitFor('in-run mention note stored', async () => (await conversationJson('agent', runId, runId)).includes(`- Code Reviewer (Agent) at ${REVIEWER_ADDRESS}, already in this run`), 60000)
+  const inRunNote = await conversationJson('agent', runId, runId)
+  assert(inRunNote.includes('One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.'), 'in-run guidance missing (REQ-003)', inRunNote.slice(-1500))
+  await page.locator(sel('user-message-mention')).last().waitFor({ timeout: 30000 })
+  assert(!(await conversationShowsNote(page)), 'the in-run note is shown as text instead of a chip (REQ-004)')
+  await waitHostIdle(page)
+  const afterInRun = await agentRootView(runId)
+  r.collaboratorsAfterInRunMention = collaboratorsOf(afterInRun).map((c) => c.agentRunId)
+  assert(r.collaboratorsAfterInRunMention.length === 1 && r.collaboratorsAfterInRunMention[0] === entry.agentRunId, 'the in-run mention added or replaced a collaborator (AC-006)', r)
+  const newMessages = (afterInRun?.communication_messages.messages ?? []).slice(beforeInRun)
+  r.hostChoice = newMessages.some((m) => m.senderAgentRunId === runId && m.receiverAgentRunId === entry.agentRunId) ? 'messaged the existing collaborator (send_message_to)'
+    : taskNodesIn(afterInRun?.execution_tree).some((n) => n.delegatorAgentRunId === runId && n.address === REVIEWER_ADDRESS) ? 'delegated a separate copy (delegate_task)' : 'neither'
+  note(`S01 in-run mention: the host ${r.hostChoice}`)
+  assert(r.hostChoice !== 'neither', 'the host neither messaged the in-run collaborator nor delegated a copy', r)
+  await shot(page, 'S01-in-run-mention')
   return r
 })
 
@@ -777,6 +802,7 @@ defineCase('F01', 'AC-001 alternate (ineligible mention): a mention whose defini
   r.tasksAdded = (await adHocTasks()).length - tasksBefore
   await shot(page, 'F01-ineligible-mention-refused')
   assert(r.draft.includes(marker) && r.highlightKept && !r.messageSent, 'draft and highlight must stay and nothing be sent', r)
+  assert(/Couldn.t mention/.test(r.notice) && !/Couldn.t add/.test(r.notice), 'failure notice copy (REQ-006)', r)
   assert(r.collaborators === 0 && r.copies === 0 && r.tasksAdded === 0, 'a refused mention added something', r)
   await page.locator(sel('collaborator-add-failure-dismiss')).click().catch(() => {})
   await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: runId }).catch(() => {})
@@ -803,7 +829,9 @@ defineCase('T01', 'SCN-001 Team run: VIS-001 menu; @Product Team → no Team col
   assert(researcherRunId, 'researcher run id', await teamTree(state.teamRunId))
   await openMenu(page)
   r.options = await menuOptions(page)
-  assert(![ids.reviewTeam, ids.researcher, ids.writer, ids.org, 'autobyteus-daily-assistant'].some((id) => r.options.includes(id)), 'in-run or excluded definitions offered in the Team run', r.options)
+  // mention-candidates-in-run REQ-001: configured shared members are offered; only the run's own Team, Orgs and built-ins are not.
+  assert(![ids.reviewTeam, ids.org, 'autobyteus-daily-assistant'].some((id) => r.options.includes(id)), 'the run\'s own Team, an Org or a built-in offered in the Team run', r.options)
+  assert(r.options.includes(ids.researcher) && r.options.includes(ids.writer), 'configured shared members not offered in the Team run (REQ-001)', r.options)
   assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer), 'outside definitions missing', r.options)
   await shot(page, 'T01-01-team-run-at-menu')
   await page.keyboard.press('Escape')
@@ -890,7 +918,9 @@ defineCase('O01', 'SCN-001 Org run: VIS-008 menu; two mentions → no Org collab
   await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /analyst/i }).first().click(); await delay(3000)
   await openMenu(page)
   r.options = await menuOptions(page)
-  assert(![ids.org, ids.analyst, ids.reviewTeam, ids.researcher, ids.writer].some((id) => r.options.includes(id)), 'Org, members or mounted teams offered', r.options)
+  // mention-candidates-in-run REQ-001: Org members and mounted shared Teams are offered; Orgs never.
+  assert(!r.options.includes(ids.org), 'Org offered', r.options)
+  assert([ids.analyst, ids.reviewTeam, ids.researcher, ids.writer].every((id) => r.options.includes(id)), 'Org members / mounted Team not offered (REQ-001)', r.options)
   assert(r.options.includes(ids.noteTaker) && r.options.includes(ids.productTeam), 'outside candidates missing', r.options)
   await shot(page, 'O01-01-org-run-at-menu')
   await page.keyboard.press('Escape')
@@ -1123,7 +1153,7 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   await page.locator(`[data-test^="workspace-team-member-${teamRunId}-"]`).filter({ hasText: /researcher/i }).first().click(); await delay(2500)
   await openMenu(page)
   r.teamMenu = await menuOptions(page)
-  assert(r.teamMenu.includes(ids.reviewer) && !r.teamMenu.includes(ids.researcher), 'menu in the old-shape Team run', r.teamMenu)
+  assert(r.teamMenu.includes(ids.reviewer) && r.teamMenu.includes(ids.researcher) && !r.teamMenu.includes(ids.reviewTeam), 'menu in the old-shape Team run', r.teamMenu)
   await page.keyboard.press('Escape')
   const input = runComposer(page); await input.fill('')
   await sendInComposer(page, 'Reply with the single word OLD-TEAM-OK.')
@@ -1213,7 +1243,9 @@ defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits 
   await switchTarget(page, 'review', ids.reviewTeam)
   await openMenu(page)
   r.options = await menuOptions(page)
-  const excluded = [ids.reviewTeam, ids.researcher, ids.writer, ids.org, ...BUILT_IN_AGENT_IDS]
+  // mention-candidates-in-run REQ-005: the Team target's shared members are offered; the target itself is not.
+  const excluded = [ids.reviewTeam, ids.org, ...BUILT_IN_AGENT_IDS]
+  assert(r.options.includes(ids.researcher) && r.options.includes(ids.writer), 'Team New chat does not offer the Team\'s shared members (REQ-005)', r.options)
   assert(!excluded.some((id) => r.options.includes(id)), 'Team New chat offers the team, a member, a built-in or an Org', { options: r.options, excluded })
   assert([ids.research, ids.reviewer, ids.analyst, ids.productTeam].every((id) => r.options.includes(id)), 'shared outside candidates missing in Team New chat', r.options)
   await page.keyboard.press('Escape')

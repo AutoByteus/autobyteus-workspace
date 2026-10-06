@@ -83,12 +83,13 @@ start."). For a Team every member's effective settings are checked too.
   prefixed to the message by `utils/skills/skillRequestInstruction.ts`; sent
   user messages parse that prefix back into chips.
 - `@` is mention-only, as in a live run (below): it inserts a collaborator
-  mention ("Bring into this run") and never changes the target. Candidates come
-  from `utils/collaborators/draftMentionEligibility.ts`, which mirrors the
-  server's `CollaboratorCandidatePolicy` for the would-be run: shared,
-  non-built-in Agents, then shared Agent Teams, never Orgs, minus the target and,
-  for a Team, every definition placed in it. The first message keeps its
-  mentions.
+  mention ("Delegate to an agent or team") and never changes the target.
+  Candidates come from `utils/collaborators/draftMentionEligibility.ts`, which
+  mirrors the server's `CollaboratorCandidatePolicy` for the would-be run:
+  shared, non-built-in Agents, then shared Agent Teams, never Orgs, minus only the
+  target's own definition (a Team target's shared members are offered). After
+  "@", the hint reads "to delegate to an agent or team." The first message keeps
+  its mentions.
 - The workspace menu accepts an existing workspace or an absolute folder path
   (`~` is rejected); the folder is loaded at send time. Its search box (the
   model-menu search styling, placeholder "Search workspaces") is always shown and
@@ -268,16 +269,21 @@ the first message (`chatDraftModelControls.ts`).
 
 In every sendable live-run composer (standalone Agent run, Team member, Org
 member, and any task child), `@` at a word start opens the run variant of
-`ChatTargetMenu` above the box ("Bring into this run"). New chat `@` works the
+`ChatTargetMenu` above the box ("Delegate to an agent or team"; zh-CN
+"委派给智能体或团队"). New chat `@` works the
 same way, with draft candidates (see New Chat Draft); there is no "Chat with"
 target mode.
 
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
   time the menu opens and invalidated when a collaborator is added. Shared
-  Agents (no Daily Assistant or built-ins), then shared Agent Teams, minus what
-  is already in the run; Agent Orgs are never offered. The footer names the
-  focused agent, which receives the message.
+  Agents (no Daily Assistant or built-ins), then shared Agent Teams, including
+  ones already in the run (configured members, collaborators); only the run's own
+  definition is left out, and Agent Orgs are never offered. The footer reads
+  "{agent} gets your message and delegates the work", naming the focused agent.
+  For a mention already in the run, the note marks it "already in this run" and
+  tells the agent it can message that instance with `send_message_to` or delegate
+  a separate copy.
 - **Scope.** `useComposerTarget` sets `mentionScope` from the active target
   (`composables/agentInput/runMentionScope.ts`); launch drafts and read-only
   views have none and show no menu.
@@ -335,7 +341,7 @@ target mode.
   `services/collaborators/collaboratorAddFailures.ts`) posts nothing: the draft
   text, selected definitions and attachments stay, and
   `CollaboratorAddFailureNotice` (above the box) shows
-  "Couldn't add <name> to this run" with the reason from
+  "Couldn't mention <name>" with the reason from
   `AgentContext.collaboratorAddFailure`. It can be dismissed and is replaced by
   the next send. Success has no notice. The notice now only appears for a
   definition that is not eligible in the run; whether the agent can run it is

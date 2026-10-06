@@ -36,7 +36,7 @@ describe('collaborator mention text', () => {
   it('reads a sent message without the skill instruction or the server mention note', () => {
     const content = composeCollaboratorMentionNote(
       skillRequestInstruction.compose(['writer'], 'ask @Product Team to fix it'),
-      [{ name: 'Product Team', kind: 'agent_team', address: '/product_team' }],
+      [{ name: 'Product Team', kind: 'agent_team', address: '/product_team', inRun: false }],
     )
     expect(presentSentUserMessage(content)).toEqual({
       skillNames: ['writer'], text: 'ask @Product Team to fix it', mentionNames: ['Product Team'],
@@ -44,11 +44,21 @@ describe('collaborator mention text', () => {
     expect(presentSentUserMessage('plain @Code Reviewer', ['Code Reviewer']).mentionNames).toEqual(['Code Reviewer'])
   })
 
+  it('reads a message whose note marks an agent already in the run as chips, without the note (AC-005)', () => {
+    const content = composeCollaboratorMentionNote('ask @Agent Package Creator', [
+      { name: 'Agent Package Creator', kind: 'agent', address: '/agent_package_creator', inRun: true },
+    ])
+    expect(content).toContain('/agent_package_creator, already in this run')
+    expect(presentSentUserMessage(content)).toEqual({
+      skillNames: [], text: 'ask @Agent Package Creator', mentionNames: ['Agent Package Creator'],
+    })
+  })
+
   it('run summaries drop the note; a mention-only message reads as its mentions', () => {
     const summary = (text: string) => resolveFirstUserMessageSummary({ messages: [{ type: 'user', text } as never] })
-    expect(summary(composeCollaboratorMentionNote('ask @Code Reviewer', [{ name: 'Code Reviewer', kind: 'agent', address: '/code_reviewer' }])))
+    expect(summary(composeCollaboratorMentionNote('ask @Code Reviewer', [{ name: 'Code Reviewer', kind: 'agent', address: '/code_reviewer', inRun: false }])))
       .toBe('ask @Code Reviewer')
-    expect(summary(composeCollaboratorMentionNote('', [{ name: 'Code Reviewer', kind: 'agent', address: '/code_reviewer' }])))
+    expect(summary(composeCollaboratorMentionNote('', [{ name: 'Code Reviewer', kind: 'agent', address: '/code_reviewer', inRun: false }])))
       .toBe('@Code Reviewer')
   })
 })

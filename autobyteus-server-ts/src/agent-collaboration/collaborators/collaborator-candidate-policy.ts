@@ -69,9 +69,11 @@ const hasId = <T extends { id?: string | null }>(definition: T): definition is T
 /**
  * The single owner of `@` and catalog eligibility. Candidates are shared standalone Agent
  * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the internal
- * built-ins and the root's own definition are never candidates. `@` offers only definitions
- * not yet in the run; `list_available_agents` lists every eligible definition once, at its
- * in-run address or at the address it gets when brought in (Q-2: the same eligibility).
+ * built-ins and the root's own definition are never candidates. Two checks: `requireEligible`
+ * may be mentioned with `@` (including definitions already in the run, which `@` addresses);
+ * `requireAdmissible` may be brought in as a collaborator (not already in the run, unless it
+ * is a collaborator whose entry is reused). `list_available_agents` lists every eligible
+ * definition once, at its in-run address or at the address it gets when brought in.
  */
 export class CollaboratorCandidatePolicy {
   constructor(private readonly catalog: CollaboratorDefinitionCatalog) {}
@@ -130,19 +132,21 @@ export class CollaboratorCandidatePolicy {
     return { eligible, map };
   }
 
+  /** `@` options: every eligible definition, in the run or not, except the run's own definition. */
   async listCandidates(port: CollaboratorRootPort): Promise<CollaboratorCandidateList> {
     if (port.isApplicationBound) {
       return Object.freeze({ availability: "UNAVAILABLE_APPLICATION_ROOT", candidates: Object.freeze([]) });
     }
-    const inRun = this.inRunDefinitionIds(port);
+    const own = port.rootDefinition();
+    const isOwn = (kind: CollaboratorMentionKind, definitionId: string) => own?.kind === kind && own.definitionId === definitionId;
     const [agents, teams] = await Promise.all([this.catalog.listAgentDefinitions(), this.catalog.listTeamDefinitions()]);
     const candidates: CollaboratorCandidate[] = [];
     for (const agent of agents) {
-      if (!this.isEligibleAgent(agent) || inRun.agentDefinitionIds.has(agent.id)) continue;
+      if (!this.isEligibleAgent(agent) || isOwn("agent", agent.id)) continue;
       candidates.push(Object.freeze({ kind: "agent", definitionId: agent.id, name: agent.name, description: agent.description ?? "" }));
     }
     for (const team of teams) {
-      if (!this.isEligibleTeam(team) || inRun.teamDefinitionIds.has(team.id)) continue;
+      if (!this.isEligibleTeam(team) || isOwn("agent_team", team.id)) continue;
       candidates.push(Object.freeze({
         kind: "agent_team",
         definitionId: team.id,
@@ -156,26 +160,45 @@ export class CollaboratorCandidatePolicy {
   }
 
   /**
-   * Admission re-check of one mention. A definition that already has a collaborator entry is
-   * admissible (admission reuses that entry); anything else in the run is not.
+   * `@` re-check of one mention: a shared, non-built-in definition that is not the run's own.
+   * It may already be in the run (the mention then addresses that instance).
    */
-  async requireAdmissible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
+  async requireEligible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
     if (port.isApplicationBound) {
       throw new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", "Collaborators cannot be brought into application-owned runs.");
     }
+    const own = port.rootDefinition();
+    const resolved: AdmissibleCollaboratorDefinition = mention.kind === "agent"
+      ? { kind: "agent", definition: await this.eligibleAgent(mention) }
+      : { kind: "agent_team", definition: await this.eligibleTeam(mention) };
+    if (own?.kind === resolved.kind && own.definitionId === resolved.definition.id) throw this.ownDefinition(resolved.definition.name);
+    return Object.freeze(resolved);
+  }
+
+  /**
+   * Bring-in re-check of one definition: eligible, and not already in the run unless it has a
+   * collaborator entry (admission reuses that entry). Never admits a second instance.
+   */
+  async requireAdmissible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
+    const eligible = await this.requireEligible(port, mention);
     const existing = port.collaborators().some((entry) => entry.kind === mention.kind
       && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === mention.definitionId);
     const inRun = this.inRunDefinitionIds(port);
-    if (mention.kind === "agent") {
-      const definition = await this.catalog.getAgentDefinition(mention.definitionId);
-      if (!definition || !this.isEligibleAgent(definition)) throw this.invalid(mention);
-      if (!existing && inRun.agentDefinitionIds.has(definition.id)) throw this.alreadyInRun(definition.name);
-      return Object.freeze({ kind: "agent", definition });
-    }
+    const inRunIds = eligible.kind === "agent" ? inRun.agentDefinitionIds : inRun.teamDefinitionIds;
+    if (!existing && inRunIds.has(eligible.definition.id)) throw this.alreadyInRun(eligible.definition.name);
+    return eligible;
+  }
+
+  private async eligibleAgent(mention: CollaboratorMention): Promise<AgentDefinition & { id: string }> {
+    const definition = await this.catalog.getAgentDefinition(mention.definitionId);
+    if (!definition || !this.isEligibleAgent(definition)) throw this.invalid(mention);
+    return definition;
+  }
+
+  private async eligibleTeam(mention: CollaboratorMention): Promise<AgentTeamDefinition & { id: string }> {
     const definition = await this.catalog.getTeamDefinition(mention.definitionId);
     if (!definition || !this.isEligibleTeam(definition)) throw this.invalid(mention);
-    if (!existing && inRun.teamDefinitionIds.has(definition.id)) throw this.alreadyInRun(definition.name);
-    return Object.freeze({ kind: "agent_team", definition });
+    return definition;
   }
 
   private isEligibleAgent(definition: AgentDefinition): definition is AgentDefinition & { id: string } {
@@ -191,6 +214,10 @@ export class CollaboratorCandidatePolicy {
       "COLLABORATOR_MENTION_INVALID",
       `'${mention.definitionId}' is not a shared ${mention.kind === "agent" ? "Agent" : "Agent Team"} that can be mentioned.`,
     );
+  }
+
+  private ownDefinition(name: string): CollaboratorMentionError {
+    return new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", `${name} is this run's own definition.`, name);
   }
 
   private alreadyInRun(name: string): CollaboratorMentionError {
