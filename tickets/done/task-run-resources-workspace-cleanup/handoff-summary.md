@@ -2,7 +2,12 @@
 
 ## Status
 
-- Delivery state: **Awaiting explicit user verification.** Nothing has been pushed, merged into `personal`, archived or released.
+- Delivery state: **Delivery Completed.**
+  - User verified on 2026-10-06 ("its done perfect. now finalize and release the next beta"); see `user-verification-record.md`.
+  - The ticket is archived, finalized into `personal` (merge `8273593ce`) and released as beta **`v1.4.95-beta.4`** (`3c8e49ad5`).
+  - Desktop, Android and iOS succeeded. Docker was still running and was not awaited, at the user's instruction.
+  - Full cleanup is done: worktree, branches, ARCH-REV-003 backups, preview data and finalization clones.
+  - Final state is in `release-deployment-report.md`. The sections below record the DR-001 pre-verification state, kept for history.
 - Classification (unchanged by delivery): `task_size=Large`, `architectural_risk=High`. Route: reviewed (architecture review, source review, API/E2E, test-code review).
 
 | Stage | Revision | Result |
@@ -13,7 +18,7 @@
 | Source review | CRR-005 | Pass, 9.4/10, no open findings |
 | API/E2E | API-REV-003 | Pass, 95% |
 | Test-code review | CRR-006 | Pass |
-| Delivery | DR-001 | Checkpointed, base integrated, checks rerun, docs synced, awaiting verification |
+| Delivery | DR-001 / DR-002 | Docs synced; user verified; finalized; beta `v1.4.95-beta.4` published; full cleanup completed |
 
 | Item | Value |
 | --- | --- |
