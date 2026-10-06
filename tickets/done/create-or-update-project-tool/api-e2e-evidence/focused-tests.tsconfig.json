@@ -1,0 +1,15 @@
+{
+  "extends": "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool",
+    "noEmit": true,
+    "typeRoots": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/node_modules/@types"
+    ]
+  },
+  "include": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts"
+  ],
+  "exclude": []
+}

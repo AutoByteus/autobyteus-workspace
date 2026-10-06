@@ -4,6 +4,7 @@ import { workspaceDisplayNameFromRootPath } from "../../workspaces/workspace-pat
 import type {
   AddProjectWorkspaceCommand,
   CreateProjectCommand,
+  PatchProjectCommand,
   Project,
   ProjectView,
   ProjectWorkspaceLink,
@@ -106,6 +107,11 @@ export class ProjectService {
   }
 
   async createProject(command: CreateProjectCommand): Promise<ProjectView> {
+    return this.toView(await this.createProjectRecord(command));
+  }
+
+  /** Returns the committed record without Task or availability enrichment. */
+  async createProjectRecord(command: CreateProjectCommand): Promise<Project> {
     const name = normalizeName(command.name);
     const description = normalizeDescription(command.description);
     const timestamp = this.nowIso();
@@ -118,13 +124,11 @@ export class ProjectService {
       workspaces: [],
     };
 
-    await this.store.createProject(async (records) => {
+    return this.store.createProject(async (records) => {
       assertNameAvailable(records, name);
-      created.workspaces = await this.resolveFormLinks(created, command.workspaces ?? []);
+      created.workspaces = await this.resolveWorkspaceLinks(created, command.workspaces ?? [], "clear");
       return created;
     });
-
-    return this.toView(created);
   }
 
   async updateProject(command: UpdateProjectCommand): Promise<ProjectView> {
@@ -133,10 +137,26 @@ export class ProjectService {
 
     const updated = await this.updateProjectRecord(command.projectId, async (project, records) => {
       assertNameAvailable(records, name, project.projectId);
-      const workspaces = command.workspaces == null ? project.workspaces : await this.resolveFormLinks(project, command.workspaces);
+      const workspaces = command.workspaces == null ? project.workspaces : await this.resolveWorkspaceLinks(project, command.workspaces, "clear");
       return { ...project, name, description, workspaces };
     });
     return this.toView(updated);
+  }
+
+  /** Merge against the current record under the existing catalog write lock. */
+  async patchProjectRecord(command: PatchProjectCommand): Promise<Project> {
+    if (command.name === undefined && command.description === undefined && command.workspaces === undefined) {
+      throw new ProjectError("PROJECT_PATCH_REQUIRED", "Supply name, description and/or workspaces to update a Project.");
+    }
+    return this.updateProjectRecord(command.projectId, async (project, records) => {
+      const name = command.name === undefined ? project.name : normalizeName(command.name);
+      const description = command.description === undefined ? project.description : normalizeDescription(command.description);
+      assertNameAvailable(records, name, project.projectId);
+      const workspaces = command.workspaces === undefined
+        ? project.workspaces
+        : await this.resolveWorkspaceLinks(project, command.workspaces, "preserve");
+      return { ...project, name, description, workspaces };
+    });
   }
 
   /**
@@ -198,13 +218,16 @@ export class ProjectService {
     return this.toView(updated);
   }
 
-  private async resolveFormLinks(project: Project, rows: ProjectWorkspaceInput[]): Promise<ProjectWorkspaceLink[]> {
+  private async resolveWorkspaceLinks(
+    project: Project, rows: ProjectWorkspaceInput[], omittedDescription: "clear" | "preserve",
+  ): Promise<ProjectWorkspaceLink[]> {
     const ids = rows.map((r) => r.workspaceId.trim());
     if (new Set(ids).size !== ids.length) throw new ProjectError("WORKSPACE_ALREADY_LINKED", "Duplicate workspace links are not allowed.");
     return Promise.all(rows.map(async (row, index) => {
       const workspaceId = ids[index];
       const existing = project.workspaces.find((l) => l.workspaceId === workspaceId);
-      if (existing) return { ...existing, description: normalizeDescription(row.description) };
+      if (existing) return { ...existing, description: omittedDescription === "preserve" && row.description === undefined
+        ? existing.description : normalizeDescription(row.description) };
       const workspaceRootPath = await this.workspaceLookup.getRegisteredWorkspaceRootPath(workspaceId);
       if (!workspaceRootPath) throw new ProjectError("WORKSPACE_NOT_REGISTERED", `Workspace '${workspaceId}' is not registered.`);
       return {workspaceId, workspaceRootPath, description: normalizeDescription(row.description), addedAt: this.nowIso()};

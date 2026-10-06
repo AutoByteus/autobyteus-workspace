@@ -93,6 +93,34 @@ The probe stops its exact instance and removes its own data/source fixtures on
 success or failure. Inspect cleanup results as well as case results; unrelated
 instances and the user's app/data must remain untouched.
 
+### Project Mutation Regressions
+
+From the repository root with installed workspace dependencies:
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts tests/e2e/projects/project-mutation-node-locality.e2e.test.ts --no-watch
+```
+
+The HTTP boundary suite covers selected native/MCP Project creation and partial
+metadata/link replacement, strict validation/authorization/collision and exact
+Project/Task/context/assignment/registry/folder preservation. Original Task and
+full-form API coverage remains. The sibling node-locality suite and
+`tests/fixtures/project-mutation-http-node.mjs` use **current dist**, two private
+HOME/data/SQLite nodes and free ports, real public registration/HTTP/GraphQL,
+Manager bootstrap and graceful restart. Rebuild before running it; do not use
+an installed or pre-change backend. Serialize shared-output builds in the same
+worktree: clean/rebuild operations can invalidate another build's module graph.
+
+Session/actor acquisition is scripted; the stored assignment is representative
+current-format state, and the opaque history sentinel proves non-interference
+only. This is not live delegation/history replay, Manager Chat/`@`, desktop,
+paid inference or explicit user-verification proof. Real workspace IDs and the
+complete desired list remain caller inputs; no discovery tool is supplied.
+Inspect actual saved-value and cleanup receipts: owned children must exit,
+listeners close and private roots disappear. Never use the user's app/data.
+
 ### Project and Task Description Voice Regression
 
 Run the full Projects browser/API probe with optional native-browser voice cases:

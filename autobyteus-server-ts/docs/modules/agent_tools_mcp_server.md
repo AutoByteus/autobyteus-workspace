@@ -198,7 +198,7 @@ Registry definitions with `ToolOrigin.MCP` and `metadata.mcp_server_id` are
 eligible only when the registered tool name is selected by the agent definition.
 Name-overlap behavior is adapter-policy driven: protected first-party
 platform/control adapters such as `send_message_to`, `get_handoff_rules` and
-the three Project Task tools reserve their names and block configured MCP collisions, while browser static adapters prefer the
+the four Project/Task tools reserve their names and block configured MCP collisions, while browser static adapters prefer the
 selected configured MCP-origin route. That lets a Docker/remote BrowserServer
 MCP tool such as `open_tab` route through its configured MCP source even though
 an embedded Electron browser adapter with the same name exists in code. The
@@ -306,13 +306,21 @@ implemented in MCP dispatch. Each canonical name must be explicitly selected;
 these adapters require no MemberTeamContext and are available independently of
 the default-off Projects UI visibility flag. An active run-session and normal
 local admission are still required. One selected name cannot expose the rest.
-All three use protect_static_adapter collision policy; retired task tools and
+All four use protect_static_adapter collision policy; retired task tools and
 category-wide native task exposure are not restored.
 
 - `list_projects({})` → `{projects: [{projectId, name, description}]}` for all
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS or DONE.
+- `create_or_update_project({project_id?, name?, description?, workspaces?})` → `{project}`.
+  Omit project_id to create with required nonblank name; supply known project_id
+  to patch at least one field. Omitted fields persist; blank description clears.
+  Workspaces are `[{workspace_id, description?}]`: supplied list fully replaces,
+  [] unlinks only, omission preserves. Retained links preserve omitted description,
+  root snapshot and added time; new IDs must be registered on this node. Callers
+  must know real IDs/the full desired list; no discovery/registration is provided.
+  Result is saved projectId/name/description and workspace IDs/descriptions only.
 - `create_or_update_task({project_id, task_id?, description?, status?})` → `{task}`.
   Omit task_id to create with required nonempty description and **omit status**
   (new TODO). Supply a known ID to patch text and/or status. Unknown IDs fail,
@@ -322,7 +330,7 @@ category-wide native task exposure are not restored.
 Task projections include projectId/taskId, description/status and saved
 contextFiles (metadata/HTTP locator plus validated server-local localPath when
 bytes are available), not timestamps. Missing bytes do not fabricate paths.
-No Project creation, Task attachment mutation, batch, delegation, automatic
+No workspace discovery/registration, Task attachment mutation, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.
 DONE is business metadata, not proof of accepted work or execution cleanup.
 
@@ -330,7 +338,7 @@ Known domain errors preserve `{error:{code,message}}`; unexpected execution
 errors redact to PROJECT_OPERATION_FAILED. Tool errors set isError:true; text
 and structuredContent represent the same JSON object. Native projection is
 shared, while inactive-session/unselected-tool/local-admission rejection remains
-with the existing host/session boundary. See [Projects](projects.md#exactly-three-agent-tools)
+with the existing host/session boundary. See [Projects](projects.md#exactly-four-agent-tools)
 for exact masks/errors, persisted continuity and context-byte ownership.
 
 Server-owned structured-JSON adapters validate their operation result first,

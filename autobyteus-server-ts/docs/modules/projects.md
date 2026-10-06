@@ -5,7 +5,7 @@
 Projects are durable, node-local work containers. Each has a unique name, an
 optional string description, and described links to registered filesystem
 workspaces. It also holds Project Tasks, each with a description, a business
-status and optional Task-owned context files. Manual authoring and three
+status and optional Task-owned context files. Manual authoring and four
 selected agent tools use the same services. Status is read-only in the web UI
 and writable by the tools.
 
@@ -29,13 +29,15 @@ scheduler. Its template is in
 `autobyteus-project-task-manager`).
 
 The Manager:
+- creates or explicitly patches Projects only when requested by the user,
+  clarifying real workspace IDs and the complete desired list when unknown;
 - selects, reuses or creates real Tasks;
 - discovers an Agent or Team and delegates saved work to it;
 - follows up on the exact ingress run ID that delegation returns;
 - explicitly sets IN_PROGRESS or DONE from the business information available
   to it.
 
-Its selected tools are the three Project tools plus `list_available_agents`,
+Its selected tools are the four Project/Task tools plus `list_available_agents`,
 `delegate_task`, `send_message_to` and `read_file`. It has no
 resource-inspection or cleanup-retry duty. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
@@ -124,6 +126,16 @@ selected explicitly in the agent definition, independently of the UI flag.
 workspace membership and duplicates. Project reads sort by case-insensitive
 name, then ID. Views compute `taskCount` and `openTaskCount` (non-DONE) from the
 Task folders.
+
+Agent mutations use `createProjectRecord` / `patchProjectRecord`, returning the
+committed record without Task or workspace-availability enrichment. A patch
+merges supplied fields and resolves the complete link list against the current
+record inside the existing catalog write callback; adapters never pre-read and
+merge. Retained links preserve omitted descriptions in this patch path. The
+active UI/GraphQL `createProject` facade calls the same creation write once,
+then enriches its view; full-form `updateProject` retains its existing omitted-
+description clearing policy. Both paths share the workspace resolver. No new
+persisted shape, migration, Task/history write or locking owner is introduced.
 
 `ProjectTaskService` applies only the supplied fields to the **current** Task.
 - Creation requires trimmed, non-empty text and creates a TODO Task with a fresh
@@ -242,7 +254,7 @@ names the file and says to fix or restore it and restart:
 Recovery: there is no self-repair and no automatic reload. Fix or restore the
 file and restart.
 
-## Exactly Three Agent Tools
+## Exactly Four Agent Tools
 
 Inputs use snake_case; result fields use camelCase. Native tools and Agent
 Tools MCP share the parser, manifest, services and error projection.
@@ -251,7 +263,22 @@ Tools MCP share the parser, manifest, services and error projection.
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS or DONE | `{projectId, tasks: [...]}` |
+| `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceId, description}]}}` |
 | `create_or_update_task` | Required `project_id`; omit `task_id` to create with required `description` and **omit status**; provide a known `task_id` to patch description and/or status | `{task: {...}}` |
+
+`create_or_update_project` preserves omitted fields on patch. A blank Project
+description clears it; unknown IDs never create. Names are trimmed, nonblank
+and unique case-insensitively. Creation defaults to blank description/no links.
+`workspaces?: [{workspace_id, description?}]` is a **complete replacement list**,
+not append; omission preserves all links and `[]` unlinks without deleting
+folders/registrations. Retained links preserve their root snapshot, added time
+and omitted description; blank description clears it. New links must be
+registered on the current node and default to blank description. There is no
+workspace-discovery tool: callers must know actual IDs and the complete desired
+list; the Manager asks when these are unknown. Null/wrong types, duplicate IDs
+and unknown row/top-level keys fail before mutation; an empty patch returns
+`PROJECT_PATCH_REQUIRED`. The acknowledgement contains committed metadata/links,
+not Task counts, filesystem paths, availability or a work assessment.
 
 `list_project_tasks` stays global: it returns every Task in the Project, with
 an optional `status` filter. Each Task has `projectId`, `taskId`, the full
@@ -279,14 +306,14 @@ locator. `localPath` is included only when the Task authority validates the
 physical saved bytes. It is a server-local path, not guaranteed to be reachable
 by a remote consumer. Missing bytes never produce a fabricated `localPath`.
 
-Input validation:
-- Presence matters: a null or blank `task_id` is invalid, not a request to
+Task input validation (Project rules are above):
+- Presence matters: a null or blank `project_id` or `task_id` is invalid, not a request to
   create. A null, blank or non-string `description` is invalid.
 - Unknown input keys are rejected.
 - An empty patch fails with `TASK_PATCH_REQUIRED`, an invalid status with
   `TASK_STATUS_INVALID`, and any status supplied on creation with
   `TASK_CREATE_STATUS_UNSUPPORTED`.
-- There is no batch update, Project creation, context upload/edit/delete tool,
+- There is no batch update, workspace discovery/registration, context upload/edit/delete tool,
   or implicit Project binding.
 
 Exposure:
@@ -294,7 +321,7 @@ Exposure:
 - They need no collaboration-member context and are independent of the
   Projects UI flag.
 - Their first-party names are protected against configured MCP collisions.
-- Selecting one does not expose the other two. Unselected tools stay absent or
+- Selecting one does not expose the others. Unselected tools stay absent or
   rejected. No retired task tools and no category-wide exposure are restored.
 - Discovery, `delegate_task` and `send_message_to` remain separate operations.
 
@@ -305,7 +332,7 @@ Errors:
   text/structuredContent. Native tools use the same business projection.
 - Session and local-admission failures remain transport-owned.
 - If a mutation's result cannot be confirmed, `PROJECT_OPERATION_UNCONFIRMED`
-  asks the caller to check the saved Task before repeating. An exception is not
+  asks the caller to check the saved Project or Task before repeating. An exception is not
   proof of rollback.
 
 See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and access.
@@ -512,14 +539,17 @@ Coverage:
 - `tests/unit/agent-tools/project-tasks`
 - `tests/unit/context-files` (preserved)
 - `tests/architecture/projects-boundaries.test.ts`
-- `tests/e2e/projects/{projects-graphql,project-task-boundaries,projects-startup-migration}.e2e.test.ts`.
+- `tests/e2e/projects/{projects-graphql,project-task-boundaries,project-mutation-node-locality,projects-startup-migration}.e2e.test.ts`.
   The startup-migration e2e covers both startup entrypoints, the gate before
   and after, and retry.
 - MCP route, runtime exposure and startup tests.
 
 Real temporary byte fixtures and HTTP, default MCP and native tests are
 distinct from injected fault contracts. Run
-`pnpm -C autobyteus-server-ts prepare:shared` before downstream server checks.
+`pnpm -C autobyteus-server-ts prepare:shared` before source-level server checks.
+The node-locality suite requires current server `prebuild` and `build` as well;
+see [Project mutation regressions](../../../TESTING.md#project-mutation-regressions)
+for commands, fixture ownership and evidence limits.
 
 - [Frontend Projects](../../../autobyteus-web/docs/projects.md)
 - [Workspaces](workspaces.md)

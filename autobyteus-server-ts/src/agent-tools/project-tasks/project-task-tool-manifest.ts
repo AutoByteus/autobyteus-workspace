@@ -1,9 +1,14 @@
 import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
-import type { ProjectTaskStatus, ProjectTaskView } from "../../projects/domain/models.js";
+import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput } from "../../projects/domain/models.js";
 import type { TaskAssignment } from "../../projects/domain/task-agent-resources.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
+
+const projectAcknowledgement = ({projectId, name, description, workspaces}: Project) => ({
+  projectId, name, description,
+  workspaces: workspaces.map(({workspaceId, description}) => ({workspaceId, description})),
+});
 
 type TaskAcknowledgement = Pick<ProjectTaskView, "projectId" | "taskId" | "status">;
 /** Business read: current (open) assignments, or a marker when this Task's assignments can't be read. */
@@ -16,11 +21,13 @@ const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles
   ...(assignments === "unavailable" ? { assignmentsUnavailable: true as const } : { assignments: assignments ?? [] }),
 });
 
-class TaskMutationUnconfirmed extends Error {
-  constructor(cause: unknown) { super("Task change could not be confirmed. Check the saved Task before repeating.", { cause }); }
+class ProjectMutationUnconfirmed extends Error {
+  constructor(subject: "Project" | "Task", cause: unknown) {
+    super(`${subject} change could not be confirmed. Check the saved ${subject} before repeating.`, { cause });
+  }
 }
 export const projectTaskToolError = (error: unknown) => {
-  if (error instanceof TaskMutationUnconfirmed) {
+  if (error instanceof ProjectMutationUnconfirmed) {
     console.error("Project Task mutation result unavailable.", error);
     return { error: { code: "PROJECT_OPERATION_UNCONFIRMED", message: error.message } };
   }
@@ -31,6 +38,25 @@ export const projectTaskToolError = (error: unknown) => {
 export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unknown): Promise<unknown> {
   const input = parseProjectTaskToolInput(name, raw);
   if (name === "list_projects") return { projects: await getProjectService().listProjectSummaries() };
+  if (name === "create_or_update_project") {
+    const fields = {
+      ...(Object.hasOwn(input, "name") ? {name: input.name as string} : {}),
+      ...(Object.hasOwn(input, "description") ? {description: input.description as string} : {}),
+      ...(Object.hasOwn(input, "workspaces") ? {workspaces: (input.workspaces as Array<Record<string, unknown>>).map(row => ({
+        workspaceId: row.workspace_id as string,
+        ...(Object.hasOwn(row, "description") ? {description: row.description as string} : {}),
+      })) as ProjectWorkspaceInput[]} : {}),
+    };
+    try {
+      const project = Object.hasOwn(input, "project_id")
+        ? await getProjectService().patchProjectRecord({projectId: input.project_id as string, ...fields})
+        : await getProjectService().createProjectRecord({...fields, name: input.name as string});
+      return {project: projectAcknowledgement(project)};
+    } catch (error) {
+      if (error instanceof ProjectError) throw error;
+      throw new ProjectMutationUnconfirmed("Project", error);
+    }
+  }
   const projectId = input.project_id as string;
   if (name === "list_project_tasks") {
     const tasks = await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined);
@@ -48,7 +74,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
     return { task: taskAcknowledgement(task) };
   } catch (error) {
     if (error instanceof ProjectError) throw error;
-    throw new TaskMutationUnconfirmed(error);
+    throw new ProjectMutationUnconfirmed("Task", error);
   }
 }
 export const PROJECT_TASK_TOOL_MANIFEST = [...PROJECT_TASK_TOOL_NAMES].map((name) => ({

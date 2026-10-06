@@ -139,7 +139,7 @@ try {
     const managerConfig = await fs.readFile(path.join(managerDir, "agent-config.json"), "utf8");
     assert.equal(managerConfig, await fs.readFile(projectTaskManagerDistAgentConfigPath, "utf8"));
     assert.deepEqual(JSON.parse(managerConfig).toolNames, [
-      "list_projects", "list_project_tasks", "create_or_update_task", "list_available_agents",
+      "list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task", "list_available_agents",
       "delegate_task", "send_message_to", "read_file",
     ]);
     assert.equal(JSON.parse(managerConfig).defaultLaunchConfig, null);

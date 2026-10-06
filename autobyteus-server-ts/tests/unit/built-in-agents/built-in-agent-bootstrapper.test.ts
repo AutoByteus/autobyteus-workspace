@@ -81,15 +81,15 @@ describe("BuiltInAgentBootstrapper", () => {
     agentDefinitionId,
   );
 
-  it("ships the business-only Manager prompt and unchanged ordinary tools through real bootstrap", async () => {
+  it("ships the business-only Manager prompt and selected ordinary tools through real bootstrap", async () => {
     const services = createServices();
     await bootstrapBuiltInAgents(services);
     const prompt = await fs.readFile(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent.md"), "utf8");
     expect(prompt).toBe(await readTemplate("project-task-manager", "agent.md"));
-    for (const businessDuty of ["list_projects", "list_project_tasks", "TODO", "recipient_address and task_id", "IN_PROGRESS", "target_agent_run_id", "send_message_to", "results, artifacts and user instructions", "DONE", "completion information is missing"]) expect(prompt).toContain(businessDuty);
+    for (const businessDuty of ["list_projects", "list_project_tasks", "create_or_update_project", "user-requested Project changes", "Omitted fields are preserved", "complete desired list", "real IDs", "unconfirmed", "TODO", "recipient_address and task_id", "IN_PROGRESS", "target_agent_run_id", "send_message_to", "results, artifacts and user instructions", "DONE", "completion information is missing"]) expect(prompt).toContain(businessDuty);
     expect(prompt).not.toMatch(/runtime|resource|cleanup|lifetime|cascade|restore|global Stop|scheduler|polling|notifier|self-DONE|completion[- ]report/i);
     const config = await readJson(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent-config.json"));
-    expect(config.toolNames).toEqual(["list_projects", "list_project_tasks", "create_or_update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file"]);
+    expect(config.toolNames).toEqual(["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file"]);
     for (const key of ["inputProcessorNames", "llmResponseProcessorNames", "toolExecutionResultProcessorNames", "toolInvocationPreprocessorNames", "lifecycleProcessorNames"]) expect(config[key]).toEqual([]);
   });
 

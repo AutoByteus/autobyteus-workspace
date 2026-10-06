@@ -211,8 +211,15 @@ extension, microphone/permission/device or live transcription capability.
 
 ## Agent Tools / Scope Exclusions
 
-Exactly `list_projects`, `list_project_tasks`, `create_or_update_task` are selected
-independently per agent/node. List requires explicit Project ID after discovery;
+Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_or_update_task` are selected
+independently per agent/node. Project authoring uses a required name to create
+or a known project_id to patch: omitted fields persist, blank description clears.
+Optional workspaces [{workspace_id, description?}] reference known registered IDs:
+a supplied list replaces all links, [] unlinks only, omission preserves. Retained
+link descriptions persist if omitted. No workspace discovery/registration is
+provided; the Manager asks for real IDs/the complete desired list when unknown.
+The saved Project acknowledgement contains metadata and link IDs/descriptions,
+not Task counts or filesystem paths. List requires explicit Project ID after discovery;
 omitted Task ID creates TODO with text and no status, known Task ID patches text
 and/or exact status, unknown ID fails. Full text and saved context references
 are available from listing. Each Task also carries its current (open)
@@ -221,10 +228,11 @@ assignments `{targetAgentRunId, kind, assignedBy, outcome}` for follow-up, or
 fields and files persist. A mutation returns a compact recorded-status
 acknowledgement, not raw resource diagnostics or a work assessment. There is no
 batch or Task attachment mutation tool. See the
-[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-three-agent-tools).
+[server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-four-agent-tools).
 
 The shipped Project Task Manager is an ordinary reusable Agent available through
-existing Chat/`@`; no Project-page chat or assignment panel is added. It selects
+existing Chat/`@`; no Project-page chat or assignment panel is added. It authors
+Projects only when requested by the user, clarifying unknown IDs/desired links. It selects
 real saved Tasks, delegates with `{recipient_address, task_id}`, follows the exact
 returned ingress run ID and explicitly updates status from available results or
 user instructions. It does not supervise physical resources or guarantee worker

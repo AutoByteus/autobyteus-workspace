@@ -1,0 +1,16 @@
+{
+  "extends": "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool",
+    "noEmit": true,
+    "typeRoots": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/node_modules/@types"
+    ]
+  },
+  "include": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tests/unit/projects/project-service.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts"
+  ],
+  "exclude": []
+}
