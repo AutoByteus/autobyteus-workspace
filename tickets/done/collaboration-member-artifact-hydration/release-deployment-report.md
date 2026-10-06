@@ -80,24 +80,70 @@ Root cause of the merge-introduced failure:
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: `user-verification-record.md` ("finalize, no need to release a new version thanks")
+- Renewed verification required after later re-integration: `No` (`origin/personal` not advanced after verification)
+- Renewed verification received: `Not needed`
+
+## Ticket State Transition
+
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/collaboration-member-artifact-hydration/`
+- Note: path references inside the upstream artifacts still name the former worktree and `tickets/in-progress/` location, which is kept as history.
+
+## Version / Tag / Release Commit
+
+- Not required (the user declined a release).
+- `v1.4.95-beta.4` does not contain this ticket.
 
 ## Repository Finalization
 
-- Ticket branch: `codex/collaboration-member-artifact-hydration` (local, not pushed)
-- Repository finalization status: pending user verification
+- Bootstrap context source: Code Reviewer handoff (target `origin/personal`)
+- Ticket branch: `codex/collaboration-member-artifact-hydration`
+- Ticket branch commit result: `Completed`. The final commit `1a67854c5` contains the docs sync and the archive.
+- Ticket branch push result: `Completed` (later deleted after the merge)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (still `f777a6559`)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` (local `personal` fast-forwarded to `f777a6559`)
+- Merge into target result: `Completed` (`--no-ff` merge `4e66fce54`)
+- Push target branch result: `Completed` (`f777a6559..4e66fce54`)
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user. `release-notes.md` is prepared.
+- Applicable: `No`
+- Release/publication/deployment result: `Not required` (the user said "no need to release a new version")
+- Release notes handoff result: `Not required`. `release-notes.md` is archived for a future release.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/home/autobyteus/workspace/.codex/worktrees/collaboration-member-artifact-hydration`
+- Worktree cleanup result: `Completed`. It was removed with `--force`; the only untracked content was the SDK `dist/` build output.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+
+## Release Notes Summary
+
+- Release notes artifact created before verification / acceptance: `release-notes.md`
+- Release notes status: `Not required` (no release)
 
 ## Environment Or Persisted-Data Transition Notes
 
 - No persistence or API change. Delivery action required: `None`.
 
+## Verification Checks
+
+- `delivery-evidence/web-vitest-integrated.log` (DR-001, blocked run with attribution)
+- `delivery-evidence/web-vitest-integrated-round2.log` (DR-002: 20 pre-existing failures only, 2025 passed)
+- API/E2E round 2: `api-e2e-evidence/round2/`
+
 ## Rollback Criteria
 
-- Revert the final merge into `personal` if any of these appear:
+- Revert with `git revert -m 1 4e66fce54` if any of these appear:
   - Team or Org open or member selection regresses.
   - Duplicate or reverted artifacts appear after hydration.
 - No data migration is involved.
@@ -108,8 +154,10 @@ Root cause of the merge-introduced failure:
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Unresolved blocker: `None` (awaiting user verification)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (see `delivery-revision-record.md` DR-003)
