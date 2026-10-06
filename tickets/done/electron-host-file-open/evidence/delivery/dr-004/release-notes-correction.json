@@ -1,0 +1,15 @@
+{
+  "recordedAt": "2026-10-06T19:45:42.615582+00:00",
+  "classification": "Delivery-local documentation correction",
+  "finding": "Additional inspection of prior finalized project-task-manager-linked-delegation handoff identified one-time Projects folder migration/backup caution missing from the initial accumulated stable notes",
+  "fix": "Add exact migration/backup/restart caution to canonical archived and current curated notes; patch published GitHub release notes once tag publishers finish",
+  "runtimeDelta": "None",
+  "tagRetagOrDuplicateRelease": "Not performed",
+  "publicationNotesPatch": "Completed / published body exact canonical notes",
+  "source": "tickets/done/project-task-manager-linked-delegation/handoff-summary.md",
+  "publishedReleaseId": 405086037,
+  "patchCheckedAt": "2026-10-06T20:13:25.640996+00:00",
+  "originalTaggedNotesSha256": "1eff959ba82c22ff39685f7b2b8a60e537773b5ec81875e8167c6b530fb60641",
+  "correctedNotesSha256": "85d63f5906df7633df98328187b5a55ed1fa97af1369895b30e73ef15b486dac",
+  "publishedBodyMatchesCanonical": true
+}

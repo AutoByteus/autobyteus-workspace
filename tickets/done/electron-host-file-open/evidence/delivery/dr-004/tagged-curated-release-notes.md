@@ -17,8 +17,6 @@
 
 ## Upgrade notes
 
-- Existing Projects storage moves once to per-Project folders on first start. The original file is retained as `projects.pre-folders.json`; while migration is pending, Projects asks you to restart the app to finish.
-
 - **Task-tool callers:** updating an existing Task with `create_or_update_task` now takes `task_id` without `project_id`; sending both is rejected. Update external agent packages that use the old call shape.
 - The built-in Project Task Manager has been removed. Use the Project Task Manager from the agent repository by configuring that repository as an agent package root. On startup, the old built-in `agents/autobyteus-project-task-manager/` app-data folder is deleted without a backup. Other agents, Projects, Tasks and histories are retained; past conversations with the removed agent stay readable but cannot be continued.
 - The Electron preview fix adds no edit/save access and does not broaden remote/browser/mobile file access.

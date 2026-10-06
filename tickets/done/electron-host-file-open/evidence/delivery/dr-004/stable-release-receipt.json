@@ -1,0 +1,15 @@
+{
+  "recordedAt": "2026-10-06T19:44:40.258404+00:00",
+  "version": "1.4.95",
+  "releaseCommit": "334438b5ac6b84caa6e109b2b5b6867f7b66370b",
+  "annotatedTagObject": "2835ae8b4b5f20a45d07bd4ee046ef9e15faa38d",
+  "peeledTagCommit": "334438b5ac6b84caa6e109b2b5b6867f7b66370b",
+  "remoteRefs": "334438b5ac6b84caa6e109b2b5b6867f7b66370b\trefs/heads/personal\n2835ae8b4b5f20a45d07bd4ee046ef9e15faa38d\trefs/tags/v1.4.95\n334438b5ac6b84caa6e109b2b5b6867f7b66370b\trefs/tags/v1.4.95^{}\n",
+  "remotePersonalAndTagVerified": true,
+  "command": "bash scripts/desktop-release.sh release 1.4.95 --release-notes tickets/done/electron-host-file-open/release-notes.md",
+  "helperExit": 0,
+  "notesMatch": true,
+  "productionDiffFromBeta": "autobyteus-web/package.json version and curated .github/release-notes/release-notes.md only; other delta delivery evidence/docs",
+  "receiptCommitBeforeRelease": "f073c19135569fe4fbfd9c06af2524996cd71fea",
+  "duplicatedWorkflowDispatch": false
+}

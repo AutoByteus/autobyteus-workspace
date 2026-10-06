@@ -1,0 +1,230 @@
+{
+  "checkedAt": "2026-10-06T20:13:25.601610+00:00",
+  "result": "Pass",
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.95",
+  "tag": "v1.4.95",
+  "prerelease": false,
+  "draft": false,
+  "publishedAt": "2026-10-06T19:58:19Z",
+  "releaseId": 405086037,
+  "assetsCount": 17,
+  "assets": [
+    {
+      "name": "AutoByteus_personal_android-1.4.95-release.apk",
+      "size": 1846691,
+      "state": "uploaded",
+      "digest": "sha256:d229357dad51f3a6e1a63b624c8349ad0a8b9248e8f5a945c7387cb576f231cb",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_android-1.4.95-release.apk"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.95-release.apk.sha256",
+      "size": 113,
+      "state": "uploaded",
+      "digest": "sha256:68e21a07a0839995f189faea6814899871a971ee064b707aa45529335f23f2c6",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_android-1.4.95-release.apk.sha256"
+    },
+    {
+      "name": "AutoByteus_personal_linux-arm64-1.4.95.AppImage",
+      "size": 447480476,
+      "state": "uploaded",
+      "digest": "sha256:339224c21e0284a793962429323042a4941b5f9cff21a4caf58d11540d804510",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_linux-arm64-1.4.95.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_linux-x64-1.4.95.AppImage",
+      "size": 459428747,
+      "state": "uploaded",
+      "digest": "sha256:9efc07cfdef6f9bff2678c8c0403ed9637c2373227c115b19b090d92aba6f019",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_linux-x64-1.4.95.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.95.dmg",
+      "size": 515188631,
+      "state": "uploaded",
+      "digest": "sha256:ee8f3a6c0eb2831bb05fa875dec915867cf363f08ea957fe5f5ff39fa8b54753",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-arm64-1.4.95.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.95.dmg.blockmap",
+      "size": 534051,
+      "state": "uploaded",
+      "digest": "sha256:fd5051863b39b4251c03894843ee11747819e5dea79a44ea85f10419b2c0943a",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-arm64-1.4.95.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.95.zip",
+      "size": 510951350,
+      "state": "uploaded",
+      "digest": "sha256:51d97293ac7b10e436fa6d58473f2e52b9b99fa65b6d38e227be0152d2ae9599",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-arm64-1.4.95.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.95.zip.blockmap",
+      "size": 524681,
+      "state": "uploaded",
+      "digest": "sha256:f409fba451328da3178e3a2c57a954f948cda13ca320565c0ee70dcdc6406620",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-arm64-1.4.95.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.95.dmg",
+      "size": 537616939,
+      "state": "uploaded",
+      "digest": "sha256:6b1be5a691e27d0c572fdada47b8595ce5b3da18282963bcd47ca6453b6590f9",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-x64-1.4.95.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.95.dmg.blockmap",
+      "size": 562139,
+      "state": "uploaded",
+      "digest": "sha256:7552d3aa59ef500d8048664daec728be33607c7e38278748a46ed0b2a8769f09",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-x64-1.4.95.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.95.zip",
+      "size": 532591080,
+      "state": "uploaded",
+      "digest": "sha256:477ccc5537783b430e75477f8d68503e92b1f94f84186020b9a6cf31ec74d04b",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-x64-1.4.95.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.95.zip.blockmap",
+      "size": 546523,
+      "state": "uploaded",
+      "digest": "sha256:ae693e1b88b69e0f8a26b75cf613edb6e1d16e64ce0e957c29ad79708683fc49",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_macos-x64-1.4.95.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_windows-1.4.95.exe",
+      "size": 340444448,
+      "state": "uploaded",
+      "digest": "sha256:c7b397859d2bc15ebdea849876870993eebccc5b76783f4cc3d5e02d66e86a06",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/AutoByteus_personal_windows-1.4.95.exe"
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "size": 417,
+      "state": "uploaded",
+      "digest": "sha256:130640c6816783bc7a5cf8b3d42d88864bd88c571e19eb419d0487ebf8ec5987",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/latest-linux-arm64.yml"
+    },
+    {
+      "name": "latest-linux.yml",
+      "size": 413,
+      "state": "uploaded",
+      "digest": "sha256:7529d8a1f17228b90432e7f8303b68ad87b54fe64f102fb98e1e8febbde82edd",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/latest-linux.yml"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 897,
+      "state": "uploaded",
+      "digest": "sha256:ced6cfed53bfe80c7b28dd6c525ed1bdc12244ddb2b24f9612eae03ceb68f175",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/latest-mac.yml"
+    },
+    {
+      "name": "latest.yml",
+      "size": 354,
+      "state": "uploaded",
+      "digest": "sha256:b9673167ad380c8547bed73121726b325d954bb767fd3e8529ffac136fccbfd3",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.95/latest.yml"
+    }
+  ],
+  "updaterMetadata": [
+    {
+      "name": "latest-linux-arm64.yml",
+      "version": "1.4.95",
+      "downloadSha256MatchesUpload": true,
+      "files": [
+        {
+          "url": "AutoByteus_personal_linux-arm64-1.4.95.AppImage",
+          "metadataSize": 447480476,
+          "assetSize": 447480476,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": true,
+          "missingSizeDisposition": "Not missing"
+        }
+      ]
+    },
+    {
+      "name": "latest-linux.yml",
+      "version": "1.4.95",
+      "downloadSha256MatchesUpload": true,
+      "files": [
+        {
+          "url": "AutoByteus_personal_linux-x64-1.4.95.AppImage",
+          "metadataSize": 459428747,
+          "assetSize": 459428747,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": true,
+          "missingSizeDisposition": "Not missing"
+        }
+      ]
+    },
+    {
+      "name": "latest-mac.yml",
+      "version": "1.4.95",
+      "downloadSha256MatchesUpload": true,
+      "files": [
+        {
+          "url": "AutoByteus_personal_macos-arm64-1.4.95.zip",
+          "metadataSize": 510951350,
+          "assetSize": 510951350,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": true,
+          "missingSizeDisposition": "Not missing"
+        },
+        {
+          "url": "AutoByteus_personal_macos-arm64-1.4.95.dmg",
+          "metadataSize": 515188631,
+          "assetSize": 515188631,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": true,
+          "missingSizeDisposition": "Not missing"
+        },
+        {
+          "url": "AutoByteus_personal_macos-x64-1.4.95.zip",
+          "metadataSize": 532591080,
+          "assetSize": 532591080,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": true,
+          "missingSizeDisposition": "Not missing"
+        },
+        {
+          "url": "AutoByteus_personal_macos-x64-1.4.95.dmg",
+          "metadataSize": 537616939,
+          "assetSize": 537616939,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": true,
+          "missingSizeDisposition": "Not missing"
+        }
+      ]
+    },
+    {
+      "name": "latest.yml",
+      "version": "1.4.95",
+      "downloadSha256MatchesUpload": true,
+      "files": [
+        {
+          "url": "AutoByteus_personal_windows-1.4.95.exe",
+          "metadataSize": null,
+          "assetSize": 340444448,
+          "sha512WellFormed": true,
+          "releaseAssetExists": true,
+          "metadataSizeMatchesWhenSupplied": false,
+          "missingSizeDisposition": "N/A \u2014 current Windows metadata omits size; uploaded asset nonzero size verified"
+        }
+      ]
+    }
+  ],
+  "androidChecksumMatchesGitHubUploadDigest": true,
+  "stableLatestIsThisRelease": true,
+  "stableTag": "v1.4.95",
+  "notesMode": "Curated stable notes; published body exactly matches archived canonical release-notes.md",
+  "limits": "Validated API uploaded assets, exact downloaded metadata/checksum hashes, references/nonzero sizes, supplied metadata sizes, version and SHA512 shape. Did not download/hash/install every large desktop binary; successful Desktop CI owns build/signing/packaging checks. iOS CI upload evidence is separate from TestFlight processing/user installation."
+}

@@ -7,7 +7,6 @@ Latest docs-sync-report.md, handoff-summary.md and release-deployment-report.md 
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass / IR-002 cumulative direct package | N/A | Integrated docs ready; **Blocked — explicit user verification pending** | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, release-notes.md, user-verification.md; two long-lived docs |
 | DR-002 | Solution Designer coordination hold return | DR-001 verification hold / upstream coordination | **Blocked — User/External Prerequisite**, no technical reroute | delivery reports, user-verification.md, cumulative package; solution-coordination-hold.md added |
-
 | DR-003 | Direct user finalize/new-beta instruction | DR-002 external verification hold | Repository finalized; beta publication verified; cleanup deferred for stable request | user-verification.md, delivery reports, archive and release evidence |
 | DR-004 | Direct user stable-release instruction | DR-003 beta verified, cleanup pending | Stable authorized/in progress; no terminal yet | Release notes, acceptance, final reports, stable publication evidence |
 
@@ -68,3 +67,13 @@ Latest docs-sync-report.md, handoff-summary.md and release-deployment-report.md 
 - Fresh origin/personal remains accepted beta release8d9d22adb; no runtime delta, no additional product validation or renewed verification required for receipt/notes/version-only work.
 - Beta publication completed, no replay. Stable curated release-notes.md prepared from v1.4.94..HEAD production changes and archived upstream notes, including Task call-shape and removed built-in cautions. Original beta note retained under dr-003.
 - Current result: Stable publication authorized/in progress; cleanup and successful terminal remain Pending. Authorities: docs-sync-report.md, handoff-summary.md, release-deployment-report.md, user-verification.md; evidence/delivery/dr-004/stable-authorization-and-base.json.
+
+#### DR-004 delivery-local notes correction
+After stable tag execution, additional inspection of the older finalized Projects handoff identified its one-time folder migration and retained backup caution. Added it to canonical/current curated stable notes without runtime/tag/version/workflow changes. Tagged original notes retained as evidence; one published-body patch will follow successful publishers. This is documentation-local recovery, not a source/architecture failure or silent re-tag.
+
+#### DR-004 publication recovery
+Android metadata/build/APK artifact validation passed; publisher failed after checksum upload, leaving GitHub release405086037 draft (tag404 while draft). Exact cause not proved; raw job log/annotations retained. Delivery retried only failed publish job112468202672 on run37521238492, same tag/SHA/built artifact. No new version/tag/full workflow/source changes; recovery remains pending outcome.
+
+Android publisher-only retry completed/success; built artifact and immutable stable source/tag retained, no source change. android-recovery-final.json/log evidence. iOS run also completed/success; Desktop and Docker still in progress on fresh query.
+
+Stable Desktop/Android/iOS completed/success; published non-draft non-prerelease GitHub1.4.95 is latest stable with17 uploaded assets, four downloaded updater metadata/version/hash/reference checks and Android checksum Pass. Corrected migration caution published byte-equivalent (whitespace-normalized) to canonical notes after both GitHub publishers; original tagged note retained. Docker and cleanup remain Pending.

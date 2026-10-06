@@ -1,0 +1,18 @@
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	﻿2026-10-06T19:48:47.9385989Z ##[group]Run softprops/action-gh-release@v2
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9386314Z with:
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9386512Z   tag_name: v1.4.95
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387103Z   target_commitish: 334438b5ac6b84caa6e109b2b5b6867f7b66370b
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387462Z   draft: false
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387677Z   prerelease: false
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387937Z   body_path: .github/release-notes/release-notes.md
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9388336Z   files: release-artifacts/*.apk
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	release-artifacts/*.apk.sha256
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9388703Z   overwrite_files: true
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9391145Z   token: ***
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9391359Z ##[endgroup]
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:48.2425890Z 👩‍🏭 Creating new GitHub release for tag v1.4.95 using commit "334438b5ac6b84caa6e109b2b5b6867f7b66370b"...
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:56.3905311Z Release 405086037 is not yet discoverable by tag v1.4.95, retrying... (2 retries remaining)
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:49:00.6896108Z ⬆️ Uploading AutoByteus_personal_android-1.4.95-release.apk...
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:49:00.6898646Z ⬆️ Uploading AutoByteus_personal_android-1.4.95-release.apk.sha256...
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:49:07.6854664Z ✅ Uploaded AutoByteus_personal_android-1.4.95-release.apk.sha256

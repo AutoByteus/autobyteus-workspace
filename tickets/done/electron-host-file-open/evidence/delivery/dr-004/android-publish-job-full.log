@@ -1,0 +1,952 @@
+Publish Android APK To GitHub Release	Set up job	﻿2026-10-06T19:48:11.5255064Z Current runner version: '2.337.0'
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5280214Z ##[group]Runner Image Provisioner
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5281486Z Hosted Compute Agent
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5282101Z Version: 20261002.596
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5282904Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5283708Z Build Date: 2026-10-02T22:28:27Z
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5284440Z Worker ID: {f17f53cb-2cfd-4370-90ad-f0372620205e}
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5285579Z Region: eastus
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5286230Z Cloud: Azure
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5286996Z ##[endgroup]
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5288634Z ##[group]Operating System
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5289344Z Ubuntu
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5289990Z 24.04.5
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5290557Z LTS
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5291269Z ##[endgroup]
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5291900Z ##[group]Runner Image
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5292783Z Image: ubuntu-24.04
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5293453Z Version: 20261004.327.1
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5294597Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5296438Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5297824Z ##[endgroup]
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5298969Z ##[group]GITHUB_TOKEN Permissions
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5301115Z Contents: write
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5301836Z Metadata: read
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5302392Z ##[endgroup]
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5304457Z Secret source: Actions
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5305480Z Cache mode: write
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5306448Z Prepare workflow directory
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5632674Z Prepare all required actions
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.5680922Z Getting action download info
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.8314379Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:11.9287251Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:12.0918132Z Download action repository 'softprops/action-gh-release@v2' (SHA:3bb12739c298aeb8a4eeaf626c5b8d85266b0e65)
+Publish Android APK To GitHub Release	Set up job	2026-10-06T19:48:12.3345446Z Complete job name: Publish Android APK To GitHub Release
+Publish Android APK To GitHub Release	Checkout workspace	﻿2026-10-06T19:48:12.4234240Z ##[group]Run actions/checkout@v4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4235561Z with:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4236292Z   ref: v1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4237247Z   fetch-depth: 0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4238080Z   repository: AutoByteus/autobyteus-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4243436Z   token: ***
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4244165Z   ssh-strict: true
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4244910Z   ssh-user: git
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4245665Z   persist-credentials: true
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4246493Z   clean: true
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4247385Z   sparse-checkout-cone-mode: true
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4248260Z   fetch-tags: false
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4249035Z   show-progress: true
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4249800Z   lfs: false
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4250529Z   submodules: false
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4251290Z   set-safe-directory: true
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4252127Z   allow-unsafe-pr-checkout: false
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.4253286Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5344052Z Syncing repository: AutoByteus/autobyteus-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5347797Z ##[group]Getting Git version info
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5350206Z Working directory is '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5353505Z [command]/usr/bin/git version
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5468707Z git version 2.55.0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5491148Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5509628Z Temporarily overriding HOME='/home/runner/work/_temp/4a36f3f5-de82-4aea-980c-2193f154bf52' before making global git config changes
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5513949Z Adding repository directory to the temporary git global config as a safe directory
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5518268Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5577850Z Deleting the contents of '/home/runner/work/autobyteus-workspace/autobyteus-workspace'
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5591268Z ##[group]Initializing the repository
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5604976Z [command]/usr/bin/git init /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5701950Z hint: Using 'master' as the name for the initial branch. This default branch name
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5705144Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5708596Z hint: to use in all of your new repositories, which will suppress this warning,
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5711156Z hint: call:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5712864Z hint:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5714719Z hint: 	git config --global init.defaultBranch <name>
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5718136Z hint:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5720210Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5723230Z hint: 'development'. The just-created branch can be renamed via this command:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5725741Z hint:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5755076Z hint: 	git branch -m <name>
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5760601Z hint:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5762519Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5766083Z Initialized empty Git repository in /home/runner/work/autobyteus-workspace/autobyteus-workspace/.git/
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5771661Z [command]/usr/bin/git remote add origin https://github.com/AutoByteus/autobyteus-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5832757Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5834505Z ##[group]Disabling automatic garbage collection
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5836442Z [command]/usr/bin/git config --local gc.auto 0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5879475Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5881516Z ##[group]Setting up auth
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5883325Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.5917681Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6337503Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6393730Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6650175Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6688848Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6915635Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6957692Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6959051Z ##[group]Fetching the repository
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:12.6968688Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3167864Z From https://github.com/AutoByteus/autobyteus-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3169752Z  * [new branch]          codex/agent-based-compaction -> origin/codex/agent-based-compaction
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3171443Z  * [new branch]          codex/agent-initiated-collaborators -> origin/codex/agent-initiated-collaborators
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3173583Z  * [new branch]          codex/agent-isolated-app-recording -> origin/codex/agent-isolated-app-recording
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3175742Z  * [new branch]          codex/agent-package-multiple-skills-analysis -> origin/codex/agent-package-multiple-skills-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3178321Z  * [new branch]          codex/agent-run-id-global-allocation-refactor -> origin/codex/agent-run-id-global-allocation-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3180088Z  * [new branch]          codex/agent-run-id-sanitization -> origin/codex/agent-run-id-sanitization
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3183276Z  * [new branch]          codex/agent-run-termination-extraction -> origin/codex/agent-run-termination-extraction
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3184987Z  * [new branch]          codex/agent-status-event-analysis -> origin/codex/agent-status-event-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3187069Z  * [new branch]          codex/agent-team-chevron-affordance -> origin/codex/agent-team-chevron-affordance
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3188593Z  * [new branch]          codex/agent-team-codex-output-not-visible -> origin/codex/agent-team-codex-output-not-visible
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3190216Z  * [new branch]          codex/agent-team-hierarchical-handoffs -> origin/codex/agent-team-hierarchical-handoffs
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3191742Z  * [new branch]          codex/agent-team-local-member-import-analysis -> origin/codex/agent-team-local-member-import-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3193158Z  * [new branch]          codex/agent-team-universal-task-delegation -> origin/codex/agent-team-universal-task-delegation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3194069Z  * [new branch]          codex/agent-turn-model-refactor -> origin/codex/agent-turn-model-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3194833Z  * [new branch]          codex/agent-work-request-prompt -> origin/codex/agent-work-request-prompt
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3195793Z  * [new branch]          codex/agy-background-task-turn-liveness -> origin/codex/agy-background-task-turn-liveness
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3196581Z  * [new branch]          codex/agy-compaction-analysis -> origin/codex/agy-compaction-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3198121Z  * [new branch]          codex/agy-empty-mcp-config-activation -> origin/codex/agy-empty-mcp-config-activation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3199366Z  * [new branch]          codex/agy-linked-skills-always-auto-approve -> origin/codex/agy-linked-skills-always-auto-approve
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3200342Z  * [new branch]          codex/agy-mcp-tool-call-presentation-only -> origin/codex/agy-mcp-tool-call-presentation-only
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3201175Z  * [new branch]          codex/agy-native-image-output-path -> origin/codex/agy-native-image-output-path
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3202044Z  * [new branch]          codex/analyse-memory-layout-duplication -> origin/codex/analyse-memory-layout-duplication
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3202979Z  * [new branch]          codex/antigravity-marketing-turn-failure -> origin/codex/antigravity-marketing-turn-failure
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3204140Z  * [new branch]          codex/antigravity-runtime-missing -> origin/codex/antigravity-runtime-missing
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3205198Z  * [new branch]          codex/antigravity-tool-argument-visibility -> origin/codex/antigravity-tool-argument-visibility
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3206437Z  * [new branch]          codex/application-communication-api-clarity -> origin/codex/application-communication-api-clarity
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3207789Z  * [new branch]          codex/application-execution-resource-naming -> origin/codex/application-execution-resource-naming
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3208679Z  * [new branch]          codex/archive-run-history -> origin/codex/archive-run-history
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3209543Z  * [new branch]          codex/artifact-edit-file-content-view-bug -> origin/codex/artifact-edit-file-content-view-bug
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3210552Z  * [new branch]          codex/artifact-edit-file-external-path-view-bug -> origin/codex/artifact-edit-file-external-path-view-bug
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3211375Z  * [new branch]          codex/artifact-maximize-button -> origin/codex/artifact-maximize-button
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3212117Z  * [new branch]          codex/artifact-touched-files-redesign -> origin/codex/artifact-touched-files-redesign
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3213008Z  * [new branch]          codex/autobyteus-runtime-streaming-ui-performance -> origin/codex/autobyteus-runtime-streaming-ui-performance
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3214024Z  * [new branch]          codex/autobyteus-tool-result-continuation-regression -> origin/codex/autobyteus-tool-result-continuation-regression
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3215098Z  * [new branch]          codex/autobyteus-ts-bash-html-corruption -> origin/codex/autobyteus-ts-bash-html-corruption
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3216236Z  * [new branch]          codex/autobyteus-ts-custom-openai-compatible-endpoint-support -> origin/codex/autobyteus-ts-custom-openai-compatible-endpoint-support
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3217742Z  * [new branch]          codex/background-task-shell-command -> origin/codex/background-task-shell-command
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3218592Z  * [new branch]          codex/browser-empty-tabstrip-cleanup -> origin/codex/browser-empty-tabstrip-cleanup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3219367Z  * [new branch]          codex/browser-mobile-view-support -> origin/codex/browser-mobile-view-support
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3220101Z  * [new branch]          codex/browser-navigate-load-hang -> origin/codex/browser-navigate-load-hang
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3220914Z  * [new branch]          codex/centralized-memory-provider-design -> origin/codex/centralized-memory-provider-design
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3221768Z  * [new branch]          codex/chat-composer-menus-open-upward -> origin/codex/chat-composer-menus-open-upward
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3222493Z  * [new branch]          codex/chat-interface-entry -> origin/codex/chat-interface-entry
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3223281Z  * [new branch]          codex/clarify-agent-definition-id-vs-run-id -> origin/codex/clarify-agent-definition-id-vs-run-id
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3224175Z  * [new branch]          codex/claude-agent-sdk-runtime-support -> origin/codex/claude-agent-sdk-runtime-support
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3224918Z  * [new branch]          codex/claude-read-artifacts -> origin/codex/claude-read-artifacts
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3290007Z  * [new branch]          codex/claude-sdk-builtin-tool-restriction -> origin/codex/claude-sdk-builtin-tool-restriction
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3291089Z  * [new branch]          codex/claude-sdk-interrupt-followup-ebadf -> origin/codex/claude-sdk-interrupt-followup-ebadf
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3292089Z  * [new branch]          codex/claude-sdk-interrupt-resume-session -> origin/codex/claude-sdk-interrupt-resume-session
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3293097Z  * [new branch]          codex/claude-sdk-tool-arguments-activity -> origin/codex/claude-sdk-tool-arguments-activity
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3294014Z  * [new branch]          codex/codex-history-reload-toolcalls -> origin/codex/codex-history-reload-toolcalls
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3294834Z  * [new branch]          codex/codex-installed-skill-dedup -> origin/codex/codex-installed-skill-dedup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3295844Z  * [new branch]          codex/codex-installed-skill-dedup-redo -> origin/codex/codex-installed-skill-dedup-redo
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3296969Z  * [new branch]          codex/codex-interrupted-compaction-fix -> origin/codex/codex-interrupted-compaction-fix
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3297959Z  * [new branch]          codex/codex-runtime-image-input-support -> origin/codex/codex-runtime-image-input-support
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3298692Z  * [new branch]          codex/codex-stream-stall -> origin/codex/codex-stream-stall
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3299491Z  * [new branch]          codex/codex-team-member-runtime-communication -> origin/codex/codex-team-member-runtime-communication
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3300780Z  * [new branch]          codex/compact-skill-details-header -> origin/codex/compact-skill-details-header
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3302319Z  * [new branch]          codex/compaction-config-save-button -> origin/codex/compaction-config-save-button
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3303982Z  * [new branch]          codex/compaction-frontier-llm-rendering -> origin/codex/compaction-frontier-llm-rendering
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3305506Z  * [new branch]          codex/compaction-icon-spinner -> origin/codex/compaction-icon-spinner
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3307263Z  * [new branch]          codex/composer-mention-discoverability -> origin/codex/composer-mention-discoverability
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3309215Z  * [new branch]          codex/context-attachment-draft-transfer-refactor -> origin/codex/context-attachment-draft-transfer-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3311172Z  * [new branch]          codex/context-compaction-simplification-analysis -> origin/codex/context-compaction-simplification-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3312944Z  * [new branch]          codex/context-file-reference-paths -> origin/codex/context-file-reference-paths
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3315027Z  * [new branch]          codex/create-or-update-project-tool -> origin/codex/create-or-update-project-tool
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3316507Z  * [new branch]          codex/cross-scope-agent-mentions -> origin/codex/cross-scope-agent-mentions
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3318246Z  * [new branch]          codex/custom-provider-model-context-metadata -> origin/codex/custom-provider-model-context-metadata
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3319795Z  * [new branch]          codex/default-temp-workspace-run-config -> origin/codex/default-temp-workspace-run-config
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3321276Z  * [new branch]          codex/desktop-auto-update-restart-errors -> origin/codex/desktop-auto-update-restart-errors
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3322657Z  * [new branch]          codex/desktop-beta-update-channel -> origin/codex/desktop-beta-update-channel
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3324326Z  * [new branch]          codex/desktop-invalid-package-agent-definitions -> origin/codex/desktop-invalid-package-agent-definitions
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3325205Z  * [new branch]          codex/diagram-zoom-viewer -> origin/codex/diagram-zoom-viewer
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3325906Z  * [new branch]          codex/disable-artifact-auto-focus -> origin/codex/disable-artifact-auto-focus
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3327111Z  * [new branch]          codex/disable-native-multi-agent-20261006 -> origin/codex/disable-native-multi-agent-20261006
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3327948Z  * [new branch]          codex/docker-cli-latest-install -> origin/codex/docker-cli-latest-install
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3328713Z  * [new branch]          codex/docker-guide-command-hotfix -> origin/codex/docker-guide-command-hotfix
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3329538Z  * [new branch]          codex/docker-launcher-container-lifecycle -> origin/codex/docker-launcher-container-lifecycle
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3330394Z  * [new branch]          codex/draggable-left-panel-divider -> origin/codex/draggable-left-panel-divider
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3331152Z  * [new branch]          codex/dynamic-agent-team-runtime -> origin/codex/dynamic-agent-team-runtime
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3332063Z  * [new branch]          codex/electron-agent-prompt-file-resolution -> origin/codex/electron-agent-prompt-file-resolution
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3333758Z  * [new branch]          codex/electron-auto-update -> origin/codex/electron-auto-update
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3335219Z  * [new branch]          codex/electron-embedded-server-config-consistency -> origin/codex/electron-embedded-server-config-consistency
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3336931Z  * [new branch]          codex/electron-host-file-open -> origin/codex/electron-host-file-open
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3338319Z  * [new branch]          codex/electron-migration-packaging-recovery -> origin/codex/electron-migration-packaging-recovery
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3339840Z  * [new branch]          codex/embedded-browser-open-tab-investigation -> origin/codex/embedded-browser-open-tab-investigation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3341521Z  * [new branch]          codex/event-monitor-absolute-path-file-preview -> origin/codex/event-monitor-absolute-path-file-preview
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3343238Z  * [new branch]          codex/event-monitor-file-uri-internal-preview -> origin/codex/event-monitor-file-uri-internal-preview
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3344698Z  * [new branch]          codex/event-monitor-html-file-preview -> origin/codex/event-monitor-html-file-preview
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3346141Z  * [new branch]          codex/event-monitor-mermaid-error-layout-overflow -> origin/codex/event-monitor-mermaid-error-layout-overflow
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3347349Z  * [new branch]          codex/event-monitor-tool-text-ux -> origin/codex/event-monitor-tool-text-ux
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3348371Z  * [new branch]          codex/explicit-agent-provider-composition-and-scope-assembly -> origin/codex/explicit-agent-provider-composition-and-scope-assembly
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3349462Z  * [new branch]          codex/external-channel-receipt-state-machine -> origin/codex/external-channel-receipt-state-machine
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3350303Z  * [new branch]          codex/external-channel-sql-removal -> origin/codex/external-channel-sql-removal
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3351305Z  * [new branch]          codex/external-turn-reply-aggregation -> origin/codex/external-turn-reply-aggregation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3352138Z  * [new branch]          codex/featured-default-assistant -> origin/codex/featured-default-assistant
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3352851Z  * [new branch]          codex/file-based-agent-refactor -> origin/codex/file-based-agent-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3353544Z  * [new branch]          codex/file-tool-authorized-root -> origin/codex/file-tool-authorized-root
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3354226Z  * [new branch]          codex/fix-server-docker-build -> origin/codex/fix-server-docker-build
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3355044Z  * [new branch]          codex/flat-agent-organization-model-follow-up -> origin/codex/flat-agent-organization-model-follow-up
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3355970Z  * [new branch]          codex/flat-agent-team-domain-simplification -> origin/codex/flat-agent-team-domain-simplification
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3357188Z  * [new branch]          codex/focused-agent-interrupt-routing -> origin/codex/focused-agent-interrupt-routing
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3358107Z  * [new branch]          codex/frontend-agent-team-memory-visibility -> origin/codex/frontend-agent-team-memory-visibility
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3359001Z  * [new branch]          codex/frontend-file-explorer-context-menu -> origin/codex/frontend-file-explorer-context-menu
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3359821Z  * [new branch]          codex/frontend-responsive-ux-audit -> origin/codex/frontend-responsive-ux-audit
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3360597Z  * [new branch]          codex/gateway-dead-code-investigation -> origin/codex/gateway-dead-code-investigation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3361311Z  * [new branch]          codex/gemini-38-tts-upgrade -> origin/codex/gemini-38-tts-upgrade
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3362048Z  * [new branch]          codex/gemini-latest-image-model-support -> origin/codex/gemini-latest-image-model-support
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3362866Z  * [new branch]          codex/gemini-rpa-thinking-config-ts -> origin/codex/gemini-rpa-thinking-config-ts
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3363641Z  * [new branch]          codex/gemini-tts-voice-schema-audit -> origin/codex/gemini-tts-voice-schema-audit
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3364554Z  * [new branch]          codex/github-agent-package-import -> origin/codex/github-agent-package-import
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3365230Z  * [new branch]          codex/github-skill-sources -> origin/codex/github-skill-sources
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3365941Z  * [new branch]          codex/hide-middle-success-tool-label -> origin/codex/hide-middle-success-tool-label
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3367196Z  * [new branch]          codex/hierarchical-team-run-launch-config-recovery-20260824 -> origin/codex/hierarchical-team-run-launch-config-recovery-20260824
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3368239Z  * [new branch]          codex/historical-run-config-readonly-ux -> origin/codex/historical-run-config-readonly-ux
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3369189Z  * [new branch]          codex/imported-definition-editability-skill-import -> origin/codex/imported-definition-editability-skill-import
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3370169Z  * [new branch]          codex/incomplete-tool-call-resume-recovery -> origin/codex/incomplete-tool-call-resume-recovery
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3371054Z  * [new branch]          codex/instruction-panel-expand-collapse -> origin/codex/instruction-panel-expand-collapse
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3371875Z  * [new branch]          codex/intel-mac-terminal-prompt-hang -> origin/codex/intel-mac-terminal-prompt-hang
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3372593Z  * [new branch]          codex/intel-mac-zip-release -> origin/codex/intel-mac-zip-release
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3373400Z  * [new branch]          codex/investigate-ios-build-pipeline-failure -> origin/codex/investigate-ios-build-pipeline-failure
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3374261Z  * [new branch]          codex/ios-release-ui-test-flakiness -> origin/codex/ios-release-ui-test-flakiness
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3375096Z  * [new branch]          codex/isolated-app-parallel-control-ports -> origin/codex/isolated-app-parallel-control-ports
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3376107Z  * [new branch]          codex/kimi-highspeed-model-bug -> origin/codex/kimi-highspeed-model-bug
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3377072Z  * [new branch]          codex/kimi-tool-stream-visibility -> origin/codex/kimi-tool-stream-visibility
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3377897Z  * [new branch]          codex/linux-appimage-memory-dir-startup -> origin/codex/linux-appimage-memory-dir-startup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3378696Z  * [new branch]          codex/linux-appimage-prisma-erofs -> origin/codex/linux-appimage-prisma-erofs
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3379540Z  * [new branch]          codex/live-run-stream-reconnect-after-reload -> origin/codex/live-run-stream-reconnect-after-reload
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3380366Z  * [new branch]          codex/llm-runtime-real-compaction -> origin/codex/llm-runtime-real-compaction
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3381150Z  * [new branch]          codex/lmstudio-thinking-investigation -> origin/codex/lmstudio-thinking-investigation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3381967Z  * [new branch]          codex/logging-best-practice-refactor -> origin/codex/logging-best-practice-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3382723Z  * [new branch]          codex/mac-arm64-updater-signing -> origin/codex/mac-arm64-updater-signing
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3383510Z  * [new branch]          codex/mac-intel-desktop-release-pipeline -> origin/codex/mac-intel-desktop-release-pipeline
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3384402Z  * [new branch]          codex/mac-intel-prisma-engine-arch-mismatch -> origin/codex/mac-intel-prisma-engine-arch-mismatch
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3385292Z  * [new branch]          codex/managed-gateway-runtime-versioning -> origin/codex/managed-gateway-runtime-versioning
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3386139Z  * [new branch]          codex/mcp-circular-result-investigation -> origin/codex/mcp-circular-result-investigation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3387158Z  * [new branch]          codex/mcp-json-view-preview-save -> origin/codex/mcp-json-view-preview-save
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3387904Z  * [new branch]          codex/mcp-nullable-schema-mapping -> origin/codex/mcp-nullable-schema-mapping
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3388650Z  * [new branch]          codex/mcp-tool-exposure-docker -> origin/codex/mcp-tool-exposure-docker
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3389560Z  * [new branch]          codex/memory-sync-transparency-design -> origin/codex/memory-sync-transparency-design
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3390339Z  * [new branch]          codex/message-delivery-robustness -> origin/codex/message-delivery-robustness
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3391143Z  * [new branch]          codex/messaging-gateway-404-install-start -> origin/codex/messaging-gateway-404-install-start
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3392053Z  * [new branch]          codex/messaging-gateway-distribution-analysis -> origin/codex/messaging-gateway-distribution-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3393526Z  * [new branch]          codex/messaging-gateway-release-hotfix -> origin/codex/messaging-gateway-release-hotfix
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3394402Z  * [new branch]          codex/messaging-runtime-visibility -> origin/codex/messaging-runtime-visibility
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3395837Z  * [new branch]          codex/migration-startup-scope-recovery -> origin/codex/migration-startup-scope-recovery
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3397860Z  * [new branch]          codex/mixed-team-manager-simplification-analysis -> origin/codex/mixed-team-manager-simplification-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3399525Z  * [new branch]          codex/mobile-run-config-chat-flow -> origin/codex/mobile-run-config-chat-flow
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3400821Z  * [new branch]          codex/mobile-ux-simplification -> origin/codex/mobile-ux-simplification
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3401971Z  * [new branch]          codex/model-context-metadata -> origin/codex/model-context-metadata
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3403135Z  * [new branch]          codex/nested-team-row-expand -> origin/codex/nested-team-row-expand
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3404689Z  * [new branch]          codex/new-team-focused-member-message-routing -> origin/codex/new-team-focused-member-message-routing
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3406319Z  * [new branch]          codex/node-manager-tabs -> origin/codex/node-manager-tabs
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3407700Z  * [new branch]          codex/node-manager-ui-cleanup -> origin/codex/node-manager-ui-cleanup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3408922Z  * [new branch]          codex/offline-org-team-workspace -> origin/codex/offline-org-team-workspace
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3410144Z  * [new branch]          codex/optional-definition-avatar -> origin/codex/optional-definition-avatar
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3411363Z  * [new branch]          codex/org-history-startup-latency -> origin/codex/org-history-startup-latency
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3412719Z  * [new branch]          codex/org-history-startup-latency-reopen -> origin/codex/org-history-startup-latency-reopen
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3414211Z  * [new branch]          codex/org-member-switch-performance -> origin/codex/org-member-switch-performance
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3415056Z  * [new branch]          codex/org-owned-team-local-agent-loading -> origin/codex/org-owned-team-local-agent-loading
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3415865Z  * [new branch]          codex/org-run-config-performance -> origin/codex/org-run-config-performance
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3416622Z  * [new branch]          codex/persist-terminal-session-tabs -> origin/codex/persist-terminal-session-tabs
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3417627Z  * [new branch]          codex/personal-docker-setup -> origin/codex/personal-docker-setup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3418406Z  * [new branch]          codex/port-team-memory-layout-to-superrepo -> origin/codex/port-team-memory-layout-to-superrepo
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3419302Z  * [new branch]          codex/preview-session-multi-runtime-design -> origin/codex/preview-session-multi-runtime-design
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3420153Z  * [new branch]          codex/project-task-manager-foundations -> origin/codex/project-task-manager-foundations
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3421030Z  * [new branch]          codex/project-task-manager-linked-delegation -> origin/codex/project-task-manager-linked-delegation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3422222Z  * [new branch]          codex/project-testing-guideline -> origin/codex/project-testing-guideline
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3423617Z  * [new branch]          codex/projects-primary-nav-order -> origin/codex/projects-primary-nav-order
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3424763Z  * [new branch]          codex/provider-native-tool-history-rendering -> origin/codex/provider-native-tool-history-rendering
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3425667Z  * [new branch]          codex/publish-artifacts-plural-refactor -> origin/codex/publish-artifacts-plural-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3426523Z  * [new branch]          codex/read-media-file-tool-continuation -> origin/codex/read-media-file-tool-continuation
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3427665Z  * [new branch]          codex/readable-org-catalog-member-names -> origin/codex/readable-org-catalog-member-names
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3428512Z  * [new branch]          codex/release-server-dockerhub-publish -> origin/codex/release-server-dockerhub-publish
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3429371Z  * [new branch]          codex/remote-node-telegram-agent-delivery -> origin/codex/remote-node-telegram-agent-delivery
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3430239Z  * [new branch]          codex/remove-assistant-chunk-legacy-path -> origin/codex/remove-assistant-chunk-legacy-path
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3431135Z  * [new branch]          codex/remove-deprecated-deepseek-kimi-models -> origin/codex/remove-deprecated-deepseek-kimi-models
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3432003Z  * [new branch]          codex/remove-file-persistence-provider -> origin/codex/remove-file-persistence-provider
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3433005Z  * [new branch]          codex/remove-media-output-path-restriction -> origin/codex/remove-media-output-path-restriction
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3434125Z  * [new branch]          codex/remove-native-autobyteus-agent-team -> origin/codex/remove-native-autobyteus-agent-team
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3434921Z  * [new branch]          codex/remove-skill-access-mode -> origin/codex/remove-skill-access-mode
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3435610Z  * [new branch]          codex/remove-skills-page-header -> origin/codex/remove-skills-page-header
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3436447Z  * [new branch]          codex/remove-web-todo-panel -> origin/codex/remove-web-todo-panel
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3437651Z  * [new branch]          codex/restore-focused-progressive-markdown -> origin/codex/restore-focused-progressive-markdown
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3438545Z  * [new branch]          codex/retain-activity-after-termination -> origin/codex/retain-activity-after-termination
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3439605Z  * [new branch]          codex/revert-session-discovery-ui -> origin/codex/revert-session-discovery-ui
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3440391Z  * [new branch]          codex/right-panel-resizer-visibility -> origin/codex/right-panel-resizer-visibility
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3441588Z  * [new branch]          codex/rpa-gemini-include-thoughts-removal -> origin/codex/rpa-gemini-include-thoughts-removal
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3443060Z  * [new branch]          codex/rpa-llm-session-resume -> origin/codex/rpa-llm-session-resume
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3444530Z  * [new branch]          codex/rpa-visible-resume-prompt-cleanup -> origin/codex/rpa-visible-resume-prompt-cleanup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3446072Z  * [new branch]          codex/run-bash-posix-spawn-failure -> origin/codex/run-bash-posix-spawn-failure
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3447645Z  * [new branch]          codex/run-bash-tool-benchmarks -> origin/codex/run-bash-tool-benchmarks
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3448958Z  * [new branch]          codex/run-history-index-consistency -> origin/codex/run-history-index-consistency
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3450536Z  * [new branch]          codex/run-history-worktree-live-stream-loss -> origin/codex/run-history-worktree-live-stream-loss
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3452191Z  * [new branch]          codex/run-service-layering-refactor -> origin/codex/run-service-layering-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3453572Z  * [new branch]          codex/run-settings-ui-unification -> origin/codex/run-settings-ui-unification
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3454988Z  * [new branch]          codex/runtime-agent-tools-mcp-unification -> origin/codex/runtime-agent-tools-mcp-unification
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3456381Z  * [new branch]          codex/runtime-decoupling-refactor -> origin/codex/runtime-decoupling-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3458227Z  * [new branch]          codex/runtime-interrupt-functionality -> origin/codex/runtime-interrupt-functionality
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3459661Z  * [new branch]          codex/runtime-model-identifier-dropdown -> origin/codex/runtime-model-identifier-dropdown
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3461259Z  * [new branch]          codex/runtime-stop-cleanup-and-org-recovery -> origin/codex/runtime-stop-cleanup-and-org-recovery
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3462221Z  * [new branch]          codex/runtime-streaming-performance-followup -> origin/codex/runtime-streaming-performance-followup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3463196Z  * [new branch]          codex/runtime-termination-separation-of-concerns -> origin/codex/runtime-termination-separation-of-concerns
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3464079Z  * [new branch]          codex/runtime-work-transfer-analysis -> origin/codex/runtime-work-transfer-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3464909Z  * [new branch]          codex/self-evolve-agent-subject-naming -> origin/codex/self-evolve-agent-subject-naming
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3465753Z  * [new branch]          codex/self-evolving-harness-feasibility -> origin/codex/self-evolving-harness-feasibility
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3466569Z  * [new branch]          codex/send-message-global-run-routing -> origin/codex/send-message-global-run-routing
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3467643Z  * [new branch]          codex/server-docker-codex-claude-cli -> origin/codex/server-docker-codex-claude-cli
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3468724Z  * [new branch]          codex/server-docker-desktop-only-analysis -> origin/codex/server-docker-desktop-only-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3470240Z  * [new branch]          codex/server-docker-preinstalled-clis -> origin/codex/server-docker-preinstalled-clis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3471589Z  * [new branch]          codex/server-settings-applications-toggle-card -> origin/codex/server-settings-applications-toggle-card
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3472766Z  * [new branch]          codex/server-settings-basics-loading-fix -> origin/codex/server-settings-basics-loading-fix
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3473526Z  * [new branch]          codex/session-discovery-ui -> origin/codex/session-discovery-ui
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3474224Z  * [new branch]          codex/shared-work-trace-projection -> origin/codex/shared-work-trace-projection
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3475072Z  * [new branch]          codex/sidebar-team-icon-org-history-collapse -> origin/codex/sidebar-team-icon-org-history-collapse
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3476028Z  * [new branch]          codex/simplify-agent-workspace-to-path-string -> origin/codex/simplify-agent-workspace-to-path-string
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3477192Z  * [new branch]          codex/simplify-server-settings-cards -> origin/codex/simplify-server-settings-cards
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3477967Z  * [new branch]          codex/skill-access-mode-analysis -> origin/codex/skill-access-mode-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3478736Z  * [new branch]          codex/skill-load-guidance-global-only -> origin/codex/skill-load-guidance-global-only
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3479647Z  * [new branch]          codex/skill-prompt-absolute-paths -> origin/codex/skill-prompt-absolute-paths
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3480526Z  * [new branch]          codex/skill-source-reload -> origin/codex/skill-source-reload
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3481217Z  * [new branch]          codex/skill-source-removal-refresh -> origin/codex/skill-source-removal-refresh
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3482477Z  * [new branch]          codex/standalone-agent-run-root -> origin/codex/standalone-agent-run-root
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3483761Z  * [new branch]          codex/startup-performance -> origin/codex/startup-performance
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3485064Z  * [new branch]          codex/status-lifecycle-hardening -> origin/codex/status-lifecycle-hardening
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3486588Z  * [new branch]          codex/stopped-org-member-header-actions -> origin/codex/stopped-org-member-header-actions
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3488226Z  * [new branch]          codex/stopped-org-whole-config -> origin/codex/stopped-org-whole-config
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3489501Z  * [new branch]          codex/streamable-mcp-runtime-tools -> origin/codex/streamable-mcp-runtime-tools
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3490731Z  * [new branch]          codex/task-agent-identity-projection-refactor -> origin/codex/task-agent-identity-projection-refactor
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3491588Z  * [new branch]          codex/task-agent-peer-sidebar -> origin/codex/task-agent-peer-sidebar
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3492362Z  * [new branch]          codex/task-delegation-resource-lifecycle -> origin/codex/task-delegation-resource-lifecycle
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3493195Z  * [new branch]          codex/task-delegation-tool-io-shape -> origin/codex/task-delegation-tool-io-shape
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3493978Z  * [new branch]          codex/task-page-copy-simplification -> origin/codex/task-page-copy-simplification
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3494796Z  * [new branch]          codex/task-team-focused-member-messages -> origin/codex/task-team-focused-member-messages
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3495605Z  * [new branch]          codex/task-voice-success-cleanup -> origin/codex/task-voice-success-cleanup
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3496402Z  * [new branch]          codex/team-agent-instruction-composition -> origin/codex/team-agent-instruction-composition
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3497710Z  * [new branch]          codex/team-attachment-exact-execution -> origin/codex/team-attachment-exact-execution
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3498618Z  * [new branch]          codex/team-attachment-startup-recovery -> origin/codex/team-attachment-startup-recovery
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3499425Z  * [new branch]          codex/team-communication-white-gap -> origin/codex/team-communication-white-gap
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3500203Z  * [new branch]          codex/team-context-files-ui-disappear -> origin/codex/team-context-files-ui-disappear
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3500949Z  * [new branch]          codex/team-history-grouped-runs -> origin/codex/team-history-grouped-runs
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3501956Z  * [new branch]          codex/team-reload-stale-member-instructions -> origin/codex/team-reload-stale-member-instructions
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3502758Z  * [new branch]          codex/team-run-config-ui-retune -> origin/codex/team-run-config-ui-retune
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3503405Z  * [new branch]          codex/team-tasks-auto-open -> origin/codex/team-tasks-auto-open
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3504196Z  * [new branch]          codex/telegram-external-channel-outbound-reply -> origin/codex/telegram-external-channel-outbound-reply
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3505097Z  * [new branch]          codex/temp-team-selection-metadata-error -> origin/codex/temp-team-selection-metadata-error
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3505873Z  * [new branch]          codex/terminal-unicode-mojibake -> origin/codex/terminal-unicode-mojibake
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3506610Z  * [new branch]          codex/thinking-selector-auto-enable -> origin/codex/thinking-selector-auto-enable
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3508083Z  * [new branch]          codex/token-input-prompt-discrepancy-analysis -> origin/codex/token-input-prompt-discrepancy-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3509014Z  * [new branch]          codex/token-meter-team-member-focus -> origin/codex/token-meter-team-member-focus
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3509880Z  * [new branch]          codex/token-statistics-custom-provider-model -> origin/codex/token-statistics-custom-provider-model
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3510743Z  * [new branch]          codex/token-statistics-remove-header -> origin/codex/token-statistics-remove-header
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3511648Z  * [new branch]          codex/token-usage-ledger-drop-legacy-path-columns -> origin/codex/token-usage-ledger-drop-legacy-path-columns
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3512488Z  * [new branch]          codex/token-usage-pricing-ui -> origin/codex/token-usage-pricing-ui
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3513251Z  * [new branch]          codex/token-usage-transparency-analysis -> origin/codex/token-usage-transparency-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3514108Z  * [new branch]          codex/tolerant-flat-team-package-reading -> origin/codex/tolerant-flat-team-package-reading
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3514858Z  * [new branch]          codex/ui-mcp-gateway-polish -> origin/codex/ui-mcp-gateway-polish
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3516041Z  * [new branch]          codex/universal-application-framework-latest-personal-integration -> origin/codex/universal-application-framework-latest-personal-integration
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3517816Z  * [new branch]          codex/universal-application-framework-proposal-analysis -> origin/codex/universal-application-framework-proposal-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3519016Z  * [new branch]          codex/upgrade-electron-latest-stable -> origin/codex/upgrade-electron-latest-stable
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3519992Z  * [new branch]          codex/v1-3-46-release-artifact-hygiene -> origin/codex/v1-3-46-release-artifact-hygiene
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3520715Z  * [new branch]          codex/video-url-size-crash -> origin/codex/video-url-size-crash
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3521617Z  * [new branch]          codex/voice-input-audio-source-selection -> origin/codex/voice-input-audio-source-selection
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3522617Z  * [new branch]          codex/voice-input-bilingual-runtime -> origin/codex/voice-input-bilingual-runtime
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3523502Z  * [new branch]          codex/voice-input-extension-flow -> origin/codex/voice-input-extension-flow
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3524228Z  * [new branch]          codex/voice-input-mac-recording -> origin/codex/voice-input-mac-recording
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3525075Z  * [new branch]          codex/voice-recording-unexpected-stop-analysis -> origin/codex/voice-recording-unexpected-stop-analysis
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3526006Z  * [new branch]          codex/whole-skill-symlink-materialization -> origin/codex/whole-skill-symlink-materialization
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3527016Z  * [new branch]          codex/windows-prisma-sqlite-url -> origin/codex/windows-prisma-sqlite-url
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3527995Z  * [new branch]          codex/windows-prisma-url-regression -> origin/codex/windows-prisma-url-regression
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3529525Z  * [new branch]          codex/workspace-run-config-ui-simplification -> origin/codex/workspace-run-config-ui-simplification
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3530984Z  * [new branch]          codex/xml-tool-array-parser-fix -> origin/codex/xml-tool-array-parser-fix
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3532026Z  * [new branch]          enterprise              -> origin/enterprise
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3532840Z  * [new branch]          personal                -> origin/personal
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3534003Z  * [new branch]          requirements/collaboration-follow-up-fixes -> origin/requirements/collaboration-follow-up-fixes
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3535558Z  * [new branch]          requirements/stopped-run-compatible-model -> origin/requirements/stopped-run-compatible-model
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3536861Z  * [new tag]             v1.1.10                 -> v1.1.10
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3537593Z  * [new tag]             v1.1.11                 -> v1.1.11
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3538311Z  * [new tag]             v1.1.11-rc1             -> v1.1.11-rc1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3539024Z  * [new tag]             v1.1.12                 -> v1.1.12
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3539772Z  * [new tag]             v1.1.13                 -> v1.1.13
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3540191Z  * [new tag]             v1.1.14                 -> v1.1.14
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3540589Z  * [new tag]             v1.1.15                 -> v1.1.15
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3541338Z  * [new tag]             v1.1.16                 -> v1.1.16
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3542099Z  * [new tag]             v1.1.17                 -> v1.1.17
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3542851Z  * [new tag]             v1.1.18                 -> v1.1.18
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3543589Z  * [new tag]             v1.1.19                 -> v1.1.19
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3544299Z  * [new tag]             v1.1.9                  -> v1.1.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3545006Z  * [new tag]             v1.2.0                  -> v1.2.0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3545708Z  * [new tag]             v1.2.1                  -> v1.2.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3546412Z  * [new tag]             v1.2.10                 -> v1.2.10
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3547535Z  * [new tag]             v1.2.100                -> v1.2.100
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3548248Z  * [new tag]             v1.2.11                 -> v1.2.11
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3548945Z  * [new tag]             v1.2.12                 -> v1.2.12
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3549636Z  * [new tag]             v1.2.13                 -> v1.2.13
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3550321Z  * [new tag]             v1.2.14                 -> v1.2.14
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3551004Z  * [new tag]             v1.2.15                 -> v1.2.15
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3551701Z  * [new tag]             v1.2.16                 -> v1.2.16
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3552396Z  * [new tag]             v1.2.17                 -> v1.2.17
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3553085Z  * [new tag]             v1.2.18                 -> v1.2.18
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3553775Z  * [new tag]             v1.2.19                 -> v1.2.19
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3554455Z  * [new tag]             v1.2.2                  -> v1.2.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3555120Z  * [new tag]             v1.2.20                 -> v1.2.20
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3555794Z  * [new tag]             v1.2.21                 -> v1.2.21
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3556464Z  * [new tag]             v1.2.22                 -> v1.2.22
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3557316Z  * [new tag]             v1.2.23                 -> v1.2.23
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3558247Z  * [new tag]             v1.2.24                 -> v1.2.24
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3558935Z  * [new tag]             v1.2.25                 -> v1.2.25
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3559615Z  * [new tag]             v1.2.26                 -> v1.2.26
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3560320Z  * [new tag]             v1.2.26-rc1             -> v1.2.26-rc1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3561037Z  * [new tag]             v1.2.26-rc2             -> v1.2.26-rc2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3561746Z  * [new tag]             v1.2.26-rc3             -> v1.2.26-rc3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3562442Z  * [new tag]             v1.2.27                 -> v1.2.27
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3563310Z  * [new tag]             v1.2.28                 -> v1.2.28
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3563991Z  * [new tag]             v1.2.29                 -> v1.2.29
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3564667Z  * [new tag]             v1.2.3                  -> v1.2.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3565330Z  * [new tag]             v1.2.30                 -> v1.2.30
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3565996Z  * [new tag]             v1.2.31                 -> v1.2.31
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3566662Z  * [new tag]             v1.2.32                 -> v1.2.32
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3567745Z  * [new tag]             v1.2.33                 -> v1.2.33
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3569011Z  * [new tag]             v1.2.34                 -> v1.2.34
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3570034Z  * [new tag]             v1.2.35                 -> v1.2.35
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3571173Z  * [new tag]             v1.2.36                 -> v1.2.36
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3571652Z  * [new tag]             v1.2.37                 -> v1.2.37
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3572071Z  * [new tag]             v1.2.38                 -> v1.2.38
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3572452Z  * [new tag]             v1.2.39                 -> v1.2.39
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3572837Z  * [new tag]             v1.2.4                  -> v1.2.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3573217Z  * [new tag]             v1.2.40                 -> v1.2.40
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3573595Z  * [new tag]             v1.2.41                 -> v1.2.41
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3573970Z  * [new tag]             v1.2.42                 -> v1.2.42
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3574348Z  * [new tag]             v1.2.43                 -> v1.2.43
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3574721Z  * [new tag]             v1.2.44                 -> v1.2.44
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3575099Z  * [new tag]             v1.2.45                 -> v1.2.45
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3575481Z  * [new tag]             v1.2.46                 -> v1.2.46
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3575857Z  * [new tag]             v1.2.47                 -> v1.2.47
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3576231Z  * [new tag]             v1.2.48                 -> v1.2.48
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3576610Z  * [new tag]             v1.2.49                 -> v1.2.49
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3577724Z  * [new tag]             v1.2.5                  -> v1.2.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3578133Z  * [new tag]             v1.2.50                 -> v1.2.50
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3578533Z  * [new tag]             v1.2.52                 -> v1.2.52
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3578925Z  * [new tag]             v1.2.53                 -> v1.2.53
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3579321Z  * [new tag]             v1.2.54                 -> v1.2.54
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3579707Z  * [new tag]             v1.2.55                 -> v1.2.55
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3580109Z  * [new tag]             v1.2.56                 -> v1.2.56
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3580486Z  * [new tag]             v1.2.57                 -> v1.2.57
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3580863Z  * [new tag]             v1.2.58                 -> v1.2.58
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3581242Z  * [new tag]             v1.2.59                 -> v1.2.59
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3581633Z  * [new tag]             v1.2.6                  -> v1.2.6
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3582019Z  * [new tag]             v1.2.60                 -> v1.2.60
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3582411Z  * [new tag]             v1.2.61                 -> v1.2.61
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3582797Z  * [new tag]             v1.2.62                 -> v1.2.62
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3583178Z  * [new tag]             v1.2.63                 -> v1.2.63
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3583553Z  * [new tag]             v1.2.64                 -> v1.2.64
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3583929Z  * [new tag]             v1.2.65                 -> v1.2.65
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3584306Z  * [new tag]             v1.2.66                 -> v1.2.66
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3584682Z  * [new tag]             v1.2.67                 -> v1.2.67
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3585058Z  * [new tag]             v1.2.68                 -> v1.2.68
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3585433Z  * [new tag]             v1.2.69                 -> v1.2.69
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3585816Z  * [new tag]             v1.2.7                  -> v1.2.7
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3586343Z  * [new tag]             v1.2.70                 -> v1.2.70
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3586726Z  * [new tag]             v1.2.71                 -> v1.2.71
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3587282Z  * [new tag]             v1.2.72                 -> v1.2.72
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3587660Z  * [new tag]             v1.2.73                 -> v1.2.73
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3588294Z  * [new tag]             v1.2.74                 -> v1.2.74
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3588690Z  * [new tag]             v1.2.75                 -> v1.2.75
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3589067Z  * [new tag]             v1.2.76                 -> v1.2.76
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3589444Z  * [new tag]             v1.2.77                 -> v1.2.77
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3589818Z  * [new tag]             v1.2.78                 -> v1.2.78
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3590194Z  * [new tag]             v1.2.79                 -> v1.2.79
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3590583Z  * [new tag]             v1.2.8                  -> v1.2.8
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3590978Z  * [new tag]             v1.2.80                 -> v1.2.80
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3591357Z  * [new tag]             v1.2.81                 -> v1.2.81
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3591741Z  * [new tag]             v1.2.82                 -> v1.2.82
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3592113Z  * [new tag]             v1.2.83                 -> v1.2.83
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3592483Z  * [new tag]             v1.2.84                 -> v1.2.84
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3592860Z  * [new tag]             v1.2.85                 -> v1.2.85
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3593236Z  * [new tag]             v1.2.86                 -> v1.2.86
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3593606Z  * [new tag]             v1.2.87                 -> v1.2.87
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3593978Z  * [new tag]             v1.2.88                 -> v1.2.88
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3594350Z  * [new tag]             v1.2.89                 -> v1.2.89
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3594724Z  * [new tag]             v1.2.9                  -> v1.2.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3595096Z  * [new tag]             v1.2.90                 -> v1.2.90
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3595473Z  * [new tag]             v1.2.91                 -> v1.2.91
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3596017Z  * [new tag]             v1.2.92                 -> v1.2.92
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3596394Z  * [new tag]             v1.2.93                 -> v1.2.93
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3596981Z  * [new tag]             v1.2.94                 -> v1.2.94
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3597728Z  * [new tag]             v1.2.95                 -> v1.2.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3598393Z  * [new tag]             v1.2.96                 -> v1.2.96
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3598819Z  * [new tag]             v1.2.97                 -> v1.2.97
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3599196Z  * [new tag]             v1.2.98                 -> v1.2.98
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3599771Z  * [new tag]             v1.2.99                 -> v1.2.99
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3600166Z  * [new tag]             v1.3.0                  -> v1.3.0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3600545Z  * [new tag]             v1.3.1                  -> v1.3.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3601148Z  * [new tag]             v1.3.10                 -> v1.3.10
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3601534Z  * [new tag]             v1.3.11                 -> v1.3.11
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3602061Z  * [new tag]             v1.3.12                 -> v1.3.12
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3602504Z  * [new tag]             v1.3.13                 -> v1.3.13
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3602882Z  * [new tag]             v1.3.14                 -> v1.3.14
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3603450Z  * [new tag]             v1.3.15                 -> v1.3.15
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3603844Z  * [new tag]             v1.3.16                 -> v1.3.16
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3604222Z  * [new tag]             v1.3.17                 -> v1.3.17
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3604793Z  * [new tag]             v1.3.18                 -> v1.3.18
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3605185Z  * [new tag]             v1.3.19                 -> v1.3.19
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3605642Z  * [new tag]             v1.3.2                  -> v1.3.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3606152Z  * [new tag]             v1.3.20                 -> v1.3.20
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3606965Z  * [new tag]             v1.3.21                 -> v1.3.21
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3607487Z  * [new tag]             v1.3.22                 -> v1.3.22
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3607874Z  * [new tag]             v1.3.23                 -> v1.3.23
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3608445Z  * [new tag]             v1.3.24                 -> v1.3.24
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3608845Z  * [new tag]             v1.3.25                 -> v1.3.25
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3609234Z  * [new tag]             v1.3.26                 -> v1.3.26
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3609809Z  * [new tag]             v1.3.27                 -> v1.3.27
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3610195Z  * [new tag]             v1.3.28                 -> v1.3.28
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3610674Z  * [new tag]             v1.3.29                 -> v1.3.29
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3611147Z  * [new tag]             v1.3.3                  -> v1.3.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3611539Z  * [new tag]             v1.3.30                 -> v1.3.30
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3612137Z  * [new tag]             v1.3.31                 -> v1.3.31
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3612545Z  * [new tag]             v1.3.32                 -> v1.3.32
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3612936Z  * [new tag]             v1.3.33                 -> v1.3.33
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3613518Z  * [new tag]             v1.3.34                 -> v1.3.34
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3613906Z  * [new tag]             v1.3.35                 -> v1.3.35
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3614384Z  * [new tag]             v1.3.36                 -> v1.3.36
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3614860Z  * [new tag]             v1.3.37                 -> v1.3.37
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3615240Z  * [new tag]             v1.3.38                 -> v1.3.38
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3615790Z  * [new tag]             v1.3.39                 -> v1.3.39
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3616192Z  * [new tag]             v1.3.4                  -> v1.3.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3616580Z  * [new tag]             v1.3.40                 -> v1.3.40
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3617287Z  * [new tag]             v1.3.41                 -> v1.3.41
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3617688Z  * [new tag]             v1.3.42                 -> v1.3.42
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3618179Z  * [new tag]             v1.3.43                 -> v1.3.43
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3618848Z  * [new tag]             v1.3.44                 -> v1.3.44
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3619289Z  * [new tag]             v1.3.45                 -> v1.3.45
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3619828Z  * [new tag]             v1.3.46                 -> v1.3.46
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3620210Z  * [new tag]             v1.3.47                 -> v1.3.47
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3620719Z  * [new tag]             v1.3.48                 -> v1.3.48
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3621170Z  * [new tag]             v1.3.49                 -> v1.3.49
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3621557Z  * [new tag]             v1.3.5                  -> v1.3.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3622122Z  * [new tag]             v1.3.50                 -> v1.3.50
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3622518Z  * [new tag]             v1.3.51                 -> v1.3.51
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3622919Z  * [new tag]             v1.3.52                 -> v1.3.52
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3623487Z  * [new tag]             v1.3.53                 -> v1.3.53
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3623881Z  * [new tag]             v1.3.54                 -> v1.3.54
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3624356Z  * [new tag]             v1.3.55                 -> v1.3.55
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3624846Z  * [new tag]             v1.3.56                 -> v1.3.56
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3625229Z  * [new tag]             v1.3.57                 -> v1.3.57
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3625795Z  * [new tag]             v1.3.58                 -> v1.3.58
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3626189Z  * [new tag]             v1.3.59                 -> v1.3.59
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3626565Z  * [new tag]             v1.3.6                  -> v1.3.6
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3627280Z  * [new tag]             v1.3.60                 -> v1.3.60
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3627669Z  * [new tag]             v1.3.61                 -> v1.3.61
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3628164Z  * [new tag]             v1.3.62                 -> v1.3.62
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3628777Z  * [new tag]             v1.3.63                 -> v1.3.63
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3629215Z  * [new tag]             v1.3.64                 -> v1.3.64
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3629741Z  * [new tag]             v1.3.65                 -> v1.3.65
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3630125Z  * [new tag]             v1.3.66                 -> v1.3.66
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3630647Z  * [new tag]             v1.3.67                 -> v1.3.67
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3631047Z  * [new tag]             v1.3.68                 -> v1.3.68
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3631420Z  * [new tag]             v1.3.69                 -> v1.3.69
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3631963Z  * [new tag]             v1.3.7                  -> v1.3.7
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3632360Z  * [new tag]             v1.3.70                 -> v1.3.70
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3632732Z  * [new tag]             v1.3.71                 -> v1.3.71
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3633274Z  * [new tag]             v1.3.72                 -> v1.3.72
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3633675Z  * [new tag]             v1.3.73                 -> v1.3.73
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3634189Z  * [new tag]             v1.3.74                 -> v1.3.74
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3634616Z  * [new tag]             v1.3.75                 -> v1.3.75
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3635002Z  * [new tag]             v1.3.76                 -> v1.3.76
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3635552Z  * [new tag]             v1.3.77                 -> v1.3.77
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3635939Z  * [new tag]             v1.3.78                 -> v1.3.78
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3636316Z  * [new tag]             v1.3.79                 -> v1.3.79
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3636988Z  * [new tag]             v1.3.8                  -> v1.3.8
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3637389Z  * [new tag]             v1.3.80                 -> v1.3.80
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3638023Z  * [new tag]             v1.3.81                 -> v1.3.81
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3638417Z  * [new tag]             v1.3.82                 -> v1.3.82
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3638794Z  * [new tag]             v1.3.83                 -> v1.3.83
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3639380Z  * [new tag]             v1.3.84                 -> v1.3.84
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3639763Z  * [new tag]             v1.3.85                 -> v1.3.85
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3640317Z  * [new tag]             v1.3.86                 -> v1.3.86
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3640910Z  * [new tag]             v1.3.87                 -> v1.3.87
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3641304Z  * [new tag]             v1.3.88                 -> v1.3.88
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3641694Z  * [new tag]             v1.3.89                 -> v1.3.89
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3642079Z  * [new tag]             v1.3.9                  -> v1.3.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3642458Z  * [new tag]             v1.3.90                 -> v1.3.90
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3642987Z  * [new tag]             v1.3.91                 -> v1.3.91
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3643428Z  * [new tag]             v1.3.92                 -> v1.3.92
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3643813Z  * [new tag]             v1.3.93                 -> v1.3.93
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3644202Z  * [new tag]             v1.3.94                 -> v1.3.94
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3644577Z  * [new tag]             v1.3.95                 -> v1.3.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3644958Z  * [new tag]             v1.3.96                 -> v1.3.96
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3645343Z  * [new tag]             v1.3.97                 -> v1.3.97
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3645721Z  * [new tag]             v1.3.98                 -> v1.3.98
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3646093Z  * [new tag]             v1.3.99                 -> v1.3.99
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3646470Z  * [new tag]             v1.4.0                  -> v1.4.0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3647152Z  * [new tag]             v1.4.1                  -> v1.4.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3647558Z  * [new tag]             v1.4.10                 -> v1.4.10
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3647940Z  * [new tag]             v1.4.11                 -> v1.4.11
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3648321Z  * [new tag]             v1.4.12                 -> v1.4.12
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3648702Z  * [new tag]             v1.4.13                 -> v1.4.13
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3649293Z  * [new tag]             v1.4.14                 -> v1.4.14
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3649672Z  * [new tag]             v1.4.15                 -> v1.4.15
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3650056Z  * [new tag]             v1.4.16                 -> v1.4.16
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3650432Z  * [new tag]             v1.4.17                 -> v1.4.17
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3650806Z  * [new tag]             v1.4.18                 -> v1.4.18
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3651178Z  * [new tag]             v1.4.19                 -> v1.4.19
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3651552Z  * [new tag]             v1.4.2                  -> v1.4.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3651927Z  * [new tag]             v1.4.20                 -> v1.4.20
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3652309Z  * [new tag]             v1.4.21                 -> v1.4.21
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3652682Z  * [new tag]             v1.4.22                 -> v1.4.22
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3653052Z  * [new tag]             v1.4.23                 -> v1.4.23
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3653428Z  * [new tag]             v1.4.24                 -> v1.4.24
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3653807Z  * [new tag]             v1.4.25                 -> v1.4.25
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3654405Z  * [new tag]             v1.4.26                 -> v1.4.26
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3654792Z  * [new tag]             v1.4.27                 -> v1.4.27
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3655169Z  * [new tag]             v1.4.28                 -> v1.4.28
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3655549Z  * [new tag]             v1.4.29                 -> v1.4.29
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3655926Z  * [new tag]             v1.4.3                  -> v1.4.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3656306Z  * [new tag]             v1.4.30                 -> v1.4.30
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3656680Z  * [new tag]             v1.4.31                 -> v1.4.31
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3657212Z  * [new tag]             v1.4.32                 -> v1.4.32
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3657592Z  * [new tag]             v1.4.33                 -> v1.4.33
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3657965Z  * [new tag]             v1.4.34                 -> v1.4.34
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3658356Z  * [new tag]             v1.4.35                 -> v1.4.35
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3658742Z  * [new tag]             v1.4.36                 -> v1.4.36
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3659282Z  * [new tag]             v1.4.37                 -> v1.4.37
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3659656Z  * [new tag]             v1.4.38                 -> v1.4.38
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3660030Z  * [new tag]             v1.4.39                 -> v1.4.39
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3660405Z  * [new tag]             v1.4.4                  -> v1.4.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3660787Z  * [new tag]             v1.4.40                 -> v1.4.40
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3661160Z  * [new tag]             v1.4.41                 -> v1.4.41
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3661536Z  * [new tag]             v1.4.42                 -> v1.4.42
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3661910Z  * [new tag]             v1.4.43                 -> v1.4.43
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3662284Z  * [new tag]             v1.4.44                 -> v1.4.44
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3662671Z  * [new tag]             v1.4.45                 -> v1.4.45
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3663061Z  * [new tag]             v1.4.46                 -> v1.4.46
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3663443Z  * [new tag]             v1.4.47                 -> v1.4.47
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3663818Z  * [new tag]             v1.4.48                 -> v1.4.48
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3664197Z  * [new tag]             v1.4.49                 -> v1.4.49
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3664575Z  * [new tag]             v1.4.5                  -> v1.4.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3664954Z  * [new tag]             v1.4.50                 -> v1.4.50
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3665335Z  * [new tag]             v1.4.51                 -> v1.4.51
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3665716Z  * [new tag]             v1.4.52                 -> v1.4.52
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3666093Z  * [new tag]             v1.4.53                 -> v1.4.53
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3666481Z  * [new tag]             v1.4.54                 -> v1.4.54
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3667002Z  * [new tag]             v1.4.55                 -> v1.4.55
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3667717Z  * [new tag]             v1.4.56                 -> v1.4.56
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3668128Z  * [new tag]             v1.4.57                 -> v1.4.57
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3668513Z  * [new tag]             v1.4.58                 -> v1.4.58
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3668888Z  * [new tag]             v1.4.59                 -> v1.4.59
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3669265Z  * [new tag]             v1.4.6                  -> v1.4.6
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3669649Z  * [new tag]             v1.4.60                 -> v1.4.60
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3670021Z  * [new tag]             v1.4.61                 -> v1.4.61
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3670391Z  * [new tag]             v1.4.62                 -> v1.4.62
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3670763Z  * [new tag]             v1.4.63                 -> v1.4.63
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3671175Z  * [new tag]             v1.4.64                 -> v1.4.64
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3671554Z  * [new tag]             v1.4.65                 -> v1.4.65
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3671932Z  * [new tag]             v1.4.66                 -> v1.4.66
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3672312Z  * [new tag]             v1.4.67                 -> v1.4.67
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3672698Z  * [new tag]             v1.4.68                 -> v1.4.68
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3673069Z  * [new tag]             v1.4.69                 -> v1.4.69
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3673448Z  * [new tag]             v1.4.7                  -> v1.4.7
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3673828Z  * [new tag]             v1.4.70                 -> v1.4.70
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3674204Z  * [new tag]             v1.4.71                 -> v1.4.71
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3674578Z  * [new tag]             v1.4.72                 -> v1.4.72
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3674953Z  * [new tag]             v1.4.73                 -> v1.4.73
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3675328Z  * [new tag]             v1.4.74                 -> v1.4.74
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3675701Z  * [new tag]             v1.4.75                 -> v1.4.75
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3676083Z  * [new tag]             v1.4.76                 -> v1.4.76
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3676468Z  * [new tag]             v1.4.77                 -> v1.4.77
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3677154Z  * [new tag]             v1.4.78                 -> v1.4.78
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3677746Z  * [new tag]             v1.4.79                 -> v1.4.79
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3678137Z  * [new tag]             v1.4.8                  -> v1.4.8
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3678519Z  * [new tag]             v1.4.80                 -> v1.4.80
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3678904Z  * [new tag]             v1.4.81                 -> v1.4.81
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3679280Z  * [new tag]             v1.4.82                 -> v1.4.82
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3679655Z  * [new tag]             v1.4.83                 -> v1.4.83
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3680041Z  * [new tag]             v1.4.84                 -> v1.4.84
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3680421Z  * [new tag]             v1.4.85                 -> v1.4.85
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3680794Z  * [new tag]             v1.4.86                 -> v1.4.86
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3681171Z  * [new tag]             v1.4.87                 -> v1.4.87
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3681555Z  * [new tag]             v1.4.88                 -> v1.4.88
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3681940Z  * [new tag]             v1.4.89                 -> v1.4.89
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3682323Z  * [new tag]             v1.4.9                  -> v1.4.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3682704Z  * [new tag]             v1.4.90                 -> v1.4.90
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3683088Z  * [new tag]             v1.4.91                 -> v1.4.91
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3683487Z  * [new tag]             v1.4.91-beta.1          -> v1.4.91-beta.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3683914Z  * [new tag]             v1.4.91-beta.10         -> v1.4.91-beta.10
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3684342Z  * [new tag]             v1.4.91-beta.2          -> v1.4.91-beta.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3684756Z  * [new tag]             v1.4.91-beta.3          -> v1.4.91-beta.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3685166Z  * [new tag]             v1.4.91-beta.4          -> v1.4.91-beta.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3685574Z  * [new tag]             v1.4.91-beta.5          -> v1.4.91-beta.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3686112Z  * [new tag]             v1.4.91-beta.6          -> v1.4.91-beta.6
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3686530Z  * [new tag]             v1.4.91-beta.7          -> v1.4.91-beta.7
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3687102Z  * [new tag]             v1.4.91-beta.8          -> v1.4.91-beta.8
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3687513Z  * [new tag]             v1.4.91-beta.9          -> v1.4.91-beta.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3687908Z  * [new tag]             v1.4.92                 -> v1.4.92
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3688309Z  * [new tag]             v1.4.92-beta.1          -> v1.4.92-beta.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3688733Z  * [new tag]             v1.4.92-beta.10         -> v1.4.92-beta.10
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3689155Z  * [new tag]             v1.4.92-beta.11         -> v1.4.92-beta.11
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3689571Z  * [new tag]             v1.4.92-beta.12         -> v1.4.92-beta.12
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3689985Z  * [new tag]             v1.4.92-beta.2          -> v1.4.92-beta.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3690406Z  * [new tag]             v1.4.92-beta.3          -> v1.4.92-beta.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3690816Z  * [new tag]             v1.4.92-beta.4          -> v1.4.92-beta.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3691225Z  * [new tag]             v1.4.92-beta.5          -> v1.4.92-beta.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3691634Z  * [new tag]             v1.4.92-beta.6          -> v1.4.92-beta.6
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3692046Z  * [new tag]             v1.4.92-beta.7          -> v1.4.92-beta.7
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3692458Z  * [new tag]             v1.4.92-beta.8          -> v1.4.92-beta.8
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3692865Z  * [new tag]             v1.4.92-beta.9          -> v1.4.92-beta.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3693262Z  * [new tag]             v1.4.93                 -> v1.4.93
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3693663Z  * [new tag]             v1.4.93-beta.1          -> v1.4.93-beta.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3694294Z  * [new tag]             v1.4.93-beta.2          -> v1.4.93-beta.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3694701Z  * [new tag]             v1.4.94                 -> v1.4.94
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3695107Z  * [new tag]             v1.4.94-beta.1          -> v1.4.94-beta.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3695522Z  * [new tag]             v1.4.94-beta.2          -> v1.4.94-beta.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3696089Z  * [new tag]             v1.4.94-beta.3          -> v1.4.94-beta.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3696495Z  * [new tag]             v1.4.94-beta.4          -> v1.4.94-beta.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3697064Z  * [new tag]             v1.4.94-beta.5          -> v1.4.94-beta.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3697475Z  * [new tag]             v1.4.95                 -> v1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3697870Z  * [new tag]             v1.4.95-beta.1          -> v1.4.95-beta.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3698280Z  * [new tag]             v1.4.95-beta.2          -> v1.4.95-beta.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3698692Z  * [new tag]             v1.4.95-beta.3          -> v1.4.95-beta.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3699110Z  * [new tag]             v1.4.95-beta.4          -> v1.4.95-beta.4
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3699518Z  * [new tag]             v1.4.95-beta.5          -> v1.4.95-beta.5
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3699936Z  * [new tag]             v1.4.95-beta.6          -> v1.4.95-beta.6
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3700355Z  * [new tag]             v1.4.95-beta.7          -> v1.4.95-beta.7
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3700770Z  * [new tag]             v1.4.95-beta.8          -> v1.4.95-beta.8
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3701173Z  * [new tag]             v1.4.95-beta.9          -> v1.4.95-beta.9
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3701710Z  * [new tag]             v2026.02.26-personal-desktop-e2e.1 -> v2026.02.26-personal-desktop-e2e.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3702363Z  * [new tag]             v2026.02.26-personal-desktop-e2e.2 -> v2026.02.26-personal-desktop-e2e.2
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3702989Z  * [new tag]             v2026.02.26-personal-desktop-e2e.3 -> v2026.02.26-personal-desktop-e2e.3
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3703545Z  * [new tag]             voice-runtime-v0.1.0    -> voice-runtime-v0.1.0
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3704020Z  * [new tag]             voice-runtime-v0.1.1    -> voice-runtime-v0.1.1
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3705536Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3706132Z ##[group]Determining the checkout info
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3706551Z [command]/usr/bin/git branch --list --remote origin/v1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3707483Z [command]/usr/bin/git tag --list v1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3707813Z v1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3708548Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3708855Z [command]/usr/bin/git sparse-checkout disable
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3709696Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3710655Z ##[group]Checking out the ref
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:37.3711063Z [command]/usr/bin/git checkout --progress --force refs/tags/v1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.4525354Z Updating files:  16% (8912/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.5385330Z Updating files:  17% (9235/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.6095407Z Updating files:  18% (9778/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.7086434Z Updating files:  19% (10321/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.7686211Z Updating files:  20% (10865/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.8263391Z Updating files:  21% (11408/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:38.9425495Z Updating files:  22% (11951/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.0340777Z Updating files:  23% (12494/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.1177982Z Updating files:  24% (13038/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.3165777Z Updating files:  25% (13581/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.3850987Z Updating files:  26% (14124/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.4169490Z Updating files:  27% (14667/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.7180201Z Updating files:  27% (14942/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.7645649Z Updating files:  28% (15210/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:39.9284107Z Updating files:  29% (15754/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.0101667Z Updating files:  30% (16297/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.2090875Z Updating files:  31% (16840/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.2940798Z Updating files:  32% (17383/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.3742054Z Updating files:  33% (17926/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.4096007Z Updating files:  34% (18470/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.4219274Z Updating files:  35% (19013/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.4571147Z Updating files:  35% (19076/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.6693186Z Updating files:  36% (19556/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.7453441Z Updating files:  37% (20099/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.8411283Z Updating files:  38% (20642/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:40.9815128Z Updating files:  39% (21186/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.0805230Z Updating files:  40% (21729/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.1859707Z Updating files:  41% (22272/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.3508627Z Updating files:  42% (22815/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.4169802Z Updating files:  43% (23359/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.5924209Z Updating files:  43% (23509/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.6748965Z Updating files:  44% (23902/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.7382854Z Updating files:  45% (24445/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.8005319Z Updating files:  46% (24988/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.8989372Z Updating files:  47% (25531/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:41.9603605Z Updating files:  48% (26075/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.0700838Z Updating files:  49% (26618/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.1439542Z Updating files:  50% (27161/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.2554459Z Updating files:  51% (27704/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.3216316Z Updating files:  52% (28247/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.4034911Z Updating files:  53% (28791/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.4168996Z Updating files:  54% (29334/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.5130167Z Updating files:  54% (29399/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.5824215Z Updating files:  55% (29877/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.6689322Z Updating files:  56% (30420/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.8272350Z Updating files:  57% (30963/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:42.9149891Z Updating files:  58% (31507/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.0204506Z Updating files:  59% (32050/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.0949860Z Updating files:  60% (32593/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.1651822Z Updating files:  61% (33136/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.3099498Z Updating files:  62% (33680/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.4086201Z Updating files:  63% (34223/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.4169386Z Updating files:  64% (34766/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.5397456Z Updating files:  64% (34791/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.6082397Z Updating files:  65% (35309/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.7299306Z Updating files:  66% (35852/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.8691406Z Updating files:  67% (36396/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:43.9899276Z Updating files:  68% (36939/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.0395366Z Updating files:  69% (37482/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.0921013Z Updating files:  70% (38025/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.1410951Z Updating files:  71% (38568/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.1855767Z Updating files:  72% (39112/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.2390191Z Updating files:  73% (39655/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.3107429Z Updating files:  74% (40198/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.4288276Z Updating files:  75% (40741/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.4315530Z Updating files:  75% (41256/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.4954893Z Updating files:  76% (41284/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.5789613Z Updating files:  77% (41828/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.6472189Z Updating files:  78% (42371/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.7801070Z Updating files:  79% (42914/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.9059776Z Updating files:  80% (43457/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:44.9952323Z Updating files:  81% (44001/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.1194674Z Updating files:  82% (44544/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.2112293Z Updating files:  83% (45087/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.4137682Z Updating files:  84% (45630/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.4168821Z Updating files:  85% (46173/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.4797161Z Updating files:  85% (46217/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.5476076Z Updating files:  86% (46717/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.7411998Z Updating files:  87% (47260/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:45.9439841Z Updating files:  88% (47803/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.0695355Z Updating files:  89% (48346/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.2081998Z Updating files:  90% (48889/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.2910838Z Updating files:  91% (49433/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.4170795Z Updating files:  92% (49976/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.4315439Z Updating files:  92% (50395/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.5676552Z Updating files:  93% (50519/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.6814221Z Updating files:  94% (51062/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.7990180Z Updating files:  95% (51605/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:46.9486084Z Updating files:  96% (52149/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.0369632Z Updating files:  97% (52692/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.1153883Z Updating files:  98% (53235/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2110045Z Updating files:  99% (53778/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2110609Z Updating files: 100% (54321/54321)
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2111024Z Updating files: 100% (54321/54321), done.
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2759073Z Note: switching to 'refs/tags/v1.4.95'.
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2759480Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2760017Z You are in 'detached HEAD' state. You can look around, make experimental
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2760842Z changes and commit them, and you can discard any commits you make in this
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2761620Z state without impacting any branches by switching back to a branch.
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2762089Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2762401Z If you want to create a new branch to retain commits you create, you may
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2763109Z do so (now or later) by using -c with the switch command. Example:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2763504Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2763673Z   git switch -c <new-branch-name>
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2763931Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2764090Z Or undo this operation with:
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2764334Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2764473Z   git switch -
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2764659Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2764979Z Turn off this advice by setting config variable advice.detachedHead to false
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2765441Z 
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2765778Z HEAD is now at 334438b5a chore(release): bump workspace release version to 1.4.95
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2947391Z ##[endgroup]
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.2991255Z [command]/usr/bin/git log -1 --format=%H
+Publish Android APK To GitHub Release	Checkout workspace	2026-10-06T19:48:47.3022361Z 334438b5ac6b84caa6e109b2b5b6867f7b66370b
+Publish Android APK To GitHub Release	Download Android APK artifact	﻿2026-10-06T19:48:47.3262789Z ##[group]Run actions/download-artifact@v4
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3263111Z with:
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3263307Z   name: android-apk
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3263703Z   path: release-artifacts
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3263953Z   merge-multiple: false
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3264226Z   repository: AutoByteus/autobyteus-workspace
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3264516Z   run-id: 37521238492
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.3264727Z ##[endgroup]
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.4728704Z Downloading single artifact
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.4873546Z (node:2335) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.4874307Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.5828739Z Preparing to download the following artifacts:
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.5830062Z - android-apk (ID: 11441026848, Size: 1764806, Expected Digest: sha256:8eb19b64fdc45dedef6294637720c71de55e3de74c29a4a970723eec3579da11)
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.7078460Z Redirecting to blob download url: https://productionresultssa5.blob.core.windows.net/actions-results/23e74dd9-af52-80b2-a024-2f14eee89f92/workflow-job-run-ce1a811c-6339-5fbd-aec0-1df9c8a5b870/artifacts/a83f47babea2729ab3d2776417b0cab96b60592e69b7b3810d03a990079646c9.zip
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.7080290Z Starting download of artifact to: /home/runner/work/autobyteus-workspace/autobyteus-workspace/release-artifacts
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.7955831Z (node:2335) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.8496560Z SHA256 digest of downloaded artifact is 8eb19b64fdc45dedef6294637720c71de55e3de74c29a4a970723eec3579da11
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.8497513Z Artifact download completed successfully.
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.8497840Z Total of 1 artifact(s) downloaded
+Publish Android APK To GitHub Release	Download Android APK artifact	2026-10-06T19:48:47.8503831Z Download artifact has finished successfully
+Publish Android APK To GitHub Release	Validate publishable APK artifact	﻿2026-10-06T19:48:47.8629221Z ##[group]Run set -euo pipefail
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8629653Z [36;1mset -euo pipefail[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8630162Z [36;1mrelease_apk_count="$(find release-artifacts -type f -name '*-release.apk' | wc -l | tr -d ' ')"[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8630927Z [36;1mdebug_apk_count="$(find release-artifacts -type f -name '*-debug.apk' | wc -l | tr -d ' ')"[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8631433Z [36;1mif [[ "$release_apk_count" != "1" ]]; then[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8631926Z [36;1m  echo "::error::Expected exactly one signed release APK artifact, found $release_apk_count."[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8632465Z [36;1m  find release-artifacts -maxdepth 2 -type f -print[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8632806Z [36;1m  exit 1[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8633010Z [36;1mfi[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8633241Z [36;1mif [[ "$debug_apk_count" != "0" ]]; then[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8633825Z [36;1m  echo "::error::Debug APK artifact found in publish-enabled run; debug APKs must not be uploaded to GitHub Releases."[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8634481Z [36;1m  find release-artifacts -maxdepth 2 -type f -print[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8634811Z [36;1m  exit 1[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8635012Z [36;1mfi[0m
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8883168Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Publish Android APK To GitHub Release	Validate publishable APK artifact	2026-10-06T19:48:47.8883596Z ##[endgroup]
+Publish Android APK To GitHub Release	Resolve release notes mode	﻿2026-10-06T19:48:47.9076241Z ##[group]Run set -euo pipefail
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9076635Z [36;1mset -euo pipefail[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9077342Z [36;1mCURATED_PATH=".github/release-notes/release-notes.md"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9077865Z [36;1m# Same rule as the desktop workflow, which writes the same GitHub release:[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9078457Z [36;1m# pre-release tags use generated notes, not the previous stable's curated notes.[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9078935Z [36;1mif [[ "$RELEASE_TAG" == *-* ]]; then[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9079302Z [36;1m  echo "has_curated_notes=false" >> "$GITHUB_OUTPUT"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9079643Z [36;1m  {[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9079883Z [36;1m    echo "### Release notes mode"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9080177Z [36;1m    echo ""[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9080534Z [36;1m    echo "Pre-release tag \`$RELEASE_TAG\`; using generated GitHub notes."[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9080959Z [36;1m  } >> "$GITHUB_STEP_SUMMARY"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9081548Z [36;1melif [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9082050Z [36;1m  echo "has_curated_notes=true" >> "$GITHUB_OUTPUT"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9082482Z [36;1m  echo "release_notes_path=$CURATED_PATH" >> "$GITHUB_OUTPUT"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9082848Z [36;1m  {[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9083095Z [36;1m    echo "### Release notes mode"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9083386Z [36;1m    echo ""[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9083706Z [36;1m    echo "Using curated release notes from \`$CURATED_PATH\`."[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9084093Z [36;1m  } >> "$GITHUB_STEP_SUMMARY"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9084373Z [36;1melse[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9084650Z [36;1m  echo "has_curated_notes=false" >> "$GITHUB_OUTPUT"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9084989Z [36;1m  {[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9085224Z [36;1m    echo "### Release notes mode"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9085521Z [36;1m    echo ""[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9085999Z [36;1m    echo "Curated release notes file missing in the tagged revision; falling back to generated GitHub notes."[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9086560Z [36;1m  } >> "$GITHUB_STEP_SUMMARY"[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9087133Z [36;1mfi[0m
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9152657Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9153033Z env:
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9153252Z   RELEASE_TAG: v1.4.95
+Publish Android APK To GitHub Release	Resolve release notes mode	2026-10-06T19:48:47.9153498Z ##[endgroup]
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	﻿2026-10-06T19:48:47.9385989Z ##[group]Run softprops/action-gh-release@v2
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9386314Z with:
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9386512Z   tag_name: v1.4.95
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387103Z   target_commitish: 334438b5ac6b84caa6e109b2b5b6867f7b66370b
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387462Z   draft: false
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387677Z   prerelease: false
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9387937Z   body_path: .github/release-notes/release-notes.md
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9388336Z   files: release-artifacts/*.apk
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	release-artifacts/*.apk.sha256
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9388703Z   overwrite_files: true
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9391145Z   token: ***
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:47.9391359Z ##[endgroup]
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:48.2425890Z 👩‍🏭 Creating new GitHub release for tag v1.4.95 using commit "334438b5ac6b84caa6e109b2b5b6867f7b66370b"...
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:48:56.3905311Z Release 405086037 is not yet discoverable by tag v1.4.95, retrying... (2 retries remaining)
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:49:00.6896108Z ⬆️ Uploading AutoByteus_personal_android-1.4.95-release.apk...
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:49:00.6898646Z ⬆️ Uploading AutoByteus_personal_android-1.4.95-release.apk.sha256...
+Publish Android APK To GitHub Release	Publish Android APK asset with curated notes	2026-10-06T19:49:07.6854664Z ✅ Uploaded AutoByteus_personal_android-1.4.95-release.apk.sha256
+Publish Android APK To GitHub Release	Post Checkout workspace	﻿2026-10-06T19:49:07.7153730Z Post job cleanup.
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8036289Z [command]/usr/bin/git version
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8080181Z git version 2.55.0
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8120352Z Temporarily overriding HOME='/home/runner/work/_temp/ed19a93d-2d7f-4437-8802-e4178c525324' before making global git config changes
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8121998Z Adding repository directory to the temporary git global config as a safe directory
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8126621Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/autobyteus-workspace/autobyteus-workspace
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8166403Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8201870Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8507136Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8528432Z http.https://github.com/.extraheader
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8543568Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8576277Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8890808Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Publish Android APK To GitHub Release	Post Checkout workspace	2026-10-06T19:49:07.8934609Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Publish Android APK To GitHub Release	Complete job	﻿2026-10-06T19:49:07.9379918Z Cleaning up orphan processes
+Publish Android APK To GitHub Release	Complete job	2026-10-06T19:49:07.9652331Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, softprops/action-gh-release@v2. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

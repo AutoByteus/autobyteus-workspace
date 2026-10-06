@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-10-06T19:57:25.641567+00:00",
+  "classification": "Delivery-local publication recovery",
+  "runId": 37521238492,
+  "failedJobId": 112468202672,
+  "finding": "Metadata validation and APK build/artifact validation succeeded. Publish action uploaded checksum but APK upload/publish failed, leaving release405086037 draft; tag lookup404 while draft. Full logs/API/check annotations retained; exact cause not proved.",
+  "action": "gh run rerun 37521238492 --repo AutoByteus/autobyteus-workspace --job 112468202672",
+  "scope": "Retry only failed publisher for existing tag/SHA and same built APK artifact. No re-tag/new release/version/manual full dispatch/source workaround.",
+  "commandExit": 0,
+  "result": "Completed / success",
+  "outcomeEvidence": "android-recovery-final.json and android-recovery-log.txt",
+  "rootCause": "Not proved; publication retry succeeded with same source/tag/APK artifact and no workaround"
+}
