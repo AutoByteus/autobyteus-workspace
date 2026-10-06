@@ -16,6 +16,8 @@
   "branch_and_tag_push": "Completed",
   "duplicate_dispatch": false,
   "workflow_count": 4,
-  "publication": "Pending workflow completion",
-  "cleanup": "Pending publication verification"
+  "publication": "Completed; all four workflows success",
+  "cleanup": "Completed; all task-owned workspaces/branches removed",
+  "latest_receipt_at": "2026-10-06T09:49:23.795771+00:00",
+  "authoritative_reports": "release-deployment-report.md; rollout-verification.json; cleanup.json"
 }

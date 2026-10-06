@@ -1,72 +1,91 @@
 # Delivery / Release / Deployment Report — remove-built-in-project-task-manager
 
-## Scope / Current Status
+## Scope And Status
 
-**DR-003: User acceptance and repository finalization Completed; NEW BETA v1.4.95-beta.5 tag pushed. Hosted publication/rollout verification in progress.**
-`task_size=Medium`, `architectural_risk=High`, full independent-review route. Finalization target `origin/personal`. No stable release authorized.
+**DR-003: Delivery Completed. Explicit user acceptance, repository finalization, beta publication/rollout verification and all safe cleanup gates Completed.**
+Classification unchanged: `task_size=Medium`, `architectural_risk=High`, full independent-review route. Target `origin/personal`; user requested one NEW BETA, not stable.
 
-## Cumulative Basis / Docs
+## Cumulative Authority / Docs Sync
 
-SR-001 approved requirements, SR-002 design, ARCH-REV-001 Pass, IR-001 (`62af418df`), CRR-001 source Pass (9.5/10), API-REV-001 Pass (95.7%), CRR-002 test-code Pass. Existing cumulative ticket archived to `tickets/done/remove-built-in-project-task-manager` before final commit. Handoff `handoff-summary.md`; docs `docs-sync-report.md`; revision history `delivery-revision-record.md`.
-Long-lived docs: server README, server/web Projects docs, TESTING.md (implementation), `autobyteus-server-ts/docs/modules/agent_definition.md` (Delivery retirement rule). Final integrated docs recheck Pass; no additional long-lived change required.
+SR-001 approved requirements, SR-002 design, ARCH-REV-001 Pass, IR-001 (`62af418df`), CRR-001 source Pass 9.5/10, API-REV-001 Pass 95.7%, CRR-002 test-code Pass. DR-001/DR-002 retained in `delivery-revision-record.md`. Full package in `tickets/done/remove-built-in-project-task-manager`; terminal manifest lists durable artifacts. Historical upstream in-progress paths refer to archived same-named artifacts, not additional missing gates.
+`handoff-summary.md`, `docs-sync-report.md`, `user-verification-record.md`, `release-notes.md` are the current authorities.
+Long-lived docs: server README, server/web Projects docs and TESTING.md (implementation); server `docs/modules/agent_definition.md` retirement rule (Delivery). Final integrated docs recheck Pass; no further long-lived doc change required. AC-010 satisfied.
 
-## Integration And Verification
+## Integration / Validation
 
-- DR-001: checkpoint be480b5fb, merge f928bfed3 of db39803d4; build/369 server/57 web tests Pass.
-- DR-002: checkpoint db77f6035, merge 0f66ad7a0 of f777a6559; build/390 server/57 web tests Pass (3 opt-in AGY cases skipped); explicit acceptance pending then.
-- DR-003 after acceptance: protect DR-002 edits in checkpoint `0171eb2dc`; merge `eb6941349` of `origin/personal@4e66fce54`; no conflicts. Base later advanced by ticket receipts only to `8e9f855a9`, merged as `526bac6a3`.
-- New base member-hydration package has no removal-specific server/migration/registry/mirror/Projects doc overlap; no material removal behavior change, no renewed user acceptance required.
+- DR-001: checkpoint be480b5fb, merge f928bfed3 of db39803d4; build/369 server/57 web Pass.
+- DR-002: checkpoint db77f6035, merge 0f66ad7a0 of f777a6559; build/390 server/57 web Pass; 3 opt-in new-base AGY cases skipped, not claimed tested. Verification hold then.
+- DR-003: protect DR-002 delivery edits in checkpoint `0171eb2dc`; merge `eb6941349` of target `4e66fce54`; later receipts-only target `8e9f855a9` merged as `526bac6a3`. No conflicts. No removal-specific server/migration/registry/mirror/Projects doc overlap; no material removal behavior change, no renewed verification needed.
 - `pnpm -C autobyteus-server-ts build`: Pass incl. sanitized bootstrap smoke (`delivery-evidence/dr-003/build.log`).
-- `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts tests/unit/app-data-migrations tests/integration/app-data-migrations tests/unit/built-in-agents --no-watch`: 55 files / 369 tests Pass, 0 skipped; startup removal E2E 4/4 (`server.log`).
+- `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts tests/unit/app-data-migrations tests/integration/app-data-migrations tests/unit/built-in-agents --no-watch`: 55 files / 369 tests Pass, 0 skipped; startup E2E 4/4 (`server.log`).
 - `pnpm -C autobyteus-web test:nuxt utils/agents utils/collaborators stores/__tests__/runHistoryStore.spec.ts services/runHydration/__tests__/memberRunStateHydration.spec.ts --run`: 5 files / 64 tests Pass (`web.log`).
 - After receipts-only merge: `node autobyteus-server-ts/scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs`: Pass (`smoke-final.log`).
 - `python3 scripts/check_repository_artifact_hygiene.py`: Pass (`hygiene.log`).
-- Exact candidate/base receipts: `delivery-evidence/dr-003/verification.json`. Docs edits only after integration/checks.
+- Exact integrated candidate/base/checks: `delivery-evidence/dr-003/verification.json`. Docs edits only after integration/checks.
 
-## User Verification
+## Explicit User Verification Acceptance
 
-`user-verification-record.md`: After being asked whether to accept documented automated checks and proceed, user answered **“now finalize and release a new beta”** on 2026-10-06. This is acceptance of the stated evidence, NOT personal app testing. DR-002 hold resolved. No renewed verification required for unrelated reviewed hydration package/ticket receipts.
+`user-verification-record.md`: User answered the explicit verification-acceptance question with **“now finalize and release a new beta”** on 2026-10-06. This accepts the documented automated/API/E2E basis. No personal user app testing is claimed. DR-002 hold resolved; no renewed acceptance required for unrelated reviewed hydration changes/receipt-only refresh.
 
-## Repository Finalization / Archive
+## Ticket Archive And Repository Finalization
 
-- Ticket moved to done before final commit: Yes (this archive operation).
-- Ticket branch `codex/remove-built-in-project-task-manager`; final commit/push pending this archive commit.
-- Target personal updated in isolated clean clone `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager-finalization`; unrelated dirty main checkout untouched.
-- Required sequence: ticket commit/push, refresh target, merge ticket into personal, push personal.
-- Final merge/push receipt: Pending.
+- Ticket moved from in-progress to done before final commit: Completed.
+- Final ticket/archive commit `5a4e17da0c159bdfe367b7e09c9fa98d94c580f2`, pushed to `codex/remove-built-in-project-task-manager`.
+- Clean isolated personal clone updated to checked target `8e9f855a931d9bf3479107548785610658a81430`.
+- --no-ff merge `3ecf5100897ba25e085258c24d37290d66ab9d00`, tree identical to ticket; personal push Completed.
+- Order honored: ticket commit/push → target update → merge → target push. No application changes after accepted integration.
+- Shared main checkout refreshed with --ff-only, preserving unrelated dirty path set and tracked dirty diff (`delivery-evidence/dr-003/main-refresh.json`). No unrelated work staged/overwritten.
+- Repository receipt: `delivery-evidence/dr-003/repository-release-receipt.json`; final operational outcomes below supersede its intermediate pending fields.
 
-## Version / Release / Rollout
+## New Beta Version / Tag / Release
 
-- Applicable: Yes, one NEW BETA via `bash scripts/desktop-release.sh beta` on clean finalized personal.
-- Tag/version/release commit: Pending; helper recomputes next unused beta.
-- Single tag-push set of Desktop/Android/iOS/Server Docker workflows; no manual duplicate dispatch.
-- Notes artifact: `tickets/done/remove-built-in-project-task-manager/release-notes.md`; beta helper deliberately uses generated notes (no curated argument). Archived notes retained for durable product context/next stable.
-- Publication/rollout: Pending verification of workflow outcomes, non-draft prerelease, nonempty assets and updater versions. No separate environment deployment requested.
+- Exactly one `bash scripts/desktop-release.sh beta` from clean finalized personal. No stable release or duplicate manual dispatch.
+- Version `1.4.95-beta.5`; release commit `0dd5722d7ee4473361831a4bbabf5ad125bcb20c`.
+- Annotated tag `v1.4.95-beta.5`, tag object `1795ef258b33db277ce41dce0b51913f14ded30d`, resolves to release commit; package and tag match. Branch and tag pushes Completed.
+- Logs: `beta-release.log`, `final-merge.log` under `delivery-evidence/dr-003/`.
+- Archived notes: `tickets/done/remove-built-in-project-task-manager/release-notes.md`. Beta helper intentionally takes no curated-notes argument; hosted jobs used generated notes. Archived functional/upgrade notes retained for product context/next stable. No misuse of stable notes path.
 
-## Post-Finalization Cleanup
+## Hosted Publication / Rollout Verification
 
-Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager`, local/remote ticket branches, finalization clone: retained until finalization/publication safely complete. SDK dist is regenerated untracked build output, excluded from commit. Tests own/clean their temp data/processes; user's app/data untouched.
+All four single tag-triggered workflows **success**:
 
-## Data Transition / Rollback / Limits
+| Workflow | Run | Outcome |
+| --- | --- | --- |
+| Desktop Release | 37441073748 | Success (Linux x64/ARM64, Windows x64, macOS ARM64/Intel, GitHub publication) |
+| Android APK Release | 37441073844 | Success (signed APK publication) |
+| iOS App Store Connect Release | 37441073741 | Success (build/tests and TestFlight upload) |
+| Server Docker Release | 37441073732 | Success (multi-arch image publication and beta channel) |
 
-Approved DEC-001 A: startup migration `20261006_remove_built_in_project_task_manager` removes only retired built-in folder once without backup; missing skipped, failed deletion nonblocking/retried next startup (STARTUP_ONLY per reviewed REC-001). No operator data edit. History readable but not continuable; Projects/Tasks/repository PTM/other agents unchanged.
-API E-001..004, TMP-001 cross-version upgrade, TMP-002 browser old-run behavior, negative control 4/4 expected failures; current startup E2E re-passed 4/4.
-Rollback: revert finalized merge and cut a new beta; never move immutable published tag. Code rollback does not restore deleted folder; older builds re-create template on startup.
-Limits: packaged Electron shell not exercised locally, no personal tests claimed, prior unrelated TS6059 not rechecked, downgrade unsupported. Hosted publication is not actual user device/auto-update proof.
+- GitHub https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.95-beta.5 is non-draft, prerelease, published 2026-10-06T09:14:30Z; 17 nonempty assets (`github-release.json`).
+- Downloaded updater metadata `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml` all say `version: 1.4.95-beta.5` (`updater-metadata/`).
+- GitHub stable latest remains `v1.4.94` (`stable-feed.json`).
+- Docker `autobyteus/autobyteus-server:1.4.95-beta.5` and `:beta` share index digest `sha256:0adcedd1b8e4878bb10b75263e1c0e93f970ad544e092a7f1d5bb076844b8600`; linux/amd64 and linux/arm64 manifests verified (`docker-version-manifest.txt`, `docker-beta-manifest.txt`).
+- Workflow and rollout receipts: `workflows-final.json`, `workflow-watch.jsonl`, `*-final.json`, `docker-publish.log`, `rollout-verification.json`.
+- No separate environment deployment requested. Hosted publication verified; actual user-device install, live auto-update and final public App Store approval are not claimed/required here.
+
+## Safe Cleanup
+
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager`: Removed/pruned after confirming HEAD `5a4e17da0` is in origin/personal. Only untracked regenerated SDK dist folders discarded; no uncommitted source/docs lost.
+- Local and remote `codex/remove-built-in-project-task-manager`: Deleted after safe merge/publication.
+- Tests' owned processes/temp data cleaned; no user app/data touched. No preview app was started by Delivery.
+- Finalization clone `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager-finalization`: Removed after confirming clean HEAD `d526e3f27` was pushed and present in personal; main refreshed first with unrelated dirty paths/diff unchanged. Actual completed cleanup receipt: `delivery-evidence/dr-003/cleanup.json`.
+
+## Data Transition / Rollback / Residual Limits
+
+Approved DEC-001 A: required registered startup migration `20261006_remove_built_in_project_task_manager` deletes only retired built-in folder once, no backup; missing skipped, failed deletion nonblocking/retried next startup (STARTUP_ONLY per reviewed REC-001). No manual user-data mutation. History readable but not continuable; Projects/Tasks/repository PTM/other agents unchanged.
+API E-001..004, TMP-001 real cross-version upgrade, TMP-002 browser old-run journey and 4/4 expected negative-control failures; current startup E2E 4/4 re-passed.
+Rollback: revert merge on personal and cut a new beta; never move/delete published tag. Code rollback does not restore folder; an older build re-creates its template on next start.
+Limits: packaged shell not interactively exercised locally; no personal user tests claimed; prior unrelated TS6059 not rechecked; downgrade unsupported. CI packaging checks and publication are separate evidence, not a user-device test.
 
 ## Final Gate Status
 
-- Explicit user acceptance: Completed.
+- Explicit user verification acceptance: Completed.
 - Repository finalization: Completed.
-- Release/publication/rollout: Tag/version pushed; hosted workflows in progress.
-- Safe ticket/branch/finalization-clone cleanup: Pending.
-- Delivery Completed terminal return: Not yet eligible.
+- Applicable release/publication/rollout: Completed.
+- Safe ticket worktree/branches cleanup: Completed.
+- Finalization-clone cleanup: Completed.
+- Delivery Completed terminal return: Eligible; required handoff prepared for rule-based return. The actual send tool confirms delivery, not this pre-send artifact.
 
-## Authoritative Repository / Tag Receipts
+## Durable Completion Receipt
 
-- Archive/final ticket commit `5a4e17da0c159bdfe367b7e09c9fa98d94c580f2`, ticket push Completed.
-- Updated clean personal to checked `8e9f855a9`; merged --no-ff as `3ecf5100897ba25e085258c24d37290d66ab9d00`; merge tree identical to ticket; personal push Completed.
-- `bash scripts/desktop-release.sh beta` run exactly once on clean finalized personal. Release commit `0dd5722d7ee4473361831a4bbabf5ad125bcb20c`; package `1.4.95-beta.5`; annotated tag `v1.4.95-beta.5` (`1795ef258b33db277ce41dce0b51913f14ded30d`) resolves to release commit. Branch/tag pushes Completed. No stable tag and no duplicate dispatch.
-- Single tag-triggered runs: Desktop 37441073748, Android 37441073844, iOS 37441073741, Docker 37441073732. All currently in progress; not yet certified publication.
-- Receipts: `delivery-evidence/dr-003/repository-release-receipt.json`, `beta-release.log`, `final-merge.log`, `workflows-initial.json`. Earlier pending fields describe pre-finalization plan and are superseded by this section.
-- Cleanup/Delivery Completed remain gated on applicable publication/rollout verification.
+All owning delivery worktrees/clones and local/remote ticket branches removed. Durable artifacts live under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/`; `delivery-evidence/dr-003/cumulative-package.json` enumerates the full reviewed chain, authoritative delivery reports and retained evidence. Repository/tag/publication/cleanup receipts are authoritative. Final receipt-only edits do not alter released application source or require a second beta. No unresolved blocker; result **Delivery Completed**. Terminal message supplies final pushed receipt-commit SHA after this commit is made; no self-referential SHA or premature sent claim is fabricated.
