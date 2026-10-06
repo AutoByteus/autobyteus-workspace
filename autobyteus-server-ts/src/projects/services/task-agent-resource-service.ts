@@ -97,6 +97,13 @@ export class TaskAgentResourceService {
     }
     return [...groups.values()];
   }
+  /** Closed agent runs of every readable Task hosted by the root (the in-memory view; damaged Tasks are not in it). */
+  closedAgentRunsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
+    const key = rootExecutionIdentityKey(hostRoot);
+    return [...this.files.values()].flatMap(({ file }) => file.agentRunResources
+      .filter(entry => entry.closedAt !== null && rootExecutionIdentityKey(entry.hostRoot) === key)
+      .map(entry => entry.agentRun));
+  }
   async currentAssignments(taskId: string): Promise<TaskAssignment[] | "unavailable"> {
     await this.load();
     if (this.damaged.has(taskId)) return "unavailable";

@@ -11,6 +11,8 @@ import type { CollaboratorEntry } from "../../run-history/domain/run-execution-t
 export type StandaloneRootEvent =
   | Readonly<{ kind: "agent_presentation"; execution: CollaborationMemberExecutionIdentity; message: AgentPresentationMessage }>
   | Readonly<{ kind: "task_execution_started"; host: TaskExecutionHostIdentity; taskExecution: TaskExecutionReference }>
+  /** These task executions' Task became DONE; published before they are stopped. */
+  | Readonly<{ kind: "task_executions_closed"; taskExecutions: readonly TaskExecutionReference[] }>
   | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessageV1 }>
   | Readonly<{ kind: "collaborator_added"; collaborator: CollaboratorEntry }>
   | Readonly<{ kind: "lifecycle"; isActive: boolean }>;

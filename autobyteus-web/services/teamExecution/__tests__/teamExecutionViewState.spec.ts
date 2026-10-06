@@ -1,3 +1,4 @@
+import type { TaskExecutionReference } from '~/utils/collaboration/taskExecutionClosure';
 import { describe, expect, it } from 'vitest';
 import { computed, isReactive, toRaw } from 'vue';
 import type {
@@ -92,6 +93,7 @@ const config = (executionTree: TeamRunExecutionTreeDto) => createTeamConfigurati
 const createStateFixture = (input: {
   rootActive?: boolean;
   executionTree?: TeamRunExecutionTreeDto;
+  closedTaskExecutions?: readonly TaskExecutionReference[];
   initialFocusedAgentRunId?: string;
 } = {}) => {
   const initialTree = input.executionTree ?? tree();
@@ -106,7 +108,7 @@ const createStateFixture = (input: {
   ]));
   const dynamicallyCreatedContexts = new Map<string, AgentContext>();
   const state = createTeamExecutionViewState({
-    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree,
+    rootTeamRunId: 'root-team-1', rootActive: input.rootActive ?? true, executionTree: initialTree, closedTaskExecutions: input.closedTaskExecutions ?? [],
     messages: [], configuration: config(initialTree),
     initialFocusedAgentRunId: input.initialFocusedAgentRunId ?? 'teacher-run',
     agentContexts: initial.map(([agentRunId, memberAddress]) => ({
@@ -270,11 +272,11 @@ describe('TeamExecutionViewState', () => {
       status('student-run', '/StudentStudyGroup/Student', AgentStatus.Idle),
     ];
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, execution_tree: executionTree,
+      root_team_run_id: 'root-team-1', base_change_sequence: 3, closed_task_executions: [], execution_tree: executionTree,
       messages: [], agent_input_states: [], agent_statuses: configuredStatuses,
     } })).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, execution_tree: executionTree,
+      root_team_run_id: 'root-team-1', base_change_sequence: 3, closed_task_executions: [], execution_tree: executionTree,
       messages: [], agent_input_states: [], agent_statuses: [...configuredStatuses, status('dormant-student-run', '/StudentStudyGroup/Student', AgentStatus.Offline)],
     } })).toMatchObject({ disposition: 'applied' });
     expect(state.getAgentContext('dormant-student-run')?.state.currentStatus).toBe(AgentStatus.Offline);
@@ -302,7 +304,7 @@ describe('TeamExecutionViewState', () => {
     const invalidSnapshot = {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
       payload: {
-        root_team_run_id: 'foreign-root', base_change_sequence: 9, execution_tree: beforeTree,
+        root_team_run_id: 'foreign-root', base_change_sequence: 9, closed_task_executions: [], execution_tree: beforeTree,
         messages: [], agent_input_states: [], agent_statuses: [],
       },
     };
@@ -319,7 +321,7 @@ describe('TeamExecutionViewState', () => {
     const snapshot = state.applySnapshot({
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
       payload: {
-        root_team_run_id: 'root-team-1', base_change_sequence: 4, execution_tree: tree(),
+        root_team_run_id: 'root-team-1', base_change_sequence: 4, closed_task_executions: [], execution_tree: tree(),
         messages: [],
         agent_input_states: [], agent_statuses: [
           { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
@@ -367,7 +369,7 @@ describe('TeamExecutionViewState', () => {
       payload: {
         root_team_run_id: 'root-team-1',
         base_change_sequence: 7,
-        execution_tree: relocatedTree,
+        closed_task_executions: [], execution_tree: relocatedTree,
         messages: [],
         agent_input_states: [], agent_statuses: [
           {

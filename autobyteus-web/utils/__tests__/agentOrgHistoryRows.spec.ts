@@ -7,7 +7,7 @@ type OrgTree = AgentOrgRunHistoryItem['executionTree']
 
 const runFor = (tree: OrgTree): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-  createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree,
+  createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
 })
 
 const fixtureTree = () => structuredClone(taskBearingView().execution_tree) as OrgTree

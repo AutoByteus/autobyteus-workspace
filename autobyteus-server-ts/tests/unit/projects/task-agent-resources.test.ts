@@ -192,6 +192,35 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     await recovered.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
   });
 
+  it("closedAgentRunsIn answers a root's closed runs from the view: per host root, after restart and delete, never for a damaged Task", async () => {
+    const a = await tasks.createTask({ projectId, description: "A" });
+    const b = await tasks.createTask({ projectId, description: "B" });
+    const c = await tasks.createTask({ projectId, description: "C" });
+    await tasks.linkAgentRun({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, agentRun: { teamRunId: "a-team" }, coordinatorAgentRunId: "a-lead" });
+    await tasks.linkAgentRun({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, agentRun: { agentRunId: "a-sub" } });
+    await tasks.linkAgentRun({ role: "broughtIn", creator: { teamRunId: "a-team" }, hostRoot, agentRun: { agentRunId: "a-helper" } });
+    await assign(b.taskId, "b-worker");
+    await assign(c.taskId, "c-elsewhere", otherRoot);
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([]);
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
+    await tasks.updateTask({ projectId, taskId: c.taskId, status: "DONE" });
+    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
+    expect(tasks.closedAgentRunsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
+    // Reopen and delegate again: the old runs stay closed, the new one is open.
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
+    await assign(a.taskId, "a-new");
+    await tasks.deleteTask({ projectId, taskId: a.taskId });
+    const restarted = await boot();
+    expect(restarted.closedAgentRunsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
+    // A damaged Task contributes nothing (its runs stay listed) and the read never throws.
+    await fs.writeFile(layout.agentRunResourcesFile(projectId, a.taskId), "{ truncated");
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const damaged = await boot();
+    expect(() => damaged.closedAgentRunsIn(hostRoot)).not.toThrow();
+    expect(damaged.closedAgentRunsIn(hostRoot)).toEqual([]);
+    expect(damaged.closedAgentRunsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
+  });
+
   it("serializes assignment linking and DONE per Task, without blocking other Tasks", async () => {
     const service = new TaskAgentResourceService(new TaskAgentResourceStore(layout));
     const gate = latch(), order: string[] = [];

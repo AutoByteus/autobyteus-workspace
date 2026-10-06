@@ -54,6 +54,7 @@ function fixture(kind: RootKind) {
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async ref => committed.has('agentRunId' in ref ? ref.agentRunId : '')
       ? { accepted: true } : { accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' }),
     taskExecutionChainFor: agentRunId => committed.has(agentRunId) ? [{ agentRunId }] : [],
+    containsTaskExecution: ref => committed.has('agentRunId' in ref ? ref.agentRunId : ''), publishTaskExecutionsClosed: vi.fn(),
     isLive: () => false, assertRestorableChain: () => undefined, restoreChain: async () => undefined, tryShutDownIfQuiet: async () => false,
   };
   const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskAgentResources: resources });

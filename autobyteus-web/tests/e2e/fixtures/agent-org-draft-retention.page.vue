@@ -94,7 +94,7 @@ const createOrgView = (
 ): AgentOrgExecutionViewDto => ({
   base_change_sequence: 0,
   is_active: false,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org',
     createdAt: NOW,
     archivedAt: null,

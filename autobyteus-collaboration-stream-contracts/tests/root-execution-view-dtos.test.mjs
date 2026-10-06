@@ -38,6 +38,7 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
         taskExecutions: [],
       },
     },
+    closed_task_executions: [],
     task_records: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", records: [] },
     communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] },
     agent_statuses: [],

@@ -23,6 +23,8 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import type { MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { flushMicrotasks, observeConfiguredHandles } from "../agent-org-execution/helpers/task-publication-handles.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
+import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
 
 const runnable = {
   validate: vi.fn(),
@@ -94,7 +96,7 @@ const hostRun = () => {
   return { run, reserved, published, crash: () => { active = false; }, restore: () => { active = true; } };
 };
 
-const buildManager = async () => {
+const buildManager = async (taskAgentResources?: InMemoryTaskAgentResources) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
@@ -126,7 +128,9 @@ const buildManager = async () => {
       readMetadata: async () => currentMetadata,
       recordCollaborationPackageCreated: catalogFlag,
     },
+    taskAgentResources,
     rootDependencies: {
+      taskAgentResources,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new RootedAgentMemoryLocator({ memoryDir }) }),
       taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
       teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
@@ -612,6 +616,45 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(f.manager.hasRoot(HOST)).toBe(false);
     await expect(f.manager.resolveRootAndEnsureHost(HOST)).resolves.toMatchObject({ run: { runId: HOST }, metadata: { runId: HOST } });
     expect(f.manager.getActive(HOST)).not.toBe(root);
+  });
+
+  it("Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read", async () => {
+    const resources = new InMemoryTaskAgentResources();
+    resources.addTask("A"); resources.addTask("B");
+    const f = await buildManager(resources);
+    const root = (await f.manager.resolveRoot(HOST))!;
+    const events: { event: { kind: string }; changeSequence: number }[] = [];
+    root.subscribeToEvents((sequenced) => { events.push(sequenced as never); });
+    const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    const other = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "B" });
+    await flushMicrotasks();
+    const closedA = { agentRunId: assigned.target_agent_run_id };
+    const before = await root.openPackageSnapshotConnection();
+    expect(before.snapshot.closedTaskExecutions).toEqual([]);
+    before.close();
+
+    const stopped = root.releaseTaskAgentResources(resources.close("A"));
+    // Published synchronously, before any stop settles (visibility follows closure, not stop success).
+    const closedEvent = events.find((entry) => entry.event.kind === "task_executions_closed")!;
+    expect(closedEvent.event).toEqual({ kind: "task_executions_closed", taskExecutions: [closedA] });
+    expect(projectAgentCollaborationEvent(HOST, root.getExecutionTreeSnapshot(), closedEvent as never)?.event)
+      .toEqual({ kind: "task_executions_closed", task_executions: [closedA] });
+    await stopped;
+
+    const live = await root.openPackageSnapshotConnection();
+    expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
+    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence });
+    live.close();
+    expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
+    // The tree is never filtered: both copies stay recorded.
+    expect(root.getExecutionTreeSnapshot().taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId))
+      .toEqual([assigned.target_agent_run_id, other.target_agent_run_id]);
+
+    await f.manager.stopRoot(HOST);
+    const stored = (await f.manager.getInspection(HOST))!;
+    expect(stored.isActive).toBe(false);
+    expect(stored.snapshot.closedTaskExecutions).toEqual([closedA]);
+    expect(stored.snapshot.tree.taskExecutions).toHaveLength(2);
   });
 
   it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED (REQ-004)", async () => {

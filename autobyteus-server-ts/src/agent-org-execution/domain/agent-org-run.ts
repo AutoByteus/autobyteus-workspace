@@ -51,6 +51,8 @@ import { projectAgentOrgAgentStatusSnapshots } from "../services/agent-org-agent
 
 export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
+  /** Task executions of `tree` whose Task is DONE (read at the same point as the tree). */
+  closedTaskExecutions: readonly TaskExecutionReference[];
   messages: AgentOrgCommunicationMessagesFileV1;
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
@@ -105,6 +107,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
       replaceTree: (tree) => this.replaceTree(tree),
       publishTaskExecutionStarted: (host, taskExecution) => options.publisher.publish({ kind: "task_execution_started", host, taskExecution }),
+      publishTaskExecutionsClosed: (taskExecutions) => options.publisher.publish({ kind: "task_executions_closed", taskExecutions }),
       publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
         kind: "status_overlay",
         snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
@@ -281,6 +284,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<AgentOrgRunPackageSnapshot, AgentOrgRunEvent>> {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
+      closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
       messages: this.messages,
       statuses: this.getAgentStatusSnapshots(),
       inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),

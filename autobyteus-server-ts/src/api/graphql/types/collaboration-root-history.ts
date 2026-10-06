@@ -22,6 +22,7 @@ export class AgentOrgRootHistoryObject {
   @Field(() => Boolean) is_active!: boolean;
   @Field(() => String) summary!: string;
   @Field(() => GraphQLJSON) org!: unknown;
+  @Field(() => GraphQLJSON) closed_task_executions!: unknown;
 }
 
 const CollaborationRootHistoryUnion = createUnionType({

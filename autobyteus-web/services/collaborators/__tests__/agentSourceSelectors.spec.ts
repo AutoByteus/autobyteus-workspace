@@ -55,7 +55,7 @@ describe('collaborator-aware sources', () => {
     const tree = teamTree()
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, messages: [],
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], messages: [],
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
@@ -127,7 +127,7 @@ describe('collaborator-aware sources', () => {
     }
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, messages: [],
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], messages: [],
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],

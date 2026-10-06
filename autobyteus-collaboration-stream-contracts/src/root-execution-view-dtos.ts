@@ -19,6 +19,37 @@ const addCorrelationIssue = (context: z.RefinementCtx, message: string): void =>
   context.addIssue({ code: "custom", message });
 };
 
+type TaskExecutionReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
+/** A tree node that can host task executions directly or through its Team members. */
+type TaskExecutionHolder = Readonly<{ members?: readonly unknown[]; taskExecutions?: readonly IdentityNode[] }>;
+const referenceKey = (reference: TaskExecutionReference): string =>
+  "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
+
+/** Each closed reference must identify a task execution node (at any depth), never a configured or member node. */
+const validateClosedTaskExecutions = (
+  closed: readonly TaskExecutionReference[],
+  holders: readonly TaskExecutionHolder[],
+  label: string,
+  context: z.RefinementCtx,
+): void => {
+  const taskExecutionKeys = new Set<string>();
+  const visit = (holder: TaskExecutionHolder): void => {
+    for (const task of holder.taskExecutions ?? []) {
+      taskExecutionKeys.add(referenceKey(task));
+      if ("teamRunId" in task) visit(task);
+    }
+    for (const member of holder.members ?? []) {
+      if (typeof member === "object" && member !== null && "teamRunId" in member) visit(member as TaskExecutionHolder);
+    }
+  };
+  holders.forEach(visit);
+  for (const reference of closed) {
+    if (!taskExecutionKeys.has(referenceKey(reference))) {
+      addCorrelationIssue(context, `${label} closed task execution '${referenceKey(reference)}' is not a task execution of the execution tree.`);
+    }
+  }
+};
+
 const positiveSequence = z.number().int().positive();
 export const AgentTeamRootExecutionViewDtoSchema = z.object({
   root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema,
@@ -77,6 +108,8 @@ const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context:
       addCorrelationIssue(context, "Agent root status identity mismatch.");
     }
   }
+  validateClosedTaskExecutions(view.closed_task_executions,
+    [view.execution_tree as TaskExecutionHolder, ...view.execution_tree.collaborators as readonly TaskExecutionHolder[]], "Agent root", context);
 };
 
 export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kind", [
@@ -186,6 +219,9 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
   for (const agentRunId of statusRequiredAgentRunIds) {
     if (!statusRunIds.has(agentRunId)) addCorrelationIssue(context, `AgentOrg AgentRun '${agentRunId}' has no status record.`);
   }
+  const rootOrg = value.root_org.execution_tree.rootOrg;
+  validateClosedTaskExecutions(value.root_org.closed_task_executions,
+    [rootOrg as TaskExecutionHolder, ...rootOrg.collaborators as readonly TaskExecutionHolder[]], "AgentOrg", context);
 });
 
 export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [

@@ -487,6 +487,11 @@ export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
             source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
         }>, unknown>>>;
     }, z.core.$strict>;
+    closed_task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
     communication_messages: z.ZodObject<{
         schemaVersion: z.ZodLiteral<1>;
         subjectKind: z.ZodLiteral<"agent">;
@@ -831,6 +836,13 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
         addedAt: z.ZodString;
         addedViaAgentRunId: z.ZodString;
     }, z.core.$strict>], "kind">;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"task_executions_closed">;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
 }, z.core.$strict>], "kind">;
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;
 export type AgentRunCollaborationViewDto = Readonly<z.infer<typeof agentRunCollaborationViewDtoSchema>>;
