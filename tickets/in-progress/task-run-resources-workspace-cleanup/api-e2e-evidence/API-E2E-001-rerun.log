@@ -1,0 +1,680 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:49966) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T06:57:20.543Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 48 items.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-06T06:57:21.816Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-06T06:57:21.831Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 48 items.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID trc-manager-68ff28.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: trc-manager-68ff28
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID trc-worker-68ff28.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: trc-worker-68ff28
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID trc-helper-68ff28.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: trc-helper-68ff28
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID trc-assistant-68ff28.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: trc-assistant-68ff28
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-06T06:57:22.028Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID trc-squad-68ff28.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: trc-squad-68ff28
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-06T06:57:22.051Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID trc-team-68ff28.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: trc-team-68ff28
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreated and registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_manager_68ff28_1e95755f3fba4b2fa5a0630306f457d0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAgent websocket attached for run trc_manager_68ff28_1e95755f3fba4b2fa5a0630306f457d0
+Created agent session cfbf61cc-db12-4f68-b29a-48bc9056afc3 for run trc_manager_68ff28_1e95755f3fba4b2fa5a0630306f457d0
+Agent WebSocket connected: session=cfbf61cc-db12-4f68-b29a-48bc9056afc3, run=trc_manager_68ff28_1e95755f3fba4b2fa5a0630306f457d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_77909c40859d41878e6ea832f614d044: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_helper_68ff28_aaf3187364d94114aa4ff43b8cd2caf5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_assistant_68ff28_cbe61e0f0b414519801c2b08f920913b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_d240c8b5a7104360bf24ba0847bfe4c7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_fa4db3af22d54228a653f5c78be3f767: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_6330e1df915a410d9077ff3b70ab5257: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_14e71460cc9f477a9d8490270a3b8a0f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mClosed agent session cfbf61cc-db12-4f68-b29a-48bc9056afc3
+Agent WebSocket disconnected: cfbf61cc-db12-4f68-b29a-48bc9056afc3
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_manager_68ff28_d75c2a9218da4be0818c0be930ae74f9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mAgent websocket attached for run trc_manager_68ff28_d75c2a9218da4be0818c0be930ae74f9
+Created agent session 05ca1ca6-f7ab-410a-b889-68ec98aa80c5 for run trc_manager_68ff28_d75c2a9218da4be0818c0be930ae74f9
+Agent WebSocket connected: session=05ca1ca6-f7ab-410a-b889-68ec98aa80c5, run=trc_manager_68ff28_d75c2a9218da4be0818c0be930ae74f9
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete
+[22m[39mClosed agent session 05ca1ca6-f7ab-410a-b889-68ec98aa80c5
+Agent WebSocket disconnected: 05ca1ca6-f7ab-410a-b889-68ec98aa80c5
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent team websocket attached for team run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+Created agent session 7d39c952-6ca2-4ebe-bdbd-68eb350b0b61 for run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent Team WebSocket connected: session=7d39c952-6ca2-4ebe-bdbd-68eb350b0b61, run=trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_manager_68ff28_2722124ad1c2426295a72bbddd127aa7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_cb48c5ce00334430b70a7b081651a637: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_helper_68ff28_0cca0eae23e34a4daeedb8ff43229528: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_assistant_68ff28_7392ce31f60b4aff85bdcb3241939b5f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_1d0c024ea9bd487b8ac2a1b68ecfad2a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_759776307d9a421eac4ad28f064b5e82: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_778889faf7e4497592dd3f2aadd8727a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent team websocket attached for team run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+Created agent session 1541b21f-961b-4ed8-a313-5c89baf20986 for run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent Team WebSocket connected: session=1541b21f-961b-4ed8-a313-5c89baf20986, run=trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mClosed agent session 7d39c952-6ca2-4ebe-bdbd-68eb350b0b61
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent team websocket attached for team run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+Created agent session 004f0637-aebc-4c6f-871e-fafcf046f2e0 for run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent Team WebSocket connected: session=004f0637-aebc-4c6f-871e-fafcf046f2e0, run=trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mClosed agent session 1541b21f-961b-4ed8-a313-5c89baf20986
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent team websocket attached for team run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+Created agent session d21534c5-d3ea-4971-b2ee-71f38cea618c for run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent Team WebSocket connected: session=d21534c5-d3ea-4971-b2ee-71f38cea618c, run=trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mClosed agent session 004f0637-aebc-4c6f-871e-fafcf046f2e0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_0c082542bf0f47f1bf9625fcc6f8b775: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent team websocket attached for team run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+Created agent session c6c5d71a-df66-460c-9f4a-3f25244cdd06 for run trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent Team WebSocket connected: session=c6c5d71a-df66-460c-9f4a-3f25244cdd06, run=trc_team_68ff28_8f4eafe5e5a04f9fbe8b956ee7dfe07c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mClosed agent session d21534c5-d3ea-4971-b2ee-71f38cea618c
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mClosed agent session c6c5d71a-df66-460c-9f4a-3f25244cdd06
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_manager_68ff28_b281605b920c4276af4641111b117afb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mAgent websocket attached for run trc_manager_68ff28_b281605b920c4276af4641111b117afb
+Created agent session d304b445-6cb2-42c7-aae6-fd4a4fb68c39 for run trc_manager_68ff28_b281605b920c4276af4641111b117afb
+Agent WebSocket connected: session=d304b445-6cb2-42c7-aae6-fd4a4fb68c39, run=trc_manager_68ff28_b281605b920c4276af4641111b117afb
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete
+[22m[39mClosed agent session d304b445-6cb2-42c7-aae6-fd4a4fb68c39
+Agent WebSocket disconnected: d304b445-6cb2-42c7-aae6-fd4a4fb68c39
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_manager_68ff28_39a8a063567548209c20ae1d04d2b3c1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_f8d13cf2a9714b3aa33995edb933770d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_helper_68ff28_21841c9d1f234e62a342583dbc1bceee: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_assistant_68ff28_d3109dcbcabc472996799be59a7b00e0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_b1cbbcb658524b5490ed7d4d548b68fa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_86b6acce4230483e8581f108b132f640: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_15d2a1dfe42249398db540aa146b9edb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_worker_68ff28_f1374d0d55984393b28d3b209443cc0d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-e2e-p2430y/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mReusing registered workspace ID: agent_ws_46567b9978f3aa0654cf28221681257d602683afa73be639ac44e6c4c88a88d0
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAGY compaction detection off for run trc_manager_68ff28_9bfd3e65340749068910531cf2cfcff8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mAgent websocket attached for run trc_manager_68ff28_9bfd3e65340749068910531cf2cfcff8
+Created agent session 4b078bab-b644-439c-9318-8e6b9ccfed06 for run trc_manager_68ff28_9bfd3e65340749068910531cf2cfcff8
+Agent WebSocket connected: session=4b078bab-b644-439c-9318-8e6b9ccfed06, run=trc_manager_68ff28_9bfd3e65340749068910531cf2cfcff8
+
+[90mstdout[2m | tests/e2e/projects/task-closure-root-visibility.e2e.test.ts[2m > [22m[2mTask DONE hides the Task's agent run resources in every root view (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete
+[22m[39mClosed agent session 4b078bab-b644-439c-9318-8e6b9ccfed06
+Agent WebSocket disconnected: 4b078bab-b644-439c-9318-8e6b9ccfed06
+
+ [32m✓[39m tests/e2e/projects/task-closure-root-visibility.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 15663[2mms[22m[39m
+     [33m[2m✓[22m[39m standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen, Task delete [33m 4619[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen, Task delete [33m 5000[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen, Task delete [33m 4464[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 08:57:07
+[2m   Duration [22m 28.85s[2m (transform 9.09s, setup 22ms, import 12.46s, tests 15.66s, environment 0ms)[22m
+

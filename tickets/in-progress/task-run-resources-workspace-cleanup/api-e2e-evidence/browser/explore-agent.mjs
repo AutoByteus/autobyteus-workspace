@@ -1,0 +1,27 @@
+import fs from 'node:fs';
+import * as L from './lib.mjs';
+await L.ensureWorkspace();
+const { ids, names } = await L.createDefinitions('Explore');
+const { projectId, task } = await L.createProject('Explore');
+const taskA = await task(L.callTool('delegate_task', { recipient_address: `/${L.segment(names.helper)}`,
+  description: L.callTool('send_message_to', { recipient_address: `/${L.segment(names.assistant)}`, content: 'Collect the changelog links.' }) }));
+const taskB = await task('Review the docs site.');
+const root = await L.createRoot('agent', ids);
+const input = await L.managerInput(root);
+input.send(L.callTool('delegate_task', { recipient_address: `/${L.segment(names.worker)}`, task_id: taskA }));
+await L.until('A nodes', async () => L.taskNodes(await L.storedTree(root)).length >= 3, 60000);
+input.send(L.callTool('delegate_task', { recipient_address: `/${L.segment(names.squad)}`, task_id: taskB }));
+await L.until('B node', async () => L.taskNodes(await L.storedTree(root)).length >= 4, 60000);
+input.send(L.callTool('delegate_task', { recipient_address: `/${L.segment(names.worker)}`, description: 'Draft a short summary.' }));
+await L.until('plain', async () => L.taskNodes(await L.storedTree(root)).length >= 5, 60000);
+input.close();
+fs.writeFileSync(new URL('./explore-agent.json', import.meta.url), JSON.stringify({ ids, names, projectId, taskA, taskB, root, nodes: L.taskNodes(await L.storedTree(root)) }, null, 2));
+const browser = await L.chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await page.goto(L.state().frontendUrl + '/workspace', { waitUntil: 'networkidle', timeout: 120000 });
+await L.sleep(4000);
+await page.screenshot({ path: new URL('./explore-agent-1.png', import.meta.url).pathname, fullPage: true });
+console.log((await page.locator('body').innerText()).slice(0, 1500));
+const testIds = await page.evaluate(() => [...new Set([...document.querySelectorAll('[data-test]')].map(e => e.getAttribute('data-test').replace(/[-_][0-9a-f]{8,}.*$/,'').replace(/-trc.*|-manager.*/, '')))].slice(0, 120));
+console.log(JSON.stringify(testIds));
+await browser.close();

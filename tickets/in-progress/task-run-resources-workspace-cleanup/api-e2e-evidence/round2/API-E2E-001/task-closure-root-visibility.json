@@ -1,0 +1,197 @@
+{
+  "agent": {
+    "rootId": "trc_manager_a034d7_603c1b5364414b52a50bf1e4bb381982",
+    "managerRunId": "trc_manager_a034d7_603c1b5364414b52a50bf1e4bb381982",
+    "projectId": "project_bfbf2d85-c59c-42c1-888d-cdfa14e1cb07",
+    "taskA": "project_task_6e33256b-9f1c-4af3-bd0a-e9026f9174e0",
+    "taskB": "project_task_3eba0b78-814b-4e65-8270-f076f6330dcb",
+    "taskARefs": [
+      {
+        "agentRunId": "trc_worker_a034d7_34d7cba882ff4078a16f9cdc5f757635"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_37139dfac05a4d7aa46444b235946611"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_fb16bf65ed774973908549241827bb9b"
+      }
+    ],
+    "taskBRef": {
+      "teamRunId": "trc_squad_a034d7_648c540300024b0c96cf0f5768f651a9"
+    },
+    "plain": [
+      {
+        "agentRunId": "trc_worker_a034d7_b19b2675ea5d41b798d0f2e0e293f929"
+      }
+    ],
+    "redelegated": [
+      {
+        "agentRunId": "trc_worker_a034d7_b1feaceee823416b8522b4c5a1c62a5f"
+      }
+    ],
+    "closedPayload": [
+      {
+        "agentRunId": "trc_worker_a034d7_34d7cba882ff4078a16f9cdc5f757635"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_37139dfac05a4d7aa46444b235946611"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_fb16bf65ed774973908549241827bb9b"
+      }
+    ],
+    "closedIndex": 3,
+    "stopIndex": 4,
+    "storedClosedAfterDelete": [
+      {
+        "agentRunId": "trc_worker_a034d7_34d7cba882ff4078a16f9cdc5f757635"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_37139dfac05a4d7aa46444b235946611"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_fb16bf65ed774973908549241827bb9b"
+      },
+      {
+        "teamRunId": "trc_squad_a034d7_648c540300024b0c96cf0f5768f651a9"
+      }
+    ],
+    "aMessageIds": [
+      "collabmsg_JyY2expVACnSV8yh_6kGcmSZ9t6P9Rp1",
+      "collabmsg_0P7_nogeibAslh2P-7h2kSjsK8ou5Au6"
+    ],
+    "memoryHits": 5
+  },
+  "team": {
+    "rootId": "trc_team_a034d7_1ef01fbff9e246b7bdf84a2430cb2d08",
+    "managerRunId": "trc_manager_a034d7_2f6166aac5ed4b0780513f8d6e9f2d98",
+    "projectId": "project_0ef13a49-76fe-4138-a22b-1458680857aa",
+    "taskA": "project_task_59a21242-8b90-44b8-a9d5-53c23bbff194",
+    "taskB": "project_task_4b1c9255-f843-4cb8-aef2-65ebe2b30569",
+    "taskARefs": [
+      {
+        "agentRunId": "trc_worker_a034d7_e2be14f43c2242f4afaf19e5bfce263c"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_37029004597b4385b7b0da562b7b9511"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_174a2a987b9a407daf39c5f1e37c6a9a"
+      }
+    ],
+    "taskBRef": {
+      "teamRunId": "trc_squad_a034d7_284928c4373146469c61d1248d18241d"
+    },
+    "plain": [
+      {
+        "agentRunId": "trc_worker_a034d7_12b9e2c7309e4a3492781b0dd9e9b146"
+      }
+    ],
+    "redelegated": [
+      {
+        "agentRunId": "trc_worker_a034d7_f38b03b53a1c479bae2eff0cb1f20d41"
+      }
+    ],
+    "closedPayload": [
+      {
+        "agent_run_id": "trc_worker_a034d7_e2be14f43c2242f4afaf19e5bfce263c"
+      },
+      {
+        "agent_run_id": "trc_helper_a034d7_37029004597b4385b7b0da562b7b9511"
+      },
+      {
+        "agent_run_id": "trc_assistant_a034d7_174a2a987b9a407daf39c5f1e37c6a9a"
+      }
+    ],
+    "closedIndex": 11,
+    "stopIndex": 22,
+    "storedClosedAfterDelete": [
+      {
+        "agentRunId": "trc_worker_a034d7_e2be14f43c2242f4afaf19e5bfce263c"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_37029004597b4385b7b0da562b7b9511"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_174a2a987b9a407daf39c5f1e37c6a9a"
+      },
+      {
+        "teamRunId": "trc_squad_a034d7_284928c4373146469c61d1248d18241d"
+      }
+    ],
+    "aMessageIds": [
+      null,
+      null
+    ],
+    "memoryHits": 5
+  },
+  "org": {
+    "rootId": "trc_org_a034d7_a715250061c04e08b227f63bcd5eb055",
+    "managerRunId": "trc_manager_a034d7_e29616ddbcf44a038002613bce45778f",
+    "projectId": "project_f1463bc6-65ef-4e96-b4ec-e356cfd7d969",
+    "taskA": "project_task_4564edb5-242a-4838-bb18-c24051b2c10d",
+    "taskB": "project_task_485eb605-e03e-4aae-bd23-5c7e0cf09d25",
+    "taskARefs": [
+      {
+        "agentRunId": "trc_worker_a034d7_9f124fd0d0b04a9687648982f4deac52"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_9cff5ccb68f3417bac845a35e9e76fed"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_4bbedbe87b6f487eb4c72404401a1c91"
+      }
+    ],
+    "taskBRef": {
+      "teamRunId": "trc_squad_a034d7_0d834f671b4245a786678cae02296a08"
+    },
+    "plain": [
+      {
+        "agentRunId": "trc_worker_a034d7_306457483144426a9f0aacedb76e4284"
+      }
+    ],
+    "redelegated": [
+      {
+        "agentRunId": "trc_worker_a034d7_1180780d1b2e450bbdc7f1e2f580580e"
+      }
+    ],
+    "closedPayload": [
+      {
+        "agentRunId": "trc_worker_a034d7_9f124fd0d0b04a9687648982f4deac52"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_9cff5ccb68f3417bac845a35e9e76fed"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_4bbedbe87b6f487eb4c72404401a1c91"
+      }
+    ],
+    "closedIndex": 12,
+    "stopIndex": 23,
+    "storedClosedAfterDelete": [
+      {
+        "agentRunId": "trc_worker_a034d7_9f124fd0d0b04a9687648982f4deac52"
+      },
+      {
+        "agentRunId": "trc_helper_a034d7_9cff5ccb68f3417bac845a35e9e76fed"
+      },
+      {
+        "agentRunId": "trc_assistant_a034d7_4bbedbe87b6f487eb4c72404401a1c91"
+      },
+      {
+        "teamRunId": "trc_squad_a034d7_0d834f671b4245a786678cae02296a08"
+      }
+    ],
+    "aMessageIds": [
+      "collabmsg_Rakirax67Rxfc2uZzd5Su2NDoCpnDbOR",
+      "collabmsg_0NZpSeo8qilzFkNIn-o8fBtYq_DPhifg"
+    ],
+    "memoryHits": 5
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

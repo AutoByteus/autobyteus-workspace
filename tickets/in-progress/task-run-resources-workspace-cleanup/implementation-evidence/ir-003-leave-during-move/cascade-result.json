@@ -1,0 +1,12 @@
+{
+  "no-preference": {
+    "transitionProperty": "opacity, max-height, margin-top, transform",
+    "opacityAt100ms": 0.315797,
+    "heightAt100ms": 10.09375
+  },
+  "reduce": {
+    "transitionProperty": "none",
+    "opacityAt100ms": 0,
+    "heightAt100ms": 0
+  }
+}

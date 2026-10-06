@@ -1,0 +1,210 @@
+{
+  "startedAt": "2026-10-06T07:17:50.820Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "description": "Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_bragent_ff00_7c4cf9ab8d894a4dbb7ab1824af15a37",
+          "managerRunId": "manager_bragent_ff00_7c4cf9ab8d894a4dbb7ab1824af15a37"
+        },
+        "latencyMs": 311,
+        "leave": {
+          "firstHiddenAt": 37,
+          "goneAt": 265,
+          "leaveMs": 228,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "bLeave": {
+          "firstHiddenAt": 51,
+          "goneAt": 284,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "rgb(238, 242, 255)",
+        "active": "workspace-agent-run-row"
+      }
+    },
+    "BR-002": {
+      "result": "Pass",
+      "description": "Agent Team root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_brteam_d251_0afc35ee0bdb4e1db52c3e79e09d06b3",
+          "managerRunId": "manager_brteam_d251_1beeaa0a580a4a42aa28fcd357b2bd5c"
+        },
+        "latencyMs": 309,
+        "leave": {
+          "firstHiddenAt": 38,
+          "goneAt": 266,
+          "leaveMs": 228,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            true,
+            true,
+            true
+          ],
+          "activeAtFirstHidden": "workspace-team-row-delivery_team_brteam_d251_0afc35ee0bdb4e1db52c3e79e09d06b3"
+        },
+        "bLeave": {
+          "firstHiddenAt": 50,
+          "goneAt": 283,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "workspace-team-row-delivery_team_brteam_d251_0afc35ee0bdb4e1db52c3e79e09d06b3"
+      }
+    },
+    "BR-003": {
+      "result": "Fail",
+      "description": "Agent Org root live DONE (same journey; fallback to the delegating Manager)",
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-tab-list\"]').getByText('Team', { exact: true })\n"
+    },
+    "BR-004": {
+      "result": "Pass",
+      "description": "Reduced motion (Agent and Team trees): removed at once; focus to the run row",
+      "details": {
+        "agent": {
+          "root": {
+            "kind": "agent",
+            "rootId": "manager_rmagent_0aa1_7d2aa890d83448848d86b56f19ebea51",
+            "managerRunId": "manager_rmagent_0aa1_7d2aa890d83448848d86b56f19ebea51"
+          },
+          "leave": {
+            "firstHiddenAt": 156,
+            "goneAt": 187,
+            "leaveMs": 31,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-agent-run-row"
+          },
+          "active": "workspace-agent-run-row"
+        },
+        "team": {
+          "root": {
+            "kind": "team",
+            "rootId": "delivery_team_rmteam_4db7_c19f1747d75644eab84b7a1971223574",
+            "managerRunId": "manager_rmteam_4db7_54a9547a302b4012af0095964dea2db0"
+          },
+          "leave": {
+            "firstHiddenAt": 40,
+            "goneAt": 70,
+            "leaveMs": 30,
+            "midOpacityFrames": 0,
+            "hiddenAndInertAtOnce": true,
+            "moveClassAtLeaveStart": [
+              false,
+              false,
+              false
+            ],
+            "activeAtFirstHidden": "workspace-team-row-delivery_team_rmteam_4db7_c19f1747d75644eab84b7a1971223574"
+          },
+          "active": "workspace-team-row-delivery_team_rmteam_4db7_c19f1747d75644eab84b7a1971223574"
+        }
+      }
+    },
+    "BR-005": {
+      "result": "Fail",
+      "description": "Reload, then real backend restart + reload: closed rows never render",
+      "message": "BR-005 needs BR-001..BR-003 in the same run"
+    },
+    "BR-006": {
+      "result": "Pass",
+      "description": "CR-001: the last task rows under an Agent run fade; the empty tree then disappears",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_lastrows_e688_0929a2caacdb456c8b098b8fd64ea834",
+          "managerRunId": "manager_lastrows_e688_0929a2caacdb456c8b098b8fd64ea834"
+        },
+        "leave": {
+          "firstHiddenAt": 137,
+          "goneAt": 368,
+          "leaveMs": 231,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "active": "workspace-agent-run-row"
+      }
+    },
+    "BR-007": {
+      "result": "Fail",
+      "description": "SP-3: stopped Org run expanded from history before hydration renders no closed rows",
+      "message": "BR-007 needs BR-003 in the same run"
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 17313,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 17279,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "BR-003",
+      "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"right-side-tab-list\"]').getByText('Team', { exact: true })\n"
+    },
+    {
+      "id": "BR-005",
+      "message": "BR-005 needs BR-001..BR-003 in the same run"
+    },
+    {
+      "id": "BR-007",
+      "message": "BR-007 needs BR-003 in the same run"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:55406",
+    "frontendUrl": "http://127.0.0.1:55407",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-LEqCSG"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Fail",
+  "finishedAt": "2026-10-06T07:19:09.255Z"
+}

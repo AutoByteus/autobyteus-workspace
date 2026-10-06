@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.95-beta.3 test:e2e:nested-team-hierarchy /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-web
+> node tests/e2e/nested-team-hierarchy-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/tickets/in-progress/task-run-resources-workspace-cleanup/api-e2e-evidence/REG-001/nested-team-hierarchy
+
+Nested Team hierarchy browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/tickets/in-progress/task-run-resources-workspace-cleanup/api-e2e-evidence/REG-001/nested-team-hierarchy/evidence.json

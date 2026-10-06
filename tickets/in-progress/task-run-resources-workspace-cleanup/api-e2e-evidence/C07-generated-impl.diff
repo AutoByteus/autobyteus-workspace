@@ -1,0 +1,71 @@
+diff --git a/autobyteus-web/generated/graphql.ts b/autobyteus-web/generated/graphql.ts
+index 7d10cffd2..487a4d305 100644
+--- a/autobyteus-web/generated/graphql.ts
++++ b/autobyteus-web/generated/graphql.ts
+@@ -172,6 +172,7 @@ export type AgentOrgPlacementLaunchOverrideInput = {
+ export type AgentOrgRootHistoryObject = {
+   __typename?: 'AgentOrgRootHistoryObject';
+   archived_at?: Maybe<Scalars['String']['output']>;
++  closed_task_executions: Scalars['JSON']['output'];
+   created_at: Scalars['String']['output'];
+   is_active: Scalars['Boolean']['output'];
+   org: Scalars['JSON']['output'];
+@@ -3084,6 +3085,8 @@ export type TeamRunModelConfigPatchInput = {
+ 
+ export type TeamRunResumeConfigPayload = {
+   __typename?: 'TeamRunResumeConfigPayload';
++  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE. */
++  closedTaskExecutions: Scalars['JSON']['output'];
+   executionTree: Scalars['JSON']['output'];
+   isActive: Scalars['Boolean']['output'];
+   modelConfigEditability: RunModelConfigEditabilityObject;
+@@ -4353,14 +4356,14 @@ export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __
+ export type ListCollaborationRootHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+ 
+ 
+-export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
++export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
+ 
+ export type GetAgentOrgRootHistoryQueryVariables = Exact<{
+   orgRunId: Scalars['String']['input'];
+ }>;
+ 
+ 
+-export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRootHistory?: { __typename?: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any } | null };
++export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRootHistory?: { __typename?: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | null };
+ 
+ export type GetCollaboratorMentionCandidatesQueryVariables = Exact<{
+   rootSubjectKind: Scalars['String']['input'];
+@@ -4687,7 +4690,7 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
+ }>;
+ 
+ 
+-export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
++export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, closedTaskExecutions: any, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
+ 
+ export type GetTeamRunExecutionCheckpointQueryVariables = Exact<{
+   teamRunId: Scalars['String']['input'];
+@@ -9061,6 +9064,7 @@ export const ListCollaborationRootHistoryDocument = gql`
+       is_active
+       summary
+       org
++      closed_task_executions
+     }
+     ... on AgentTeamRootHistoryObject {
+       root_subject_kind
+@@ -9099,6 +9103,7 @@ export const GetAgentOrgRootHistoryDocument = gql`
+     is_active
+     summary
+     org
++    closed_task_executions
+   }
+ }
+     `;
+@@ -10872,6 +10877,7 @@ export const GetTeamRunResumeConfigDocument = gql`
+     teamRunId
+     isActive
+     executionTree
++    closedTaskExecutions
+     modelConfigEditability {
+       editable
+       reason

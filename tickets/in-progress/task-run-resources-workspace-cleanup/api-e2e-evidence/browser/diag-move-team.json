@@ -1,0 +1,10710 @@
+[
+ {
+  "t": 1,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 25,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 33,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 80,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 81,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 83,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 100,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 50,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "tree-row-move",
+    "tf": "matrix(1, 0, 0, 1, 0, -22)"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "tree-row-move",
+    "tf": "matrix(1, 0, 0, 1, 0, -22)"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "tree-row-move",
+    "tf": "matrix(1, 0, 0, 1, 0, -22)"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "tree-row-move",
+    "tf": "matrix(1, 0, 0, 1, 0, -22)"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "tree-row-move",
+    "tf": "matrix(1, 0, 0, 1, 0, -22)"
+   }
+  ]
+ },
+ {
+  "t": 117,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 132,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 150,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 166,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 183,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 200,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 217,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 243,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "tree-row-leave-from tree-row-leave-active",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "tree-row-leave-from tree-row-leave-active",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "tree-row-leave-from tree-row-leave-active",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 250,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "tree-row-leave-from tree-row-leave-active",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "tree-row-leave-from tree-row-leave-active",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "tree-row-leave-from tree-row-leave-active",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 266,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 774,
+    "h": 28,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 804,
+    "h": 28,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 834,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 283,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 683,
+    "h": 28,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 713,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 743,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 773,
+    "h": 28,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 802,
+    "h": 28,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 832,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 300,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 683,
+    "h": 24,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 709,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 739,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 768,
+    "h": 24,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 793,
+    "h": 24,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 819,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 316,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 683,
+    "h": 20,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 705,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 735,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 764,
+    "h": 20,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 785,
+    "h": 20,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 807,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 338,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 683,
+    "h": 16,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 701,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 731,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 760,
+    "h": 16,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 777,
+    "h": 16,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 796,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 350,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 13,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 697,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 727,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 756,
+    "h": 13,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 770,
+    "h": 13,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 785,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 366,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 10,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 694,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 724,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 753,
+    "h": 10,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 764,
+    "h": 10,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 776,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 383,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 7,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 691,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 721,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 750,
+    "h": 7,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 758,
+    "h": 7,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 767,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 399,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 5,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 689,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 719,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 747,
+    "h": 5,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 752,
+    "h": 5,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 759,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 416,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 3,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 687,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 717,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 745,
+    "h": 3,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 748,
+    "h": 3,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 753,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 433,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 1,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 685,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 715,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 743,
+    "h": 1,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 745,
+    "h": 1,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 748,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 450,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 682,
+    "h": 0,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, helper, level 1",
+    "y": 742,
+    "h": 0,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, researcher diagteam e8f9, level 1",
+    "y": 742,
+    "h": 0,
+    "c": "tree-row-leave-active tree-row-leave-to",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 745,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 467,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 483,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 499,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 516,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 532,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 550,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 565,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 583,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 600,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 616,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 632,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 650,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 666,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 683,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 699,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 716,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 733,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 749,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 767,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 783,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 799,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 816,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 836,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 850,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 866,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 883,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 899,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 916,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 933,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 950,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 967,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 984,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1000,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1016,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1033,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1049,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1066,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1083,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1099,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1116,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1133,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1150,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1166,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1183,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1199,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1217,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1232,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1250,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1266,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1283,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1299,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1316,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1332,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1350,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1367,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1383,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1399,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1415,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1432,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1449,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1466,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1484,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1499,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1516,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1536,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1550,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1566,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1583,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1600,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1616,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1632,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1649,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1666,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1682,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1699,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1716,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1732,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1749,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1766,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1784,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1800,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1817,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1833,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1850,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1867,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1883,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1900,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1916,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1933,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1950,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1965,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1983,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 1999,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2016,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2032,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2050,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2066,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2083,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2100,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2116,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2133,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2150,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2166,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2183,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2200,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2216,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2232,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2249,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2266,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2283,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2299,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2316,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2333,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2349,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2366,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2383,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2400,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2416,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2432,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2450,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2466,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2483,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2500,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2517,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2533,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2550,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2565,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2583,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2599,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2616,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2632,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2650,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2666,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2683,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2700,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2717,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2733,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2750,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2766,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2783,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2799,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2816,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2832,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2850,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2866,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2883,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2899,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2917,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2933,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2950,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2967,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 2985,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3000,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3016,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3033,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3049,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3066,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3082,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3099,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3116,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3133,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3149,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3165,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3183,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3200,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3216,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3232,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3249,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3266,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3283,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3300,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3316,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3332,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3349,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3366,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3383,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3399,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3416,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3432,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3450,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3466,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3483,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3499,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3516,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3532,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3550,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3566,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3583,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3599,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3616,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3633,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3649,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3666,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3682,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3699,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3715,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3732,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3749,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3766,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3783,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3800,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3816,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3832,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3849,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3866,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3882,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3900,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3915,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3933,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3950,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3966,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 3983,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4000,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4016,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4033,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4049,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4066,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4083,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4100,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4116,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4133,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4149,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4165,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4183,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ },
+ {
+  "t": 4199,
+  "rows": [
+   {
+    "n": "Agent, manager, level 1",
+    "y": 624,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, worker, level 1",
+    "y": 654,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task agent, worker, level 1",
+    "y": 684,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Agent, helper, level 1",
+    "y": 714,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   },
+   {
+    "n": "Temporary task team, docs review team diagteam e8f9, level 1",
+    "y": 744,
+    "h": 28,
+    "c": "",
+    "tf": "none"
+   }
+  ]
+ }
+]

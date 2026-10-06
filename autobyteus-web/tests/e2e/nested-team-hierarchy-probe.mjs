@@ -45,6 +45,18 @@ const getArg = (name, fallback = undefined) => {
 };
 
 const timeoutMs = Number(getArg('timeout-ms', '90000'));
+
+// Rows removed by a collapse leave the tree with the 200 ms `tree-row` transition (aria-hidden and inert at
+// once; see components/workspace/history/treeRowLeave.css). Absence is asserted once that leave has settled.
+const LEAVE_SETTLE_MS = 1500;
+const afterLeave = async (predicate) => {
+  const deadline = Date.now() + LEAVE_SETTLE_MS;
+  while (Date.now() < deadline) {
+    if (await predicate()) return true;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  return Boolean(await predicate());
+};
 const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/nested-team-hierarchy'));
 const explicitPort = getArg('port');
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
@@ -561,7 +573,7 @@ try {
       await setProbeState(page, { width: 320, font: 'default', locale: 'en', expanded: false });
       await page.evaluate(() => window.__nestedTeamHierarchyProbe.resetCounters());
       const tree = page.locator('[data-test="workspace-team-execution-tree"]');
-      assert(await tree.locator('[role="treeitem"]').count() === 5, 'All nested Teams must default to the collapsed fixture state');
+      assert(await afterLeave(async () => await tree.locator('[role="treeitem"]').count() === 5), 'All nested Teams must default to the collapsed fixture state');
 
       await page.locator(PRODUCT_ROW).click();
       assert(await tree.locator('[role="treeitem"]').count() === 11, 'Pointer activation must reveal only Product descendants');
@@ -583,7 +595,7 @@ try {
         'Configured and transient structural activation must never fabricate a concrete member selection', state);
 
       await page.locator(PRODUCT_ROW).locator('[data-test="workspace-team-member-disclosure"]').click();
-      assert(await tree.locator('[role="treeitem"]').count() === 9, 'Dedicated disclosure must collapse only Product descendants');
+      assert(await afterLeave(async () => await tree.locator('[role="treeitem"]').count() === 9), 'Dedicated disclosure must collapse only Product descendants');
       assert(await page.locator(SOFTWARE_ROW).getAttribute('aria-expanded') === 'true'
         && await page.locator(QUALITY_ROW).getAttribute('aria-expanded') === 'true',
       'Unrelated expansion choices must remain unchanged');
