@@ -190,3 +190,10 @@ Approved caller knowledge of real workspace IDs/full desired list remains necess
 - Failure Origin: N/A — no API/E2E failure package.
 - Primary next recipient: `/api_e2e_engineer`; informational recipient after successful primary handoff: `/implementation_engineer`.
 - Notes: source-review readiness only; no API/E2E, delivery or release approval.
+
+## Handoff Rule Decision And Receipts
+After completing/persisting CRR-001, get_handoff_rules returned primary implementation Pass → exact `/api_e2e_engineer` and post-primary informational Pass → exact `/implementation_engineer`. Other Local Fix/failure-origin/upstream/test-review rules do not match this entry point. Skill requires the informational notification after primary success; no extra recipient notified.
+
+- Primary send_message_to: accepted true / DELIVERED to `/api_e2e_engineer`, run `api_e2e_engineer_75f4c9e570c647829be0c709465fcb12`; full cumulative package attached/indexed.
+- Subsequent informational send_message_to: accepted true / DELIVERED to `/implementation_engineer`, run `implementation_engineer_28c7518b041e4c2995fcde1983318f74`; Pass, CRR-001, canonical paths and next recipient supplied; Informational — no action required.
+- Review artifacts/evidence first committed as `103c22fcb`. Both required handoffs succeeded. No recipient polling or additional forwarding.
