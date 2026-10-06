@@ -384,3 +384,8 @@ export const getDefaultThinkingConfig = (
   return next;
 };
 
+/** A config value or key as a label: `extra_high` → "Extra high", `service-tier` → "Service tier". */
+export const humanizeThinkingValue = (value: string): string => {
+  const text = value.replace(/[_-]+/g, ' ').trim()
+  return text ? `${text.charAt(0).toUpperCase()}${text.slice(1)}` : text
+}

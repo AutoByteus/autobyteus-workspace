@@ -1,28 +1,22 @@
 <template>
-  <!--
-    `launch`: New chat `@` picks the launch target.
-    `run`: `@` in a live run brings a shared Agent or Team into that run.
-  -->
+  <!-- `@` brings a shared Agent or Team into the run, in New chat and in a running chat alike.
+       What to run is chosen from the New chat heading (RunTargetSwitcher), never here. -->
   <div
-    :data-test="isRun ? 'run-mention-menu' : 'chat-target-menu'"
+    data-test="run-mention-menu"
     class="flex min-h-0 w-[23rem] max-w-[calc(100vw-1rem)] flex-col rounded-lg border border-gray-200 bg-white text-left shadow-lg"
   >
     <p class="border-b border-gray-100 px-3 py-1.5 text-[0.6875rem] text-gray-400">
-      {{ isRun ? $t('chat.mentions.headerPrefix') : $t('chat.targets.headerPrefix') }} <span class="font-medium text-gray-600">@{{ query }}</span> · {{ $t('chat.targets.headerHint') }}
+      {{ $t('chat.mentions.headerPrefix') }} <span class="font-medium text-gray-600">@{{ query }}</span> · {{ $t('chat.targets.headerHint') }}
     </p>
     <ul
       :id="listId"
       role="listbox"
-      :aria-label="isRun ? $t('chat.mentions.listAria') : $t('chat.targets.listAria')"
+      :aria-label="$t('chat.mentions.listAria')"
       class="max-h-64 min-h-0 overflow-y-auto p-1"
     >
-      <li
-        v-if="!targets.length"
-        class="px-2 py-3 text-center"
-        :data-test="isRun ? 'run-mention-menu-empty' : 'chat-target-menu-empty'"
-      >
+      <li v-if="!targets.length" class="px-2 py-3 text-center" data-test="run-mention-menu-empty">
         <span class="block text-[0.8125rem] text-gray-500">{{ $t('chat.targets.noMatch') }}</span>
-        <span v-if="isRun" class="mt-0.5 block text-xs text-gray-400">{{ $t('chat.mentions.noMatchHint') }}</span>
+        <span class="mt-0.5 block text-xs text-gray-400">{{ $t('chat.mentions.noMatchHint') }}</span>
       </li>
       <template v-for="(target, index) in targets" :key="target.key">
         <li v-if="index === 0 || targets[index - 1]!.kind !== target.kind" role="presentation" class="px-2 pb-0.5 pt-1.5 text-[0.6875rem] font-medium text-gray-400">
@@ -32,7 +26,7 @@
           <button
             type="button"
             tabindex="-1"
-            :data-test="`${isRun ? 'run-mention-option' : 'chat-target-option'}-${target.id}`"
+            :data-test="`run-mention-option-${target.id}`"
             class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left focus:outline-none"
             :class="index === highlight ? 'bg-gray-100' : 'hover:bg-gray-50'"
             @mouseenter="emit('highlight', index)"
@@ -52,29 +46,25 @@
         </li>
       </template>
     </ul>
-    <footer class="border-t border-gray-100 px-3 py-1.5 text-xs text-gray-400" :data-test="isRun ? 'run-mention-menu-footer' : undefined">
-      {{ isRun ? $t('chat.mentions.footerRelay', { agent: focusedName }) : $t('chat.targets.footer') }}
+    <footer class="border-t border-gray-100 px-3 py-1.5 text-xs text-gray-400" data-test="run-mention-menu-footer">
+      {{ $t('chat.mentions.footerRelay', { agent: focusedName }) }}
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { ChatTargetOption } from '~/components/chat/chatComposerMenus'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   listId: string
   query: string
   targets: ChatTargetOption[]
   highlight: number
-  variant?: 'launch' | 'run'
-  /** `run` only: the agent the user is talking to; it receives the message. */
+  /** The agent the user is talking to; it receives the message and brings the collaborator in. */
   focusedName?: string
-}>(), { variant: 'launch', focusedName: '' })
+}>(), { focusedName: '' })
 const emit = defineEmits<{
   (event: 'choose', index: number): void
   (event: 'highlight', index: number): void
 }>()
-
-const isRun = computed(() => props.variant === 'run')
 </script>

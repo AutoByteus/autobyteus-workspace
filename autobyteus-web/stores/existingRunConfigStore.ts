@@ -41,8 +41,10 @@ import {
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 import type { AgentOrgRunConfigRead } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import { existingRunConfigResultActions } from '~/stores/existingRunConfigResultActions'
+import { existingRunConfigEditActions } from '~/stores/existingRunConfigEditActions'
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
+
 const metadataSelection = (metadata: RunResumeConfigPayload['metadataConfig']): ExistingRunModelSelection => ({
   llmModelIdentifier: metadata.llmModelIdentifier,
   llmConfig: cloneExistingRunModelConfig(metadata.llmConfig),
@@ -137,9 +139,11 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         const options = await loadExistingRunModelOptions(draft)
         if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.modelOptionsByAddress = options
+        this.deriveSchemaStates()
       } catch {
         if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
         this.modelOptionsByAddress = Object.fromEntries(addresses.map((address) => [address, { status: 'unavailable', options: null }]))
+        this.deriveSchemaStates()
       }
     },
     clear(): void {
@@ -323,6 +327,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       this.draft = { ...this.draft, draftSelection: cloneExistingRunSelection(selection) }
       this.feedback = null
       this.fieldErrors = []
+      this.deriveSchemaStates()
     },
     updateTeamScopeModelConfig(address: string, selection: ExistingRunModelSelection, directlyEdited = true): void {
       if (this.draft?.kind !== 'team' || !this.draft.editability.editable || this.draft.isActive
@@ -333,6 +338,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       }
       this.feedback = null
       this.fieldErrors = []
+      this.deriveSchemaStates()
     },
     updateAgentOrgScopeModelConfig(address: string, selection: ExistingRunModelSelection, directlyEdited = true): void {
       if (this.draft?.kind !== 'agent_org' || !this.draft.editability.editable || this.draft.isActive
@@ -341,6 +347,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         planner: updateExistingAgentOrgScopeModelConfig(this.draft.planner, address, selection, directlyEdited) }
       this.feedback = null
       this.fieldErrors = []
+      this.deriveSchemaStates()
     },
     updateAgentOrgWorkspaceSelection(address: string, selection: WorkspaceSelectionState): void {
       if (this.draft?.kind !== 'agent_org' || !this.draft.editability.editable || this.draft.isActive
@@ -350,11 +357,6 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       this.feedback = null
       this.fieldErrors = []
       void this.refreshModelOptions(selection.mode === 'new' ? 250 : 0)
-    },
-    setSchemaState(address: string, state: ExistingRunModelConfigSchemaState): void {
-      if (!this.draft || (this.draft.kind === 'agent' && address !== '/') ||
-          (this.draft.kind !== 'agent' && !this.draft.planner.scopesByAddress[address])) return
-      this.schemaStateByAddress = { ...this.schemaStateByAddress, [address]: { ...state } }
     },
     async save(): Promise<boolean> {
       const draft = this.draft
@@ -459,5 +461,6 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       return false
     },
     ...existingRunConfigResultActions,
+    ...existingRunConfigEditActions,
   },
 })

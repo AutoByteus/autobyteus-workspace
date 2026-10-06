@@ -1,0 +1,132 @@
+{
+  "startedAt": "2026-10-05T21:40:49.459Z",
+  "sourceCommit": "83ab477e4cbb4428b40dfa40360f6a19cb58d2c7",
+  "environment": {
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data",
+    "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace",
+    "backendUrl": "http://127.0.0.1:63095",
+    "frontendUrl": "http://127.0.0.1:63096",
+    "wrapper": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/agy-wrapper.mjs",
+    "realAgy": "/Users/normy/.local/bin/agy",
+    "chrome": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "model": "gemini-3.8-flash-low",
+    "orgDefinitionId": "agy-r7-large-org-3ab65078",
+    "browserErrors": [],
+    "treeShapeObserved": {
+      "rootMembers": [
+        {
+          "address": "/agent01",
+          "memberCount": null
+        },
+        {
+          "address": "/agent02",
+          "memberCount": null
+        },
+        {
+          "address": "/team1",
+          "memberCount": 4
+        },
+        {
+          "address": "/team2",
+          "memberCount": 4
+        },
+        {
+          "address": "/team3",
+          "memberCount": 4
+        }
+      ],
+      "directCount": 2,
+      "nestedCount": 3
+    }
+  },
+  "cases": {
+    "largeOrg": {
+      "result": "Pass",
+      "runId": "agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5",
+      "elapsedMs": 4434,
+      "healthLatenciesMs": [
+        2,
+        2,
+        1
+      ],
+      "placementAddresses": [
+        "/",
+        "/agent01",
+        "/agent02",
+        "/team1",
+        "/team1/agent03",
+        "/team1/agent04",
+        "/team1/agent05",
+        "/team1/agent06",
+        "/team2",
+        "/team2/agent07",
+        "/team2/agent08",
+        "/team2/agent09",
+        "/team2/agent10",
+        "/team3",
+        "/team3/agent11",
+        "/team3/agent12",
+        "/team3/agent13",
+        "/team3/agent14"
+      ],
+      "slowModelsCalls": 1,
+      "active": true,
+      "treeShape": {
+        "root": 1,
+        "teams": 3,
+        "agents": 14
+      }
+    },
+    "timeout": {
+      "result": "Pass",
+      "elapsedMs": 15588,
+      "healthLatenciesMs": [
+        2,
+        2,
+        3
+      ],
+      "rendered": "Couldn't start this Agent Org. Try again.",
+      "loggedDiagnostic": "Failed to start the Agent Org: Error: Invalid configuration for '/': Antigravity model discovery timed out; check the CLI and retry.\n    at Proxy.launch (http://127.0.0.1:63096/_nuxt/stores/agentOrgRunStore.ts:15:60)\n    at async Object.launch (http://127.0.0.1:63096/_nuxt/services/agentOrgExecution/agentOrgLaunchService.ts:33:22)\n    at async Proxy.launch (http://127.0.0.1:63096/_nuxt/stores/agentOrgLaunchDraftStore.ts:285:24)"
+    },
+    "failed": {
+      "result": "Pass",
+      "elapsedMs": 642,
+      "rendered": "Couldn't start this Agent Org. Try again.",
+      "loggedDiagnostic": "Failed to start the Agent Org: Error: Invalid configuration for '/': Antigravity model discovery failed; check authentication or network and retry.\n    at Proxy.launch (http://127.0.0.1:63096/_nuxt/stores/agentOrgRunStore.ts:15:60)\n    at async Object.launch (http://127.0.0.1:63096/_nuxt/services/agentOrgExecution/agentOrgLaunchService.ts:33:22)\n    at async Proxy.launch (http://127.0.0.1:63096/_nuxt/stores/agentOrgLaunchDraftStore.ts:285:24)"
+    },
+    "missing": {
+      "result": "Pass",
+      "elapsedMs": 647,
+      "rendered": "Couldn't start this Agent Org. Try again.",
+      "loggedDiagnostic": "Failed to start the Agent Org: Error: Invalid configuration for '/': The selected model is unavailable.\n    at Proxy.launch (http://127.0.0.1:63096/_nuxt/stores/agentOrgRunStore.ts:15:60)\n    at async Object.launch (http://127.0.0.1:63096/_nuxt/services/agentOrgExecution/agentOrgLaunchService.ts:33:22)\n    at async Proxy.launch (http://127.0.0.1:63096/_nuxt/stores/agentOrgLaunchDraftStore.ts:285:24)"
+    },
+    "persistedTree": {
+      "result": "Pass",
+      "oldBackendPid": 34946,
+      "newBackendPid": 35297,
+      "sameRunId": "agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5",
+      "placementCount": 18,
+      "exactTreeAndIdentityStable": true
+    }
+  },
+  "failures": [],
+  "cleanup": {
+    "backendA": {
+      "pid": 34946,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "frontend": {
+      "pid": 34978,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "backend": {
+      "pid": 35297,
+      "exitCode": 0,
+      "signalCode": null
+    }
+  },
+  "result": "Pass",
+  "endedAt": "2026-10-05T21:41:46.700Z"
+}

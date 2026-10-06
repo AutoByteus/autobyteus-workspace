@@ -1,0 +1,170 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:61453
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:61453
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:61304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T19:26:32.544Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-10-05T19:26:32.993Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-05T19:26:32.994Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1791228393001,"pid":61304,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61494"}
+{"level":30,"time":1791228393067,"pid":61304,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:61453"}
+[2026-10-05T19:26:33.067Z] [INFO] [server.runtime] Server listening on 127.0.0.1:61453
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID research-assistant.
+Agent Definition created successfully with ID: research-assistant
+In-memory cache: Added new agent definition with ID code-reviewer.
+Agent Definition created successfully with ID: code-reviewer
+In-memory cache: Added new agent definition with ID researcher.
+Agent Definition created successfully with ID: researcher
+In-memory cache: Added new agent definition with ID writer.
+Agent Definition created successfully with ID: writer
+In-memory cache: Added new agent definition with ID analyst.
+Agent Definition created successfully with ID: analyst
+In-memory cache: Added new agent definition with ID product-prototyper.
+Agent Definition created successfully with ID: product-prototyper
+In-memory cache: Added new agent definition with ID prototype-bootstrapper.
+Agent Definition created successfully with ID: prototype-bootstrapper
+[2026-10-05T19:26:33.655Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID product-team.
+Agent Team Definition created successfully with ID: product-team
+[2026-10-05T19:26:33.691Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID review-team.
+Agent Team Definition created successfully with ID: review-team
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_166f51118a764d0d84833c8b10cea752
+Created agent session 7db25cdc-e263-4eef-877e-fe2084644cd1 for run research_assistant_166f51118a764d0d84833c8b10cea752
+Agent WebSocket connected: session=7db25cdc-e263-4eef-877e-fe2084644cd1, run=research_assistant_166f51118a764d0d84833c8b10cea752
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1791228429527,"pid":61304,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_CELQXPa3aKITXVn5ZPqx4hI96Q28yPA4R7VLPLBi_-A","statusCode":400,"elapsedMs":0.7754579782485962,"msg":"http request completed"}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory/agents/research_assistant_166f51118a764d0d84833c8b10cea752/collaboration/product_team_74e79812d3d349bcac73a5df74587769/product_prototyper_d20ad357cf7a4d20ab345c94a4824b09/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory/agents/research_assistant_166f51118a764d0d84833c8b10cea752/collaboration/product_team_74e79812d3d349bcac73a5df74587769/prototype_bootstrapper_e28070f949c04a4e9aaa008a21fea58c/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1791228437112,"pid":61304,"hostname":"MacBookPro","reqId":"req-6","method":"POST","url":"/mcp/agent-tools/agtrun_ppDYxGQg-6pwhQe4vhrqE_0q0vRM_mQNyUckpKnJzCo","statusCode":400,"elapsedMs":0.4601249694824219,"msg":"http request completed"}
+Closed agent session 7db25cdc-e263-4eef-877e-fe2084644cd1
+Agent WebSocket disconnected: 7db25cdc-e263-4eef-877e-fe2084644cd1
+Agent websocket attached for run research_assistant_166f51118a764d0d84833c8b10cea752
+Created agent session c8746a4e-817d-4c0b-b04d-9b1f5be676b5 for run research_assistant_166f51118a764d0d84833c8b10cea752
+Agent WebSocket connected: session=c8746a4e-817d-4c0b-b04d-9b1f5be676b5, run=research_assistant_166f51118a764d0d84833c8b10cea752
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory/agent_teams/review_team_1e1e67481e804334be9756b17f8cf5a2/researcher_83e60222c40d489098e6f500cf9dd55e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory/agent_teams/review_team_1e1e67481e804334be9756b17f8cf5a2/writer_a15af51d95dc4b1da0f601737acbd4b7/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_1e1e67481e804334be9756b17f8cf5a2
+Created agent session 20cce0f7-35ce-4551-86fc-3d9b9fd44b7e for run review_team_1e1e67481e804334be9756b17f8cf5a2
+Agent Team WebSocket connected: session=20cce0f7-35ce-4551-86fc-3d9b9fd44b7e, run=review_team_1e1e67481e804334be9756b17f8cf5a2
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory/agent_teams/review_team_1e1e67481e804334be9756b17f8cf5a2/researcher_83e60222c40d489098e6f500cf9dd55e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-i1V1mE/server-data/memory/agent_teams/review_team_1e1e67481e804334be9756b17f8cf5a2/researcher_83e60222c40d489098e6f500cf9dd55e/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1791228449282,"pid":61304,"hostname":"MacBookPro","reqId":"req-b","method":"POST","url":"/mcp/agent-tools/agtrun_fKQzAkRrm_FLh3OPmAtDVz2LmeKoqnBc90lumB5P4hQ","statusCode":400,"elapsedMs":0.37483298778533936,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1791228457136,"pid":61304,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/mcp/agent-tools/agtrun_9jROQviL3MhTFe7QuxMNC4Vx1KniYntX9SJMYpTumQ8","statusCode":400,"elapsedMs":0.7070000171661377,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1791228462284,"pid":61304,"hostname":"MacBookPro","reqId":"req-l","method":"POST","url":"/mcp/agent-tools/agtrun_ZNW1VPL4npGc7aUFJKEXxK_oX_M9kiCSQVHxGqwKig4","statusCode":400,"elapsedMs":0.26212501525878906,"msg":"http request completed"}
+Closed agent session 20cce0f7-35ce-4551-86fc-3d9b9fd44b7e
+Closed agent session c8746a4e-817d-4c0b-b04d-9b1f5be676b5
+Agent WebSocket disconnected: c8746a4e-817d-4c0b-b04d-9b1f5be676b5
+[2026-10-05T19:28:15.771Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-05T19:28:16.065Z] [INFO] [server.runtime] Server closed cleanly.

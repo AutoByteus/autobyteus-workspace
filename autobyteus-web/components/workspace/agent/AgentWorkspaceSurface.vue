@@ -17,6 +17,7 @@
       </div>
       <WorkspaceHeaderActions
         v-if="showHeaderActions"
+        :show-edit-config="showEditConfig"
         @new-agent="$emit('new-agent')"
         @edit-config="$emit('edit-config')"
       />
@@ -64,12 +65,14 @@ import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTa
 const props = withDefaults(defineProps<{
   target: ActiveAgentWorkspaceTarget
   showHeaderActions?: boolean
+  /** ⚙ (Edit Config); hidden for a `temp-*` context, which has no saved settings. */
+  showEditConfig?: boolean
   recoveryNotice?: string | null
   /** `/` skill tags in the box; supplied only for standalone agent runs. */
   skillTagging?: SkillTaggingCapability | null
   /** Composer placeholder for a target without skill tags. */
   composerPlaceholder?: string | null
-}>(), { showHeaderActions: false, recoveryNotice: null, skillTagging: null, composerPlaceholder: null })
+}>(), { showHeaderActions: false, showEditConfig: true, recoveryNotice: null, skillTagging: null, composerPlaceholder: null })
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()

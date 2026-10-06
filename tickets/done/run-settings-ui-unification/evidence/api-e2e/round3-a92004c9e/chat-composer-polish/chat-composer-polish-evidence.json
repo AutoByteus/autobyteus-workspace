@@ -1,0 +1,342 @@
+{
+  "startedAt": "2026-10-05T22:26:12.132Z",
+  "cases": {
+    "T01": {
+      "title": "Claude SDK merged thinking menu at desktop width: Off state, pick High, Off, Medium, Off→Medium (A-1)",
+      "result": "Pass",
+      "ms": 6077,
+      "details": {
+        "model": "claude-fable-5",
+        "effortLevels": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "initial": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "medium"
+          }
+        },
+        "openFocus": "chat-thinking-option-primary-off",
+        "offMenu": {
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 1040.5,
+            "y": 360,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 581.5,
+            "right": 1216.5
+          },
+          "position": "absolute"
+        },
+        "high": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(93, 93, 93)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "offAgain": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "medium": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        },
+        "storedOffMedium": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "repick": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    },
+    "T02": {
+      "title": "Launch a chat at High: the created run records thinking_enabled:true + reasoning_effort:high (AC-001)",
+      "result": "Pass",
+      "ms": 7472,
+      "details": {
+        "runId": "daily_assistant_18944555958d47398e38f73dc1eba6f9",
+        "draft": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        },
+        "recorded": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        },
+        "runtimeReplied": true
+      }
+    },
+    "T03": {
+      "title": "Launch Off → recorded Off → ⚙ run settings: choosing an effort turns Thinking on → save keeps effort (AC-010)",
+      "result": "Pass",
+      "ms": 10922,
+      "details": {
+        "runId": "daily_assistant_4a8315b4e0a04deea61202f2f0eb53a9",
+        "recordedOff": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "offRendered": {
+          "trigger": "Off"
+        },
+        "before": "medium",
+        "target": "high",
+        "after": {
+          "trigger": "High",
+          "saveEnabled": true
+        },
+        "saved": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        }
+      }
+    },
+    "T04": {
+      "title": "A model without an on/off switch keeps the per-parameter thinking menu (AC-006)",
+      "result": "Pass",
+      "ms": 2952,
+      "details": {
+        "runtimeKind": "codex_app_server",
+        "model": "gpt-5.6-luna",
+        "keys": [
+          "reasoning_effort",
+          "service_tier"
+        ],
+        "before": {
+          "trigger": "Medium",
+          "draft": {
+            "reasoning_effort": "medium"
+          }
+        },
+        "items": [
+          "chat-thinking-option-reasoning_effort-low",
+          "chat-thinking-option-reasoning_effort-medium",
+          "chat-thinking-option-reasoning_effort-high",
+          "chat-thinking-option-reasoning_effort-xhigh",
+          "chat-thinking-option-reasoning_effort-max"
+        ],
+        "after": {
+          "trigger": "Low",
+          "draft": {
+            "reasoning_effort": "low"
+          },
+          "picked": "low"
+        }
+      }
+    },
+    "T05": {
+      "title": "Workspace search at desktop width with 14 workspaces: focus, filter, path, empty state, keys, IME guard, Escape, reset (AC-007, AC-008)",
+      "result": "Pass",
+      "ms": 1517,
+      "details": {
+        "initialSelection": "Temp workspace",
+        "open": {
+          "position": "absolute",
+          "box": {
+            "x": 506.5,
+            "y": 161.5,
+            "w": 384,
+            "h": 420,
+            "right": 890.5,
+            "bottom": 581.5
+          },
+          "scrolls": true,
+          "inputInListbox": false,
+          "placeholder": "Search workspaces",
+          "ariaLabel": "Search workspaces",
+          "options": 15
+        },
+        "mcps": [
+          "MCPS-tools",
+          "autobyteus_mcps"
+        ],
+        "byPath": [
+          "lambda-sdk"
+        ],
+        "empty": "No workspaces match “zzz”",
+        "notesOrder": [
+          "alpha-notes",
+          "notes"
+        ],
+        "keys": {
+          "k1": "chat-workspace-option-agent_ws_856f38d8e98ecb1fae26f8302ac70e333cf8a586ddd5acf10e79c6388a17f53c",
+          "k2": "chat-workspace-option-agent_ws_227a80a374e9d861e077de96546bbbecd3d08d5ba319a41eff7378f411fa9d64",
+          "k3": "chat-workspace-option-agent_ws_856f38d8e98ecb1fae26f8302ac70e333cf8a586ddd5acf10e79c6388a17f53c",
+          "k4": "chat-workspace-search"
+        },
+        "picked": "notes",
+        "hint": null,
+        "reopenedQuery": "",
+        "afterEscape": "notes",
+        "enterPick": "gamma-api",
+        "folderForm": true
+      }
+    },
+    "T06": {
+      "title": "Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)",
+      "result": "Pass",
+      "ms": 7020,
+      "details": {
+        "1440x1000": {
+          "thinkingTriggerSettledMs": 1291,
+          "paddingTop": 140,
+          "paddingBottom": 40,
+          "composerTop": 521.5,
+          "blockCenterMinusAreaCenter": 32,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 506.5,
+            "y": 218.5,
+            "right": 890.5,
+            "bottom": 638.5
+          },
+          "thBox": {
+            "x": 1040.5,
+            "y": 417,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 638.5,
+            "right": 1216.5
+          }
+        },
+        "1280x700": {
+          "thinkingTriggerSettledMs": 1813,
+          "paddingTop": 98,
+          "paddingBottom": 40,
+          "composerTop": 350.5,
+          "blockCenterMinusAreaCenter": 11,
+          "noOverlap": true,
+          "inside": true,
+          "overflow": false,
+          "wsBox": {
+            "x": 426.5,
+            "y": 47.5,
+            "right": 810.5,
+            "bottom": 467.5
+          },
+          "thBox": {
+            "x": 960.5,
+            "y": 246,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 467.5,
+            "right": 1136.5
+          }
+        }
+      }
+    },
+    "T07": {
+      "title": "Narrow bottom sheet (413×738): merged thinking list and workspace search still work",
+      "result": "Pass",
+      "ms": 3485,
+      "details": {
+        "thinking": {
+          "position": "fixed",
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 8,
+            "y": 508.5,
+            "w": 397,
+            "h": 221.5,
+            "bottom": 730,
+            "right": 405
+          }
+        },
+        "names": [
+          "kappa-cli"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 95841
+    },
+    {
+      "label": "frontend",
+      "pid": 95867
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 95867,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 95841,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-48FxUh"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-48FxUh",
+  "backendUrl": "http://127.0.0.1:53548",
+  "frontUrl": "http://127.0.0.1:53549",
+  "workspaces": {
+    "alpha-notes": "agent_ws_856f38d8e98ecb1fae26f8302ac70e333cf8a586ddd5acf10e79c6388a17f53c",
+    "autobyteus_mcps": "agent_ws_5cb4eac120377c01937eed3ab9b3d84c30b6abe20ab847fa41c79c1122aad740",
+    "MCPS-tools": "agent_ws_2fd0f9afa6421d744fed88d7f7eb75bb9d2b0503f12d00e4bcc7bc00b8f41c2f",
+    "beta-site": "agent_ws_2d944a0452e008d4771fcf44e21bdfaca3c7f72598cf2b8e557db7ad29fe8300",
+    "gamma-api": "agent_ws_35097329d8fb1ffd06a1590382d83f52bfb0d0da717ab5e0ba63c90531c2ec13",
+    "delta-infra": "agent_ws_f69d5e2fba73a99ebc4f7d5535bd7de7c2dc6dfee70714add1d346ceefb02547",
+    "epsilon-docs": "agent_ws_7916ee7e8f7c2b6f07dbe29f2364038ff76d8eb0ec3722e5b3bc161a37ae61ff",
+    "zeta-mobile": "agent_ws_b66b01e638b8d73e78883f2b51539cdfe29cc1c6e2f01ffc6262e76abe1aff48",
+    "eta-data": "agent_ws_fb51802bab9cd3602a9310c3c6d6f1ac637020a9ab228f5810f1808fb41746c8",
+    "theta-ml": "agent_ws_da047b1562a8283b3c0a744d1fc525a9740d3666ee81f011226e3e851805a634",
+    "iota-web": "agent_ws_bcc999285c58cfbea3a29e5b81ebb02a3f4e78c51c0121f6d4c883e641b8018d",
+    "kappa-cli": "agent_ws_fef684e488762bcf391b450b535d4b17bfe7a7aa0d73e6774c9449bb38b516c3",
+    "lambda-sdk": "agent_ws_d8008831c503c255b876595489bc4a8e63ee7d22d447039058ddef85d0f947ab",
+    "notes": "agent_ws_227a80a374e9d861e077de96546bbbecd3d08d5ba319a41eff7378f411fa9d64"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-05T22:27:05.866Z"
+}

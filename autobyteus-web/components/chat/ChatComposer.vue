@@ -23,10 +23,9 @@
           :disabled="starting || target?.access === 'read_only'"
           :skill-options="skillOptions"
           :skills-all-installed="skillsAllInstalled"
-          :target-options="targetOptions"
+          :mention-source="mentionSource"
           :autofocus="autofocus"
           @submit="activatePrimaryAction"
-          @select-target="emit('select-target', $event)"
         />
 
         <VoiceInputStatusRow class="mx-3 mb-2" />
@@ -36,11 +35,13 @@
     <!-- Footer: what can still change for this chat. Left: workspace and approval (New chat only). -->
     <div class="flex flex-wrap items-center gap-0.5 rounded-b-xl border-t border-gray-100 bg-white px-2 py-1.5" data-test="chat-composer-footer">
       <slot name="footer-left" />
-      <div class="ml-auto flex items-center gap-0.5">
+      <!-- min-w-0: a long model name truncates so Send always stays inside the box. -->
+      <div class="ml-auto flex min-w-0 max-w-full items-center gap-0.5">
         <slot name="footer-right" />
         <span class="w-1" aria-hidden="true"></span>
-        <VoiceInputButton :target="voiceTarget" compact />
+        <VoiceInputButton class="flex-shrink-0" :target="voiceTarget" compact />
         <MessagePrimaryActionButton
+          class="flex-shrink-0"
           data-test="chat-primary-action"
           compact
           :kind="primaryKind"
@@ -63,10 +64,9 @@ import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue'
 import ChatMessageInput from '~/components/chat/ChatMessageInput.vue'
 import SkillTagChips from '~/components/chat/SkillTagChips.vue'
-import type { ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import type { MentionCandidateSource } from '~/composables/runSettings/useMentionCandidates'
 import type { SkillTagOption } from '~/utils/skills/skillTagMenu'
 import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget'
-import type { ChatTarget } from '~/stores/chatDraftStore'
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
 import { useToasts } from '~/composables/useToasts'
 import { hasSendableDraft, resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction'
@@ -77,7 +77,8 @@ const props = withDefaults(defineProps<{
   placeholder: string
   skillOptions: SkillTagOption[] | null
   skillsAllInstalled?: boolean
-  targetOptions?: ChatTargetOption[] | null
+  /** Where `@` candidates come from; null when `@` is not offered. */
+  mentionSource?: MentionCandidateSource | null
   /** The first send of a New chat is in flight. */
   starting?: boolean
   /** Why the draft cannot be sent (e.g. its runtime is unavailable); labels the disabled send button. */
@@ -85,12 +86,11 @@ const props = withDefaults(defineProps<{
   autofocus?: boolean
 }>(), {
   skillsAllInstalled: false,
-  targetOptions: null,
+  mentionSource: null,
   starting: false,
   sendBlockedReason: null,
   autofocus: false,
 })
-const emit = defineEmits<{ (event: 'select-target', target: ChatTarget): void }>()
 
 const slots = useSlots()
 const inputRef = ref<InstanceType<typeof ChatMessageInput> | null>(null)

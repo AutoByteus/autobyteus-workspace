@@ -1,0 +1,210 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63095
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63095
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "r7.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/db/r7.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:34946) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T21:40:51.241Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-10-05T21:40:51.638Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-05T21:40:51.642Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+Agent definition cache populated with 49 items.
+{"level":30,"time":1791236451650,"pid":34946,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63112"}
+{"level":30,"time":1791236451673,"pid":34946,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63095"}
+[2026-10-05T21:40:51.673Z] [INFO] [server.runtime] Server listening on 127.0.0.1:63095
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID agy-r7-agent-01-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-01-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-02-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-02-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-03-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-03-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-04-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-04-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-05-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-05-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-06-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-06-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-07-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-07-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-08-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-08-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-09-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-09-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-10-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-10-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-11-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-11-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-12-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-12-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-13-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-13-3ab65078
+In-memory cache: Added new agent definition with ID agy-r7-agent-14-3ab65078.
+Agent Definition created successfully with ID: agy-r7-agent-14-3ab65078
+[2026-10-05T21:40:53.974Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-r7-team-1-3ab65078.
+Agent Team Definition created successfully with ID: agy-r7-team-1-3ab65078
+[2026-10-05T21:40:53.991Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-r7-team-2-3ab65078.
+Agent Team Definition created successfully with ID: agy-r7-team-2-3ab65078
+[2026-10-05T21:40:54.008Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-r7-team-3-3ab65078.
+Agent Team Definition created successfully with ID: agy-r7-team-3-3ab65078
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace.
+Created and registered workspace ID: agent_ws_6ac2d9ebb9b67bd8419a03e5712cb17bd495318e910fd327099ade062881732d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace.
+Reusing registered workspace ID: agent_ws_6ac2d9ebb9b67bd8419a03e5712cb17bd495318e910fd327099ade062881732d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_agent_01_3ab65078_343eaaa3f1e946ea83004a5743ca63c6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_agent_02_3ab65078_a254b5383a014a3cb26000f374dc4022/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_03_3ab65078_1e71d5bb3f5948c48041ebd3d19a0818/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_04_3ab65078_2ce15aeaf38b43c08a514f3656b8841c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_05_3ab65078_b6bf696f1a184c7ab16ec37ac0a62d76/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_06_3ab65078_db0c87211858436b86731610567a4671/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_08_3ab65078_2797dfcabf1e4fd6b26fca3c2a9dcb86/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_09_3ab65078_dc4ae2fd7c3c450385d6397886f777f8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_10_3ab65078_cd7e0c80541f4c3abdeb8ccdafda4b17/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_11_3ab65078_41c044147d984b4a9f0fd3bec662fb43/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_07_3ab65078_1f937bcac1a848a4ab0951fd3bb66673/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_13_3ab65078_3296427363674fac851b4b8727433804/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_14_3ab65078_2c545a9c5f824bd599e0a6a78def477e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_12_3ab65078_159709101def44219a424f2c255dff2d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_agent_01_3ab65078_343eaaa3f1e946ea83004a5743ca63c6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_agent_02_3ab65078_a254b5383a014a3cb26000f374dc4022/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_03_3ab65078_1e71d5bb3f5948c48041ebd3d19a0818/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_04_3ab65078_2ce15aeaf38b43c08a514f3656b8841c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_05_3ab65078_b6bf696f1a184c7ab16ec37ac0a62d76/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_1_3ab65078_6d01b6d4bfca45a0bf907ad363ba3eca/agy_r7_agent_06_3ab65078_db0c87211858436b86731610567a4671/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_08_3ab65078_2797dfcabf1e4fd6b26fca3c2a9dcb86/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_09_3ab65078_dc4ae2fd7c3c450385d6397886f777f8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_10_3ab65078_cd7e0c80541f4c3abdeb8ccdafda4b17/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_11_3ab65078_41c044147d984b4a9f0fd3bec662fb43/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_2_3ab65078_8ca4feb033a443b09ac3d25ab124d325/agy_r7_agent_07_3ab65078_1f937bcac1a848a4ab0951fd3bb66673/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_13_3ab65078_3296427363674fac851b4b8727433804/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_14_3ab65078_2c545a9c5f824bd599e0a6a78def477e/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/server-data/memory/agent_orgs/agy_r7_large_org_3ab65078_b44af3161ab64a389dcc7eb0d0dccce5/agy_r7_team_3_3ab65078_15113595a6ef4ec88fe7bc95174cbe60/agy_r7_agent_12_3ab65078_159709101def44219a424f2c255dff2d/raw_traces_active.jsonl
+Created terminal session 64fd4d2b-6bd6-46ee-8325-0f565f1de99f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 64fd4d2b-6bd6-46ee-8325-0f565f1de99f
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 64fd4d2b-6bd6-46ee-8325-0f565f1de99f
+Terminal WebSocket disconnected: 64fd4d2b-6bd6-46ee-8325-0f565f1de99f
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace.
+Reusing registered workspace ID: agent_ws_6ac2d9ebb9b67bd8419a03e5712cb17bd495318e910fd327099ade062881732d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace.
+Reusing registered workspace ID: agent_ws_6ac2d9ebb9b67bd8419a03e5712cb17bd495318e910fd327099ade062881732d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-QSNI0a/selected-workspace.
+Reusing registered workspace ID: agent_ws_6ac2d9ebb9b67bd8419a03e5712cb17bd495318e910fd327099ade062881732d
+[2026-10-05T21:41:43.838Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-05T21:41:43.847Z] [INFO] [server.runtime] Server closed cleanly.

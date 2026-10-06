@@ -1,0 +1,139 @@
+{
+  "startedAt": "2026-10-05T19:52:01.303Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "N01": {
+      "title": "New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target",
+      "result": "Pass",
+      "ms": 4582,
+      "details": {
+        "targets": [
+          "autobyteus-daily-assistant",
+          "analyst",
+          "autobyteus-project-task-manager",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team",
+          "launch-org"
+        ],
+        "mentions": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    },
+    "N02": {
+      "title": "AF-009 / REQ-012: an Agent New chat first send with an `@Team` mention starts the run and the server admits the collaborator Team; the host briefs it",
+      "result": "Pass",
+      "ms": 17094,
+      "details": {
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ],
+        "text": "please ask @Product Team to design a tiny settings page and report back.",
+        "runId": "research_assistant_8c9a7847a14643a4b884aaeef0b35d50",
+        "entry": {
+          "kind": "agent_team",
+          "address": "/product_team",
+          "teamRunId": "product_team_27c6f2f707d8409fa080052a7ab242c0",
+          "members": [
+            "/product_team/product_prototyper",
+            "/product_team/prototype_bootstrapper"
+          ]
+        },
+        "userMention": "@Product Team",
+        "briefed": true
+      }
+    },
+    "N03": {
+      "title": "AF-009 / AR-001: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run and the team root admits the collaborator",
+      "result": "Pass",
+      "ms": 25983,
+      "details": {
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "product-team"
+        ],
+        "footer": "researcher gets your message and brings them into this run",
+        "text": "please ask @Code Reviewer to review the phrase \"hello team\" and report back.",
+        "teamRunId": "review_team_9416f7b170644620ae1e563fa67a4132",
+        "entry": {
+          "kind": "agent",
+          "address": "/code_reviewer",
+          "agentRunId": "code_reviewer_5a197bdffc4c442c8657d399efb3cfec"
+        },
+        "userMention": "@Code Reviewer",
+        "reported": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 63543
+    },
+    {
+      "label": "frontend",
+      "pid": 63570
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 63570,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 63543,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-jL3spD"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-jL3spD",
+  "backendUrl": "http://127.0.0.1:64783",
+  "frontUrl": "http://127.0.0.1:64784",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 3,
+    "fail": 0,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-05T19:52:59.965Z"
+}

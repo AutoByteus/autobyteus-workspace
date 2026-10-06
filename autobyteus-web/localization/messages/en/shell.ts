@@ -163,6 +163,7 @@ const shellMessages = {
   'shell.components.app.AppUpdateNotice.version.unknown': 'unknown',
   'shell.components.app.AppUpdateNotice.version.currentToNew': 'Current {{current}} → New {{next}}',
   'shell.components.app.AppUpdateNotice.version.currentOnly': 'Current {{current}}',
+  'shell.startTools.show': 'Show tools',
 } satisfies TranslationCatalog;
 
 export default shellMessages;

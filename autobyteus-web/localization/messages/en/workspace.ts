@@ -4,33 +4,16 @@ const messages = {
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
-  "workspace.teamCopy.failed": "Could not copy this Team configuration: {error} Use New (+) to retry.",
-  "workspace.runModelConfig.agyAutoApproveLocked": "Antigravity always runs with auto-approve, so it can't be turned off.",
   "workspace.runModelConfig.modelRequired": "Select a model before launch.",
-  "workspace.agentOrg.runConfig.modelRequired": "Select a model for {address} before launch.",
-  "workspace.agentOrg.runConfig.retryInitialization": "Retry loading configuration",
-
   "workspace.runModelConfig.orgOwnershipUnavailable": "This Org run is application-owned. Its model settings cannot be edited here.",
   "workspace.agentOrg.inspectionUnavailable": "Saved Agent Org data is unavailable. No run was started.",
   "workspace.runModelConfig.loading": "Loading run configuration…",
-  "workspace.runModelConfig.runUnavailable": "This run is no longer available.",
-  "workspace.runModelConfig.save": "Save",
-  "workspace.runModelConfig.saving": "Saving…",
-  "workspace.runModelConfig.verifying": "Verifying…",
   "workspace.runModelConfig.loadingModels": "Loading model options…",
   "workspace.runModelConfig.catalogError": "Model options could not be loaded. Saved settings were not changed.",
   "workspace.runModelConfig.selectedModelUnavailable": "The selected model is unavailable for the current runtime.",
   "workspace.runModelConfig.retry": "Retry",
-  "workspace.runModelConfig.refreshRequired": "Saved model settings must be refreshed before editing.",
   "workspace.runModelConfig.noAdjustableSettings": "This model has no adjustable settings.",
   "workspace.runModelConfig.schemaUnavailable": "Saved model settings cannot be represented by the current schema.",
-  "workspace.runModelConfig.agentStopped": "This run is stopped. Saved model settings will be used when it resumes.",
-  "workspace.runModelConfig.agentActive": "Stop this run before changing model settings.",
-  "workspace.runModelConfig.teamStopped": "This team is stopped. Saved model settings will be used when it resumes.",
-  "workspace.runModelConfig.orgStopped": "This Org is stopped. Save model settings and mounted Team workspaces for the next continuation. A Team workspace applies to all its configured Agents; existing files and history stay where they are.",
-  "workspace.runModelConfig.orgActive": "Stop the enclosing Org before changing its settings.",
-  "workspace.runModelConfig.teamActive": "Stop this team before changing model settings.",
-  "workspace.runModelConfig.fixedRuntime": "Runtime is fixed for this saved run.",
   "workspace.runModelConfig.nativeModelHelp": "Choose a verified model with at least the saved model’s context capacity.",
   "workspace.runModelConfig.externalModelHelp": "Choose any model offered by this runtime. The runtime handles context limits when the run resumes.",
   "workspace.runModelConfig.unknownModelHelp": "Replacement models for this runtime are unavailable.",
@@ -39,7 +22,6 @@ const messages = {
   "workspace.runModelConfig.replacementInvalid": "This replacement is no longer offered or eligible. Refresh options before saving.",
   "workspace.runModelConfig.noNativeReplacements": "No verified equal-or-larger replacement models are available.",
   "workspace.runModelConfig.noCatalogReplacements": "No other models are currently offered by this runtime.",
-  "workspace.runModelConfig.fixedWorkspace": "Workspace is fixed for existing runs.",
   "workspace.runModelConfig.validation.required": "A value is required.",
   "workspace.runModelConfig.validation.type": "Enter a value of type {expected}.",
   "workspace.runModelConfig.validation.enum": "Choose one of the supported options.",
@@ -94,25 +76,6 @@ const messages = {
   "workspace.agentOrg.history.relativeHours": "{{count}}h",
   "workspace.agentOrg.history.relativeDays": "{{count}}d",
   "workspace.agentOrg.runConfig.orgLabel": "Agent Org",
-  "workspace.agentOrg.runConfig.runtimeHelp": "Selects the runtime used by this organization run.",
-  "workspace.agentOrg.runConfig.modelLabel": "Default LLM Model",
-  "workspace.agentOrg.runConfig.modelHelp": "Used across the organization unless a placement is customized.",
-  "workspace.agentOrg.runConfig.loading": "Loading Agent Org…",
-  "workspace.agentOrg.runConfig.starting": "Starting Agent Org…",
-  "workspace.agentOrg.runConfig.run": "Run Agent Org",
-  "workspace.agentOrg.runConfig.autoApprove": "Auto approve tools",
-  "workspace.agentOrg.runConfig.autoApproveHelp":
-    "Automatically allows tool calls and access requests for this run.",
-  "workspace.agentOrg.runConfig.workspaceRequired": "Workspace is required to run an Agent Org.",
-  "workspace.agentOrg.runConfig.memberOverrides": "Member overrides",
-  "workspace.agentOrg.runConfig.referencesLoading": "Loading organization members…",
-  "workspace.agentOrg.runConfig.referencesUnavailable": "Unable to load organization members: {references}",
-  "workspace.agentOrg.runConfig.schemaLoading": "Validating model configuration for {address}…",
-  "workspace.agentOrg.runConfig.schemaBlocked": "Model configuration for {address} is not ready: {error}",
-  "workspace.agentOrg.runConfig.schemaUnavailable": "The effective model configuration is unavailable.",
-  "workspace.agentOrg.runConfig.workspaceUnavailable": "Workspace '{{workspaceId}}' is unavailable.",
-  "workspace.agentOrg.runConfig.workspacePathRequired": "Workspace path is required.",
-  "workspace.agentOrg.runConfig.workspacePathUnavailable": "Selected workspace has no usable root path.",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram":
     "Expand diagram",
   "workspace.components.conversation.segments.renderer.MermaidDiagram.viewer":
@@ -131,74 +94,16 @@ const messages = {
     "This file is available only on the host workspace.",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "The file preview could not be opened.",
-  "workspace.components.workspace.config.RunConfigPanel.runTeamButton":
-    "Run Team",
-  "workspace.components.workspace.config.RunConfigPanel.runAgentButton":
-    "Run Agent",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "Agent Configuration",
-  "workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration":
-    "New Agent Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":
     "Team Configuration",
-  "workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration":
-    "New Team Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.configuration":
     "Configuration",
-  "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
-    "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
-  "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
-    "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
-  "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
-    "Team Members Override",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
     "{{count}} overridden",
-  "workspace.components.workspace.config.TeamRunConfigForm.topology_repaired":
-    "Team topology changed. Stale settings were removed. Review these addresses and retry:",
-  "workspace.components.workspace.config.TeamRunConfigForm.historical_value_unavailable": "Saved value is unavailable in current options.",
-  "workspace.components.workspace.config.TeamRunConfigForm.saved_model_configuration": "Saved model configuration",
   "workspace.components.workspace.config.TeamScopeConfigEditor.customized": "Customized",
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "Inherited",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.team_marker": "Team",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.reset": "Reset",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.reset_aria": "Reset settings for {{name}} ({{address}})",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help": "Runtime used by this Team scope.",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model": "Default LLM Model",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.model_help": "Nested Teams and Agents inherit this value unless customized.",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.flat_model_help": "Agents in this Team inherit this value unless customized.",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve": "Auto approve tools",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.auto_help": "Inherited by descendant scopes without an override.",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_loading": "Loading models for {{address}}…",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.catalog_error": "Could not load models for {{address}}: {{error}}",
-  "workspace.components.workspace.config.TeamScopeConfigEditor.retry": "Retry",
-  "workspace.components.workspace.config.MemberOverrideItem.coordinator":
-    "Coordinator",
-  "workspace.components.workspace.config.MemberOverrideItem.overridden":
-    "Overridden",
-  "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
-    "Runtime",
-  "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
-    "Global default",
-  "workspace.components.workspace.config.MemberOverrideItem.llm_model_override":
-    "LLM Model",
-  "workspace.components.workspace.config.MemberOverrideItem.use_global_model_default":
-    "Global default",
-  "workspace.components.workspace.config.MemberOverrideItem.search_models":
-    "Search models...",
-  "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
-    "Choose a compatible member model",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_approve":
-    "Auto approve",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
-    "Global default",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
-    "On",
-  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
-    "Off",
-  "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
-    "Agent",
-  "workspace.components.workspace.running.RunningRunRow.newRunLabel":
-    "New - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
   "workspace.components.progress.BackgroundTaskPanel.title":
@@ -247,12 +152,6 @@ const messages = {
     "AutoByteus-supplied · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "AutoByteus-supplied system instructions",
-  "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
-    "Agents",
-  "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":
-    "Teams",
-  "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
-    "No description",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "Messages",
   "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
     "Messages",

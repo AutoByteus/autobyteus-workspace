@@ -38,6 +38,8 @@ const mountPage = () => mount(ChatPage, {
       ChatNewSurface: { template: '<div data-test="stub-new" />' },
       // The chat run view is the workspace frame over the selected standalone run (D-17).
       WorkspaceAdaptiveLayout: { template: '<div data-test="stub-frame" />' },
+      // New chat is a start surface: its tools sit behind one icon (REQ-020).
+      WorkspaceToolShell: { props: { startSurface: Boolean }, template: '<div data-test="stub-tool-shell" :data-start-surface="String(startSurface)"><slot /></div>' },
     },
     mocks: { $t: (key: string) => key },
   },
@@ -53,8 +55,10 @@ describe('pages/chat.vue', () => {
     routing.open.mockReset()
   })
 
-  it('shows the New chat surface without an id', () => {
-    expect(mountPage().find('[data-test="stub-new"]').exists()).toBe(true)
+  it('shows the New chat surface without an id, as a start surface', () => {
+    const wrapper = mountPage()
+    expect(wrapper.find('[data-test="stub-new"]').exists()).toBe(true)
+    expect(wrapper.get('[data-test="stub-tool-shell"]').attributes('data-start-surface')).toBe('true')
   })
 
   it('selects and shows a mounted run', async () => {

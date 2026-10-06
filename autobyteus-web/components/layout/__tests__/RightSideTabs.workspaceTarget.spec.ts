@@ -27,7 +27,6 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions'
-import { useRunActions } from '~/composables/useRunActions'
 import { useRightSideTabs } from '~/composables/useRightSideTabs'
 import { TreeNode } from '~/utils/fileExplorer/TreeNode'
 
@@ -118,8 +117,9 @@ for (const previouslyMounted of [false, true]) {
       return { data: { updateStoppedAgentOrgRunConfig: { success: true, outcome: 'UPDATED', message: 'Saved',
         isActive: false, editability: { editable: true, reason: null }, fieldErrors: [], canonical } } }
     })
-    useRunActions().prepareAgentRun({ id: 'draft-def', name: 'Draft A' } as any)
+    // An unrelated agent launch draft (the mobile run setup owns this store).
     const draftStore = useAgentRunConfigStore()
+    draftStore.setTemplate({ id: 'draft-def', name: 'Draft A' } as any)
     draftStore.setWorkspaceLoaded('A', '/workspace/A', metadata('A'))
     const retainedDraft = draftStore.config
     await files.openFile('A.txt', 'A')

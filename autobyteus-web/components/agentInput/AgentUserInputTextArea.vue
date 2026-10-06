@@ -4,21 +4,12 @@
       {{ $t('agentInput.components.agentInput.AgentUserInputTextArea.compaction_retry') }}
     </p>
     <div ref="rootRef" class="relative flex-grow">
-      <!-- Background only: native textarea owns text, selection, undo and accessibility. -->
-      <div
-        v-if="activeMentionNames.length"
-        class="mention-mirror-viewport"
-        aria-hidden="true"
-        :style="{ width: `${mirrorMetrics.width}px`, height: `${mirrorMetrics.height}px` }"
-        data-test="composer-mention-mirror"
-      >
-        <div
-          class="composer-text mention-mirror"
-          :style="{ transform: `translate(${-mirrorMetrics.scrollLeft}px, ${-mirrorMetrics.scrollTop}px)` }"
-        ><template v-for="(part, index) in mentionParts" :key="index"><span
-          :class="{ 'mention-highlight': part.kind === 'mention' }"
-        >{{ part.kind === 'mention' ? '@' + part.value : part.value }}</span></template></div>
-      </div>
+      <ComposerMentionMirror
+        :text="internalRequirement"
+        :mentions="targetContext?.requestedMentions"
+        :metrics="mirrorMetrics"
+        padding="10px 56px 10px 12px"
+      />
       <textarea
         :value="internalRequirement"
         @input="handleInput"
@@ -88,7 +79,6 @@
           :style="mentionMenu.popover.narrow.value ? undefined : { maxHeight: `${mentionMenu.popover.maxHeight.value}px` }"
         >
           <ChatTargetMenu
-            variant="run"
             :list-id="mentionMenuListId"
             :query="mentionMenu.query.value"
             :targets="mentionMenu.filtered.value"
@@ -119,11 +109,12 @@ import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
 import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
 import ChatTargetMenu from '~/components/chat/ChatTargetMenu.vue';
-import { useRunMentionMenu } from '~/composables/agentInput/useRunMentionMenu';
+import ComposerMentionMirror from '~/components/agentInput/ComposerMentionMirror.vue';
+import { useComposerMentionMenu } from '~/composables/agentInput/useComposerMentionMenu';
+import { useMentionCandidates, type MentionCandidateSource } from '~/composables/runSettings/useMentionCandidates';
 import { useSkillTagMenu, type SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
 import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction';
 import { useLocalization } from '~/composables/useLocalization';
-import { mentionsPresentInText, splitMentionText } from '~/utils/collaborators/collaboratorMentionText';
 
 const props = defineProps<{
   target: ComposerTarget | null;
@@ -247,11 +238,19 @@ const skillMenu = useSkillTagMenu({
   setText: setRequirement,
 });
 
-const mentionMenu = useRunMentionMenu({
+const mentionSource = computed<MentionCandidateSource | null>(() => {
+  const scope = props.target?.mentionScope ?? null;
+  return scope ? { kind: 'live_run', scope } : null;
+});
+const mentionCandidates = useMentionCandidates(mentionSource);
+const mentionMenu = useComposerMentionMenu({
   rootRef,
   textareaRef: textarea,
   context: targetContext,
-  scope: computed(() => props.target?.mentionScope ?? null),
+  available: mentionCandidates.available,
+  candidates: mentionCandidates.candidates,
+  focusedName: mentionCandidates.focusedName,
+  onOpen: mentionCandidates.refresh,
   getText: () => internalRequirement.value,
   setText: setRequirement,
 });
@@ -260,10 +259,6 @@ const composerPlaceholder = computed(() => mentionMenu.available.value
   ? t('chat.mentions.placeholderMention')
   : props.skillTagging?.placeholder || props.placeholder
     || t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message'));
-const activeMentionNames = computed(() => mentionsPresentInText(
-  internalRequirement.value, targetContext.value?.requestedMentions,
-).map((mention) => mention.name));
-const mentionParts = computed(() => splitMentionText(internalRequirement.value, activeMentionNames.value));
 
 /** One menu at a time: `@` takes the token when it matches, otherwise `/`. */
 const detectMenus = () => {
@@ -413,30 +408,6 @@ const voiceTarget = useComposerVoiceTarget(() => props.target);
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: normal;
-}
-.mention-mirror-viewport {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.mention-mirror {
-  width: 100%;
-  color: transparent;
-}
-.mention-highlight {
-  background: #f0f9ff;
-  box-shadow: inset 0 0 0 1px #bae6fd;
-  border-radius: 4px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-@media (forced-colors: active) {
-  /* Native controls may paint an opaque Canvas even with a transparent CSS background. */
-  .mention-mirror-viewport { z-index: 1; }
-  .mention-mirror { forced-color-adjust: none; }
-  .mention-highlight { background: transparent; box-shadow: inset 0 0 0 1px Highlight; }
 }
 textarea {
   outline: none;

@@ -1,0 +1,199 @@
+{
+  "startedAt": "2026-10-05T22:28:56.509Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 6994,
+      "details": {
+        "model": "gpt-5.6-luna",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 14975,
+      "details": {
+        "runId": "daily_assistant_33607cb2b41d427cbb32afd8de7d2f91",
+        "exposure": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "GPT-5.6-Luna (default reasoning: medium) · Codex",
+        "triggerFirstSeen": "gpt-5.6-luna",
+        "triggerSettledAfterMs": 2110
+      }
+    },
+    "C12": {
+      "title": "Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in",
+      "result": "Pass",
+      "ms": 4081,
+      "details": {
+        "sheet": {
+          "x": 8,
+          "y": 569,
+          "width": 374,
+          "height": 267
+        },
+        "runOverflow": 0
+      }
+    },
+    "C16": {
+      "title": "D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)",
+      "result": "Pass",
+      "ms": 22481,
+      "details": {
+        "claude_agent_sdk": [
+          {
+            "id": "opus",
+            "label": "claude-opus-5-5",
+            "secondary": "Opus 5.5 · For complex work and everyday tasks",
+            "recommended": true
+          },
+          {
+            "id": "claude-fable-5",
+            "label": "claude-fable-5",
+            "secondary": "Fable 5 · Most capable for your hardest and longest-running tasks",
+            "recommended": false
+          },
+          {
+            "id": "claude-fable-5-1[1m]",
+            "label": "claude-fable-5-1",
+            "secondary": "Fable 5.1 · For your toughest challenges",
+            "recommended": false
+          },
+          {
+            "id": "haiku",
+            "label": "claude-haiku-4-5-20251001",
+            "secondary": "Haiku 4.5 · Fastest for quick answers",
+            "recommended": false
+          }
+        ],
+        "codex_app_server": [
+          {
+            "id": "gpt-5.6-luna",
+            "label": "GPT-5.6-Luna (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-sol",
+            "label": "GPT-5.6-Sol (default reasoning: low)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-terra",
+            "label": "GPT-5.6-Terra (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-6-astra",
+            "label": "GPT-6-Astra (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          }
+        ],
+        "autobyteus": [
+          {
+            "id": "claude-fable-5",
+            "label": "claude-fable-5",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-fable-5-1",
+            "label": "claude-fable-5-1",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-opus-4.7",
+            "label": "claude-opus-4.7",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-opus-4.8",
+            "label": "claude-opus-4.8",
+            "secondary": null,
+            "recommended": false
+          }
+        ],
+        "freshTrigger": {
+          "firstSeenLabel": "opus",
+          "settledAfterMs": 1044
+        },
+        "narrowFirstSeen": "opus",
+        "narrowSettledAfterMs": 2040,
+        "picked": {
+          "id": "opus",
+          "label": "claude-opus-5-5",
+          "secondary": "Opus 5.5 · For complex work and everyday tasks",
+          "recommended": true,
+          "singleLine": true,
+          "title": "claude-opus-5-5 — Opus 5.5 · For complex work and everyday tasks"
+        },
+        "searches": {
+          "opus-5-5": 5,
+          "Opus 5.5": 4,
+          "opus": 12,
+          "gpt-6": 7
+        },
+        "fixedRows": 10,
+        "launchFormParity": 10
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 98621
+    },
+    {
+      "label": "frontend",
+      "pid": 98646
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 98646,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 98621,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Xr3U6C"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Xr3U6C",
+  "backendUrl": "http://127.0.0.1:54891",
+  "frontUrl": "http://127.0.0.1:54892",
+  "browserErrors": [],
+  "completedAt": "2026-10-05T22:29:53.023Z"
+}

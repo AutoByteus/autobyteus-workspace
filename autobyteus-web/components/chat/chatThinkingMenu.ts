@@ -6,6 +6,7 @@ import {
   getThinkingParamKeys,
   getThinkingToggleOwnedParamKeys,
   hasThinkingSwitch,
+  humanizeThinkingValue,
 } from '~/utils/llmThinkingConfigAdapter'
 import { resolveEffectiveConfigValue, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 
@@ -37,11 +38,6 @@ export type ChatThinkingMenu =
   | { mode: 'parameters'; parameters: ChatThinkingParameter[]; summary: string; active: boolean }
 
 const EFFORT_KEY = 'reasoning_effort'
-
-export const humanizeThinkingValue = (value: string): string => {
-  const text = value.replace(/[_-]+/g, ' ').trim()
-  return text ? `${text.charAt(0).toUpperCase()}${text.slice(1)}` : text
-}
 
 const optionLabel = (value: unknown, t: Translate): string => {
   if (value === true) return t('chat.thinking.on')

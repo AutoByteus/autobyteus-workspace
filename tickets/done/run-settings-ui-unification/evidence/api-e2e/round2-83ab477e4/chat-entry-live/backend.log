@@ -1,0 +1,919 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63372
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63372
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:35379) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-05T21:41:58.850Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 7 items.
+Populating agent definition cache for the first time...
+[2026-10-05T21:41:58.959Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-05T21:41:58.959Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 7 items.
+{"level":30,"time":1791236518964,"pid":35379,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63379"}
+{"level":30,"time":1791236518986,"pid":35379,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63372"}
+[2026-10-05T21:41:58.986Z] [INFO] [server.runtime] Server listening on 127.0.0.1:63372
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Skill name 'probe-alpha' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/agents/probe-shadow-owner/skills/probe-alpha'.
+[2026-10-05T21:41:59.150Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID probe-team.
+Agent Team Definition created successfully with ID: probe-team
+[CodexAppServerClient] stderr: [2m2026-10-05T21:42:15.503909Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:17.005195Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Created agent session 3e89566d-8204-4258-bd6e-4aaff1167817 for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Agent WebSocket connected: session=3e89566d-8204-4258-bd6e-4aaff1167817, run=daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:18.593227Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:18.694433Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:18.694489Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 3e89566d-8204-4258-bd6e-4aaff1167817
+Agent WebSocket disconnected: 3e89566d-8204-4258-bd6e-4aaff1167817
+Agent websocket attached for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Created agent session e47edc23-de36-4eef-af21-69810c678308 for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Agent WebSocket connected: session=e47edc23-de36-4eef-af21-69810c678308, run=daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Closed agent session e47edc23-de36-4eef-af21-69810c678308
+Agent WebSocket disconnected: e47edc23-de36-4eef-af21-69810c678308
+Agent websocket attached for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Created agent session 046c390e-08de-4d68-ad6a-f017aa768ae1 for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Agent WebSocket connected: session=046c390e-08de-4d68-ad6a-f017aa768ae1, run=daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:30.937833Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 046c390e-08de-4d68-ad6a-f017aa768ae1
+Agent WebSocket disconnected: 046c390e-08de-4d68-ad6a-f017aa768ae1
+Agent websocket attached for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Created agent session 5b098aeb-b985-4186-a294-a1974ea30230 for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Agent WebSocket connected: session=5b098aeb-b985-4186-a294-a1974ea30230, run=daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:54.086291Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+{"level":30,"time":1791236694112,"pid":35379,"hostname":"MacBookPro","reqId":"req-9i","err":{"type":"GraphQLError","message":"Codex client generation for '/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts' has unresolved cleanup.","stack":"Error: Codex client generation for '/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts' has unresolved cleanup.\n    at CodexAppServerClientManager.beginAcquire (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-client-manager.js:18:19)\n    at CodexModelCatalog.listModels (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/llm-management/services/codex-model-catalog.js:11:42)\n    at ModelCatalogService.runtimeModelSelectionCatalog (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/llm-management/services/model-catalog-service.js:148:44)\n    at ModelCatalogService.listExternalRuntimeSnapshots (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/llm-management/services/model-catalog-service.js:301:40)\n    at ModelCatalogService.listProviderModelCatalogSnapshots (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/llm-management/services/model-catalog-service.js:48:25)\n    at LlmProviderResolver.providerModelCatalogSnapshots (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/types/llm-provider.js:229:48)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["providerModelCatalogSnapshots"],"locations":[{"line":1,"column":18}],"extensions":{}},"msg":"Codex client generation for '/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts' has unresolved cleanup."}
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:54.201622Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 5b098aeb-b985-4186-a294-a1974ea30230
+Agent WebSocket disconnected: 5b098aeb-b985-4186-a294-a1974ea30230
+Agent websocket attached for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Created agent session 13f8da8f-a694-4d35-aa17-afe1b8154609 for run daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Agent WebSocket connected: session=13f8da8f-a694-4d35-aa17-afe1b8154609, run=daily_assistant_466ebff6338649b6a3e61c83d3b6409a
+Closed agent session 13f8da8f-a694-4d35-aa17-afe1b8154609
+Agent WebSocket disconnected: 13f8da8f-a694-4d35-aa17-afe1b8154609
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:56.669710Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws.
+Created and registered workspace ID: agent_ws_308bd40f9f79a79f009d83d056362b9b622ac4d37a226d8c7460bbd98ff4fa64
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws.
+Reusing registered workspace ID: agent_ws_308bd40f9f79a79f009d83d056362b9b622ac4d37a226d8c7460bbd98ff4fa64
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 37f951fd-dfe1-49d6-b574-bc8998717d19 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=37f951fd-dfe1-49d6-b574-bc8998717d19, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws.
+Reusing registered workspace ID: agent_ws_308bd40f9f79a79f009d83d056362b9b622ac4d37a226d8c7460bbd98ff4fa64
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:57.702400Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:44:57.801152Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/folder-ws as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-05T21:44:57.801199Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 37f951fd-dfe1-49d6-b574-bc8998717d19
+Agent WebSocket disconnected: 37f951fd-dfe1-49d6-b574-bc8998717d19
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 1ed4b2ab-e2b2-4618-a681-41be35fdd2c4 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=1ed4b2ab-e2b2-4618-a681-41be35fdd2c4, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:02.040069Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 976377bb-4f66-4946-a144-dbf0d559de39 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=976377bb-4f66-4946-a144-dbf0d559de39, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:02.649731Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:02.747228Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 1ed4b2ab-e2b2-4618-a681-41be35fdd2c4
+Agent WebSocket disconnected: 1ed4b2ab-e2b2-4618-a681-41be35fdd2c4
+Closed agent session 976377bb-4f66-4946-a144-dbf0d559de39
+Agent WebSocket disconnected: 976377bb-4f66-4946-a144-dbf0d559de39
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 0567bf45-e852-4c20-aa0d-747562db2af8 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=0567bf45-e852-4c20-aa0d-747562db2af8, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session ac0f5f65-89ce-424d-9faf-b43bc097f4dd for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=ac0f5f65-89ce-424d-9faf-b43bc097f4dd, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Closed agent session ac0f5f65-89ce-424d-9faf-b43bc097f4dd
+Agent WebSocket disconnected: ac0f5f65-89ce-424d-9faf-b43bc097f4dd
+Closed agent session 0567bf45-e852-4c20-aa0d-747562db2af8
+Agent WebSocket disconnected: 0567bf45-e852-4c20-aa0d-747562db2af8
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:07.829325Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session c2528d97-9fb5-41c7-831e-ee2ce4d6195d for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=c2528d97-9fb5-41c7-831e-ee2ce4d6195d, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 3196cf57-3928-483c-a5ac-90c8570436ac for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=3196cf57-3928-483c-a5ac-90c8570436ac, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Closed agent session 3196cf57-3928-483c-a5ac-90c8570436ac
+Agent WebSocket disconnected: 3196cf57-3928-483c-a5ac-90c8570436ac
+Closed agent session c2528d97-9fb5-41c7-831e-ee2ce4d6195d
+Agent WebSocket disconnected: c2528d97-9fb5-41c7-831e-ee2ce4d6195d
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:08.201524Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session ec96df20-b46f-4d20-82ad-2f1176fd770d for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=ec96df20-b46f-4d20-82ad-2f1176fd770d, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session d51757e2-8d4e-450f-8009-a641849647cc for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=d51757e2-8d4e-450f-8009-a641849647cc, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:09.522209Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_legacy_a52c6ab510944ec8bf41c586f9dba4aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session ee39d853-17f6-4db2-8352-b38eb6f66886 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=ee39d853-17f6-4db2-8352-b38eb6f66886, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_legacy_a52c6ab510944ec8bf41c586f9dba4aa/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_legacy_a52c6ab510944ec8bf41c586f9dba4aa/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+{"level":30,"time":1791236717347,"pid":35379,"hostname":"MacBookPro","reqId":"req-h6","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:517:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1791236717347,"pid":35379,"hostname":"MacBookPro","reqId":"req-h6","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.368291974067688,"msg":"http request completed"}
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:19.502378Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session ec96df20-b46f-4d20-82ad-2f1176fd770d
+Agent WebSocket disconnected: ec96df20-b46f-4d20-82ad-2f1176fd770d
+Closed agent session ee39d853-17f6-4db2-8352-b38eb6f66886
+Closed agent session d51757e2-8d4e-450f-8009-a641849647cc
+Agent WebSocket disconnected: d51757e2-8d4e-450f-8009-a641849647cc
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 5c515188-f241-4a99-829f-5b2638167126 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=5c515188-f241-4a99-829f-5b2638167126, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session e75d3c4c-f992-49ab-8fb6-9572343c3154 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=e75d3c4c-f992-49ab-8fb6-9572343c3154, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 846f6250-3d49-4a5f-b4a3-32d8beffa7cd for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=846f6250-3d49-4a5f-b4a3-32d8beffa7cd, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:22.945734Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws.
+Created and registered workspace ID: agent_ws_3377f98c895f094863d59821f4ae6e1988fac19e3cd608764cf54e71b778bc70
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_3377f98c895f094863d59821f4ae6e1988fac19e3cd608764cf54e71b778bc70
+Agent websocket attached for run daily_assistant_021f5330bbd7434597ac42055aae7afc
+Created agent session 64a35f8f-6d55-4808-aff1-cec0d2f91981 for run daily_assistant_021f5330bbd7434597ac42055aae7afc
+Agent WebSocket connected: session=64a35f8f-6d55-4808-aff1-cec0d2f91981, run=daily_assistant_021f5330bbd7434597ac42055aae7afc
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_3377f98c895f094863d59821f4ae6e1988fac19e3cd608764cf54e71b778bc70
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:23.674548Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-05T21:45:23.674590Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+codex-runtime-duplicate: skill='probe-alpha', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws/.codex/skills/probe-alpha', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha'; exposing the chosen copy in the workspace.
+Codex workspace skill reconciliation: run='daily_assistant_021f5330bbd7434597ac42055aae7afc', skill='probe-alpha', path='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws/.codex/skills/probe-alpha', previousTarget='none', currentSource='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha', disposition='skipped-workspace-owned'.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:23.773508Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-05T21:45:23.773551Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 5c515188-f241-4a99-829f-5b2638167126
+Agent WebSocket disconnected: 5c515188-f241-4a99-829f-5b2638167126
+Closed agent session 64a35f8f-6d55-4808-aff1-cec0d2f91981
+Agent WebSocket disconnected: 64a35f8f-6d55-4808-aff1-cec0d2f91981
+Closed agent session 846f6250-3d49-4a5f-b4a3-32d8beffa7cd
+Closed agent session e75d3c4c-f992-49ab-8fb6-9572343c3154
+Agent WebSocket disconnected: e75d3c4c-f992-49ab-8fb6-9572343c3154
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 6af81ecf-a2e1-44d0-b4a9-d3cdaadb29d7 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=6af81ecf-a2e1-44d0-b4a9-d3cdaadb29d7, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 48d2aa84-487c-4c20-8a8f-99f10e55fb3d for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=48d2aa84-487c-4c20-8a8f-99f10e55fb3d, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_021f5330bbd7434597ac42055aae7afc
+Created agent session 4dabac4a-a830-48d1-9e37-54e0af4bd064 for run daily_assistant_021f5330bbd7434597ac42055aae7afc
+Agent WebSocket connected: session=4dabac4a-a830-48d1-9e37-54e0af4bd064, run=daily_assistant_021f5330bbd7434597ac42055aae7afc
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 4dde2d15-2999-4c00-a701-bef098e94b2a for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=4dde2d15-2999-4c00-a701-bef098e94b2a, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:27.599358Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_3377f98c895f094863d59821f4ae6e1988fac19e3cd608764cf54e71b778bc70
+Agent websocket attached for run probe_shadow_owner_4293f428f98d4096b82c3cf508b50955
+Created agent session c56e1cf1-e54c-4ebe-b267-f82c4ce9b93d for run probe_shadow_owner_4293f428f98d4096b82c3cf508b50955
+Agent WebSocket connected: session=c56e1cf1-e54c-4ebe-b267-f82c4ce9b93d, run=probe_shadow_owner_4293f428f98d4096b82c3cf508b50955
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_3377f98c895f094863d59821f4ae6e1988fac19e3cd608764cf54e71b778bc70
+codex-runtime-duplicate: skill='probe-alpha', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws/.codex/skills/probe-alpha', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha'; exposing the chosen copy in the workspace.
+SEND_MESSAGE command not accepted for agent run probe_shadow_owner_4293f428f98d4096b82c3cf508b50955: [ACTIVATION_FAILED] Workspace skill path collision for Codex skill 'probe-alpha': path '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/user-owned-skill-ws/.codex/skills/probe-alpha' already exists as a directory.
+Closed agent session 6af81ecf-a2e1-44d0-b4a9-d3cdaadb29d7
+Agent WebSocket disconnected: 6af81ecf-a2e1-44d0-b4a9-d3cdaadb29d7
+Closed agent session 4dde2d15-2999-4c00-a701-bef098e94b2a
+Closed agent session 4dabac4a-a830-48d1-9e37-54e0af4bd064
+Agent WebSocket disconnected: 4dabac4a-a830-48d1-9e37-54e0af4bd064
+Closed agent session 48d2aa84-487c-4c20-8a8f-99f10e55fb3d
+Agent WebSocket disconnected: 48d2aa84-487c-4c20-8a8f-99f10e55fb3d
+Closed agent session c56e1cf1-e54c-4ebe-b267-f82c4ce9b93d
+Agent WebSocket disconnected: c56e1cf1-e54c-4ebe-b267-f82c4ce9b93d
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 184dbebc-cd22-49b9-9285-1c7fb58ad6a0 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=184dbebc-cd22-49b9-9285-1c7fb58ad6a0, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 62b769e5-f3b8-4833-a745-531ea16de8e0 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=62b769e5-f3b8-4833-a745-531ea16de8e0, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 68b04ab5-ba0e-4e92-a96a-f08895c1e53b for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=68b04ab5-ba0e-4e92-a96a-f08895c1e53b, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:29.848475Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws.
+Created and registered workspace ID: agent_ws_880997a0d507c58bf79c28bc7c02bf76c8c7f7e2089ccae34116c5dbc791021d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_880997a0d507c58bf79c28bc7c02bf76c8c7f7e2089ccae34116c5dbc791021d
+Agent websocket attached for run daily_assistant_9c102ae61c8348abab1eafb932843275
+Created agent session 36ec8f13-dd97-4eb4-a507-e7fa9f57f996 for run daily_assistant_9c102ae61c8348abab1eafb932843275
+Agent WebSocket connected: session=36ec8f13-dd97-4eb4-a507-e7fa9f57f996, run=daily_assistant_9c102ae61c8348abab1eafb932843275
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_880997a0d507c58bf79c28bc7c02bf76c8c7f7e2089ccae34116c5dbc791021d
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:30.555686Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:30.658299Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-05T21:45:30.658344Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 184dbebc-cd22-49b9-9285-1c7fb58ad6a0
+Agent WebSocket disconnected: 184dbebc-cd22-49b9-9285-1c7fb58ad6a0
+Closed agent session 68b04ab5-ba0e-4e92-a96a-f08895c1e53b
+Closed agent session 62b769e5-f3b8-4833-a745-531ea16de8e0
+Agent WebSocket disconnected: 62b769e5-f3b8-4833-a745-531ea16de8e0
+Closed agent session 36ec8f13-dd97-4eb4-a507-e7fa9f57f996
+Agent WebSocket disconnected: 36ec8f13-dd97-4eb4-a507-e7fa9f57f996
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 441642e3-eafc-4342-97b1-049c782c7a8c for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=441642e3-eafc-4342-97b1-049c782c7a8c, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_9c102ae61c8348abab1eafb932843275
+Created agent session 5220b11e-7f26-4dd0-ab94-109d13fdd53d for run daily_assistant_9c102ae61c8348abab1eafb932843275
+Agent WebSocket connected: session=5220b11e-7f26-4dd0-ab94-109d13fdd53d, run=daily_assistant_9c102ae61c8348abab1eafb932843275
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session d30f07fc-bb8b-4815-b6cc-23f46b84d5bd for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=d30f07fc-bb8b-4815-b6cc-23f46b84d5bd, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 27ae81da-19e6-40f9-87f1-d05e5a1894ae for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=27ae81da-19e6-40f9-87f1-d05e5a1894ae, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:37.357608Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_880997a0d507c58bf79c28bc7c02bf76c8c7f7e2089ccae34116c5dbc791021d
+Agent websocket attached for run probe_shadow_owner_ea0355c020bb4089a8fd28eb3a9017d2
+Created agent session 08e91a2d-c471-43d3-b6f5-20340c161380 for run probe_shadow_owner_ea0355c020bb4089a8fd28eb3a9017d2
+Agent WebSocket connected: session=08e91a2d-c471-43d3-b6f5-20340c161380, run=probe_shadow_owner_ea0355c020bb4089a8fd28eb3a9017d2
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_880997a0d507c58bf79c28bc7c02bf76c8c7f7e2089ccae34116c5dbc791021d
+Closed agent session 441642e3-eafc-4342-97b1-049c782c7a8c
+Agent WebSocket disconnected: 441642e3-eafc-4342-97b1-049c782c7a8c
+Closed agent session 08e91a2d-c471-43d3-b6f5-20340c161380
+Agent WebSocket disconnected: 08e91a2d-c471-43d3-b6f5-20340c161380
+Closed agent session 27ae81da-19e6-40f9-87f1-d05e5a1894ae
+Closed agent session d30f07fc-bb8b-4815-b6cc-23f46b84d5bd
+Agent WebSocket disconnected: d30f07fc-bb8b-4815-b6cc-23f46b84d5bd
+Closed agent session 5220b11e-7f26-4dd0-ab94-109d13fdd53d
+Agent WebSocket disconnected: 5220b11e-7f26-4dd0-ab94-109d13fdd53d
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 55f7a370-59c2-4734-bac0-4ff2bc57fee9 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=55f7a370-59c2-4734-bac0-4ff2bc57fee9, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 7e2048c9-a8b1-47fb-ad7d-9bd25a86dfcf for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=7e2048c9-a8b1-47fb-ad7d-9bd25a86dfcf, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session d6dd4555-7477-41a0-8c99-1cc4e3336f08 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=d6dd4555-7477-41a0-8c99-1cc4e3336f08, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:46.623730Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:49.087651Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:45:53.560836Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_112b8dae6fca469591b6e6f08cd6addf
+Created agent session 5fc8da57-e820-4d7c-9879-04b3a808c641 for run daily_assistant_112b8dae6fca469591b6e6f08cd6addf
+Agent WebSocket connected: session=5fc8da57-e820-4d7c-9879-04b3a808c641, run=daily_assistant_112b8dae6fca469591b6e6f08cd6addf
+Resolved configured temp workspace root to TempWorkspace.
+(node:35379) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, edit_image, mcp__autobyteus_agent_tools__edit_image, generate_image, mcp__autobyteus_agent_tools__generate_image, generate_speech, mcp__autobyteus_agent_tools__generate_speech, list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1791236754751,"pid":35379,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/mcp/agent-tools/agtrun_YrcBmkFRF3eTfMv83EhkKreZTinfz3ezMdZD2SNiu3Y","statusCode":400,"elapsedMs":0.31208300590515137,"msg":"http request completed"}
+Closed agent session 55f7a370-59c2-4734-bac0-4ff2bc57fee9
+Agent WebSocket disconnected: 55f7a370-59c2-4734-bac0-4ff2bc57fee9
+Closed agent session d6dd4555-7477-41a0-8c99-1cc4e3336f08
+Closed agent session 7e2048c9-a8b1-47fb-ad7d-9bd25a86dfcf
+Agent WebSocket disconnected: 7e2048c9-a8b1-47fb-ad7d-9bd25a86dfcf
+Closed agent session 5fc8da57-e820-4d7c-9879-04b3a808c641
+Agent WebSocket disconnected: 5fc8da57-e820-4d7c-9879-04b3a808c641
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 035fedd7-c952-4d82-902e-390aa01902c9 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=035fedd7-c952-4d82-902e-390aa01902c9, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 56f3aae7-7f1c-45e2-918f-8f374e06544b for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=56f3aae7-7f1c-45e2-918f-8f374e06544b, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session fad77927-a367-41ee-a61a-4a919afbe4b7 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=fad77927-a367-41ee-a61a-4a919afbe4b7, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Closed agent session 035fedd7-c952-4d82-902e-390aa01902c9
+Agent WebSocket disconnected: 035fedd7-c952-4d82-902e-390aa01902c9
+Closed agent session fad77927-a367-41ee-a61a-4a919afbe4b7
+Closed agent session 56f3aae7-7f1c-45e2-918f-8f374e06544b
+Agent WebSocket disconnected: 56f3aae7-7f1c-45e2-918f-8f374e06544b
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session b9146806-8bbb-4818-a192-db9724e310cb for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=b9146806-8bbb-4818-a192-db9724e310cb, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session f8599521-c4ce-45ec-a7a7-f547b9f10900 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=f8599521-c4ce-45ec-a7a7-f547b9f10900, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 05c178fc-4a19-4538-80a6-1533c2cfe068 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=05c178fc-4a19-4538-80a6-1533c2cfe068, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Closed agent session b9146806-8bbb-4818-a192-db9724e310cb
+Agent WebSocket disconnected: b9146806-8bbb-4818-a192-db9724e310cb
+Closed agent session 05c178fc-4a19-4538-80a6-1533c2cfe068
+Closed agent session f8599521-c4ce-45ec-a7a7-f547b9f10900
+Agent WebSocket disconnected: f8599521-c4ce-45ec-a7a7-f547b9f10900
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 3da4b06c-6c10-4a00-8cc0-6fa620286866 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=3da4b06c-6c10-4a00-8cc0-6fa620286866, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 72d95ee0-0897-400f-98f2-78885fe022a8 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=72d95ee0-0897-400f-98f2-78885fe022a8, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session fc091c77-b5e4-4c21-b221-61a3d4d56a12 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=fc091c77-b5e4-4c21-b221-61a3d4d56a12, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:07.564675Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 3da4b06c-6c10-4a00-8cc0-6fa620286866
+Agent WebSocket disconnected: 3da4b06c-6c10-4a00-8cc0-6fa620286866
+Closed agent session fc091c77-b5e4-4c21-b221-61a3d4d56a12
+Closed agent session 72d95ee0-0897-400f-98f2-78885fe022a8
+Agent WebSocket disconnected: 72d95ee0-0897-400f-98f2-78885fe022a8
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 3b11807d-b16d-4632-9ca0-adb56149a892 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=3b11807d-b16d-4632-9ca0-adb56149a892, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session ab1d59a8-0f7f-4673-ae2e-6e6b45a08ef4 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=ab1d59a8-0f7f-4673-ae2e-6e6b45a08ef4, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 3651bf04-1b55-4f85-be45-6e0c43c361c7 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=3651bf04-1b55-4f85-be45-6e0c43c361c7, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e545aab9-5c0d-4cb0-8264-d8e21d03d54e for workspace temp_ws_default
+Created file explorer session e545aab9-5c0d-4cb0-8264-d8e21d03d54e for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: e545aab9-5c0d-4cb0-8264-d8e21d03d54e for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+FileExplorerSession closed: e545aab9-5c0d-4cb0-8264-d8e21d03d54e
+Closed file explorer session e545aab9-5c0d-4cb0-8264-d8e21d03d54e. Active sessions: 0
+File explorer WebSocket disconnected: e545aab9-5c0d-4cb0-8264-d8e21d03d54e
+Created terminal session 275914fd-4468-4ef4-ab2a-54172f394517 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Terminal WebSocket connected: 275914fd-4468-4ef4-ab2a-54172f394517
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Closed PTY session 275914fd-4468-4ef4-ab2a-54172f394517
+Terminal WebSocket disconnected: 275914fd-4468-4ef4-ab2a-54172f394517
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 23af3766-9515-4ad1-b58b-2391c21f515f for workspace temp_ws_default
+Created file explorer session 23af3766-9515-4ad1-b58b-2391c21f515f for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 23af3766-9515-4ad1-b58b-2391c21f515f for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+FileExplorerSession closed: 23af3766-9515-4ad1-b58b-2391c21f515f
+Closed file explorer session 23af3766-9515-4ad1-b58b-2391c21f515f. Active sessions: 0
+File explorer WebSocket disconnected: 23af3766-9515-4ad1-b58b-2391c21f515f
+Created terminal session c4c39fa3-ab26-438c-b8d4-2e42097c7926 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Terminal WebSocket connected: c4c39fa3-ab26-438c-b8d4-2e42097c7926
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 91d3a563-b2f9-46b9-ae15-42bc183ac495 for workspace temp_ws_default
+Created file explorer session 91d3a563-b2f9-46b9-ae15-42bc183ac495 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 91d3a563-b2f9-46b9-ae15-42bc183ac495 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+FileExplorerSession closed: 91d3a563-b2f9-46b9-ae15-42bc183ac495
+Closed file explorer session 91d3a563-b2f9-46b9-ae15-42bc183ac495. Active sessions: 0
+File explorer WebSocket disconnected: 91d3a563-b2f9-46b9-ae15-42bc183ac495
+Closed PTY session c4c39fa3-ab26-438c-b8d4-2e42097c7926
+Terminal WebSocket disconnected: c4c39fa3-ab26-438c-b8d4-2e42097c7926
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 29f937e9-f2a5-4e5f-9691-a16585d169b7 for workspace temp_ws_default
+Created file explorer session 29f937e9-f2a5-4e5f-9691-a16585d169b7 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 29f937e9-f2a5-4e5f-9691-a16585d169b7 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Closed agent session 3b11807d-b16d-4632-9ca0-adb56149a892
+Agent WebSocket disconnected: 3b11807d-b16d-4632-9ca0-adb56149a892
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/temp_workspace
+FileExplorerSession closed: 29f937e9-f2a5-4e5f-9691-a16585d169b7
+Closed file explorer session 29f937e9-f2a5-4e5f-9691-a16585d169b7. Active sessions: 0
+File explorer WebSocket disconnected: 29f937e9-f2a5-4e5f-9691-a16585d169b7
+Closed agent session 3651bf04-1b55-4f85-be45-6e0c43c361c7
+Closed agent session ab1d59a8-0f7f-4673-ae2e-6e6b45a08ef4
+Agent WebSocket disconnected: ab1d59a8-0f7f-4673-ae2e-6e6b45a08ef4
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 478d5cb2-705b-40c7-91bb-40bff360fa97 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=478d5cb2-705b-40c7-91bb-40bff360fa97, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session fb2bdf07-c636-4ba9-bc72-f6be63229f8e for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=fb2bdf07-c636-4ba9-bc72-f6be63229f8e, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 27699b2f-ac41-4d7a-a9d5-ee2afc0f80b6 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=27699b2f-ac41-4d7a-a9d5-ee2afc0f80b6, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:16.356165Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 90d04d87-6e30-4c55-91b0-06132933f792 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=90d04d87-6e30-4c55-91b0-06132933f792, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'skills/changed',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: []
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Closed agent session 478d5cb2-705b-40c7-91bb-40bff360fa97
+Agent WebSocket disconnected: 478d5cb2-705b-40c7-91bb-40bff360fa97
+Closed agent session 90d04d87-6e30-4c55-91b0-06132933f792
+Agent WebSocket disconnected: 90d04d87-6e30-4c55-91b0-06132933f792
+Closed agent session 27699b2f-ac41-4d7a-a9d5-ee2afc0f80b6
+Closed agent session fb2bdf07-c636-4ba9-bc72-f6be63229f8e
+Agent WebSocket disconnected: fb2bdf07-c636-4ba9-bc72-f6be63229f8e
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 032dfaf6-f668-4953-82d3-3ba92cabacc6 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=032dfaf6-f668-4953-82d3-3ba92cabacc6, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 75c20843-36f3-432a-993a-dae0e37e7c02 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=75c20843-36f3-432a-993a-dae0e37e7c02, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 86c2aa03-aa36-4876-8df8-39ca16034bdd for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=86c2aa03-aa36-4876-8df8-39ca16034bdd, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 8a6a174f-c182-44d1-b174-4e098bf1f8c6 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=8a6a174f-c182-44d1-b174-4e098bf1f8c6, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:18.990692Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 032dfaf6-f668-4953-82d3-3ba92cabacc6
+Agent WebSocket disconnected: 032dfaf6-f668-4953-82d3-3ba92cabacc6
+Closed agent session 8a6a174f-c182-44d1-b174-4e098bf1f8c6
+Closed agent session 86c2aa03-aa36-4876-8df8-39ca16034bdd
+Agent WebSocket disconnected: 86c2aa03-aa36-4876-8df8-39ca16034bdd
+Closed agent session 75c20843-36f3-432a-993a-dae0e37e7c02
+Agent WebSocket disconnected: 75c20843-36f3-432a-993a-dae0e37e7c02
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session e5d8a6c0-33cc-41ff-b7ad-477fb73bf70d for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=e5d8a6c0-33cc-41ff-b7ad-477fb73bf70d, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session f2fd427e-228d-4ecf-b6ad-f47203e367b2 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=f2fd427e-228d-4ecf-b6ad-f47203e367b2, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 50f5f635-5fa2-4b30-8c15-bdff83bf9033 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=50f5f635-5fa2-4b30-8c15-bdff83bf9033, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 8c66e26b-0e1e-4e44-b1a2-aa4c8fb0190c for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=8c66e26b-0e1e-4e44-b1a2-aa4c8fb0190c, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:21.036857Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_legacy_6b5d141ed45c41b490a719f1f4e0b83b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 29fc4909-c930-48f3-879a-95424a63d770 for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=29fc4909-c930-48f3-879a-95424a63d770, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_legacy_6b5d141ed45c41b490a719f1f4e0b83b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_legacy_6b5d141ed45c41b490a719f1f4e0b83b/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session e5d8a6c0-33cc-41ff-b7ad-477fb73bf70d
+Agent WebSocket disconnected: e5d8a6c0-33cc-41ff-b7ad-477fb73bf70d
+Closed agent session 29fc4909-c930-48f3-879a-95424a63d770
+Closed agent session 8c66e26b-0e1e-4e44-b1a2-aa4c8fb0190c
+Closed agent session 50f5f635-5fa2-4b30-8c15-bdff83bf9033
+Agent WebSocket disconnected: 50f5f635-5fa2-4b30-8c15-bdff83bf9033
+Closed agent session f2fd427e-228d-4ecf-b6ad-f47203e367b2
+Agent WebSocket disconnected: f2fd427e-228d-4ecf-b6ad-f47203e367b2
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session c059bff6-5f68-49e3-a2f2-9383fc36f66c for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=c059bff6-5f68-49e3-a2f2-9383fc36f66c, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session c46e06f3-c212-4dee-a541-e59f23e0264d for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=c46e06f3-c212-4dee-a541-e59f23e0264d, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 095c7844-9eb9-4bee-8583-5fa3de561c47 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=095c7844-9eb9-4bee-8583-5fa3de561c47, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 839fa133-6db7-411f-b3f3-e379737dd215 for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=839fa133-6db7-411f-b3f3-e379737dd215, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 205b976b-2e54-44e6-a885-1606726adff7 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=205b976b-2e54-44e6-a885-1606726adff7, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Closed agent session 205b976b-2e54-44e6-a885-1606726adff7
+Closed agent session 839fa133-6db7-411f-b3f3-e379737dd215
+Closed agent session 095c7844-9eb9-4bee-8583-5fa3de561c47
+Agent WebSocket disconnected: 095c7844-9eb9-4bee-8583-5fa3de561c47
+Closed agent session c46e06f3-c212-4dee-a541-e59f23e0264d
+Agent WebSocket disconnected: c46e06f3-c212-4dee-a541-e59f23e0264d
+Closed agent session c059bff6-5f68-49e3-a2f2-9383fc36f66c
+Agent WebSocket disconnected: c059bff6-5f68-49e3-a2f2-9383fc36f66c
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:25.155320Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session f8849882-d753-4743-99d5-0361d2d87056 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=f8849882-d753-4743-99d5-0361d2d87056, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 7e9df647-7265-4ade-aa44-edaf0e5d2aad for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=7e9df647-7265-4ade-aa44-edaf0e5d2aad, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 083e353e-cfdc-4983-9dc4-fed4207000e5 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=083e353e-cfdc-4983-9dc4-fed4207000e5, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 4ccb3e6b-5a6f-41a6-9d0b-062df310e616 for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=4ccb3e6b-5a6f-41a6-9d0b-062df310e616, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 6a1b31f1-8e7e-4e39-95fc-30647fd0990e for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=6a1b31f1-8e7e-4e39-95fc-30647fd0990e, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:26.468457Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws.
+Created and registered workspace ID: agent_ws_898933639f0be4c3ca5030a2a346602fd40e469922ab0c7d5fdf40ee1ee2d9a5
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws.
+Reusing registered workspace ID: agent_ws_898933639f0be4c3ca5030a2a346602fd40e469922ab0c7d5fdf40ee1ee2d9a5
+Agent websocket attached for run daily_assistant_4742a0056b6f46bea34c81b109524858
+Created agent session c499e427-ce2f-40b1-879d-9a43f3b28ce0 for run daily_assistant_4742a0056b6f46bea34c81b109524858
+Agent WebSocket connected: session=c499e427-ce2f-40b1-879d-9a43f3b28ce0, run=daily_assistant_4742a0056b6f46bea34c81b109524858
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws.
+Reusing registered workspace ID: agent_ws_898933639f0be4c3ca5030a2a346602fd40e469922ab0c7d5fdf40ee1ee2d9a5
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:27.179887Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:27.277201Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-05T21:46:27.277245Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session f8849882-d753-4743-99d5-0361d2d87056
+Agent WebSocket disconnected: f8849882-d753-4743-99d5-0361d2d87056
+Closed agent session 6a1b31f1-8e7e-4e39-95fc-30647fd0990e
+Closed agent session 4ccb3e6b-5a6f-41a6-9d0b-062df310e616
+Closed agent session 083e353e-cfdc-4983-9dc4-fed4207000e5
+Agent WebSocket disconnected: 083e353e-cfdc-4983-9dc4-fed4207000e5
+Closed agent session 7e9df647-7265-4ade-aa44-edaf0e5d2aad
+Agent WebSocket disconnected: 7e9df647-7265-4ade-aa44-edaf0e5d2aad
+Closed agent session c499e427-ce2f-40b1-879d-9a43f3b28ce0
+Agent WebSocket disconnected: c499e427-ce2f-40b1-879d-9a43f3b28ce0
+Agent websocket attached for run daily_assistant_4742a0056b6f46bea34c81b109524858
+Created agent session b4a9f1b6-176b-4a2e-b2b9-88753578d77c for run daily_assistant_4742a0056b6f46bea34c81b109524858
+Agent WebSocket connected: session=b4a9f1b6-176b-4a2e-b2b9-88753578d77c, run=daily_assistant_4742a0056b6f46bea34c81b109524858
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 6ad40b01-a11b-4ec9-80af-c124cf5dfb1a for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=6ad40b01-a11b-4ec9-80af-c124cf5dfb1a, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session c732ce2a-65f5-44f3-b0a2-7abb66a75ee0 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=c732ce2a-65f5-44f3-b0a2-7abb66a75ee0, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 45c33578-34b7-4c4a-a91b-106347fd56e9 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=45c33578-34b7-4c4a-a91b-106347fd56e9, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 006fe920-b6dd-4988-9cec-a9bce00d5d0a for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=006fe920-b6dd-4988-9cec-a9bce00d5d0a, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 4390ff5d-3b2c-4019-8f6d-62dcfc506d19 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=4390ff5d-3b2c-4019-8f6d-62dcfc506d19, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+[CodexAppServerClient] stderr: [2m2026-10-05T21:46:32.192065Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws.
+Reusing registered workspace ID: agent_ws_898933639f0be4c3ca5030a2a346602fd40e469922ab0c7d5fdf40ee1ee2d9a5
+Agent websocket attached for run probe_borrower_ae040930dd3a4eb29c8b281f95451f8f
+Created agent session 965268c2-a6a2-4a52-ab2c-989196874f71 for run probe_borrower_ae040930dd3a4eb29c8b281f95451f8f
+Agent WebSocket connected: session=965268c2-a6a2-4a52-ab2c-989196874f71, run=probe_borrower_ae040930dd3a4eb29c8b281f95451f8f
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/borrower-ws.
+Reusing registered workspace ID: agent_ws_898933639f0be4c3ca5030a2a346602fd40e469922ab0c7d5fdf40ee1ee2d9a5
+Closed agent session b4a9f1b6-176b-4a2e-b2b9-88753578d77c
+Agent WebSocket disconnected: b4a9f1b6-176b-4a2e-b2b9-88753578d77c
+Closed agent session 45c33578-34b7-4c4a-a91b-106347fd56e9
+Agent WebSocket disconnected: 45c33578-34b7-4c4a-a91b-106347fd56e9
+Closed agent session c732ce2a-65f5-44f3-b0a2-7abb66a75ee0
+Agent WebSocket disconnected: c732ce2a-65f5-44f3-b0a2-7abb66a75ee0
+Closed agent session 6ad40b01-a11b-4ec9-80af-c124cf5dfb1a
+Agent WebSocket disconnected: 6ad40b01-a11b-4ec9-80af-c124cf5dfb1a
+Closed agent session 965268c2-a6a2-4a52-ab2c-989196874f71
+Agent WebSocket disconnected: 965268c2-a6a2-4a52-ab2c-989196874f71
+Closed agent session 4390ff5d-3b2c-4019-8f6d-62dcfc506d19
+Closed agent session 006fe920-b6dd-4988-9cec-a9bce00d5d0a
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 4689bb4f-a9ee-4c32-a5a6-70ac298d2c38 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=4689bb4f-a9ee-4c32-a5a6-70ac298d2c38, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session b56916ee-c5c3-4390-8ebc-dccf8adff5cc for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=b56916ee-c5c3-4390-8ebc-dccf8adff5cc, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 3b3bb8b7-c7cd-4a0b-b686-928640f6ef6b for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=3b3bb8b7-c7cd-4a0b-b686-928640f6ef6b, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 765b32c5-d871-46b5-ae9a-258886ef1807 for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=765b32c5-d871-46b5-ae9a-258886ef1807, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 04783fa5-7925-4b33-8574-02ffecbccf9f for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=04783fa5-7925-4b33-8574-02ffecbccf9f, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Closed agent session 4689bb4f-a9ee-4c32-a5a6-70ac298d2c38
+Agent WebSocket disconnected: 4689bb4f-a9ee-4c32-a5a6-70ac298d2c38
+Closed agent session 3b3bb8b7-c7cd-4a0b-b686-928640f6ef6b
+Agent WebSocket disconnected: 3b3bb8b7-c7cd-4a0b-b686-928640f6ef6b
+Closed agent session b56916ee-c5c3-4390-8ebc-dccf8adff5cc
+Agent WebSocket disconnected: b56916ee-c5c3-4390-8ebc-dccf8adff5cc
+Closed agent session 04783fa5-7925-4b33-8574-02ffecbccf9f
+Closed agent session 765b32c5-d871-46b5-ae9a-258886ef1807
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session e3dcba11-8f2d-44a6-9422-f2a1686504f0 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=e3dcba11-8f2d-44a6-9422-f2a1686504f0, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 40b31306-4bd5-4b97-b801-0a7f07ed8d0a for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=40b31306-4bd5-4b97-b801-0a7f07ed8d0a, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 6135d2c7-4234-4958-b567-e1c06c7c873c for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=6135d2c7-4234-4958-b567-e1c06c7c873c, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 5826a92c-34f4-4417-832f-a8648cb116ea for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=5826a92c-34f4-4417-832f-a8648cb116ea, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session d7bbf2ea-8f75-4da7-8b50-1d2d37d7549a for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=d7bbf2ea-8f75-4da7-8b50-1d2d37d7549a, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+{"level":30,"time":1791236807873,"pid":35379,"hostname":"MacBookPro","reqId":"req-1bf","err":{"type":"GraphQLError","message":"Duplicate skill names: probe-bundled","stack":"GraphQLError: Duplicate skill names: probe-bundled\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at SkillResolver.addSkillSource (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/types/skills.js:394:16)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["addSkillSource"],"locations":[{"line":2,"column":3}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"probe-bundled","existingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/agents/probe-bundle-owner/skills/probe-bundled","incomingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/incoming-skills/probe-bundled"}]}},"msg":"Duplicate skill names: probe-bundled"}
+Closed agent session e3dcba11-8f2d-44a6-9422-f2a1686504f0
+Agent WebSocket disconnected: e3dcba11-8f2d-44a6-9422-f2a1686504f0
+Closed agent session d7bbf2ea-8f75-4da7-8b50-1d2d37d7549a
+Closed agent session 5826a92c-34f4-4417-832f-a8648cb116ea
+Closed agent session 6135d2c7-4234-4958-b567-e1c06c7c873c
+Agent WebSocket disconnected: 6135d2c7-4234-4958-b567-e1c06c7c873c
+Closed agent session 40b31306-4bd5-4b97-b801-0a7f07ed8d0a
+Agent WebSocket disconnected: 40b31306-4bd5-4b97-b801-0a7f07ed8d0a
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 76d88d56-07fe-4add-b959-5c17944e64fe for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=76d88d56-07fe-4add-b959-5c17944e64fe, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 62fd2a83-a19c-42e6-a825-75734a4463f8 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=62fd2a83-a19c-42e6-a825-75734a4463f8, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 1957f77c-c756-4029-9477-65acc8509e80 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=1957f77c-c756-4029-9477-65acc8509e80, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 048702e6-ebbe-445c-8058-afe45eb6d64a for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=048702e6-ebbe-445c-8058-afe45eb6d64a, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session cfadc0b3-bb17-451d-a00f-c21e9a333a32 for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=cfadc0b3-bb17-451d-a00f-c21e9a333a32, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+{"level":30,"time":1791236809352,"pid":35379,"hostname":"MacBookPro","reqId":"req-1cq","err":{"type":"GraphQLError","message":"Duplicate skill names: probe-bundled","stack":"GraphQLError: Duplicate skill names: probe-bundled\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at SkillResolver.createSkill (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/types/skills.js:340:16)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["createSkill"],"locations":[{"line":2,"column":3}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"probe-bundled","existingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/agents/probe-bundle-owner/skills/probe-bundled","incomingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-bundled"}]}},"msg":"Duplicate skill names: probe-bundled"}
+Closed agent session 76d88d56-07fe-4add-b959-5c17944e64fe
+Agent WebSocket disconnected: 76d88d56-07fe-4add-b959-5c17944e64fe
+Closed agent session cfadc0b3-bb17-451d-a00f-c21e9a333a32
+Closed agent session 048702e6-ebbe-445c-8058-afe45eb6d64a
+Closed agent session 1957f77c-c756-4029-9477-65acc8509e80
+Agent WebSocket disconnected: 1957f77c-c756-4029-9477-65acc8509e80
+Closed agent session 62fd2a83-a19c-42e6-a825-75734a4463f8
+Agent WebSocket disconnected: 62fd2a83-a19c-42e6-a825-75734a4463f8
+{"level":30,"time":1791236810421,"pid":35379,"hostname":"MacBookPro","reqId":"req-1cw","err":{"type":"GraphQLError","message":"Duplicate skill names: probe-alpha","stack":"GraphQLError: Duplicate skill names: probe-alpha\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentPackageResolver.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/types/agent-packages.js:217:26)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["importAgentPackage"],"locations":[{"line":29,"column":3}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"probe-alpha","existingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha","incomingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/dup-package/agents/dup-helper/skills/probe-alpha"}]}},"msg":"Duplicate skill names: probe-alpha"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 8 items.
+[2026-10-05T21:46:50.584Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-05T21:46:50.584Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Skill name 'probe-alpha' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/agents/probe-shadow-owner/skills/probe-alpha', '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/reload-package/agents/rl-helper/skills/probe-alpha'.
+{"level":30,"time":1791236810855,"pid":35379,"hostname":"MacBookPro","reqId":"req-1d8","err":{"type":"GraphQLError","message":"Duplicate skill names: probe-alpha","stack":"GraphQLError: Duplicate skill names: probe-alpha\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at async AgentPackageResolver.reloadAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/autobyteus-server-ts/dist/api/graphql/types/agent-packages.js:227:26)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["reloadAgentPackage"],"locations":[{"line":29,"column":3}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"probe-alpha","existingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/skills/probe-alpha","incomingPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/reload-package/agents/rl-helper/skills/probe-alpha"}]}},"msg":"Duplicate skill names: probe-alpha"}
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session b45124d6-a3e9-48d8-9e3b-41ae4c9531bf for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=b45124d6-a3e9-48d8-9e3b-41ae4c9531bf, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 1285afc1-dc7f-4c62-90f1-2469fd795829 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=1285afc1-dc7f-4c62-90f1-2469fd795829, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session 1b95d530-c6ff-4472-b9d6-eaa815a22ff9 for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=1b95d530-c6ff-4472-b9d6-eaa815a22ff9, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session 074ba9d8-39c2-41fa-9c55-33d5e107a923 for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=074ba9d8-39c2-41fa-9c55-33d5e107a923, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session 68724960-69b3-463c-89e2-4124f4dc3d4f for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=68724960-69b3-463c-89e2-4124f4dc3d4f, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+Closed agent session b45124d6-a3e9-48d8-9e3b-41ae4c9531bf
+Agent WebSocket disconnected: b45124d6-a3e9-48d8-9e3b-41ae4c9531bf
+Closed agent session 68724960-69b3-463c-89e2-4124f4dc3d4f
+Closed agent session 074ba9d8-39c2-41fa-9c55-33d5e107a923
+Closed agent session 1b95d530-c6ff-4472-b9d6-eaa815a22ff9
+Agent WebSocket disconnected: 1b95d530-c6ff-4472-b9d6-eaa815a22ff9
+Closed agent session 1285afc1-dc7f-4c62-90f1-2469fd795829
+Agent WebSocket disconnected: 1285afc1-dc7f-4c62-90f1-2469fd795829
+Agent websocket attached for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Created agent session 77e3d1a6-d990-4310-8943-da8bbb990c58 for run daily_assistant_db705f0fa93c4335bbedc043ac248285
+Agent WebSocket connected: session=77e3d1a6-d990-4310-8943-da8bbb990c58, run=daily_assistant_db705f0fa93c4335bbedc043ac248285
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_fcca6da5e0234b84ad6992c045e8f2c7/probe_bundle_owner_63e198f6c3ce45db8329742b48e84574/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Created agent session 16cb9029-355d-469a-bd06-6d3affb0c069 for run daily_assistant_94a4beae4a9e418fa114204164b62b66
+Agent WebSocket connected: session=16cb9029-355d-469a-bd06-6d3affb0c069, run=daily_assistant_94a4beae4a9e418fa114204164b62b66
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-sg4eei/server-data/memory/agent_teams/probe_team_51c4bc198b9d447988c17850d4a0d480/probe_bundle_owner_b2850c34368b4bd4aaa247a743e60522/raw_traces_active.jsonl
+Agent websocket attached for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Created agent session ba7e20a8-24ea-4ee0-968c-9a37e2ea722e for run probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent WebSocket connected: session=ba7e20a8-24ea-4ee0-968c-9a37e2ea722e, run=probe_legacy_e6f686f5254f41c0ad2d7a27be950bfe
+Agent team websocket attached for team run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Created agent session d8fed8f9-64d0-4991-b1d7-9dadd14a5bcb for run probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent Team WebSocket connected: session=d8fed8f9-64d0-4991-b1d7-9dadd14a5bcb, run=probe_team_fcca6da5e0234b84ad6992c045e8f2c7
+Agent team websocket attached for team run probe_team_51c4bc198b9d447988c17850d4a0d480
+Created agent session f849d426-1fbf-403f-9271-05ace05d96ad for run probe_team_51c4bc198b9d447988c17850d4a0d480
+Agent Team WebSocket connected: session=f849d426-1fbf-403f-9271-05ace05d96ad, run=probe_team_51c4bc198b9d447988c17850d4a0d480
+{"level":30,"time":1791236813587,"pid":35379,"hostname":"MacBookPro","reqId":"req-1g4","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:517:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/run-settings-ui-unification/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1791236813587,"pid":35379,"hostname":"MacBookPro","reqId":"req-1g4","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.0448750257492065,"msg":"http request completed"}
+In-memory cache: Updated agent definition with ID autobyteus-daily-assistant.
+Agent Definition with ID autobyteus-daily-assistant updated successfully.
+[2026-10-05T21:46:53.666Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session f849d426-1fbf-403f-9271-05ace05d96ad
+Closed agent session d8fed8f9-64d0-4991-b1d7-9dadd14a5bcb
+Closed agent session ba7e20a8-24ea-4ee0-968c-9a37e2ea722e
+Agent WebSocket disconnected: ba7e20a8-24ea-4ee0-968c-9a37e2ea722e
+Closed agent session 16cb9029-355d-469a-bd06-6d3affb0c069
+Agent WebSocket disconnected: 16cb9029-355d-469a-bd06-6d3affb0c069
+Closed agent session 77e3d1a6-d990-4310-8943-da8bbb990c58
+Agent WebSocket disconnected: 77e3d1a6-d990-4310-8943-da8bbb990c58
+{"level":30,"time":1791236813721,"pid":35379,"hostname":"MacBookPro","reqId":"req-1g8","res":{"statusCode":503},"msg":"request aborted - refusing to accept new requests as server is closing"}
+[2026-10-05T21:46:53.731Z] [INFO] [server.runtime] Server closed cleanly.

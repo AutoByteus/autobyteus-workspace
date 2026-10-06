@@ -1,6 +1,7 @@
 <template>
   <div class="flex items-center space-x-1">
     <button
+      v-if="showEditConfig"
       type="button"
       data-test="workspace-header-edit-config"
       @click="$emit('editConfig')"
@@ -26,6 +27,8 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 
+/** `showEditConfig`: false where a run has no saved settings yet (a `temp-*` chat whose first send failed). */
+withDefaults(defineProps<{ showEditConfig?: boolean }>(), { showEditConfig: true });
 defineEmits(['newAgent', 'editConfig']);
 </script>
 

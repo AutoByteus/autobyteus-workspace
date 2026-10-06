@@ -98,16 +98,68 @@ owned reads stay fresh without inserting owned Agents into the shared catalog.
 Org → Team → Agent detail and Back retain the explicit Org-return context;
 ordinary standalone routes remain unscoped.
 
-## Run Configuration
+## Org Launch Page
 
-Running an Org opens one configuration panel for the complete mounted scope.
-`agentOrgRunConfigStore` owns:
+An Agent Org has no coordinator or initial recipient, so it is never a chat
+target: it is never chatted with, never receives a first message, and New chat
+never starts one. Orgs start only from the **Org launch page**:
 
-- required Org-root runtime/model/model-config/tool/skill/workspace choices;
-- sparse Team-placement overrides;
-- sparse exact-Agent-placement overrides;
-- exact runtime/model schema readiness;
-- the immutable launch snapshot and admission guard.
+- **Run** on an Agent Org (list or detail);
+- **+** on a running or stored Org run (prefilled from that run);
+- choosing an Org in the heading switcher of New chat or of another Org's page.
+
+The page keeps the existing route
+`/workspace?rootSubjectKind=agent_org&definitionId=<id>&mode=configuration[&sourceOrgRunId=<orgRunId>]`.
+`pages/workspace.vue` renders `components/run-settings/OrgLaunchPage.vue` for
+it inside `WorkspaceToolShell start-surface` (not inside
+`WorkspaceAdaptiveLayout`). Every start goes through
+`composables/runSettings/useRunStart.ts` (`runOrg`, `copyOrgRun`,
+`switchTarget`), which starts the draft and pushes the route; a reload calls
+`agentOrgLaunchDraftStore.ensureForRoute` and starts a matching draft.
+
+The page has:
+
+- the Org name as the heading switcher (`RunTargetSwitcher`, the same one New
+  chat uses);
+- one settings card with the chat controls (Workspace, Model, Thinking, any
+  other model settings such as Codex **Fast mode**, Tool approval) and a round
+  play-icon **Run** button in its lower-right corner; there is no message box;
+- a status line under the card (preparing, launching
+  "Starting {Org} on {runtime}…", the amber blocking reason, or the red failure);
+- the members line and the Member settings drawer (below);
+- the "Show tools" icon (see [Chat](./chat.md#start-surfaces)).
+
+States: an unknown Org or one whose references cannot be read shows "This Agent
+Org isn't available. Choose another Agent Org." with **Back to Agent Orgs**. A
+failed launch keeps the page and its values and shows "Couldn't start this Agent
+Org. Try again."; the server's validation message goes to the console. No raw
+member address appears in user-facing copy.
+
+### Draft And Launch Owners
+
+`stores/agentOrgLaunchDraftStore.ts` (formerly `agentOrgRunConfigStore`) owns
+the Org launch draft:
+
+- phases `preparing` (load the Org's exact references and, for **+**, read the
+  source run) → `ready` ⇄ edits → `launching` → cleared after navigation, or
+  back to `ready` with an error. Each start gets a new key, so late results of
+  an older start are dropped;
+- the Org card's settings: a `RunWorkspaceChoice`, runtime, model, model config
+  and tool approval;
+- sparse overrides: `teamOverrides` (a placed team's model/thinking/approval),
+  `teamWorkspaces` (a placed team's workspace, kept only where it differs from
+  the Org's) and `agentOverrides` (direct agents and placed-team members);
+- the member tree projection (`utils/runSettings/runMemberTree.ts`) and
+  readiness.
+
+`services/agentOrgExecution/agentOrgLaunchService.ts` owns the launch side
+effects and holds no state: it resolves or creates the root and placed-team
+workspaces (each folder once), serializes the placements
+(`toAgentOrgPlacementLaunchConfiguration`), calls `agentOrgRunStore.launch()`
+with no focused recipient, refreshes the new history row and records the model
+as the last chat model. The page never calls it or `agentOrgRunStore` directly;
+Run calls `agentOrgLaunchDraftStore.launch(navigate)`, which then opens the
+launched Org run view (`mode=active`).
 
 Effective values resolve as:
 
@@ -119,59 +171,61 @@ Team Agent:   Agent override -> Team override -> Org root
 Referenced Agent/Team definition defaults remain standalone defaults and do not
 silently override Org choices.
 
-A fresh launch draft selects the real **Temp Workspace (Default)** catalog entry
-when it is available, matching fresh AgentTeam launch behavior. Mounted Teams
-and Agents inherit that root Workspace unless an exact supported Team-placement
-override applies. A deliberate existing/new Workspace choice wins for the rest
-of the draft. If the catalog/default is unavailable, the client does not invent
-a path; it keeps the exact actionable selection state and blocks Run until a
-valid root Workspace is supplied.
+Initial settings follow one rule for every start page:
 
-### Member Overrides
+- **Run:** the Org's default launch config; if it has no usable model, the last
+  model used in chat, then the default runtime's first model. Workspace is the
+  temp workspace. Tool approval defaults to **Auto-approve**, as for Agents and
+  Teams (the Antigravity lock still applies).
+- **+:** the source run's settings and member overrides. A placed team keeps its
+  workspace only where it differs from the Org's. If the run cannot be read or
+  copied, the Org defaults are used.
+- **Heading switcher:** the carried workspace, approval and model config; member
+  overrides reset.
 
-**Member overrides (N)** starts collapsed, where `N` is the exact number of
-configurable Agent placements. Opening it keeps every mounted Team independently
-collapsed.
+Copied and carried settings are kept as they are; their runtimes' availability
+and model catalogs (the Org card's and every override's) load before Run is
+offered.
 
-A Team row shows readable name, `TEAM`, exact mounted address, explicit
-**Inherited** or **Customized** state, and an accessible disclosure control.
-Expanding one Team exposes its Team-placement controls and exact direct-Agent
-rows; sibling Teams stay collapsed. Coordinator identity appears only on the
-exact coordinator Agent row. Team state changes only for a Team-level override;
-an Agent-only change does not relabel the Team.
+### Member Settings
 
-Valid drafts survive collapse/reopen. The editor never mutates the referenced
-definition or selects a runtime recipient.
+The members line under the card reads "All {N} members use these settings ·
+Customize members", or "● {n} of {N} customized · Edit · Reset". It opens the
+right-side **Member settings** drawer (`RunMemberSettingsDrawer`,
+`role="dialog"`), shared with Team New chat. The drawer is resizable between 400
+and 960 px (the page keeps at least 360 px), remembers its width in
+`autobyteus.chat.memberPanelWidth`, and is full width below `sm`.
 
-### Readiness And Runtime Catalog Failure
+The drawer lists placed teams, their members and direct agents. A row can
+override **model + runtime, thinking, other model settings and tool approval**;
+a placed team can also override its **workspace**. Only fields that differ from
+the parent are stored, so a field set back to the parent's value follows the
+parent again. A customized row shows "Customized" and supports per-field Reset,
+row reset and **Reset all**. Thinking counts as customized only when the
+thinking settings differ.
 
-Run is disabled until every root, Team, and Agent scope is ready. Loading,
-invalid, or unavailable runtime/model schema state is shown at the exact scope
-and blocks admission.
+### Readiness
+
+Run is disabled until the draft is ready. One readiness rule,
+`utils/runSettings/launchReadiness.ts` (`resolveScopesReadiness`), serves both
+start surfaces (New chat and this page). It walks the effective scopes (the Org
+card and every member of the projected tree) and reports the first blocking
+reason, in this order:
+
+1. the Org is unavailable, or its topology cannot be launched (the topology
+   diagnostic is logged to the console once);
+2. a scope's runtime is disabled ("{Runtime} is unavailable. Choose another
+   runtime.");
+3. a scope has no model ("Choose a model to start.").
+
+While runtime availability is still unknown, nothing is blocked on it. The
+reason shows in amber under the card and as the Run tooltip/label.
 
 Runtime kinds are inventoried separately from per-kind capability verification.
-Verified Codex can be selected while another runtime is still being discovered;
-aggregate loading does not imply that Codex is unavailable. This does not bypass
-Codex model-catalog or exact schema readiness, change defaults, or make another
-runtime available without its own verification.
-
-Root and inherited member views observe current shared evidence for their
-effective runtime. An inherited member shows its catalog failure and a targeted
-**Retry** even when it has no override. Same-kind accepted catalog publication
-can recover those views without changing exact model/configuration choices or
-creating overrides. Another runtime's outage or a retained explicit failed edit
-is not silently cleared. Missing models, invalid configuration and unresolved
-or wrong-owner member references continue to block Run. See
+Verified Codex can be selected while another runtime is still being discovered.
+The model menu shows each runtime's catalog loading or failure state with a
+**Retry**. See
 [Independent Runtime Readiness](../../autobyteus-server-ts/docs/modules/agent_execution.md#independent-runtime-readiness).
-
-When an exact Agent runtime catalog request fails:
-
-- the requested runtime remains visible;
-- the durable/effective override is not committed;
-- an accessible error and **Retry** action are shown;
-- Retry replays the retained request through the same bounded path;
-- selecting the real committed or Global default abandons the failed request,
-  clears its error, restores readiness, and produces no stale launch override.
 
 ### Authoritative New-Row Publication
 
@@ -565,8 +619,10 @@ report for the exact acceptance scope.
 ## Store And Component Ownership
 
 - `agentOrgDefinitionStore.ts`: admitted catalog and definition CRUD.
-- `agentOrgRunConfigStore.ts`: launch draft, sparse overrides, readiness, and
-  admission.
+- `agentOrgLaunchDraftStore.ts`: Org launch draft (phases, references/seed,
+  sparse overrides, readiness) and `launch`.
+- `services/agentOrgExecution/agentOrgLaunchService.ts`: stateless Org launch
+  side effects (workspaces, placement serialization, launch, history refresh).
 - `agentOrgRunStore.ts`: create/restore/terminate and selected Org.
 - `agentOrgContextsStore.ts`: hydrated execution contexts and owned read-only
   inspection requests.
@@ -588,7 +644,11 @@ report for the exact acceptance scope.
   captured-identity Delete confirmation.
 - `components/agentOrgs/AgentOrgAvatar.vue` and `AgentOrgAvatarEditor.vue`:
   Org image/initials presentation and draft upload/preview/remove.
-- `components/workspace/config/AgentOrgRunConfigPanel.vue`: launch form.
+- `components/run-settings/OrgLaunchPage.vue`: the Org launch page (heading
+  switcher, settings card with Run, status line, members line).
+- `components/run-settings/ExistingRunSettings.vue` (view) behind
+  `components/workspace/config/ExistingRunConfigEditor.vue` (container): saved
+  Org run settings, see [Settings](./settings.md#existing-run-configuration).
 - `components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue`:
   AgentOrg rows within the unified Workspaces projection. The separate
   `AgentOrgRunHistoryPanel.vue` history owner was removed.
@@ -596,9 +656,6 @@ report for the exact acceptance scope.
   Messages-only collaboration panel.
 - `components/workspace/org/AgentOrgWorkspaceView.vue`: focused/unfocused and
   stopped workspace states plus the enclosing-Org config/Back adapter.
-- `components/workspace/config/AgentOrgRunConfigForm.vue`: shared launch and
-  stopped whole-Org hierarchy body. Existing mode is backed by the canonical
-  execution tree and the subject-neutral existing-run editor/store.
 - `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` and
   `WorkspaceHistoryWorkspaceSection.vue`: always-mounted mixed-family
   Workspaces hierarchy and sibling Agent/Team/AgentOrg groups.

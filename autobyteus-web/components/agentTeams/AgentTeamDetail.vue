@@ -85,7 +85,7 @@ import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore'
 import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
-import { useRunActions } from '~/composables/useRunActions'
+import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { useLocalization } from '~/composables/useLocalization'
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 import { toEditableHandoffs, type HandoffEndpointOption } from '~/types/collaboration/handoffs'
@@ -96,7 +96,7 @@ const emit = defineEmits(['navigate'])
 const router = useRouter()
 const teamStore = useAgentTeamDefinitionStore()
 const agentStore = useAgentDefinitionStore()
-const { prepareTeamRun } = useRunActions()
+const runStart = useRunStart()
 const { t } = useLocalization()
 const loading = ref(false)
 const referenceError = ref('')
@@ -135,7 +135,8 @@ watch([teamDefinitionId, returnToOrgId], async ([teamId, orgId], _, onCleanup) =
     if (current) referenceError.value = error instanceof Error ? error.message : String(error)
   } finally { if (current) loading.value = false }
 }, { immediate: true })
-const runTeam = (): void => { if (teamDef.value) { prepareTeamRun(teamDef.value); void router.push('/workspace') } }
+// Run opens New chat addressed to the team (REQ-005).
+const runTeam = (): void => { if (teamDef.value) void runStart.runTeam(teamDef.value.id) }
 const viewAgent = (node: TeamNode): void => { if (teamDef.value) emit('navigate', { target: 'agents', view: 'detail', id: agentId(node), returnToTeam: teamDef.value.id }) }
 const deleteTeam = async (): Promise<void> => {
   if (!teamDef.value) return

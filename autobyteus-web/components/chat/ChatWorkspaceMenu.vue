@@ -20,12 +20,13 @@
     <div v-if="popover.open.value && popover.narrow.value" class="fixed inset-0 z-40 bg-black/20" aria-hidden="true"></div>
     <div
       v-if="popover.open.value"
+      ref="menuRef"
       data-test="chat-workspace-menu"
       class="z-50 flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-left shadow-lg"
       :class="popover.narrow.value
         ? 'fixed inset-x-2 bottom-2 max-h-[80vh]'
         : ['absolute left-0 w-96 max-w-[calc(100vw-1.5rem)]', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
-      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px` }"
+      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px`, ...inBoundary.style.value }"
     >
       <div class="flex flex-shrink-0 items-center gap-2 border-b border-gray-100 px-3 py-2">
         <Icon icon="heroicons:magnifying-glass" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
@@ -141,13 +142,18 @@ import { computed, nextTick, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useWorkspaceStore } from '~/stores/workspace'
-import type { ChatDraftWorkspace } from '~/stores/chatDraftStore'
+import { useMenuInBoundary } from '~/composables/popover/useMenuInBoundary'
+import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
 import { isAbsoluteFolderPath } from '~/utils/chat/chatDefaults'
 import { useLocalization } from '~/composables/useLocalization'
 import { filterWorkspaceOptions } from '~/components/chat/chatComposerMenus'
 
-const props = defineProps<{ workspace: ChatDraftWorkspace }>()
-const emit = defineEmits<{ (event: 'select', value: ChatDraftWorkspace): void }>()
+const props = withDefaults(defineProps<{
+  workspace: RunWorkspaceChoice
+  /** Run-settings rows open the menu where it fits. */
+  placement?: 'above' | 'auto'
+}>(), { placement: 'above' })
+const emit = defineEmits<{ (event: 'select', value: RunWorkspaceChoice): void }>()
 
 const { t } = useLocalization()
 const workspaceStore = useWorkspaceStore()
@@ -156,7 +162,9 @@ const triggerRef = ref<HTMLElement | null>(null)
 const listRef = ref<HTMLElement | null>(null)
 const pathRef = ref<HTMLInputElement | null>(null)
 const searchRef = ref<HTMLInputElement | null>(null)
-const popover = useAnchoredPopover(rootRef, triggerRef, 420, { placement: 'above' })
+const popover = useAnchoredPopover(rootRef, triggerRef, 420, { placement: props.placement })
+const menuRef = ref<HTMLElement | null>(null)
+const inBoundary = useMenuInBoundary(menuRef, computed(() => popover.open.value), computed(() => !popover.narrow.value))
 const adding = ref(false)
 const path = ref('')
 const error = ref('')

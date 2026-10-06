@@ -305,7 +305,7 @@ roots are out of MVP scope.
 The frontend does not decide whether a skill is eligible for Skill Improvement. The
 composer-adjacent **Improve skills** CTA lazy-loads backend eligibility for the
 selected active run or team member and stays hidden when the backend says the
-current target is ineligible. Run-history rows and launch forms do not own
+current target is ineligible. Run-history rows and start surfaces do not own
 Skill Improvement actions. Before messaging the visible improver, the backend
 projects the target's raw trace corpus into readable work trace files and sends
 the improver a concise task packet with paths, editable skill roots, and a

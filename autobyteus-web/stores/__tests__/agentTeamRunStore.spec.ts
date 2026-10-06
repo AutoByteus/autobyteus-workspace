@@ -1,10 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { mount } from '@vue/test-utils'
+
 import { computed, nextTick } from 'vue'
 import { useAgentTeamRunStore } from '../agentTeamRunStore'
-import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue'
-import TeamRunConfigForm from '~/components/workspace/config/TeamRunConfigForm.vue'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -861,22 +859,15 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     const createWorkspace = vi.spyOn(useWorkspaceStore(), 'createWorkspace')
     const runStore = useAgentTeamRunStore()
     const launchDraft = vi.spyOn(runStore, 'launchDraft')
-    const wrapper = mount(RunConfigPanel, {
-      global: {
-        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
-      },
-    })
 
     expect(configStore.launchReadiness).toEqual(expect.objectContaining({ canLaunch: true, blockingIssues: [] }))
     expect(configStore.repairNotice).toBeNull()
-    expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
-    await wrapper.find('.run-btn').trigger('click')
+    await runStore.launchDraft(configStore.selectedDraft!).catch(() => undefined)
     await vi.waitFor(() => expect(configStore.repairNotice?.addresses).toEqual(['/implementer', '/review_lead']))
 
     expect(createWorkspace).not.toHaveBeenCalled()
     expect(mockMutate).not.toHaveBeenCalled()
     expect(configStore.selectedDraft!.config.agentOverrides).toEqual({})
-    expect(wrapper.findComponent(TeamRunConfigForm).props('model').repairAddresses).toEqual(['/implementer', '/review_lead'])
     expect(launchDraft).toHaveBeenCalledOnce()
   })
 

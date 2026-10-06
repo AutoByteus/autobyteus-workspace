@@ -168,8 +168,8 @@ export const useAgentRunStore = defineStore('agentRun', {
       const draftOwner = buildAgentDraftContextFileOwner(runId);
       const messageId = createClientMessageId();
       let dedupeKey = `agent_run_input:${runId}:${messageId}`;
-      // `@` mentions exist only for an existing run; a first message never carries them.
-      const mentions = isNewAgent ? [] : mentionsPresentInText(userText, currentAgent.requestedMentions);
+      // `@` mentions still in the text, on the first message too (REQ-012); the server admits them.
+      const mentions = mentionsPresentInText(userText, currentAgent.requestedMentions);
       const localSubmission = beginLocalUserSubmission(currentAgent, {
         text: messageContent, identity: { messageId, dedupeKey },
         attachments: draftAttachments,

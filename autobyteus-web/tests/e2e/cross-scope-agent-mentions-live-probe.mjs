@@ -167,19 +167,44 @@ const menuOptions = (page) => page.locator(`${sel('run-mention-menu')} [data-tes
 const shot = async (page, name) => { await page.screenshot({ path: path.join(outDir, `${name}.png`) }) }
 const MODEL_ROW = 'button[role="menuitemradio"][data-test^="chat-model-option-"]'
 const state = { model: null, agentRunId: null, teamRunId: null, orgRunId: null, children: {} }
+/**
+ * Opens one runtime's model list in the open model menu and returns it. The desktop menu opens runtime flyouts on
+ * hover, and clicking a runtime row whose flyout is already open can toggle it shut; so hover, verify, and click
+ * only when needed. Then enter the flyout sideways at the row's height: a diagonal pointer path would cross the
+ * next runtime rows (e.g. an installed Grok Build) and open their flyouts instead. On phones the menu drills in.
+ */
+const openRuntimeList = async (page, runtimeKind) => {
+  const list = page.locator(sel(`chat-model-list-${runtimeKind}`))
+  const row = page.locator(sel(`chat-runtime-${runtimeKind}`))
+  for (let attempt = 0; attempt < 6 && !(await list.isVisible().catch(() => false)); attempt += 1) {
+    await row.hover().catch(() => {}); await delay(400)
+    if (!(await list.isVisible().catch(() => false))) { await row.click().catch(() => {}); await delay(700) }
+  }
+  await list.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
+  const rowBox = await row.boundingBox({ timeout: 1000 }).catch(() => null)
+  const listBox = await list.boundingBox({ timeout: 1000 }).catch(() => null)
+  if (rowBox && listBox && listBox.x > rowBox.x) await page.mouse.move(listBox.x + 12, Math.min(Math.max(rowBox.y + rowBox.height / 2, listBox.y + 6), listBox.y + listBox.height - 6), { steps: 5 })
+  return list
+}
 const pickModel = async (page) => {
   await page.locator(sel('chat-model-trigger')).click()
-  await page.locator(sel(`chat-runtime-${runtime}`)).click()
-  await page.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
-  const models = await page.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
+  const list = await openRuntimeList(page, runtime)
+  const models = await list.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
   const chosen = preferredModel && models.includes(preferredModel) ? preferredModel : models[0]
-  await page.locator(sel(`chat-model-option-${chosen}`)).click()
+  await list.locator(sel(`chat-model-option-${chosen}`)).click()
   state.model = chosen
 }
 const newChat = async (page) => {
   await page.goto(`${frontUrl}/chat`, { waitUntil: 'domcontentloaded' })
   await page.locator(sel('chat-new')).waitFor({ timeout: 120000 })
   await delay(800)
+}
+// run-settings-ui-unification: New chat's target is chosen in the heading switcher; `@` only mentions collaborators.
+const switchTarget = async (page, query, id) => {
+  await page.locator(sel('run-target-switcher-trigger')).click()
+  await page.locator(sel('run-target-switcher-search')).fill(query)
+  await page.locator(sel(`run-target-switcher-option-${id}`)).click()
+  await page.locator(sel('run-target-switcher-menu')).waitFor({ state: 'detached', timeout: 30000 })
 }
 const openMenu = async (page, query = '') => {
   const input = runComposer(page)
@@ -320,9 +345,9 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline 
   const r = {}
   await newChat(page)
   await pickModel(page)
+  await switchTarget(page, 'Research', ids.research)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@Research')
-  await page.locator(sel(`chat-target-option-${ids.research}`)).click()
+  await chatInput.click()
   await page.keyboard.type('Say hello in one short sentence.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
@@ -390,7 +415,7 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline 
   const entry = collaboratorsOf(added)[0]
   state.children.reviewer = entry.agentRunId
   r.entry = { address: entry.address, agentRunId: entry.agentRunId, launch: entry.launchConfiguration }
-  assert(entry.launchConfiguration.runtimeKind === runtime && entry.launchConfiguration.llmModelIdentifier === state.model, 'collaborator did not take the root settings', entry)
+  assert(entry.launchConfiguration.runtimeKind === runtime && entry.launchConfiguration.llmModelIdentifier === state.model, 'collaborator did not take the root settings', { entry, chosenModel: state.model, hostConfig: (await gql('query($id:String!){getAgentRunResumeConfig(runId:$id){metadataConfig{runtimeKind llmModelIdentifier llmConfig}}}', { id: state.agentRunId }).catch(() => null))?.getAgentRunResumeConfig?.metadataConfig ?? null })
   await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
   assert((await input.inputValue()) === '' && !(await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').count()) && !(await page.locator(sel('agent-input-mention-chips')).count()), 'composer not cleared after an accepted send')
   // The host briefs it with send_message_to; it starts and reports back.
@@ -423,7 +448,9 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline 
   r.childHasNotice = /Task delegator address/.test(await conversationText(page))
   assert(/code reviewer/i.test(r.childTitle) && !r.runRowHighlighted, 'collaborator open: header/run-row highlight', r)
   assert(r.childHeaderControls.settings && r.childHeaderControls.newRun, 'F-04: header ⚙/+ controls missing on the collaborator view', r.childHeaderControls)
-  assert(/^Message code reviewer/i.test(r.childPlaceholder ?? ''), 'F-04: placeholder does not name the collaborator', r.childPlaceholder)
+  // composer-mention-discoverability (2026-10-02) gave the mention placeholder precedence whenever `@` is available,
+  // which supersedes F-04's per-collaborator placeholder (2026-10-01); the collaborator is named in the header instead.
+  assert(/^(Message code reviewer|Ask anything · @ for an agent or team)/i.test(r.childPlaceholder ?? ''), 'F-04: unexpected collaborator-view placeholder', r.childPlaceholder)
   assert(r.childFrom[0] === 'From Research Assistant:' && !r.childHasNotice, 'the collaborator conversation must start with the briefing as "From Research Assistant:" and no task notice', r)
   await shot(page, 'A01-06-collaborator-conversation-VIS-013')
   await sendInComposer(page, 'Reply with the single word CHILD-OK.')
@@ -575,9 +602,9 @@ defineCase('T01', 'UXJ-001 Team run: VIS-001 menu; send adds the collaborator Te
   const findings = []
   await newChat(page)
   await pickModel(page)
+  await switchTarget(page, 'review', ids.reviewTeam)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@review')
-  await page.locator(sel(`chat-target-option-${ids.reviewTeam}`)).click()
+  await chatInput.click()
   await page.keyboard.type('Say hello in one short sentence.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
@@ -825,9 +852,9 @@ const newPids = (before, after) => [...after].filter((pid) => !before.has(pid))
 const startStandaloneRun = async (page, prompt) => {
   await newChat(page)
   await pickModel(page)
+  await switchTarget(page, 'Research', ids.research)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@Research')
-  await page.locator(sel(`chat-target-option-${ids.research}`)).click()
+  await chatInput.click()
   await page.keyboard.type(prompt)
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
@@ -935,9 +962,9 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   const r = {}
   // Team run through the New chat quick path, then stopped.
   await newChat(page); await pickModel(page)
+  await switchTarget(page, 'review', ids.reviewTeam)
   const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@review')
-  await page.locator(sel(`chat-target-option-${ids.reviewTeam}`)).click()
+  await chatInput.click()
   await page.keyboard.type('Say hi in one short sentence.')
   await page.locator(sel('chat-primary-action')).first().click()
   await page.waitForURL(/\/workspace/, { timeout: 180000 })
@@ -996,16 +1023,111 @@ defineCase('P01', 'Old data: Team and Org runs whose trees have no `collaborator
   return r
 })
 
-defineCase('N01', 'AC-013 New chat `@` is still the launch-target picker', async (page) => {
+defineCase('N01', 'New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target', async (page) => {
   await newChat(page)
-  const chatInput = page.locator(`${sel('chat-composer')} textarea`).first()
-  await chatInput.click(); await page.keyboard.type('@')
-  await page.locator(sel('chat-target-menu')).waitFor({ timeout: 30000 })
-  const targets = await page.locator('[data-test^="chat-target-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-target-option-', '')))
-  assert(!(await page.locator(sel('run-mention-menu')).isVisible().catch(() => false)), 'run menu shown in New chat')
+  await page.locator(sel('run-target-switcher-trigger')).click()
+  await page.locator(sel('run-target-switcher-menu')).waitFor({ timeout: 30000 })
+  const targets = await page.locator('[data-test^="run-target-switcher-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-target-switcher-option-', '')))
   assert(targets.includes(ids.research) && targets.includes(ids.reviewTeam), 'New chat targets', targets)
   await page.keyboard.press('Escape')
-  return { targets }
+  await switchTarget(page, 'Research', ids.research)
+  await openMenu(page)
+  const mentions = await menuOptions(page)
+  assert(!(await page.locator(sel('chat-target-menu')).count()), 'the old `@` target picker is gone')
+  assert(!mentions.includes(ids.research), 'the target is offered as its own mention', mentions)
+  assert(mentions.includes(ids.reviewTeam), 'a shared Team is a mention candidate', mentions)
+  await page.keyboard.press('Escape')
+  return { targets, mentions }
+})
+
+// run-settings-ui-unification AF-009 / REQ-012: the first message of a new run keeps its `@` mentions, and the
+// server admits them. The client list mirrors the server's CollaboratorCandidatePolicy (design AR-001).
+const BUILT_IN_AGENT_IDS = ['autobyteus-daily-assistant', 'autobyteus-project-task-manager', 'autobyteus-retrospective-skill-improver']
+const newChatInput = (page) => page.locator(`${sel('chat-composer')} textarea`).first()
+const typeFirstMessageWithMention = async (page, prefix, query, id, rest) => {
+  const input = newChatInput(page)
+  await input.click(); await input.fill('')
+  await page.keyboard.type(prefix)
+  await page.locator(sel('run-mention-menu')).waitFor({ timeout: 30000 })
+  await choose(page, query, id)
+  await page.keyboard.type(rest)
+  return input.inputValue()
+}
+
+defineCase('N02', 'AF-009 / REQ-012: an Agent New chat first send with an `@Team` mention starts the run and the server admits the collaborator Team; the host briefs it', async (page) => {
+  const r = {}
+  await newChat(page)
+  await pickModel(page)
+  await switchTarget(page, 'Research', ids.research)
+  await openMenu(page)
+  r.options = await menuOptions(page)
+  assert(!r.options.includes(ids.research) && !r.options.includes(ids.org) && !BUILT_IN_AGENT_IDS.some((id) => r.options.includes(id)), 'target, Org or a built-in agent offered in Agent New chat', r.options)
+  assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer), 'shared candidates missing in Agent New chat', r.options)
+  await page.keyboard.press('Escape')
+  r.text = await typeFirstMessageWithMention(page, 'please ask @', 'product', ids.productTeam, 'to design a tiny settings page and report back.')
+  assert(r.text.includes('@Product Team '), 'mention token not inserted in the New chat composer', r.text)
+  await shot(page, 'N02-01-agent-new-chat-first-message-with-mention')
+  await page.locator(sel('chat-primary-action')).first().click()
+  await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
+  r.runId = new URL(page.url()).searchParams.get('id')
+  await page.locator(RUN_VIEW).waitFor({ timeout: 120000 })
+  // Server admission: the collaborator Team is in the new run's collaboration tree.
+  const view = await waitCollaborators(r.runId, 1, 'first-send collaborator admitted')
+  const entry = collaboratorsOf(view).find((c) => c.kind === 'agent_team')
+  assert(entry, 'the first-send mention was not admitted as an Agent Team collaborator', collaboratorsOf(view))
+  r.entry = { kind: entry.kind, address: entry.address, teamRunId: entry.teamRunId ?? entry.team_run_id, members: (entry.members ?? []).map((m) => m.address) }
+  assert(r.entry.members.length === 2, 'collaborator Team not opened with its two members', r.entry)
+  await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
+  r.userMention = await page.locator(sel('user-message-mention')).first().innerText()
+  assert(/Product Team/.test(r.userMention), 'stored first message does not show the mention', r.userMention)
+  // The mention reached the host model: it briefs the Team coordinator with send_message_to.
+  const coordinator = entry.members.find((m) => m.address === entry.coordinatorAddress)
+  await waitFor('host briefs the collaborator Team coordinator', async () => {
+    const msgs = (await agentRootView(r.runId))?.communication_messages.messages ?? []
+    return msgs.some((m) => m.senderAgentRunId === r.runId && m.receiverAgentRunId === coordinator.agentRunId)
+  }, 300000, 1500)
+  r.briefed = true
+  await waitHostIdle(page); await delay(1500)
+  await shot(page, 'N02-02-agent-first-send-collaborator-admitted')
+  return r
+})
+
+defineCase('N03', 'AF-009 / AR-001: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run and the team root admits the collaborator', async (page) => {
+  const r = {}
+  const teamRunsBefore = async () => {
+    const h = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { teamDefinitions { teamDefinitionId runs { teamRunId } } } }')
+    return h.listWorkspaceRunHistory.flatMap((w) => w.teamDefinitions).filter((t) => t.teamDefinitionId === ids.reviewTeam).flatMap((t) => t.runs.map((x) => x.teamRunId))
+  }
+  const before = new Set(await teamRunsBefore())
+  await newChat(page)
+  await pickModel(page)
+  await switchTarget(page, 'review', ids.reviewTeam)
+  await openMenu(page)
+  r.options = await menuOptions(page)
+  const excluded = [ids.reviewTeam, ids.researcher, ids.writer, ids.org, ...BUILT_IN_AGENT_IDS]
+  assert(!excluded.some((id) => r.options.includes(id)), 'Team New chat offers the team, a member, a built-in or an Org', { options: r.options, excluded })
+  assert([ids.research, ids.reviewer, ids.analyst, ids.productTeam].every((id) => r.options.includes(id)), 'shared outside candidates missing in Team New chat', r.options)
+  r.footer = await page.locator(sel('run-mention-menu-footer')).innerText().catch(() => null)
+  await shot(page, 'N03-01-team-new-chat-at-menu-VIS-030')
+  await page.keyboard.press('Escape')
+  r.text = await typeFirstMessageWithMention(page, 'please ask @', 'code', ids.reviewer, 'to review the phrase "hello team" and report back.')
+  assert(r.text.includes('@Code Reviewer '), 'mention token not inserted in the Team New chat composer', r.text)
+  await page.locator(sel('chat-primary-action')).first().click()
+  await page.waitForURL(/\/workspace/, { timeout: 180000 })
+  r.teamRunId = await waitFor('new team run in history', async () => (await teamRunsBefore()).find((id) => !before.has(id)), 60000)
+  const collaborators = await waitFor('team-root collaborator admitted', async () => { const c = await teamCollaborators(r.teamRunId); return c.length ? c : null }, 120000)
+  const entry = collaborators.find((c) => c.kind === 'agent')
+  assert(entry, 'the first-send mention was not admitted as an Agent collaborator on the team root', collaborators)
+  r.entry = { kind: entry.kind, address: entry.address, agentRunId: entry.agentRunId ?? entry.agent_run_id }
+  await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 60000 })
+  r.userMention = await page.locator(sel('user-message-mention')).first().innerText()
+  assert(/Code Reviewer/.test(r.userMention), 'stored first message does not show the mention', r.userMention)
+  // The coordinator briefs the collaborator, which reports back "From Code Reviewer:".
+  await waitFor('report "From Code Reviewer:"', async () => (await fromLabels(page)).includes('From Code Reviewer:'), 300000, 2000)
+  r.reported = true
+  await waitHostIdle(page); await delay(1500)
+  await shot(page, 'N03-02-team-first-send-collaborator-admitted')
+  return r
 })
 
 // ---------------------------------------------------------------------------------------------

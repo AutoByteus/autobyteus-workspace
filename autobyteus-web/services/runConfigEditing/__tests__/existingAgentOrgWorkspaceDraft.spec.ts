@@ -3,7 +3,15 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 import { createExistingAgentOrgWorkspaceDraft, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid,
   planExistingAgentOrgWorkspacePatches, previewExistingAgentOrgWorkspaces, updateExistingAgentOrgWorkspaceDraft } from '../existingAgentOrgWorkspaceDraft'
 import { createExistingAgentOrgModelConfigDraft } from '../existingAgentOrgModelConfigDraft'
-import { projectExistingAgentOrgRunFormModel } from '../existingAgentOrgRunFormModel'
+import { buildSavedRunMemberTree } from '~/utils/runSettings/runMemberTree'
+import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
+
+const folder = (rootPath: string | null): RunWorkspaceChoice | null => (rootPath ? { kind: 'folder', rootPath } : null)
+const treeDeps = {
+  schemaFor: () => null,
+  sameWorkspace: (left: RunWorkspaceChoice | null, right: RunWorkspaceChoice | null) => JSON.stringify(left) === JSON.stringify(right),
+  workspaceFromRootPath: folder,
+}
 
 it('composes independent workspace intentions without repairing distinct children at draft open or changing models', () => {
   const tree = JSON.parse(JSON.stringify(taskBearingView().execution_tree))
@@ -20,17 +28,14 @@ it('composes independent workspace intentions without repairing distinct childre
   const planner = createExistingAgentOrgModelConfigDraft(tree)
   draft = updateExistingAgentOrgWorkspaceDraft(draft, '/team', { mode: 'existing', existingWorkspaceId: 'B', newWorkspacePath: '' }, known)
   expect(planExistingAgentOrgWorkspacePatches(tree, draft)).toEqual([{ teamAddress: '/team', workspaceRootPath: '/B' }])
-  const form = projectExistingAgentOrgRunFormModel({ tree, planner, workspaceDraft: draft,
-    isActive: false, modelConfigEditable: true, modelConfigReason: null, saving: false })
-  const projected = form.members[2]!
-  expect(form.root.workspacePresentation).toEqual({ kind: 'selector', model: expect.objectContaining({ mode: 'stored' }) })
-  expect(projected.kind).toBe('agent_team')
-  if (projected.kind !== 'agent_team') throw new Error('fixture')
-  expect(projected.scope.workspacePresentation).toEqual({ kind: 'selector', model: expect.objectContaining({ mode: 'editable' }) })
-  expect(projected.scope.isCustomized).toBe(true)
-  expect(projected.children.map(child => child.kind === 'agent' && child.workspacePresentation.kind === 'selector'
-    && child.workspacePresentation.model.mode === 'stored' && child.workspacePresentation.model.workspace?.rootPath)).toEqual(['/B', '/B'])
-  expect(projected.children[1]?.kind === 'agent' && projected.children[1].effectiveConfig.llmConfig).toEqual({ customized: true })
+  // The saved-run Members list shows the placed team's edited workspace; its members follow it.
+  const saved = buildSavedRunMemberTree({ kind: 'agent_org', tree, planner, workspaceDraft: draft }, treeDeps)
+  const projected = saved.nodes[2]!
+  expect(projected.kind).toBe('team')
+  expect(projected.values.workspace).toEqual(folder('/B'))
+  expect(projected.customized.workspace).toBe(true)
+  expect(projected.children.map((child) => child.values.workspace)).toEqual([folder('/B'), folder('/B')])
+  expect(projected.children[1]!.values.llmConfig).toEqual({ customized: true })
   draft = updateExistingAgentOrgWorkspaceDraft(draft, '/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: ' ' }, known)
   expect(existingAgentOrgWorkspacesDirty(tree, draft)).toBe(true)
   expect(existingAgentOrgWorkspacesValid(tree, draft)).toBe(false)

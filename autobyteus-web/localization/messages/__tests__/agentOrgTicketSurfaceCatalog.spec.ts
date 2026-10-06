@@ -7,6 +7,8 @@ import zhCnAgentOrgMessages from '../zh-CN/agentOrgs'
 import zhCnAgentTeamMessages from '../zh-CN/agentTeams'
 import zhCnHandoffMessages from '../zh-CN/handoffs'
 import zhCnWorkspaceMessages from '../zh-CN/workspace'
+import enRunSettingsMessages from '../en/runSettings'
+import zhCnRunSettingsMessages from '../zh-CN/runSettings'
 
 describe('Agent Org ticket surface localization catalogs', () => {
   it('keeps every Agent Org management key complete in English and Simplified Chinese', () => {
@@ -41,21 +43,19 @@ describe('Agent Org ticket surface localization catalogs', () => {
       'workspace.agentOrg.history.relativeMinutes',
       'workspace.agentOrg.history.relativeHours',
       'workspace.agentOrg.history.relativeDays',
-      'workspace.agentOrg.runConfig.runtimeHelp',
-      'workspace.agentOrg.runConfig.modelLabel',
-      'workspace.agentOrg.runConfig.modelHelp',
-      'workspace.agentOrg.runConfig.loading',
-      'workspace.agentOrg.runConfig.starting',
-      'workspace.agentOrg.runConfig.run',
-      'workspace.agentOrg.runConfig.workspaceUnavailable',
-      'workspace.agentOrg.runConfig.workspacePathRequired',
-      'workspace.agentOrg.runConfig.workspacePathUnavailable',
     ] as const
 
     for (const key of workspaceKeys) {
       expect(enWorkspaceMessages[key], key).toBeTruthy()
       expect(zhCnWorkspaceMessages[key], key).toBeTruthy()
       expect(zhCnWorkspaceMessages[key], key).not.toBe(enWorkspaceMessages[key])
+    }
+
+    // The Org launch page (UIS-004).
+    expect(Object.keys(zhCnRunSettingsMessages).sort()).toEqual(Object.keys(enRunSettingsMessages).sort())
+    for (const key of Object.keys(enRunSettingsMessages).filter((entry) => entry.startsWith('runSettings.orgLaunch.')) as Array<keyof typeof enRunSettingsMessages>) {
+      expect(zhCnRunSettingsMessages[key], key).toBeTruthy()
+      expect(zhCnRunSettingsMessages[key], key).not.toBe(enRunSettingsMessages[key])
     }
 
     const returnKey = 'agentTeams.components.agentTeams.AgentTeamDetail.backToAgentOrgs'

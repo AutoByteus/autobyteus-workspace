@@ -135,7 +135,6 @@ describe('WorkspaceAdaptiveLayout', () => {
           AgentWorkspaceView: AgentWorkspaceViewValue,
           TeamWorkspaceView: TeamWorkspaceViewValue,
           RunConfigPanel: RunConfigPanelValue,
-          AgentOrgRunConfigPanel: { template: '<div class="org-config-view"></div>' },
           AgentOrgWorkspaceView: { template: '<div class="org-workspace-view"></div>' },
         },
         provide: {
@@ -170,7 +169,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.find('.run-config-view').exists()).toBe(false);
   });
 
-  it('renders RunConfigPanel when no selection and pending agent config exists', async () => {
+  it('never shows a launch form: new runs start in New chat, so a pending agent template leaves the placeholder', async () => {
     const wrapper = await mountComponent({
       agentSelection: { subject: null },
       workspaceCenterView: { mode: 'chat' },
@@ -185,9 +184,8 @@ describe('WorkspaceAdaptiveLayout', () => {
       teamRunConfig: { config: null },
     });
 
-    expect(wrapper.find('.run-config-view').exists()).toBe(true);
-    expect(wrapper.find('.agent-view').exists()).toBe(false);
-    expect(wrapper.find('.team-view').exists()).toBe(false);
+    expect(wrapper.find('.run-config-view').exists()).toBe(false);
+    expect(wrapper.find('[data-test="workspace-empty-state"]').exists()).toBe(true);
   });
 
   it('renders placeholder when nothing is selected and no pending config exists', async () => {
@@ -476,11 +474,12 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(source).not.toContain('showNavigationTrigger');
     expect(source).not.toContain("rightPanel.presentation === 'drawer'");
     expect(source).toContain('rightPanel.stripActivation');
-    expect(source).toContain('!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip');
+    expect(source).toContain('!startSurface && !isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip');
     expect(source).toContain('@request-redock="redockRightPanel"');
     expect(source).toContain("leftPanel.stripActivation === 'open-drawer'");
     expect(source).not.toContain('openToolsSurface');
-    expect(source).toContain('v-else-if="!isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"');
+    // Start surfaces (New chat, the Org launch page) show no strip; their tools open from one icon.
+    expect(source).toContain('v-else-if="!startSurface && !isRightDrawerOpen && responsiveWorkspaceShellState.showRightStrip"');
     expect(source).toContain('@request-open="openRightDrawer"');
     expect(source).toContain(':backdrop-style="rightDrawerBackdropStyle"');
     expect(source).toContain('responsiveWorkspaceShellState.value.showLeftStrip');

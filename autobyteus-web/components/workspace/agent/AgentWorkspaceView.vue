@@ -3,6 +3,7 @@
     v-if="target"
     :target="target"
     :show-header-actions="true"
+    :show-edit-config="!isTemporaryRunId(target.context.state.runId)"
     :skill-tagging="skillTagging"
     :composer-placeholder="childPlaceholder"
     @new-agent="startNewChatForRun"
@@ -15,16 +16,15 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import { useActiveContextStore } from '~/stores/activeContextStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
-import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useChatComposerOptions } from '~/composables/chat/useChatComposerOptions'
 import { useAgentRunCollaborationSync } from '~/composables/agentCollaboration/useAgentRunCollaborationSync'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
-import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
+import { DEFAULT_CHAT_AGENT_DEFINITION_ID, isTemporaryRunId } from '~/utils/chat/chatDefaults'
+import { useRunStart } from '~/composables/runSettings/useRunStart'
 import { useLocalization } from '~/composables/useLocalization'
 
 /**
@@ -33,10 +33,9 @@ import { useLocalization } from '~/composables/useLocalization'
  * has the same header controls and a box that names it.
  */
 const { t } = useLocalization()
-const router = useRouter()
 const active = useActiveContextStore()
 const definitions = useAgentDefinitionStore()
-const chatDraftStore = useChatDraftStore()
+const runStart = useRunStart()
 const center = useWorkspaceCenterViewStore()
 // The run's own agent, or a task child brought into the run with `@`.
 const target = computed(() => {
@@ -66,17 +65,16 @@ const childPlaceholder = computed(() => {
   return config && !isHost.value ? t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }) : null
 })
 
-/** ＋ starts a New chat preset to this run's agent and workspace (UIS-013 R3). */
+/**
+ * ＋ opens New chat for the agent on screen (the run's agent or an `@` collaborator) with its
+ * workspace, approval and model config (REQ-013, CR-001).
+ */
 const startNewChatForRun = async () => {
   const config = target.value?.context.config
-  if (!config) return
-  chatDraftStore.startNewChat({
-    agentDefinitionId: config.agentDefinitionId,
-    workspaceRootPath: config.workspaceMetadata?.workspaceRootPath || undefined,
-  })
-  await router.push('/chat')
+  if (config) await runStart.copyAgentFromConfig(config)
 }
-const openSelectedRunConfig = () => { if (target.value) center.showConfig() }
+// A failed first send lands on the `temp-*` context; it has no saved settings (⚙ is hidden there).
+const openSelectedRunConfig = () => { if (target.value && !isTemporaryRunId(target.value.context.state.runId)) center.showConfig() }
 
 onMounted(async () => {
   if (!definitions.agentDefinitions.length) await definitions.fetchAllAgentDefinitions().catch(() => undefined)
