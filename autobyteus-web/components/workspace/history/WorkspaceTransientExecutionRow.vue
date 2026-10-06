@@ -1,6 +1,6 @@
 <template>
   <div
-    class="transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300"
+    class="transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
     :class="rowClasses"
     :style="rowStyle"
     data-test="workspace-team-transient-execution-row"
@@ -68,12 +68,13 @@
         />
       </span>
       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
+        <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
         <span
           v-if="row.memberKind === 'agent_team'"
-          class="inline-flex h-4 w-4 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
+          class="inline-flex h-4 w-4 items-center justify-center text-slate-500"
           data-team-icon="temporary-task-team"
         >
-          <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
+          <Icon icon="heroicons:bolt-20-solid" class="h-4 w-4" />
         </span>
         <!-- A task Agent shows the same solid status dot and initials as a member. -->
         <span
@@ -189,7 +190,7 @@ const rowStyle = computed(() => ({
 
 const rowClasses = computed(() => ({
   'is-selected text-indigo-900': props.isSelected,
-  'text-gray-600': !props.isSelected,
+  'text-gray-600 hover:bg-gray-50': !props.isSelected,
 }));
 
 const activateRow = (): void => {
@@ -201,12 +202,6 @@ const activateRow = (): void => {
 <style scoped>
 .transient-execution-row {
   isolation: isolate;
-}
-
-/* The row has a 1px border; draw the branch lines from the border edge so they continue the
-   lines of the rows above and below exactly. */
-.transient-execution-row > .hierarchy-branches {
-  inset: -1px;
 }
 
 .transient-execution-row > :not(.hierarchy-identity-tooltip):not(.hierarchy-branches) {

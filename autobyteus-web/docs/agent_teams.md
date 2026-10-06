@@ -190,8 +190,8 @@ configured member that has not started other than the row kind.
 In an expanded Team run, available task Agents appear immediately after their
 corresponding recipient Agent at the same indentation level. They do not require
 opening that Agent, and an Agent has no disclosure solely for delegated task
-Agents. Task rows retain their distinct dashed treatment, runtime status, and
-exact-execution selection by mouse, Enter or Space. A task Agent shows the member
+Agents. Task rows use the ordinary tree-row style (no dashed box or tint) and
+keep their runtime status and exact-execution selection by mouse, Enter or Space. A task Agent shows the member
 marker (solid status dot and initials) centered on its name line; the starter is
 in the accessible label only, not a visible "Started by" line; branch lines run
 straight through member and task rows.

@@ -1,0 +1,2111 @@
+{
+  "startedAt": "2026-10-06T04:55:04.983Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "expect": {
+    "text": "rgb(102, 102, 102)",
+    "rest": "rgba(0, 0, 0, 0)",
+    "hover": "rgb(242, 242, 242)",
+    "ring": "rgb(99, 102, 241) 0px 0px 0px 2px",
+    "bolt": "rgb(100, 116, 139)",
+    "selectedBg": "rgb(238, 242, 255)",
+    "selectedText": "rgb(49, 46, 129)",
+    "selectedShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset"
+  },
+  "cases": {
+    "E2E-001": {
+      "result": "Pass",
+      "description": "Agent root (AgentRunTaskRows): delegated Agent, Team and Team-member rows render flat; hover, keyboard focus, Team bolt, Agent avatar, selection, Enter/Space/click, collapse",
+      "details": {
+        "rows": [
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 96,
+              "w": 332,
+              "h": 28,
+              "right": 368
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "computer use agent",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "CU",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 1,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 126,
+              "w": 332,
+              "h": 28,
+              "right": 368
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-2746c134=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "product team",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null,
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 2,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, prototyper, level 2, running, /product_team/prototyper",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 156,
+              "w": 332,
+              "h": 28,
+              "right": 368
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "prototyper",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "P",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 4,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, bootstrapper, level 2, offline, /product_team/bootstrapper",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 186,
+              "w": 332,
+              "h": 28,
+              "right": 368
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "bootstrapper",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "B",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 5,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, release notes writer, level 1, idle, Started by research assistant, /release_notes_writer",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 216,
+              "w": 332,
+              "h": 28,
+              "right": 368
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "release notes writer",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "RN",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 6,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          }
+        ],
+        "storeRows": [
+          {
+            "name": "computer use agent",
+            "kind": "agent",
+            "depth": 0
+          },
+          {
+            "name": "product team",
+            "kind": "agent_team",
+            "depth": 0
+          },
+          {
+            "name": "prototyper",
+            "kind": "agent",
+            "depth": 1
+          },
+          {
+            "name": "bootstrapper",
+            "kind": "agent",
+            "depth": 1
+          },
+          {
+            "name": "release notes writer",
+            "kind": "agent",
+            "depth": 0
+          }
+        ],
+        "tooltipVisible": true
+      }
+    },
+    "E2E-002": {
+      "result": "Pass",
+      "description": "Agent root at 390x844 (VIS-008): rows fit, names truncate, style unchanged",
+      "details": {
+        "rows": [
+          {
+            "label": "Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 124,
+              "w": 330,
+              "h": 28,
+              "right": 366
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "computer use agent",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "CU"
+          },
+          {
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 154,
+              "w": 330,
+              "h": 28,
+              "right": 366
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-2746c134=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "product team",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null
+          },
+          {
+            "label": "Temporary task agent, prototyper, level 2, running, /product_team/prototyper",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 184,
+              "w": 330,
+              "h": 28,
+              "right": 366
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "prototyper",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "P"
+          },
+          {
+            "label": "Temporary task agent, bootstrapper, level 2, offline, /product_team/bootstrapper",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 214,
+              "w": 330,
+              "h": 28,
+              "right": 366
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "bootstrapper",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "B"
+          },
+          {
+            "label": "Temporary task agent, release notes writer, level 1, idle, Started by research assistant, /release_notes_writer",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 36,
+              "y": 244,
+              "w": 330,
+              "h": 28,
+              "right": 366
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "release notes writer",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "RN"
+          }
+        ],
+        "docOverflow": 0
+      }
+    },
+    "E2E-003": {
+      "result": "Pass",
+      "description": "Team root (WorkspaceTeamExecutionTree): delegated rows flat, hover/focus, bolt Team, selection identical to a member row",
+      "details": {
+        "rows": [
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 56,
+              "y": 218.5,
+              "w": 311,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Worker",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "W",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 7,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 56,
+              "y": 248.5,
+              "w": 311,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Worker",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "W",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 8,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent_team",
+            "label": "Temporary task team, Research, level 2, offline, Started by Reviewer, /Research",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 56,
+              "y": 368.5,
+              "w": 311,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-2746c134=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "Research",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null,
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 13,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, Analyst, level 3, offline, /Research/Analyst",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 56,
+              "y": 398.5,
+              "w": 311,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Analyst",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "A",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 15,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "kind": "agent",
+            "label": "Temporary task agent, Analyst, level 3, offline, Started by Analyst, /Research/Analyst",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 56,
+              "y": 428.5,
+              "w": 311,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Analyst",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "A",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 16,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          }
+        ],
+        "member": {
+          "rest": {
+            "label": "Agent, Worker, level 1, idle, /Worker",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 56,
+              "y": 188.5,
+              "w": 311,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Worker",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": null
+          },
+          "hover": "rgb(242, 242, 242)",
+          "focus": {
+            "tabs": 6,
+            "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "outline": "solid rgba(0, 0, 0, 0)"
+          }
+        },
+        "delegatedSelected": {
+          "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker",
+          "selected": "true",
+          "color": "rgb(49, 46, 129)",
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "outlineStyle": "solid",
+          "outlineColor": "rgba(0, 0, 0, 0)",
+          "borderWidths": [
+            "0px",
+            "0px",
+            "0px",
+            "0px"
+          ],
+          "borderStyles": [
+            "solid",
+            "solid",
+            "solid",
+            "solid"
+          ],
+          "borderRadius": "0px",
+          "focusVisible": false,
+          "rect": {
+            "x": 56,
+            "y": 218.5,
+            "w": 311,
+            "h": 28,
+            "right": 367
+          },
+          "branchesInset": {
+            "dx": 0,
+            "dy": 0,
+            "dw": 0,
+            "dh": 0
+          },
+          "teamIcon": null,
+          "nameWeight": "400",
+          "nameText": "Worker",
+          "nameOverflow": "ellipsis",
+          "hasStatusDot": true,
+          "avatarText": "W"
+        },
+        "memberSelected": {
+          "label": "Agent, Worker, level 1, idle, /Worker",
+          "selected": "true",
+          "color": "rgb(49, 46, 129)",
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "outlineStyle": "solid",
+          "outlineColor": "rgba(0, 0, 0, 0)",
+          "borderWidths": [
+            "0px",
+            "0px",
+            "0px",
+            "0px"
+          ],
+          "borderStyles": [
+            "solid",
+            "solid",
+            "solid",
+            "solid"
+          ],
+          "borderRadius": "0px",
+          "focusVisible": false,
+          "rect": {
+            "x": 56,
+            "y": 188.5,
+            "w": 311,
+            "h": 28,
+            "right": 367
+          },
+          "branchesInset": {
+            "dx": 0,
+            "dy": 0,
+            "dw": 0,
+            "dh": 0
+          },
+          "teamIcon": null,
+          "nameWeight": "400",
+          "nameText": "Worker",
+          "nameOverflow": "ellipsis",
+          "hasStatusDot": true,
+          "avatarText": null
+        },
+        "delegatedSelectedFocused": {
+          "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker",
+          "selected": "true",
+          "color": "rgb(49, 46, 129)",
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "outlineStyle": "solid",
+          "outlineColor": "rgba(0, 0, 0, 0)",
+          "borderWidths": [
+            "0px",
+            "0px",
+            "0px",
+            "0px"
+          ],
+          "borderStyles": [
+            "solid",
+            "solid",
+            "solid",
+            "solid"
+          ],
+          "borderRadius": "0px",
+          "focusVisible": true,
+          "rect": {
+            "x": 56,
+            "y": 218.5,
+            "w": 311,
+            "h": 28,
+            "right": 367
+          },
+          "branchesInset": {
+            "dx": 0,
+            "dy": 0,
+            "dw": 0,
+            "dh": 0
+          },
+          "teamIcon": null,
+          "nameWeight": "400",
+          "nameText": "Worker",
+          "nameOverflow": "ellipsis",
+          "hasStatusDot": true,
+          "avatarText": "W"
+        },
+        "memberSelectedFocused": {
+          "label": "Agent, Worker, level 1, idle, /Worker",
+          "selected": "true",
+          "color": "rgb(49, 46, 129)",
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "outlineStyle": "solid",
+          "outlineColor": "rgba(0, 0, 0, 0)",
+          "borderWidths": [
+            "0px",
+            "0px",
+            "0px",
+            "0px"
+          ],
+          "borderStyles": [
+            "solid",
+            "solid",
+            "solid",
+            "solid"
+          ],
+          "borderRadius": "0px",
+          "focusVisible": true,
+          "rect": {
+            "x": 56,
+            "y": 188.5,
+            "w": 311,
+            "h": 28,
+            "right": 367
+          },
+          "branchesInset": {
+            "dx": 0,
+            "dy": 0,
+            "dw": 0,
+            "dh": 0
+          },
+          "teamIcon": null,
+          "nameWeight": "400",
+          "nameText": "Worker",
+          "nameOverflow": "ellipsis",
+          "hasStatusDot": true,
+          "avatarText": null
+        }
+      }
+    },
+    "E2E-004": {
+      "result": "Pass",
+      "description": "Org root (WorkspaceAgentOrgHistoryCollection): task Agent and task Team rows flat, hover/focus ring, slate bolt + semibold, click/Enter/Space",
+      "details": {
+        "rows": [
+          {
+            "dataTest": "agent-org-task-team-row-ssg-task-1",
+            "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1",
+            "selected": null,
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 306.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "StudentStudyGroup",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null,
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 10,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-agent-row-ssg1-s1",
+            "label": "student one, offline, /StudentStudyGroup/student_one, ssg1-s1",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 336.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student one",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "SO",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 11,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-agent-row-ssg1-s2",
+            "label": "student two, offline, /StudentStudyGroup/student_two, ssg1-s2",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 366.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student two",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "ST",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 12,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-team-row-reviewers-task-nested",
+            "label": "Reviewers, Started by student one, /Reviewers, reviewers-task-nested",
+            "selected": null,
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 396.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "Reviewers",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null,
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 13,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-agent-row-reviewers-nested-chair",
+            "label": "chair, offline, /Reviewers/chair, reviewers-nested-chair",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 426.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "chair",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "C",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 14,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-team-row-ssg-task-2",
+            "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-2",
+            "selected": null,
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 456.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "StudentStudyGroup",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null,
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 15,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-agent-row-ssg2-s1",
+            "label": "student one, offline, /StudentStudyGroup/student_one, ssg2-s1",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 486.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student one",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "SO",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 16,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-agent-row-ssg2-s2",
+            "label": "student two, offline, /StudentStudyGroup/student_two, ssg2-s2",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 516.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student two",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "ST",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 17,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          },
+          {
+            "dataTest": "agent-org-task-agent-row-teacher-task",
+            "label": "Teacher, offline, Started by Teacher, /Teacher, teacher-task",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 546.5,
+              "w": 319,
+              "h": 28,
+              "right": 367
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Teacher",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "T",
+            "hover": "rgb(242, 242, 242)",
+            "focus": {
+              "tabs": 18,
+              "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+              "outline": "solid rgba(0, 0, 0, 0)"
+            }
+          }
+        ],
+        "memberRest": {
+          "label": "Teacher, offline, /Teacher, teacher-run",
+          "selected": "false",
+          "color": "rgb(102, 102, 102)",
+          "background": "rgba(0, 0, 0, 0)",
+          "boxShadow": "none",
+          "outlineStyle": "none",
+          "outlineColor": "rgb(102, 102, 102)",
+          "borderWidths": [
+            "0px",
+            "0px",
+            "0px",
+            "0px"
+          ],
+          "borderStyles": [
+            "solid",
+            "solid",
+            "solid",
+            "solid"
+          ],
+          "borderRadius": "6px",
+          "focusVisible": false,
+          "rect": {
+            "x": 48,
+            "y": 156.5,
+            "w": 319,
+            "h": 28,
+            "right": 367
+          },
+          "branchesInset": {
+            "dx": 0,
+            "dy": 0,
+            "dw": 0,
+            "dh": 0
+          },
+          "teamIcon": null,
+          "nameWeight": "400",
+          "nameText": "Teacher",
+          "nameOverflow": "ellipsis",
+          "hasStatusDot": true,
+          "avatarText": null
+        },
+        "calls": {
+          "inspect": [
+            {
+              "agentRunId": "teacher-task",
+              "address": "/Teacher"
+            },
+            {
+              "agentRunId": "teacher-task",
+              "address": "/Teacher"
+            },
+            {
+              "agentRunId": "teacher-task",
+              "address": "/Teacher"
+            },
+            {
+              "agentRunId": "ssg2-s1",
+              "address": "/StudentStudyGroup/student_one"
+            }
+          ],
+          "select": [],
+          "open": 0
+        },
+        "teamToggle": {
+          "before": "true",
+          "after": "false"
+        }
+      }
+    },
+    "E2E-005": {
+      "result": "Pass",
+      "description": "Org root at 390x844 (VIS-008): delegated rows do not overflow the page; names truncate",
+      "details": {
+        "rows": [
+          {
+            "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1",
+            "selected": null,
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 334.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "StudentStudyGroup",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null
+          },
+          {
+            "label": "student one, offline, /StudentStudyGroup/student_one, ssg1-s1",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 364.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student one",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "SO"
+          },
+          {
+            "label": "student two, offline, /StudentStudyGroup/student_two, ssg1-s2",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 394.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student two",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "ST"
+          },
+          {
+            "label": "Reviewers, Started by student one, /Reviewers, reviewers-task-nested",
+            "selected": null,
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 424.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "Reviewers",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null
+          },
+          {
+            "label": "chair, offline, /Reviewers/chair, reviewers-nested-chair",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 454.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "chair",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "C"
+          },
+          {
+            "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-2",
+            "selected": null,
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 484.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": {
+              "color": "rgb(100, 116, 139)",
+              "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+              "w": 16,
+              "h": 16,
+              "wrapBorder": [
+                "0px",
+                "solid"
+              ],
+              "wrapBackground": "rgba(0, 0, 0, 0)"
+            },
+            "nameWeight": "600",
+            "nameText": "StudentStudyGroup",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": false,
+            "avatarText": null
+          },
+          {
+            "label": "student one, offline, /StudentStudyGroup/student_one, ssg2-s1",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 514.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student one",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "SO"
+          },
+          {
+            "label": "student two, offline, /StudentStudyGroup/student_two, ssg2-s2",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 544.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "student two",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "ST"
+          },
+          {
+            "label": "Teacher, offline, Started by Teacher, /Teacher, teacher-task",
+            "selected": "false",
+            "color": "rgb(102, 102, 102)",
+            "background": "rgba(0, 0, 0, 0)",
+            "boxShadow": "none",
+            "outlineStyle": "none",
+            "outlineColor": "rgb(102, 102, 102)",
+            "borderWidths": [
+              "0px",
+              "0px",
+              "0px",
+              "0px"
+            ],
+            "borderStyles": [
+              "solid",
+              "solid",
+              "solid",
+              "solid"
+            ],
+            "borderRadius": "6px",
+            "focusVisible": false,
+            "rect": {
+              "x": 48,
+              "y": 574.5,
+              "w": 317,
+              "h": 28,
+              "right": 365
+            },
+            "branchesInset": {
+              "dx": 0,
+              "dy": 0,
+              "dw": 0,
+              "dh": 0
+            },
+            "teamIcon": null,
+            "nameWeight": "400",
+            "nameText": "Teacher",
+            "nameOverflow": "ellipsis",
+            "hasStatusDot": true,
+            "avatarText": "T"
+          }
+        ]
+      }
+    }
+  },
+  "requests": [
+    {
+      "op": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/bootstrapper",
+        "agentRunId": "pb-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/release_notes_writer",
+        "agentRunId": "task-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/bootstrapper",
+        "agentRunId": "pb-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/release_notes_writer",
+        "agentRunId": "task-run"
+      }
+    },
+    {
+      "op": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "op": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "op": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "peer-root",
+        "agentRunId": "peer-task-a"
+      }
+    },
+    {
+      "op": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "peer-root",
+        "agentRunId": "peer-worker"
+      }
+    }
+  ],
+  "browserEvents": [],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "pid": 74465,
+      "exited": true,
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    "pages": [
+      {
+        "dest": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web/pages/api-e2e-drcs-agent-root.vue",
+        "exists": false
+      },
+      {
+        "dest": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web/pages/api-e2e-drcs-team-root.vue",
+        "exists": false
+      },
+      {
+        "dest": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web/pages/api-e2e-drcs-org-root.vue",
+        "exists": false
+      }
+    ]
+  },
+  "failures": [],
+  "baseUrl": "http://127.0.0.1:64163",
+  "nuxtPid": 74465,
+  "browserVersion": "154.0.8037.98",
+  "unexpectedBrowserErrors": [],
+  "result": "Pass",
+  "finishedAt": "2026-10-06T04:55:55.167Z"
+}

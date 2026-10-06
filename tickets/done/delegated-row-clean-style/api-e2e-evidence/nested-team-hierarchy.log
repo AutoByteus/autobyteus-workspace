@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.95-beta.2 test:e2e:nested-team-hierarchy /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web
+> node tests/e2e/nested-team-hierarchy-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/tickets/in-progress/delegated-row-clean-style/api-e2e-evidence/nested-team-hierarchy
+
+Nested Team hierarchy browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/tickets/in-progress/delegated-row-clean-style/api-e2e-evidence/nested-team-hierarchy/evidence.json
