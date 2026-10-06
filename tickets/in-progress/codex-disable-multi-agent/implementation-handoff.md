@@ -75,7 +75,7 @@ Installed frozen-lockfile dependencies locally, no lockfile/source dependency ch
 - New tests against old source: intentional red **12 fail / 1 pass**.
 - Changed launch-config suite: **13/13 pass**.
 - Final serialized current-source client/config/manager/bootstrapper/thread-manager/MCP materializer units: **6 files, 62/62 pass, zero skips**.
-- Documented server build: **Pass**, including production tsc and built bootstrap smoke. Emitted launch-config composition check: **Pass**; `git diff --check`: **Pass**.
+- Documented server build: **Pass**, including production tsc and built bootstrap smoke. Emitted launch-config composition check: **Pass**; source/test `git diff --check`: **Pass**. Whole-package diff flags raw logs and literal patch context only; preserved verbatim and recorded in package-whitespace-check.json, not claimed clean.
 - First focused run passed but overlapped shared-output prebuild; preserved separately and repeated after build. Final counted evidence is serialized.
 - Exact worktree test DB/journal removed; no real Codex/application instance/provider started by Implementation, no credentials used. No executable API/E2E sign-off claimed.
 

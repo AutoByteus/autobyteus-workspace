@@ -32,7 +32,9 @@
     "focused_serialized_unit_files": 6,
     "focused_serialized_unit_passed": 62,
     "built_composition_smoke_exit": 0,
-    "diff_check_exit": 0
+    "diff_check_exit": 0,
+    "diff_check_scope": "changed source/test paths only",
+    "whole_package_diff_check_exit": 2
   },
   "cleanup": {
     "test_database_files_removed": [
@@ -49,6 +51,7 @@
     "No changed-source native tool definitions/live inventory/system MCP/lifecycle API-E2E run; API/E2E-owned.",
     "Initial focused-unit run overlapped shared prebuild; retained separately, final run serialized after build.",
     "SDK dist outputs are untracked build prerequisites, not staged source.",
-    "No release, deploy, merge or push."
+    "No release, deploy, merge or push.",
+    "Whole-package diff check reports raw Vitest log EOF/whitespace and literal patch context; preserved verbatim, not a source/test whitespace failure."
   ]
 }
