@@ -45,10 +45,30 @@ describe('useLeavingTreeRows', () => {
 
   it('leaves in 200 ms ease-out (fade, height and margin) and removes rows at once under reduced motion', () => {
     const css = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8').replace(/\s+/g, ' ')
-    expect(css).toContain('.tree-row-leave-active { overflow: hidden; transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out; }')
+    expect(css).toContain('.tree-row-leave-active { overflow: hidden; transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out, transform 200ms ease-out; }')
     expect(css).toContain('.tree-row-leave-to { opacity: 0; max-height: 0; min-height: 0; margin-top: 0 !important; }')
     expect(css).toContain('.tree-row-move { transition: transform 200ms ease-out; }')
     expect(css).toContain('@media (prefers-reduced-motion: reduce) { .tree-row-leave-active, .tree-row-move { transition: none; } }')
     expect(css).not.toContain('enter-active')
+  })
+
+  it('still fades and collapses a leaving row that carries the move class (CR-002)', () => {
+    const style = document.createElement('style')
+    // The media query does not match here; the cascade of the remaining rules is what a browser applies.
+    style.textContent = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8')
+    document.head.append(style)
+    const row = document.createElement('div')
+    row.className = 'tree-row-move tree-row-leave-active tree-row-leave-to'
+    document.body.append(row)
+    try {
+      const transition = getComputedStyle(row).transition
+      for (const property of ['opacity', 'max-height', 'margin-top', 'transform']) expect(transition).toContain(`${property} 200ms ease-out`)
+      const moving = document.createElement('div')
+      moving.className = 'tree-row-move'
+      document.body.append(moving)
+      expect(getComputedStyle(moving).transition).toBe('transform 200ms ease-out')
+    } finally {
+      style.remove()
+    }
   })
 })
