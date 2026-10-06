@@ -1,0 +1,17 @@
+version: 1.4.95-beta.3
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.95-beta.3.zip
+    sha512: Y9p4d6r3DJ3d+ra1G56/1EcNgrTZRVH6VT02nIoddUkb/FDKNTKBDLNVn6CvWMnC3HGv72B6gxzFdUVAX4ZUXQ==
+    size: 510835047
+  - url: AutoByteus_personal_macos-arm64-1.4.95-beta.3.dmg
+    sha512: 8ZxDCLhVgepv6mkn88C5eiRDMWTtoYyUcYdinaoDprkOOMLBnU9091XjuZV80/8GnZH5yXk4MCYrz1FIXJsvtQ==
+    size: 515297816
+  - url: AutoByteus_personal_macos-x64-1.4.95-beta.3.zip
+    sha512: i1Stk6hKwEorqY+zjdTT3MJJynZt8nicrutY7RbyWhSsLVbscJq2+xIC91KBex4ijAbe5AT2CscLjlL9GT1zlw==
+    size: 532474874
+  - url: AutoByteus_personal_macos-x64-1.4.95-beta.3.dmg
+    sha512: a7OO8j3VTBy1op02ILR89LLZk0mnt/NffeyK8cehsLQfs9LXI2kg+TrJQdES+8Epg1CgI/GTGMbJcs3CXfX5JA==
+    size: 537528344
+path: AutoByteus_personal_macos-arm64-1.4.95-beta.3.zip
+sha512: Y9p4d6r3DJ3d+ra1G56/1EcNgrTZRVH6VT02nIoddUkb/FDKNTKBDLNVn6CvWMnC3HGv72B6gxzFdUVAX4ZUXQ==
+releaseDate: '2026-10-06T05:24:04.039Z'

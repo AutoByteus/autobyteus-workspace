@@ -2,7 +2,12 @@
 
 ## Status
 
-- Delivery state: **Awaiting explicit user verification.** Nothing has been pushed, merged into `personal`, archived or released.
+- Delivery state: **Delivery Completed.** User verified on 2026-10-06 ("finalize and release a new beta."; see `user-verification-record.md`).
+  - The ticket is archived to `tickets/done/`.
+  - It is finalized into `personal` with merge `24e00db81`.
+  - Beta **`v1.4.95-beta.3`** is released (`5c74fed71`). All four release workflows succeeded.
+  - The worktree and the ticket branches are cleaned up.
+  - Final state is in `release-deployment-report.md`. The sections below record the DR-001 pre-verification state, kept for history.
 - Classification (unchanged by delivery): `task_size=Small`, `architectural_risk=Low`. Route: direct low-risk (Solution Designer → Implementation → API/E2E → Delivery). Architecture review, source review and test-code review: `N/A — not applicable`.
 
 | Stage | Revision | Result |
@@ -10,7 +15,7 @@
 | Requirements / design | SR-001 | User-approved 2026-10-06 (SD-AP-001, Product UI confirmed, split SD-AP-002) |
 | Implementation | IR-001 (`c21d312c0`) | Done |
 | API/E2E | API-REV-001 | Pass, confidence 96% |
-| Delivery | DR-001 | Base integrated, docs synced, awaiting verification |
+| Delivery | DR-001 / DR-002 | Docs synced; user verified; finalized; beta `v1.4.95-beta.3` published; cleanup completed |
 
 | Item | Value |
 | --- | --- |
