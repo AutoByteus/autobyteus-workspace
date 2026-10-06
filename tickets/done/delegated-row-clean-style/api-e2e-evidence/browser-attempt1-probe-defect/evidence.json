@@ -1,0 +1,629 @@
+{
+  "startedAt": "2026-10-06T04:52:41.314Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "expect": {
+    "text": "rgb(102, 102, 102)",
+    "rest": "rgba(0, 0, 0, 0)",
+    "hover": "rgb(242, 242, 242)",
+    "ring": "rgb(99, 102, 241) 0px 0px 0px 2px",
+    "bolt": "rgb(100, 116, 139)",
+    "selectedBg": "rgb(238, 242, 255)",
+    "selectedText": "rgb(49, 46, 129)",
+    "selectedShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset"
+  },
+  "cases": {
+    "E2E-001": {
+      "result": "Fail",
+      "description": "Agent root (AgentRunTaskRows): delegated Agent, Team and Team-member rows render flat; hover, keyboard focus, Team bolt, Agent avatar, selection, Enter/Space/click, collapse",
+      "message": "agent-root row Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent: row has a border",
+      "details": {
+        "label": "Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent",
+        "selected": "false",
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 36,
+          "y": 96,
+          "w": 332,
+          "h": 28,
+          "right": 368
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": null,
+        "nameWeight": "400",
+        "nameText": "computer use agent",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": true,
+        "avatarText": "CU"
+      }
+    },
+    "E2E-002": {
+      "result": "Fail",
+      "description": "Agent root at 390x844 (VIS-008): rows fit, names truncate, style unchanged",
+      "message": "narrow agent-root Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent: row has a border",
+      "details": {
+        "label": "Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent",
+        "selected": "false",
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 36,
+          "y": 124,
+          "w": 330,
+          "h": 28,
+          "right": 366
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": null,
+        "nameWeight": "400",
+        "nameText": "computer use agent",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": true,
+        "avatarText": "CU"
+      }
+    },
+    "E2E-003": {
+      "result": "Fail",
+      "description": "Team root (WorkspaceTeamExecutionTree): delegated rows flat, hover/focus, bolt Team, selection identical to a member row",
+      "message": "team-root row Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker: row has a border",
+      "details": {
+        "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker",
+        "selected": "false",
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 56,
+          "y": 218.5,
+          "w": 311,
+          "h": 28,
+          "right": 367
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": null,
+        "nameWeight": "400",
+        "nameText": "Worker",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": true,
+        "avatarText": "W"
+      }
+    },
+    "E2E-004": {
+      "result": "Fail",
+      "description": "Org root (WorkspaceAgentOrgHistoryCollection): task Agent and task Team rows flat, hover/focus ring, slate bolt + semibold, click/Enter/Space",
+      "message": "org row agent-org-task-team-row-ssg-task-1: row has a border",
+      "details": {
+        "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1",
+        "selected": null,
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 48,
+          "y": 334.5,
+          "w": 319,
+          "h": 28,
+          "right": 367
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": {
+          "color": "rgb(100, 116, 139)",
+          "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+          "w": 16,
+          "h": 16,
+          "wrapBorder": [
+            "0px",
+            "solid"
+          ],
+          "wrapBackground": "rgba(0, 0, 0, 0)"
+        },
+        "nameWeight": "600",
+        "nameText": "StudentStudyGroup",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": false,
+        "avatarText": null
+      }
+    },
+    "E2E-005": {
+      "result": "Fail",
+      "description": "Org root at 390x844 (VIS-008): delegated rows do not overflow the page; names truncate",
+      "message": "narrow org StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1: row has a border",
+      "details": {
+        "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1",
+        "selected": null,
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 48,
+          "y": 334.5,
+          "w": 317,
+          "h": 28,
+          "right": 365
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": {
+          "color": "rgb(100, 116, 139)",
+          "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+          "w": 16,
+          "h": 16,
+          "wrapBorder": [
+            "0px",
+            "solid"
+          ],
+          "wrapBackground": "rgba(0, 0, 0, 0)"
+        },
+        "nameWeight": "600",
+        "nameText": "StudentStudyGroup",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": false,
+        "avatarText": null
+      }
+    }
+  },
+  "requests": [
+    {
+      "op": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/bootstrapper",
+        "agentRunId": "pb-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/release_notes_writer",
+        "agentRunId": "task-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaboration",
+      "variables": {
+        "runId": "host-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/computer_use_agent",
+        "agentRunId": "cua-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/prototyper",
+        "agentRunId": "pp-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/product_team/bootstrapper",
+        "agentRunId": "pb-run"
+      }
+    },
+    {
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "variables": {
+        "hostRunId": "host-run",
+        "memberAddress": "/release_notes_writer",
+        "agentRunId": "task-run"
+      }
+    },
+    {
+      "op": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "op": "GetAgentDefinitions",
+      "variables": {}
+    }
+  ],
+  "browserEvents": [],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "pid": 72246,
+      "exited": true,
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    "pages": [
+      {
+        "dest": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web/pages/api-e2e-drcs-agent-root.vue",
+        "exists": false
+      },
+      {
+        "dest": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web/pages/api-e2e-drcs-team-root.vue",
+        "exists": false
+      },
+      {
+        "dest": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-row-clean-style/autobyteus-web/pages/api-e2e-drcs-org-root.vue",
+        "exists": false
+      }
+    ]
+  },
+  "failures": [
+    {
+      "id": "E2E-001",
+      "message": "agent-root row Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent: row has a border",
+      "details": {
+        "label": "Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent",
+        "selected": "false",
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 36,
+          "y": 96,
+          "w": 332,
+          "h": 28,
+          "right": 368
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": null,
+        "nameWeight": "400",
+        "nameText": "computer use agent",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": true,
+        "avatarText": "CU"
+      }
+    },
+    {
+      "id": "E2E-002",
+      "message": "narrow agent-root Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent: row has a border",
+      "details": {
+        "label": "Temporary task agent, computer use agent, level 1, idle, Started by research assistant, /computer_use_agent",
+        "selected": "false",
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 36,
+          "y": 124,
+          "w": 330,
+          "h": 28,
+          "right": 366
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": null,
+        "nameWeight": "400",
+        "nameText": "computer use agent",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": true,
+        "avatarText": "CU"
+      }
+    },
+    {
+      "id": "E2E-003",
+      "message": "team-root row Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker: row has a border",
+      "details": {
+        "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker",
+        "selected": "false",
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 56,
+          "y": 218.5,
+          "w": 311,
+          "h": 28,
+          "right": 367
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": null,
+        "nameWeight": "400",
+        "nameText": "Worker",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": true,
+        "avatarText": "W"
+      }
+    },
+    {
+      "id": "E2E-004",
+      "message": "org row agent-org-task-team-row-ssg-task-1: row has a border",
+      "details": {
+        "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1",
+        "selected": null,
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 48,
+          "y": 334.5,
+          "w": 319,
+          "h": 28,
+          "right": 367
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": {
+          "color": "rgb(100, 116, 139)",
+          "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+          "w": 16,
+          "h": 16,
+          "wrapBorder": [
+            "0px",
+            "solid"
+          ],
+          "wrapBackground": "rgba(0, 0, 0, 0)"
+        },
+        "nameWeight": "600",
+        "nameText": "StudentStudyGroup",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": false,
+        "avatarText": null
+      }
+    },
+    {
+      "id": "E2E-005",
+      "message": "narrow org StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1: row has a border",
+      "details": {
+        "label": "StudentStudyGroup, Started by Teacher, /StudentStudyGroup, ssg-task-1",
+        "selected": null,
+        "color": "rgb(102, 102, 102)",
+        "background": "rgba(0, 0, 0, 0)",
+        "boxShadow": "none",
+        "outlineStyle": "none",
+        "borderWidths": [
+          "0px",
+          "0px",
+          "0px",
+          "0px"
+        ],
+        "borderStyles": [
+          "solid",
+          "solid",
+          "solid",
+          "solid"
+        ],
+        "borderRadius": "6px",
+        "focusVisible": false,
+        "rect": {
+          "x": 48,
+          "y": 334.5,
+          "w": 317,
+          "h": 28,
+          "right": 365
+        },
+        "branchesInset": {
+          "dx": 0,
+          "dy": 0,
+          "dw": 0,
+          "dh": 0
+        },
+        "teamIcon": {
+          "color": "rgb(100, 116, 139)",
+          "svgIcon": "<svg data-v-c3addd28=\"\" xmlns=\"http://www.w3.org/2000/svg\" x",
+          "w": 16,
+          "h": 16,
+          "wrapBorder": [
+            "0px",
+            "solid"
+          ],
+          "wrapBackground": "rgba(0, 0, 0, 0)"
+        },
+        "nameWeight": "600",
+        "nameText": "StudentStudyGroup",
+        "nameOverflow": "ellipsis",
+        "hasStatusDot": false,
+        "avatarText": null
+      }
+    }
+  ],
+  "baseUrl": "http://127.0.0.1:63978",
+  "nuxtPid": 72246,
+  "browserVersion": "154.0.8037.98",
+  "unexpectedBrowserErrors": [],
+  "result": "Fail",
+  "finishedAt": "2026-10-06T04:53:02.966Z"
+}
