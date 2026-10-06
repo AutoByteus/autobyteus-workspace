@@ -71,3 +71,8 @@
 - Failure classification: N/A — clean proportional Pass; **Medium/High Reviewed route unchanged**.
 - Recommended Recipient: `/delivery_engineer`, subject to returned handoff rule.
 - Notes: cumulative API-REV-001 passed package ready for delivery-owned integrated docs/product/user verification/finalization gates. Prior CRR-001 source report unchanged; no delivery or release approval inferred.
+
+## Handoff Rule Decision And Receipt
+After persisting CRR-002, get_handoff_rules returned successful post-API/E2E durable test-code Pass → exact `/delivery_engineer`. This is the single applicable result rule; implementation-pass informational, failure/local-fix/upstream rules do not match.
+
+send_message_to confirmed accepted true / DELIVERED to `/delivery_engineer`, run `delivery_engineer_831d6e8b940442be9b01f5a7a8b95421`, with cumulative package/report/history/evidence and all three durable paths attached. Review artifacts committed `eee3ae0df`. No additional recipient or polling.
