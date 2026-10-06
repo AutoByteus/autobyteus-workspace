@@ -2,7 +2,12 @@
 
 ## Status
 
-- Delivery state: **The user verified on 2026-10-06 ("finalize and release a new beta"); see `user-verification-record.md`.** Finalization into `personal` and one new beta are in progress; the outcomes are recorded in `release-deployment-report.md` (DR-002).
+- Delivery state: **Delivery Completed (DR-002).** The user verified on 2026-10-06 ("finalize and release a new beta"); see `user-verification-record.md`.
+  - Merged into `personal` as `5216e607d` and pushed.
+  - Beta `v1.4.95-beta.7` (`96dc5a25f`) is published, and all 4 workflows succeeded.
+  - A parallel delivery's `v1.4.95-beta.8` (which contains this change) is now the newest beta.
+  - The worktree and branches are cleaned up.
+  - The sections below record the pre-verification state.
 - Classification (unchanged): `task_size=Medium`, `architectural_risk=Low`.
   - Route: direct low-risk (Solution Designer → Implementation → API/E2E → Delivery).
   - Architecture review, source review and test-code review: `N/A — not applicable`.
@@ -12,7 +17,7 @@
 | Requirements / design | see `solution-revision-record.md` | User-approved; REQ-001..REQ-006, AC-001..AC-008 |
 | Implementation | IR-001 (`e08c4a8c5`) | Done |
 | API/E2E | API-REV-001 | Pass, 95.3% |
-| Delivery | DR-001 | Current with the base, docs synced, awaiting verification |
+| Delivery | DR-002 | Delivery Completed: finalized, beta.7 released, cleaned up |
 
 | Item | Value |
 | --- | --- |
