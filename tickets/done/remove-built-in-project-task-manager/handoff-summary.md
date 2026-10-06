@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-002.** Latest base refreshed again; checks passed and docs rechecked. User requested finalization and a NEW BETA, but explicit acceptance of verification remains pending. No personal user tests are claimed.
+- Delivery state: **DR-003. Explicit user acceptance received; final integration/checks passed. Repository finalization and NEW BETA publication in progress.**
 - Classification (unchanged by delivery): `task_size=Medium`, `architectural_risk=High`. Route: full independent review (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → Code Review (test code) → Delivery).
 
 | Stage | Revision | Result |
@@ -12,7 +12,7 @@
 | Implementation | IR-001 (`62af418df`) | Done |
 | Code review | CRR-001 source Pass 9.5/10; CRR-002 test-code Pass | Pass |
 | API/E2E | API-REV-001 | Pass, confidence 95.7% |
-| Delivery | DR-002 | Refreshed base integrated, checks passed, NEW BETA requested; explicit verification acceptance pending |
+| Delivery | DR-003 | Explicit user acceptance; final integrated checks passed; finalization/new beta in progress |
 
 | Item | Value |
 | --- | --- |
@@ -60,3 +60,10 @@
 - **Remaining gate:** explicit user verification acceptance. Asked the user whether they accept documented automated/API/E2E verification and authorize proceeding without a personal app test, or prefer to test first. Awaiting answer.
 - No finalization push/merge, archive, beta tag, release workflow or cleanup performed in DR-002. Worktree stays intact. The current release report is authoritative.
 - Upon acceptance: refresh target again; if materially changed, integrate/check and obtain renewed verification. Archive ticket, commit/push ticket, update/merge/push personal, run the documented beta helper exactly once, verify publication/rollout and clean safely. The shared personal checkout has unrelated dirty files, so use an isolated clean finalization clone rather than overwriting them.
+
+## DR-003 Latest Authority
+
+- User response to acceptance question: “now finalize and release a new beta”. `user-verification-record.md` records evidence acceptance, NOT personal testing. Previous DR-002 hold is resolved.
+- Latest base `8e9f855a9`, integrated `526bac6a3`; no material removal behavior change/no renewed verification required. Build + 369 server tests + 64 web tests + final sanitized smoke Pass.
+- Ticket archived before final commit. Finalization target personal; one new beta via documented helper. Precise repository/publication/cleanup receipts will be appended to current release report.
+- Full cumulative artifact manifest will accompany the terminal receipt; historical upstream absolute in-progress paths are remapped there to durable done paths.

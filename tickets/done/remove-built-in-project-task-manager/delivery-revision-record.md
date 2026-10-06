@@ -10,6 +10,8 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 
 | DR-002 | User-directed finalization and NEW BETA resumption via Solution Designer | DR-001 awaiting verification | Latest target integrated, checks passed; Blocked at explicit verification acceptance | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
 
+| DR-003 | User accepts evidence and directs finalization/new beta | DR-002 verification hold | Acceptance received; integrated checks Pass; finalization/publication in progress | `user-verification-record.md`, archived cumulative ticket, DR-003 evidence, docs/handoff/release reports |
+
 ## Revision Entries
 
 ### DR-001 — Initial integrated delivery baseline
@@ -44,3 +46,17 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Rationale: Resume unfinished gates rather than repeat an already completed release. Refresh protects delivery edits and avoids stale verification.
 - Next action: User explicitly accepts documented verification or tests the app; Delivery then resumes required finalization/release/rollout/cleanup gates.
 - Risks: packaged Electron shell not exercised; startup migration deletes without backup per approved DEC-001; old runs readable but not continuable; downgrade unsupported; unrelated prior TS6059 not rechecked.
+
+### DR-003 — User-accepted finalization and new beta
+
+- Trigger: user “now finalize and release a new beta”, explicitly in response to the verification-acceptance question.
+- Prior result: DR-002 blocked at user acceptance; now resolved without claiming personal tests.
+- Classification preserved: Medium / High, full independent-review route. Cumulative SR-001/SR-002, ARCH-REV-001, IR-001, CRR-001/002 and API-REV-001 remain authoritative.
+- Integration: safety checkpoint `0171eb2dc`; merge `eb6941349` of latest member-hydration target `4e66fce54`; later receipts-only base `8e9f855a9` merged as `526bac6a3`. No conflicts/no material removal change/no renewed acceptance required.
+- Checks: build Pass; 55 files / 369 server tests Pass, 5 files / 64 web tests Pass; final receipts-only merge sanitized smoke Pass. Exact receipts `delivery-evidence/dr-003/verification.json` and logs.
+- User verification: `user-verification-record.md`.
+- Docs: `docs-sync-report.md`, no additional long-lived impact. Handoff: `handoff-summary.md`; finalization/release/cleanup: `release-deployment-report.md`.
+- Current result: finalization and beta publication in progress; completion gated on truthful publication/cleanup receipts.
+- Terminal return: Not yet eligible.
+- Rationale: resume only unfinished delivery gates; preserve DR-001/DR-002 and prior release history. No stable release or duplicate dispatch.
+- Residual risks unchanged: packaged shell not exercised locally, no personal tests claimed, irreversible template deletion per approved DEC-001, unsupported downgrade.

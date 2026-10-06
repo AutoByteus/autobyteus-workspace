@@ -1,0 +1,30 @@
+{
+  "delivery_revision": "DR-003",
+  "recorded_at": "2026-10-06T09:09:17.852302+00:00",
+  "user_acceptance_reference": "user-verification-record.md",
+  "candidate": "526bac6a39c4fa1493109bb367c6d1796a3cb406",
+  "checked_base": "8e9f855a931d9bf3479107548785610658a81430",
+  "initial_checkpoint": "0171eb2dc",
+  "initial_merge": "eb69413498072b81997e0f526539f2b2b187049a",
+  "final_merge": "526bac6a39c4fa1493109bb367c6d1796a3cb406",
+  "build": "Pass",
+  "server": {
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts tests/unit/app-data-migrations tests/integration/app-data-migrations tests/unit/built-in-agents --no-watch",
+    "files": 55,
+    "tests": 369,
+    "skipped": 0,
+    "exit": 0
+  },
+  "web": {
+    "command": "pnpm -C autobyteus-web test:nuxt utils/agents utils/collaborators stores/__tests__/runHistoryStore.spec.ts services/runHydration/__tests__/memberRunStateHydration.spec.ts --run",
+    "files": 5,
+    "tests": 64,
+    "exit": 0
+  },
+  "receipts_only_merge_smoke": {
+    "command": "node autobyteus-server-ts/scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
+    "exit": 0
+  },
+  "renewed_acceptance_required": false,
+  "reason": "No material removal behavior change; reviewed independent member-hydration package, then ticket receipts only"
+}

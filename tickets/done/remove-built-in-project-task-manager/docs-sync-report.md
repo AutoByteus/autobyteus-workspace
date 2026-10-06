@@ -62,3 +62,7 @@
 - Canonical docs listed above rechecked against the integrated registry/migration behavior. No additional long-lived edit needed. AC-010 grep finds only intentional historical retirement/fixture mentions, not a current shipped manager claim.
 - Build (including sanitized built-in bootstrap smoke), 390 server tests and 57 web tests passed. Three opt-in new-base AGY task-closure tests skipped; not claimed as proof. See `delivery-evidence/dr-002/`.
 - Docs sync result: Pass. NEW BETA release direction recorded; explicit verification acceptance still pending. No user app testing is inferred.
+
+## DR-003 — Final accepted integrated state
+
+Latest base `origin/personal@8e9f855a9` integrated as `526bac6a3`, after the member-hydration integration `eb6941349`. Docs still match the final removal behavior; no additional long-lived edits needed. Build, 369 server tests, 64 web tests and final sanitized smoke Pass (`delivery-evidence/dr-003/`). User explicitly accepted the presented automated evidence and requested finalization/new beta (`user-verification-record.md`); no personal test claimed. Next: archive/finalize/publish/verify/clean. DR-001 and DR-002 sections are historical, not current gate status.
