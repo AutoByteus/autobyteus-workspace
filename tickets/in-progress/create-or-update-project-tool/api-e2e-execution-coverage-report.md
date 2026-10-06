@@ -99,3 +99,6 @@ Separate proportional review of the three durable coverage paths on Reviewed Med
 
 ## Handoff Rule Decision
 get_handoff_rules returned four conditions. Selected only Pass + architectural_risk High + cumulative package requiring proportional durable test-code review → exact `/code_reviewer`. Fail-origin, direct Low-risk delivery and upstream-gap routes do not match. Successful-test review of the three coverage paths is requested, not duplicate production-source review. Receipt remains pending until send_message_to confirms delivery.
+
+## Confirmed Dispatch Receipt
+send_message_to confirmed accepted=true, code=DELIVERED to `/code_reviewer`, run `code_reviewer_dfa861f2349f4e27b7ca3a3343c8b61a`. Cumulative package, logs and all three durable test paths attached; baseline test/evidence commit `2253c6ee2b0ea57358dca0419e60439e9283907d`. Required handoff complete; no other recipient notified and no recipient polling. Earlier pending receipt describes pre-dispatch state only.
