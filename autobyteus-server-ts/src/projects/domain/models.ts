@@ -67,6 +67,14 @@ export interface UpdateProjectCommand {
   description?: string | null;
 }
 
+/** Omission-preserving command, distinct from the active full-form update. */
+export interface PatchProjectCommand {
+  projectId: string;
+  name?: string;
+  description?: string;
+  workspaces?: ProjectWorkspaceInput[];
+}
+
 export interface AddProjectWorkspaceCommand {
   projectId: string;
   workspaceId: string;
