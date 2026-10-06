@@ -324,7 +324,7 @@ describe('Team open loads each member artifact list with its run state', () => {
           agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
         } }, errors: [] };
       }
-      return { data: { getTeamRunResumeConfig: { teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree } }, errors: [] };
+      return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree } }, errors: [] };
     });
   };
   const open = () => hydrateLiveTeamRunContext({

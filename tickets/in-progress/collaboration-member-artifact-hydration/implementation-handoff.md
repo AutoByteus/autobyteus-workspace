@@ -40,7 +40,7 @@ Team and AgentOrg members now load their recorded artifacts together with their 
 
 - Implementation cycle: `Initial` (first completed round on SR-003)
 - Implementation revision record: `<T>/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`. A test-fixture-only Local Fix after delivery merged `origin/personal@3c8e49ad5`: the Team open artifact spec mock now includes the new required `closedTaskExecutions`. No production change. See the revision record for the composition check and the merged-branch test results.
 - Related solution revision IDs: `SR-003` (history: `SR-001`, `SR-002`)
 - Related architecture-review revision IDs: `ARCH-REV-001`
 - Related code-review revision IDs: `N/A`
