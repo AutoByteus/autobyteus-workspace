@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-06T17:03:16.452091+00:00",
+  "tags": {
+    "1.4.95-beta.8": {
+      "name": "1.4.95-beta.8",
+      "digest": "sha256:3a20fecfac312bd0239c154549e226c31ad06592e31d22da40ad90f3ccca4045",
+      "last_updated": "2026-10-06T16:51:05.307805Z",
+      "architectures": [
+        "amd64",
+        "arm64"
+      ]
+    },
+    "beta": {
+      "name": "beta",
+      "digest": "sha256:beb45a435786a8a9d0a682149c6a794d69d24debffd29cdc334aa9d642a5c0ec",
+      "last_updated": "2026-10-06T12:48:30.637666Z",
+      "architectures": [
+        "amd64",
+        "arm64"
+      ]
+    }
+  }
+}

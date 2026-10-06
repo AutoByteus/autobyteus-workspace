@@ -1,0 +1,180 @@
+Merge made by the 'ort' strategy.
+ TESTING.md                                         |   17 +-
+ .../dist/collaborator-mention-note.d.ts            |    7 +-
+ .../dist/collaborator-mention-note.d.ts.map        |    2 +-
+ .../dist/collaborator-mention-note.js              |   19 +-
+ .../dist/collaborator-mention-note.js.map          |    2 +-
+ .../src/collaborator-mention-note.ts               |   22 +-
+ .../tests/collaborator-mention-note.test.mjs       |   31 +-
+ .../docs/modules/agent_communication.md            |   32 +-
+ autobyteus-server-ts/docs/modules/agent_orgs.md    |    2 +-
+ autobyteus-server-ts/docs/modules/agent_tools.md   |    4 +-
+ .../collaborators/collaborator-admission.ts        |   36 +-
+ .../collaborators/collaborator-candidate-policy.ts |   61 +-
+ .../projects/ad-hoc-task-delegation.e2e.test.ts    |   32 +-
+ .../collaborators/collaborator-admission.test.ts   |   51 +-
+ .../agent-org-collaborators.test.ts                |   23 +-
+ ...team-root-agent-initiated-collaborators.test.ts |    2 +-
+ .../team-root-collaborators.test.ts                |    8 +-
+ .../standalone-agent-run-root.test.ts              |   15 +-
+ .../agentInput/useComposerMentionMenu.ts           |    2 +-
+ .../runSettings/useMentionCandidates.ts            |    2 +-
+ autobyteus-web/docs/agent_orgs.md                  |    8 +-
+ autobyteus-web/docs/chat.md                        |   28 +-
+ autobyteus-web/localization/messages/en/chat.ts    |   12 +-
+ autobyteus-web/localization/messages/zh-CN/chat.ts |   12 +-
+ .../agentStreaming/protocol/messageTypes.ts        |    2 +-
+ .../stores/__tests__/chatDraftStore.spec.ts        |    9 +-
+ .../e2e/cross-scope-agent-mentions-live-probe.mjs  |   42 +-
+ .../__tests__/collaboratorMentionText.spec.ts      |   16 +-
+ .../__tests__/draftMentionEligibility.spec.ts      |   12 +-
+ .../utils/collaborators/draftMentionEligibility.ts |   45 +-
+ .../api-e2e-coverage-investigation.md              |  167 +
+ .../api-e2e-evidence/H-desktop/00-start.png        |  Bin 0 -> 107429 bytes
+ .../H-desktop/01-new-chat-team-at-menu-en.png      |  Bin 0 -> 169653 bytes
+ .../02-team-first-send-member-mention.png          |  Bin 0 -> 183644 bytes
+ .../03-agent-brought-in-code-reviewer.png          |  Bin 0 -> 248812 bytes
+ .../04-at-menu-lists-in-run-collaborator.png       |  Bin 0 -> 284429 bytes
+ .../H-desktop/05-in-run-mention-sent.png           |  Bin 0 -> 292366 bytes
+ .../api-e2e-evidence/H-desktop/06-language-zh.png  |  Bin 0 -> 130491 bytes
+ .../H-desktop/07-at-menu-zh-CN.png                 |  Bin 0 -> 312985 bytes
+ .../H-desktop/08-new-chat-hint-zh-CN.png           |  Bin 0 -> 157291 bytes
+ .../api-e2e-evidence/H-desktop/journey.mp4         |  Bin 0 -> 1567770 bytes
+ .../api-e2e-evidence/H-desktop/start.json          |   20 +
+ .../api-e2e-evidence/L-CLAUDE-ledger.md            |   25 +
+ .../L-CLAUDE/A01-01-agent-run-at-menu.png          |  Bin 0 -> 92732 bytes
+ .../L-CLAUDE/A01-02-composer-inline-mention.png    |  Bin 0 -> 80101 bytes
+ .../L-CLAUDE/A01-03-delegated-row.png              |  Bin 0 -> 87196 bytes
+ .../L-CLAUDE/A01-04-after-report.png               |  Bin 0 -> 154523 bytes
+ .../L-CLAUDE/A01-05-delegated-copy-view.png        |  Bin 0 -> 81886 bytes
+ .../L-CLAUDE/A01-06-delegated-team.png             |  Bin 0 -> 169116 bytes
+ .../L-CLAUDE/A02-row-gone-after-done.png           |  Bin 0 -> 160149 bytes
+ .../L-CLAUDE/A03-second-copy-after-stop.png        |  Bin 0 -> 156492 bytes
+ .../L-CLAUDE/A04-reload-with-copy-selected.png     |  Bin 0 -> 161515 bytes
+ .../L-CLAUDE/A05-after-restart-done.png            |  Bin 0 -> 153335 bytes
+ .../L-CLAUDE/A06-old-trace-user-style.png          |  Bin 0 -> 153091 bytes
+ .../api-e2e-evidence/L-CLAUDE/D01-run-deleted.png  |  Bin 0 -> 81545 bytes
+ .../L-CLAUDE/F01-ineligible-mention-refused.png    |  Bin 0 -> 102266 bytes
+ .../L-CLAUDE/N02-agent-first-send-delegated.png    |  Bin 0 -> 112335 bytes
+ .../L-CLAUDE/N03-team-first-send-delegated.png     |  Bin 0 -> 144325 bytes
+ .../L-CLAUDE/O01-01-org-run-at-menu.png            |  Bin 0 -> 85705 bytes
+ .../L-CLAUDE/O01-02-org-two-copies.png             |  Bin 0 -> 106199 bytes
+ .../api-e2e-evidence/L-CLAUDE/O02-copy-view.png    |  Bin 0 -> 97658 bytes
+ .../L-CLAUDE/O03-org-copies-done.png               |  Bin 0 -> 151543 bytes
+ .../L-CLAUDE/S01-in-run-mention.png                |  Bin 0 -> 216917 bytes
+ .../L-CLAUDE/S01-stored-collaborator-restored.png  |  Bin 0 -> 187405 bytes
+ .../L-CLAUDE/T01-01-team-run-at-menu.png           |  Bin 0 -> 96525 bytes
+ .../L-CLAUDE/T01-02-team-copy-delegated.png        |  Bin 0 -> 90093 bytes
+ .../L-CLAUDE/T01-03-team-run-copies.png            |  Bin 0 -> 215337 bytes
+ .../api-e2e-evidence/L-CLAUDE/T02-copy-view.png    |  Bin 0 -> 83175 bytes
+ .../L-CLAUDE/T03-team-copy-done.png                |  Bin 0 -> 190135 bytes
+ .../api-e2e-evidence/L-CLAUDE/backend-restart.log  |  517 ++
+ .../api-e2e-evidence/L-CLAUDE/backend.log          |  182 +
+ .../cross-scope-agent-mentions-evidence.json       |  772 ++
+ .../api-e2e-evidence/L-CLAUDE/frontend.log         |   23 +
+ .../R-05/ad-hoc-task-delegation.json               |  196 +
+ .../R-05/task-closure-root-visibility.json         |  248 +
+ .../api-e2e-evidence/logs/H-desktop-build.log      |  640 ++
+ .../api-e2e-evidence/logs/L-CLAUDE.log             |   30 +
+ .../api-e2e-evidence/logs/R-00-typecheck.log       |    1 +
+ .../api-e2e-evidence/logs/R-01-contracts.log       |   91 +
+ .../api-e2e-evidence/logs/R-02-server-focused.log  | 8111 ++++++++++++++++++++
+ .../api-e2e-evidence/logs/R-03-web.log             | 3639 +++++++++
+ .../api-e2e-evidence/logs/R-04-prebuild-build.log  |   59 +
+ .../api-e2e-evidence/logs/R-05-gated.log           | 1294 ++++
+ .../api-e2e-execution-coverage-report.md           |  195 +
+ .../api-e2e-revision-record.md                     |   34 +
+ .../api-e2e-test-case-ledger.md                    |   44 +
+ .../delivery-evidence/delivery-contracts.log       |    9 +
+ .../delivery-evidence/delivery-server-e2e.log      | 1309 ++++
+ .../delivery-evidence/delivery-server-unit.log     |  181 +
+ .../delivery-evidence/delivery-web.log             |  161 +
+ .../delivery-revision-record.md                    |   28 +
+ .../done/mention-candidates-in-run/design-spec.md  |   91 +
+ .../mention-candidates-in-run/docs-sync-report.md  |   60 +
+ .../handoff-architecture-design-complete.md        |   35 +
+ .../mention-candidates-in-run/handoff-summary.md   |   59 +
+ .../implementation-handoff.md                      |  163 +
+ .../implementation-revision-record.md              |   36 +
+ .../investigation-notes.md                         |   32 +
+ .../release-deployment-report.md                   |   80 +
+ .../mention-candidates-in-run/release-notes.md     |    8 +
+ .../mention-candidates-in-run/requirements-doc.md  |   82 +
+ .../solution-revision-record.md                    |   18 +
+ .../user-verification-record.md                    |    6 +
+ 103 files changed, 19027 insertions(+), 175 deletions(-)
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/00-start.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/01-new-chat-team-at-menu-en.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/02-team-first-send-member-mention.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/03-agent-brought-in-code-reviewer.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/04-at-menu-lists-in-run-collaborator.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/05-in-run-mention-sent.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/06-language-zh.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/07-at-menu-zh-CN.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/08-new-chat-hint-zh-CN.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/journey.mp4
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/H-desktop/start.json
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE-ledger.md
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A01-01-agent-run-at-menu.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A01-02-composer-inline-mention.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A01-03-delegated-row.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A01-04-after-report.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A01-05-delegated-copy-view.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A01-06-delegated-team.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A02-row-gone-after-done.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A03-second-copy-after-stop.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A04-reload-with-copy-selected.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A05-after-restart-done.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/A06-old-trace-user-style.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/D01-run-deleted.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/F01-ineligible-mention-refused.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/N02-agent-first-send-delegated.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/N03-team-first-send-delegated.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/O01-01-org-run-at-menu.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/O01-02-org-two-copies.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/O02-copy-view.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/O03-org-copies-done.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/S01-in-run-mention.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/S01-stored-collaborator-restored.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/T01-01-team-run-at-menu.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/T01-02-team-copy-delegated.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/T01-03-team-run-copies.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/T02-copy-view.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/T03-team-copy-done.png
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/backend-restart.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/backend.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/cross-scope-agent-mentions-evidence.json
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/L-CLAUDE/frontend.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/R-05/ad-hoc-task-delegation.json
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/R-05/task-closure-root-visibility.json
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/H-desktop-build.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/L-CLAUDE.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/R-00-typecheck.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/R-01-contracts.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/R-02-server-focused.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/R-03-web.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/R-04-prebuild-build.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-evidence/logs/R-05-gated.log
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-revision-record.md
+ create mode 100644 tickets/done/mention-candidates-in-run/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/mention-candidates-in-run/delivery-evidence/delivery-contracts.log
+ create mode 100644 tickets/done/mention-candidates-in-run/delivery-evidence/delivery-server-e2e.log
+ create mode 100644 tickets/done/mention-candidates-in-run/delivery-evidence/delivery-server-unit.log
+ create mode 100644 tickets/done/mention-candidates-in-run/delivery-evidence/delivery-web.log
+ create mode 100644 tickets/done/mention-candidates-in-run/delivery-revision-record.md
+ create mode 100644 tickets/done/mention-candidates-in-run/design-spec.md
+ create mode 100644 tickets/done/mention-candidates-in-run/docs-sync-report.md
+ create mode 100644 tickets/done/mention-candidates-in-run/handoff-architecture-design-complete.md
+ create mode 100644 tickets/done/mention-candidates-in-run/handoff-summary.md
+ create mode 100644 tickets/done/mention-candidates-in-run/implementation-handoff.md
+ create mode 100644 tickets/done/mention-candidates-in-run/implementation-revision-record.md
+ create mode 100644 tickets/done/mention-candidates-in-run/investigation-notes.md
+ create mode 100644 tickets/done/mention-candidates-in-run/release-deployment-report.md
+ create mode 100644 tickets/done/mention-candidates-in-run/release-notes.md
+ create mode 100644 tickets/done/mention-candidates-in-run/requirements-doc.md
+ create mode 100644 tickets/done/mention-candidates-in-run/solution-revision-record.md
+ create mode 100644 tickets/done/mention-candidates-in-run/user-verification-record.md
+tree-identical
+   f48dbfbf3..5216e607d  personal -> personal
