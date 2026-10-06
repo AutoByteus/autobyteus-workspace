@@ -9,7 +9,8 @@ are authoritative; no prior delivery inferred from absence.
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-002 cumulative validated package, 2026-10-06 | N/A | Integrated checks/docs sync Pass; Blocked on user verification/finalization eligibility | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, user-verification-record.md, delivery-evidence/checks-summary.md |
 | DR-002 | Solution Designer verification/preview coordination result, 2026-10-06 | DR-001 verification hold | Blocked — User/External Prerequisite; candidate retained, no rerun | handoff-summary.md, release-deployment-report.md, user-verification-record.md |
-| DR-003 | Explicit user completion + new beta request, 2026-10-06 | DR-002 User/External Prerequisite hold | User verified; finalization/release executing | user-verification-record.md, release-deployment-report.md, handoff-summary.md, release-notes.md |
+| DR-003 | Explicit user completion + new beta request, 2026-10-06 | DR-002 User/External Prerequisite hold | User verified; repository finalized and beta triggered (monitoring interrupted) | user-verification-record.md, release-deployment-report.md, handoff-summary.md, release-notes.md |
+| DR-004 | Power-off recovery / existing-release publication verification and cleanup | DR-003 repository finalized, release monitoring pending | Delivery Completed | release-deployment-report.md, handoff-summary.md, docs-sync-report.md, delivery-evidence/final-checks-summary.md |
 
 ## DR-001 — Initial Integrated Verification Hold
 - Trigger: code_reviewer successful durable-test Pass / CRR-002, eee3ae0df plus a83642e6f receipt; full upstream chain retained.
@@ -70,3 +71,24 @@ polling or repeating validation.
 - Release now Applicable: Yes. Documented `bash scripts/desktop-release.sh beta` selects next unused beta (currently 1.4.95-beta.2 after tag refresh); generated notes, not curated release-note ingestion. No duplicate workflow dispatch.
 - Shared personal checkout has unrelated dirty work. Finalization uses a separate clean local clone with its own personal branch; original personal checkout/ref/index/worktree preserved. Ticket commit/push → remote target refresh/merge/push → beta helper/tag push → hosted publication verification → safe task resource cleanup.
 - Status: user gate Completed; repository/beta publication/cleanup execution Pending. Not yet Delivery Completed.
+
+## DR-003 Repository / Beta Trigger Receipt
+- Ticket archived before final commit; a74bccabe committed and pushed codex/create-or-update-project-tool. Staged diff hygiene and repository artifact hygiene Pass (52,781 tracked files, maximum path 200). Initial whitespace-only EOF issue fixed without deleting failed-attempt evidence.
+- Separate clean target clone fetched current target, checked out personal, merged ticket with --no-ff at 522395c9616e67a20ea4ee555d15150cfdfe6e80 and pushed personal successfully. Shared dirty personal checkout/ref remains untouched.
+- Documented beta helper `bash scripts/desktop-release.sh beta` exited0: bumped 1.4.95-beta.1 → 1.4.95-beta.2; release commit 23d6c877ada66058453f3e466dd6c7d302972610; annotated v1.4.95-beta.2 created by helper; personal and tag pushes completed.
+- Exactly one matching push-triggered Desktop Release run observed: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37412908817, headSha23d6c877ada66058453f3e466dd6c7d302972610. In progress; publication NOT yet claimed. No manual workflow dispatch.
+- Repository finalization Completed; beta publication/rollout and final safe ticket worktree/branch cleanup Pending. Not yet eligible for successful terminal handoff.
+
+## DR-004 — Recovered Release Publication And Safe Cleanup
+- Trigger: user “sorry there was poweroff”; resume unfinished monitoring/cleanup only.
+- Prior authoritative result: DR-003 explicit user verification, repository finalization and beta trigger completed; publication monitoring interrupted.
+- Current result: **Delivery Completed**. User signal from DR-003 retained; no behavior change/reverification need. Medium/High Reviewed cumulative upstream chain unchanged.
+- Docs sync report `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool/docs-sync-report.md` remains Updated/Pass. Handoff `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool/handoff-summary.md` and release report `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool/release-deployment-report.md` are current final authorities.
+- Integration/checks: unchanged current base; 195-test/build/bootstrap evidence retained. No repeat merge/build/release/tag/dispatch on recovery.
+- Repository: ticket a74bccabe pushed; target merge522395c9616e67a20ea4ee555d15150cfdfe6e80 pushed; release23d6c877ada66058453f3e466dd6c7d302972610/tagv1.4.95-beta.2 pushed. Metadata-only final receipt commit follows; immutable release tag not moved.
+- Publication: desktop/Android/iOS/Docker workflows all completed/success. Non-draft prerelease, 17 uploaded assets; actual four updater metadata/version references validated; DockerHub amd64/arm64 version manifest verified.
+- Cleanup: source ticket worktree removed/pruned, both local ticket branches deleted after reachability/cleanliness guard. Remote branch retained Not required to delete. Preview absent/ports released; private --keep data deliberately retained. Durable finalized personal clone retained as authoritative target checkout, not a ticket worktree.
+- Final evidence `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool/delivery-evidence/final-checks-summary.md`, JSON workflow/asset/registry and cleanup receipts.
+- User verification `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool/user-verification-record.md` exact finalization/beta request; original launcher not inferred, Delivery Engineer adopted exact cleanup.
+- Terminal return eligible; **Not yet sent**, pending rule/tool receipt.
+- Remaining scope limits: generic TS6059 failure unchanged; no full desktop install/update, paid inference/Manager Chat/@/live delegation/history replay or mobile-device/store-rollout certificate. No unresolved blocker within applicable gates.

@@ -5,7 +5,7 @@
 - Trigger: CRR-002 successful durable-test review Pass; cumulative Medium/High Reviewed route.
 - Bootstrap base: origin/personal `68261f8111e2f0eb119824c91a2650410c9aeffa`.
 - Integrated base: origin/personal `d9ffaa7cbf0b8907e002d9da1482d3a9aa5ae469`, merge HEAD `db34a3f6684d8515c76debe6a3e08b494b26a40d`.
-- Post-integration verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool/tickets/in-progress/create-or-update-project-tool/delivery-evidence/checks-summary.md`; final 15 files/195 tests, current build/bootstrap Pass after retained initial concurrent-build failure.
+- Post-integration verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool/delivery-evidence/checks-summary.md`; final 15 files/195 tests, current build/bootstrap Pass after retained initial concurrent-build failure.
 
 ## Long-Lived Docs Reviewed
 | Doc | Result | Notes |
@@ -37,3 +37,9 @@ server/MCP/web docs and remain accurate. No released operation/schema removed.
 - No-impact decision: N/A (two long-lived docs updated).
 - Product UI/UX package: N/A — no new rendered design.
 - Next: explicit user verification, then final remote refresh/finalization and safe cleanup. No user acceptance or terminal completion inferred.
+
+## DR-003 Archive / Release Scope
+User explicitly accepted the candidate and requested beta publication. No new implementation/docs semantics or base commits were introduced; DR-001 docs/checks remain valid. Current artifact directory: /Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool. Release scope is now applicable per user-verification-record.md; earlier no-release statements describe the original request.
+
+## DR-004 Final Archive Authority
+Current finalized artifact directory: /Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization/tickets/done/create-or-update-project-tool. Release/recovery/cleanup are reflected in current release-deployment-report.md and handoff-summary.md; no additional implementation or product behavior change and no new long-lived docs impact. Earlier verification holds/no-release statements are historical; user signal and final receipts supersede them.
