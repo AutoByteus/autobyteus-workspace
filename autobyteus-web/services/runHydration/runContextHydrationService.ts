@@ -2,7 +2,7 @@ import { getApolloClient } from '~/utils/apolloClient';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { GetAgentRunResumeConfig, GetRunFileChanges, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentRunResumeConfig, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRunConfig,
@@ -13,7 +13,7 @@ import { buildConversationFromProjection, type RunProjectionConversationEntry } 
 import { buildActivitiesFromProjection, type RunProjectionActivityEntry } from './runProjectionActivityHydration';
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
-import { hydrateRunFileChanges } from './runFileChangeHydrationService';
+import { fetchRunFileChanges, hydrateRunFileChanges } from './runFileChangeHydrationService';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
@@ -33,10 +33,6 @@ interface GetRunProjectionQueryData {
 
 interface GetAgentRunResumeConfigQueryData {
   getAgentRunResumeConfig: RunResumeConfigPayload;
-}
-
-interface GetRunFileChangesQueryData {
-  getRunFileChanges: RunFileChangeArtifact[];
 }
 
 export interface LoadRunContextHydrationInput {
@@ -62,7 +58,7 @@ export const loadRunContextHydrationCandidate = async (
 ): Promise<RunContextHydrationCandidate> => {
   const expectedActivityRevision = useAgentActivityStore().getActivityContentRevision(input.runId);
   const client = getApolloClient();
-  const [projectionResponse, resumeResponse, fileChangesResponse] = await Promise.all([
+  const [projectionResponse, resumeResponse, fileChanges] = await Promise.all([
     client.query<GetRunProjectionQueryData>({
       query: GetRunProjection,
       variables: { runId: input.runId },
@@ -73,11 +69,7 @@ export const loadRunContextHydrationCandidate = async (
       variables: { runId: input.runId },
       fetchPolicy: 'network-only',
     }),
-    client.query<GetRunFileChangesQueryData>({
-      query: GetRunFileChanges,
-      variables: { runId: input.runId },
-      fetchPolicy: 'network-only',
-    }),
+    fetchRunFileChanges(input.runId),
   ]);
 
   const projectionErrors = projectionResponse.errors || [];
@@ -88,11 +80,6 @@ export const loadRunContextHydrationCandidate = async (
   const resumeErrors = resumeResponse.errors || [];
   if (resumeErrors.length > 0) {
     throw new Error(resumeErrors.map((e: { message: string }) => e.message).join(', '));
-  }
-
-  const fileChangeErrors = fileChangesResponse.errors || [];
-  if (fileChangeErrors.length > 0) {
-    throw new Error(fileChangeErrors.map((e: { message: string }) => e.message).join(', '));
   }
 
   const projection = projectionResponse.data?.getRunProjection;
@@ -168,7 +155,7 @@ export const loadRunContextHydrationCandidate = async (
     conversation,
     activities: buildActivitiesFromProjection(projection.activities || []),
     expectedActivityRevision,
-    fileChanges: fileChangesResponse.data?.getRunFileChanges || [],
+    fileChanges,
     hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
   };
 };

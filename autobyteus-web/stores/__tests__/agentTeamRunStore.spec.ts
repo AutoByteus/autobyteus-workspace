@@ -175,7 +175,7 @@ const teamHydrationCandidate = (hydratedContext: AgentTeamContext): any => {
     resumeConfig: { teamRunId, isActive: hydratedContext.view.isRootTeamActive(), metadata: {} },
     hydratedContext,
     projectionByAgentRunId: new Map([[focusedAgentRunId, { agentRunId: focusedAgentRunId }]]),
-    activityReplacements: [],
+    memberRunStates: [],
   }
 }
 

@@ -48,7 +48,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     })
   }
 
-  const publish = (id: string, candidate: AgentOrgExecutionContext, commitActivities: () => void) => {
+  const publish = (id: string, candidate: AgentOrgExecutionContext, commit: () => void) => {
     const previous = contexts.value[id]
     // Validate retained identity before committing any projection or activity.
     for (const entry of candidate.listAgentContextEntries()) {
@@ -60,7 +60,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         upsertUserMessageByIdentity({ context: entry.context, userMessage: submission.message })
       }
     }
-    commitActivities()
+    commit()
     if (previous) candidate.adoptLocalContexts(previous)
     retainSubmissionExclusion(id, candidate)
     const requested = pendingFocus.value[id]
@@ -93,7 +93,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (existing) { existing.connect(); return existing }
     const service = new AgentOrgStreamingService({
       orgRunId: id,
-      publish: (candidate, commitActivities) => publish(id, candidate, commitActivities),
+      publish: (candidate, commit) => publish(id, candidate, commit),
       reportError: (message) => report(id, message),
       onInactive: () => markHistorical(id),
       onExecutionTreeChanged: () => { void useRunHistoryStore().refreshAgentOrgHistoryItem(id) },
@@ -137,7 +137,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: id, view, isCurrent: current })
       if (!current()) return
       const candidate = shallowReactive(staged.context)
-      publish(id, candidate, staged.commitActivities)
+      publish(id, candidate, staged.commit)
       if (candidate.isActive) {
         // The coherent server observation permits attachment, not a stale row/mode.
         candidate.requireReopen('AgentOrg stream is synchronizing.')

@@ -44,7 +44,7 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   hydrateTeamRunContextForStreamRecovery: hydrateTeamRunContextForStreamRecoveryMock,
 }))
 vi.mock('~/services/runHydration/teamRunHydrationCommit', () => ({
-  commitTeamRunHydrationActivities: commitActivitiesMock,
+  commitTeamRunHydration: commitActivitiesMock,
   markCommittedTeamRunHydrationAuthority: markAuthorityMock,
 }))
 vi.mock('~/stores/agentTeamContextsStore', () => ({
@@ -102,7 +102,7 @@ const hydration = (team: ReturnType<typeof makeTeam>) => ({
   focusedAgentRunId: team.view.getFocusedAgentRunId(),
   resumeConfig: { teamRunId: ROOT, isActive: team.view.isRootTeamActive(), executionTree: team.view.getExecutionTree() },
   projectionByAgentRunId: new Map([[team.view.getFocusedAgentRunId(), {}]]),
-  activityReplacements: [],
+  memberRunStates: [],
   hydratedContext: team,
 })
 

@@ -23,6 +23,12 @@ import { getApolloClient } from '~/utils/apolloClient'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import {
+  commitMemberRunStates,
+  fetchMemberRunState,
+  type MemberRunState,
+  type MemberRunStateCommit,
+} from '~/services/runHydration/memberRunStateHydration'
+import {
   AgentOrgExecutionContext,
   type AgentOrgContextEntry,
 } from './agentOrgExecutionContext'
@@ -97,17 +103,11 @@ const fetchProjection = async (
   return projection
 }
 
-type PendingActivityReplacement = Readonly<{
-  runId: string
-  expectedRevision: number
-  activities: ReturnType<typeof buildActivitiesFromProjection>
-}>
-
 const applyProjection = (
   context: AgentContext,
   seed: AgentSeed,
-  projection: Projection,
-): PendingActivityReplacement => {
+  { projection, fileChanges }: MemberRunState<Projection>,
+): MemberRunStateCommit => {
   resetRecentEventMonitorBaseline(context)
   context.state.conversation = buildConversationFromProjection(
     seed.agentRunId,
@@ -123,8 +123,9 @@ const applyProjection = (
   const activities = useAgentActivityStore()
   return Object.freeze({
     runId: seed.agentRunId,
-    expectedRevision: activities.getActivityContentRevision(seed.agentRunId),
+    expectedActivityRevision: activities.getActivityContentRevision(seed.agentRunId),
     activities: buildActivitiesFromProjection(projection.activities),
+    fileChanges,
   })
 }
 
@@ -133,7 +134,7 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
   view: AgentOrgExecutionViewDto
   source: 'inspection' | 'stream'
   isCurrent?(): boolean
-}>): Promise<{ context: AgentOrgExecutionContext; commitActivities(): void }> => {
+}>): Promise<{ context: AgentOrgExecutionContext; commit(): void }> => {
   if (input.view.execution_tree.rootOrg.orgRunId !== input.orgRunId
     || input.view.communication_messages.orgRunId !== input.orgRunId) {
     throw new Error(`AgentOrg snapshot correlation mismatch for '${input.orgRunId}'.`)
@@ -147,10 +148,13 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
       input.view.execution_tree.createdAt,
       rootPath ? workspaces.get(rootPath) ?? null : null,
     )
-    const activityReplacement = applyProjection(
+    const memberRunState = applyProjection(
       context,
       seed,
-      await fetchProjection(input.orgRunId, seed),
+      await fetchMemberRunState({
+        runId: seed.agentRunId,
+        fetchProjection: () => fetchProjection(input.orgRunId, seed),
+      }),
     )
     return Object.freeze({
       entry: Object.freeze({
@@ -158,7 +162,7 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
         memberAddress: seed.address,
         context,
       }) satisfies AgentOrgContextEntry,
-      activityReplacement,
+      memberRunState,
     })
   }))
   if (input.isCurrent && !input.isCurrent()) throw new Error('AgentOrg hydration ownership released.')
@@ -166,11 +170,10 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
     ...input,
     entries: hydrated.map((item) => item.entry),
   })
-  const replacements = hydrated.flatMap((item) =>
-    item.activityReplacement ? [item.activityReplacement] : [])
-  return { context, commitActivities: () => {
-    if (replacements.length > 0
-      && useAgentActivityStore().replaceProjectionActivitiesIfRevisions(replacements) === 'conflict') {
+  const memberRunStates = hydrated.map((item) => item.memberRunState)
+  // Commits every member's staged state (activities, then artifacts) when the caller publishes the context.
+  return { context, commit: () => {
+    if (commitMemberRunStates(memberRunStates) === 'conflict') {
       throw new Error(`AgentOrg activity changed before '${input.orgRunId}' hydration could commit.`)
     }
   } }

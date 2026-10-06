@@ -9,7 +9,7 @@ import {
   hydrateTeamRunContextForStreamRecovery,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import {
-  commitTeamRunHydrationActivities,
+  commitTeamRunHydration,
   markCommittedTeamRunHydrationAuthority,
 } from '~/services/runHydration/teamRunHydrationCommit';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
@@ -62,7 +62,7 @@ export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promi
     || hydrated.projectionByAgentRunId.get(hydrated.focusedAgentRunId) == null) {
     throw new Error(`Team '${input.teamRunId}' did not load its exact focused AgentRun.`);
   }
-  commitTeamRunHydrationActivities(hydrated);
+  commitTeamRunHydration(hydrated);
   contexts.addTeamContext(context);
   markCommittedTeamRunHydrationAuthority(hydrated);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
@@ -125,7 +125,7 @@ export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordin
       expectedBaseChangeSequence: hydrated.expectedBaseChangeSequence,
       beforeContextCommit: () => {
         if (intent && !intent.isCurrent()) throw new Error('Workspace selection superseded.');
-        commitTeamRunHydrationActivities(hydrated);
+        commitTeamRunHydration(hydrated);
       },
     });
   } catch (error) {
