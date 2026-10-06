@@ -1,0 +1,17 @@
+{
+  "ticketWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool",
+  "worktreeRemoved": true,
+  "pruned": true,
+  "localTicketBranchRemovedInSharedRepo": true,
+  "localTicketBranchRemovedInFinalTargetClone": true,
+  "remoteTicketBranchCleanup": "Not required; retained provenance",
+  "previewInstance": "iso-61927-6763",
+  "previewRunning": false,
+  "controlPortReleased": true,
+  "serverPortReleased": true,
+  "previewDataRootRemoved": false,
+  "previewDataPolicy": "Keep preview edits (--keep); deletion Not required",
+  "targetCheckoutRetained": "/Users/normy/autobyteus_org/autobyteus-worktrees/create-or-update-project-tool-finalization",
+  "targetCheckoutReason": "Durable finalized personal target / authoritative artifact workspace, not a ticket worktree",
+  "sharedDirtyCheckoutPolicy": "Unrelated edits/index/local personal ref left untouched; fetch only updates remote refs"
+}
