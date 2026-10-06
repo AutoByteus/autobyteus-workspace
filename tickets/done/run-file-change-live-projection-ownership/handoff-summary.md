@@ -2,7 +2,12 @@
 
 ## Status
 
-- Delivery state: **Awaiting user verification (DR-001).** The latest base is integrated, the checks were rerun and the docs are synced. Nothing is pushed or merged.
+- Delivery state: **Delivery Completed (DR-002).** The user verified on 2026-10-06 ("finalize please. no need to release a new version."); see `user-verification-record.md`.
+  - The ticket is archived to `tickets/done/`.
+  - It is finalized into `personal` with merge `64ec8bcda`, which is pushed.
+  - There is no release, as the user declined one.
+  - The worktree and the local and remote ticket branches are cleaned up.
+  - Final state is in `release-deployment-report.md`. The sections below record the DR-001 pre-verification state, kept for history.
 - Classification (unchanged by delivery): `task_size=Medium`, `architectural_risk=High`. Route: full independent review (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → Code Review (test code) → Delivery).
 
 | Stage | Revision | Result |
