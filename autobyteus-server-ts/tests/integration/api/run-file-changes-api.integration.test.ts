@@ -587,6 +587,20 @@ describe("Run file changes API integration", () => {
       }
       expect((await content(imagePath("d"))).statusCode).toBe(409);
       expect((await content(imagePath("unknown"))).json()).toEqual({ detail: "File change not found" });
+
+      // The streaming entry completes: its file is written and the next preview of the same entry succeeds.
+      await record("d");
+      const store = new RunFileChangeProjectionStore();
+      const deadline = Date.now() + 2000;
+      while ((await store.readProjection(runDir)).entries.find((entry) => entry.path === imagePath("d"))?.status
+        !== "available") {
+        if (Date.now() > deadline) throw new Error("Timed out completing 'd'.");
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+      const completed = await content(imagePath("d"));
+      expect(completed.statusCode).toBe(200);
+      expect(completed.rawPayload.equals(imageBytes("d"))).toBe(true);
+      expect(await listPaths()).toEqual([imagePath("a"), imagePath("b"), imagePath("c"), imagePath("d")]);
     } finally {
       detach();
       activeRuns.delete(runId);

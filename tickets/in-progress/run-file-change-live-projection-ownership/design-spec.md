@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-001`
-- Approved requirements baseline: `requirements-doc.md` SR-001, user approval 2026-10-06 ("since you found the bug, please work on the ticket now. the requirement is clear.")
+- Current solution revision ID: `SR-002` (design content unchanged from SR-001; SR-002 only narrowed SCN-002/SCN-003 UI scope, so Team-member UI hydration is the next ticket)
+- Approved requirements baseline: `requirements-doc.md` SR-002 (approved 2026-10-06, Option 2 split), built on SR-001 (user approval 2026-10-06: "since you found the bug, please work on the ticket now. the requirement is clear.")
 - Behavior-defining supplements: None
 - Design status: `Ready`
 - Canonical investigation-notes path: `/home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/tickets/in-progress/run-file-change-live-projection-ownership/investigation-notes.md`

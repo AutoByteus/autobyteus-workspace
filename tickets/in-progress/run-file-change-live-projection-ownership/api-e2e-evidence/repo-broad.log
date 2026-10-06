@@ -1,0 +1,178 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/integration/api/run-file-changes-api.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:21666) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+Custom app data directory set to: /tmp/run-file-changes-api-appdata-A3qwBx
+Updated config file path to /tmp/run-file-changes-api-appdata-A3qwBx/.env
+Loading environment from: /tmp/run-file-changes-api-appdata-A3qwBx/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/run-file-changes-api-appdata-A3qwBx/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/run-file-changes-api-appdata-A3qwBx
+DB DIRECTORY: /tmp/run-file-changes-api-appdata-A3qwBx/db
+LOGS DIRECTORY: /tmp/run-file-changes-api-appdata-A3qwBx/logs
+DOWNLOAD DIRECTORY: /tmp/run-file-changes-api-appdata-A3qwBx/download
+MEMORY DIRECTORY: /tmp/run-file-changes-api-appdata-A3qwBx/memory
+============================================================
+AgentRunManager initialized.
+
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts (6 tests | 1 failed) 244ms
+     ✓ hydrates unified rows through GraphQL and serves current text/media bytes through the run-scoped route 62ms
+     ✓ does not hydrate legacy-only persisted runs after the clean-cut removal 5ms
+     × hydrates historical AutoByteus team-member file changes through GraphQL and REST 17ms
+     ✓ returns 404 for historical rows whose files no longer exist 2ms
+     ✓ returns 409 for active runs when an indexed pending file has not been written yet 2ms
+     ✓ serves every artifact an attached active run records after an earlier read (regression) 69ms
+ ✓ tests/architecture/agent-provider-composition-boundaries.test.ts (14 tests) 9048ms
+     ✓ closes retired symbols and provider-specific construction below supported roots  664ms
+     ✓ keeps configured Agent and flat-Team construction inside their owned factories  460ms
+     ✓ closes complete Agent manager and AgentRun construction to production roots  2552ms
+     ✓ selects one host validator and propagates it to the two exact lifecycle roots  2129ms
+     ✓ keeps context translation provider-neutral and all path authority explicit  1999ms
+ ✓ tests/architecture/application-framework-boundaries.test.ts (20 tests) 5564ms
+     ✓ keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005  1247ms
+     ✓ keeps required tool registration behind the single lifecycle readiness owner  1701ms
+     ✓ guards the exact SR-011 host definition and public/general run authority  1260ms
+     ✓ guards the revised root-neutral Agent and flat-Team execution boundary  856ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts (14 tests) 3050ms
+     ✓ retains new native capture and exact resumed conversation binding with monotonically new step indices  1758ms
+     ✓ retains ambiguous native plans and their normal summary stream/completion  717ms
+ ✓ tests/architecture/projects-boundaries.test.ts (4 tests) 122ms
+ ✓ tests/architecture/application-agent-addressing-boundaries.test.ts (6 tests) 25ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > hydrates historical AutoByteus team-member file changes through GraphQL and REST
+AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+
+- Expected
++ Received
+
+- [
+-   ObjectContaining {
+-     "path": "team/team-file-1791266498684.md",
+-     "runId": "team-file-1791266498684-professor",
+-     "sourceTool": "write_file",
+-     "status": "available",
+-     "type": "file",
+-   },
+- ]
++ []
+
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts:425:36
+    423|     );
+    424| 
+    425|     expect(data.getRunFileChanges).toEqual([
+       |                                    ^
+    426|       expect.objectContaining({
+    427|         runId: memberRunId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 63 passed (64)
+   Start at  06:01:29
+   Duration  28.81s (transform 5.63s, setup 45ms, import 9.27s, tests 18.05s, environment 0ms)
+

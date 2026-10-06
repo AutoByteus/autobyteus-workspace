@@ -3,13 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Package identifier: `run-file-change-live-projection-ownership`
 - Request / ticket: Artifacts produced after the first one by an active agent show "File not found — deleted or moved" although the files exist.
 - Requirements owner: Solution Designer
 - Date: 2026-10-06
 - Approval state and reference: Approved by user in conversation on 2026-10-06 after the investigation result was presented: "since you found the bug, please work on the ticket now. the requirement is clear." Follow-up instruction: "make sure check whether this is a design issue or not does it need some refactoring" (design-phase instruction, no behavior change).
-- Exact approved requirements baseline / solution revision: SR-001 — every artifact an active run records must be listable and previewable while the file exists; restore the documented artifact-serving behavior.
+- SR-002 approval (2026-10-06): user chose to finish this ticket first and handle Team-member Artifacts hydration as the next ticket: "agreed. but lets finish this current bug ticket first. and then work on this one right?" The user agreed earlier that the follow-up must make Team members consistent with standalone agents ("i guess stay consistant" / "agreed").
+- Exact approved requirements baseline / solution revision: SR-002 (SR-001 scope with SCN-002/SCN-003 narrowed per §Proposed Revision SR-002, Option 2). SR-001 text: every artifact an active run records must be listable and previewable while the file exists; restore the documented artifact-serving behavior.
 - Behavior-defining supplements and their approved versions: None.
 
 ## Problem And Desired Outcome
@@ -51,6 +52,7 @@
 - Changes to which tool events produce `FILE_CHANGE`.
 - The `file_changes.json` format.
 - Application-platform artifact publication/relay behavior.
+- **Frontend Team-member Artifacts hydration** (loading a member's list from the server when a Team run is opened or a member is inspected, active and historical). Pre-existing gap found by API-REV-001 B-003/B-004. User-approved as the **next ticket**, to be started after this one is finished. Approved intent: Team members behave consistently with standalone agents.
 
 ### Non-Goals
 
@@ -82,8 +84,8 @@ BEH-003, BEH-004; preserved columns of BEH-001/BEH-002.
 | --- | --- | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001 | BEH-001 / SCN-001 | Active team-member run records artifact A; A's content is read; then artifacts B and C are recorded | Content requests for A, B and C all return 200 with the file bytes | — | Automated (service/integration) with real process composition wiring; regression test fails on current code |
 | AC-002 | REQ-001 | BEH-001 / SCN-001 | Same as AC-001 for an active standalone run | A, B, C all 200 | — | Automated |
-| AC-003 | REQ-002 | BEH-002 / SCN-002 | Active run; list read after A; B, C recorded; list read again | Second list contains A, B, C | — | Automated |
-| AC-004 | REQ-003 | BEH-003 / SCN-003 | Inactive run with `file_changes.json` | List and content as before | — | Existing tests pass |
+| AC-003 | REQ-002 | BEH-002 / SCN-002 | Active run (standalone or Team member); list read after A; B, C recorded; list read again via `getRunFileChanges`. Standalone UI reload also shows A, B, C | Second list contains A, B, C | — | Automated |
+| AC-004 | REQ-003 | BEH-003 / SCN-003 | Inactive run with `file_changes.json` (server API for any run; standalone UI) | List and content as before | — | Existing tests pass |
 | AC-005 | REQ-004 | BEH-001 | Active run entry `streaming` without file; and unknown path | 409 and 404 respectively | — | Existing tests pass |
 | AC-006 | REQ-001, REQ-002 | SCN-001 | Live server, agent generates ≥ 2 images in one turn | Every image previews in the Artifacts tab without restart | — | API/E2E or live check |
 
@@ -92,8 +94,8 @@ BEH-003, BEH-004; preserved columns of BEH-001/BEH-002.
 | Scenario ID | Kind | Actor / Initiator | Coherent Goal Or Governing Event | Supported Trigger / Entry Surface | Starting Condition | Product-Level Steps Or Event Sequence | Expected Outcome | Supported Alternate / Error Behavior | Scenario Validity | Independent Evidence / Decision Reference | Related Requirement / AC IDs |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | SCN-001 | User | User watching an agent | See each produced artifact | Artifacts tab preview | Run active | Agent produces A → user opens A → agent produces B, C → user opens B, C | All previews render | 409 while still streaming | Supported Normal Scenario | User screenshots 2026-10-06; curl reproduction | REQ-001, REQ-004 / AC-001, AC-002, AC-005, AC-006 |
-| SCN-002 | User | User reopening a run | See full artifact list | Artifacts tab hydration | Run active, artifacts already read once | Reopen run / reload UI | Full list | — | Supported Normal Scenario | Code path | REQ-002 / AC-003 |
-| SCN-003 | User | User browsing history | View past artifacts | Artifacts tab, inactive run | Run inactive | Open run | Full list and previews | 404 when file deleted | Supported Normal Scenario | Code path | REQ-003 / AC-004 |
+| SCN-002 | User | User reopening a run | See full artifact list | Artifacts tab hydration (standalone agent UI); `getRunFileChanges` API for any run incl. Team members | Run active, artifacts already read once | Reopen run / reload UI (standalone) or API list request (Team member) | Full list (Team-member **UI** hydration: follow-up ticket, see Out Of Scope) | — | Supported Normal Scenario | Code path | REQ-002 / AC-003 |
+| SCN-003 | User | User browsing history | View past artifacts | Artifacts tab (standalone agent UI); API for any run incl. Team members | Run inactive | Open run | Full list and previews (Team-member **UI** hydration: follow-up ticket) | 404 when file deleted | Supported Normal Scenario | Code path | REQ-003 / AC-004 |
 
 ## UI, Interaction, And Experience Requirements
 
@@ -128,7 +130,15 @@ BEH-003, BEH-004; preserved columns of BEH-001/BEH-002.
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | The frontend does not need changes once the server returns correct data | Scope boundary | AC-006 live check | Open (expected true: frontend already fetches per row) |
+| ASM-001 | The frontend does not need changes once the server returns correct data (standalone UI + live Team-member previews) | Scope boundary | AC-006 live check | Holds for SR-002 scope; was **invalidated for Team-member reload/history UI**, now out of scope (follow-up). (API-REV-001 B-003/B-004; CRR-002). Holds for standalone agents. See Proposed Revision SR-002 |
+
+## Revision SR-002 (Approved: Option 2, split; Team-member UI hydration is the next ticket)
+
+- Trigger: CRR-002 `Requirement Gap` from API-REV-001. B-003: an active team member's Artifacts list is empty after a page reload. B-004: a historical team member's list is empty. The server returns the correct three entries in both cases.
+- Evidence (re-verified by Solution Designer on `061d4698b`): `autobyteus-web` calls `GetRunFileChanges` / `hydrateRunFileChanges` only from the agent-run path (`runContextHydrationService.ts`, `agentRunOpenCoordinator.ts`). No team open/inspection/hydration path calls it, at any point in history. Team-member rows exist only from live `FILE_CHANGE` events.
+- Option 1 (extend this ticket): add REQ-005, "When a Team run is opened or a member is inspected, the member's Artifacts list is hydrated from the server (active and historical)". Map SCN-002/SCN-003 to Team members with new ACs. Revise the design to add frontend team-member artifact hydration reusing `hydrateRunFileChanges`. Re-review applies.
+- Option 2 (split): narrow SCN-002/SCN-003 in this ticket to standalone runs plus the server API for Team members. Record Team-member UI hydration as a follow-up ticket. No design change.
+- Decision owner: user. **Decision (2026-10-06): Option 2, split.** Quote: "agreed. but lets finish this current bug ticket first. and then work on this one right?" The follow-up ticket makes Team members consistent with standalone agents.
 
 ## Open Decisions And Questions
 

@@ -56,3 +56,13 @@ User (2026-10-06): in the Marketing Team run, `marketing_content_creator` (agy r
 ## Next Expected Action
 
 Architecture Reviewer reviews the package.
+
+## SR-002 Routing (2026-10-06)
+
+- Result: `Architecture Design Complete` (revised package SR-002; design unchanged), `task_size=Medium`, `architectural_risk=High`.
+- Trigger: CRR-002 `Requirement Gap` (API-REV-001 B-003/B-004: Team-member Artifacts list empty after reload / on historical runs, because the frontend never loads it on team pages).
+- User decision: Option 2, split. This ticket finishes as the server fix plus live previews. Frontend Team-member Artifacts hydration becomes the **next ticket**, and must make Team members consistent with standalone agents.
+- Changes: requirements-doc (Approved SR-002; SCN-002/SCN-003/AC-003/AC-004 narrowed; Out Of Scope + follow-up; ASM-001), solution-revision-record (SR-002), design-spec (basis note only).
+- Implementation state: commit `061d4698b` (CRR-001 Pass). Uncommitted durable test changes are still owed a code review after API/E2E.
+- Expected downstream: API/E2E re-validates against the amended AC-003/AC-004. B-003/B-004 Team-member UI cases are out of scope.
+- Applied handoff rule: "Architecture Design Complete … architectural_risk=High" → `/architecture_reviewer`.

@@ -7,14 +7,30 @@
 - Upstream Solution Revision Record: `/home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/tickets/in-progress/run-file-change-live-projection-ownership/solution-revision-record.md`
 - Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/tickets/in-progress/run-file-change-live-projection-ownership/design-spec.md`
 - Supplemental Task Artifacts Reviewed: None
-- Relevant Solution Revision IDs: `SR-001`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`
 - Architecture Review Revision Record: `/home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/tickets/in-progress/run-file-change-live-projection-ownership/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: `Architecture Design Complete` from `/solution_designer` (SR-001)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: revised package SR-002 from `/solution_designer` (CRR-002 `Requirement Gap` from API-REV-001 B-003/B-004; the user approved Option 2, split)
+- Prior Review Round Reviewed: 1 (`ARCH-REV-001`, Pass)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: worktree `codex/run-file-change-live-projection-ownership` @ `5c74fed71`. Files read: `src/services/run-file-changes/run-file-change-service.ts`, `src/run-history/services/run-file-change-projection-service.ts`, `src/agent-execution/runtime/general-process-run-supervisor.ts` (construction, rollback L380-401, `closeInternal` L412-455), `src/agent-execution/services/agent-run-resource-manager.ts`, `src/agent-execution/services/agent-run-service.ts` (bind pattern), `src/agent-execution/services/agent-run-manager.ts` (`getInstance` throws when unbound), `src/application-platform/execution/application-execution-scope-kernel-builder.ts:90`, `tests/architecture/application-framework-boundaries.test.ts:458-468`. I also grepped every use of `RunFileChangeService`, `getRunFileChangeService` and `attachToRun`.
+
+## Round 2 Delta (SR-002)
+
+- Delta reviewed: a `git diff` of `requirements-doc.md`, `design-spec.md`, `solution-revision-record.md` and `solution-handoff.md`. The design-spec change is limited to the revision-ID line.
+- Requirements change:
+  - SCN-002 and SCN-003 are narrowed. They now cover the standalone UI plus the `getRunFileChanges` and content API for any run, including Team members.
+  - AC-003 and AC-004 are restated accordingly.
+  - ASM-001 is amended.
+  - Team-member Artifacts **UI** hydration is moved to Out Of Scope as the approved next ticket, with the user quote recorded.
+- Design impact: none. The design is server-side only (process authority, attached-run cache, per-call reader resolution). It already satisfies the narrowed AC-003 and AC-004 for Team members at the API boundary. That frontend gap (no team call site to `hydrateRunFileChanges`) predates this ticket and is not caused by this design.
+- The approved basis for every in-scope behavior is still confirmed. No structural verdict changes, and all round-1 verdicts are preserved.
+- Non-blocking artifact-consistency notes (DOC-001):
+  - design-spec §Solution And Approval Basis still says "Approved requirements baseline: `requirements-doc.md` SR-001". It should reference SR-002.
+  - In solution-revision-record SR-002, the "Current status" line still reads requirements `Ready for Approval` and design "`Needs Revision` only if Option 1". The later "User decision" line and the requirements-doc record approval of Option 2.
+  - requirements-doc's §Revision SR-002 table row still lists `Decision owner: user` with no decision recorded inline. The heading and Document Status record it.
+  - None of these affects implementation. The Solution Designer may correct them at its next revision.
 
 ## Routing Classification Review
 
@@ -27,7 +43,7 @@
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Yes. Every artifact that an active run records must be listable and previewable while its file exists. This restores the documented single-owner behavior. There is no API or persistence change.
+- Approved requirements / intended behavior understood: Yes (SR-002). Every artifact that an active run records must be listable and previewable while its file exists. This restores the documented single-owner behavior. There is no API or persistence change.
 - Relevant existing behavior and evidence confirmed: Yes. The code confirms the following:
   - `getRunFileChangeService()` lazily creates an instance. Its only caller is `RunFileChangeProjectionService`, and nothing attaches runs to it.
   - The writer is the instance constructed inline at `general-process-run-supervisor.ts:186` and passed to `AgentRunResourceManager`.
@@ -41,8 +57,8 @@
 | Behavior ID | Kind | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | Pass | Pass | Pass (DS-002: the attached run is served from the live owner, and the 409/404 branches in `run-file-changes.ts` are untouched) | Confirmed | None |
-| BEH-002 | User | Pass | Pass | Pass (DS-002, same resolution) | Confirmed | None |
-| BEH-003 | User | Pass | Pass | Pass (the inactive branches read disk directly and are unchanged) | Confirmed | None |
+| BEH-002 | User | Pass | Pass | Pass (DS-002, same resolution; SR-002 narrows UI hydration to standalone, and Team members are covered at the API) | Confirmed | None |
+| BEH-003 | User | Pass | Pass | Pass (the inactive branches read disk directly and are unchanged; SR-002 narrowing applies to the UI only) | Confirmed | None |
 | BEH-004 | System | Pass | Pass | Pass (DS-001: the writer and store are unchanged) | Confirmed | None |
 
 ## Supplemental Artifact Coherence Verdict
@@ -208,6 +224,7 @@ The returned primary pass recipient (normally `/implementation_engineer`), with 
 
 ## Residual Risks
 
+- Team-member Artifacts UI hydration (reload or historical) is a pre-existing frontend gap. It is user-approved as the next ticket (SR-002). Also noted there: the failing base integration test "hydrates historical AutoByteus team-member file changes" (stale seed, per CRR-002).
 - RSK-001: the frontend's "deleted or moved" wording for every 404. Out of scope; separate-ticket candidate.
 - Tests that relied on the implicit singleton must bind or inject explicitly (`run-file-changes.test.ts`, `run-file-changes-api.integration.test.ts`, `run-file-change-projection-service.test.ts`).
 - Unattached active runs (a short activation or release window) get a fresh disk read on every request. This is correct, and the cost is small.
@@ -216,4 +233,4 @@ The returned primary pass recipient (normally `/implementation_engineer`), with 
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: the design restores the documented single-owner behavior using the established `bindProcess*` pattern, with clear removal and no API or persistence change. REC-001 and REC-002 are advisory.
+- Notes: Round 2 (SR-002) is a requirements-only narrowing with explicit user approval, and the design is unchanged. DOC-001 is advisory. The design restores the documented single-owner behavior using the established `bindProcess*` pattern, with clear removal and no API or persistence change. REC-001 and REC-002 are advisory.

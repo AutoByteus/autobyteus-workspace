@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { randomUUID } from "node:crypto";
-import { appendFileSync, lstatSync, readdirSync, readFileSync, readlinkSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 
@@ -202,6 +202,24 @@ if (arg === "--version") {
       call(14, "call_mcp_tool", open, "DONE", { output: null });
       reply(15, "MCP_DONE");
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "MCP_DONE" } });
+    } else if (imageDone && process.env.AGY_FAKE_IMAGE_STEPS) {
+      // Several native images in one turn (comma-separated step indices). Before each image after the first,
+      // the turn waits until the test creates AGY_FAKE_IMAGE_GATE_<n> (n = 2, 3, …), so the test can open the
+      // earlier images while the agent is still working, as a user watching the Artifacts tab does.
+      const steps = process.env.AGY_FAKE_IMAGE_STEPS.split(",").map(Number);
+      const gate = process.env.AGY_FAKE_IMAGE_GATE;
+      (async () => {
+        for (const [position, step_index] of steps.entries()) {
+          if (gate && position > 0) {
+            while (!existsSync(`${gate}_${position + 1}`)) await new Promise((resolve) => setTimeout(resolve, 50));
+          }
+          const base = { conversation_id, step_index, step_type: "tool", tool_name: "generate_image" };
+          emit({ event: "step_update", step_update: { ...base, state: "ACTIVE",
+            tool_info: { parameters: { ImageName: `image_${step_index}`, Prompt: `image ${step_index}` } } } });
+          emit({ event: "step_update", step_update: { ...base, state: "DONE", tool_info: {} } });
+        }
+        emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "Images generated." } });
+      })();
     } else if (imageDone) {
       const base = { conversation_id, step_index: 1, step_type: "tool", tool_name: "generate_image" };
       emit({ event: "step_update", step_update: { ...base, state: "ACTIVE",
