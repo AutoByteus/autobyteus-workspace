@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-002. The branch is integrated with the latest base (`a07b17a5e`, still current) and docs are synced. It now includes the API/E2E desktop-journey addendum. Awaiting your explicit verification.** Nothing is pushed, merged or released yet.
+- Delivery state: **DR-002. The branch is integrated with the latest base (`a07b17a5e`, still current) and docs are synced. It now includes the API/E2E desktop-journey addendum.** The user verified on 2026-10-06 ("the task is done. lets finalize and release a new beta"); see `user-verification-record.md`. Finalization into `personal` and one new beta are in progress; the outcomes are recorded in `release-deployment-report.md` (DR-003).
 - Classification (unchanged): `task_size=Large`, `architectural_risk=High`, reviewed route.
 
 | Stage | Revision | Result |

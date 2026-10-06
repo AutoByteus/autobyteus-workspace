@@ -36,7 +36,10 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: `user-verification-record.md` ("the task is done. lets finalize and release a new beta", 2026-10-06)
+- Renewed verification required after later re-integration: `No` (the target was unchanged at `a07b17a5e`)
+- Renewed verification received: `Not needed`
 
 ## Docs Sync Result
 
@@ -46,7 +49,8 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (after verification)
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/mention-delegation-dismissal/`
 
 ## Repository Finalization
 
@@ -56,7 +60,8 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user at verification.
+- Applicable: `Yes`. The user requested one new beta.
+- Method: `Release Script`, `bash scripts/desktop-release.sh beta`, run from a clean finalized `personal`.
 - Release notes handoff result: `release-notes.md` prepared.
 
 ## Environment Or Persisted-Data Transition Notes
