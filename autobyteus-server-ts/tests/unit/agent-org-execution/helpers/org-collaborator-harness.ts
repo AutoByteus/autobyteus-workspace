@@ -23,6 +23,8 @@ import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-colla
 import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
+import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
+import type { AgentOrgRunCollaborators } from "../../../../src/agent-org-execution/services/agent-org-run-collaborators.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -101,7 +103,16 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
     collaboratorAdmission: admission(options.runnable ?? true),
     prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
+    // Production always binds the Task side; every delegated copy belongs to a Task.
+    taskAgentResources: new InMemoryTaskAgentResources(),
   });
   run.activate();
   return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher };
 };
+
+/**
+ * Brings a catalog address in as a collaborator (Offline, nothing started): the bring-in step of
+ * the sender's first send_message_to that address, without delivering the message.
+ */
+export const bringIn = (owner: AgentOrgRun, address: string, senderRunId: string) =>
+  (owner as unknown as { collaborators: AgentOrgRunCollaborators }).collaborators.bringInAt({ address, senderRunId });

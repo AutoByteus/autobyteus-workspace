@@ -44,10 +44,15 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 
 const NOTE_HEADING = "[Mentioned collaborators]";
 const NOTE_GUIDANCE =
-  "Message a collaborator with send_message_to and its address; it starts on its first message. delegate_task to its address spawns a new copy instead, which you follow up by run ID.";
-/** The guidance line of notes written before REQ-009; still recognized so saved history reads unchanged. */
-const RELEASED_NOTE_GUIDANCE =
-  "Message a collaborator with send_message_to and its address; it starts on its first message.";
+  "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.";
+/**
+ * Guidance lines of notes saved by earlier releases (collaborator messaging, before and after
+ * REQ-009); still recognized so saved history reads unchanged. Never composed.
+ */
+const SAVED_NOTE_GUIDANCES = Object.freeze([
+  "Message a collaborator with send_message_to and its address; it starts on its first message. delegate_task to its address spawns a new copy instead, which you follow up by run ID.",
+  "Message a collaborator with send_message_to and its address; it starts on its first message.",
+]);
 const KIND_LABELS: Readonly<Record<CollaboratorMentionKind, string>> = Object.freeze({
   agent: "Agent",
   agent_team: "Agent Team",
@@ -67,10 +72,11 @@ const entryLine = (collaborator: MentionedCollaborator): string => {
 };
 
 /**
- * The one owner of the mention-note wording (server compose, web parse):
+ * The one owner of the mention-note wording (server compose, web parse). The note tells the
+ * focused agent to delegate the work to each mentioned address:
  *
  *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team" }])
- *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nMessage a collaborator with send_message_to …"
+ *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nDelegate the work with delegate_task …"
  */
 export const composeCollaboratorMentionNote = (
   text: string,
@@ -83,7 +89,7 @@ export const composeCollaboratorMentionNote = (
 
 /** Recognizes only a note at the very end of the content, in exactly the composed form. */
 export const parseCollaboratorMentionNote = (content: string): ParsedCollaboratorMentionNote | null => {
-  if (![NOTE_GUIDANCE, RELEASED_NOTE_GUIDANCE].some((guidance) => content.endsWith(`\n${guidance}`))) return null;
+  if (![NOTE_GUIDANCE, ...SAVED_NOTE_GUIDANCES].some((guidance) => content.endsWith(`\n${guidance}`))) return null;
   const headingAt = content.startsWith(`${NOTE_HEADING}\n`)
     ? 0
     : content.lastIndexOf(`\n\n${NOTE_HEADING}\n`);
@@ -109,8 +115,8 @@ export const parseCollaboratorMentionNote = (content: string): ParsedCollaborato
 };
 
 /**
- * The code every transport uses when a mentioned collaborator cannot be added on send: nothing
- * is added and the message is not posted. Transports carry the collaborator's name with it.
+ * The code every transport uses when a mentioned definition cannot be resolved on send (it is
+ * not eligible in the run): the message is not posted. Transports carry its name with it.
  */
 export const COLLABORATOR_ADD_FAILED = "COLLABORATOR_ADD_FAILED";
 

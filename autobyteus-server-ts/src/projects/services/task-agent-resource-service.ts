@@ -6,9 +6,10 @@ import {
   agentRunKey, closeTaskAgentResources, currentAssignments, linkTaskAgentResource, settleTaskAgentResourceStart,
   type TaskAgentResourceFile, type TaskAssignment,
 } from "../domain/task-agent-resources.js";
-import { TaskAgentResourceStore, type TaskAgentResourceLocation } from "../stores/task-agent-resource-store.js";
+import type { TaskLocation } from "../domain/models.js";
+import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
 
-type Loaded = { location: TaskAgentResourceLocation; file: TaskAgentResourceFile };
+type Loaded = { location: TaskLocation; file: TaskAgentResourceFile };
 export type TaskAgentResourceGroup = Readonly<{ hostRoot: RootExecutionIdentity; agentRuns: readonly TaskExecutionReference[] }>;
 
 /**
@@ -54,7 +55,7 @@ export class TaskAgentResourceService {
     return next;
   }
 
-  async linkAssigned(location: TaskAgentResourceLocation, link: Extract<TaskAgentResourceLinkInput, { role: "assigned" }>): Promise<void> {
+  async linkAssigned(location: TaskLocation, link: Extract<TaskAgentResourceLinkInput, { role: "assigned" }>): Promise<void> {
     await this.load();
     this.assertTaskReadable(location.taskId);
     await this.link(location, link);
@@ -75,7 +76,7 @@ export class TaskAgentResourceService {
   }
 
   /** DONE: closes every open entry first (under the Task's serialization), then runs `afterClose`. */
-  async closeTask(location: TaskAgentResourceLocation, afterClose: () => Promise<void>): Promise<void> {
+  async closeTask(location: TaskLocation, afterClose: () => Promise<void>): Promise<void> {
     await this.load();
     await this.serialize(location.taskId, async () => {
       this.assertTaskReadable(location.taskId);
@@ -102,6 +103,22 @@ export class TaskAgentResourceService {
   /** Closed agent runs hosted by the root, from the per-root index (damaged Tasks never reach `swap()`). Never throws. */
   closedAgentRunsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
     return [...this.closedRunsByHostRootKey.get(rootExecutionIdentityKey(hostRoot))?.values() ?? []];
+  }
+  /**
+   * Ad-hoc Tasks (no Project) with an agent run hosted by the root, from the view. Every entry of an
+   * ad-hoc Task has its delegator's host root (only described delegation creates and assigns to one).
+   */
+  adHocTaskIdsHostedBy(hostRoot: RootExecutionIdentity): string[] {
+    const rootKey = rootExecutionIdentityKey(hostRoot);
+    return [...this.files.values()]
+      .filter(({ location, file }) => location.projectId === null
+        && file.agentRunResources.some(entry => rootExecutionIdentityKey(entry.hostRoot) === rootKey))
+      .map(({ location }) => location.taskId);
+  }
+  /** Drops a Task whose files were removed from the view (owners and closed runs included). Call under `serialize`. */
+  forget(location: TaskLocation): void {
+    this.unindex(location.taskId);
+    this.files.delete(location.taskId);
   }
   async currentAssignments(taskId: string): Promise<TaskAssignment[] | "unavailable"> {
     await this.load();
@@ -142,7 +159,7 @@ export class TaskAgentResourceService {
     if (!first.done) throw new ProjectError("TASK_AGENT_RESOURCES_UNAVAILABLE", first.value);
   }
 
-  private async link(location: TaskAgentResourceLocation, link: TaskAgentResourceLinkInput): Promise<void> {
+  private async link(location: TaskLocation, link: TaskAgentResourceLinkInput): Promise<void> {
     const owner = this.owners.get(agentRunKey(link.agentRun));
     if (owner) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run already belongs to a Task.");
     await this.store.update(location, file => linkTaskAgentResource(file, link, this.now().toISOString()), next => this.swap(location, next));
@@ -159,12 +176,8 @@ export class TaskAgentResourceService {
     return taskId ? this.files.get(taskId)?.file.agentRunResources.find(e => agentRunKey(e.agentRun) === agentRunKey(agentRun)) : undefined;
   }
   /** View swap for one committed Task file: synchronous, never before commit. */
-  private swap(location: TaskAgentResourceLocation, file: TaskAgentResourceFile): void {
-    const previous = this.files.get(location.taskId);
-    for (const entry of previous?.file.agentRunResources ?? []) {
-      this.owners.delete(agentRunKey(entry.agentRun));
-      if (entry.closedAt !== null) this.forgetClosed(entry.hostRoot, entry.agentRun);
-    }
+  private swap(location: TaskLocation, file: TaskAgentResourceFile): void {
+    this.unindex(location.taskId);
     for (const entry of file.agentRunResources) {
       const key = agentRunKey(entry.agentRun);
       const other = this.owners.get(key);
@@ -178,6 +191,13 @@ export class TaskAgentResourceService {
       }
     }
     this.files.set(location.taskId, { location, file });
+  }
+  /** Removes the Task's current file content from the derived indexes (owners, closed runs per host root). */
+  private unindex(taskId: string): void {
+    for (const entry of this.files.get(taskId)?.file.agentRunResources ?? []) {
+      this.owners.delete(agentRunKey(entry.agentRun));
+      if (entry.closedAt !== null) this.forgetClosed(entry.hostRoot, entry.agentRun);
+    }
   }
   private forgetClosed(hostRoot: RootExecutionIdentity, agentRun: TaskExecutionReference): void {
     const rootKey = rootExecutionIdentityKey(hostRoot);

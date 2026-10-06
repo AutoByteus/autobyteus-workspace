@@ -129,7 +129,7 @@ describe("task delegation runtime descriptions", () => {
     expect(publicCopy).toContain("target_agent_run_id");
   });
 
-  it("publishes the delegate_task MCP output schema as the spawn-result union with no task identity (AC-019)", () => {
+  it("publishes the delegate_task MCP output schema as the spawn-result union; success may carry the created task_id (AC-019, REQ-004)", () => {
     const provider = new TaskDelegationToolsMcpAdapterProvider({} as never);
     const catalog = new AgentToolMcpCatalog({ adapters: provider.getAdapters() });
     const [mcpDefinition] = catalog.listMcpToolsForSession({
@@ -146,16 +146,19 @@ describe("task delegation runtime descriptions", () => {
       type: "object",
       additionalProperties: false,
       required: ["target_agent_run_id"],
-      properties: { target_agent_run_id: { type: "string", minLength: 1 } },
+      properties: { target_agent_run_id: { type: "string", minLength: 1 }, task_id: { type: "string", minLength: 1 } },
     });
-    expect(Object.keys(success!.properties as object)).toEqual(["target_agent_run_id"]);
+    expect(Object.keys(success!.properties as object)).toEqual(["target_agent_run_id", "task_id"]);
     expect(notStarted).toMatchObject({
       type: "object",
       additionalProperties: false,
       required: ["target_agent_run_id", "message"],
       properties: { target_agent_run_id: { type: "null" }, message: { type: "string", minLength: 1 } },
     });
-    expect(JSON.stringify(outputSchema)).not.toMatch(/task_id|"status"/);
+    // task_id is only an optional success field; no Task status or failed-start Task identity.
+    expect(success!.required).toEqual(["target_agent_run_id"]);
+    expect(JSON.stringify(notStarted)).not.toMatch(/task_id/);
+    expect(JSON.stringify(outputSchema)).not.toMatch(/"status"/);
   });
 
   it("projects pure task tools through Agent Tools MCP adapter definitions", () => {

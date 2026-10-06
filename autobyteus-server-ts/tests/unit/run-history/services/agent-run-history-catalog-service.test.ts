@@ -345,21 +345,24 @@ describe("AgentRunHistoryCatalogService", () => {
         if (options.endFails) throw new Error("a child did not stop");
         state.rootRegistered = false;
       });
+      const adHocTasks = { deleteAdHocTasksHostedBy: vi.fn(async () => undefined) };
       const service = new AgentRunHistoryCatalogService(memoryDir, {
         indexStore: indexStore as never,
         agentDefinitionService: { getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }) } as never,
         agentRunManager: { hasActiveRun: vi.fn().mockReturnValue(options.hostActive ?? false) },
         collaborationRoots: { hasRoot: vi.fn(() => state.rootRegistered), endRoot },
+        adHocTasks,
       });
-      return { service, state, endRoot, runDir, childMemory };
+      return { service, state, endRoot, runDir, childMemory, adHocTasks };
     };
 
-    it("delete ends the root (children stop) before removing anything, then deletes", async () => {
+    it("delete ends the root (children stop) before removing anything, then deletes, then removes the run's ad-hoc Tasks", async () => {
       const f = await setup();
       await expect(f.service.deleteRun("run-1")).resolves.toMatchObject({ success: true });
       expect(f.endRoot).toHaveBeenCalledWith("run-1");
       expect(f.state.filesPresentWhenEnded).toEqual([true]);
       await expect(fs.access(f.runDir)).rejects.toThrow();
+      expect(f.adHocTasks.deleteAdHocTasksHostedBy).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent", rootRunId: "run-1" });
     });
 
     it("archive ends the root first, then archives", async () => {
@@ -376,6 +379,7 @@ describe("AgentRunHistoryCatalogService", () => {
       });
       await expect(f.service.archiveRun("run-1")).resolves.toMatchObject({ success: false });
       await expect(fs.access(f.childMemory)).resolves.toBeUndefined();
+      expect(f.adHocTasks.deleteAdHocTasksHostedBy).not.toHaveBeenCalled();
     });
 
     it("refuses while the host itself is active, without touching the root", async () => {

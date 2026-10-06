@@ -4,12 +4,14 @@ export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_t
 export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "create_or_update_project" | "create_or_update_task";
 export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName =>
   PROJECT_TASK_TOOL_NAMES.has(name as ProjectTaskToolName);
+/** Automatic wherever `delegate_task` is: it closes the Task a delegation created (status DONE). */
+export const CREATE_OR_UPDATE_TASK_TOOL_NAME = "create_or_update_task" satisfies ProjectTaskToolName;
 const statuses = ["TODO", "IN_PROGRESS", "DONE"];
 export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string> = {
   create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference known registered workspace IDs: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Unknown IDs fail. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
   list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns descriptions, saved context-file references and each Task's current assignments (the worker run to follow up with, whether it is an Agent or a Team, who assigned it, and whether the work was accepted); accepted work is not necessarily finished. A Task whose assignments can't be read is marked assignments unavailable.",
-  create_or_update_task: "Create or explicitly patch one Project Task. Omit task_id to create a required-description TODO Task (omit status). Supply a known task_id to patch description and/or TODO/IN_PROGRESS/DONE status. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity and status, not a work-completion assessment. Does not delegate work.",
+  create_or_update_task: "Create a Project Task, or patch any Task by its ID. Create: supply project_id and a required description (omit task_id and status); the new Task is TODO. Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE status, and never project_id; task_id may name a Project Task or a Task that delegate_task created (it has no Project). DONE closes the Task's delegated copies for good: they are stopped and removed from the run, and their history is kept. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, not a work-completion assessment. Does not delegate work.",
 };
 export function buildProjectTaskToolSchema(name: ProjectTaskToolName): ParameterSchema {
   const p = (name: string, description: string, required = false, enumValues?: string[]) => new ParameterDefinition({
@@ -28,10 +30,15 @@ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): Parameter
       ]),
     }),
   ]);
+  if (name === "create_or_update_task") return new ParameterSchema([
+    p("project_id", "Project identity on the current node; required to create, forbidden with task_id."),
+    p("task_id", "Known Task identity (with or without a Project) to patch; omit to create."),
+    p("description", "Trimmed non-empty Task content; required for create."),
+    p("status", "Explicit business status patch; forbidden during create.", false, statuses),
+  ]);
   return new ParameterSchema(name === "list_projects" ? [] : [
     p("project_id", "Explicit Project identity on the current node.", true),
-    ...(name === "create_or_update_task" ? [p("task_id", "Known Task identity for patch; omit to create."), p("description", "Trimmed non-empty Task content; required for create.")] : []),
-    p("status", name === "list_project_tasks" ? "Optional exact business status filter." : "Explicit business status patch; forbidden during create.", false, statuses),
+    p("status", "Optional exact business status filter.", false, statuses),
   ]);
 }
 const invalid = (message: string): never => { throw new ProjectError("PROJECT_TOOL_ARGUMENT_INVALID", message); };
@@ -86,24 +93,28 @@ function parseProjectMutation(raw: unknown): Record<string, unknown> {
   return result;
 }
 
-/** Presence matters: null/blank task_id is never a creation request. No coercion or hidden keys. */
+/**
+ * Presence matters: null/blank task_id is never a creation request. No coercion or hidden keys.
+ * `create_or_update_task` has two strict modes: create `{project_id, description}` and patch
+ * `{task_id, status?, description?}` (a Task ID is unique, so patch never takes project_id).
+ */
 export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknown): Record<string, unknown> {
   if (name === "create_or_update_project") return parseProjectMutation(raw);
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) invalid("Tool arguments must be an object.");
   const input = raw as Record<string, unknown>;
-  const allowed = name === "list_projects" ? [] : name === "list_project_tasks" ? ["project_id", "status"] : ["project_id", "task_id", "description", "status"];
+  const hasTask = name === "create_or_update_task" && Object.hasOwn(input, "task_id");
+  const allowed = name === "list_projects" ? [] : name === "list_project_tasks" ? ["project_id", "status"]
+    : hasTask ? ["task_id", "description", "status"] : ["project_id", "description", "status"];
   if (Object.keys(input).some((key) => !allowed.includes(key))) invalid("Unsupported tool argument.");
   if (name === "list_projects") return {};
-  const result: Record<string, unknown> = {project_id: id(input, "project_id")};
+  const result: Record<string, unknown> = hasTask ? {task_id: id(input, "task_id")} : {project_id: id(input, "project_id")};
   const hasStatus = Object.hasOwn(input, "status");
   if (hasStatus) {
     if (typeof input.status !== "string" || !statuses.includes(input.status)) throw new ProjectError("TASK_STATUS_INVALID", "Task status must be TODO, IN_PROGRESS or DONE.");
     result.status = input.status;
   }
   if (name === "list_project_tasks") return result;
-  const hasTask = Object.hasOwn(input, "task_id");
   const hasDescription = Object.hasOwn(input, "description");
-  if (hasTask) result.task_id = id(input, "task_id");
   if (hasDescription) {
     if (typeof input.description !== "string") invalid("description must be a string.");
     if (!(input.description as string).trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");

@@ -42,7 +42,7 @@ type DeliveryInput = Readonly<{
 }>;
 
 /**
- * The standalone root's message and delegation addressing, collaborator admission, input
+ * The standalone root's message and delegation addressing, `@` mention resolution, input
  * routing and child commands. Every public method runs inside the root's operation gate, held by the caller, so a
  * catalog bring-in never re-enters it. The host is reached through its handle like any child:
  * a message to a host that is not running makes it ready first (no special wake path).
@@ -63,17 +63,18 @@ export class StandaloneRootMessageDelivery {
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
   }>) {}
 
-  /** `@`: ensures the mentioned collaborators for the focused agent; the caller composes the note. */
-  admitMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
+  resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.ensure({ senderRunId: input.focusedAgentRunId, definitions: input.mentions })
+      ? this.options.collaborators.resolveMentions(input.mentions)
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in Agent root '${this.options.hostRunId}'.` });
   }
 
   /**
    * A user message for the host: ready (activated or restored as needed), `onActiveRunReady`
-   * (binds its stream) before anything is admitted or posted, mention admission, then the post
-   * of the composed message with the caller's options unchanged. A failed admission posts nothing.
+   * (binds its stream) before anything is resolved or posted, mention resolution (adds nothing),
+   * then the post of the composed message with the caller's options unchanged. A failed
+   * resolution posts nothing.
    */
   async postToHost(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
     const run = await this.options.host.ensureReady();
@@ -82,7 +83,7 @@ export class StandaloneRootMessageDelivery {
     if (input.mentions?.length) {
       let admission: RootCollaboratorAdmissionResult;
       try {
-        admission = await this.admitMentions({ focusedAgentRunId: this.options.hostRunId, mentions: input.mentions });
+        admission = await this.resolveMentions({ focusedAgentRunId: this.options.hostRunId, mentions: input.mentions });
       } catch (error) {
         return { kind: "admission_failed", run, message: error instanceof Error ? error.message : String(error) };
       }

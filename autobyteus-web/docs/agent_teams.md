@@ -248,7 +248,7 @@ reads the definition and launch settings from there:
 Rows for collaborator and catalog-copy addresses use the display-name formatter
 (`readsAsDisplayName`). Copies are placed by address (REQ-012): a teammate copy
 inside the delegator's own Team instance, any other copy at the run's top level.
-See [Chat](./chat.md#-in-a-live-run-collaborators).
+See [Chat](./chat.md#-in-a-live-run-delegation).
 
 ## History, Restore, Stop, And Delete
 

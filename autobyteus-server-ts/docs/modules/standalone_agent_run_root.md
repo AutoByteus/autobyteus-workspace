@@ -6,10 +6,12 @@
 end (root kind `agent`). One `StandaloneAgentRunRoot` owns the run's own agent (the host),
 its collaborators, their task copies, their messages, the run's lifecycle (start, restore,
 crash recovery, Stop, delete and archive) and the collaboration package. A user in a standalone
-run can type `@` and bring a shared Agent or Agent Team into the run. The root hosts one
-instance per collaborator (added when the user sends, Offline until its first message); the host
-messages it with `send_message_to` by address, and `delegate_task` to its address starts an extra
-copy. The host is still streamed on `/ws/agent/:runId`.
+run can type `@` to name a shared Agent or Agent Team; the message tells the focused agent to
+`delegate_task` to its address, and nothing is added at send time. A delegated copy belongs to a
+Task with no Project that the agent can mark DONE (`create_or_update_task`), which stops and hides
+it. The root also hosts one instance per collaborator that an agent brings in by its first
+`send_message_to` to a catalog address (and the collaborators of stored runs); `delegate_task` to a
+collaborator address starts an extra copy. The host is still streamed on `/ws/agent/:runId`.
 
 Collaborators, admission and the candidate policy are shared by all roots; see
 [Agent Communication](./agent_communication.md#collaborators).
@@ -19,7 +21,8 @@ Collaborators, admission and the candidate policy are shared by all roots; see
 A standalone run has a root unless it is a server helper run (`launchPurpose: "server_helper"`,
 such as the skill improver) or an application-owned run (`applicationExecutionContext`). This one
 rule (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
-An eligible host always has `send_message_to` and `delegate_task` from its first turn and a short
+An eligible host always has `send_message_to`, `delegate_task` and `create_or_update_task` from
+its first turn and a short
 standalone collaboration section in its prompt
 (`agent-execution/prompt/standalone-collaboration-instruction.ts`, including the shared "Work
 Requests and Outcomes" section); it has no `get_handoff_rules`. Ineligible runs keep the plain
@@ -89,8 +92,8 @@ Agents bring collaborators in and delegate to the catalog themselves (REQ-004/00
 `StandaloneRootRecipientResolver` resolves `send_message_to(address)` with the shared
 `MessageRecipientResolution`, inside the operation gate: the sender's own Team instance first
 (REQ-007), then the host or a collaborator, then a catalog bring-in through
-`StandaloneRootCollaborators.bringInAt` (same admission as `@`; the first bring-in creates the
-package). The root's `CollaboratorAdmissionQueue` serializes admission, so concurrent first
+`StandaloneRootCollaborators.bringInAt` (`CollaboratorAdmission.ensure`; the first bring-in
+creates the package). The root's `CollaboratorAdmissionQueue` serializes admission, so concurrent first
 messages to one new address make one instance. `delegate_task(address)` falls back to a catalog
 copy with a recorded `source`, which `StandaloneRootTaskSourceResolver` reads first. Delegating
 to the caller's own address is rejected with `COLLABORATION_SELF_TARGET_REJECTED`, as in Team
@@ -132,12 +135,14 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
 
 ## Surfaces
 
-- **Admission.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is admitted by the root
-  after the host is ready (through `StandaloneRunCommandPort`); a child's SEND_MESSAGE with
-  `mentions` on the collaboration stream is admitted by the root. A collaborator that cannot be
-  added rejects the send with `COLLABORATOR_ADD_FAILED` and `collaborator_name` (nothing is
-  posted; the host stays ready); a run that cannot host collaborators answers
-  `COLLABORATOR_MENTION_UNAVAILABLE`.
+- **`@` resolution.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is resolved by the
+  root after the host is ready (`AgentRunCommandCoordinator.post` →
+  `StandaloneAgentRunRoot.postUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
+  SEND_MESSAGE with `mentions` on the collaboration stream is resolved by the root
+  (`resolveCollaboratorMentions`). Resolution adds nothing; the posted message carries the note
+  steering the agent to `delegate_task`. An ineligible mention rejects the send with
+  `COLLABORATOR_ADD_FAILED` and `collaborator_name` (nothing is posted; the host stays ready); a
+  run that cannot host collaborators answers `COLLABORATOR_MENTION_UNAVAILABLE`.
 - **Collaboration stream** `/ws/agent-collaboration/:hostRunId`: `connect` resolves the root and
   makes the host ready (a stopped run's host starts when its collaboration view is opened), then
   sends the Agent-root snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the

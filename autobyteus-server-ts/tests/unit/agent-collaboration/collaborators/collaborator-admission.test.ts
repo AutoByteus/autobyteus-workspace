@@ -110,7 +110,34 @@ describe("collaborator policy and admission", () => {
       .toEqual({ availability: "UNAVAILABLE_APPLICATION_ROOT", candidates: [] });
   });
 
-  it("validates, allocates and commits, in that order; the `@` caller composes the note (R-1)", async () => {
+  it("`@` resolves addresses without validating, allocating or adding; the caller composes the delegate_task note (REQ-001/002)", async () => {
+    const run = harness({ invalid: true });
+    const reviewerEntry = { kind: "agent", address: "/reviewer_in_run", agentDefinitionId: "reviewer" } as unknown as CollaboratorEntry;
+    const result = await run.admission.resolveMentions(port({ collaborators: [reviewerEntry] }),
+      [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }]);
+    // An in-run definition resolves to its entry's address; any other to its catalog address.
+    expect(result).toEqual({ admitted: true, collaborators: [
+      { name: "Code Reviewer", kind: "agent", address: "/reviewer_in_run" },
+      { name: "Product Team", kind: "agent_team", address: "/product_team" },
+    ] });
+    // Runnability is checked when the agent delegates, not here; nothing is allocated or added.
+    expect(run.steps).toEqual([]);
+    expect(run.added).toEqual([]);
+    const note = composeCollaboratorMentionNote("please review", result.admitted ? result.collaborators : []);
+    expect(note).toContain("[Mentioned collaborators]\n- Code Reviewer (Agent) at /reviewer_in_run");
+    expect(note).toContain("delegate_task");
+    expect(note).not.toContain("send_message_to");
+    await expect(run.admission.resolveMentions(port(), [])).resolves.toEqual({ admitted: true, collaborators: [] });
+  });
+
+  it("`@` of an ineligible definition fails with its name and adds nothing", async () => {
+    const run = harness();
+    await expect(run.admission.resolveMentions(port(), [{ kind: "agent", definitionId: "local" }]))
+      .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "local" });
+    expect(run.steps).toEqual([]);
+  });
+
+  it("bring-in validates, allocates and commits, in that order", async () => {
     const run = harness();
     const result = await run.admission.ensure(port(), {
       senderRunId: "focused",
@@ -125,9 +152,6 @@ describe("collaborator policy and admission", () => {
         { name: "Product Team", kind: "agent_team", address: "/product_team" },
       ],
     });
-    const note = composeCollaboratorMentionNote("please review", result.admitted ? result.collaborators : []);
-    expect(note).toContain("[Mentioned collaborators]");
-    expect(note).toContain("send_message_to");
     expect(run.added).toEqual([
       expect.objectContaining({ kind: "agent", address: "/code_reviewer", agentRunId: "reviewer-run-1", platformAgentRunId: null }),
       expect.objectContaining({

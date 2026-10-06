@@ -13,6 +13,7 @@ import { buildDeliveryEndpointForParticipant } from "../../../../src/agent-team-
 import type { CollaboratorEntry } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { buildInitialTeamRunExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { MemberExecutionContextBuilder } from "../../../../src/agent-team-execution/services/member-team-context-builder.js";
+import type { TeamRunCollaborators } from "../../../../src/agent-team-execution/services/team-run-collaborators.js";
 import { materializeTeamRoot } from "../../../../src/agent-team-execution/services/team-root-materializer.js";
 import { buildTeamRunConfigFromExecutionTree } from "../../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
@@ -22,6 +23,7 @@ import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/provid
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
+import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -65,6 +67,8 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
     executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationV1Store(),
     collaboratorAdmission: admission(options.runnable ?? true),
+    // Production always binds the Task side; every delegated copy belongs to a Task.
+    taskAgentResources: new InMemoryTaskAgentResources(),
     onTerminated: vi.fn(),
   };
   const config = testTeamRunConfig({
@@ -95,10 +99,22 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
   return { root, handles, reopen, identity, message, dependencies, teamMemoryDir };
 };
 
-export const admitBoth = (root: Awaited<ReturnType<typeof harness>>["root"]) => root.admitCollaboratorMentions({
+/** `@` of both catalog definitions by the coordinator: resolves their addresses, adds nothing. */
+export const mentionBoth = (root: Awaited<ReturnType<typeof harness>>["root"]) => root.resolveCollaboratorMentions({
   focusedAgentRunId: "run-coordinator",
   mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
 });
+/**
+ * Brings both in as collaborators (Offline, nothing started): the bring-in step of the
+ * coordinator's first send_message_to each catalog address, without delivering the message.
+ */
+export const bringInBoth = async (root: Awaited<ReturnType<typeof harness>>["root"]) => {
+  const collaborators = (root as unknown as { collaborators: TeamRunCollaborators }).collaborators;
+  return [
+    await collaborators.bringInAt({ address: "/code_reviewer", senderRunId: "run-coordinator" }),
+    await collaborators.bringInAt({ address: "/product_team", senderRunId: "run-coordinator" }),
+  ];
+};
 export const entriesOf = (root: Awaited<ReturnType<typeof harness>>["root"]) => {
   const [reviewer, product] = root.getExecutionTreeSnapshot().rootTeam.collaborators as CollaboratorEntry[];
   if (reviewer?.kind !== "agent" || product?.kind !== "agent_team") throw new Error("collaborators were not added");

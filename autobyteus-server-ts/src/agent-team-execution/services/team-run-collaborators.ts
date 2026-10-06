@@ -40,10 +40,11 @@ export const teamCollaboratorPortFor = (tree: TeamRunExecutionTreeSnapshot): Col
 });
 
 /**
- * Team-root collaborators. The root runs `ensure` inside its materialization gate (for `@` and
- * for a first message to a catalog address); this owner prepares the hosted executions, commits
- * the new entries in one tree write, then publishes the executions (Offline) and
- * `COLLABORATOR_ADDED`. It also answers the read-only catalog questions of the root.
+ * Team-root collaborators. For `@` it only resolves the mentioned definitions' addresses (nothing
+ * is added). For a first message to a catalog address the root runs `bringInAt` inside its
+ * materialization gate; this owner prepares the hosted executions, commits the new entries in one
+ * tree write, then publishes the executions (Offline) and `COLLABORATOR_ADDED`. It also answers
+ * the read-only catalog questions of the root.
  */
 export class TeamRunCollaborators {
   private readonly queue = new CollaboratorAdmissionQueue();
@@ -62,9 +63,9 @@ export class TeamRunCollaborators {
     publish(event: TeamRunEvent): void;
   }>) {}
 
-  /** `@`: ensures the mentioned definitions. Call only inside the root gate. */
-  ensure(input: Readonly<{ senderRunId: string; definitions: readonly CollaboratorMention[] }>): Promise<CollaboratorAdmissionResult> {
-    return this.queue.run(() => this.ensureNow(input));
+  /** `@`: each mentioned definition's name, kind and address; adds nothing. Call only inside the root gate. */
+  resolveMentions(definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
+    return this.queue.run(() => this.admission.resolveMentions(this.port(), definitions));
   }
 
   /**

@@ -129,7 +129,7 @@ export class AgentCollaborationStreamHandler {
       if (message.type === "SEND_MESSAGE") {
         let content = message.payload.content;
         if (message.payload.mentions?.length) {
-          const admission = await root.admitCollaboratorMentions({
+          const admission = await root.resolveCollaboratorMentions({
             focusedAgentRunId: target, mentions: toCollaboratorMentions(message.payload.mentions),
           });
           if (!admission.admitted) {

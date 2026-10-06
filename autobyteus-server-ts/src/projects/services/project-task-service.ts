@@ -5,19 +5,27 @@ import type {
 } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { CreateProjectTaskCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView, UpdateProjectTaskCommand } from "../domain/models.js";
+import type {
+  CreateProjectTaskCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView,
+  TaskAcknowledgementView, TaskLocation, UpdateProjectTaskCommand, UpdateTaskByIdCommand,
+} from "../domain/models.js";
+import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js";
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
 import type { TaskAssignment } from "../domain/task-agent-resources.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
+import { AdHocTaskStore } from "../stores/ad-hoc-task-store.js";
 import { getProjectTaskContextStore, type ProjectTaskContextStore, type PreparedTaskContext } from "../context/project-task-context-store.js";
 import { TaskAgentResourceRelease } from "../runtime/task-agent-resource-release.js";
 import { TaskAgentResourceService } from "./task-agent-resource-service.js";
 import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
 
 type TaskPersistence = Pick<ProjectStore, "layout" | "readProject" | "listTasks" | "readTask" | "findTask" | "createTask" | "updateTask" | "deleteTask">;
+type AssignedLink = Extract<TaskAgentResourceLinkInput, { role: "assigned" }>;
 type Dependencies = {
   store?: TaskPersistence;
+  /** Tasks with no Project (`<appData>/ad-hoc-tasks/`); outside the Projects store and its migration gate. */
+  adHocTasks?: AdHocTaskStore;
   contextStore?: ProjectTaskContextStore;
   now?: () => Date;
   createId?: () => string;
@@ -40,16 +48,20 @@ const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
 };
 
 /**
- * The Task subject boundary: Task metadata and context (released semantics over the per-Project
- * store), saved work for assignment, status rules, and DONE / assignment orchestration. It is the
+ * The Task subject boundary: Project Task metadata and context (released semantics over the
+ * per-Project store), Tasks with no Project (ad-hoc, created only by described delegation), saved
+ * work for assignment, status rules, and DONE / assignment orchestration for both. It is the
  * runtime's `TaskAgentResourcePort`, delegating agent run facts to TaskAgentResourceService.
  */
 export class ProjectTaskService implements TaskAgentResourcePort {
   private readonly resources: TaskAgentResourceService;
   private readonly release: TaskAgentResourceRelease;
+  private readonly adHocTasks: AdHocTaskStore;
   constructor(private readonly deps: Dependencies = {}) {
-    // Agent run resources live in the same Projects layout as the Task metadata.
-    this.resources = deps.taskAgentResources ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout));
+    this.adHocTasks = deps.adHocTasks ?? new AdHocTaskStore();
+    // Agent run resources live beside the Task metadata in the same layouts.
+    this.resources = deps.taskAgentResources
+      ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout, this.adHocTasks.layout));
     this.release = new TaskAgentResourceRelease(deps.requestRelease);
   }
   private get store() { return this.deps.store ?? getProjectStore(); }
@@ -108,25 +120,57 @@ export class ProjectTaskService implements TaskAgentResourcePort {
       return meaningful ? { ...current, ...(hasDescription ? { description } : {}), ...(hasStatus ? { status } : {}),
         ...(changes ? { contextFiles: [...files.filter((f) => !removals.includes(f.storedFilename)), ...prepared.files] } : {}), updatedAt: this.nowIso() } as ProjectTask : current;
     });
-    let updated: ProjectTask;
-    if (status === "DONE") {
-      // DONE: close the Task's agent runs first (fences at once), then the status, then ask roots to stop them.
-      let closed = false, written: ProjectTask | undefined;
-      try {
-        await this.resources.closeTask({ projectId: command.projectId, taskId: command.taskId }, async () => {
-          closed = true;
-          written = await writeMetadata();
-        });
-      } finally {
-        if (closed) this.release.release(command.taskId, this.resources.closedByHostRoot(command.taskId));
-      }
-      updated = written!;
-    } else {
-      updated = await writeMetadata();
-    }
+    const updated = status === "DONE"
+      ? await this.closeAndWrite({ projectId: command.projectId, taskId: command.taskId }, writeMetadata)
+      : await writeMetadata();
     await this.consume(command.projectId, prepared);
     if (removed.length) await cleanup(() => this.context.cleanupRemoved(command.projectId, command.taskId, removed));
     return this.toView(command.projectId, updated);
+  }
+  /**
+   * Patches any Task by its unique id: an ad-hoc Task (direct path read, no Projects gate) or else
+   * a Project Task (found across Projects). Description and status only; DONE closes its agent runs.
+   */
+  async updateTaskById(command: UpdateTaskByIdCommand): Promise<TaskAcknowledgementView> {
+    const hasDescription = Object.hasOwn(command, "description");
+    const hasStatus = Object.hasOwn(command, "status");
+    if (!hasDescription && !hasStatus) throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description and/or status to update a Task.");
+    const description = hasDescription ? normalizeDescription(command.description) : undefined;
+    const status = hasStatus ? validateTaskStatus(command.status) : undefined;
+    if (typeof command.taskId !== "string" || !command.taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");
+    const taskId = command.taskId;
+    if (await this.adHocTasks.read(taskId)) {
+      const write = () => this.adHocTasks.update(taskId, (current): AdHocTask => {
+        const meaningful = (description !== undefined && current.description !== description) || (status !== undefined && current.status !== status);
+        return meaningful ? { ...current, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}), updatedAt: this.nowIso() } : current;
+      });
+      const updated = status === "DONE" ? await this.closeAndWrite({ projectId: null, taskId }, write) : await write();
+      return { projectId: null, taskId, status: updated.status };
+    }
+    const { projectId } = await this.uniqueTask(taskId);
+    const updated = await this.updateTask({ projectId, taskId, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}) });
+    return { projectId, taskId, status: updated.status };
+  }
+  /**
+   * Permanent run delete: removes the ad-hoc Tasks whose agent runs that root hosted (from the view,
+   * no scan). Best effort: failures are logged and never fail the run delete.
+   */
+  async deleteAdHocTasksHostedBy(hostRoot: RootExecutionIdentity): Promise<void> {
+    try {
+      await this.resources.load();
+      for (const taskId of this.resources.adHocTaskIdsHostedBy(hostRoot)) {
+        try {
+          await this.resources.serialize(taskId, async () => {
+            await this.adHocTasks.delete(taskId);
+            this.resources.forget({ projectId: null, taskId });
+          });
+        } catch (error) {
+          console.warn("AD_HOC_TASK_DELETE_FAILED", { taskId, hostRoot, error: error instanceof Error ? error.message : String(error) });
+        }
+      }
+    } catch (error) {
+      console.warn("AD_HOC_TASK_DELETE_FAILED", { hostRoot, error: error instanceof Error ? error.message : String(error) });
+    }
   }
   /** Removes metadata and context; the Task's agent run resources stay, so closed work stays closed. */
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
@@ -174,6 +218,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   }
   async linkAgentRun(input: TaskAgentResourceLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
+    if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
     const { projectId } = await this.uniqueTask(input.taskId);
     await this.resources.serialize(input.taskId, async () => {
       // Status re-check inside the Task's serialization: a DONE is entirely before or entirely after.
@@ -192,6 +237,28 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   closedAgentRunsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedAgentRunsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
 
+  /** Creates the Task with no Project (text only) and links the agent run as its assignment. */
+  private async linkAdHocTask(link: AssignedLink, content: NonNullable<AssignedLink["adHocTask"]>): Promise<string> {
+    const taskId = `${AD_HOC_TASK_ID_PREFIX}${randomUUID()}`;
+    const timestamp = this.nowIso();
+    await this.adHocTasks.create({ taskId, description: normalizeDescription(content.description),
+      referenceFiles: [...content.referenceFiles], status: "TODO", createdAt: timestamp, updatedAt: timestamp });
+    await this.resources.serialize(taskId, () => this.resources.linkAssigned({ projectId: null, taskId }, link));
+    return taskId;
+  }
+  /** DONE (both Task kinds): close the Task's agent runs first (fences at once), then write the status, then ask roots to stop them. */
+  private async closeAndWrite<T>(location: TaskLocation, write: () => Promise<T>): Promise<T> {
+    let closed = false, written: T | undefined;
+    try {
+      await this.resources.closeTask(location, async () => {
+        closed = true;
+        written = await write();
+      });
+    } finally {
+      if (closed) this.release.release(location.taskId, this.resources.closedByHostRoot(location.taskId));
+    }
+    return written!;
+  }
   private async uniqueTask(taskId: string) {
     if (typeof taskId !== "string" || !taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");
     const matches = await this.store.findTask(taskId);
@@ -242,7 +309,7 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskAgentResources" | "requestRelease">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskAgentResources" | "adHocTasks" | "requestRelease">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

@@ -271,12 +271,12 @@ export class RootTeamRun {
     return this.executeAgentCommand(targetAgentRunId, { kind: "post_message", message });
   }
 
-  /** `@`: ensures the mentioned collaborators for the focused agent in one gate; the caller composes the note. */
-  admitCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: resolves the mentioned definitions for the focused agent in one gate (adds nothing); the caller composes the note. */
+  resolveCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.materializationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.ensure({ senderRunId: input.focusedAgentRunId, definitions: input.mentions })
+        ? this.collaborators.resolveMentions(input.mentions)
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
     });
   }

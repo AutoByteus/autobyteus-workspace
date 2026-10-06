@@ -8,9 +8,17 @@ import { isSafeContextFilename } from "../domain/project-task-context.js";
 /** Safe-segment rule for an id used as a folder name: no separators, NUL or dot segments; encoded. */
 export const isSafeSegment = (value: unknown): value is string =>
   typeof value === "string" && Boolean(value.trim()) && value !== "." && value !== ".." && !/[\\/\0]/.test(value);
-const segment = (value: string): string => {
+/** The encoded folder name of an id; rejects unsafe ids. */
+export const segment = (value: string): string => {
   if (!isSafeSegment(value)) throw new ProjectError("TASK_CONTEXT_INVALID", "Invalid Project or Task identity.");
   return encodeURIComponent(value);
+};
+/** The id a folder name stands for, when it is a valid encoded segment. */
+export const idOfSegmentFolder = (name: string): string | null => {
+  try {
+    const id = decodeURIComponent(name);
+    return isSafeSegment(id) && encodeURIComponent(id) === name ? id : null;
+  } catch { return null; }
 };
 const DRAFT_ID = /^[a-f0-9-]{36}$/;
 
@@ -41,12 +49,7 @@ export class ProjectsLayout {
     return path.join(this.taskDir(projectId, taskId), "agent_run_resources.json");
   }
   /** The id a folder name stands for, when it is a valid encoded segment. */
-  idOfFolder(name: string): string | null {
-    try {
-      const id = decodeURIComponent(name);
-      return isSafeSegment(id) && encodeURIComponent(id) === name ? id : null;
-    } catch { return null; }
-  }
+  idOfFolder(name: string): string | null { return idOfSegmentFolder(name); }
 
   file(dir: string, name: string): string {
     if (!isSafeContextFilename(name)) throw new ProjectError("TASK_CONTEXT_INVALID", "Invalid context filename.");

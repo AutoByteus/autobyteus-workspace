@@ -238,9 +238,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
 
   /**
    * A user message for the host: the host is made ready, `onActiveRunReady` runs (binding its
-   * stream) before anything is admitted or posted, mentions are admitted, then the composed
-   * message is posted with the caller's post options unchanged. A failed admission leaves the
-   * host ready and posts nothing.
+   * stream) before anything is resolved or posted, mentions are resolved (nothing is added), then
+   * the composed message is posted with the caller's post options unchanged. A failed resolution
+   * leaves the host ready and posts nothing.
    */
   postHostUserMessage(input: Omit<StandaloneRunPostInput, "runId">): Promise<StandaloneRunPostResult> {
     return this.operationGate.run(async () => {
@@ -249,11 +249,11 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     });
   }
 
-  /** `@` for a child: ensures the mentioned collaborators in one gate; the caller composes the note. */
-  admitCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
+  /** `@` for a child: resolves the mentioned definitions in one gate (adds nothing); the caller composes the note. */
+  resolveCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
-      return this.delivery.admitMentions(input);
+      return this.delivery.resolveMentions(input);
     });
   }
 

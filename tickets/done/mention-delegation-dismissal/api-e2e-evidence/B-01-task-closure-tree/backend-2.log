@@ -1,0 +1,213 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:49358
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:49358
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/db/development.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:8042) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T10:23:52.432Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 23 items.
+Populating agent definition cache for the first time...
+[2026-10-06T10:23:52.627Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-06T10:23:52.630Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 10 items.
+Agent definition cache populated with 23 items.
+{"level":30,"time":1791282232636,"pid":8042,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49732"}
+{"level":30,"time":1791282232659,"pid":8042,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49358"}
+[2026-10-06T10:23:52.659Z] [INFO] [server.runtime] Server listening on 127.0.0.1:49358
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Created terminal session e98ed8c6-7b7b-4b00-82d0-20b0b9452e3a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: e98ed8c6-7b7b-4b00-82d0-20b0b9452e3a
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agents/manager_bragent_ff42_3e1805dbc66a4d9b89f6341ddfd9cc1a/collaboration/docs_review_team_bragent_ff42_5e69bc76640044dcba6cdbdedc116c4b/fact_checker_bragent_ff42_35953e164f84455babd43cfc4b326915/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agents/manager_bragent_ff42_3e1805dbc66a4d9b89f6341ddfd9cc1a/collaboration/docs_review_team_bragent_ff42_5e69bc76640044dcba6cdbdedc116c4b/fact_checker_bragent_ff42_35953e164f84455babd43cfc4b326915/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agents/manager_bragent_ff42_3e1805dbc66a4d9b89f6341ddfd9cc1a/collaboration/docs_review_team_bragent_ff42_5e69bc76640044dcba6cdbdedc116c4b/fact_checker_bragent_ff42_35953e164f84455babd43cfc4b326915/raw_traces_active.jsonl
+Closed PTY session e98ed8c6-7b7b-4b00-82d0-20b0b9452e3a
+Terminal WebSocket disconnected: e98ed8c6-7b7b-4b00-82d0-20b0b9452e3a
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Created terminal session 898de968-687d-4c94-a1d0-d612edf0e0f8 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 898de968-687d-4c94-a1d0-d612edf0e0f8
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_teams/delivery_team_brteam_859c_65abb35e723143d694c0bda787c6983e/release_notes_writer_brteam_859c_37107d1a3a5e44269ccf454d0a26bfc3/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_teams/delivery_team_brteam_859c_65abb35e723143d694c0bda787c6983e/fact_checker_brteam_859c_d0903f08a72649958091550d516e258b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_teams/delivery_team_brteam_859c_65abb35e723143d694c0bda787c6983e/docs_review_team_brteam_859c_c1de4d45782b43bea5b62a0c53a4eaec/fact_checker_brteam_859c_c217dfc7ebca455392c472db579613be/raw_traces_active.jsonl
+Closed PTY session 898de968-687d-4c94-a1d0-d612edf0e0f8
+Terminal WebSocket disconnected: 898de968-687d-4c94-a1d0-d612edf0e0f8
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Created terminal session 20f1ac27-6840-4430-8084-ab68850e4efe using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 20f1ac27-6840-4430-8084-ab68850e4efe
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/fact_checker_brorg_36c4_487709332c444226a5777241eaaab247/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/docs_review_team_brorg_36c4_dd9cb623b6f34b38b334b319e6fd099e/release_notes_writer_brorg_36c4_a224a62791024fab837c46a33d596812/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/release_notes_writer_brorg_36c4_c713d33296f4490ebaf96236319cd9c1/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/docs_review_team_brorg_36c4_dd9cb623b6f34b38b334b319e6fd099e/fact_checker_brorg_36c4_e38f336e1e4349cdaadae297487983d7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/docs_review_team_brorg_36c4_ae664f41dddc456d87e2aefdd9f82b68/fact_checker_brorg_36c4_0a41d7355304429e96c7f0769f6983e7/raw_traces_active.jsonl
+In-memory cache: Added new agent definition with ID manager-lastrows-bf81.
+Agent Definition created successfully with ID: manager-lastrows-bf81
+Closed PTY session 20f1ac27-6840-4430-8084-ab68850e4efe
+Terminal WebSocket disconnected: 20f1ac27-6840-4430-8084-ab68850e4efe
+In-memory cache: Added new agent definition with ID release-notes-writer-lastrows-bf81.
+Agent Definition created successfully with ID: release-notes-writer-lastrows-bf81
+In-memory cache: Added new agent definition with ID fact-checker-lastrows-bf81.
+Agent Definition created successfully with ID: fact-checker-lastrows-bf81
+In-memory cache: Added new agent definition with ID researcher-lastrows-bf81.
+Agent Definition created successfully with ID: researcher-lastrows-bf81
+[2026-10-06T10:24:02.020Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID docs-review-team-lastrows-bf81.
+Agent Team Definition created successfully with ID: docs-review-team-lastrows-bf81
+[2026-10-06T10:24:02.033Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID delivery-team-lastrows-bf81.
+Agent Team Definition created successfully with ID: delivery-team-lastrows-bf81
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Created and registered workspace ID: agent_ws_ed9fd654e14ed895b13dfe96ef3a2795213f2614fa7118fa9f7cb8372d0c77c1
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Reusing registered workspace ID: agent_ws_ed9fd654e14ed895b13dfe96ef3a2795213f2614fa7118fa9f7cb8372d0c77c1
+AGY compaction detection off for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Created agent session caa2b79e-70c3-4d7c-955e-ef9e5a1ed6b1 for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Agent WebSocket connected: session=caa2b79e-70c3-4d7c-955e-ef9e5a1ed6b1, run=manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+{"level":40,"time":1791282242379,"pid":8042,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_ontONsBHKczf1S7Rwa3jd6FK7XJgTi336DLgg9FWmU0","statusCode":405,"elapsedMs":0.13237500190734863,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Reusing registered workspace ID: agent_ws_ed9fd654e14ed895b13dfe96ef3a2795213f2614fa7118fa9f7cb8372d0c77c1
+AGY compaction detection off for run release_notes_writer_lastrows_bf81_c9503a2aec1147c095ad8d777f07e507: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791282242726,"pid":8042,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun__fH9JqI6nIYU4fUJwRz5_Zngg5m8X6XeCG27pSDzmN8","statusCode":405,"elapsedMs":0.16037499904632568,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Reusing registered workspace ID: agent_ws_ed9fd654e14ed895b13dfe96ef3a2795213f2614fa7118fa9f7cb8372d0c77c1
+AGY compaction detection off for run fact_checker_lastrows_bf81_cb9f1346be5343d8abf458009db961b0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791282243057,"pid":8042,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_adevbKSmC7-aQg6hrBktfiKuYAH-nXszynQGY3J6wSw","statusCode":405,"elapsedMs":0.09616601467132568,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/workspace.
+Reusing registered workspace ID: agent_ws_ed9fd654e14ed895b13dfe96ef3a2795213f2614fa7118fa9f7cb8372d0c77c1
+AGY compaction detection off for run researcher_lastrows_bf81_d5b9bd0b160b4967b91940eb01fae719: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 5122c3cb-76dc-4107-990e-49263ebafae9 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5122c3cb-76dc-4107-990e-49263ebafae9
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Created agent session 425d5cf7-931b-4273-a89f-3b7fb05a3e27 for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Agent WebSocket connected: session=425d5cf7-931b-4273-a89f-3b7fb05a3e27, run=manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+{"level":40,"time":1791282244770,"pid":8042,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_ontONsBHKczf1S7Rwa3jd6FK7XJgTi336DLgg9FWmU0","statusCode":405,"elapsedMs":0.08483302593231201,"msg":"http request completed"}
+Closed PTY session 5122c3cb-76dc-4107-990e-49263ebafae9
+Terminal WebSocket disconnected: 5122c3cb-76dc-4107-990e-49263ebafae9
+Closed agent session caa2b79e-70c3-4d7c-955e-ef9e5a1ed6b1
+Agent WebSocket disconnected: caa2b79e-70c3-4d7c-955e-ef9e5a1ed6b1
+Closed agent session 425d5cf7-931b-4273-a89f-3b7fb05a3e27
+Agent WebSocket disconnected: 425d5cf7-931b-4273-a89f-3b7fb05a3e27
+Created terminal session a8af732f-2900-4e08-8662-ae10b03127a8 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a8af732f-2900-4e08-8662-ae10b03127a8
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Created agent session 5736a415-b185-4f44-a583-a031512ddff7 for run manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Agent WebSocket connected: session=5736a415-b185-4f44-a583-a031512ddff7, run=manager_lastrows_bf81_31a3461eeac443feb9f078f2a13f186e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/release_notes_writer_brorg_36c4_c713d33296f4490ebaf96236319cd9c1/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/fact_checker_brorg_36c4_487709332c444226a5777241eaaab247/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/docs_review_team_brorg_36c4_dd9cb623b6f34b38b334b319e6fd099e/release_notes_writer_brorg_36c4_a224a62791024fab837c46a33d596812/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/docs_review_team_brorg_36c4_dd9cb623b6f34b38b334b319e6fd099e/fact_checker_brorg_36c4_e38f336e1e4349cdaadae297487983d7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ZWipx7/memory/agent_orgs/delivery_org_brorg_36c4_e182ff2cb9e74e0c8ff5452a926ebb68/docs_review_team_brorg_36c4_ae664f41dddc456d87e2aefdd9f82b68/fact_checker_brorg_36c4_0a41d7355304429e96c7f0769f6983e7/raw_traces_active.jsonl
+Closed agent session 5736a415-b185-4f44-a583-a031512ddff7
+Agent WebSocket disconnected: 5736a415-b185-4f44-a583-a031512ddff7
+Closed PTY session a8af732f-2900-4e08-8662-ae10b03127a8
+Terminal WebSocket disconnected: a8af732f-2900-4e08-8662-ae10b03127a8
+[2026-10-06T10:24:09.063Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-06T10:24:09.140Z] [INFO] [server.runtime] Server closed cleanly.

@@ -9,6 +9,8 @@ import { ProjectService } from "../../../../src/projects/services/project-servic
 import * as taskServices from "../../../../src/projects/services/project-task-service.js";
 import { ProjectTaskService } from "../../../../src/projects/services/project-task-service.js";
 import { ProjectTaskContextStore } from "../../../../src/projects/context/project-task-context-store.js";
+import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-store.js";
+import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskAgentResourceReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
 import { CreateOrUpdateTaskTool, ListProjectTasksTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
@@ -24,7 +26,8 @@ const root = (kind: RootSubjectKind) => createRootExecutionIdentity({ rootSubjec
 let dir: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
 let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
 const service = async (storeOverride?: object) => {
-  const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: release });
+  const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: release,
+    adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) });
   await created.load();
   return created;
 };
@@ -70,7 +73,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     for (const privateDetail of ["closed-worker", "internal-delegate", "owned-helper", "hostRoot", "closedAt", "Internal dispatch detail", "linkedAt"]) {
       expect(JSON.stringify(native)).not.toContain(privateDetail);
     }
-    const patch = { project_id: projectId, task_id: task.taskId, description: "Revised saved work" };
+    const patch = { task_id: task.taskId, description: "Revised saved work" };
     expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, patch))).toEqual({ task: { projectId, taskId: task.taskId, status: "TODO" } });
     expect((await mcp("create_or_update_task", patch)).structuredContent).toEqual({ task: { projectId, taskId: task.taskId, status: "TODO" } });
     const reread = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as typeof native;
@@ -89,7 +92,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     expect(damaged).toMatchObject({ assignmentsUnavailable: true });
     expect(damaged).not.toHaveProperty("assignments");
     expect(listed.tasks.find((t: { taskId: string }) => t.taskId !== a.taskId)).toMatchObject({ assignments: [] });
-    const done = await new CreateOrUpdateTaskTool().execute(null, { project_id: projectId, task_id: a.taskId, status: "DONE" })
+    const done = await new CreateOrUpdateTaskTool().execute(null, { task_id: a.taskId, status: "DONE" })
       .then(() => { throw new Error("Must reject"); }, e => JSON.parse(e.message));
     expect(done).toEqual({ error: { code: "TASK_AGENT_RESOURCES_UNAVAILABLE", message: expect.stringContaining("Fix or restore the file and restart the app") } });
   });
@@ -103,7 +106,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     await tasks.linkAgentRun({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot: root(kind), agentRun: { agentRunId: "B" } });
     const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
     release.mockResolvedValueOnce([{ agentRun: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
-    const done = { task: { projectId, taskId, status: "DONE" } }, args = { project_id: projectId, task_id: taskId, status: "DONE" };
+    const done = { task: { projectId, taskId, status: "DONE" } }, args = { task_id: taskId, status: "DONE" };
     expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, args))).toEqual(done);
     await tasks.drainRuntimeReleases();
     expect(errors).toHaveBeenCalledWith("TASK_AGENT_RESOURCE_STOP_FAILED", expect.objectContaining({ taskId }));
@@ -138,7 +141,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
       updateTask: async (...args: Parameters<ProjectStore["updateTask"]>) => { await store.updateTask(...args); throw new Error("private postcommit detail"); },
     }));
     const diagnostics = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    const args = { project_id: projectId, task_id: task.taskId, status: "DONE" };
+    const args = { task_id: task.taskId, status: "DONE" };
     const mcpResult = mode === "mcp" ? await mcp("create_or_update_task", args) : null;
     if (mcpResult) expect(mcpResult.isError).toBe(true);
     const result = mode === "native" ? await new CreateOrUpdateTaskTool().execute(null, args).then(() => { throw new Error("Must not acknowledge"); }, e => JSON.parse(e.message))

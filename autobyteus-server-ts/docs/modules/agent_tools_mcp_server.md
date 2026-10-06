@@ -321,11 +321,15 @@ category-wide native task exposure are not restored.
   root snapshot and added time; new IDs must be registered on this node. Callers
   must know real IDs/the full desired list; no discovery/registration is provided.
   Result is saved projectId/name/description and workspace IDs/descriptions only.
-- `create_or_update_task({project_id, task_id?, description?, status?})` → `{task}`.
-  Omit task_id to create with required nonempty description and **omit status**
-  (new TODO). Supply a known ID to patch text and/or status. Unknown IDs fail,
-  never upsert. Null/blank IDs are invalid, not omitted; hidden input keys fail.
-  Omitted fields/context are preserved through a locked current-record patch.
+- `create_or_update_task` → `{task}`, two strict modes. Create
+  `{project_id, description}`: required nonempty description, **omit status**
+  (new TODO). Update `{task_id, description?, status?}` with **no project_id**:
+  the unique Task ID patches text and/or status of a Project Task or a Task with
+  no Project (`projectId: null` in the result). Unknown IDs fail, never upsert.
+  Null/blank IDs are invalid, not omitted; hidden input keys (including
+  `project_id` with `task_id`) fail. Omitted fields/context are preserved
+  through a locked current-record patch. Added automatically wherever
+  `delegate_task` is.
 
 Task projections include projectId/taskId, description/status and saved
 contextFiles (metadata/HTTP locator plus validated server-local localPath when

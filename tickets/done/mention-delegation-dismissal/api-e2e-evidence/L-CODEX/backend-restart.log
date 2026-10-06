@@ -1,0 +1,464 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:52844
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:52844
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:51903) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T10:48:39.610Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 12 items.
+Populating agent definition cache for the first time...
+[2026-10-06T10:48:39.736Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-06T10:48:39.737Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 12 items.
+{"level":30,"time":1791283719744,"pid":51903,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53250"}
+{"level":30,"time":1791283719769,"pid":51903,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52844"}
+[2026-10-06T10:48:39.769Z] [INFO] [server.runtime] Server listening on 127.0.0.1:52844
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent websocket attached for run research_assistant_f6f4b367ea4c425e9c40f44e0db764cc
+Created agent session 15f3d469-dd0c-4f2e-b819-2448226cbd47 for run research_assistant_f6f4b367ea4c425e9c40f44e0db764cc
+Agent WebSocket connected: session=15f3d469-dd0c-4f2e-b819-2448226cbd47, run=research_assistant_f6f4b367ea4c425e9c40f44e0db764cc
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-06T10:48:47.393361Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Closed agent session 15f3d469-dd0c-4f2e-b819-2448226cbd47
+Agent WebSocket disconnected: 15f3d469-dd0c-4f2e-b819-2448226cbd47
+[CodexAppServerClient] stderr: [2m2026-10-06T10:49:08.392566Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 9e4031c0-4cba-4adc-9372-8a98fbba82d9 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=9e4031c0-4cba-4adc-9372-8a98fbba82d9, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-06T10:49:09.146972Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 9e4031c0-4cba-4adc-9372-8a98fbba82d9
+Agent WebSocket disconnected: 9e4031c0-4cba-4adc-9372-8a98fbba82d9
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-06T10:49:33.222438Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'summary', 'details' ]
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'account/updated',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'authMode', 'planType' ]
+}
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 704bc180-833c-4ab8-9903-13c6c8313633 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=704bc180-833c-4ab8-9903-13c6c8313633, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Closed agent session 704bc180-833c-4ab8-9903-13c6c8313633
+Agent WebSocket disconnected: 704bc180-833c-4ab8-9903-13c6c8313633
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 0d4bad71-e83b-4a54-9db3-31fb64fdcc1e for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=0d4bad71-e83b-4a54-9db3-31fb64fdcc1e, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+[CodexAppServerClient] stderr: [2m2026-10-06T10:49:44.196045Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_b1b0b33f9ed94de99360e431dbb94d66
+Created agent session bd79b92e-cfc4-4e05-8946-c4d7e77b317a for run research_assistant_b1b0b33f9ed94de99360e431dbb94d66
+Agent WebSocket connected: session=bd79b92e-cfc4-4e05-8946-c4d7e77b317a, run=research_assistant_b1b0b33f9ed94de99360e431dbb94d66
+Resolved configured temp workspace root to TempWorkspace.
+In-memory cache: Removed agent definition with ID temp-helper.
+Agent Definition with ID temp-helper deleted successfully.
+SEND_MESSAGE command not accepted for agent run research_assistant_b1b0b33f9ed94de99360e431dbb94d66: [COLLABORATOR_ADD_FAILED] 'temp-helper' is not a shared Agent that can be mentioned.
+Closed agent session 0d4bad71-e83b-4a54-9db3-31fb64fdcc1e
+Agent WebSocket disconnected: 0d4bad71-e83b-4a54-9db3-31fb64fdcc1e
+Closed agent session bd79b92e-cfc4-4e05-8946-c4d7e77b317a
+Agent WebSocket disconnected: bd79b92e-cfc4-4e05-8946-c4d7e77b317a
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 637354a3-8dc2-428c-9d75-4372e65df0c5 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=637354a3-8dc2-428c-9d75-4372e65df0c5, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+[CodexAppServerClient] stderr: [2m2026-10-06T10:49:51.144116Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/researcher_20ab9ce607194d59b9b2b466b9390609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 6c58d0d3-b742-4cce-a7f7-2d07ecb57f38 for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=6c58d0d3-b742-4cce-a7f7-2d07ecb57f38, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/researcher_20ab9ce607194d59b9b2b466b9390609/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/researcher_20ab9ce607194d59b9b2b466b9390609/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 3,
+  paramKeys: [ 'thread' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'thread' ]
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'warning',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'threadId', 'message' ]
+}
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 637354a3-8dc2-428c-9d75-4372e65df0c5
+Agent WebSocket disconnected: 637354a3-8dc2-428c-9d75-4372e65df0c5
+Closed agent session 6c58d0d3-b742-4cce-a7f7-2d07ecb57f38
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session a23ceb38-ff74-411e-9812-39d4ca3aaacd for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=a23ceb38-ff74-411e-9812-39d4ca3aaacd, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session abe608f5-1b5b-40c6-97b9-ff783676faef for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=abe608f5-1b5b-40c6-97b9-ff783676faef, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created terminal session 3937b1ad-5ce3-4412-9556-08ae865d7b3c using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3937b1ad-5ce3-4412-9556-08ae865d7b3c
+Terminal websocket attached for cwd /Users/normy
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session a23ceb38-ff74-411e-9812-39d4ca3aaacd
+Agent WebSocket disconnected: a23ceb38-ff74-411e-9812-39d4ca3aaacd
+Closed agent session abe608f5-1b5b-40c6-97b9-ff783676faef
+Closed PTY session 3937b1ad-5ce3-4412-9556-08ae865d7b3c
+Terminal WebSocket disconnected: 3937b1ad-5ce3-4412-9556-08ae865d7b3c
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session df4eb551-06d0-4b12-84b0-d270a718abf8 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=df4eb551-06d0-4b12-84b0-d270a718abf8, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Created terminal session 8fffd3c8-5939-4a8a-906c-1b0c0424ed04 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8fffd3c8-5939-4a8a-906c-1b0c0424ed04
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 2ea96406-d1e3-4cd4-a6b7-19b08107296e for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=2ea96406-d1e3-4cd4-a6b7-19b08107296e, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/analyst_11c4af955ef843e98c54232227a2a837/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/researcher_8d5e7a5c592c4cd98d7401819ef94bd6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/writer_a8d52b7055444355942c5eb4b7c093bd/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/analyst_11c4af955ef843e98c54232227a2a837/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/researcher_8d5e7a5c592c4cd98d7401819ef94bd6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/writer_a8d52b7055444355942c5eb4b7c093bd/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/researcher_8d5e7a5c592c4cd98d7401819ef94bd6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/writer_a8d52b7055444355942c5eb4b7c093bd/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/researcher_8d5e7a5c592c4cd98d7401819ef94bd6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/writer_a8d52b7055444355942c5eb4b7c093bd/raw_traces_active.jsonl
+[CodexAppServerClient] stderr: [2m2026-10-06T10:52:51.186784Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0minvalid agent id prototype_bootstrapper_d663084881c548258e1a21b3c56ff0aa: Error(ParseChar { character: 'p', index: 1 })
+Closed agent session 2ea96406-d1e3-4cd4-a6b7-19b08107296e
+Closed agent session df4eb551-06d0-4b12-84b0-d270a718abf8
+Agent WebSocket disconnected: df4eb551-06d0-4b12-84b0-d270a718abf8
+Closed PTY session 8fffd3c8-5939-4a8a-906c-1b0c0424ed04
+Terminal WebSocket disconnected: 8fffd3c8-5939-4a8a-906c-1b0c0424ed04
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/researcher_8d5e7a5c592c4cd98d7401819ef94bd6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/writer_a8d52b7055444355942c5eb4b7c093bd/raw_traces_active.jsonl
+Created terminal session 3a4f93dc-2197-48f5-8708-8d55bbcdcc2d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3a4f93dc-2197-48f5-8708-8d55bbcdcc2d
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 7b4396f4-45eb-4681-a699-955a4c14266a for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=7b4396f4-45eb-4681-a699-955a4c14266a, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/researcher_8d5e7a5c592c4cd98d7401819ef94bd6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_d0edd7ab0dbd4ea8b9df7f17b0ceca81/review_team_43f3cbd2f8284fb1a1013cecce6da5cd/writer_a8d52b7055444355942c5eb4b7c093bd/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 6990516f-626d-4587-b8d7-1e1af8b248ce for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=6990516f-626d-4587-b8d7-1e1af8b248ce, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Closed agent session 7b4396f4-45eb-4681-a699-955a4c14266a
+Agent WebSocket disconnected: 7b4396f4-45eb-4681-a699-955a4c14266a
+Closed agent session 6990516f-626d-4587-b8d7-1e1af8b248ce
+Closed PTY session 3a4f93dc-2197-48f5-8708-8d55bbcdcc2d
+Terminal WebSocket disconnected: 3a4f93dc-2197-48f5-8708-8d55bbcdcc2d
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 2d57ff21-ae29-46ac-b80a-d26f7dd6e4c8 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=2d57ff21-ae29-46ac-b80a-d26f7dd6e4c8, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 19bb6932-5db8-45c7-b580-31f5762d0352 for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=19bb6932-5db8-45c7-b580-31f5762d0352, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+[CodexAppServerClient] stderr: [2m2026-10-06T10:53:33.403581Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/researcher_c18803a962924460a0a6a02df9568d1d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Created agent session fd6b46ea-7ae7-458b-8daf-6f07f4760e94 for run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent Team WebSocket connected: session=fd6b46ea-7ae7-458b-8daf-6f07f4760e94, run=review_team_0de33cd0ac0442fe9771f395cf93fc08
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/researcher_c18803a962924460a0a6a02df9568d1d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/researcher_c18803a962924460a0a6a02df9568d1d/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 2d57ff21-ae29-46ac-b80a-d26f7dd6e4c8
+Agent WebSocket disconnected: 2d57ff21-ae29-46ac-b80a-d26f7dd6e4c8
+Closed agent session fd6b46ea-7ae7-458b-8daf-6f07f4760e94
+Closed agent session 19bb6932-5db8-45c7-b580-31f5762d0352
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 2cc2e06d-f9ef-44a6-aefc-2d9383409131 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=2cc2e06d-f9ef-44a6-aefc-2d9383409131, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Created terminal session 9f45b738-0438-4d51-80e3-3e6eb1c42378 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 9f45b738-0438-4d51-80e3-3e6eb1c42378
+Terminal websocket attached for cwd /Users/normy
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session d4a0c578-0fdb-4e8a-8aa3-76eb6f906d3c for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=d4a0c578-0fdb-4e8a-8aa3-76eb6f906d3c, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Created agent session dbbe5b07-e516-4f58-9ee9-02253a922154 for run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent Team WebSocket connected: session=dbbe5b07-e516-4f58-9ee9-02253a922154, run=review_team_0de33cd0ac0442fe9771f395cf93fc08
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'deprecationNotice',
+  requestId: undefined,
+  threadCount: 5,
+  paramKeys: [ 'summary', 'details' ]
+}
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_b09f237565234278bb23fd89226b2f21/review_team_2a8fd162cea14a4caff99a9285f60b10/researcher_af669621e89044a7b323d4c7c7975e0a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_b09f237565234278bb23fd89226b2f21/review_team_2a8fd162cea14a4caff99a9285f60b10/writer_cf55e34f33904b64a54c55cbeb518317/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_b09f237565234278bb23fd89226b2f21/analyst_719bc4383b5b410cbebf5e18c8d0c8d0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_b09f237565234278bb23fd89226b2f21/analyst_719bc4383b5b410cbebf5e18c8d0c8d0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_b09f237565234278bb23fd89226b2f21/review_team_2a8fd162cea14a4caff99a9285f60b10/researcher_af669621e89044a7b323d4c7c7975e0a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_orgs/launch_org_b09f237565234278bb23fd89226b2f21/review_team_2a8fd162cea14a4caff99a9285f60b10/writer_cf55e34f33904b64a54c55cbeb518317/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session dbbe5b07-e516-4f58-9ee9-02253a922154
+Closed agent session d4a0c578-0fdb-4e8a-8aa3-76eb6f906d3c
+Closed agent session 2cc2e06d-f9ef-44a6-aefc-2d9383409131
+Agent WebSocket disconnected: 2cc2e06d-f9ef-44a6-aefc-2d9383409131
+Closed PTY session 9f45b738-0438-4d51-80e3-3e6eb1c42378
+Terminal WebSocket disconnected: 9f45b738-0438-4d51-80e3-3e6eb1c42378
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 7dfe4bea-3c20-4d88-bc1d-fa9d56ef2adc for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=7dfe4bea-3c20-4d88-bc1d-fa9d56ef2adc, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Created agent session 79da734a-d346-44aa-8fbd-4e13a09d4e3b for run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent Team WebSocket connected: session=79da734a-d346-44aa-8fbd-4e13a09d4e3b, run=review_team_0de33cd0ac0442fe9771f395cf93fc08
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 5fb7342c-a090-4f32-abc2-67b26c631941 for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=5fb7342c-a090-4f32-abc2-67b26c631941, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Closed agent session 5fb7342c-a090-4f32-abc2-67b26c631941
+Closed agent session 79da734a-d346-44aa-8fbd-4e13a09d4e3b
+Closed agent session 7dfe4bea-3c20-4d88-bc1d-fa9d56ef2adc
+Agent WebSocket disconnected: 7dfe4bea-3c20-4d88-bc1d-fa9d56ef2adc
+[CodexAppServerClient] stderr: [2m2026-10-06T10:54:10.941529Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 59422040-0e73-43a4-ac1f-858b99eae7d9 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=59422040-0e73-43a4-ac1f-858b99eae7d9, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Created agent session 49eccd88-325b-41bc-82f9-17dfc629630e for run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent Team WebSocket connected: session=49eccd88-325b-41bc-82f9-17dfc629630e, run=review_team_0de33cd0ac0442fe9771f395cf93fc08
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 23125794-05d9-4030-b595-344486f738c6 for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=23125794-05d9-4030-b595-344486f738c6, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+[CodexAppServerClient] stderr: [2m2026-10-06T10:54:12.040921Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Created agent session 19d50aa8-357a-46b0-ab49-c7ae0d9a2aa3 for run research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Agent WebSocket connected: session=19d50aa8-357a-46b0-ab49-c7ae0d9a2aa3, run=research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 9,
+  paramKeys: [ 'thread' ]
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'warning',
+  requestId: undefined,
+  threadCount: 9,
+  paramKeys: [ 'threadId', 'message' ]
+}
+Closed agent session 59422040-0e73-43a4-ac1f-858b99eae7d9
+Agent WebSocket disconnected: 59422040-0e73-43a4-ac1f-858b99eae7d9
+Closed agent session 19d50aa8-357a-46b0-ab49-c7ae0d9a2aa3
+Agent WebSocket disconnected: 19d50aa8-357a-46b0-ab49-c7ae0d9a2aa3
+Closed agent session 23125794-05d9-4030-b595-344486f738c6
+Closed agent session 49eccd88-325b-41bc-82f9-17dfc629630e
+Agent websocket attached for run research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Created agent session 8b02818c-07e3-449b-b61c-2722225c0b25 for run research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Agent WebSocket connected: session=8b02818c-07e3-449b-b61c-2722225c0b25, run=research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session cc175a0a-2c6a-4c56-a6e2-bfe136919ad3 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=cc175a0a-2c6a-4c56-a6e2-bfe136919ad3, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Created agent session d30ff5b4-a518-41d2-8615-e176a66e490d for run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent Team WebSocket connected: session=d30ff5b4-a518-41d2-8615-e176a66e490d, run=review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session 43d13587-0237-4908-a09f-0802c4fa013d for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=43d13587-0237-4908-a09f-0802c4fa013d, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+[CodexAppServerClient] stderr: [2m2026-10-06T10:54:25.629423Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_170279bb605e4d229f5eae842846871d/researcher_7f2d1fe0fb0d42e2bccebbe3f355bcaf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_170279bb605e4d229f5eae842846871d/writer_5576085d8ad34e5aa9e0994ac54b5816/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_170279bb605e4d229f5eae842846871d
+Created agent session 351ba98c-0c04-41c0-9d1b-4ae9fd111643 for run review_team_170279bb605e4d229f5eae842846871d
+Agent Team WebSocket connected: session=351ba98c-0c04-41c0-9d1b-4ae9fd111643, run=review_team_170279bb605e4d229f5eae842846871d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_170279bb605e4d229f5eae842846871d/researcher_7f2d1fe0fb0d42e2bccebbe3f355bcaf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_170279bb605e4d229f5eae842846871d/researcher_7f2d1fe0fb0d42e2bccebbe3f355bcaf/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 8b02818c-07e3-449b-b61c-2722225c0b25
+Agent WebSocket disconnected: 8b02818c-07e3-449b-b61c-2722225c0b25
+Closed agent session 351ba98c-0c04-41c0-9d1b-4ae9fd111643
+Closed agent session 43d13587-0237-4908-a09f-0802c4fa013d
+Closed agent session d30ff5b4-a518-41d2-8615-e176a66e490d
+Closed agent session cc175a0a-2c6a-4c56-a6e2-bfe136919ad3
+Agent WebSocket disconnected: cc175a0a-2c6a-4c56-a6e2-bfe136919ad3
+Agent websocket attached for run research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Created agent session c4a4c0ba-3b96-4e72-b57b-3bcd1cb0de2e for run research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Agent WebSocket connected: session=c4a4c0ba-3b96-4e72-b57b-3bcd1cb0de2e, run=research_assistant_eeb5b6ebd5e14acab28681b74e748d8b
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_170279bb605e4d229f5eae842846871d/writer_5576085d8ad34e5aa9e0994ac54b5816/raw_traces_active.jsonl
+Agent websocket attached for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Created agent session 5dafad9a-8704-4d34-8208-da8fce7b3617 for run research_assistant_20dee336373b482a99423e3cd37a6c64
+Agent WebSocket connected: session=5dafad9a-8704-4d34-8208-da8fce7b3617, run=research_assistant_20dee336373b482a99423e3cd37a6c64
+Created terminal session 28ba8e16-413d-42dc-a99c-5e3b08f223d5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 28ba8e16-413d-42dc-a99c-5e3b08f223d5
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_0de33cd0ac0442fe9771f395cf93fc08/writer_7e4973e5f12746c4a07aec63bd9d0e12/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_170279bb605e4d229f5eae842846871d
+Created agent session 133d0e60-f8fa-49d9-8f42-43a309924f7c for run review_team_170279bb605e4d229f5eae842846871d
+Agent Team WebSocket connected: session=133d0e60-f8fa-49d9-8f42-43a309924f7c, run=review_team_170279bb605e4d229f5eae842846871d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-yWHdTT/server-data/memory/agent_teams/review_team_356fd84c8e094a76ab626d0fd3fcb01a/writer_c22a409655d446dea63e4a7d5d49dd83/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Created agent session 4ca0de20-7b58-4712-b6af-9c10232e4157 for run review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent Team WebSocket connected: session=4ca0de20-7b58-4712-b6af-9c10232e4157, run=review_team_0de33cd0ac0442fe9771f395cf93fc08
+Agent team websocket attached for team run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Created agent session b048c946-1dfc-4685-bf29-cb7e6781bcf4 for run review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Agent Team WebSocket connected: session=b048c946-1dfc-4685-bf29-cb7e6781bcf4, run=review_team_356fd84c8e094a76ab626d0fd3fcb01a
+Closed agent session 5dafad9a-8704-4d34-8208-da8fce7b3617
+Agent WebSocket disconnected: 5dafad9a-8704-4d34-8208-da8fce7b3617
+Closed agent session 133d0e60-f8fa-49d9-8f42-43a309924f7c
+Closed agent session 4ca0de20-7b58-4712-b6af-9c10232e4157
+Closed agent session b048c946-1dfc-4685-bf29-cb7e6781bcf4
+Closed agent session c4a4c0ba-3b96-4e72-b57b-3bcd1cb0de2e
+Agent WebSocket disconnected: c4a4c0ba-3b96-4e72-b57b-3bcd1cb0de2e
+Closed PTY session 28ba8e16-413d-42dc-a99c-5e3b08f223d5
+Terminal WebSocket disconnected: 28ba8e16-413d-42dc-a99c-5e3b08f223d5
+[2026-10-06T10:54:58.864Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-06T10:54:58.919Z] [INFO] [server.runtime] Server closed cleanly.

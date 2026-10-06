@@ -1,0 +1,174 @@
+{
+  "agent": {
+    "pendingTaskId": "ad_hoc_task_198762d2-4636-4d9d-bca8-572987e18143",
+    "rootId": "aht_manager_660d63_cf8ab7e726be49d487b33aa8137c364b",
+    "managerRunId": "aht_manager_660d63_cf8ab7e726be49d487b33aa8137c364b",
+    "projectId": "project_9292678f-ef17-4e5e-9b88-d356f9fa0a29",
+    "projectTaskId": "project_task_efdd3bfa-6956-42c2-b702-617d24c3ade6",
+    "adHocTaskId": "ad_hoc_task_fe486e05-701f-47e8-a476-32f6453b5d88",
+    "copy": {
+      "agentRunId": "aht_reviewer_660d63_325d825a1ad84efca22b82c090f79ea0",
+      "address": "/aht_reviewer_660d63",
+      "startedAt": "2026-10-06T10:56:13.829Z",
+      "delegatorAgentRunId": "aht_manager_660d63_cf8ab7e726be49d487b33aa8137c364b"
+    },
+    "subCopy": {
+      "agentRunId": "aht_helper_660d63_2ef510ea7938453bb0e0878f8796d09b",
+      "address": "/aht_helper_660d63",
+      "startedAt": "2026-10-06T10:56:14.214Z",
+      "delegatorAgentRunId": "aht_reviewer_660d63_325d825a1ad84efca22b82c090f79ea0"
+    },
+    "closedPayload": [
+      {
+        "agentRunId": "aht_reviewer_660d63_325d825a1ad84efca22b82c090f79ea0"
+      },
+      {
+        "agentRunId": "aht_helper_660d63_2ef510ea7938453bb0e0878f8796d09b"
+      }
+    ],
+    "collaboratorRunId": "aht_assistant_660d63_9f3c279240db4fb4ab3986e507aae415",
+    "storedAdHocTask": {
+      "taskId": "ad_hoc_task_fe486e05-701f-47e8-a476-32f6453b5d88",
+      "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/aht_helper_660d63\",\"description\":\"Reply OK.\"}}",
+      "referenceFiles": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-0CrCGg/workspace/review-notes.md"
+      ],
+      "status": "TODO",
+      "createdAt": "2026-10-06T10:56:13.829Z",
+      "updatedAt": "2026-10-06T10:56:13.829Z"
+    },
+    "delegated": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": \\\"aht_reviewer_660d63_325d825a1ad84efca22b82c090f79ea0\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_fe486e05-701f-47e8-a476-32f6453b5d88\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":\"aht_reviewer_660d63_325d825a1ad84efca22b82c090f79ea0\",\"task_id\":\"ad_hoc_task_fe486e05-701f-47e8-a476-32f6453b5d88\"}}",
+    "rejectedDelegation": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}",
+    "rejected": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"Unsupported tool argument.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"Unsupported tool argument.\"}},\"isError\":true}",
+    "unknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_NOT_FOUND\\\",\\\"message\\\":\\\"Task 'ad_hoc_task_9a52da80-caf4-4a35-9599-61017d11a5b3' must identify exactly one current node-local Task (found 0).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'ad_hoc_task_9a52da80-caf4-4a35-9599-61017d11a5b3' must identify exactly one current node-local Task (found 0).\"}},\"isError\":true}",
+    "createWithoutProject": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"project_id must be a non-empty string.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}},\"isError\":true}",
+    "done": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"task\\\":{\\\"projectId\\\":null,\\\"taskId\\\":\\\"ad_hoc_task_fe486e05-701f-47e8-a476-32f6453b5d88\\\",\\\"status\\\":\\\"DONE\\\"}}\"}],\"structuredContent\":{\"task\":{\"projectId\":null,\"taskId\":\"ad_hoc_task_fe486e05-701f-47e8-a476-32f6453b5d88\",\"status\":\"DONE\"}}}",
+    "fenced": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_AGENT_RESOURCE_CLOSED\\\",\\\"message\\\":\\\"The Task work for this agent run is closed (Task DONE).\\\",\\\"target_agent_run_id\\\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CLOSED\",\"message\":\"The Task work for this agent run is closed (Task DONE).\",\"target_agent_run_id\":null},\"isError\":true}",
+    "closedAfterStop": [
+      {
+        "agentRunId": "aht_reviewer_660d63_325d825a1ad84efca22b82c090f79ea0"
+      },
+      {
+        "agentRunId": "aht_helper_660d63_2ef510ea7938453bb0e0878f8796d09b"
+      },
+      {
+        "agentRunId": "aht_reviewer_660d63_a26ffa0b100b4693add96e17511c056d"
+      }
+    ],
+    "otherTaskId": "ad_hoc_task_936347e2-1124-4f12-9084-5cc8391e297a"
+  },
+  "team": {
+    "rootId": "aht_team_660d63_1d70126961ca4812957f33019b5b9126",
+    "managerRunId": "aht_manager_660d63_7519294352e245beaa3e1196f268e376",
+    "projectId": "project_686a982b-a7d0-4c23-a064-8ff1becf219c",
+    "projectTaskId": "project_task_ca93be25-c494-44c5-907f-7b5cf771e937",
+    "adHocTaskId": "ad_hoc_task_55b58d6c-0033-462b-8259-9d722ff73097",
+    "copy": {
+      "agentRunId": "aht_reviewer_660d63_a1b98007a5aa4b9f97fc7f7715fd9872",
+      "address": "/aht_reviewer_660d63",
+      "startedAt": "2026-10-06T10:56:17.990Z",
+      "delegatorAgentRunId": "aht_manager_660d63_7519294352e245beaa3e1196f268e376"
+    },
+    "subCopy": {
+      "agentRunId": "aht_helper_660d63_ab70cead13b64a8ab391089e8ac20cf2",
+      "address": "/aht_helper_660d63",
+      "startedAt": "2026-10-06T10:56:18.337Z",
+      "delegatorAgentRunId": "aht_reviewer_660d63_a1b98007a5aa4b9f97fc7f7715fd9872"
+    },
+    "closedPayload": [
+      {
+        "agent_run_id": "aht_reviewer_660d63_a1b98007a5aa4b9f97fc7f7715fd9872"
+      },
+      {
+        "agent_run_id": "aht_helper_660d63_ab70cead13b64a8ab391089e8ac20cf2"
+      }
+    ],
+    "collaboratorRunId": "aht_assistant_660d63_0075d79c9e774067bd35a0e9f4ff95a2",
+    "storedAdHocTask": {
+      "taskId": "ad_hoc_task_55b58d6c-0033-462b-8259-9d722ff73097",
+      "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/aht_helper_660d63\",\"description\":\"Reply OK.\"}}",
+      "referenceFiles": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-0CrCGg/workspace/review-notes.md"
+      ],
+      "status": "TODO",
+      "createdAt": "2026-10-06T10:56:17.990Z",
+      "updatedAt": "2026-10-06T10:56:17.990Z"
+    },
+    "delegated": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": \\\"aht_reviewer_660d63_a1b98007a5aa4b9f97fc7f7715fd9872\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_55b58d6c-0033-462b-8259-9d722ff73097\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":\"aht_reviewer_660d63_a1b98007a5aa4b9f97fc7f7715fd9872\",\"task_id\":\"ad_hoc_task_55b58d6c-0033-462b-8259-9d722ff73097\"}}",
+    "rejectedDelegation": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}",
+    "rejected": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"Unsupported tool argument.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"Unsupported tool argument.\"}},\"isError\":true}",
+    "unknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_NOT_FOUND\\\",\\\"message\\\":\\\"Task 'ad_hoc_task_0cd38de9-bb22-48f7-800e-a54b2ea5e9b5' must identify exactly one current node-local Task (found 0).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'ad_hoc_task_0cd38de9-bb22-48f7-800e-a54b2ea5e9b5' must identify exactly one current node-local Task (found 0).\"}},\"isError\":true}",
+    "createWithoutProject": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"project_id must be a non-empty string.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}},\"isError\":true}",
+    "done": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"task\\\":{\\\"projectId\\\":null,\\\"taskId\\\":\\\"ad_hoc_task_55b58d6c-0033-462b-8259-9d722ff73097\\\",\\\"status\\\":\\\"DONE\\\"}}\"}],\"structuredContent\":{\"task\":{\"projectId\":null,\"taskId\":\"ad_hoc_task_55b58d6c-0033-462b-8259-9d722ff73097\",\"status\":\"DONE\"}}}",
+    "fenced": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_AGENT_RESOURCE_CLOSED\\\",\\\"message\\\":\\\"The Task work for this agent run is closed (Task DONE).\\\",\\\"target_agent_run_id\\\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CLOSED\",\"message\":\"The Task work for this agent run is closed (Task DONE).\",\"target_agent_run_id\":null},\"isError\":true}",
+    "closedAfterStop": [
+      {
+        "agentRunId": "aht_reviewer_660d63_a1b98007a5aa4b9f97fc7f7715fd9872"
+      },
+      {
+        "agentRunId": "aht_helper_660d63_ab70cead13b64a8ab391089e8ac20cf2"
+      }
+    ],
+    "otherTaskId": "ad_hoc_task_abefd3d7-b24c-4c8b-a567-ab9ae590d7c7"
+  },
+  "org": {
+    "rootId": "aht_org_660d63_af0b9150c5ea480f97c5ac73ba23de86",
+    "managerRunId": "aht_manager_660d63_76b61f88b50c438ca711957fd069ffb5",
+    "projectId": "project_00a87740-d077-4fdb-b78f-3405475749ef",
+    "projectTaskId": "project_task_13d44151-6346-4cb3-aee9-04b7c93aafaf",
+    "adHocTaskId": "ad_hoc_task_3cefcea4-ec45-4c84-84e1-4aaf439459ab",
+    "copy": {
+      "agentRunId": "aht_reviewer_660d63_cb8c877e60a440baa63b273b6a83b33d",
+      "address": "/aht_reviewer_660d63",
+      "startedAt": "2026-10-06T10:56:21.632Z",
+      "delegatorAgentRunId": "aht_manager_660d63_76b61f88b50c438ca711957fd069ffb5"
+    },
+    "subCopy": {
+      "agentRunId": "aht_helper_660d63_f735640d552f4ec9884e1f61ba7c601e",
+      "address": "/aht_helper_660d63",
+      "startedAt": "2026-10-06T10:56:21.976Z",
+      "delegatorAgentRunId": "aht_reviewer_660d63_cb8c877e60a440baa63b273b6a83b33d"
+    },
+    "closedPayload": [
+      {
+        "agentRunId": "aht_reviewer_660d63_cb8c877e60a440baa63b273b6a83b33d"
+      },
+      {
+        "agentRunId": "aht_helper_660d63_f735640d552f4ec9884e1f61ba7c601e"
+      }
+    ],
+    "collaboratorRunId": "aht_assistant_660d63_f1dbc88323924df7a14d6587db2a001d",
+    "storedAdHocTask": {
+      "taskId": "ad_hoc_task_3cefcea4-ec45-4c84-84e1-4aaf439459ab",
+      "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/aht_helper_660d63\",\"description\":\"Reply OK.\"}}",
+      "referenceFiles": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-0CrCGg/workspace/review-notes.md"
+      ],
+      "status": "TODO",
+      "createdAt": "2026-10-06T10:56:21.632Z",
+      "updatedAt": "2026-10-06T10:56:21.632Z"
+    },
+    "delegated": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": \\\"aht_reviewer_660d63_cb8c877e60a440baa63b273b6a83b33d\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_3cefcea4-ec45-4c84-84e1-4aaf439459ab\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":\"aht_reviewer_660d63_cb8c877e60a440baa63b273b6a83b33d\",\"task_id\":\"ad_hoc_task_3cefcea4-ec45-4c84-84e1-4aaf439459ab\"}}",
+    "rejectedDelegation": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}",
+    "rejected": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"Unsupported tool argument.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"Unsupported tool argument.\"}},\"isError\":true}",
+    "unknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_NOT_FOUND\\\",\\\"message\\\":\\\"Task 'ad_hoc_task_430780b8-6b95-4c23-95ea-be655b09cb63' must identify exactly one current node-local Task (found 0).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'ad_hoc_task_430780b8-6b95-4c23-95ea-be655b09cb63' must identify exactly one current node-local Task (found 0).\"}},\"isError\":true}",
+    "createWithoutProject": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"project_id must be a non-empty string.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}},\"isError\":true}",
+    "done": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"task\\\":{\\\"projectId\\\":null,\\\"taskId\\\":\\\"ad_hoc_task_3cefcea4-ec45-4c84-84e1-4aaf439459ab\\\",\\\"status\\\":\\\"DONE\\\"}}\"}],\"structuredContent\":{\"task\":{\"projectId\":null,\"taskId\":\"ad_hoc_task_3cefcea4-ec45-4c84-84e1-4aaf439459ab\",\"status\":\"DONE\"}}}",
+    "fenced": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_AGENT_RESOURCE_CLOSED\\\",\\\"message\\\":\\\"The Task work for this agent run is closed (Task DONE).\\\",\\\"target_agent_run_id\\\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CLOSED\",\"message\":\"The Task work for this agent run is closed (Task DONE).\",\"target_agent_run_id\":null},\"isError\":true}",
+    "closedAfterStop": [
+      {
+        "agentRunId": "aht_reviewer_660d63_cb8c877e60a440baa63b273b6a83b33d"
+      },
+      {
+        "agentRunId": "aht_helper_660d63_f735640d552f4ec9884e1f61ba7c601e"
+      }
+    ],
+    "otherTaskId": "ad_hoc_task_cfaa5888-cccd-4d6a-99c5-02a32928d7fe"
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

@@ -54,15 +54,23 @@ describe("AgentOrgRunService history ordering", () => {
     const archiveStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `archived ${orgRunId}` }));
     const deleteStored = vi.fn(async (orgRunId: string) => ({ success: true, message: `deleted ${orgRunId}` }));
     const manager = { restore: vi.fn(), create: vi.fn(), terminate: vi.fn() };
+    const adHocTasks = { deleteAdHocTasksHostedBy: vi.fn(async () => undefined) };
     const service = new AgentOrgRunService({
       manager,
       history: { archiveStored, deleteStored },
+      adHocTasks,
     } as never);
 
     await expect(service.archiveStoredRun(" org-run ")).resolves.toEqual({ success: true, message: "archived org-run" });
+    expect(adHocTasks.deleteAdHocTasksHostedBy).not.toHaveBeenCalled();
     await expect(service.deleteStoredRun(" org-run ")).resolves.toEqual({ success: true, message: "deleted org-run" });
+    // A committed permanent delete also removes the ad-hoc Tasks this root hosted (REQ-009).
+    expect(adHocTasks.deleteAdHocTasksHostedBy).toHaveBeenCalledExactlyOnceWith({ rootSubjectKind: "agent_org", rootRunId: "org-run" });
+    deleteStored.mockResolvedValueOnce({ success: false, message: "active" });
+    await expect(service.deleteStoredRun("org-run")).resolves.toEqual({ success: false, message: "active" });
+    expect(adHocTasks.deleteAdHocTasksHostedBy).toHaveBeenCalledTimes(1);
     expect(archiveStored).toHaveBeenCalledExactlyOnceWith("org-run");
-    expect(deleteStored).toHaveBeenCalledExactlyOnceWith("org-run");
+    expect(deleteStored).toHaveBeenNthCalledWith(1, "org-run");
     expect(manager.restore).not.toHaveBeenCalled();
     expect(manager.create).not.toHaveBeenCalled();
     expect(manager.terminate).not.toHaveBeenCalled();

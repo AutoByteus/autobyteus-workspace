@@ -337,7 +337,7 @@ const liveDone = async (kind, label) => {
     await shot(page, `${kind}-live-before`);
     await startSampler(page, aSel);
     const sentAt = Date.now();
-    s.input.send(callTool('create_or_update_task', { project_id: s.projectId, task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('Task A rows gone', goneAll(page, aSel), 60000);
     const latencyMs = Date.now() - sentAt;
     await sleep(500);
@@ -360,7 +360,7 @@ const liveDone = async (kind, label) => {
     await until('Team tab message kept', async () => /Status of the release notes\?/.test(await page.locator('[data-test="workspace-right-panel"]').innerText()), 10000);
     await shot(page, `${kind}-team-tab-after`);
     // Reopen + delegate again: the new run appears; the closed ones stay hidden (AC-006).
-    s.input.send(callTool('create_or_update_task', { project_id: s.projectId, task_id: s.taskA, status: 'IN_PROGRESS' }));
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
     await until('reopened', async () => (await taskStatus(s.projectId, s.taskA)) === 'IN_PROGRESS', 30000);
     const before = taskNodes(await storedTree(s.root)).map((n) => n.agentRunId ?? n.teamRunId);
     s.input.send(callTool('delegate_task', { recipient_address: s.at('worker', s.names.worker), task_id: s.taskA }));
@@ -376,7 +376,7 @@ const liveDone = async (kind, label) => {
     await (managerRow ?? runRow).click();
     await sleep(800);
     const composer = page.locator('[data-test="workspace-center-pane"] textarea').first();
-    await composer.fill(callTool('create_or_update_task', { project_id: s.projectId, task_id: s.taskB, status: 'DONE' }));
+    await composer.fill(callTool('create_or_update_task', { task_id: s.taskB, status: 'DONE' }));
     await startSampler(page, [bSel, ...memberSel]);
     await composer.press('Enter');
     await until('Task B Team and members gone', goneAll(page, [bSel, ...memberSel]), 60000);
@@ -401,7 +401,7 @@ const reducedMotion = async (kind, label) => {
     for (const sel of aSel) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
     await page.locator(aSel[0]).focus();
     await startSampler(page, aSel);
-    s.input.send(callTool('create_or_update_task', { project_id: s.projectId, task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('rows gone', goneAll(page, aSel), 60000);
     await sleep(300);
     const leave = analyzeLeave(await page.evaluate(() => window.__samples));
@@ -428,7 +428,7 @@ const lastRows = async () => {
         rows: document.querySelectorAll('[data-test="workspace-team-transient-execution-row"]').length });
       if (performance.now() - t0 < 4000) requestAnimationFrame(tick); }; requestAnimationFrame(tick); });
     await startSampler(page, aSel);
-    s.input.send(callTool('create_or_update_task', { project_id: s.projectId, task_id: s.taskA, status: 'DONE' }));
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
     await until('tree removed', async () => (await page.locator('[data-test="workspace-agent-run-task-tree"]').count()) === 0, 60000);
     await sleep(300);
     const leave = analyzeLeave(await page.evaluate(() => window.__samples));

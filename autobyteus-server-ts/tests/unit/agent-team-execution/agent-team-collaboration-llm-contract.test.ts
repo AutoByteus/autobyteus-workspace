@@ -53,11 +53,11 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       sendTool: "c2911fdc939324ebfa2cc7d66c32e479a4b4b996004e8628b2900ce78c365909",
       sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
       sendExactRun: "c847864e1dfe9745cab69b255ad3960185cf6c93ff78b647f809ec9fa85971cb",
-      delegateTool: "83d4696113a9468b523d5db8379c98e81f63fa5c74657b8636681ba1d4dbfdf2",
+      delegateTool: "8e17556b5295c7324370ae9ca6de6c6ae84e6912bacd9db415cac680f02e34d2",
       delegateRecipient: "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
       delegateDescription: "31d5193d5849bf4df65d443af5061384cf1e32e41839793d1d711bfe493b9da4",
       delegateReferences: "8f6e0bd3e58880db150c3516c898ac4fb00ab30dce9fa0161739c0a09c5763ae",
-      collaborationPrompt: "930f41326bd9065c7a4a82a619b55fdcf5d1f2299e3a149eb05443cae995f4fa",
+      collaborationPrompt: "2f1f9b07b0e781d665ab5855f6299a406ace94a260f5d0c4fe7691b5fb367a34",
     });
   });
 
@@ -80,6 +80,10 @@ describe("approved AgentTeam collaboration LLM contract", () => {
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("brought in on first use");
     expect(SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION).toContain("a run ID never brings anything in");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("target_agent_run_id is null and message explains why");
+    // A description-only delegation that creates a Task returns its task_id; DONE closes the copy.
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("that creates a Task also returns its task_id");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("create_or_update_task with that task_id and status DONE");
+    expect(prompt).toContain("`task_id`. When the work is finished, call `create_or_update_task` with that\n  `task_id` and status `DONE`; this stops the copy and removes it from the run.");
   });
 
   it("encodes SCN-001 as one most-specific rule and at most one recipient", () => {

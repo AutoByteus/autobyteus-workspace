@@ -15,6 +15,12 @@ records which agent runs were started for it, as the Task's **agent run
 resources**. Execution trees (Team, Org and standalone run history) carry **no
 Task information**: they record runs, nesting, creator and source only.
 
+The Task subject also has **Tasks with no Project** (ad-hoc Tasks): a
+description-only `delegate_task` from an agent that is not working on a Task
+creates one for its copy, so every delegated copy can be closed. They are
+execution helpers, not Project work, and are never listed under a Project (see
+[Tasks With No Project](#tasks-with-no-project-ad-hoc)).
+
 The Task service owns business status and the agent run resource records. The
 shared root lifecycle and runtime owners perform dispatch, admission and exact
 release. Explicit `DONE` closes every open agent run resource of the Task
@@ -40,12 +46,14 @@ installed copy (see the server README).
 not gate backend CRUD or tool authorization. Unset values initialize to false,
 and persisted values are authoritative. Disabling it keeps all metadata and
 files. The existing shared boolean setting accessor is unchanged. Tools must be
-selected explicitly in the agent definition, independently of the UI flag.
+selected explicitly in the agent definition, independently of the UI flag,
+except `create_or_update_task`, which every agent with `delegate_task` gets
+automatically.
 
 ## Main Owners
 
-- `src/projects/domain/{models,project-errors,project-task-context,settings,task-agent-resources}.ts`
-- `src/projects/stores/{projects-layout,project-store,task-agent-resource-store,task-agent-resource-schema}.ts`
+- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,settings,task-agent-resources}.ts`
+- `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-agent-resource-store,task-agent-resource-schema}.ts`
 - `src/projects/services/{project-service,project-task-service,task-agent-resource-service,projects-capability-service}.ts`
 - `src/projects/runtime/task-agent-resource-release.ts` (DONE's stop request)
 - `src/projects/context/project-task-context-store.ts`
@@ -89,6 +97,21 @@ selected explicitly in the agent definition, independently of the UI flag.
 
 `task.json` holds the released Task fields plus `projectId`:
 `taskId, projectId, description, status, createdAt, updatedAt, contextFiles[]`.
+
+Tasks with no Project live outside the Projects root, so no Project scan or the
+Projects migration gate ever sees them. `AdHocTasksLayout` owns
+`<appDataDir>/ad-hoc-tasks/`:
+
+```
+<appDataDir>/ad-hoc-tasks/
+└── <taskId>/                              ad_hoc_task_<uuid>
+    ├── task.json                          {taskId, description, referenceFiles[], status, createdAt, updatedAt}
+    └── agent_run_resources.json           same format as a Project Task's
+```
+
+An ad-hoc `task.json` stores text only: the delegated description and the
+given `reference_files` paths. File contents are never copied. The directory is
+additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
 
 ### Reading and writing
 
@@ -193,7 +216,8 @@ keeps its exact behavior.
 
 ## Agent Run Resources
 
-Each Task's `<projectId>/tasks/<taskId>/agent_run_resources.json` is the
+Each Task's `<projectId>/tasks/<taskId>/agent_run_resources.json` (for a Task
+with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
 **only** record of the agent runs started for that Task:
 
 ```jsonc
@@ -209,7 +233,7 @@ Each Task's `<projectId>/tasks/<taskId>/agent_run_resources.json` is the
 
 | Field | Meaning |
 | --- | --- |
-| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: an open owned run's `send_message_to` that started a new copy. |
+| `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: an open owned run's `send_message_to` that started a new copy. |
 | `assignedBy` | Present only on `assigned`: the run that made the assignment. |
 | `hostRoot` | The top-level run the user started, which hosts this agent run. |
 | `agentRun` | `{kind: agent, agentRunId}` or `{kind: team, teamRunId, coordinatorAgentRunId}`. |
@@ -224,7 +248,9 @@ Rules for the file:
   lock, never from the in-memory view. These cover the creator being open,
   uniqueness, and the open set that DONE closes.
 - At composition, the server loads every
-  `*/tasks/*/agent_run_resources.json` into an in-memory view.
+  `projects/*/tasks/*/agent_run_resources.json` and
+  `ad-hoc-tasks/*/agent_run_resources.json` into one in-memory view
+  (`TaskAgentResourceService`; locations are `{projectId: string | null, taskId}`).
 
 ### Damaged file (Q-3)
 
@@ -257,7 +283,7 @@ Tools MCP share the parser, manifest, services and error projection.
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS or DONE | `{projectId, tasks: [...]}` |
 | `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceId, description}]}}` |
-| `create_or_update_task` | Required `project_id`; omit `task_id` to create with required `description` and **omit status**; provide a known `task_id` to patch description and/or status | `{task: {...}}` |
+| `create_or_update_task` | Two strict modes. Create: `{project_id, description}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
 
 `create_or_update_project` preserves omitted fields on patch. A blank Project
 description clears it; unknown IDs never create. Names are trimmed, nonblank
@@ -291,8 +317,13 @@ in the app's run views. Acceptance is not completion. The purpose is continuity
 across chats and Managers (follow-up via `send_message_to`) and avoiding
 duplicate work.
 
-`create_or_update_task` returns only `{task: {projectId, taskId, status}}`. It is
-a recorded-business acknowledgement, not an assessment or proof of a stop.
+`create_or_update_task` returns only `{task: {projectId, taskId, status}}`, with
+`projectId: null` for a Task with no Project. It is a recorded-business
+acknowledgement, not an assessment or proof of a stop. Update resolves the Task
+by ID through `ProjectTaskService.updateTaskById`: first a direct read of
+`ad-hoc-tasks/<taskId>/task.json` (no scan, no Projects gate), otherwise the
+Project Task found across Projects. The Projects page's
+`updateTask({projectId, taskId, ...})` stays the Project-only boundary.
 
 Each listed context file exposes its saved metadata and a relative HTTP
 locator. `localPath` is included only when the Task authority validates the
@@ -302,7 +333,9 @@ by a remote consumer. Missing bytes never produce a fabricated `localPath`.
 Task input validation (Project rules are above):
 - Presence matters: a null or blank `project_id` or `task_id` is invalid, not a request to
   create. A null, blank or non-string `description` is invalid.
-- Unknown input keys are rejected.
+- Unknown input keys are rejected. `project_id` together with `task_id` is an
+  unsupported argument (`PROJECT_TOOL_ARGUMENT_INVALID`); create without
+  `project_id` fails the same way. Unknown Task IDs fail with `TASK_NOT_FOUND`.
 - An empty patch fails with `TASK_PATCH_REQUIRED`, an invalid status with
   `TASK_STATUS_INVALID`, and any status supplied on creation with
   `TASK_CREATE_STATUS_UNSUPPORTED`.
@@ -310,7 +343,9 @@ Task input validation (Project rules are above):
   or implicit Project binding.
 
 Exposure:
-- The tool names are opt-in in both native and session MCP exposure.
+- The tool names are opt-in in both native and session MCP exposure, except
+  `create_or_update_task`: `automaticCollaborationToolNames` adds it wherever
+  `delegate_task` is (every member context, on every runtime).
 - They need no collaboration-member context and are independent of the
   Projects UI flag.
 - Their first-party names are protected against configured MCP collisions.
@@ -334,14 +369,20 @@ See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and acces
 
 `delegate_task` has two strict, coequal input modes:
 
-- Described work: `{recipient_address, description, reference_files?}`.
-- Linked saved work: `{recipient_address, task_id}` only. No `project_id`,
-  description or reference_files override is accepted. Blank, unknown or
-  ambiguous Task IDs, DONE Tasks and unavailable saved bytes fail without
-  spawning anything as a fallback.
+- Described work: `{recipient_address, description, reference_files?}`. From
+  an agent that is not working on a Task, the copy is assigned to a new Task
+  with no Project and the result also carries its `task_id` (see
+  [Tasks With No Project](#tasks-with-no-project-ad-hoc)). From Task work, the
+  copy is that Task's `delegated` sub-work and no `task_id` is returned.
+- Linked saved work: `{recipient_address, task_id}` only, for **Project Tasks**
+  only (an ad-hoc Task ID is `TASK_NOT_FOUND`). No `project_id`, description or
+  reference_files override is accepted. Blank, unknown or ambiguous Task IDs,
+  DONE Tasks and unavailable saved files fail without spawning anything as a
+  fallback. The result is exactly `{target_agent_run_id}`.
 
-Linked dispatch resolves the unique current node-local Task and snapshots its
-saved description and context bytes into the ordinary work packet. Later Task
+Linked dispatch resolves the unique current node-local Task and copies its saved
+description and the paths of its saved context files into the ordinary work
+packet (the files themselves are not copied). Later Task
 edits do not rewrite work that was already delivered. Each call allocates a
 fresh copy. The TeamRun identity and the coordinator's ingress AgentRun
 identity remain distinct. Follow-up uses the exact returned
@@ -375,8 +416,8 @@ identity remain distinct. Follow-up uses the exact returned
 - **Address messaging order:** the sender's own Team instance; then the Task's
   open helper at that address; then an existing unowned run in the root; then a
   new `broughtIn` copy.
-- **Borrowed, not adopted.** Existing unowned advisers and the user's `@`
-  collaborators are borrowed, never adopted. Unowned agents are never checked
+- **Borrowed, not adopted.** Existing unowned advisers and collaborators are
+  borrowed, never adopted. Unowned agents are never checked
   against Task data. Another Task's run is never a shared helper
   (`TASK_AGENT_RESOURCE_CONFLICT`). Definition or address equality is not
   ownership.
@@ -415,6 +456,42 @@ borrowed runs.
 See [Team delegation](agent_team_execution.md#server-owned-task-delegation),
 [message resolution](agent_communication.md#task-linked-message-scope) and
 [public history](run_history.md#task-linked-history-and-public-projection).
+
+## Tasks With No Project (Ad-Hoc)
+
+A Task with no Project makes a description-only delegation closable. The user's
+`@` steers the focused agent to `delegate_task`; the same applies to any agent.
+
+1. **Created only by delegation.** `delegate_task({recipient_address,
+   description, reference_files?})` from an agent that is not working on a Task
+   joins the copy as `{role: "assigned", adHocTask: {description,
+   referenceFiles}}`. Inside the existing link step (after identity planning,
+   before resources), `ProjectTaskService.linkAgentRun` writes
+   `ad-hoc-tasks/<taskId>/task.json` and links the copy `starting` in that
+   Task's `agent_run_resources.json`. The result is
+   `{target_agent_run_id, task_id}`. A call rejected before the link creates no
+   Task; a dispatch failure after the link returns no `task_id` and leaves the
+   Task with a `failed` assignment until its run is deleted.
+   `create_or_update_task` never creates one.
+2. **Owned like Project Task work.** The copy, its Team members and its
+   `delegated`/`broughtIn` sub-work belong to that Task (the message-scope rules
+   above apply). Every entry has the delegator's host root.
+3. **DONE.** `create_or_update_task({task_id, status: "DONE"})` runs the same
+   DONE as a Project Task: close every open entry, write the status, ask the
+   host root to stop exactly those runs; the run tree hides them live and after
+   reopen or restart, and conversations are kept. Description and status can
+   also be patched; there is no other mutation.
+4. **Not Project work.** They are not on the Projects page, not in
+   `list_project_tasks`, and cannot be assigned by `delegate_task({task_id})`.
+5. **Retention.** When a run is permanently deleted from history, its delete
+   owner (`AgentRunHistoryCatalogService.deleteRun`,
+   `TeamRunHistoryService.deleteStoredTeamRun`, `AgentOrgRunService.deleteStoredRun`)
+   calls `ProjectTaskService.deleteAdHocTasksHostedBy(root)` after the delete
+   committed. It removes the folders of the ad-hoc Tasks whose entries name
+   that root, using the in-memory view; failures are logged and never fail the
+   delete. This is the only dependency from run history to Projects.
+6. **No Projects lockout.** Creation, lookup and DONE never touch the Projects
+   store, so they keep working while the Projects migration is pending.
 
 ## Workspace Registration Boundary
 

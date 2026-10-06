@@ -12,6 +12,8 @@ import { TeamRunHistoryCatalogService, getTeamRunHistoryCatalogService } from ".
 import { TeamRunLiveProjectionService, type TeamRunMemberStatusProjection } from "./team-run-live-projection-service.js";
 import { projectExecutionTree } from "../../services/agent-streaming/team-execution-view-projector.js";
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
+import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 
 export interface DeleteStoredTeamRunResult { success: boolean; message: string }
 export interface ArchiveStoredTeamRunResult { success: boolean; message: string }
@@ -30,13 +32,17 @@ export class TeamRunHistoryService {
   private readonly manager: AgentTeamRunManager;
   private readonly live: TeamRunLiveProjectionService;
   private readonly layout: AgentMemoryLayout;
+  private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
 
   constructor(memoryDir: string, options: {
     executionTreeStore?: TeamRunExecutionTreeStore;
     catalogService?: TeamRunHistoryCatalogService;
     teamRunManager?: AgentTeamRunManager;
     liveProjectionService?: TeamRunLiveProjectionService;
+    /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
+    adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
   } = {}) {
+    this.adHocTasks = options.adHocTasks;
     this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.catalog = options.catalogService ?? getTeamRunHistoryCatalogService();
     this.manager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
@@ -78,8 +84,12 @@ export class TeamRunHistoryService {
     return this.catalog.archiveTeamRun(teamRunId);
   }
 
-  deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    return this.catalog.deleteTeamRun(teamRunId);
+  async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
+    const result = await this.catalog.deleteTeamRun(teamRunId);
+    // After the committed delete, the run's ad-hoc Tasks go too (best effort; never throws).
+    if (result.success) await (this.adHocTasks ?? getProjectTaskService())
+      .deleteAdHocTasksHostedBy(createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: teamRunId.trim() }));
+    return result;
   }
 
   private readTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {

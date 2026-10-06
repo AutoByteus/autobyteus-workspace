@@ -1,0 +1,165 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-web
+
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatMessageInput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/chatDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/chatDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatMessageInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/acceptedInputIdentity.spec.ts (12 tests) 10ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts (10 tests) 9ms
+ ✓ components/chat/__tests__/ChatMessageInput.spec.ts (4 tests) 50ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts (11 tests) 129ms
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket error: Error: socket failed
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-web/[39mservices/agentStreaming/__tests__/AgentStreamingService.spec.ts:239:38
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:103:5)[39m
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8)
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > serializes and exactly matches an admitted standalone interrupt
+Ignoring unmatched interrupt command acknowledgement. {
+  command_type: [32m'INTERRUPT_GENERATION'[39m,
+  command_id: [32m'client_interrupt_1'[39m,
+  state: [32m'accepted'[39m,
+  target: { target_kind: [32m'standalone_run'[39m, run_id: [32m'wrong-run'[39m }
+}
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > completes reentrant disconnect-plus-send-throw exactly once
+Agent WebSocket disconnected: socket closed
+Agent WebSocket disconnected: again
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > keeps immediately projected content on each context across replacement and remote disconnect
+Agent WebSocket disconnected: remote closed
+
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts (35 tests) 34ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (9 tests) 19ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 15ms
+ ✓ stores/__tests__/chatDraftStore.spec.ts (20 tests) 38ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (14 tests) 31ms
+stderr | stores/__tests__/agentRunCollaborationStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatComposerMenus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentRunCollaborationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentRunCollaborationStore.spec.ts (4 tests) 11ms
+ ✓ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts (7 tests) 15ms
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts (6 tests) 20ms
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatComposerMenus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/chatComposerMenus.spec.ts (4 tests) 3ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (3 tests) 13ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (3 tests) 14ms
+
+ Test Files  15 passed (15)
+      Tests  154 passed (154)
+   Start at  13:03:15
+   Duration  8.58s (transform 3.75s, setup 58.00s, collect 3.55s, tests 411ms, environment 3.80s, prepare 2.46s)
+

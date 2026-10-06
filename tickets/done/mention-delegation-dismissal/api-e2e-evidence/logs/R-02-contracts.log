@@ -1,0 +1,79 @@
+
+> @autobyteus/agent-presentation-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-agent-presentation-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: normalized tagged primary identity never bridges secondary tokens
+ok 1 - normalized tagged primary identity never bridges secondary tokens
+  ---
+  duration_ms: 0.688375
+  type: 'test'
+  ...
+# Subtest: accepts a strict root-neutral message and rejects root identity
+ok 2 - accepts a strict root-neutral message and rejects root identity
+  ---
+  duration_ms: 9.95425
+  type: 'test'
+  ...
+# Subtest: accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+ok 3 - accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+  ---
+  duration_ms: 6.142292
+  type: 'test'
+  ...
+# Subtest: compaction carries direct diagnostics separately from provider-native identity
+ok 4 - compaction carries direct diagnostics separately from provider-native identity
+  ---
+  duration_ms: 4.188125
+  type: 'test'
+  ...
+# Subtest: composes the note after the user's text, steering to delegate_task, and parses it back
+ok 5 - composes the note after the user's text, steering to delegate_task, and parses it back
+  ---
+  duration_ms: 1.078291
+  type: 'test'
+  ...
+# Subtest: a note saved with the collaborator-messaging guidance still parses
+ok 6 - a note saved with the collaborator-messaging guidance still parses
+  ---
+  duration_ms: 0.164458
+  type: 'test'
+  ...
+# Subtest: a note saved before the REQ-009 guidance still parses
+ok 7 - a note saved before the REQ-009 guidance still parses
+  ---
+  duration_ms: 0.115292
+  type: 'test'
+  ...
+# Subtest: a mention-only message is the note alone
+ok 8 - a mention-only message is the note alone
+  ---
+  duration_ms: 0.155917
+  type: 'test'
+  ...
+# Subtest: no collaborators leaves the text unchanged; foreign text is not parsed
+ok 9 - no collaborators leaves the text unchanged; foreign text is not parsed
+  ---
+  duration_ms: 0.14025
+  type: 'test'
+  ...
+# Subtest: mentions are at most 8 and unique by kind and definition
+ok 10 - mentions are at most 8 and unique by kind and definition
+  ---
+  duration_ms: 1.177833
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 108.936208
+exit=0

@@ -228,7 +228,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(catalog.projects).toEqual([{projectId, name: "Tools fixture", description: ""}]);
     const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: " hello "}));
     expect(created.task).toEqual({projectId, taskId: expect.any(String), status: "TODO"});
-    const patched = await mcp("create_or_update_task", {project_id: projectId, task_id: created.task.taskId, status: "DONE"});
+    const patched = await mcp("create_or_update_task", {task_id: created.task.taskId, status: "DONE"});
     expect(patched.structuredContent).toMatchObject({task: {...created.task, status: "DONE"}});
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "DONE"}));
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "DONE"})).structuredContent).toEqual(listed);
@@ -239,11 +239,15 @@ describe("Project data tools — actual native preparation/execute and selected 
     ["list_projects", {extra: true}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["list_project_tasks", {project_id: 12}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["list_project_tasks", {project_id: "p", status: "todo"}, "TASK_STATUS_INVALID"],
-    ["create_or_update_task", {project_id: "p", task_id: null, description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    ["create_or_update_task", {project_id: "p", task_id: "", description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: null, description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "", description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    // Update takes task_id only: project_id with task_id is an unsupported argument (AC-004).
+    ["create_or_update_task", {project_id: "p", task_id: "t", status: "DONE"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    // Create still needs a Project (AC-006).
+    ["create_or_update_task", {description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["create_or_update_task", {project_id: "p", description: ""}, "TASK_DESCRIPTION_REQUIRED"],
     ["create_or_update_task", {project_id: "p", description: "x", status: "TODO"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
-    ["create_or_update_task", {project_id: "p", task_id: "t"}, "TASK_PATCH_REQUIRED"],
+    ["create_or_update_task", {task_id: "t"}, "TASK_PATCH_REQUIRED"],
   ])("preserves domain errors before BaseTool coercion for %s", async (name, raw, code) => {
     const tool = name === "list_projects" ? new ListProjectsTool() : name === "list_project_tasks" ? new ListProjectTasksTool() : new CreateOrUpdateTaskTool();
     const thrown = await tool.execute(null, raw).then(() => null, (e) => JSON.parse(e.message));
@@ -252,7 +256,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(result.structuredContent).toEqual(thrown); expect(result.isError).toBe(true);
   });
   it("unknown Task IDs fail without creating and aborted native execution stays a transport error", async () => {
-    const args = {project_id: projectId, task_id: "missing", description: "No upsert"};
+    const args = {task_id: "missing", description: "No upsert"};
     const error = await new CreateOrUpdateTaskTool().execute(null, args).catch((e) => JSON.parse(e.message));
     expect(error.error.code).toBe("TASK_NOT_FOUND");
     expect((await mcp("create_or_update_task", args)).structuredContent).toEqual(error);

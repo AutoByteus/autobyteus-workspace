@@ -45,10 +45,11 @@ export const agentOrgCollaboratorPortFor = (tree: AgentOrgRunExecutionTreeSnapsh
 };
 
 /**
- * Org-root collaborators. The Org runs `ensure` inside its operation gate (for `@` and for a
- * first message to a catalog address); this owner prepares the hosted handles, commits the new
- * entries in one tree write, then publishes the handles (Offline) and `collaborator_added`. It
- * also answers the read-only catalog questions of the root.
+ * Org-root collaborators. For `@` it only resolves the mentioned definitions' addresses (nothing
+ * is added). For a first message to a catalog address the Org runs `bringInAt` inside its
+ * operation gate; this owner prepares the hosted handles, commits the new entries in one tree
+ * write, then publishes the handles (Offline) and `collaborator_added`. It also answers the
+ * read-only catalog questions of the root.
  */
 export class AgentOrgRunCollaborators {
   private readonly queue = new CollaboratorAdmissionQueue();
@@ -64,9 +65,9 @@ export class AgentOrgRunCollaborators {
     publish(event: AgentOrgRunEvent): void;
   }>) {}
 
-  /** `@`: ensures the mentioned definitions. Call only inside the root gate. */
-  ensure(input: Readonly<{ senderRunId: string; definitions: readonly CollaboratorMention[] }>): Promise<CollaboratorAdmissionResult> {
-    return this.queue.run(() => this.ensureNow(input));
+  /** `@`: each mentioned definition's name, kind and address; adds nothing. Call only inside the root gate. */
+  resolveMentions(definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
+    return this.queue.run(() => this.admission.resolveMentions(this.port(), definitions));
   }
 
   /**

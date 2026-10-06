@@ -99,7 +99,7 @@ type TeamExecutionAddress = Readonly<{
 | --- | --- | --- | --- |
 | Current standalone Team run | `FlatTeamExecutionManager` | Each configured Agent owns one runtime-specific `AgentRun`; delegated task Teams are task-scoped child executions | `ConfiguredAgentExecutionRegistry`, `TaskAgentExecutionRegistry`, and `TaskTeamExecutionRegistry` keep configured and task lifecycles distinct. |
 | AutoByteus member | `FlatTeamAgentExecutionHandle -> AgentRunManager -> AutoByteusAgentRunBackendFactory` | Standalone AutoByteus `AgentRun` | `composeNativeAutoByteusPrompt` consumes `MemberTeamContext` and emits Team Instruction plus AgentTeam Addressing/Collaboration before native guidance. |
-| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, and `delegate_task` remain automatically exposed through Agent Tools MCP. |
+| Codex or Claude member | `FlatTeamAgentExecutionHandle -> AgentRunManager` | Standalone Codex or Claude `AgentRun` | `composeSharedCarpenterPrompt` projects shared Team Instruction plus AgentTeam Addressing/Collaboration through provider instruction boundaries. `get_handoff_rules`, `send_message_to`, `delegate_task` and `create_or_update_task` remain automatically exposed through Agent Tools MCP. |
 
 ## Durable Member Activation And Restore
 
@@ -445,8 +445,8 @@ message and delegation addressing lives in `services/team-run-message-delivery.t
 `send_message_to(address)` resolves with the shared `MessageRecipientResolution`
 (the sender's own Team instance first, then run-wide, then a catalog bring-in via
 `TeamRunCollaborators.bringInAt`; the materialization gate admits concurrently,
-so `@` admissions and bring-ins are serialized by the root's
-`CollaboratorAdmissionQueue`), and `delegate_task(address)`
+so bring-ins and `@` mention resolutions are serialized by the root's
+`CollaboratorAdmissionQueue`; `@` itself adds nothing), and `delegate_task(address)`
 adds a catalog placement with a source snapshot after configured and
 collaborator placements. Copies are placed by address through the shared
 `resolveTaskCopyHost` (REQ-012; the Team root's rule, now shared by all roots); catalog copies
@@ -460,9 +460,17 @@ work packet is the child's first message: the delegator's address and AgentRun
 ID, the description, and any reference files. The result is a strict union:
 
 ```text
-{ target_agent_run_id: "<child ingress AgentRun ID>" }      // started
+{ target_agent_run_id: "<child ingress AgentRun ID>" }                         // started
+{ target_agent_run_id: "<child ingress AgentRun ID>", task_id: "ad_hoc_task_…" } // started; Task created
 { target_agent_run_id: null, message: "<why nothing started>" }
 ```
+
+`task_id` is present only when the delegation created a Task with no Project:
+a description-only `delegate_task` from an agent that is not working on a Task.
+Every delegated copy therefore belongs to a Task (linked: the Project Task;
+sub-work: its creator's Task; otherwise its own ad-hoc Task), and
+`create_or_update_task({task_id, status: "DONE"})` closes it (see
+[Projects](./projects.md#tasks-with-no-project-ad-hoc)).
 
 After delegation, parent and child talk only through `send_message_to` with run
 IDs, in both directions. `recipient_address` identifies the definition to
@@ -585,8 +593,8 @@ Agent selects the single rule whose condition most specifically applies and
 notifies only that rule's recipient; it does not fan out one outcome to
 additional recipients. The renderer injects no flat recipient, representative,
 or delegation roster. Runtime exposure automatically includes `get_handoff_rules`,
-`send_message_to`, and `delegate_task` for a valid Team context, with identical
-copy across AutoByteus, Codex, and Claude.
+`send_message_to`, `delegate_task` and `create_or_update_task` for a valid Team
+context, with identical copy across AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
 service, the sender's own Team instance first: a teammate address inside a

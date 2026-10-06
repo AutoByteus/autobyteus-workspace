@@ -1,0 +1,80 @@
+{
+  "startedAt": "2026-10-06T10:27:23.264Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "SCN-001 standalone run: menu (VIS-011/002/014, a11y), inline mentions; the send adds no collaborator and no row (AC-001); the stored message carries the delegate_task note and the UI a chip (AC-002); the host delegates (delegate_task card) and gets an ad-hoc Task, text only (AC-003, AC-015); the delegated row appears; the copy reports \"From Code Reviewer:\"; the copy view and direct chat; a Team is delegated the same way",
+      "result": "Fail",
+      "ms": 25295,
+      "error": "one delegated Code Reviewer row",
+      "details": []
+    },
+    "A02": {
+      "title": "SCN-002 / AC-007 / AC-009: the user tells the host the review is finished; the host (no Project tool selected) calls create_or_update_task by task_id alone; the Task is DONE, the copy closed, its row leaves live; the Team copy stays; history is kept",
+      "result": "Fail",
+      "ms": 3228,
+      "error": "the open Team copy must stay",
+      "details": {
+        "closed": [
+          "code_reviewer_12aed70a3ab040788780c0363f9555e2"
+        ],
+        "rows": []
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 10837
+    },
+    {
+      "label": "frontend",
+      "pid": 10862
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 10862,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 10837,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-MztzTi"
+    }
+  ],
+  "observations": [
+    {
+      "text": "A01 menu copy (unchanged by scope)",
+      "details": {
+        "menuText": "Bring into this run @ · ↑↓ to move, Enter to choose\n\nAgents\nCR\nCode Reviewer\nReviews text and code.\nR\nResearcher\nTeam researcher.\nW\nWriter\nTeam writer.\nA\nAnalyst\nOrg analyst.\nTH\nTemp Helper\nA definition that F01 deletes while a draft mentions it.\nPP\nProduct Prototyper\nBuilds UI prototypes.\nPB\nPrototype Bootstrapper\nSets up prototype repositories.\nAgent teams\nPT\nProduct Team\n2 members · coordinator product_prototyper\nRT\nReview Team\n2 members · coordinator researcher\nResearch Assistant gets your message and brings them into this run",
+        "footer": "Research Assistant gets your message and brings them into this run"
+      }
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-MztzTi",
+  "backendUrl": "http://127.0.0.1:50219",
+  "frontUrl": "http://127.0.0.1:50220",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 2,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-06T10:28:16.670Z"
+}

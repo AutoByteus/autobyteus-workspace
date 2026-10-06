@@ -8,17 +8,26 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
  */
 export type TaskAgentResourceRole = "assigned" | "delegated" | "broughtIn";
 export type TaskAgentResourceOwner = Readonly<{ taskId: string; agentRun: TaskExecutionReference; open: boolean }>;
+/** The text of a Task with no Project that an assignment creates (description-only delegation by an unowned sender). */
+export type AdHocTaskContent = Readonly<{ description: string; referenceFiles: readonly string[] }>;
+/** What an assignment joins: an existing Task, or a new Task with no Project created by the link itself. */
+export type TaskAgentResourceAssignmentTarget =
+  | Readonly<{ taskId: string; adHocTask?: never }>
+  | Readonly<{ adHocTask: AdHocTaskContent; taskId?: never }>;
 export type TaskAgentResourceLinkInput = Readonly<{
   hostRoot: RootExecutionIdentity; agentRun: TaskExecutionReference; coordinatorAgentRunId?: string;
 }> & (
-  | Readonly<{ role: "assigned"; taskId: string; assignedBy: string }>
+  | (Readonly<{ role: "assigned"; assignedBy: string }> & TaskAgentResourceAssignmentTarget)
   | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>
 );
 
 export interface TaskAgentResourcePort {
-  /** Saved work for a non-owned assignment; unknown, DONE or unreadable Tasks reject. */
+  /** Saved work for a non-owned assignment of a Project Task; unknown, DONE or unreadable Tasks reject. */
   resolveAssignment(taskId: string): Promise<Readonly<{ description: string; referenceFiles: string[] }>>;
-  /** Records the agent run `starting` before any of its resources are acquired. */
+  /**
+   * Records the agent run `starting` before any of its resources are acquired; returns the Task it
+   * joined. An `adHocTask` assignment first creates that Task (no Project) and returns its new ID.
+   */
   linkAgentRun(input: TaskAgentResourceLinkInput): Promise<Readonly<{ taskId: string }>>;
   markStarted(agentRun: TaskExecutionReference): Promise<void>;
   markFailed(agentRun: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;

@@ -1,0 +1,216 @@
+{
+  "startedAt": "2026-10-06T10:35:38.139Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "SCN-001 standalone run: menu (VIS-011, a11y), inline mention; the send adds no collaborator and no row (AC-001); stored delegate_task note, chip in the UI (AC-002); the host delegates (delegate_task card) and gets an ad-hoc Task, text only (AC-003, AC-015); the delegated row appears; the copy reports \"From Code Reviewer:\" (Task-linked scope allows its delegator); the host may close it on its own (SCN-002); a non-reporting copy and a Team copy are delegated the same way",
+      "result": "Fail",
+      "ms": 34752,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-model-list-claude_agent_sdk\"]').locator('[data-test=\"chat-model-option-undefined\"]')\n",
+      "details": null
+    },
+    "A02": {
+      "title": "SCN-002 / AC-007 / AC-009: the user tells the host the notes are finished; the host (no Project tool selected) calls create_or_update_task by task_id alone; Task DONE, copy closed, its row leaves live; history kept",
+      "result": "Fail",
+      "ms": 60081,
+      "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-run-row\"][data-run-id=\"null\"]').first() to be visible\n",
+      "details": null
+    },
+    "A03": {
+      "title": "AC-008 / SCN-004: Stop → reopen: closed copies stay hidden, viewing does not restore; a second @Note Taker is delegated to a new copy (never the closed one)",
+      "result": "Fail",
+      "ms": 12752,
+      "error": "locator.waitFor: Target page, context or browser has been closed\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-run-row\"][data-run-id=\"null\"]').first() to be visible\n",
+      "details": null
+    },
+    "A04": {
+      "title": "AR-001 (prior feature): viewing a stopped run's open delegated copy (clicking it, or reloading with it selected) does not restore the host; only a send does",
+      "result": "Fail",
+      "ms": 1,
+      "error": "fetch failed",
+      "details": null
+    },
+    "A05": {
+      "title": "AC-008 real backend restart: closed copies stay hidden, the open copy is listed, statuses are kept; after the restart the user has the host mark the second notes DONE and its row leaves",
+      "result": "Fail",
+      "ms": 2027,
+      "error": "page.reload: Target page, context or browser has been closed",
+      "details": null
+    },
+    "A06": {
+      "title": "AC-016 (prior feature): a stored delivery without a recorded sender (an old trace) keeps the user-style presentation; the user message is unchanged",
+      "result": "Fail",
+      "ms": 10,
+      "error": "GraphQL: [{\"message\":\"Variable \\\"$id\\\" of non-null type \\\"String!\\\" must not be null.\",\"locations\":[{\"line\":1,\"column\":10}]}]",
+      "details": null
+    },
+    "S01": {
+      "title": "AC-012 / SCN-007: a collaborator added by the agent's own first send_message_to to a catalog address (the remaining producer of collaborator entries) is stored; after Stop and reopen its row loads, direct chat restores it with the same run ID",
+      "result": "Fail",
+      "ms": 1,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "F01": {
+      "title": "AC-001 alternate (ineligible mention): a mention whose definition no longer exists is refused — notice, draft and highlight kept, nothing sent, no row, no Task",
+      "result": "Fail",
+      "ms": 0,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "T01": {
+      "title": "SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); \"From Product Prototyper:\"; the next send with @Note Taker (CR-003) delegates an Agent copy",
+      "result": "Fail",
+      "ms": 1,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "T02": {
+      "title": "Team run: the delegated Note Taker copy view; direct chat",
+      "result": "Fail",
+      "ms": 1,
+      "error": "locator.click: Target page, context or browser has been closed",
+      "details": null
+    },
+    "T03": {
+      "title": "AC-007 / AC-009 Team member: the user has the researcher mark the Note Taker work DONE by task_id; the row leaves live and stays hidden after reload",
+      "result": "Fail",
+      "ms": 0,
+      "error": "locator.click: Target page, context or browser has been closed",
+      "details": null
+    },
+    "O01": {
+      "title": "SCN-001 Org run: VIS-008 menu; two mentions → no Org collaborator (AC-001), stored note with both entries (AC-002); the analyst delegates an Agent and a Team copy, each with an ad-hoc Task (AC-003); \"From Product Prototyper:\"",
+      "result": "Fail",
+      "ms": 1675,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "O02": {
+      "title": "Org run: the delegated Note Taker copy view; direct chat",
+      "result": "Fail",
+      "ms": 1,
+      "error": "locator.click: Target page, context or browser has been closed",
+      "details": null
+    },
+    "O03": {
+      "title": "AC-007 / AC-009 Org member: the user has the analyst mark the delegated work DONE; the rows leave live and stay hidden after reload",
+      "result": "Fail",
+      "ms": 1,
+      "error": "locator.click: Target page, context or browser has been closed",
+      "details": null
+    },
+    "L01": {
+      "title": "Host crash keeps the root and its delegated child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Not Applicable",
+      "ms": 0,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "L02": {
+      "title": "Host crash without delegated copies: Archive succeeds and the lingering root is ended",
+      "result": "Not Applicable",
+      "ms": 0,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "P01": {
+      "title": "Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`",
+      "result": "Fail",
+      "ms": 1,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "N01": {
+      "title": "New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target",
+      "result": "Fail",
+      "ms": 0,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "N02": {
+      "title": "AF-009 + AC-001/003: an Agent New chat first send with an `@Team` mention starts the run; no collaborator; the host delegates a Team copy with an ad-hoc Task",
+      "result": "Fail",
+      "ms": 1,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "N03": {
+      "title": "AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; \"From Code Reviewer:\"",
+      "result": "Fail",
+      "ms": 5,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    },
+    "D01": {
+      "title": "SCN-005 / AC-010: permanently deleting the standalone run from history removes its ad-hoc Tasks; the Team and Org runs' ad-hoc Tasks stay",
+      "result": "Fail",
+      "ms": 0,
+      "error": "own ad-hoc Tasks missing before delete",
+      "details": {
+        "own": [],
+        "others": [],
+        "presentOwn": [],
+        "presentOthers": []
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 15159
+    },
+    {
+      "label": "frontend",
+      "pid": 15185
+    },
+    {
+      "label": "backend-restart",
+      "pid": 21650
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 15159,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 21650,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 15185,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 15159,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-qs8KWM"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-qs8KWM",
+  "backendUrl": "http://127.0.0.1:51023",
+  "frontUrl": "http://127.0.0.1:51024",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 0,
+    "fail": 19,
+    "notApplicable": 2
+  },
+  "completedAt": "2026-10-06T10:37:37.814Z"
+}

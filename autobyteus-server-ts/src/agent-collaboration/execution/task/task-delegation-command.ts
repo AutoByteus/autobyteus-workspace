@@ -6,9 +6,12 @@ export type DelegateTaskInput =
   | Readonly<{ recipient_address: string; task_id: string; description?: never; reference_files?: never }>
   | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; task_id?: never }>;
 
-/** A delegation is a spawn: success names the child ingress; failure means nothing was started. */
+/**
+ * A delegation is a spawn: success names the child ingress; failure means nothing was started.
+ * `task_id` is present only when the delegation created a Task with no Project for the copy.
+ */
 export type DelegateTaskResult =
-  | Readonly<{ target_agent_run_id: string }>
+  | Readonly<{ target_agent_run_id: string; task_id?: string }>
   | Readonly<{ target_agent_run_id: null; message: string }>;
 
 export type TaskDelegationErrorCode =

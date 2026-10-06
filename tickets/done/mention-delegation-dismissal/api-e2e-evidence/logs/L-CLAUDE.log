@@ -1,0 +1,36 @@
+
+> autobyteus@1.4.95-beta.4 test:e2e:cross-scope-agent-mentions /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-web
+> node tests/e2e/cross-scope-agent-mentions-live-probe.mjs --runtime claude_agent_sdk --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE-ledger.md
+
+A01 Fail SCN-001 standalone run: menu (VIS-011, a11y), inline mention; the send adds no collaborator and no row (AC-001); stored delegate_task note, chip in the UI (AC-002); the host delegates (delegate_task card) and gets an ad-hoc Task, text only (AC-003, AC-015); the delegated row appears; the copy reports "From Code Reviewer:" (Task-linked scope allows its delegator); the host may close it on its own (SCN-002); a non-reporting copy and a Team copy are delegated the same way — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-list-claude_agent_sdk"]').locator('[data-test="chat-model-option-undefined"]')
+
+A02 Fail SCN-002 / AC-007 / AC-009: the user tells the host the notes are finished; the host (no Project tool selected) calls create_or_update_task by task_id alone; Task DONE, copy closed, its row leaves live; history kept — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-agent-run-row"][data-run-id="null"]').first() to be visible
+
+A03 Fail AC-008 / SCN-004: Stop → reopen: closed copies stay hidden, viewing does not restore; a second @Note Taker is delegated to a new copy (never the closed one) — locator.waitFor: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('[data-test="workspace-agent-run-row"][data-run-id="null"]').first() to be visible
+
+A04 Fail AR-001 (prior feature): viewing a stopped run's open delegated copy (clicking it, or reloading with it selected) does not restore the host; only a send does — fetch failed
+A05 Fail AC-008 real backend restart: closed copies stay hidden, the open copy is listed, statuses are kept; after the restart the user has the host mark the second notes DONE and its row leaves — page.reload: Target page, context or browser has been closed
+A06 Fail AC-016 (prior feature): a stored delivery without a recorded sender (an old trace) keeps the user-style presentation; the user message is unchanged — GraphQL: [{"message":"Variable \"$id\" of non-null type \"String!\" must not be null.","locations":[{"line":1,"column":10}]}]
+S01 Fail AC-012 / SCN-007: a collaborator added by the agent's own first send_message_to to a catalog address (the remaining producer of collaborator entries) is stored; after Stop and reopen its row loads, direct chat restores it with the same run ID — page.goto: Target page, context or browser has been closed
+F01 Fail AC-001 alternate (ineligible mention): a mention whose definition no longer exists is refused — notice, draft and highlight kept, nothing sent, no row, no Task — page.goto: Target page, context or browser has been closed
+T01 Fail SCN-001 Team run: VIS-001 menu; @Product Team → no Team collaborator (AC-001), stored note (AC-002), the focused researcher delegates a Team copy with an ad-hoc Task (AC-003); "From Product Prototyper:"; the next send with @Note Taker (CR-003) delegates an Agent copy — page.goto: Target page, context or browser has been closed
+T02 Fail Team run: the delegated Note Taker copy view; direct chat — locator.click: Target page, context or browser has been closed
+T03 Fail AC-007 / AC-009 Team member: the user has the researcher mark the Note Taker work DONE by task_id; the row leaves live and stays hidden after reload — locator.click: Target page, context or browser has been closed
+O01 Fail SCN-001 Org run: VIS-008 menu; two mentions → no Org collaborator (AC-001), stored note with both entries (AC-002); the analyst delegates an Agent and a Team copy, each with an ad-hoc Task (AC-003); "From Product Prototyper:" — page.goto: Target page, context or browser has been closed
+O02 Fail Org run: the delegated Note Taker copy view; direct chat — locator.click: Target page, context or browser has been closed
+O03 Fail AC-007 / AC-009 Org member: the user has the analyst mark the delegated work DONE; the rows leave live and stay hidden after reload — locator.click: Target page, context or browser has been closed
+L01 Not Applicable Host crash keeps the root and its delegated child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run — host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)
+L02 Not Applicable Host crash without delegated copies: Archive succeeds and the lingering root is ended — host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)
+P01 Fail Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@` — page.goto: Target page, context or browser has been closed
+N01 Fail New chat: the heading switcher picks the target; `@` mentions collaborators only, never the target — page.goto: Target page, context or browser has been closed
+N02 Fail AF-009 + AC-001/003: an Agent New chat first send with an `@Team` mention starts the run; no collaborator; the host delegates a Team copy with an ad-hoc Task — page.goto: Target page, context or browser has been closed
+N03 Fail AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; "From Code Reviewer:" — page.goto: Target page, context or browser has been closed
+D01 Fail SCN-005 / AC-010: permanently deleting the standalone run from history removes its ad-hoc Tasks; the Team and Org runs' ad-hoc Tasks stay — own ad-hoc Tasks missing before delete
+Summary: 0 Pass, 19 Fail, 2 Not Applicable
+ ELIFECYCLE  Command failed with exit code 1.

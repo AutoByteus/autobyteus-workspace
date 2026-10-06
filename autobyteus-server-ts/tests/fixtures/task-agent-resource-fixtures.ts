@@ -12,15 +12,18 @@ type Entry = { taskId: string; hostRoot: RootExecutionIdentity; agentRun: TaskEx
  */
 export class InMemoryTaskAgentResources implements TaskAgentResourcePort {
   readonly entries = new Map<string, Entry>();
-  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean }>();
+  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true }>();
   readonly damaged = new Set<string>();
   readonly links: TaskAgentResourceLinkInput[] = [];
   /** Test hook awaited inside `linkAgentRun` before the write commits. */
   beforeLinkCommit?: (input: TaskAgentResourceLinkInput) => Promise<void> | void;
+  private adHocCount = 0;
 
   addTask(taskId: string, description = `saved work for ${taskId}`): void {
     this.tasks.set(taskId, { description, referenceFiles: [], done: false });
   }
+  /** The ad-hoc Tasks (no Project) that links created, in creation order. */
+  adHocTaskIds(): string[] { return [...this.tasks.entries()].filter(([, task]) => task.adHoc).map(([taskId]) => taskId); }
   /** DONE: closes every open agent run of the Task (the commit that precedes the stop request). */
   close(taskId: string): TaskExecutionReference[] {
     const task = this.tasks.get(taskId);
@@ -38,12 +41,17 @@ export class InMemoryTaskAgentResources implements TaskAgentResourcePort {
     const task = this.tasks.get(taskId);
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
+    if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     return { description: task.description, referenceFiles: task.referenceFiles };
   }
   async linkAgentRun(input: TaskAgentResourceLinkInput) {
     await this.beforeLinkCommit?.(input);
     let taskId: string;
-    if (input.role === "assigned") {
+    if (input.role === "assigned" && input.adHocTask) {
+      // Like the Projects side: a new Task with no Project, text only, created by this link.
+      taskId = `ad_hoc_task_${++this.adHocCount}`;
+      this.tasks.set(taskId, { description: input.adHocTask.description, referenceFiles: [...input.adHocTask.referenceFiles], done: false, adHoc: true });
+    } else if (input.role === "assigned") {
       taskId = input.taskId;
       if (this.damaged.has(taskId)) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read.");
       if (this.tasks.get(taskId)?.done !== false) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE or unknown.");

@@ -44,10 +44,10 @@ describe("agent-initiated collaborators in a Team root", () => {
     expect((await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!.rootTeam.collaborators).toEqual([product]);
     const lead = f.handles.get(product.members[0]!.agentRunId)!;
     expect(lead.handle.reserveInput).toHaveBeenCalledOnce();
-    // The same instance again, by address and by `@`.
+    // The same instance again by address; `@` resolves to its address and adds nothing.
     await expect(f.message(coordinatorOf(f), "/product_team", "More")).resolves.toMatchObject({ accepted: true });
     expect(lead.handle.reserveInput).toHaveBeenCalledTimes(2);
-    await expect(f.root.admitCollaboratorMentions({ focusedAgentRunId: "run-coordinator", mentions: [{ kind: "agent_team", definitionId: "product-team" }] }))
+    await expect(f.root.resolveCollaboratorMentions({ focusedAgentRunId: "run-coordinator", mentions: [{ kind: "agent_team", definitionId: "product-team" }] }))
       .resolves.toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team" }] });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toHaveLength(1);
   });
@@ -151,10 +151,9 @@ describe("agent-initiated collaborators in a Team root", () => {
       .toEqual([["/designer", "run-coordinator"], ["/lead", designerCopy.agentRunId]]);
 
     // A collaborator Team member brings a listed agent in.
-    await f.root.admitCollaboratorMentions({ focusedAgentRunId: "run-coordinator", mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
+    await f.message(coordinatorOf(f), "/product_team", "Start");
     const [product] = f.root.getExecutionTreeSnapshot().rootTeam.collaborators;
     if (product?.kind !== "agent_team") throw new Error("not added");
-    await f.message(coordinatorOf(f), "/product_team", "Start");
     const lead = f.identity("/product_team/lead", product.members[0]!.agentRunId);
     await expect(f.message(lead, "/code_reviewer", "Review the UI")).resolves.toMatchObject({ accepted: true });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators.map((entry) => [entry.address, entry.addedViaAgentRunId]))

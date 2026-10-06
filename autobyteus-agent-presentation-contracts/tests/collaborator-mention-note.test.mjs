@@ -8,7 +8,7 @@ import {
 const productTeam = { name: "Product Team", kind: "agent_team", address: "/product_team" };
 const reviewer = { name: "Code Reviewer (v2)", kind: "agent", address: "/code_reviewer" };
 
-test("composes the note after the user's text and parses it back", () => {
+test("composes the note after the user's text, steering to delegate_task, and parses it back", () => {
   const content = collaboratorMentionNote.compose("Please ask @Product Team for a UI", [productTeam, reviewer]);
   assert.equal(content, [
     "Please ask @Product Team for a UI",
@@ -16,12 +16,23 @@ test("composes the note after the user's text and parses it back", () => {
     "[Mentioned collaborators]",
     "- Product Team (Agent Team) at /product_team",
     "- Code Reviewer (v2) (Agent) at /code_reviewer",
-    "Message a collaborator with send_message_to and its address; it starts on its first message. delegate_task to its address spawns a new copy instead, which you follow up by run ID.",
+    "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.",
   ].join("\n"));
   assert.deepEqual(collaboratorMentionNote.parse(content), {
     text: "Please ask @Product Team for a UI",
     collaborators: [productTeam, reviewer],
   });
+});
+
+test("a note saved with the collaborator-messaging guidance still parses", () => {
+  const saved = [
+    "Please ask @Product Team",
+    "",
+    "[Mentioned collaborators]",
+    "- Product Team (Agent Team) at /product_team",
+    "Message a collaborator with send_message_to and its address; it starts on its first message. delegate_task to its address spawns a new copy instead, which you follow up by run ID.",
+  ].join("\n");
+  assert.deepEqual(collaboratorMentionNote.parse(saved), { text: "Please ask @Product Team", collaborators: [productTeam] });
 });
 
 test("a note saved before the REQ-009 guidance still parses", () => {

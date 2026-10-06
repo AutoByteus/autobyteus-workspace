@@ -201,11 +201,11 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     });
   }
 
-  /** `@`: ensures the mentioned collaborators for the focused agent in one gate; the caller composes the note. */
-  admitCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: resolves the mentioned definitions for the focused agent in one gate (adds nothing); the caller composes the note. */
+  resolveCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
-      return this.delivery.admitMentions(input);
+      return this.delivery.resolveMentions(input);
     });
   }
 

@@ -29,7 +29,7 @@ import type { AgentOrgRunCollaborators } from "./agent-org-run-collaborators.js"
 import type { ResolvedAgentOrgRecipient } from "./agent-org-task-execution-adapter.js";
 
 /**
- * The AgentOrg's message and delegation addressing, collaborator admission and child input
+ * The AgentOrg's message and delegation addressing, `@` mention resolution and child input
  * routing. Every public method runs inside the Org's operation gate, held by the caller, so a
  * catalog bring-in never re-enters it. Mirrors the Team root's `TeamRunMessageDelivery`.
  */
@@ -48,10 +48,10 @@ export class AgentOrgRunMessageDelivery {
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
   }>) {}
 
-  /** `@`: ensures the mentioned collaborators for the focused agent; the caller composes the note. */
-  admitMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
+  resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.ensure({ senderRunId: input.focusedAgentRunId, definitions: input.mentions })
+      ? this.options.collaborators.resolveMentions(input.mentions)
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in AgentOrg '${this.options.orgRunId}'.` });
   }
 

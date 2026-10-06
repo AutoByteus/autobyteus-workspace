@@ -156,7 +156,7 @@ describe("Project Task production HTTP boundaries", () => {
       projectId, taskId: created.taskId, description: "hello HTTP", status: "TODO", contextFiles: [],
     })]);
     for (const status of ["IN_PROGRESS", "DONE", "TODO"]) {
-      const input = { project_id: projectId, task_id: created.taskId, status };
+      const input = { task_id: created.taskId, status };
       const patched = (await call("create_or_update_task", input)).structuredContent;
       expect(patched).toEqual({ task: { projectId, taskId: created.taskId, status } });
       expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, input))).toEqual(patched);
@@ -169,12 +169,13 @@ describe("Project Task production HTTP boundaries", () => {
       ["list_project_tasks", { project_id: 12 }, "PROJECT_TOOL_ARGUMENT_INVALID"],
       ["list_project_tasks", { project_id: projectId, status: "todo" }, "TASK_STATUS_INVALID"],
       ["list_project_tasks", { project_id: "missing" }, "PROJECT_NOT_FOUND"],
-      ["create_or_update_task", { project_id: projectId, task_id: null, description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
-      ["create_or_update_task", { project_id: projectId, task_id: "", description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      ["create_or_update_task", { task_id: null, description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      ["create_or_update_task", { task_id: "", description: "x" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      ["create_or_update_task", { project_id: projectId, task_id: created.taskId, status: "DONE" }, "PROJECT_TOOL_ARGUMENT_INVALID"],
       ["create_or_update_task", { project_id: projectId, description: " " }, "TASK_DESCRIPTION_REQUIRED"],
       ["create_or_update_task", { project_id: projectId, description: "x", status: "TODO" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
-      ["create_or_update_task", { project_id: projectId, task_id: created.taskId }, "TASK_PATCH_REQUIRED"],
-      ["create_or_update_task", { project_id: projectId, task_id: "unknown", description: "no upsert" }, "TASK_NOT_FOUND"],
+      ["create_or_update_task", { task_id: created.taskId }, "TASK_PATCH_REQUIRED"],
+      ["create_or_update_task", { task_id: "unknown", description: "no upsert" }, "TASK_NOT_FOUND"],
     ];
     for (const [name, args, code] of cases) {
       const tool = name === "list_projects" ? new ListProjectsTool() : name === "list_project_tasks" ? new ListProjectTasksTool() : new CreateOrUpdateTaskTool();
@@ -209,7 +210,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect((await fetch(`${origin}${saved.locator.replace(projectId, otherId)}`)).status).toBe(404);
     const sibling = (await call("create_or_update_task", { project_id: projectId, description: "sibling" })).structuredContent.task as Task;
     expect((await fetch(`${origin}${saved.locator.replace(task.taskId, sibling.taskId)}`)).status).toBe(404);
-    await call("create_or_update_task", { project_id: projectId, task_id: task.taskId, status: "DONE" });
+    await call("create_or_update_task", { task_id: task.taskId, status: "DONE" });
     reset(); expect((await list(projectId)).find(t => t.taskId === task.taskId)).toMatchObject({ status: "DONE", contextFiles: [saved] });
     const projected = (await call("list_project_tasks", { project_id: projectId, status: "DONE" })).structuredContent.tasks[0];
     expect(await fs.readFile(projected.contextFiles[0].localPath, "utf8")).toBe("original workspace bytes");
@@ -260,7 +261,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect(registered.workspaceRootPath).toBe(missingPath); await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
     const projectId = await createProject("Aggregate existing");
     const task = (await call("create_or_update_task", { project_id: projectId, description: "Done still counts" })).structuredContent.task as Task;
-    await call("create_or_update_task", { project_id: projectId, task_id: task.taskId, status: "DONE" });
+    await call("create_or_update_task", { task_id: task.taskId, status: "DONE" });
     const fields = "projectId name taskCount openTaskCount workspaces { workspaceId workspaceRootPath description addedAt availability }";
     const updated = await gql<{ updateProject: { taskCount: number; openTaskCount: number; workspaces: Array<{ addedAt: string }> } }>(
       `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate existing", description: "saved", workspaces: [{ workspaceId: registered.workspaceId, description: "normalized registration" }] } });
