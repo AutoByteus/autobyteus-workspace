@@ -30,7 +30,7 @@ const build = () => {
 }
 vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => ({})),
-  stageAgentRunCollaborationContext: vi.fn(async () => ({ context: build(), commitActivities: () => undefined })),
+  stageAgentRunCollaborationContext: vi.fn(async () => ({ context: build(), commit: () => undefined })),
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))

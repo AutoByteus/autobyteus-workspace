@@ -64,10 +64,10 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     expandedTeams[hostRunId] = Object.freeze(opened)
   }
 
-  const publish = (hostRunId: string, context: AgentRunCollaborationContext, commitActivities: () => void) => {
+  const publish = (hostRunId: string, context: AgentRunCollaborationContext, commit: () => void) => {
     const previous = contexts.value[hostRunId]
     const adopt = previous ? context.prepareLocalContextAdoption(previous) : () => undefined
-    commitActivities()
+    commit()
     adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
@@ -127,7 +127,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         if (!isCurrent()) return
         if (!view) { setContext(hostRunId, null); return }
         const staged = await stageAgentRunCollaborationContext({ hostRunId, view, isCurrent, activityRevisions })
-        if (isCurrent()) publish(hostRunId, staged.context, staged.commitActivities)
+        if (isCurrent()) publish(hostRunId, staged.context, staged.commit)
       } catch (cause) {
         if (isCurrent()) errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
       }
