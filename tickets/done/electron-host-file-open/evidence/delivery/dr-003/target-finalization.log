@@ -1,0 +1,466 @@
+Ticket commit and remote push already completed: 689d80138aea4a9b5392300bbcd03018affd7df6
+Safe independent clone: user dirty personal checkout not changed/stashed/reset.
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+ * branch                codex/electron-host-file-open -> FETCH_HEAD
+   9d3d0299e..e41dc8711  personal   -> origin/personal
+Already on 'personal'
+Your branch is behind 'origin/personal' by 2 commits, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+Updating 9d3d0299e..e41dc8711
+Fast-forward
+ .../delivery-revision-record.md                    |  30 +-
+ .../evidence/delivery/dr-002/beta-helper.log       |  25 +
+ .../evidence/delivery/dr-002/ci-current.json       |  37 ++
+ .../delivery/dr-002/ci-desktop-progress-2.json     |   1 +
+ .../delivery/dr-002/ci-desktop-progress.json       |   1 +
+ .../delivery/dr-002/ci-docker-progress-2.json      |   1 +
+ .../delivery/dr-002/ci-docker-progress-3.json      | 184 ++++++
+ .../delivery/dr-002/ci-docker-progress.json        |   1 +
+ .../evidence/delivery/dr-002/ci-ios-progress.json  |   1 +
+ .../delivery/dr-002/ci-run-37495837604.json        |   1 +
+ .../delivery/dr-002/ci-run-37495837634.json        |   1 +
+ .../delivery/dr-002/ci-run-37495837665.json        |   1 +
+ .../delivery/dr-002/ci-run-37495837704.json        |   1 +
+ .../evidence/delivery/dr-002/ci-snapshots.jsonl    |  26 +
+ .../evidence/delivery/dr-002/cleanup-receipt.json  |  81 +++
+ .../evidence/delivery/dr-002/clone.log             |   3 +
+ .../delivery/dr-002/cumulative-package.json        |  58 ++
+ .../dr-002/desktop-publication-verification.json   | 160 +++++
+ .../delivery/dr-002/docker-live-log-query.json     |   7 +
+ .../delivery/dr-002/docker-pre-publication.json    |  66 +++
+ .../evidence/delivery/dr-002/docker-progress.json  |  23 +
+ .../delivery/dr-002/final-delivery-scan.json       |  51 ++
+ .../delivery/dr-002/finalization-receipt.json      |  29 +
+ .../delivery/dr-002/publication-manifest.json      |  56 ++
+ .../delivery/dr-002/publication-verification.json  | 139 +++++
+ .../evidence/delivery/dr-002/release-api.json      | 655 +++++++++++++++++++++
+ .../delivery/dr-002/release-version-tests.log      |   5 +
+ .../delivery/dr-002/target-finalization.log        | 446 ++++++++++++++
+ .../dr-002/updater-metadata/latest-linux-arm64.yml |   9 +
+ .../dr-002/updater-metadata/latest-linux.yml       |   9 +
+ .../dr-002/updater-metadata/latest-mac.yml         |  17 +
+ .../delivery/dr-002/updater-metadata/latest.yml    |   7 +
+ .../codex-disable-multi-agent/handoff-summary.md   |  95 ++-
+ .../release-deployment-report.md                   |  98 ++-
+ 34 files changed, 2228 insertions(+), 97 deletions(-)
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/beta-helper.log
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-current.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-desktop-progress-2.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-desktop-progress.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-docker-progress-2.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-docker-progress-3.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-docker-progress.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-ios-progress.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-run-37495837604.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-run-37495837634.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-run-37495837665.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-run-37495837704.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/ci-snapshots.jsonl
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/cleanup-receipt.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/clone.log
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/cumulative-package.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/desktop-publication-verification.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/docker-live-log-query.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/docker-pre-publication.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/docker-progress.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/final-delivery-scan.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/finalization-receipt.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/publication-manifest.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/publication-verification.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/release-api.json
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/release-version-tests.log
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/target-finalization.log
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/updater-metadata/latest-linux-arm64.yml
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/updater-metadata/latest-linux.yml
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/updater-metadata/latest-mac.yml
+ create mode 100644 tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/updater-metadata/latest.yml
+e41dc8711d7177c55ac4062200002aff466d9bbc
+e41dc8711d7177c55ac4062200002aff466d9bbc
+689d80138aea4a9b5392300bbcd03018affd7df6
+Merge made by the 'ort' strategy.
+ TESTING.md                                         |   22 +
+ .../components/layout/WorkspaceToolShell.vue       |   18 +-
+ .../RightSideTabs.workspaceTarget.spec.ts          |   81 +-
+ .../layout/__tests__/WorkspaceToolShell.spec.ts    |  272 +
+ .../workspace/agent/AgentEventMonitor.vue          |   12 +-
+ .../agent/__tests__/AgentEventMonitor.spec.ts      |   70 +-
+ ...eEventMonitorFilePreview.mobileBoundary.spec.ts |   48 +
+ .../__tests__/useEventMonitorFilePreview.spec.ts   |  239 +-
+ .../composables/layout/useWorkspaceToolReveal.ts   |   12 +
+ .../composables/useEventMonitorFilePreview.ts      |   54 +-
+ autobyteus-web/docs/content_rendering.md           |   32 +-
+ autobyteus-web/docs/file_explorer.md               |   47 +-
+ autobyteus-web/package.json                        |    1 +
+ .../__tests__/agentOrgContextHydration.spec.ts     |   15 +
+ .../agentOrgExecution/agentOrgExecutionContext.ts  |    1 +
+ .../__tests__/teamExecutionViewState.spec.ts       |   22 +
+ .../teamExecution/teamExecutionViewState.ts        |    8 +
+ .../stores/__tests__/activeContextStore.spec.ts    |   70 +
+ .../__tests__/agentRunCollaborationStore.spec.ts   |    4 +-
+ autobyteus-web/stores/activeContextStore.ts        |   38 +
+ .../stores/agentRunCollaborationStore.ts           |    1 +
+ .../tests/e2e/event-monitor-file-preview-probe.mjs |  261 +
+ .../types/workspace/activeAgentWorkspaceTarget.ts  |    1 +
+ .../api-e2e-coverage-investigation.md              |  142 +
+ .../api-e2e-execution-coverage-report.md           |  118 +
+ .../api-e2e-revision-record.md                     |   24 +
+ .../api-e2e-test-case-ledger.md                    |  184 +
+ .../approval-hold-result.md                        |   18 +
+ .../architecture-design-complete.md                |   76 +
+ .../electron-host-file-open/artifact-relocation.md |    4 +
+ .../delivery-revision-record.md                    |   56 +
+ .../done/electron-host-file-open/design-spec.md    |  239 +
+ .../electron-host-file-open/docs-sync-report.md    |   55 +
+ .../evidence/api-cumulative.log                    |  748 ++
+ .../evidence/api-electron.log                      |   18 +
+ .../evidence/api-focused-rerun.log                 |  269 +
+ .../evidence/api-focused.log                       | 8116 ++++++++++++++++++++
+ .../electron-host-file-open/evidence/api-guard.log |    5 +
+ .../evidence/api-handoff-rules.json                |   28 +
+ .../evidence/api-list-after.json                   |    8 +
+ .../evidence/api-list-during.json                  |    8 +
+ .../evidence/api-mobile-final.log                  |   41 +
+ .../evidence/api-mobile.log                        |   41 +
+ .../evidence/api-native-command.log                |    6 +
+ .../evidence/api-native-complete-command.log       |    6 +
+ .../api-native-complete/directory-file.png         |  Bin 0 -> 119717 bytes
+ .../api-native-complete/emulated-wide-redock.png   |  Bin 0 -> 133856 bytes
+ .../evidence/api-native-complete/evidence.json     |  810 ++
+ .../evidence/api-native-complete/failed-N-009.png  |  Bin 0 -> 74875 bytes
+ .../first-native-activation.png                    |  Bin 0 -> 127453 bytes
+ .../evidence/api-native-complete/list.json         |    8 +
+ .../evidence/api-native-complete/list.log          |    0
+ .../evidence/api-native-complete/missing-file.png  |  Bin 0 -> 116015 bytes
+ .../api-native-complete/readonly-deduped.png       |  Bin 0 -> 130014 bytes
+ .../evidence/api-native-complete/start.json        |   20 +
+ .../evidence/api-native-complete/start.log         |    0
+ .../evidence/api-native-complete/stop.json         |   15 +
+ .../evidence/api-native-complete/stop.log          |    0
+ .../api-native-complete/unreadable-file.png        |  Bin 0 -> 116578 bytes
+ .../evidence/api-native-final-command.log          |    6 +
+ .../evidence/api-native-final/directory-file.png   |  Bin 0 -> 119719 bytes
+ .../evidence/api-native-final/evidence.json        |  529 ++
+ .../evidence/api-native-final/failed-N-004.png     |  Bin 0 -> 116951 bytes
+ .../api-native-final/first-native-activation.png   |  Bin 0 -> 127745 bytes
+ .../evidence/api-native-final/list.json            |    8 +
+ .../evidence/api-native-final/list.log             |    0
+ .../evidence/api-native-final/missing-file.png     |  Bin 0 -> 116015 bytes
+ .../evidence/api-native-final/readonly-deduped.png |  Bin 0 -> 130014 bytes
+ .../evidence/api-native-final/start.json           |   20 +
+ .../evidence/api-native-final/start.log            |    0
+ .../evidence/api-native-final/stop.json            |   15 +
+ .../evidence/api-native-final/stop.log             |    0
+ .../evidence/api-native-rerun-command.log          |    5 +
+ .../api-native-rerun/emulated-wide-redock.png      |  Bin 0 -> 126048 bytes
+ .../evidence/api-native-rerun/evidence.json        |  913 +++
+ .../api-native-rerun/first-native-activation.png   |  Bin 0 -> 120673 bytes
+ .../evidence/api-native-rerun/list.json            |    8 +
+ .../evidence/api-native-rerun/list.log             |    0
+ .../evidence/api-native-rerun/not-regular-file.png |  Bin 0 -> 112870 bytes
+ .../evidence/api-native-rerun/readonly-deduped.png |  Bin 0 -> 123125 bytes
+ .../evidence/api-native-rerun/start.json           |   20 +
+ .../evidence/api-native-rerun/start.log            |    0
+ .../evidence/api-native-rerun/stop.json            |   15 +
+ .../evidence/api-native-rerun/stop.log             |    0
+ .../evidence/api-native-rerun/unavailable.png      |  Bin 0 -> 108978 bytes
+ .../evidence/api-native-verified-command.log       |    5 +
+ .../api-native-verified/directory-file.png         |  Bin 0 -> 119717 bytes
+ .../api-native-verified/emulated-wide-redock.png   |  Bin 0 -> 133856 bytes
+ .../evidence/api-native-verified/evidence.json     | 1000 +++
+ .../first-native-activation.png                    |  Bin 0 -> 127453 bytes
+ .../evidence/api-native-verified/list.json         |    8 +
+ .../evidence/api-native-verified/list.log          |    0
+ .../evidence/api-native-verified/missing-file.png  |  Bin 0 -> 116073 bytes
+ .../api-native-verified/readonly-deduped.png       |  Bin 0 -> 130014 bytes
+ .../evidence/api-native-verified/start.json        |   20 +
+ .../evidence/api-native-verified/start.log         |    0
+ .../evidence/api-native-verified/stop.json         |   15 +
+ .../evidence/api-native-verified/stop.log          |    0
+ .../api-native-verified/unreadable-file.png        |  Bin 0 -> 116579 bytes
+ .../evidence/api-native/evidence.json              |  335 +
+ .../api-native/first-native-activation.png         |  Bin 0 -> 120673 bytes
+ .../evidence/api-native/list.json                  |    8 +
+ .../evidence/api-native/list.log                   |    0
+ .../evidence/api-native/start.json                 |   20 +
+ .../evidence/api-native/start.log                  |    0
+ .../evidence/api-native/stop.json                  |   15 +
+ .../evidence/api-native/stop.log                   |    0
+ .../evidence/api-package-provenance.json           |   19 +
+ .../evidence/api-reference-files.json              |   88 +
+ .../evidence/baseline-owner-probe.cjs              |   63 +
+ .../evidence/baseline-owner-probe.json             |  104 +
+ .../evidence/boundary-tests.log                    |  157 +
+ .../evidence/changed-tests.log                     |  309 +
+ .../evidence/d2-cumulative-web-tests.log           |  647 ++
+ .../evidence/d2-drawer-tests.log                   |   26 +
+ .../evidence/d2-electron-tests.log                 |   16 +
+ .../evidence/d2-first-tests.log                    |  202 +
+ .../evidence/d2-handoff-rules.json                 |   24 +
+ .../evidence/d2-native-build-source.json           |   57 +
+ .../evidence/d2-native-build.log                   |  648 ++
+ .../evidence/d2-native-deduped.png                 |  Bin 0 -> 143028 bytes
+ .../evidence/d2-native-directory-error.png         |  Bin 0 -> 120935 bytes
+ .../evidence/d2-native-first-activation.png        |  Bin 0 -> 130667 bytes
+ .../evidence/d2-native-inspection-controller.cjs   |  133 +
+ .../evidence/d2-native-inspection-notes.md         |   24 +
+ .../evidence/d2-native-list-after.json             |    8 +
+ .../evidence/d2-native-missing-error.png           |  Bin 0 -> 117303 bytes
+ .../evidence/d2-native-start.json                  |   20 +
+ .../evidence/d2-native-stop.json                   |   15 +
+ .../evidence/d2-native-visual.json                 | 1192 +++
+ .../evidence/d2-native-wide-redock.png             |  Bin 0 -> 142461 bytes
+ .../evidence/d2-second-tests.log                   |  177 +
+ .../evidence/d2-self-review.md                     |   14 +
+ .../evidence/d2-web-guard.log                      |    5 +
+ .../delivery/dr-001/blocked-handoff-receipt.json   |   14 +
+ .../delivery/dr-001/blocked-handoff-request.json   |   35 +
+ .../delivery/dr-001/cumulative-package.json        |  206 +
+ .../evidence/delivery/dr-001/docs-check.log        |   10 +
+ .../delivery/dr-001/handoff-rule-selection.json    |   13 +
+ .../evidence/delivery/dr-001/handoff-rules.json    |   16 +
+ .../dr-001/integrated-base-changed-paths.log       |   48 +
+ .../delivery/dr-001/integrated-base-diff-stat.log  |   49 +
+ .../delivery/dr-001/integration-receipt.json       |   84 +
+ .../delivery/dr-001/package-provenance.json        |   67 +
+ .../delivery/dr-001/post-integration-web.log       |  294 +
+ .../dr-002/coordination-reconciliation.json        |   11 +
+ .../delivery/dr-002/handoff-rule-selection.json    |    7 +
+ .../evidence/delivery/dr-002/handoff-rules.json    |   24 +
+ .../dr-003/acceptance-and-target-refresh.json      |   14 +
+ .../delivery/dr-003/pre-finalization-hygiene.log   |    4 +
+ .../delivery/dr-003/release-version-tests.log      |    5 +
+ .../evidence/design-reveal-owner-probe.cjs         |   82 +
+ .../evidence/design-reveal-owner-probe.json        |   79 +
+ .../evidence/electron-tests.log                    |   16 +
+ .../evidence/final-web-tests-2.log                 |  480 ++
+ .../evidence/final-web-tests.log                   |  563 ++
+ .../evidence/focused-tests.log                     |  379 +
+ .../evidence/historical-owner-probe.cjs            |   68 +
+ .../evidence/historical-owner-probe.json           |  444 ++
+ .../evidence/implementation-install.log            |   27 +
+ .../evidence/initial-tests.log                     |  186 +
+ .../evidence/introducing-commit.diff               |   40 +
+ .../evidence/native-after-manual-files.png         |  Bin 0 -> 130811 bytes
+ .../evidence/native-build-source.json              |   37 +
+ .../evidence/native-build.log                      |  650 ++
+ .../evidence/native-directory-error.png            |  Bin 0 -> 121090 bytes
+ .../evidence/native-inspection-controller.cjs      |   99 +
+ .../evidence/native-inspection-notes.md            |   15 +
+ .../evidence/native-list-after.json                |    8 +
+ .../evidence/native-missing-file-error.png         |  Bin 0 -> 117421 bytes
+ .../evidence/native-readonly-deduped.png           |  Bin 0 -> 128487 bytes
+ .../evidence/native-recovered-brief.png            |  Bin 0 -> 85478 bytes
+ .../evidence/native-start.json                     |   20 +
+ .../evidence/native-stop.json                      |   15 +
+ .../evidence/native-visual-attempt-1.json          |  190 +
+ .../evidence/native-visual.json                    | 1905 +++++
+ .../evidence/nuxt-prepare.log                      |    4 +
+ .../evidence/panel-baseline.log                    |  131 +
+ .../evidence/panel-debug.log                       |  195 +
+ .../evidence/panel-final.log                       |  220 +
+ .../evidence/panel-isolation.log                   |  225 +
+ .../evidence/panel-tests-fixed.log                 |  225 +
+ .../evidence/panel-tests.log                       |  245 +
+ .../electron-host-file-open/evidence/web-guard.log |    5 +
+ .../electron-host-file-open/handoff-summary.md     |   45 +
+ .../historical-investigation-result.md             |   56 +
+ .../implementation-design-impact.md                |   28 +
+ .../implementation-handoff.md                      |   76 +
+ .../implementation-revision-record.md              |   37 +
+ .../electron-host-file-open/investigation-notes.md |  132 +
+ .../release-deployment-report.md                   |  113 +
+ .../done/electron-host-file-open/release-notes.md  |   15 +
+ .../electron-host-file-open/requirements-doc.md    |  117 +
+ .../solution-coordination-hold.md                  |   47 +
+ .../solution-revision-record.md                    |   71 +
+ .../electron-host-file-open/user-approval-r1.md    |   10 +
+ .../user-drawer-clarification.md                   |    8 +
+ .../electron-host-file-open/user-verification.md   |   17 +
+ 198 files changed, 27479 insertions(+), 52 deletions(-)
+ create mode 100644 autobyteus-web/components/layout/__tests__/WorkspaceToolShell.spec.ts
+ create mode 100644 autobyteus-web/composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts
+ create mode 100644 autobyteus-web/composables/layout/useWorkspaceToolReveal.ts
+ create mode 100644 autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs
+ create mode 100644 tickets/done/electron-host-file-open/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/electron-host-file-open/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/electron-host-file-open/api-e2e-revision-record.md
+ create mode 100644 tickets/done/electron-host-file-open/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/electron-host-file-open/approval-hold-result.md
+ create mode 100644 tickets/done/electron-host-file-open/architecture-design-complete.md
+ create mode 100644 tickets/done/electron-host-file-open/artifact-relocation.md
+ create mode 100644 tickets/done/electron-host-file-open/delivery-revision-record.md
+ create mode 100644 tickets/done/electron-host-file-open/design-spec.md
+ create mode 100644 tickets/done/electron-host-file-open/docs-sync-report.md
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-cumulative.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-electron.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-focused-rerun.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-focused.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-guard.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-handoff-rules.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-list-after.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-list-during.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-mobile-final.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-mobile.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-command.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete-command.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/directory-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/emulated-wide-redock.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/evidence.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/failed-N-009.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/first-native-activation.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/list.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/list.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/missing-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/readonly-deduped.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/start.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/stop.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-complete/unreadable-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final-command.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/directory-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/evidence.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/failed-N-004.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/first-native-activation.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/list.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/list.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/missing-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/readonly-deduped.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/start.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-final/stop.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun-command.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/emulated-wide-redock.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/evidence.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/first-native-activation.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/list.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/list.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/not-regular-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/readonly-deduped.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/start.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/stop.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-rerun/unavailable.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified-command.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/directory-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/emulated-wide-redock.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/evidence.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/first-native-activation.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/list.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/list.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/missing-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/readonly-deduped.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/start.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/stop.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native-verified/unreadable-file.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/evidence.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/first-native-activation.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/list.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/list.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/start.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-native/stop.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-package-provenance.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/api-reference-files.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/baseline-owner-probe.cjs
+ create mode 100644 tickets/done/electron-host-file-open/evidence/baseline-owner-probe.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/boundary-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/changed-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-cumulative-web-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-drawer-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-electron-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-first-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-handoff-rules.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-build-source.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-build.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-deduped.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-directory-error.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-first-activation.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-inspection-controller.cjs
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-inspection-notes.md
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-list-after.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-missing-error.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-visual.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-native-wide-redock.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-second-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-self-review.md
+ create mode 100644 tickets/done/electron-host-file-open/evidence/d2-web-guard.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/blocked-handoff-receipt.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/blocked-handoff-request.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/cumulative-package.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/docs-check.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/handoff-rule-selection.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/handoff-rules.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/integrated-base-changed-paths.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/integrated-base-diff-stat.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/integration-receipt.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/package-provenance.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-001/post-integration-web.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-002/coordination-reconciliation.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-002/handoff-rule-selection.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-002/handoff-rules.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-003/acceptance-and-target-refresh.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-003/pre-finalization-hygiene.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/delivery/dr-003/release-version-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/design-reveal-owner-probe.cjs
+ create mode 100644 tickets/done/electron-host-file-open/evidence/design-reveal-owner-probe.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/electron-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/final-web-tests-2.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/final-web-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/focused-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/historical-owner-probe.cjs
+ create mode 100644 tickets/done/electron-host-file-open/evidence/historical-owner-probe.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/implementation-install.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/initial-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/introducing-commit.diff
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-after-manual-files.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-build-source.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-build.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-directory-error.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-inspection-controller.cjs
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-inspection-notes.md
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-list-after.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-missing-file-error.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-readonly-deduped.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-recovered-brief.png
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-start.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-stop.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-visual-attempt-1.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/native-visual.json
+ create mode 100644 tickets/done/electron-host-file-open/evidence/nuxt-prepare.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/panel-baseline.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/panel-debug.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/panel-final.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/panel-isolation.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/panel-tests-fixed.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/panel-tests.log
+ create mode 100644 tickets/done/electron-host-file-open/evidence/web-guard.log
+ create mode 100644 tickets/done/electron-host-file-open/handoff-summary.md
+ create mode 100644 tickets/done/electron-host-file-open/historical-investigation-result.md
+ create mode 100644 tickets/done/electron-host-file-open/implementation-design-impact.md
+ create mode 100644 tickets/done/electron-host-file-open/implementation-handoff.md
+ create mode 100644 tickets/done/electron-host-file-open/implementation-revision-record.md
+ create mode 100644 tickets/done/electron-host-file-open/investigation-notes.md
+ create mode 100644 tickets/done/electron-host-file-open/release-deployment-report.md
+ create mode 100644 tickets/done/electron-host-file-open/release-notes.md
+ create mode 100644 tickets/done/electron-host-file-open/requirements-doc.md
+ create mode 100644 tickets/done/electron-host-file-open/solution-coordination-hold.md
+ create mode 100644 tickets/done/electron-host-file-open/solution-revision-record.md
+ create mode 100644 tickets/done/electron-host-file-open/user-approval-r1.md
+ create mode 100644 tickets/done/electron-host-file-open/user-drawer-clarification.md
+ create mode 100644 tickets/done/electron-host-file-open/user-verification.md
+remote: 
+remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   e41dc8711..609020255  personal -> personal
+6090202555744db4ac453ed347bb5fb92b2cd7db
