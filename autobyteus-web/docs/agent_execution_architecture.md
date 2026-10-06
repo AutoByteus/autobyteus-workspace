@@ -146,21 +146,19 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `terminateTeamRun()`: calls backend termination before local teardown for a
     persisted TeamRun and preserves the active local state on failure.
 
-### `agentOrgRunStore.ts`, `agentOrgContextsStore.ts`, And `agentOrgRunConfigStore.ts`
+### `agentOrgRunStore.ts`, `agentOrgContextsStore.ts`, And `agentOrgLaunchDraftStore.ts`
 
 - **Role**: Keep AgentOrg definition/configuration, root lifecycle/history, and
   live execution context separate from the standalone Team store.
-- `agentOrgRunConfigStore` owns the root choices, sparse mounted-Team and exact-
-  Agent overrides, workspace operations, and exact schema-readiness states. The
-  Run action is admitted only when every registered root/Team/Agent scope is
-  ready; unavailable or invalid scope state remains address-specific.
-- A deliberate new-launch draft epoch selects the real
-  `Temp Workspace (Default)` catalog record when available. The root selection
-  flows through the existing Org inheritance resolver; descendants do not
-  independently default themselves. Once the user chooses an existing or new
-  Workspace, later catalog changes cannot overwrite that choice. Missing or
-  failed inventory leaves an actionable unset state rather than fabricating a
-  path.
+- `agentOrgLaunchDraftStore` (formerly `agentOrgRunConfigStore`) owns the Org
+  launch page's draft: phases (`preparing` → `ready` → `launching`), the Org
+  card's settings with a `RunWorkspaceChoice` (temp workspace by default), sparse
+  placed-Team and exact-Agent overrides, a placed Team's own workspace, and
+  readiness through the shared `resolveScopesReadiness` rule. `launch()` hands
+  a snapshot to the stateless `agentOrgLaunchService`, which resolves or creates
+  the workspaces, serializes the placements and calls
+  `agentOrgRunStore.launch()`. See
+  [Agent Orgs](./agent_orgs.md#org-launch-page).
 - `agentOrgRunStore.launch()` sends one complete projected payload and records
   only the returned `agentOrgRunId`. `restore()`, `terminate()`, and
   `fetchHistory()` use the AgentOrg GraphQL operations and the
@@ -1005,104 +1003,83 @@ keeps runtime consumers dependent only on finalized eligible locators, and
 prevents an unsupported local URL from becoming executable merely because its
 inferred file type is an image or another supported viewer family.
 
-### Editable Run Workspace Selection
+### Start Surfaces And Run Workspace Choice
 
-For editable single-agent and team launches,
-`components/workspace/config/WorkspaceSelector.vue` is continuous launch input,
-not a separate workspace-loading step. `RunConfigPanel.vue` owns one complete
-transient `WorkspaceSelectionState` (`mode`, `existingWorkspaceId`, and
-`newWorkspacePath`) that governs both the rendered controls and launch
-preparation. `WorkspaceSelector.vue` is controlled by that value and emits
-complete replacement values; `AgentRunConfigForm.vue` and
-`TeamRunConfigForm.vue` only relay the contract. The selector must not keep a
-second authoritative mode or path. `mode` is the active-choice discriminator,
-while the inactive Existing id and New path may remain buffered so switching
-tabs does not discard the other value.
+New chat (`/chat`, Agents and Agent Teams) and the Org launch page
+(`/workspace?…mode=configuration`, Agent Orgs) are the only start surfaces.
+Every Run, **+** and heading-switch intent goes through
+`composables/runSettings/useRunStart.ts`, which picks the draft owner
+(`chatDraftStore` or `agentOrgLaunchDraftStore`), its initial settings and the
+route. It owns no draft state and launches nothing. The two draft owners never
+call each other; only `useRunStart` coordinates them. Launch side effects go
+through `chatLaunchService` and `agentOrgLaunchService` only.
 
-`WorkspaceSelector.vue` also accepts an opt-in `candidateWorkspaceIds` prop
-(default `null`). Run-configuration callers never pass it, so their behavior
-is unchanged. When a non-null list is supplied, the Existing options are
-exactly those ids in the given order, no Temp entry is prepended, and the
-selector never auto-selects a default. The selector stays policy-free: callers
-own the candidate rule. For example, the Projects link dialog supplies
-`selectLinkableWorkspaceIds` (see `projects.md`).
+Both drafts store the workspace as one `RunWorkspaceChoice`
+(`types/runSettings/RunWorkspaceChoice.ts`): `{ kind: 'existing', workspaceId }`
+or `{ kind: 'folder', rootPath }`. The `ChatWorkspaceMenu` control picks an
+existing workspace or accepts an absolute folder path; a typed folder that
+matches a known workspace becomes that existing choice. A folder is not loaded
+when typed: it becomes a workspace at launch.
 
-The Existing picker is the shared `components/common/SearchableSelect.vue`,
-which is keyboard-operable as a combobox/listbox (including inside modal
-dialogs). ArrowUp/ArrowDown on the trigger opens it. In the search input,
-ArrowUp/ArrowDown/Home/End move the active option (`aria-activedescendant`)
-and Enter selects it. Escape closes only the popover and does not propagate to
-the enclosing dialog. Tab closes the popover. Selection, Escape, and Tab return
-focus to the trigger because the popover is teleported to `body`, outside any
-dialog focus scope. Pointer behavior, filtering, and emitted values are
-unchanged.
+`services/workspace/runWorkspaceChoice.ts` is the single owner of
+`RunWorkspaceChoice` resolution and of the conversions to and from the older
+workspace shapes that survive in owners this design did not replace:
 
-Existing mode applies the selected visible workspace id to the active launch
-config immediately. New mode keeps the entered absolute path transient until
-submission; it does not render a user-facing **Load** button, pressing Enter in
-the path input does not preload the workspace, and the helper copy must indicate
-that the path will be loaded when the user runs the agent or team. Automatic
-Temp/Existing initialization is only a proposal for an untouched run-config
-context. Once the user explicitly changes the mode, Existing value, path, or
-folder selection, delayed workspace discovery must not overwrite that choice.
+- `resolveRunWorkspaceChoice(choice)` returns `{ workspaceId, workspaceMetadata }`
+  and creates a folder workspace at most once per path. It is called by
+  `chatLaunchService` and `agentOrgLaunchService`. A failure leaves the start
+  page and its values intact.
+- `runWorkspaceChoiceFromRootPath` (Agent **+**),
+  `runWorkspaceChoiceFromTeamWorkspace` (Team **+**) and
+  `runWorkspaceChoiceFromSelection` (Org **+** seed and the saved placed-Team
+  workspace) convert into a choice; `toWorkspaceSelection` converts a choice
+  back for `existingRunConfigStore`.
+- `knownRunWorkspaceOf` is a read-only lookup (no creation) used by the
+  start-surface tools to show the chosen workspace in Files and Terminal.
 
-The controlled state is derived again only when the active run-config context
-really changes: a selected Agent/Team run identity (including its initial
-hydration-ready transition), a Team draft id, or the standalone Agent launch
-buffer identity. Immutable edits within the same Team draft—runtime, model,
-thinking options, auto-approve, or member overrides—are value changes, not
-context changes, and therefore preserve the visible and launch workspace state.
-The Agent and Team form instances use the same stable identity so selector-local
-initialization/interaction guards reset for a genuine context transition rather
-than for an unrelated config replacement.
+Views, `runMemberTree` and `components/run-settings/*` never import
+`WorkspaceSelectionState` or `TeamWorkspaceSelection`.
 
-`RunConfigPanel.vue` owns the submit boundary. When the selector is in New mode
-with a non-empty pending path, **Run Agent** / **Run Team** first calls the
-workspace creation/registration path, updates the active launch config with the
-canonical registered workspace id and metadata, transitions the controlled
-selection to that canonical Existing identity, and only then creates the local
-standalone or team run. The active New path takes precedence over any dormant
-previously selected workspace. If registration fails or the New path is blank,
-New mode and the entered path are preserved, no run is created, and the
-workspace error is shown in the config panel; there is no hidden fallback to
-Temp/Existing. While this submit-time load is in progress, duplicate run clicks
-are blocked; the Run button is otherwise allowed to be enabled before any
-explicit preload when the pending path and the rest of the launch config are
-valid. The bound server remains authoritative for interpreting and
-canonicalizing the supplied absolute path.
+The Existing workspace picker used elsewhere is the shared
+`components/common/SearchableSelect.vue`, which is keyboard-operable as a
+combobox/listbox (including inside modal dialogs). ArrowUp/ArrowDown on the
+trigger opens it. In the search input, ArrowUp/ArrowDown/Home/End move the
+active option (`aria-activedescendant`) and Enter selects it. Escape closes only
+the popover and does not propagate to the enclosing dialog. Tab closes the
+popover. Selection, Escape, and Tab return focus to the trigger because the
+popover is teleported to `body`, outside any dialog focus scope.
 
 ### Existing Run Model Configuration
 
-`RunConfigPanel.vue` routes a selected persisted Agent or Team run to
-`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer, and
-a selected standalone `temp-*` draft to `DraftRunConfigEditor.vue`, which edits
-the draft context's config locally without an existing-run load (see `chat.md`).
-The
-editor and `existingRunConfigStore` own a Settings-scoped canonical network
-load, local draft, schema readiness, mutation state, and reconciliation. Cached
+`RunConfigPanel.vue` is only the panel chrome for a selected saved run: it has
+no launch branch. It mounts `ExistingRunConfigEditor.vue` (container), which maps
+`existingRunConfigStore` state to the `components/run-settings/ExistingRunSettings.vue`
+view. A standalone `temp-*` context (a New chat whose first send failed) has no
+saved settings, so its ⚙ is hidden. The container and `existingRunConfigStore`
+own a Settings-scoped canonical network load, local draft, schema readiness,
+mutation state, and reconciliation; the view only renders state and emits
+intents. `existingRunConfigStore.discardChanges()` backs Cancel, and
+`reloadCanonical()` refreshes editability after the view's stop action
+(`useRunStopAction`, the same per-kind terminate action as the workspace tree). Cached
 history lifecycle state may conservatively relock the current target but cannot
 unlock it or supersede the Settings-owned read.
 
 Existing-run editing is intentionally narrow. Runtime kind,
 workspace, automatic-tool policy, definition/provider identity, concrete run
-IDs, Team topology, and addresses are fixed presentation. The model/settings
-pair is writable when the canonical editability contract says
-the persisted run is available, unarchived, and inactive. Locked forms keep
-their disclosures operable, but expose no launch action, workspace authoring,
-runtime selection, or stopped-run Reset.
+IDs, Team topology, and addresses are fixed presentation (shown with a lock
+icon). The model/settings pair is writable when the canonical editability
+contract says the persisted run is available, unarchived, and inactive. The
+Members list stays readable while locked, but the view exposes no launch action,
+workspace authoring (except a stopped Org's placed-Team workspace), runtime
+selection, or stopped-run Reset.
 
 Saved standalone Team root/member workspaces use the canonical execution
-tree's `workspace_root_path` as the sole displayed value. The Team projector
-marks those fields `workspacePresentation: { kind: 'fixed-path' }`; the shared
-root/member renderers pass the already-projected `effectiveConfig.workspaceRootPath`
-to `FixedWorkspacePath`, which renders one read-only path (or a neutral empty
-value) and fixed-run context. It performs no workspace-ID lookup or physical
-availability check. The former Team `historical-only` selector projection and
-parallel `workspaceControl`/`storedWorkspace` fields are removed in favor of
-the discriminated `fixed-path`/`selector` presentation. AgentOrg projection
-continues to use the `selector` variant for its distinct mounted-Team editing
-policy; new-Team launch still uses the editable workspace selector. Model
-Save does not mutate saved Team workspace paths.
+tree's `workspace_root_path` as the sole displayed value, shown as a locked
+row. The saved-run member tree (`buildRunMemberTree` saved-run variant in
+`utils/runSettings/runMemberTree.ts`) performs no workspace-ID lookup or
+physical availability check. A stopped AgentOrg's placed Team keeps its
+editable workspace, converted through `runWorkspaceChoice.ts`. Model Save does
+not mutate saved Team workspace paths.
 
 `existingRunModelOptionsClient` reads server-owned Agent or configured-Team
 options for the saved subject. It receives self-contained current and
@@ -1172,7 +1149,7 @@ next normal message/restore. It never starts/hot-mutates a backend or performs
 Save-time compaction, history conversion, or reset. Existing runtime compaction
 algorithms remain; future model-specific budgets/timing need not be identical.
 Frontend and backend use the complete-pair API together, without an old-client
-adapter or persisted-data migration. See [Settings](./settings.md#existing-run-model-configuration)
+adapter or persisted-data migration. See [Settings](./settings.md#existing-run-configuration)
 for the user workflow and [server model-selection policy](../../autobyteus-server-ts/docs/modules/llm_management.md#persisted-run-model-selection-validation)
 for runtime-specific authority and uncertainty limits.
 
@@ -1217,7 +1194,8 @@ Settings receives its current descriptor directly in run options. Missing exact
 detail remains visibly unavailable rather than guessed. Other runtimes keep
 their existing labels and receive `selectionPresentation: null`.
 
-Editable primary/global agent and team launch config initializes **Advanced**
+Where `ModelConfigSection` is still used (mobile run setup, definition launch
+preferences), editable agent and team launch config initializes **Advanced**
 from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**
 by default so users can see defaults such as Codex `reasoning_effort: "medium"`
 or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
@@ -1225,43 +1203,32 @@ unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
 
-Editable launch forms intentionally do not expose a skill-access dropdown.
+Start surfaces and launch config intentionally do not expose a skill-access dropdown.
 Standalone runs inherit the selected agent definition's configured skills, and
 team runs apply each leaf member's configured skills. Launch, edit and restore
 payloads carry no skill field.
 
-Desktop run-configuration forms use quieter light-blue filled-field controls on
-dense Agent and Team launch surfaces while keeping the shared select components'
-default bordered styling available for callers that do not opt in. The
-light-blue treatment is presentation-only and preserves hover plus
-keyboard-focus affordance. Team launch configuration keeps the root visually
-equivalent to the established launch form: its global **Auto approve tools**
-switch follows workspace selection, and no hierarchy wrapper, root `/`,
-inheritance badge, or effective-value summary is inserted around the root
-controls.
+Desktop start surfaces and saved-run settings use the chat-composer controls
+(`ChatWorkspaceMenu`, `ChatApprovalToggle`, `ChatModelMenu`,
+`ChatThinkingControl`, `ChatModelOptionControl`) as labelled rows in
+`components/run-settings/RunSettingsCard.vue`. Member customization lives in
+the Member settings drawer (see [Agent Orgs](./agent_orgs.md#member-settings)),
+not in long per-member forms. A member's thinking is customized only when its
+thinking settings differ from its parent's.
 
-A standalone Team's **Team Members Override** disclosure defaults collapsed and
-shows its direct-Agent count. Expanding it displays only direct Agent override
-rows because AgentTeam Definition V2 is flat; configured Team groups are not a
-valid Team member shape.
+Non-thinking model parameters are **other model settings**
+(`utils/runSettings/modelOptions.ts`): every config-schema enum or boolean that
+is not a thinking key, labelled by its schema title. For Codex, a fast-capable
+model exposes `service_tier` as **Fast mode**. In the message box each is its
+own chip after Thinking (a toggle "⚡ Fast" for a default-or-one-value setting, a
+menu for multi-value settings); on labelled surfaces (Org card, member rows,
+saved-run settings) it is a row under Thinking. Default leaves the parameter
+unset. Thinking and other settings are independent (changing one keeps the
+other); choosing another model resets both. Thinking semantics stay in
+`llmThinkingConfigAdapter`; `service_tier` is not a thinking key.
 
-The AgentOrg form uses **Member overrides (N)**, where `N` is the exact
-configurable-Agent count across direct Org Agents and mounted Teams. The outer
-disclosure and every mounted-Team row start independently collapsed. Each Team
-header shows Team identity, exact placement address,
-**Inherited**/**Customized**, an accessible disclosure, and conditional
-**Reset**. Only an expanded Team shows its Team-scope controls and direct Agent
-rows; only the exact coordinator Agent carries coordinator identity. Direct Org
-Agents remain direct rows. Drafts survive collapse, sibling Teams remain closed,
-and narrow layouts wrap without overlap. Loading/error/Retry and model-schema
-state stay bound to the exact root, Team, or Agent address.
-
-Explicit Team- or Agent-local runtime/model selections that resolve to an
-effective-ON model can open only that scope's **Advanced** controls. Display-only
-inherited or schema-default values must not create overrides. Non-thinking
-runtime/model parameters render through the same advanced schema component; for
-Codex, a fast-capable model can therefore expose `service_tier` with the
-user-facing label **Fast mode** beside reasoning settings.
+`ModelConfigSection` / `RuntimeModelConfigFields` remain only for mobile run
+setup, definition launch preferences and compaction model settings.
 
 
 ### Skill Improvement Manual Composer Action
@@ -1273,7 +1240,7 @@ and the backend no longer snapshots `skillImprovementEffective` into run/member
 metadata for new runs. Agent/team definition forms and persisted definition
 defaults must not add `skillImprovement`.
 
-The visible launch forms do not expose Skill Improvement eligibility controls. The
+The start surfaces do not expose Skill Improvement eligibility controls. The
 only user-facing manual start entrypoint is the concise composer-adjacent **Self
 improve** CTA for the selected active standalone run or team member. That CTA is
 hidden when the global capability is disabled, hidden for Retrospective Skill Improver
@@ -1308,32 +1275,31 @@ the UI must not imply improver completion proves downstream improvement.
 
 ### New Run From Existing Run
 
-On a standalone agent run (the Chat run view), the header ＋ does not copy the
-run: it starts a New chat preset to that run's agent and workspace and routes
-to `/chat` (see `chat.md`). When the user clicks the workspace header
-add/new-run action while an existing team run is selected, the frontend treats that selected run as a
-launch template for the new editable draft. The selected run itself remains a
-persisted existing-run context whose eligible model settings can be edited only
-through Settings; the add/new-run action instead seeds a separate editable
-launch buffer from a deep-cloned copy of the selected run config, including
-runtime kind, model identifier, workspace, auto-approve settings, `llmConfig`,
-and team member overrides.
+**+** on a run starts another run like it, through `useRunStart`:
 
-That source-copy path must preserve backend-provided model-thinking fields such
-as `reasoning_effort: "xhigh"` even when the runtime model catalog is still
-loading. Schema arrival may sanitize invalid model-config keys after a real
-schema is available, but an empty/loading schema must not clear the copied
-`llmConfig`. Explicit user runtime/model changes remain the owner for stale
-model-config cleanup.
+- **Agent** (the Chat run view, including an `@` collaborator child's view):
+  `copyAgentFromConfig(displayed config)` opens New chat for the agent on
+  screen, prefilled with its workspace (temp when it has none), runtime, model,
+  `llmConfig` (thinking and other model settings) and tool approval.
+- **Team:** `copyTeamRun` reads the run's canonical resume configuration
+  (`loadTeamRunLaunchSeed`) and opens New chat for the Team with its root
+  settings and member overrides.
+- **Org:** `copyOrgRun` opens the Org launch page with `sourceOrgRunId`;
+  `agentOrgLaunchDraftStore` reads the run and copies its settings and member
+  overrides. A placed team keeps its workspace only where it differs from the
+  Org's.
 
-Schema arrival is also the cleanup boundary for runtime-specific non-thinking
-parameters. For example, when a copied or default Codex config contains
-`service_tier: "fast"` and the user switches to a model whose active schema does
-not include `service_tier`, the stale key is removed before launch.
-
-If there is no selected same-definition source run, workspace add/new-run flows
-fall back to the existing definition/default launch preferences instead of
+The source run itself remains a persisted existing-run context whose eligible
+model settings can be edited only through Settings. If the source cannot be read
+or copied, the start surface opens with the definition's defaults instead of
 inventing historical config.
+
+Copied settings are kept as they are, including backend-provided thinking
+fields such as `reasoning_effort: "xhigh"` and other settings such as
+`service_tier: "fast"`; the copied runtimes' availability and model catalogs load
+before Send/Run is offered. Choosing another model is the cleanup boundary: it
+resets thinking and the other model settings to the new model's defaults, so a
+stale key such as `service_tier` is not carried to a model whose schema lacks it.
 
 ---
 

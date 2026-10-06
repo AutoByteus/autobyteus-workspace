@@ -84,7 +84,7 @@ Those values are used in two places:
 - direct native agent launches, and
 - application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
 
-Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
+Definition editors can leave runtime blank to mean “choose when launching”, while start surfaces (New chat, the Org launch page) resolve to an effective runtime immediately.
 Model pickers show the backend's offered choices. For an exact model ID seeded
 from a persisted definition but absent from offered rows (such as a proven
 redundant Claude `default`), the editor and direct Run setup request a separate
@@ -97,21 +97,22 @@ new choice.
 
 Fresh definition-based Agent launch setup defaults automatic approval to **on**
 on desktop and mobile, including a fresh application session after restart.
-The shared frontend constructor `useDefinitionLaunchDefaults.ts` supplies this
-initial value; it is not a persisted definition preference or a backend default.
+On desktop, **Run** opens New chat and `chatDraftStore` supplies this initial
+value; on mobile the shared frontend constructor `useDefinitionLaunchDefaults.ts`
+does. It is not a persisted definition preference or a backend default.
 Where the selected runtime permits it, the user can turn approval off before
 launch. Ordinary model/workspace edits and runtime changes that permit false
 retain that explicit choice. Antigravity keeps its existing always-on/locked
 policy: a default-on setting is not the same as forcing approval on.
 
 Saved run settings and editable seeds copied from existing runs retain their
-explicit approval values, including false. New Chat keeps its existing on
-default. Automatic approval lets runtime-supported tool/access requests proceed
-without manual confirmation; it does not grant new capabilities or guarantee
-completion without unrelated interruptions. This frontend default does not
-change direct API callers, Agent Org defaults, backend enforcement or storage.
+explicit approval values, including false. New Chat and the Org launch page use
+the same on default. Automatic approval lets runtime-supported tool/access
+requests proceed without manual confirmation; it does not grant new capabilities
+or guarantee completion without unrelated interruptions. This frontend default
+does not change direct API callers, backend enforcement or storage.
 
-Direct run-config forms do not expose a launch-time skill-access selector.
+Start surfaces and launch config do not expose a launch-time skill-access selector.
 Runtime skill exposure is defined by the agent definition's `skillScope`:
 
 - `CONFIGURED` (default): the configured `skillNames` are available to the run,
@@ -126,7 +127,7 @@ config UI or generated GraphQL enum; the scope belongs to the definition.
 
 Skill Improvement is explicitly excluded from persisted agent definition defaults
 and run-launch configuration. `AgentDefinition`, `agent-config.json`, the agent
-create/edit forms, and the standalone run configuration form do not own
+create/edit forms, and the start surfaces do not own
 Skill Improvement eligibility. The composer-adjacent **Improve skills** CTA asks the
 backend for current eligibility for the selected active run, and the backend
 resolves that from global Skill Improvement settings plus current target state.
@@ -163,7 +164,7 @@ definitions between nodes.
 
 - Featured placement is user/operator-selected through Settings; fresh server startup does not auto-feature Daily Assistant or any other agent.
 - Daily Assistant (`autobyteus-daily-assistant`) is a platform-owned server built-in: its files in the shared agents folder are replaced from the shipped template on every server startup, so edits saved to it in the agent editor revert at the next restart. It is the default Chat agent and can be added to Featured agents through Settings if desired.
-- An agent card's Run action still opens the unchanged `RunConfigPanel` launch form on `/workspace`; once the run is created its selection opens the run in Chat (`/chat?id=<runId>`).
+- An agent card's Run action (and the detail page's) opens New chat (`/chat`) addressed to that agent with its default launch config, through `useRunStart().runAgent`; the first message starts the run in Chat (`/chat?id=<runId>`). See [Chat](./chat.md#new-chat-draft).
 - Featured agents render with the same `AgentCard` component and the same view-details and run actions as the origin-grouped browse sections.
 - When the featured section is visible, the same agent is removed from later origin sections to avoid duplicate cards.
 - Search mode hides featured and origin grouping and searches the discoverable agent catalog, excluding team-local definitions.
