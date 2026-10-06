@@ -120,11 +120,11 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/men
 | Cross-boundary integration realism and mock gap | 85% | 95% | +10 | Real Claude (`haiku`) and Codex (`gpt-5.6-luna`) followed the note: delegated, closed by `task_id`, reported | Model behavior is probabilistic; two runtimes agreed across all cases |
 | Environment, configuration, identity, and fixture fidelity | 92% | 95% | +3 | Fresh dist, owned isolated roots, sanitized env, real gate file | Migration-pending state is created by the gate file, not by a real interrupted migration |
 | Failure, edge-case, lifecycle, and recovery evidence | 88% | 94% | +6 | Real restart, Stop/reopen, fencing, repeat DONE, rejected delegation, ineligible mention, delete | Post-link activation failure (approved tradeoff) and a crash between create and link (out of scope) are unit-level/untested |
-| User-surface, browser, and desktop-shell confidence | 70% | 95% | +25 | Real browser journeys for all `@`/DONE/restart/delete outcomes on 2 runtimes | Desktop shell unchanged; not run packaged |
+| User-surface, browser, and desktop-shell confidence | 70% | 97% | +27 | Real browser journeys on 2 runtimes plus a human-style journey in a freshly built packaged desktop app (UI-created agents/team, real app restart, UI delete) | Org not repeated in the desktop app |
 | Durable regression coverage quality and relevance | 92% | 95% | +3 | Gated deterministic E2E (3 roots), resolver cases, rewritten probe tolerant of supported agent choices, TESTING.md section | The live probe depends on a real model and CLI login |
 
 - Overall post-repository confidence: 87%
-- Overall final confidence: 95.1% (simple average: 96, 96, 95, 95, 94, 95, 95)
+- Overall final confidence: 95.4% (simple average: 96, 96, 95, 95, 94, 97, 95)
 - Calculation method: simple average; no category is hidden below 90%
 - Confidence change produced by broader validation: +8 points; closed the UI, real-runtime and restart gaps
 - Every critical acceptance criterion directly proven: `Yes`
@@ -154,11 +154,32 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/men
 | Ineligible mention | refused, nothing stored | as expected | F01 | Pass ×2 (Claude after harness fix) |
 | Permanent delete from UI | own ad-hoc Tasks removed; others kept | 4 removed / 4 kept | D01 | Pass ×2 |
 
+## Human-Style Desktop Journey (Isolated Electron Instance)
+
+Run on request of the user, after the probe runs: a fresh packaged build of this worktree (`pnpm --silent isolated-app start --build`, instance `iso-55746-779d`, own ports/data root), driven through its window with the browser-automation presentation helper (visible cursor, paced typing, real clicks) like a person. Everything was created through the UI; agent instructions were plain (no test rules); no tools selected; runtime Claude Agent SDK `haiku`. Evidence: `api-e2e-evidence/H-desktop/` (screenshots 00–18, `journey.mp4` 241 s, `journey-after-restart.mp4` 251 s).
+
+| Step (as a user) | Observed | AC | Result |
+| --- | --- | --- | --- |
+| Agents page → Create Agent ×3 (Research Assistant, Code Reviewer, Note Taker) | created, 0 tools | — | Pass |
+| New chat, heading → Research Assistant, model menu → Claude `haiku`, "Hi!" | real reply | — | Pass |
+| Type `@code`, pick Code Reviewer from the menu, write a request, Enter | tree sampled every 250 ms: no row from the send; after ~3.8 s a "Temporary task agent, code reviewer … Started by research assistant" row; chip shown; `delegate_task` card; server: `collaborators: []`, one `taskExecution`; disk: `ad-hoc-tasks/<id>/{task.json, agent_run_resources.json}`, text-only, `TODO` | AC-001/002/003/015 | Pass |
+| Click the "code reviewer" row | its conversation shows the review | — | Pass |
+| Back to the host: "the review is finished. Please close that task." | `create_or_update_task` card; row left the tree in ~3.5 s; server: Task `DONE`, copy in `closed_task_executions`, status `offline` | AC-007, AC-009 (Claude, no selection) | Pass |
+| `@Note Taker …` | open delegated row | AC-003 | Pass |
+| Quit and relaunch the app (`isolated-app restart`) | closed code reviewer still absent; open note taker listed (Offline) | AC-008 | Pass |
+| "That's all I needed from the Note Taker. Please close it." | `create_or_update_task`; row left; Task `DONE` | AC-007 after restart | Pass |
+| Agent Teams → Create Team (Research Assistant coordinator + Note Taker), chat with it, `@Code Reviewer …` from the coordinator | delegated "code reviewer" row under the team; `collaborators: []`; ad-hoc Task | AC-001/003 (Team) | Pass |
+| "that's done. Please close that task." | `create_or_update_task`; row left; team members unchanged; Task `DONE` | AC-007 (Team) | Pass |
+| Stop the standalone run, then "Delete run permanently" → confirm "Delete" | run row gone; its 2 ad-hoc Tasks removed from disk; the Team run's ad-hoc Task kept | AC-010 | Pass |
+| `isolated-app stop` | `dataRootRemoved: true`, both ports released | cleanup | Pass |
+
+Not repeated in the desktop journey (covered by the probes and the server E2E): Org runs, update-mode rejections, migration-pending, stored bring-in collaborators, ineligible mentions.
+
 ## Desktop Application Validation
 
-- Approach: web-equivalent renderer via the browser dev-path probes (TESTING.md). No shell code changed.
+- Approach: browser dev-path probes (TESTING.md) and, additionally, a human-style journey in a freshly built isolated desktop instance (section above).
 - Effect on the already-running desktop application: `None`. The user's AutoByteus (port 29695, `~/.autobyteus`) was never touched. All probes used owned temp roots and free ports.
-- Not directly proven: packaged Electron rendering of the same views (unchanged shell; low risk).
+- Packaged Electron: proven by the isolated-instance journey (standalone and Team, Claude runtime, real app restart, UI delete).
 
 ## Platform / Runtime Targets
 
@@ -224,6 +245,7 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/men
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
 | In-process Studio servers + temp app data (R-05/R-06) | owned | `app.close()`, `rm` | `dataRemoved: true`, `serverClosed: true`, 0 roots |
+| Isolated desktop instance `iso-55746-779d` | owned | `isolated-app stop` | data root removed, ports released |
 | Probe backends, Nuxt dev, Chrome, temp roots (B-01, B-02, L-*) | owned | probe `finally` | receipts: SIGTERM/exit 0, roots removed, no browser errors |
 | Aborted Claude run 1 | owned | probe and its backend/Nuxt/Chrome process groups terminated by exact PID | temp root gone; no orphaned CLI |
 | Temp base worktree | owned | unlink symlinks; `git worktree remove` | removed |
@@ -236,10 +258,10 @@ N/A — Pass.
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: 95.1%
+- Final validation confidence: 95.4%
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required`, executed (Browser + real Claude and Codex runtimes)
+- Broader validation decision: `Required`, executed (Browser + real Claude and Codex runtimes; human-style journey in an isolated packaged desktop app)
 - Critical acceptance criteria lacking direct proof: None. AC-009 for AutoByteus is proven at its stated unit/integration layer.
 - Next recipient from `get_handoff_rules`: see handoff.
 - Notes:

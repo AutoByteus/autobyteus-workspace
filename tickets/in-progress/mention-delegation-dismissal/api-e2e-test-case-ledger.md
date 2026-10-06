@@ -48,12 +48,13 @@
 | 17 | L-CODEX | 2026-10-06 13:48 | Started | full run, `--runtime codex_app_server` | — | — | — | `L-CODEX/` | — |
 | 18 | L-CODEX | 2026-10-06 14:26 | Completed | full run, `--runtime codex_app_server` (model `gpt-5.6-luna`) | all cases Pass; L01/L02 N/A | 19 Pass, 0 Fail, 2 N/A. The agent closed reporting copies on its own in A01, T01 and O01 (supported). Cleanup clean; no browser errors; probe exited | Pass | `L-CODEX/`, `L-CODEX-ledger.md` | — |
 | 19 | R-06 | 2026-10-06 14:30 | Completed | added AC-003 alternate (rejected delegation) step; final gated run of R-05 + R-06 + R-07 | 10/10 | 10/10 pass; rejected delegation → `target_agent_run_id: null`, no `task_id`, no Task; receipts clean | Pass | `logs/R-final-gated.log` | — |
+| 21 | H-DESKTOP | 2026-10-06 14:40–15:05 | Completed | `isolated-app start --build` (`iso-55746-779d`); driven like a user via the browser-automation presentation helper; Claude `haiku`; UI-created agents/team | `@` → delegated row (no collaborator) → user asks to close → row gone; survives app restart; Team; UI delete | All steps Pass (see report § Human-Style Desktop Journey); instance stopped, data root removed, ports released | Pass | `api-e2e-evidence/H-desktop/` | — |
 | 20 | L-AUTOBYTEUS | 2026-10-06 14:30 | Completed | — | — | Not run. No model: LM Studio is down, and provider keys exist only in the user's data (TESTING.md rule 2). AC-009 AutoByteus is covered by the exposure unit test and R-07 | Not Tested | — | residual |
 | 13 | L-CLAUDE | 2026-10-06 12:37 | Checkpoint | full run 1 (`L-CLAUDE/`) | — | A01 failed in harness `pickModel`: the model list was read empty during a cold Nuxt start, giving `chat-model-option-undefined`. A02 cascaded. Run deliberately stopped. Probe, backend, Nuxt and Chrome groups were terminated, the temp root is gone, and no orphaned CLI remains. `pickModel` now waits for a non-empty list | Not Tested (aborted) | `L-CLAUDE/`, `L-CLAUDE-ledger.md` | full run 2 |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: seq 20 (L-AUTOBYTEUS Not Tested)
+- Last durably recorded event: seq 21 (H-DESKTOP Pass)
 - Last completed case and result: R-06 final gated run, Pass
 - Cases still running, interrupted, or not started: none. The aborted L-CLAUDE run 1 (seq 13) was superseded by run 2 (seq 15/16).
 - Next case or recovery action: none

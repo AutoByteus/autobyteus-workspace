@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 — IR-001 initial implementation | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review, round 1 — API-REV-001 Pass | Pass (CRR-001, source review) | Pass | None |
+| CRR-003 | `api-e2e-test-review-report.md` | Test-review addendum, round 2 — API-REV-001 evidence-only update (desktop journey) | Pass (CRR-002) | Not Applicable (no durable test change); CRR-002 Pass stands | None |
 
 ## Revision Entries
 
@@ -70,3 +71,24 @@ None.
 - Remaining risks or uncertainty:
   - The test changes are uncommitted and must be included at delivery.
   - Upstream residuals are unchanged: the breaking external update mode, cross-Task copy messaging, an orphan `task.json` on crash, a failed-after-link ad-hoc Task, and unchanged UI copy.
+
+### CRR-003 — Evidence-only API/E2E addendum: Not Applicable (CRR-002 Pass stands)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-test-review-report.md` ("Round 2 Addendum")
+- Review entry point and round: Successful API/E2E test-code review, round 2 (addendum)
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`, `api-e2e-execution-coverage-report.md` § Human-Style Desktop Journey; ledger seq 21; API-REV-001 updated
+- Relevant solution / architecture / implementation / API/E2E / delivery revision IDs: SR-003, SR-005 / ARCH-REV-002 / IR-001 / API-REV-001 / DR-001 (checkpoint present in the worktree)
+- Prior authoritative result: CRR-002 `Pass`
+- Current authoritative result: `Not Applicable` for the delta (no durable test change); CRR-002 `Pass` remains authoritative
+- What changed in the review result and why: There was no durable test-code change, only evidence and report updates (confidence went from 95.1% to 95.4%). I verified that the reviewed test files were committed unchanged in `9ca13012f`. Later differences in those paths come only from the integrated `origin/personal` merge (`remove-built-in-project-task-manager`), and delivery owns that.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None. Large / High preserved.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: Unchanged from CRR-002.

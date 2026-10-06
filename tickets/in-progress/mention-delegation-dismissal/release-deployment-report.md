@@ -11,8 +11,8 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: on hold for user verification.
+- Current delivery revision ID: `DR-002`
+- Notes: on hold for user verification. DR-002 picked up the API/E2E desktop-journey addendum (confidence 95.4%) and CRR-003.
 
 ## Initial Delivery Integration Refresh
 
@@ -29,7 +29,10 @@
   - `node --check` on the merged live probe → ok
 - Post-integration verification result: `Passed`
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (as of `a07b17a5e`)
+- Handoff state current with latest tracked remote base: `Yes` (as of `a07b17a5e`, rechecked at DR-002)
+- Integration-owned test-path changes (named in CRR-003) were validated:
+  - The probe's `BUILT_IN_AGENT_IDS` now equals the server `built-in-agent-registry.ts` set (daily assistant and retrospective skill improver).
+  - The `TESTING.md` node-locality wording comes from the base; that suite passed after the merge (`project-mutation-node-locality.e2e.test.ts` in `post-integration-server.log`).
 
 ## User Verification
 

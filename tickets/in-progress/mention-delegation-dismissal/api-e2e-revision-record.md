@@ -6,7 +6,7 @@ The coverage investigation (`api-e2e-coverage-investigation.md`) and the executi
 
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
-| API-REV-001 | code_reviewer / `code-review-report.md` CRR-001 / round 1 | SR-003, SR-005, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95.1% |
+| API-REV-001 | code_reviewer / `code-review-report.md` CRR-001 / round 1 | SR-003, SR-005, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95.4% |
 
 ## Revision Entries
 
@@ -21,7 +21,7 @@ The coverage investigation (`api-e2e-coverage-investigation.md`) and the executi
   - Added 2 cases to `autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts` (AC-009, AutoByteus).
   - Rewrote `autobyteus-web/tests/e2e/cross-scope-agent-mentions-live-probe.mjs` from "`@` adds a collaborator" to "`@` delegates; ad-hoc Task; DONE". F01 now covers an ineligible definition, since runnability is no longer checked at `@`; AC-012 now uses an agent-initiated bring-in.
   - Documented the gated suite and the probe in `TESTING.md`.
-- Cases: R-00..R-07, B-01, B-02, L-CLAUDE, L-CODEX (all Pass); L-AUTOBYTEUS Not Tested.
+- Cases: R-00..R-07, B-01, B-02, L-CLAUDE, L-CODEX, H-DESKTOP (human-style journey in a freshly built isolated desktop app, added at the user's request) — all Pass; L-AUTOBYTEUS Not Tested.
 - Commands, environment, fixture, or broader-validation delta: N/A (baseline).
 
 #### Prior Failure Resolution
@@ -30,7 +30,7 @@ None.
 
 - Canonical artifacts and sections updated: investigation, ledger, report, this record.
 - Prior result and confidence: N/A
-- Current result and confidence: `Pass`, 95.1% (no category below 90%).
+- Current result and confidence: `Pass`, 95.4% (no category below 90%).
 - New or remaining failure IDs: None. The F01 first-run failure was a harness false positive, fixed and rerun.
 - Recommended owner: `/code_reviewer` for proportional test-code review.
 - Remaining risks, blocked evidence, or untested scope:

@@ -57,9 +57,20 @@ Non-blocking notes (no action required):
 - In `ad-hoc-task-delegation.e2e.test.ts`, the check `expect(resources.length).toBeGreaterThan(0)` (after the copy-ID containment check) is redundant. Harmless.
 - The AutoByteus runtime was not exercised live (no model available under TESTING.md rule 2). AC-009 for AutoByteus rests on the exposure and resolver unit layer, as the execution report records.
 
+## Round 2 Addendum (CRR-003) — Evidence-Only API/E2E Update
+
+- Trigger: `/api_e2e_engineer` addendum to API-REV-001. A human-style journey in a freshly built isolated desktop app (instance `iso-55746-779d`, Claude `haiku`). The report section is "Human-Style Desktop Journey" in `api-e2e-execution-coverage-report.md`, with the ledger at seq 21. Evidence is in `api-e2e-evidence/H-desktop/`. Confidence went from 95.1% to 95.4%.
+- No durable test file changed in this addendum: `Yes`. The result for the delta is `Not Applicable`.
+- Verification: the four durable test paths reviewed in round 1 were committed unchanged in `9ca13012f`. Their diff stat against `a2a7b37bc` matches the reviewed working tree: +38 / +482 / +37 / ±887.
+- After the delivery merge of `origin/personal` (`e09a17bc9`), the only later differences in those paths come from the integrated upstream change `remove-built-in-project-task-manager`:
+  - the PTM ID was removed from `BUILT_IN_AGENT_IDS` in the probe;
+  - two wording lines changed in TESTING.md.
+  They are not part of this package's API/E2E test changes and are not re-reviewed here. Delivery owns integration validation.
+- The round 1 `Pass` stands.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
+- Result: `Pass` (round 1 test-code review; round 2 evidence-only addendum is `Not Applicable` — no durable test change)
 - Changed durable test paths reviewed:
   - `autobyteus-server-ts/tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts`
   - `autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts`

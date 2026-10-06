@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-001. The branch is integrated with the latest base and docs are synced. Awaiting your explicit verification.** Nothing is pushed, merged or released yet.
+- Delivery state: **DR-002. The branch is integrated with the latest base (`a07b17a5e`, still current) and docs are synced. It now includes the API/E2E desktop-journey addendum. Awaiting your explicit verification.** Nothing is pushed, merged or released yet.
 - Classification (unchanged): `task_size=Large`, `architectural_risk=High`, reviewed route.
 
 | Stage | Revision | Result |
@@ -12,9 +12,9 @@
 | Architecture review | ARCH-REV-002 | Pass |
 | Implementation | IR-001 (`a2a7b37bc`) | Done |
 | Code review | CRR-001 | Pass |
-| API/E2E | API-REV-001 | Pass, 95.1% confidence |
-| Test-code review | CRR-002 | Pass |
-| Delivery | DR-001 | Integrated, docs synced, awaiting verification |
+| API/E2E | API-REV-001 (+ evidence-only desktop-journey addendum) | Pass, 95.4% confidence |
+| Test-code review | CRR-002, CRR-003 | Pass; CRR-003 addendum review Not Applicable (no test-code change) |
+| Delivery | DR-002 | Integrated, docs synced, addendum evidence picked up, awaiting verification |
 
 | Item | Value |
 | --- | --- |
@@ -39,6 +39,12 @@
 
 ## Verification Evidence
 
+- **Desktop journey (addendum):** a freshly built isolated desktop app (`iso-55746-779d`, Claude `haiku`) was driven like a user.
+  - It created 3 agents, ran `@Code Reviewer`, saw the delegated row, closed it by chat, ran `@Note Taker`, then restarted the app.
+  - The closed row stayed hidden. The open row was closed after the restart.
+  - In a Team, `@` delegation was closed the same way.
+  - "Delete run permanently" removed that run's 2 ad-hoc Tasks and kept the Team run's.
+  - All steps passed. Evidence: `api-e2e-evidence/H-desktop/`, including `journey.mp4` and `journey-after-restart.mp4`.
 - `api-e2e-execution-coverage-report.md` and `api-e2e-evidence/` contain live browser journeys on Claude (`haiku`) and Codex (`gpt-5.6-luna`) for the Agent, Team and Org roots. They cover `@` → delegate → DONE → hidden, then restart, Stop/reopen, rejected delegation, ineligible mention and delete.
 - Durable: `autobyteus-server-ts/tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts` (gated with `RUN_AGY_FAILURE_E2E=1` and the fake AGY CLI), 2 AC-009 resolver cases, and the rewritten `cross-scope-agent-mentions-live-probe.mjs`.
 
