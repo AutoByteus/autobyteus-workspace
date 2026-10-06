@@ -1,0 +1,54 @@
+{
+  "package": "remove-built-in-project-task-manager",
+  "delivery_revision": "DR-002",
+  "recorded_at": "2026-10-06T09:02:11.095212+00:00",
+  "trigger": "Solution Designer forwards explicit user finalization and NEW BETA request; stable release not authorized",
+  "user_quotes": [
+    "send a message to delivery engineer to finalize and release",
+    "i meant release a new beta version"
+  ],
+  "user_test_performed": "Not evidenced",
+  "explicit_acceptance_of_verification": "Pending; requested via user-input tool in this delivery turn",
+  "checkpoint": "db77f6035",
+  "integrated_commit": "0f66ad7a0ca2c4753372ee3b8996e5b9769bf3e8",
+  "checked_remote_base": "f777a6559edf767f15b5653dc57998414e8078e6",
+  "integration": "merge; no conflicts; no removal-specific source overlap",
+  "checks": [
+    {
+      "command": "pnpm -C autobyteus-server-ts build",
+      "exit": 0,
+      "evidence": "build.log"
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts tests/unit/app-data-migrations tests/integration/app-data-migrations tests/unit/built-in-agents tests/e2e/projects --no-watch",
+      "exit": 0,
+      "files_passed": 59,
+      "tests_passed": 390,
+      "tests_skipped": 3,
+      "evidence": "server.log",
+      "skip_reason": "New-base AGY task-closure suite opt-in not enabled; not claimed as validated"
+    },
+    {
+      "command": "pnpm -C autobyteus-web test:nuxt utils/agents utils/collaborators stores/__tests__/runHistoryStore.spec.ts --run",
+      "exit": 0,
+      "files_passed": 4,
+      "tests_passed": 57,
+      "evidence": "web.log"
+    },
+    {
+      "command": "python3 scripts/check_repository_artifact_hygiene.py",
+      "exit": 0,
+      "result": "53384 tracked files; maximum path 200 chars"
+    }
+  ],
+  "repository_finalization": "Not started; verification gate",
+  "release": "Not started; new beta authorized but verification gate unmet",
+  "cleanup": "Not started; worktree must remain for verification/recovery",
+  "residuals": [
+    "Packaged Electron shell not exercised",
+    "No actual user testing claimed",
+    "Prior unrelated TS6059 not re-evaluated",
+    "Downgrade unsupported"
+  ],
+  "test_owned_ptm_roots_remaining": []
+}

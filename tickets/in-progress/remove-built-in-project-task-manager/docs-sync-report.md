@@ -6,7 +6,7 @@
 - Trigger: CRR-002 post-API/E2E test-code review Pass, from `code_reviewer`. Prior gates: CRR-001 Pass (9.5/10) and API-REV-001 Pass (confidence 95.7%).
 - Classification (preserved): `task_size=Medium`, `architectural_risk=High`. Route: full independent review.
 - Bootstrap base reference: `origin/personal@1aa91829811866d391bb61d011109aa1a4ea7683`
-- Integrated base reference used for docs sync: `origin/personal@db39803d49dcf9e4582b8c4ff143641532f5bfc0`, merged into the ticket branch as `f928bfed3`.
+- DR-001 integrated base reference used for docs sync: `origin/personal@db39803d49dcf9e4582b8c4ff143641532f5bfc0`, merged into the ticket branch as `f928bfed3`.
 - Post-integration verification reference: `delivery-evidence/build-integrated.log`, `delivery-evidence/vitest-integrated.log` and `delivery-evidence/web-integrated.log`.
 
 ## Why Docs Were Updated
@@ -52,5 +52,13 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Prepare the handoff summary and release notes, then hold for explicit user verification.
+- Next delivery action: Hold for explicit user acceptance of verification, then finalize into personal and release one NEW BETA.
 - Notes: AC-010 is satisfied. No long-lived doc claims a shipped Project Task Manager template or ID.
+
+## DR-002 — Resumption docs recheck
+
+- Latest integrated base: `origin/personal@f777a6559edf767f15b5653dc57998414e8078e6`; merged as `0f66ad7a0ca2c4753372ee3b8996e5b9769bf3e8` after checkpoint `db77f6035`.
+- Latest source/behavior unchanged for the removal; the incoming Task-closure package has no removal-specific source/doc overlap. `TESTING.md` auto-merged without conflicts.
+- Canonical docs listed above rechecked against the integrated registry/migration behavior. No additional long-lived edit needed. AC-010 grep finds only intentional historical retirement/fixture mentions, not a current shipped manager claim.
+- Build (including sanitized built-in bootstrap smoke), 390 server tests and 57 web tests passed. Three opt-in new-base AGY task-closure tests skipped; not claimed as proof. See `delivery-evidence/dr-002/`.
+- Docs sync result: Pass. NEW BETA release direction recorded; explicit verification acceptance still pending. No user app testing is inferred.

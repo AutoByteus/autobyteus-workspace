@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-001.** The latest base is integrated and docs are synced. **Awaiting explicit user verification.**
+- Delivery state: **DR-002.** Latest base refreshed again; checks passed and docs rechecked. User requested finalization and a NEW BETA, but explicit acceptance of verification remains pending. No personal user tests are claimed.
 - Classification (unchanged by delivery): `task_size=Medium`, `architectural_risk=High`. Route: full independent review (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → Code Review (test code) → Delivery).
 
 | Stage | Revision | Result |
@@ -12,7 +12,7 @@
 | Implementation | IR-001 (`62af418df`) | Done |
 | Code review | CRR-001 source Pass 9.5/10; CRR-002 test-code Pass | Pass |
 | API/E2E | API-REV-001 | Pass, confidence 95.7% |
-| Delivery | DR-001 | Base integrated, docs synced, awaiting verification |
+| Delivery | DR-002 | Refreshed base integrated, checks passed, NEW BETA requested; explicit verification acceptance pending |
 
 | Item | Value |
 | --- | --- |
@@ -50,3 +50,13 @@
   - `pnpm -C autobyteus-server-ts build`
   - `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts tests/unit/app-data-migrations tests/integration/app-data-migrations tests/unit/built-in-agents`
 - `release-notes.md` is prepared in case you want a release.
+
+## DR-002 Current Resumption State
+
+- User direction via Solution Designer: “send a message to delivery engineer to finalize and release”; clarified “i meant release a new beta version”. Stable release is not authorized. This is not evidence of personal user testing.
+- Existing local delivery edits protected in checkpoint `db77f6035`; latest target `origin/personal@f777a6559` merged without conflicts as `0f66ad7a0`. The old integrated-base row above records DR-001 history only.
+- Current checks: server build Pass; server suites 59 files / 390 tests Pass, 1 file / 3 tests skipped (opt-in AGY task-closure suite); web 4 files / 57 tests Pass. Removal startup E2E 4/4 Pass. Hygiene Pass. Exact commands/receipts in `delivery-evidence/dr-002/integration-verification.json`.
+- Docs rechecked; no new intended behavior or documentation impact. Classification remains Medium / High, full independent-review route.
+- **Remaining gate:** explicit user verification acceptance. Asked the user whether they accept documented automated/API/E2E verification and authorize proceeding without a personal app test, or prefer to test first. Awaiting answer.
+- No finalization push/merge, archive, beta tag, release workflow or cleanup performed in DR-002. Worktree stays intact. The current release report is authoritative.
+- Upon acceptance: refresh target again; if materially changed, integrate/check and obtain renewed verification. Archive ticket, commit/push ticket, update/merge/push personal, run the documented beta helper exactly once, verify publication/rollout and clean safely. The shared personal checkout has unrelated dirty files, so use an isolated clean finalization clone rather than overwriting them.
