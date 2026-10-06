@@ -43,7 +43,11 @@ import { createStoredTeamRunExecutionTreeLocationService } from "../../run-histo
 import { AgentRunResumeConfigService } from "../../run-history/services/agent-run-resume-config-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
 import { TeamRunHistoryService } from "../../run-history/services/team-run-history-service.js";
-import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
+import {
+  RunFileChangeService,
+  bindProcessRunFileChangeService,
+  releaseProcessRunFileChangeService,
+} from "../../services/run-file-changes/run-file-change-service.js";
 import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -130,6 +134,7 @@ export class GeneralProcessRunSupervisor {
   private readonly standaloneRootManager: StandaloneAgentRunRootManager;
   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private readonly collaboratorAdmission: CollaboratorAdmission;
+  private readonly runFileChangeService: RunFileChangeService;
   private closePromise: Promise<void> | null = null;
 
   constructor(input: GeneralProcessRunSupervisorInput) {
@@ -161,10 +166,15 @@ export class GeneralProcessRunSupervisor {
       teams: input.agentTeamDefinitionService,
     }), input.modelSelectionValidator);
     let collaboratorAdmissionBound = false;
+    // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.
+    const runFileChangeService = new RunFileChangeService({ workspaceManager });
+    let runFileChangeServiceBound = false;
 
     try {
       bindProcessCollaboratorAdmission(collaboratorAdmission);
       collaboratorAdmissionBound = true;
+      bindProcessRunFileChangeService(runFileChangeService);
+      runFileChangeServiceBound = true;
       const contextFileLayout = new ContextFileLayout({
         appDataDir: input.contextFilePathEnvironment.appDataDir,
         memoryDir,
@@ -183,9 +193,7 @@ export class GeneralProcessRunSupervisor {
       const memoryRecorder = new AgentRunMemoryRecorder();
       const resourceManager = new AgentRunResourceManager({
         runSessions: input.agentToolMcpSessionAuthority.runSessions,
-        runFileChangeService: new RunFileChangeService({
-          workspaceManager,
-        }),
+        runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
       });
@@ -362,6 +370,7 @@ export class GeneralProcessRunSupervisor {
       this.agentOrgRunHistoryCatalogService = agentOrgRunHistoryCatalogService;
       this.agentToolMcpSessionAuthority = input.agentToolMcpSessionAuthority;
       this.collaboratorAdmission = collaboratorAdmission;
+      this.runFileChangeService = runFileChangeService;
       this.agentRunResumeConfigService = new AgentRunResumeConfigService(memoryDir, {
         statusProjectionService: new AgentRunStatusProjectionService({
           agentRunManager,
@@ -398,6 +407,9 @@ export class GeneralProcessRunSupervisor {
       }
       if (agentRunManager) {
         AgentRunManager.releaseProcessInstance(agentRunManager);
+      }
+      if (runFileChangeServiceBound) {
+        releaseProcessRunFileChangeService(runFileChangeService);
       }
       if (collaboratorAdmissionBound) {
         releaseProcessCollaboratorAdmission(collaboratorAdmission);
@@ -445,6 +457,7 @@ export class GeneralProcessRunSupervisor {
       releaseProcessStandaloneAgentRunRootManager(this.standaloneRootManager);
       AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
       AgentRunManager.releaseProcessInstance(this.agentRunManager);
+      releaseProcessRunFileChangeService(this.runFileChangeService);
       releaseProcessCollaboratorAdmission(this.collaboratorAdmission);
     } catch (error) {
       errors.push(error);

@@ -7,7 +7,12 @@ import {
   type AgentRunEvent,
 } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { RunFileChangeProjectionStore } from "../../../../src/services/run-file-changes/run-file-change-projection-store.js";
-import { RunFileChangeService } from "../../../../src/services/run-file-changes/run-file-change-service.js";
+import {
+  RunFileChangeService,
+  bindProcessRunFileChangeService,
+  getRunFileChangeService,
+  releaseProcessRunFileChangeService,
+} from "../../../../src/services/run-file-changes/run-file-change-service.js";
 import type { RunFileChangeEntry } from "../../../../src/services/run-file-changes/run-file-change-types.js";
 
 describe("RunFileChangeService", () => {
@@ -297,5 +302,96 @@ describe("RunFileChangeService", () => {
       status: "failed",
     });
     expect(persistedProjection.entries[0]?.content).toBeUndefined();
+  });
+
+  describe("attached-run projection cache", () => {
+    const storedEntry = (runId: string, filePath: string) => ({
+      id: `${runId}:${filePath}`, runId, path: filePath, type: "file" as const, status: "available" as const,
+      sourceTool: "write_file" as const, sourceInvocationId: null,
+      createdAt: "2026-05-03T10:00:00.000Z", updatedAt: "2026-05-03T10:00:00.000Z",
+    });
+    const storedPaths = async (service: RunFileChangeService, run: any): Promise<string[]> =>
+      (await service.getProjectionForRun(run)).entries.map((entry) => entry.path).sort();
+
+    it("reads an unattached run fresh from disk on every request", async () => {
+      const { run, workspaceRoot, memoryDir } = await createRunHarness();
+      const projectionStore = new RunFileChangeProjectionStore();
+      const service = createService(workspaceRoot, projectionStore);
+
+      await projectionStore.writeProjection(memoryDir, { version: 2, entries: [storedEntry(run.runId, "src/a.txt")] });
+      expect(await storedPaths(service, run)).toEqual(["src/a.txt"]);
+
+      await projectionStore.writeProjection(memoryDir, {
+        version: 2,
+        entries: [storedEntry(run.runId, "src/a.txt"), storedEntry(run.runId, "src/b.txt")],
+      });
+      expect(await storedPaths(service, run)).toEqual(["src/a.txt", "src/b.txt"]);
+      await expect(service.getProjectionForCollaborationMember({
+        agentRunId: run.runId, memoryDir, workspaceRootPath: workspaceRoot,
+      })).resolves.toMatchObject({ entries: [{ path: "src/a.txt" }, { path: "src/b.txt" }] });
+    });
+
+    it("drops the live projection when the run is detached", async () => {
+      const { run, emit, workspaceRoot, memoryDir } = await createRunHarness();
+      const projectionStore = new RunFileChangeProjectionStore();
+      const service = createService(workspaceRoot, projectionStore);
+      const detach = service.attachToRun(run);
+      await emit(fileChangeEvent(run.runId, { path: "src/a.txt" }));
+      await waitForPersistedProjectionStatus(projectionStore, memoryDir, { path: "src/a.txt", status: "available" });
+      expect(await storedPaths(service, run)).toEqual(["src/a.txt"]);
+
+      detach();
+      await projectionStore.writeProjection(memoryDir, {
+        version: 2,
+        entries: [storedEntry(run.runId, "src/a.txt"), storedEntry(run.runId, "src/later.txt")],
+      });
+      expect(await storedPaths(service, run)).toEqual(["src/a.txt", "src/later.txt"]);
+    });
+
+    it("does not re-cache a run whose FILE_CHANGE handling finishes after detach", async () => {
+      const { run, emit, workspaceRoot, memoryDir } = await createRunHarness();
+      const projectionStore = new RunFileChangeProjectionStore();
+      const read = projectionStore.readProjection.bind(projectionStore);
+      let releaseRead!: () => void;
+      const readGate = new Promise<void>((resolve) => { releaseRead = resolve; });
+      vi.spyOn(projectionStore, "readProjection").mockImplementationOnce(async (dir: string) => {
+        await readGate;
+        return read(dir);
+      });
+      const service = createService(workspaceRoot, projectionStore);
+      const detach = service.attachToRun(run);
+
+      await emit(fileChangeEvent(run.runId, { path: "src/a.txt" }));
+      detach();
+      releaseRead();
+      await waitForPersistedProjectionStatus(projectionStore, memoryDir, { path: "src/a.txt", status: "available" });
+
+      await projectionStore.writeProjection(memoryDir, {
+        version: 2,
+        entries: [storedEntry(run.runId, "src/a.txt"), storedEntry(run.runId, "src/later.txt")],
+      });
+      // A restored run attaches again: it must start from the stored record, not a projection left by the late handler.
+      service.attachToRun(run);
+      expect(await storedPaths(service, run)).toEqual(["src/a.txt", "src/later.txt"]);
+    });
+  });
+
+  describe("process authority binding", () => {
+    it("requires an explicitly bound process instance and releases only that instance", () => {
+      expect(() => getRunFileChangeService()).toThrow("The process RunFileChangeService is not initialized.");
+      const service = new RunFileChangeService({ workspaceManager: {} as never });
+      const other = new RunFileChangeService({ workspaceManager: {} as never });
+      bindProcessRunFileChangeService(service);
+      try {
+        expect(getRunFileChangeService()).toBe(service);
+        expect(() => bindProcessRunFileChangeService(other)).toThrow("already initialized");
+        releaseProcessRunFileChangeService(other);
+        expect(getRunFileChangeService()).toBe(service);
+      } finally {
+        releaseProcessRunFileChangeService(service);
+      }
+      expect(() => getRunFileChangeService()).toThrow("not initialized");
+      expect(() => bindProcessRunFileChangeService(null as never)).toThrow("instance is required");
+    });
   });
 });

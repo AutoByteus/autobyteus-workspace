@@ -31,10 +31,10 @@ type ProjectionContext = {
 };
 
 export class RunFileChangeProjectionService {
-  private readonly agentRuns: AgentRunManager;
+  private readonly injectedAgentRuns: AgentRunManager | null;
   private readonly agentMetadata: AgentRunMetadataService;
   private readonly projectionStore: RunFileChangeProjectionStore;
-  private readonly changes: RunFileChangeService;
+  private readonly injectedChanges: RunFileChangeService | null;
   private readonly workspaces: WorkspaceManager;
   private readonly collaborationLocations: Pick<CollaborationExecutionLocationService, "findAgent">;
 
@@ -48,10 +48,10 @@ export class RunFileChangeProjectionService {
     memoryDir?: string;
   } = {}) {
     const memoryDir = options.memoryDir ?? appConfigProvider.config.getMemoryDir();
-    this.agentRuns = options.agentRunManager ?? AgentRunManager.getInstance();
+    this.injectedAgentRuns = options.agentRunManager ?? null;
     this.agentMetadata = options.metadataService ?? getAgentRunMetadataService();
     this.projectionStore = options.projectionStore ?? getRunFileChangeProjectionStore();
-    this.changes = options.runFileChangeService ?? getRunFileChangeService();
+    this.injectedChanges = options.runFileChangeService ?? null;
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
     this.collaborationLocations = options.collaborationLocations ?? new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
@@ -80,8 +80,17 @@ export class RunFileChangeProjectionService {
     } : null;
   }
 
+  /** The process run owners are resolved per call, so reads always reach the currently bound authority. */
+  private agentRuns(): AgentRunManager {
+    return this.injectedAgentRuns ?? AgentRunManager.getInstance();
+  }
+
+  private changes(): RunFileChangeService {
+    return this.injectedChanges ?? getRunFileChangeService();
+  }
+
   private async readProjectionContext(runId: string): Promise<ProjectionContext> {
-    const activeStandalone = this.agentRuns.getActiveRun(runId);
+    const activeStandalone = this.agentRuns().getActiveRun(runId);
     if (activeStandalone) return this.activeStandalone(activeStandalone);
 
     const standaloneMetadata = await this.agentMetadata.readMetadata(runId);
@@ -101,7 +110,7 @@ export class RunFileChangeProjectionService {
     const workspaceRootPath = this.workspaceRootPath(location);
     return {
       projection: location.isActive
-        ? await this.changes.getProjectionForCollaborationMember({
+        ? await this.changes().getProjectionForCollaborationMember({
             agentRunId: location.agentRunId,
             memoryDir: location.memoryDir,
             workspaceRootPath,
@@ -121,7 +130,7 @@ export class RunFileChangeProjectionService {
 
   private async activeStandalone(run: AgentRun): Promise<ProjectionContext> {
     return {
-      projection: await this.changes.getProjectionForRun(run),
+      projection: await this.changes().getProjectionForRun(run),
       workspaceRootPath: resolveRunFileChangeWorkspaceRootPath(run, this.workspaces),
       isActiveRun: true,
     };
