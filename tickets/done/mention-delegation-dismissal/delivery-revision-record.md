@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-002 Pass handoff from `/code_reviewer` | N/A | Integrated, docs synced, awaiting user verification | docs-sync-report.md, handoff-summary.md, release-notes.md, release-deployment-report.md, delivery-evidence/ |
 | DR-002 | CRR-003 addendum (API/E2E evidence-only desktop journey) | DR-001 awaiting verification | Evidence picked up; still awaiting user verification | handoff-summary.md, release-deployment-report.md |
+| DR-003 | User verification: "the task is done. lets finalize and release a new beta" | DR-002 awaiting verification | Delivery Completed | user-verification-record.md, handoff-summary.md, release-deployment-report.md, delivery-evidence/dr-003/ |
 
 ## Revision Entries
 
@@ -48,3 +49,27 @@
 - Why this delivery revision was recorded: an upstream evidence addendum changed the verification basis.
 - Next recipient/action: user verification; then finalization and an optional release.
 - Remaining blockers, rollback concerns, or untested scope: same as DR-001.
+
+### DR-003 — Finalization, beta.6 release and cleanup
+
+- Delivery round and trigger: explicit user verification with a request for one new beta (`user-verification-record.md`).
+- Prior authoritative result: DR-002, awaiting verification.
+- Current authoritative result: **Delivery Completed**.
+  - The target was unchanged at `a07b17a5e`.
+  - Ticket archived and committed as `c259b49bf`, then pushed.
+  - `--no-ff` merge `61ca9becb` into `personal` (tree identical to the verified head), pushed.
+  - `scripts/desktop-release.sh beta` produced `c879b9ece` and tag `v1.4.95-beta.6`.
+  - All 4 hosted workflows succeeded. The GitHub prerelease (17 assets), updater metadata and Docker `1.4.95-beta.6`/`beta` (same digest, amd64 and arm64) are verified.
+  - Ticket worktree, local branch and remote branch removed. The main checkout was fast-forwarded with its unrelated uncommitted work preserved.
+- Docs sync report: `docs-sync-report.md` (unchanged)
+- Handoff summary: `handoff-summary.md` (updated)
+- Release/publication/deployment report: `release-deployment-report.md` (updated)
+- Integration and post-integration verification: unchanged from DR-001.
+- User verification/finalization state: verified and finalized.
+- Terminal return to `/solution_designer`: sent after this record's receipt commit is pushed.
+- Why this delivery revision was recorded: completion of the finalization, release and cleanup gates.
+- Next recipient/action: `/solution_designer` (terminal package).
+- Remaining blockers, rollback concerns, or untested scope:
+  - No blockers.
+  - The raw `/tmp` merge and release logs were lost on a session restart; the receipts were reconstructed from git.
+  - The external Project Task Manager skill update is still a follow-up.

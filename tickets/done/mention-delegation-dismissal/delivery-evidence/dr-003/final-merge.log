@@ -1,0 +1,43 @@
+# Reconstructed from git (the original /tmp merge log was lost on session restart)
+commit 61ca9becb18bce4d02623c50c3c7214e63589c20
+parents a07b17a5e8eedd9115fcd184a31eacc9cc7df767 c259b49bfe901594d6d41655d3c79e39397522f5
+subject Merge verified mention-delegation-dismissal
+date 2026-10-06T14:01:51+02:00
+
+ TESTING.md                                         |   38 +
+ .../dist/collaborator-mention-note.d.ts            |    9 +-
+ .../dist/collaborator-mention-note.d.ts.map        |    2 +-
+ .../dist/collaborator-mention-note.js              |   23 +-
+ .../dist/collaborator-mention-note.js.map          |    2 +-
+ .../src/collaborator-mention-note.ts               |   24 +-
+ .../tests/collaborator-mention-note.test.mjs       |   15 +-
+ .../docs/modules/agent_communication.md            |   83 +-
+ .../docs/modules/agent_team_execution.md           |   20 +-
+ autobyteus-server-ts/docs/modules/agent_tools.md   |   15 +-
+ .../docs/modules/agent_tools_mcp_server.md         |   14 +-
+ autobyteus-server-ts/docs/modules/projects.md      |  119 +-
+ .../docs/modules/prompt_engineering.md             |    3 +
+ .../docs/modules/standalone_agent_run_root.md      |   31 +-
+ .../collaborators/collaborator-admission.ts        |   47 +-
+ .../agent-team-collaboration-llm-contract.ts       |    8 +-
+ .../execution/task/root-task-dispatch.ts           |   37 +-
+ .../task/root-task-execution-lifecycle.ts          |    9 +-
+ .../execution/task/task-agent-resource-port.ts     |   15 +-
+ .../execution/task/task-delegation-command.ts      |    7 +-
+ .../services/agent-run-command-coordinator.ts      |    2 +-
+ .../shared/runtime-agent-tool-exposure.ts          |   12 +-
+ .../agent-org-execution/domain/agent-org-run.ts    |    6 +-
+ .../services/agent-org-run-collaborators.ts        |   15 +-
+ .../services/agent-org-run-message-delivery.ts     |    8 +-
+ .../services/agent-org-run-service.ts              |   13 +-
+ .../agent-team-execution/domain/root-team-run.ts   |    6 +-
+ .../services/team-run-collaborators.ts             |   15 +-
+ .../task-delegation-result-contract.ts             |    7 +-
+ .../project-tasks/project-task-tool-contract.ts    |   27 +-
+ .../project-tasks/project-task-tool-manifest.ts    |   12 +-
+ .../project-task-agent-resource-composition.ts     |   12 +-
+ .../src/projects/domain/ad-hoc-task.ts             |   19 +
+ autobyteus-server-ts/src/projects/domain/models.ts |   17 +
+ .../src/projects/services/project-task-service.ts  |  111 +-
+tree(61ca9becb)=933bedf00a42003d6eedcc4002d98d278dd0d15b
+tree(ticket head c259b49bf)=933bedf00a42003d6eedcc4002d98d278dd0d15b

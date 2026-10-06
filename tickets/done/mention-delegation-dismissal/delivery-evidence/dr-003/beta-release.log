@@ -1,0 +1,16 @@
+# Reconstructed from git (the original /tmp release log was lost on session restart). Command: bash scripts/desktop-release.sh beta (exit 0; output ended 'Release complete and pushed: branch personal, tag v1.4.95-beta.6')
+commit c879b9ececc14cefbc2b340daa2fef46c9f8b938
+parents 61ca9becb18bce4d02623c50c3c7214e63589c20
+subject chore(release): bump workspace release version to 1.4.95-beta.6
+date 2026-10-06T14:02:03+02:00
+
+ autobyteus-web/package.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+object c879b9ececc14cefbc2b340daa2fef46c9f8b938
+type commit
+tag v1.4.95-beta.6
+tagger normy <normy@macbookpro.speedport.ip> 1791288124 +0200
+
+Release v1.4.95-beta.6
+tag object=6d2608fe03c90b60f35c0fd2df498fbd8e602fce -> commit c879b9ececc14cefbc2b340daa2fef46c9f8b938
+autobyteus-web version=1.4.95-beta.6

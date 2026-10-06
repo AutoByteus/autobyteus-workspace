@@ -11,7 +11,7 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-003`
 - Notes: on hold for user verification. DR-002 picked up the API/E2E desktop-journey addendum (confidence 95.4%) and CRR-003.
 
 ## Initial Delivery Integration Refresh
@@ -56,13 +56,58 @@
 
 - Bootstrap context source: `investigation-notes.md` § Bootstrap (`origin/personal`)
 - Ticket branch: `codex/mention-delegation-dismissal`
-- Repository finalization status: pending user verification
+- Ticket branch commit result: `Completed`. Archive commit `c259b49bf`.
+- Ticket branch push result: `Completed`
+- Finalization target remote: `origin` (`git@github.com-ryan:AutoByteus/autobyteus-workspace.git`)
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (still at `a07b17a5e`)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. A clean isolated clone of `personal` was made at `a07b17a5e`, so the shared main checkout, which has unrelated uncommitted work, was not used.
+- Merge into target result: `Completed`. `--no-ff` merge `61ca9becb` ("Merge verified mention-delegation-dismissal"); its tree `933bedf00` is identical to the verified ticket head.
+- Push target branch result: `Completed` (`a07b17a5e..61ca9becb`)
+- Repository finalization status: `Completed`
+- Receipt: `delivery-evidence/dr-003/final-merge.log`. It was reconstructed from git because the raw `/tmp` log was lost on a session restart; git holds the authoritative merge record.
+
+## Version / Tag / Release Commit
+
+- One `bash scripts/desktop-release.sh beta` run, from the clean finalized `personal` (exit 0). No stable release and no manual dispatch.
+- Version `1.4.95-beta.6` (`autobyteus-web/package.json`).
+- Release commit `c879b9ece` ("chore(release): bump workspace release version to 1.4.95-beta.6"), pushed `61ca9becb..c879b9ece`.
+- Annotated tag `v1.4.95-beta.6` (tag object `6d2608fe0`) resolves to `c879b9ece`. The tag push is `Completed`.
+- Commit identity: the host default `normy <normy@macbookpro.speedport.ip>`, which matches previous beta release commits (no git user config is set).
+- Receipt: `delivery-evidence/dr-003/beta-release.log` (reconstructed from git, as above).
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`. The user requested one new beta.
-- Method: `Release Script`, `bash scripts/desktop-release.sh beta`, run from a clean finalized `personal`.
-- Release notes handoff result: `release-notes.md` prepared.
+- Method: `Release Script`, `bash scripts/desktop-release.sh beta`
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` for publication. The beta helper takes no curated notes, and the GitHub pre-release uses generated notes. The archived `release-notes.md` stays as the product and upgrade summary for the next stable release.
+
+## Hosted Publication / Rollout Verification
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | 37460416526 | Success |
+| Android APK Release | 37460416703 | Success |
+| iOS App Store Connect Release | 37460416664 | Success |
+| Server Docker Release | 37460416620 | Success |
+
+- GitHub release https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.95-beta.6 is non-draft and marked prerelease, published 2026-10-06T12:06:32Z. It has 17 assets, none empty (`github-release.json`).
+- Updater metadata `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` all report `version: 1.4.95-beta.6` (`updater-metadata/`).
+- Docker `autobyteus/autobyteus-server:1.4.95-beta.6` and `:beta` share index digest `sha256:beb45a435786a8a9d0a682149c6a794d69d24debffd29cdc334aa9d642a5c0ec`, with linux/amd64 and linux/arm64 (`docker-version-manifest.txt`, `docker-beta-manifest.txt`).
+- `workflows-final.json` records all four runs.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal`
+- Worktree cleanup result: `Completed`. Removed after verifying that its head `c259b49bf` is in `personal`; only the untracked SDK `dist/` build output was discarded.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (it was `c259b49bf`)
+- Remote branch cleanup result: `Completed` (`origin/codex/mention-delegation-dismissal` deleted)
+- Shared main checkout: fast-forwarded `84b789717..c879b9ece` with `--ff-only`. Its unrelated tracked uncommitted diff was preserved, with the same checksum before and after, and no overlap with incoming paths.
+- The isolated finalization clone `/Users/normy/autobyteus_org/autobyteus-worktrees/finalize-mention-delegation-dismissal` is removed after the receipt commit is pushed.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -71,14 +116,16 @@
 
 ## Rollback Criteria
 
-- Revert the merge on `personal`. Existing `ad-hoc-tasks/` folders are inert to older builds. External callers using `{project_id, task_id}` work again after a revert.
+- Revert merge `61ca9becb` on `personal` and cut a new beta. Never move or delete the published tag.
+- Existing `ad-hoc-tasks/` folders are inert to older builds. External callers using `{project_id, task_id}` work again after a revert.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None`. The hold is on user verification.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes` (`user-verification-record.md`)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta.6 published and verified)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this receipt commit is pushed; the message reference is given in the message, not self-referenced here.
+- Follow-ups outside this repository: the agent repository's Project Task Manager skill must stop sending `project_id` with `task_id` in update mode. A tutorial video request was sent to `/tutorial_video_producer` at the user's request; it is outside the delivery gates.

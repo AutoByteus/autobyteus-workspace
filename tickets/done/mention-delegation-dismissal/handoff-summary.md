@@ -2,7 +2,11 @@
 
 ## Status
 
-- Delivery state: **DR-002. The branch is integrated with the latest base (`a07b17a5e`, still current) and docs are synced. It now includes the API/E2E desktop-journey addendum.** The user verified on 2026-10-06 ("the task is done. lets finalize and release a new beta"); see `user-verification-record.md`. Finalization into `personal` and one new beta are in progress; the outcomes are recorded in `release-deployment-report.md` (DR-003).
+- Delivery state: **Delivery Completed (DR-003).** The user verified on 2026-10-06 ("the task is done. lets finalize and release a new beta"); see `user-verification-record.md`.
+  - Merged into `personal` as `61ca9becb` and pushed.
+  - Beta `v1.4.95-beta.6` (release commit `c879b9ece`) is published: all 4 workflows succeeded, and the GitHub prerelease, updater metadata and Docker `:1.4.95-beta.6`/`:beta` are verified.
+  - The worktree and the local and remote branches are cleaned up.
+  - The sections below record the pre-verification state, kept for history.
 - Classification (unchanged): `task_size=Large`, `architectural_risk=High`, reviewed route.
 
 | Stage | Revision | Result |
@@ -14,7 +18,7 @@
 | Code review | CRR-001 | Pass |
 | API/E2E | API-REV-001 (+ evidence-only desktop-journey addendum) | Pass, 95.4% confidence |
 | Test-code review | CRR-002, CRR-003 | Pass; CRR-003 addendum review Not Applicable (no test-code change) |
-| Delivery | DR-002 | Integrated, docs synced, addendum evidence picked up, awaiting verification |
+| Delivery | DR-003 | Delivery Completed: finalized, beta.6 released, cleaned up |
 
 | Item | Value |
 | --- | --- |
