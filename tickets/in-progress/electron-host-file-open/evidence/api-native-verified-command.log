@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.95-beta.8 test:e2e:event-monitor-file-preview /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> node tests/e2e/event-monitor-file-preview-probe.mjs --skip-build --output-dir ../tickets/in-progress/electron-host-file-open/evidence/api-native-verified --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/api-e2e-test-case-ledger.md
+
+{"ok":true,"evidence":"/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/tickets/in-progress/electron-host-file-open/evidence/api-native-verified/evidence.json","cases":{"N-001":"Pass","N-002":"Pass","N-003":"Pass","N-004":"Pass","N-005":"Pass","N-009":"Pass","N-006":"Pass","N-007":"Pass","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-51507-ab1b","wasRunning":true,"forced":false,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-GiGliV","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"fixtureRemoved":true,"instances":{"instances":[]}}}
