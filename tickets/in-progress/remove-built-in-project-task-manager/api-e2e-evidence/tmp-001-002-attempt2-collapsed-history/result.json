@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-10-06T07:19:11.022Z",
+  "baseWorktree": "/private/tmp/ptm-base-api-e2e",
+  "cases": {
+    "TMP-001a-base-beta-install": {
+      "result": "Pass",
+      "stop": "SIGTERM",
+      "observed": {
+        "installedCopyWrittenByBase": {
+          "agent.md": true,
+          "agent-config.json": true
+        },
+        "catalogProjectTaskManagers": [
+          "autobyteus-project-task-manager",
+          "project-task-manager"
+        ],
+        "oldRunId": "project_task_manager_779d4ff04ac4416cb8ad4667b685ea51",
+        "otherRunId": "field_notes_writer_bd4d1464c59f4464ad2e9834eda3bb3d",
+        "userAgentId": "field-notes-writer",
+        "projectId": "project_1c742a6e-c305-49e8-93c5-834d6f2a176e"
+      }
+    },
+    "TMP-001b-new-version-upgrade": {
+      "result": "Pass",
+      "observed": {
+        "migration": {
+          "migrationId": "20261006_remove_built_in_project_task_manager",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+          "recoveryAction": "NONE"
+        },
+        "catalogProjectTaskManagers": [
+          "project-task-manager"
+        ],
+        "preservedByteIdentical": true,
+        "oldHistoryGroup": {
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "agentName": "Project Task Manager",
+          "runs": [
+            {
+              "runId": "project_task_manager_779d4ff04ac4416cb8ad4667b685ea51",
+              "summary": "Plan my launch Project.",
+              "isActive": false,
+              "status": "offline"
+            }
+          ]
+        }
+      }
+    },
+    "TMP-002a-history-panel-lists-old-run": {
+      "result": "Fail",
+      "error": "Error: Timeout: history rows\n    at wait (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:155)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:168:5\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:166:3"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:55692/_nuxt/pages/workspace.vue",
+    "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:55692/_nuxt/pages/workspace.vue",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:55692/_nuxt/pages/workspace.vue"
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "pid-21510": "already-exited",
+    "pid-21521": "SIGTERM",
+    "pid-21546": "SIGTERM",
+    "provider": "closed",
+    "ownedRootRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-wlkVSB",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-wlkVSB/data",
+    "backendUrl": "http://127.0.0.1:55691",
+    "providerOrigin": "http://127.0.0.1:55690",
+    "frontendUrl": "http://127.0.0.1:55692"
+  },
+  "model": "retired-ptm-fixture:lmstudio@127.0.0.1:55690",
+  "result": "Fail",
+  "error": "Error: Timeout: history rows\n    at wait (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:155)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:168:5\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:166:3",
+  "finishedAt": "2026-10-06T07:20:31.809Z"
+}
