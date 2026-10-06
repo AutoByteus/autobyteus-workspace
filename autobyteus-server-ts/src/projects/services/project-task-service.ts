@@ -4,6 +4,7 @@ import type {
   TaskAgentResourceLinkInput, TaskAgentResourcePort, TaskAgentResourceReleaseRequest, TaskAgentResourceRole,
 } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CreateProjectTaskCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView, UpdateProjectTaskCommand } from "../domain/models.js";
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
@@ -188,6 +189,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
   isOpen(agentRun: TaskExecutionReference): boolean { return this.resources.isOpen(agentRun); }
   openAgentRuns(taskId: string, role: TaskAgentResourceRole) { return this.resources.openAgentRuns(taskId, role); }
+  closedAgentRunsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedAgentRunsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
 
   private async uniqueTask(taskId: string) {

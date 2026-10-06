@@ -24,6 +24,11 @@ import {
   type StandaloneRootTreeSnapshot,
 } from "../domain/standalone-root-tree.js";
 import { StandaloneHostMemberContextBuilder } from "./standalone-host-member-context-builder.js";
+import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
+import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import {
   StandaloneRootBuilder,
   type StandaloneRootBuilderDependencies,
@@ -80,6 +85,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     host: StandaloneRootHostServices;
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     rootDependencies: Omit<StandaloneRootBuilderDependencies, "packageStore">;
+    /** The Task side's neutral port; the manager reads closure for stored inspections. */
+    taskAgentResources?: TaskAgentResourcePort;
     packageStore?: StandaloneRootPackageStore;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
   }>) {
@@ -211,7 +218,17 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const tree = await this.store.readTree(dir, hostRunId);
     if (!tree) return null;
     const messages = await this.store.readMessages(dir, hostRunId) ?? emptyStandaloneRootMessages(hostRunId);
-    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({ tree, messages, statuses: Object.freeze([]), inputStates: Object.freeze([]) }) });
+    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({
+      tree, closedTaskExecutions: this.closedTaskExecutionsFor(hostRunId, tree), messages,
+      statuses: Object.freeze([]), inputStates: Object.freeze([]),
+    }) });
+  }
+
+  /** Closed (Task DONE) task executions of a stored tree of this root. */
+  private closedTaskExecutionsFor(hostRunId: string, tree: StandaloneRootTreeSnapshot): readonly TaskExecutionReference[] {
+    const index = new StandaloneRootExecutionIndex(tree);
+    return listClosedTaskExecutions({ port: this.options.taskAgentResources, root: createAgentRootExecutionIdentity(hostRunId),
+      contains: (reference) => index.getTaskExecution(reference) !== null });
   }
 
   private async load(metadata: AgentRunMetadata): Promise<StandaloneAgentRunRoot> {

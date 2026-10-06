@@ -54,6 +54,8 @@ import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
+  /** Task executions of `tree` whose Task is DONE (read at the same point as the tree). */
+  closedTaskExecutions: readonly TaskExecutionReference[];
   messages: TeamCommunicationMessagesSnapshot;
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
@@ -365,6 +367,7 @@ export class RootTeamRun {
     return this.options.publisher.openSnapshotConnection(() =>
       this.options.persistence.readConsistent(() => ({
         tree: this.tree,
+        closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
         messages: this.messages,
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),

@@ -38,6 +38,7 @@ const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem 
   isActive: true,
   summary: 'Restored Org',
   executionTree: view.execution_tree,
+  closedTaskExecutions: view.closed_task_executions,
 })
 
 const offlineEvent = (memberAddress: string, agentRunId: string): AgentOrgExecutionEventDto => ({

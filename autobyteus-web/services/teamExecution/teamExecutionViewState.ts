@@ -1,5 +1,5 @@
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
-import { reactive, ref, shallowRef } from 'vue';
+import { computed, reactive, ref, shallowRef } from 'vue';
 import {
   teamExecutionViewSnapshotPayloadSchema,
   type TeamCommunicationMessageDto,
@@ -11,6 +11,16 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { insertTaskExecution } from './teamExecutionTreeMutations';
+import {
+  agentRunKey,
+  collectClosedSubtrees,
+  fromTeamTaskExecutionReference,
+  mergeClosedTaskExecutions,
+  taskExecutionReferenceKey,
+  teamRunKey,
+  type TaskExecutionReference,
+  type TaskExecutionTreeWalk,
+} from '~/utils/collaboration/taskExecutionClosure';
 import {
   collectAgentExecutionLocations,
   projectNavigationRows,
@@ -50,6 +60,8 @@ export interface TeamExecutionViewState {
   listAgentContextEntries(): readonly TeamAgentContextEntry[];
   listLiveAgentContextEntries(): readonly TeamAgentContextEntry[];
   listNavigationRows(): readonly TeamExecutionNavigationRow[];
+  /** False for a closed task execution (Task DONE) and every row under one; the Workspaces tree leaves them out. */
+  isTaskExecutionRowListed(row: TeamExecutionNavigationRow): boolean;
   listCommunicationMessages(): readonly TeamCommunicationMessageDto[];
   applySnapshot(message: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>): TeamExecutionApplyResult;
   applyMessage(message: Exclude<TeamStreamServerMessage,
@@ -61,6 +73,8 @@ export interface CreateTeamExecutionViewStateInput {
   rootActive: boolean;
   baseChangeSequence?: number;
   executionTree: TeamRunExecutionTreeDto;
+  /** Task executions of `executionTree` whose Task is DONE. */
+  closedTaskExecutions: readonly TaskExecutionReference[];
   messages?: readonly TeamCommunicationMessageDto[];
   configuration: Readonly<TeamRunConfigurationView>;
   initialFocusedAgentRunId: string;
@@ -83,10 +97,31 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
+};
+
+/** A node of the Team tree: Agents, and Teams with members, collaborators and task executions. */
+type TeamTreeNode = Readonly<{ agent_run_id: string }> | Readonly<{
+  team_run_id: string; members?: readonly unknown[]; collaborators?: readonly unknown[]; task_executions?: readonly unknown[];
+  delegator_agent_run_id?: string | null;
+}>;
+const teamTreeWalk: TaskExecutionTreeWalk<TeamTreeNode> = {
+  keyOf: (node) => 'agent_run_id' in node ? agentRunKey(node.agent_run_id) : teamRunKey(node.team_run_id),
+  childrenOf: (node) => 'agent_run_id' in node ? []
+    : [...(node.members ?? []), ...(node.collaborators ?? []), ...(node.task_executions ?? [])] as readonly TeamTreeNode[],
+};
+
+const teamTreeRunKeys = (root: TeamTreeNode): ReadonlySet<string> => {
+  const keys = new Set<string>();
+  const visit = (node: TeamTreeNode): void => {
+    keys.add(teamTreeWalk.keyOf(node));
+    teamTreeWalk.childrenOf(node).forEach(visit);
+  };
+  visit(root);
+  return keys;
 };
 
 export const createTeamExecutionViewState = (
@@ -101,6 +136,7 @@ export const createTeamExecutionViewState = (
   // never expose a Map insertion before the rest of its validated view.
   const publication = shallowRef({
     tree: structuredClone(input.executionTree),
+    closed: [...input.closedTaskExecutions] as readonly TaskExecutionReference[],
     messages: structuredClone(input.messages ?? []),
     changeSequence: input.baseChangeSequence ?? 0,
     contexts: new Map<string, AgentContext>() as ReadonlyMap<string, AgentContext>,
@@ -202,6 +238,29 @@ export const createTeamExecutionViewState = (
     tree: publication.value.tree,
     contexts: publication.value.contexts,
   });
+  // Rows under a closed task execution leave the Workspaces listing; navigation rows stay complete.
+  const closedSubtrees = computed(() => collectClosedSubtrees(
+    [publication.value.tree.root_team as TeamTreeNode], publication.value.closed, teamTreeWalk));
+  const isTaskExecutionRowListed = (row: TeamExecutionNavigationRow): boolean =>
+    !(row.agentRunId && closedSubtrees.value.has(agentRunKey(row.agentRunId)))
+    && !(row.teamRunId && closedSubtrees.value.has(teamRunKey(row.teamRunId)));
+  /**
+   * A focused agent whose Task became DONE leaves the main view: focus moves to the member that
+   * delegated the outermost closed execution when it is still listed, else to the root coordinator.
+   */
+  const leaveClosedFocus = (): boolean => {
+    const hiddenBy = closedSubtrees.value.get(agentRunKey(focusedAgentRunId.value));
+    if (!hiddenBy) return false;
+    const delegator = 'delegator_agent_run_id' in hiddenBy ? hiddenBy.delegator_agent_run_id ?? null : null;
+    const coordinatorAddress = publication.value.tree.root_team.coordinator_address;
+    const listed = navigationRows().filter((row) => row.agentRunId && isTaskExecutionRowListed(row));
+    const fallback = listed.find((row) => row.agentRunId === delegator)
+      ?? listed.find((row) => row.kind === 'configured_agent' && row.address === coordinatorAddress)
+      ?? listed[0];
+    if (!fallback?.agentRunId) return false;
+    focusedAgentRunId.value = fallback.agentRunId;
+    return true;
+  };
   const focusAgent = (agentRunId: string): MutationResult => {
     const id = agentRunId.trim();
     if (!publication.value.contexts.has(id)) return { disposition: 'rejected', code: 'TEAM_AGENT_RUN_NOT_FOUND', message: `AgentRun '${id}' is not part of this Team execution.` };
@@ -272,6 +331,7 @@ export const createTeamExecutionViewState = (
       }
       publication.value = {
         tree: structuredClone(payload.execution_tree), locations: nextLocations,
+        closed: payload.closed_task_executions.map(fromTeamTaskExecutionReference),
         messages: structuredClone(payload.messages),
         contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
       };
@@ -285,6 +345,7 @@ export const createTeamExecutionViewState = (
       for (const entry of payload.agent_input_states) handleAgentInputState(entry.state, publication.value.contexts.get(entry.agent_run_id)!);
       streamRecoveryRequired.value = false;
       repairFocus();
+      leaveClosedFocus();
       return Object.freeze({
         disposition: 'applied',
         effects: Object.freeze([
@@ -328,6 +389,16 @@ export const createTeamExecutionViewState = (
             agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
           });
         }
+        effects.push({ kind: 'reconcile_team_navigation' });
+      } else if (message.type === 'TASK_EXECUTIONS_CLOSED') {
+        // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
+        const closed = message.payload.task_executions.map(fromTeamTaskExecutionReference);
+        const treeKeys = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
+        const unknown = closed.find((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)));
+        if (unknown) throw new Error(`Closed task execution '${taskExecutionReferenceKey(unknown)}' is not in the execution tree.`);
+        publication.value = { ...publication.value, closed: mergeClosedTaskExecutions(publication.value.closed, closed),
+          changeSequence: sequence ?? publication.value.changeSequence };
+        if (leaveClosedFocus()) effects.push({ kind: 'reconcile_focused_team_member_projection' });
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'COLLABORATOR_ADDED') {
         // One hosted instance per entry: its executions are placed (Offline) with the entry.
@@ -415,6 +486,7 @@ export const createTeamExecutionViewState = (
         agentRunId, memberAddress, agentContext: publication.value.contexts.get(agentRunId)!,
       }))),
     listNavigationRows: navigationRows,
+    isTaskExecutionRowListed,
     listCommunicationMessages: () => Object.freeze([...publication.value.messages]),
     applySnapshot,
     applyMessage,

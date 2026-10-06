@@ -1,8 +1,9 @@
 import type { TaskAgentResourceLinkInput, TaskAgentResourceOwner, TaskAgentResourcePort, TaskAgentResourceRole } from "../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
 
 const rejection = (code: string, message: string) => Object.assign(new Error(message), { code });
-type Entry = { taskId: string; agentRun: TaskExecutionReference; role: TaskAgentResourceRole; open: boolean; start: "starting" | "started" | "failed" };
+type Entry = { taskId: string; hostRoot: RootExecutionIdentity; agentRun: TaskExecutionReference; role: TaskAgentResourceRole; open: boolean; start: "starting" | "started" | "failed" };
 
 /**
  * Runtime-test double of the Task side's loaded agent run resources. It follows the reviewed
@@ -53,7 +54,7 @@ export class InMemoryTaskAgentResources implements TaskAgentResourcePort {
     }
     const key = taskExecutionReferenceKey(input.agentRun);
     if (this.entries.has(key)) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Already linked.");
-    this.entries.set(key, { taskId, agentRun: input.agentRun, role: input.role, open: true, start: "starting" });
+    this.entries.set(key, { taskId, hostRoot: input.hostRoot, agentRun: input.agentRun, role: input.role, open: true, start: "starting" });
     this.links.push(input);
     return { taskId };
   }
@@ -77,6 +78,10 @@ export class InMemoryTaskAgentResources implements TaskAgentResourcePort {
   isOpen(agentRun: TaskExecutionReference): boolean { return this.entry(agentRun)?.open === true; }
   openAgentRuns(taskId: string, role: TaskAgentResourceRole): TaskExecutionReference[] {
     return [...this.entries.values()].filter(e => e.taskId === taskId && e.role === role && e.open).map(e => e.agentRun);
+  }
+  closedAgentRunsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
+    return [...this.entries.values()].filter(e => !e.open && !this.damaged.has(e.taskId)
+      && rootExecutionIdentityKey(e.hostRoot) === rootExecutionIdentityKey(hostRoot)).map(e => e.agentRun);
   }
   assertResourceDataReadable(): void {
     if (this.damaged.size) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read. Fix or restore the file and restart the app; other features keep working.");

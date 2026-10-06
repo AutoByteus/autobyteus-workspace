@@ -2293,7 +2293,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     const orgRun = {
       stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
-      executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: "/", orgDefinitionId: "org-def",
           orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
@@ -2334,7 +2334,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     const orgRun = {
       stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
       createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
-      executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
+      closedTaskExecutions: [], executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: '/', orgDefinitionId: 'org-def',
           orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
@@ -2373,7 +2373,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     const tree = structuredClone(taskBearingView().execution_tree) as any;
     const orgRun = {
       stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree,
+      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: 'org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [orgRun] }];
     (runHistoryStoreMock as any).agentOrgHistory = [orgRun];
@@ -2382,7 +2382,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     const orgContexts = useAgentOrgContextsStore();
     let opened = false;
     const inspected = {
-      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, selectedAddress: null, selection: null,
+      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { closed_task_executions: [] }, selectedAddress: null, selection: null,
       index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>() },
     };
     const openForInspection = vi.spyOn(orgContexts, 'openForInspection').mockImplementation(async () => { opened = true; });

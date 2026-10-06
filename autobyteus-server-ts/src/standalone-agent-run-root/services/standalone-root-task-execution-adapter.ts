@@ -65,6 +65,7 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
   publishTaskExecutionStarted(host: TaskExecutionHostIdentity, taskExecution: TaskExecutionReference): void;
+  publishTaskExecutionsClosed(taskExecutions: readonly TaskExecutionReference[]): void;
   publishAgentOffline(identity: CollaborationMemberExecutionIdentity): void;
   enterLifecycleFailStop(): void;
   memoryLocator?: RootedAgentMemoryLocator;
@@ -191,6 +192,9 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     }
     return entry.kind === "agent" ? this.options.rootAgents.releaseTask(entry.agentRunId) : this.options.teams.releaseTask(entry.teamRunId);
   }
+
+  containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
+  publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void { this.options.publishTaskExecutionsClosed(references); }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);

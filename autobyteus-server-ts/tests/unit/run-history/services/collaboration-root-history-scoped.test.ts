@@ -7,7 +7,7 @@ const fixture = () => {
   const row = { orgRunId: "org-one", createdAt: tree.createdAt, archivedAt: null, summary: "Server summary" } as never;
   const trees = { read: vi.fn(async () => tree) };
   const orgs = { listCatalogRows: vi.fn(async () => [row]), getCatalogRow: vi.fn(async (id: string) => id === "org-one" ? row : null) };
-  const orgRuns = { getActive: vi.fn(() => null as any) };
+  const orgRuns = { getActive: vi.fn(() => null as any), closedTaskExecutionsFor: vi.fn(() => []) };
   const teams = { listTeamRunHistory: vi.fn(async () => []) };
   const service = new CollaborationRootHistoryService({ memoryDir: "/test-owned", orgs, orgRuns, teams, orgTrees: trees as never });
   return { tree, row, trees, orgs, orgRuns, teams, service };
@@ -26,6 +26,16 @@ describe("one authoritative admitted Org history subject", () => {
     f.trees.read.mockClear(); f.orgRuns.getActive.mockReturnValue({ getExecutionTreeSnapshot: () => f.tree });
     expect(await f.service.getAgentOrg("org-one")).toMatchObject({ is_active: true, archived_at: "2026-10-01", summary: "Server summary", org: f.tree });
     expect(f.trees.read).not.toHaveBeenCalled();
+  });
+  it("carries the Org's closed task executions, read through the Org manager against the same tree it projects", async () => {
+    const f = fixture();
+    f.orgRuns.closedTaskExecutionsFor.mockReturnValue([{ agentRunId: "closed-run" }] as never);
+    expect(await f.service.getAgentOrg("org-one")).toMatchObject({ closed_task_executions: [{ agentRunId: "closed-run" }] });
+    expect(f.orgRuns.closedTaskExecutionsFor).toHaveBeenLastCalledWith("org-one", f.tree);
+    const active = structuredClone(f.tree);
+    f.orgRuns.getActive.mockReturnValue({ getExecutionTreeSnapshot: () => active });
+    await f.service.getAgentOrg("org-one");
+    expect(f.orgRuns.closedTaskExecutionsFor.mock.calls.at(-1)![1]).toBe(active);
   });
   it("returns admitted absence without tree reads, and propagates tree failure/root mismatch", async () => {
     const f = fixture(); expect(await f.service.getAgentOrg("unknown")).toBeNull(); expect(f.trees.read).not.toHaveBeenCalled();

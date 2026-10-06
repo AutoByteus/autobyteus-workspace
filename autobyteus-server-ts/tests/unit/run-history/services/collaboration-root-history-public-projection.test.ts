@@ -36,7 +36,7 @@ const setup = async (active: boolean, linked: boolean) => {
     memoryDir,
     teams: { listTeamRunHistory: async () => [] },
     orgs: { listCatalogRows: async () => catalog, getCatalogRow: async (id: string) => catalog.find(row => row.orgRunId === id) ?? null },
-    orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null) } as never,
+    orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null), closedTaskExecutionsFor: () => [] } as never,
     orgTrees: store,
   });
   return { tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
@@ -86,7 +86,7 @@ describe("mixed public history Org projection", () => {
     const service = new CollaborationRootHistoryService({
       memoryDir: roots.at(-1)!, teams: { listTeamRunHistory: async () => [team] } as never,
       orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async (id: string) => current.catalog.find(row => row.orgRunId === id) ?? null },
-      orgRuns: { getActive: () => null }, orgTrees: current.store,
+      orgRuns: { getActive: () => null, closedTaskExecutionsFor: () => [] }, orgTrees: current.store,
     });
     const rows = await service.list();
     expect(rows.map(row => row.root_run_id)).toEqual(["team-root", "org-root"]);

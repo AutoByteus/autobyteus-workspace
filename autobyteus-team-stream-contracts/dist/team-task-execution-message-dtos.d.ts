@@ -40,6 +40,23 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
     }>, unknown>>]>;
 }, z.core.$strict>;
 export type TeamTaskExecutionStartedPayload = Readonly<z.infer<typeof teamTaskExecutionStartedPayloadSchema>>;
+/** Identity of one task execution node (a task Agent or a task Team) of the root's execution tree. */
+export declare const teamTaskExecutionReferenceDtoSchema: z.ZodUnion<readonly [z.ZodObject<{
+    agent_run_id: z.ZodString;
+}, z.core.$strict>, z.ZodObject<{
+    team_run_id: z.ZodString;
+}, z.core.$strict>]>;
+export type TeamTaskExecutionReferenceDto = Readonly<z.infer<typeof teamTaskExecutionReferenceDtoSchema>>;
+/** These task executions were closed (their Task became DONE); the tree keeps them, the Workspaces listing leaves them out. */
+export declare const teamTaskExecutionsClosedPayloadSchema: z.ZodObject<{
+    change_sequence: z.ZodNumber;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agent_run_id: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        team_run_id: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
+export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskExecutionsClosedPayloadSchema>>;
 /** A collaborator entry was committed at the root; it precedes any task execution at its address. */
 export declare const teamCollaboratorAddedPayloadSchema: z.ZodObject<{
     change_sequence: z.ZodNumber;

@@ -8,6 +8,7 @@ import {
 } from "./task-agent-resource-port.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 import { TaskDelegationError } from "./task-delegation-command.js";
+import { listClosedTaskExecutions } from "./task-execution-closure.js";
 
 /** A coded Task-side rejection becomes the runtime's coded delegation error; anything else is unchanged. */
 export const asTaskDelegationError = (error: unknown): unknown => {
@@ -60,15 +61,24 @@ export class RootTaskAgentResourceScope<T> {
     }
   }
 
+  /** The closed task executions of this root's current tree (live snapshots read it with the tree). */
+  closedTaskExecutions(): readonly TaskExecutionReference[] {
+    return listClosedTaskExecutions({ port: this.resources, root: this.adapter.root, contains: reference => this.adapter.containsTaskExecution(reference) });
+  }
+
   /**
-   * Stops exactly the given closed agent runs. Every registration and committed copy is cancelled
-   * before any await; then every exact release authority the root still holds is invoked,
-   * whether or not the copy looks live. `stopped` only when each invoked release is accepted or the
-   * root holds no authority at all for the agent run.
+   * Stops exactly the given closed agent runs. First, before anything stops, the released runs
+   * that are closed and in this root's tree are published as closed (visibility follows closure,
+   * not stop success). Every registration and committed copy is cancelled before any await; then
+   * every exact release authority the root still holds is invoked, whether or not the copy looks
+   * live. `stopped` only when each invoked release is accepted or the root holds no authority at
+   * all for the agent run.
    */
   async releaseTaskAgentResources(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
     const port = this.port();
     const eligible = agentRuns.map(agentRun => ({ agentRun, closed: isClosed(port, agentRun) }));
+    const closedInTree = eligible.flatMap(entry => entry.closed && this.adapter.containsTaskExecution(entry.agentRun) ? [entry.agentRun] : []);
+    if (closedInTree.length) this.adapter.publishTaskExecutionsClosed(Object.freeze(closedInTree));
     const registered = eligible.map(entry => entry.closed ? this.adapter.registrationFor(entry.agentRun) : null);
     eligible.forEach((entry, index) => {
       if (!entry.closed) return;

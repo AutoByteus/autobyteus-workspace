@@ -34,6 +34,9 @@ import {
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import { materializeTeamRoot } from "./team-root-materializer.js";
 import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { TeamExecutionIndex } from "./team-execution-index.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -210,6 +213,13 @@ export class AgentTeamRunManager {
 
   hasManagedTeamRun(rootTeamRunIdInput: string): boolean {
     return this.getManagedTeamRun(rootTeamRunIdInput) !== null;
+  }
+
+  /** Closed (Task DONE) task executions of the given (stored) tree of this root Team. */
+  closedTaskExecutionsFor(rootTeamRunIdInput: string, tree: TeamRunExecutionTreeSnapshot): readonly TaskExecutionReference[] {
+    const index = new TeamExecutionIndex(tree);
+    return listClosedTaskExecutions({ port: this.taskAgentResources, root: createTeamRootExecutionIdentity(required(rootTeamRunIdInput, "rootTeamRunId")),
+      contains: (reference) => index.getTaskExecution(reference) !== null });
   }
 
   listActiveTeamRunIds(): string[] {

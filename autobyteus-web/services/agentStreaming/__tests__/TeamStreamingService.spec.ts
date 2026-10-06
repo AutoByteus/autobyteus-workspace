@@ -71,7 +71,7 @@ const emit = (
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
   base_change_sequence: baseChangeSequence,
-  execution_tree: team.view.getExecutionTree(),
+  closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
   messages: team.view.listCommunicationMessages(),
   agent_input_states: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({

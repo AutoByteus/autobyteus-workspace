@@ -23,6 +23,13 @@ import { collaboratorExecutionNodes } from '~/services/collaborators/agentSource
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent } from './agentRunCollaborationIndex'
+import {
+  agentRunKey,
+  collaborationTreeWalk,
+  collectClosedSubtrees,
+  mergeClosedTaskExecutions,
+  type CollaborationTreeNode,
+} from '~/utils/collaboration/taskExecutionClosure'
 
 export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_required'
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
@@ -130,6 +137,16 @@ export class AgentRunCollaborationContext {
     } else if (event.kind === 'task_execution_started') {
       // A new child needs its own context and projection; reload the view.
       return 'checkpoint_required'
+    } else if (event.kind === 'task_executions_closed') {
+      // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
+      const unknown = event.task_executions.find((reference) => 'agentRunId' in reference
+        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task_agent' : !this.index.teams.has(reference.teamRunId))
+      if (unknown) {
+        this.requireReopen('A closed task execution is not a task execution of this run.')
+        throw new Error(this.error!)
+      }
+      this.view = { ...this.view,
+        closed_task_executions: mergeClosedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
     } else if (event.kind === 'collaborator_added') {
       // One hosted instance per entry: its executions get contexts now, Offline. Applied in
       // place (no reload) so a pending send that added it keeps its acknowledgement.
@@ -219,8 +236,14 @@ export class AgentRunCollaborationContext {
     }
   }
 
-  /** The task rows under the run row: task Agents and task Teams with their members. */
+  /** A child is listed in the Workspaces tree unless it is in a closed task execution (Task DONE). */
+  isListed(agentRunId: string): boolean {
+    return this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId))
+  }
+
+  /** The task rows under the run row: task Agents and task Teams with their members, without closed ones. */
   listTaskRows(isTeamExpanded: (teamRunId: string) => boolean): AgentRunTaskTreeRow[] {
+    const hidden = this.closedSubtrees()
     const flat: RunHistoryTransientExecutionRow[] = []
     const statusOf = (agentRunId: string) => this.contexts.get(agentRunId)?.state.currentStatus ?? AgentStatus.Offline
     const delegatorName = (agentRunId: string | null) => {
@@ -237,9 +260,11 @@ export class AgentRunCollaborationContext {
     type Node = AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number]
       | Extract<AgentRunCollaborationViewDto['execution_tree']['taskExecutions'][number], { teamRunId: string }>['members'][number]
     const visit = (node: Node, depth: number): void => {
+      if (hidden.has(collaborationTreeWalk.keyOf(node))) return
       if ('agentRunId' in node) { flat.push(agentRow(this.index.requireAgent(node.agentRunId), depth)); return }
       const team = this.index.teams.get(node.teamRunId)!
       const children = [...node.members, ...node.taskExecutions]
+        .filter((child) => !hidden.has(collaborationTreeWalk.keyOf(child)))
       flat.push({
         kind: 'transient_execution', transientKind: 'task_team', rowKey: `team:${node.teamRunId}`, teamRunId: this.hostRunId,
         memberAddress: node.address, agentRunId: null, teamRunIdForNode: node.teamRunId, memberKind: 'agent_team',
@@ -248,8 +273,7 @@ export class AgentRunCollaborationContext {
       })
       if (isTeamExpanded(node.teamRunId)) children.forEach((child) => visit(child, depth + 1))
     }
-    ;[...collaboratorExecutionNodes(this.view.execution_tree.collaborators) as Node[], ...this.view.execution_tree.taskExecutions]
-      .forEach((task) => visit(task, 0))
+    this.rootExecutionNodes().forEach((task) => visit(task as Node, 0))
     const hasSibling = (index: number, depth: number): boolean => {
       for (let next = index + 1; next < flat.length; next += 1) {
         if (flat[next]!.depth < depth) return false
@@ -311,6 +335,15 @@ export class AgentRunCollaborationContext {
         throw new Error(`Agent collaboration message '${message.messageId}' identity mismatch.`)
       }
     }
+  }
+
+  /** Collaborators (hosted by the root) first, then extra copies and other delegated children. */
+  private rootExecutionNodes() {
+    return [...collaboratorExecutionNodes(this.view.execution_tree.collaborators), ...this.view.execution_tree.taskExecutions]
+  }
+
+  private closedSubtrees() {
+    return collectClosedSubtrees<CollaborationTreeNode>(this.rootExecutionNodes(), this.view.closed_task_executions, collaborationTreeWalk)
   }
 
   private commitTree(tree: AgentRunCollaborationViewDto['execution_tree']): void {

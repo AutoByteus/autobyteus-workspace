@@ -29,6 +29,7 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       archivedAt: null,
       isActive: true,
       summary: 'Deliver current package',
+      closedTaskExecutions: [],
       executionTree: {
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',

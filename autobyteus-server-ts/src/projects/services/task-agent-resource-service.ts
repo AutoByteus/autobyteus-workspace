@@ -19,6 +19,8 @@ export type TaskAgentResourceGroup = Readonly<{ hostRoot: RootExecutionIdentity;
 export class TaskAgentResourceService {
   private readonly files = new Map<string, Loaded>();
   private readonly owners = new Map<string, string>();
+  /** Closed agent runs per host root key (then by agent run key); derived only in `swap()`, like `owners`. */
+  private readonly closedRunsByHostRootKey = new Map<string, Map<string, TaskExecutionReference>>();
   private readonly damaged = new Map<string, string>();
   private readonly chains = new Map<string, Promise<unknown>>();
   private loading: Promise<void> | null = null;
@@ -97,6 +99,10 @@ export class TaskAgentResourceService {
     }
     return [...groups.values()];
   }
+  /** Closed agent runs hosted by the root, from the per-root index (damaged Tasks never reach `swap()`). Never throws. */
+  closedAgentRunsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
+    return [...this.closedRunsByHostRootKey.get(rootExecutionIdentityKey(hostRoot))?.values() ?? []];
+  }
   async currentAssignments(taskId: string): Promise<TaskAssignment[] | "unavailable"> {
     await this.load();
     if (this.damaged.has(taskId)) return "unavailable";
@@ -155,14 +161,29 @@ export class TaskAgentResourceService {
   /** View swap for one committed Task file: synchronous, never before commit. */
   private swap(location: TaskAgentResourceLocation, file: TaskAgentResourceFile): void {
     const previous = this.files.get(location.taskId);
-    for (const entry of previous?.file.agentRunResources ?? []) this.owners.delete(agentRunKey(entry.agentRun));
+    for (const entry of previous?.file.agentRunResources ?? []) {
+      this.owners.delete(agentRunKey(entry.agentRun));
+      if (entry.closedAt !== null) this.forgetClosed(entry.hostRoot, entry.agentRun);
+    }
     for (const entry of file.agentRunResources) {
       const key = agentRunKey(entry.agentRun);
       const other = this.owners.get(key);
       if (other && other !== location.taskId) console.error("TASK_AGENT_RESOURCE_CONFLICT", { agentRun: entry.agentRun, tasks: [other, location.taskId] });
       this.owners.set(key, location.taskId);
+      if (entry.closedAt !== null) {
+        const rootKey = rootExecutionIdentityKey(entry.hostRoot);
+        const closed = this.closedRunsByHostRootKey.get(rootKey) ?? new Map<string, TaskExecutionReference>();
+        closed.set(key, entry.agentRun);
+        this.closedRunsByHostRootKey.set(rootKey, closed);
+      }
     }
     this.files.set(location.taskId, { location, file });
+  }
+  private forgetClosed(hostRoot: RootExecutionIdentity, agentRun: TaskExecutionReference): void {
+    const rootKey = rootExecutionIdentityKey(hostRoot);
+    const closed = this.closedRunsByHostRootKey.get(rootKey);
+    closed?.delete(agentRunKey(agentRun));
+    if (closed?.size === 0) this.closedRunsByHostRootKey.delete(rootKey);
   }
   private assertLoaded(): void {
     if (!this.loaded) throw new Error("Task agent run resources are not loaded.");

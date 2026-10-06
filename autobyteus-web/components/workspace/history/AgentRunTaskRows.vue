@@ -1,12 +1,17 @@
 <template>
-  <!-- Task Agents and task Teams brought into a standalone Agent run with `@`. -->
-  <div
-    v-if="rows.length"
+  <!-- Task Agents and task Teams brought into a standalone Agent run with `@`. Rows of a DONE Task leave with motion. -->
+  <TransitionGroup
+    v-if="rendered"
+    tag="div"
+    name="tree-row"
     class="team-execution-tree ml-3 space-y-0.5"
     role="tree"
     :aria-label="t('workspace.history.hierarchy.tree_label', { name: label })"
     data-test="workspace-agent-run-task-tree"
     :data-run-id="runId"
+    @before-leave="onBeforeLeave"
+    @after-leave="onRowLeaveSettled"
+    @leave-cancelled="onRowLeaveSettled"
   >
     <WorkspaceTransientExecutionRow
       v-for="display in rows"
@@ -20,12 +25,13 @@
       @select="select"
       @toggle="toggle"
     />
-  </div>
+  </TransitionGroup>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue'
+import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows'
 import { useLocalization } from '~/composables/useLocalization'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
@@ -50,6 +56,17 @@ onMounted(loadStored)
 watch(() => props.hasCollaboration, loadStored)
 
 const rows = computed(() => collaboration.taskRows(props.runId))
+// The run row directly precedes this tree.
+const { leaving, onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
+  (tree) => tree.previousElementSibling instanceof HTMLElement ? tree.previousElementSibling : null)
+// The tree stays mounted while its last rows leave (their leave hooks need the group); once they
+// have settled, the empty list is not rendered.
+const rendered = ref(false)
+watch(() => rows.value.length > 0, (hasRows) => { if (hasRows) rendered.value = true }, { immediate: true })
+const onRowLeaveSettled = (): void => {
+  onLeaveSettled()
+  if (leaving.value === 0 && rows.value.length === 0) rendered.value = false
+}
 const isExpanded = (row: RunHistoryTransientExecutionRow): boolean =>
   Boolean(row.teamRunIdForNode && collaboration.isTaskTeamExpanded(props.runId, row.teamRunIdForNode))
 const isSelected = (row: RunHistoryTransientExecutionRow): boolean =>
@@ -68,3 +85,5 @@ const select = (row: RunHistoryTransientExecutionRow): void => {
   if (!props.runSelected) emit('select-run')
 }
 </script>
+
+<style scoped src="./treeRowLeave.css"></style>

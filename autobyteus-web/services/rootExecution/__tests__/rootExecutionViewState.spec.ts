@@ -18,7 +18,7 @@ const launch = {
 const view = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 4,
   is_active: true,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org',
     createdAt: '2026-09-01T00:00:00.000Z',
     archivedAt: null,

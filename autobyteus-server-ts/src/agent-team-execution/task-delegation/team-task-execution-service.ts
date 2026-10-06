@@ -30,6 +30,7 @@ export class TeamTaskExecutionService {
   releaseTaskAgentResources(refs: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
     return this.lifecycle.releaseTaskAgentResources(refs);
   }
+  closedTaskExecutions(): readonly TaskExecutionReference[] { return this.lifecycle.closedTaskExecutions(); }
 
   closeExternalAdmission(): void { this.lifecycle.closeExternalAdmission(); }
   enterRootFailStop(): void { this.lifecycle.enterRootFailStop(); }

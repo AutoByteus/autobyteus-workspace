@@ -511,8 +511,9 @@ Fresh Team open follows the same invariant: an explicitly requested focus must
 exist and its exact projection is fail-fast, while nonfocused projections remain
 best effort. The open coordinator commits the staged projection and Activity
 batch before mounting, selecting, or connecting the stream. Snapshot/reconnect
-processing invalidates retained-projection authority. Delegated children never
-leave the tree, so idle shutdown preserves focus; when focus repair chooses a
+processing invalidates retained-projection authority. Idle shutdown never
+removes delegated children from the tree, so it preserves focus (Task closure is
+the one case where they leave; see "Task closure" below); when focus repair chooses a
 different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
@@ -603,6 +604,26 @@ compatible run-id fallback. The frontend must not recreate the removed
 `isTaskAgentRunId` generated-run-id heuristic or any other run-id-format parser
 as a routing authority. Idle shutdown does not remove delegated rows; they stay
 in the tree with `offline` status, in active and historical views alike.
+
+Task closure: when a Project Task becomes DONE, its task executions leave the
+Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),
+together with everything under them. The execution tree itself is never
+filtered, so message participants and history keep their identities. Closure is
+a separate fact beside the tree: the root snapshot and stored reads carry
+`closed_task_executions`, and the live `task_executions_closed` /
+`TASK_EXECUTIONS_CLOSED` event is published before the runs are stopped, so a
+failed stop does not keep them listed. `utils/collaboration/taskExecutionClosure.ts`
+owns the closed-subtree rule; the run-history row builders and
+`AgentRunTaskRows` / `WorkspaceTeamExecutionTree` /
+`WorkspaceAgentOrgHistoryCollection` apply it. Leaving rows use
+`useLeavingTreeRows` and `treeRowLeave.css`: a 200 ms ease-out fade and collapse
+while the remaining rows move up, at once under `prefers-reduced-motion`. New
+rows appear without motion. A selected closed run hands selection to the Agent
+run (Agent root), to the delegating Manager (Team root), or to the agent that
+delegated its outermost closed execution (Org root), and keyboard focus
+on a leaving row moves to that row. Messages with closed runs stay in the Team
+tab, and nothing is deleted from disk. Only the Workspaces tree and the main
+view follow closure; other Team surfaces still list closed members.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

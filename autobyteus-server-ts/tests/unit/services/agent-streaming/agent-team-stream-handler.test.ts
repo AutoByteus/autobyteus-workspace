@@ -38,7 +38,7 @@ const createHarness = (input: {
   const root = {
     teamRunId: "team-run-root",
     openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, messages, inputStates: [], statuses: [] },
+      snapshot: { tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] },
       baseChangeSequence: 31,
       subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
       close: closeSnapshot,

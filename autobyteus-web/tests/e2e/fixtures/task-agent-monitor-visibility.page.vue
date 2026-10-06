@@ -154,7 +154,7 @@ const snapshotMessage = (): Extract<TeamStreamServerMessage, { type: 'TEAM_EXECU
   payload: {
     root_team_run_id: ROOT_TEAM_RUN_ID,
     base_change_sequence: 40,
-    execution_tree: team.view.getExecutionTree(),
+    closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
     messages: team.view.listCommunicationMessages(),
     agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
       agent_run_id: entry.agentRunId,

@@ -54,7 +54,7 @@ const message = (index: number, senderAgentRunId: string, receiverAgentRunId: st
 const largeOrgView = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 4,
   is_active: true,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org', createdAt: timestamp(0), archivedAt: null, applicationBinding: null, handoffs: [],
     rootOrg: {
       collaborators: [], address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',

@@ -6,6 +6,7 @@ import type {
   TeamRunHistoryItem,
 } from '~/stores/runHistoryTypes';
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution';
+import { closedTaskExecutionsDtoSchema } from '@autobyteus/collaboration-stream-contracts';
 
 export const flattenWorkspaceTeamRuns = (
   groups: RunHistoryWorkspaceGroup[],
@@ -117,9 +118,10 @@ export const parseAgentOrgHistoryItem = (value: unknown, requestedId?: string): 
   if (!rootRunId || (requestedId !== undefined && rootRunId !== requestedId)) throw new Error('AgentOrg history root identity mismatch.');
   const executionTree = parseAgentOrgExecutionTree(item.org);
   if (executionTree.rootOrg.orgRunId !== rootRunId) throw new Error(`AgentOrg history row '${rootRunId}' does not match its execution tree root.`);
+  const closedTaskExecutions = closedTaskExecutionsDtoSchema.parse(item.closed_task_executions);
   return Object.freeze({
     stableKey: `agent_org_run:${rootRunId}`, rootSubjectKind: 'agent_org', rootRunId,
-    createdAt, archivedAt, isActive: item.is_active, summary, executionTree,
+    createdAt, archivedAt, isActive: item.is_active, summary, executionTree, closedTaskExecutions,
   });
 };
 

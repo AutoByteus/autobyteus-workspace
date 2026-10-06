@@ -1,0 +1,44 @@
+{
+  "no-preference": {
+    "before": 14,
+    "after": 11,
+    "t0": {
+      "present": true,
+      "opacity": "1",
+      "ariaHidden": "true",
+      "inert": true,
+      "height": 28
+    },
+    "t100": {
+      "present": true,
+      "opacity": "0.409091",
+      "ariaHidden": "true",
+      "inert": true,
+      "height": 13.078125
+    },
+    "t350": {
+      "present": false
+    },
+    "focusAfter": "agent-org-run-open-ttrc-org-run",
+    "teacherTaskStillListed": 1
+  },
+  "reduce": {
+    "before": 14,
+    "after": 11,
+    "t0": {
+      "present": true,
+      "opacity": "1",
+      "ariaHidden": "true",
+      "inert": true,
+      "height": 28
+    },
+    "t100": {
+      "present": false
+    },
+    "t350": {
+      "present": false
+    },
+    "focusAfter": "agent-org-run-open-ttrc-org-run",
+    "teacherTaskStillListed": 1
+  }
+}

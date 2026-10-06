@@ -39,6 +39,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     base_change_sequence: baseChangeSequence,
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
+    closed_task_executions: snapshot.closedTaskExecutions,
     communication_messages: snapshot.messages,
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
@@ -84,6 +85,9 @@ export const projectAgentOrgExecutionEvent = (
       break;
     case "collaborator_added":
       event = { kind: "collaborator_added" as const, collaborator: projectCollaborationCollaborator(source.collaborator) };
+      break;
+    case "task_executions_closed":
+      event = { kind: "task_executions_closed" as const, task_executions: source.taskExecutions };
       break;
   }
   return RootExecutionEventDtoSchema.parse({

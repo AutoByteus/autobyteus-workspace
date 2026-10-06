@@ -99,6 +99,19 @@ const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAge
 export const taskExecutionDtoSchema = taskExecution;
 export type CollaborationTaskExecutionDto = TaskExecutionDto;
 
+/** Identity of one task execution node (a task Agent or a task Team) of a root's execution tree. */
+export const taskExecutionReferenceDtoSchema = z.union([
+  z.object({ agentRunId: nonEmptyStringSchema }).strict(),
+  z.object({ teamRunId: nonEmptyStringSchema }).strict(),
+]);
+export type TaskExecutionReferenceDto = Readonly<z.infer<typeof taskExecutionReferenceDtoSchema>>;
+/** Task executions whose Task is DONE: the tree keeps them, the Workspaces listing leaves them out. */
+export const closedTaskExecutionsDtoSchema = z.array(taskExecutionReferenceDtoSchema);
+/** Live: these task executions of the root were closed (their Task became DONE). */
+export const taskExecutionsClosedEventDtoSchema = z.object({
+  kind: z.literal("task_executions_closed"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
+}).strict();
+
 const configuredTeam = z.object({
   address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
   role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
@@ -172,6 +185,7 @@ export const agentOrgAgentStatusDtoSchema = z.object({
 export const agentOrgExecutionViewDtoSchema = z.object({
   base_change_sequence: z.number().int().nonnegative(), is_active: z.boolean(),
   execution_tree: agentOrgExecutionTreeDtoSchema,
+  closed_task_executions: closedTaskExecutionsDtoSchema,
   communication_messages: agentOrgCommunicationMessagesDtoSchema, agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
 }).strict();
@@ -184,6 +198,7 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
   }).strict(),
   z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
   z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
+  taskExecutionsClosedEventDtoSchema,
 ]);
 
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;

@@ -1,0 +1,6 @@
+{
+ "BR-001": "Pass",
+ "BR-002": "Fail: Task A rows: no visible fade/collapse frames (AC-010)",
+ "BR-003": "Pass"
+}
+exit 0

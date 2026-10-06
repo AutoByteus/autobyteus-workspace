@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.95-beta.3 test:e2e:task-closure-tree /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-web
+> node tests/e2e/task-closure-tree-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/tickets/in-progress/task-run-resources-workspace-cleanup/delivery-evidence/task-closure-tree-probe
+
+Task closure tree probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/tickets/in-progress/task-run-resources-workspace-cleanup/delivery-evidence/task-closure-tree-probe/evidence.json
