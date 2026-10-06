@@ -247,8 +247,8 @@ Every `delegate_task` call must be bound to an active collaboration root and
 the current member identity. Each root resolves the required canonical absolute
 non-root `recipient_address` with `resolveDelegationPlacement`: configured
 placements first, then the run's collaborators (shared Agents and Agent Teams
-brought in with `@` or by an agent's first message, or a member of a
-collaborator Team), then an eligible **catalog** Agent or Agent Team at its
+brought in by an agent's first message, or with `@` in runs saved by earlier
+releases, or a member of a collaborator Team), then an eligible **catalog** Agent or Agent Team at its
 listed address (`CatalogAddressMap`; see `list_available_agents`), including a
 teammate inside the sender's own catalog Team copy (taken from that copy's
 snapshot). See [Agent Communication](./agent_communication.md#collaborators).
