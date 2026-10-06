@@ -1,0 +1,242 @@
+{
+  "timestamp": "2026-10-06T16:05:16.335863+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006",
+  "branch": "codex/disable-native-multi-agent-20261006",
+  "candidateHEAD": "d44b584e08ce2ecae8da6d9610148c49f5d3456d",
+  "bootstrapBase": "f48dbfbf39bbf9ed76116943e304248ca387dc7f",
+  "checkedRemoteBase": "f48dbfbf39bbf9ed76116943e304248ca387dc7f",
+  "newBaseCommitsIntegrated": false,
+  "integrationMethod": "Already current (git merge --no-edit origin/personal)",
+  "checkpoint": "Not needed \u2014 candidate source/tests/evidence already committed; no tracked changes before integration; inherited untracked SDK outputs and accepted handoff receipts preserved",
+  "apiManifestEntriesVerified": 50,
+  "apiManifestChecks": [
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-red.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/units.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-3.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-2.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/provenance.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-1.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/coverage-self-review.md",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/prebuild.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-after-final-red-green.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-green.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/red-provenance.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/secret-retention-scan.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-restored-green.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/final-red-provenance.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-red.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/coverage-change.patch",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/test-db-cleanup.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/package-whitespace-check.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/build.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/final-repository.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-red/custom-json.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-red/positive-control.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-red/production-default.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-red/custom-string.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-2/system.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-2/system.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-3/system.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-3/system.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-red/custom-json.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-red/positive-control.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-red/production-default.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-red/custom-string.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-after-final-red-green/custom-json.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-after-final-red-green/positive-control.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-after-final-red-green/production-default.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-after-final-red-green/custom-string.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-green/custom-json.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-green/positive-control.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-green/production-default.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-green/custom-string.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-green/custom-json.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-green/positive-control.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-green/production-default.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-final-green/custom-string.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-1/system.log",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/system-attempt-1/system.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-restored-green/custom-json.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-restored-green/positive-control.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-restored-green/production-default.json",
+      "matches": true
+    },
+    {
+      "path": "tickets/in-progress/codex-disable-multi-agent/evidence/api-e2e/api-001/native-restored-green/custom-string.json",
+      "matches": true
+    }
+  ],
+  "sourceBuildTestChecks": [
+    {
+      "path": "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-launch-config.ts",
+      "sha256": "f84ffbdc8b1d4b0733c5f4622762426199e1993a6a5389bd0d79db4d66e78a47",
+      "matchesUpstream": true
+    },
+    {
+      "path": "autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-launch-config.js",
+      "sha256": "4b6bec9bca58087840af4c9b451f2737441b5d902f6f6aac01167b3bac4d25f3",
+      "matchesUpstream": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/runtime-management/codex/client/codex-native-multi-agent-disabled.integration.test.ts",
+      "sha256": "d058b9799c9c0fbd68a0501cc03b02e2d324e6d22fe9e46e6ec3363d24cdf83e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts",
+      "sha256": "bcdd1613eb390bc40fff38f353d61bb0a6882749f3ac7b0f5cc28ee5e8ea1dab",
+      "matchesUpstream": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/codex-native-multi-agent-system.mjs",
+      "sha256": "6b0d671bb0112bbbc26ecfeb87772d36b1edc10fdce0a5f14d0ce4647155818a",
+      "matchesUpstream": true
+    }
+  ],
+  "finalLiveEvidence": "evidence/api-e2e/api-001/system-attempt-3/system.json"
+}

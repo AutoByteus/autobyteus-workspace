@@ -1,0 +1,7 @@
+{
+  "result": "Blocked \u2014 explicit user verification pending",
+  "matchingRule": null,
+  "reason": "No code/packaging finding or upstream-classification issue; verification-only hold; Delivery Completed rule inapplicable",
+  "fallbackRecipient": "/api_e2e_engineer",
+  "fallbackPurpose": "Return verification-hold status to requesting agent, not reassign verification or claim terminal"
+}

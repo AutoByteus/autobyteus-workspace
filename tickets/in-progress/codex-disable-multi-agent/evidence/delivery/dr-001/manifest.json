@@ -1,0 +1,18 @@
+{
+  "filesSHA256": {
+    "delivery-self-check.json": "c6d6777f5ccdc884ff781fff023e8d38c451a20696eb653d30a5c538ee2fba00",
+    "fetch.log": "71cd7148743b6320ebf7fdd6413b1ae86ba330ecee8ce3a46c5125d1de701fdb",
+    "integration-provenance.json": "8abf111eda0d02071d095204ba484700f44b9bd3ce598cfbde98427bc5510b44",
+    "integration.log": "e5d6c99aec87ec07a2d1b5c1222d8b690d0a61c3548a55c795fff56db9450d0d",
+    "native-surface/custom-json.json": "f24908561789d7f2494f1646e41b934a9734f0b2e74435175599a820f68564b9",
+    "native-surface/custom-string.json": "cb9ace60ff8c78aee65240af0814ecc46857b01941cb82f9afc6dc31df01bc9c",
+    "native-surface/positive-control.json": "fa3d7fec15e6154763b24af78abdf68cad88d3bd3962c976e8e3ec2f79bcdd55",
+    "native-surface/production-default.json": "e4a0f980bf79d7ee25605749d1875722f60d75a11deacea609d0259f521f4d99",
+    "repository-result.json": "7adcb2b0ee1880d7903c4129524805c91c2604e34c3c6a9d6eecdef3460380c4",
+    "repository.log": "b7a48f1f8a941406168df45677b22c06ae01e1f05c2ef5467804c5be89902d41",
+    "validation-summary.json": "b905c20756093826396ed5d804dc21b203204043c09d6ebd558e83c85ea47617"
+  },
+  "sourceCommit": "ce028688bb452500578d5e8ff3633e72ac72b54e",
+  "apiPackageHEAD": "d44b584e08ce2ecae8da6d9610148c49f5d3456d",
+  "result": "Delivery integration/checks/docs pass; explicit user verification pending"
+}
