@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-10-06T16:28:50.210457+00:00",
+  "source": "Public Docker Hub tag metadata (read-only, no auth/config write)",
+  "tags": {
+    "latest": {
+      "name": "latest",
+      "digest": "sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477",
+      "last_updated": "2026-10-05T11:43:15.294204Z",
+      "tag_last_pushed": "2026-10-05T11:43:15.294204Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:d7b21034aff5899b0a74ccb116deb39789bfc6fa9aba40527dfa8213c995739a",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:f120d88be5ebff0e2a83f1410af70c799f73cd4817565c2795c18d2832375eb6",
+          "status": "active"
+        }
+      ]
+    },
+    "1.4.94": {
+      "name": "1.4.94",
+      "digest": "sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477",
+      "last_updated": "2026-10-05T11:43:12.303492Z",
+      "tag_last_pushed": "2026-10-05T11:43:12.303492Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:d7b21034aff5899b0a74ccb116deb39789bfc6fa9aba40527dfa8213c995739a",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:f120d88be5ebff0e2a83f1410af70c799f73cd4817565c2795c18d2832375eb6",
+          "status": "active"
+        }
+      ]
+    },
+    "beta": {
+      "name": "beta",
+      "digest": "sha256:beb45a435786a8a9d0a682149c6a794d69d24debffd29cdc334aa9d642a5c0ec",
+      "last_updated": "2026-10-06T12:48:30.637666Z",
+      "tag_last_pushed": "2026-10-06T12:48:30.637666Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:ee004cd9ebd8ddd653ecfaff562172340714185660a45113c74421d7014871e7",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:7b2e0a20aa942255063598dff080836687c618d13f24f41a29bf06d87593d158",
+          "status": "active"
+        }
+      ]
+    }
+  }
+}

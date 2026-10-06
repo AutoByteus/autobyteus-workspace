@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-10-06T17:06:55.805525+00:00",
+  "tag": "v1.4.95-beta.8",
+  "releaseCommit": "30c3f40d5721124c466d464004b004053173280c",
+  "docker": {
+    "1.4.95-beta.8": {
+      "name": "1.4.95-beta.8",
+      "digest": "sha256:3a20fecfac312bd0239c154549e226c31ad06592e31d22da40ad90f3ccca4045",
+      "last_updated": "2026-10-06T16:51:05.307805Z",
+      "tag_last_pushed": "2026-10-06T16:51:05.307805Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:5f7592358ed5c7c9c80d6588e329cd2f2988993bb5d83ca0dba492b95f53c6d0",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:45c4a738af413973d2d78698e8798309c49cb3910c99e8d8114703ca3096d4c3",
+          "status": "active"
+        }
+      ]
+    },
+    "beta": {
+      "name": "beta",
+      "digest": "sha256:3a20fecfac312bd0239c154549e226c31ad06592e31d22da40ad90f3ccca4045",
+      "last_updated": "2026-10-06T17:03:19.406873Z",
+      "tag_last_pushed": "2026-10-06T17:03:19.406873Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:5f7592358ed5c7c9c80d6588e329cd2f2988993bb5d83ca0dba492b95f53c6d0",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:45c4a738af413973d2d78698e8798309c49cb3910c99e8d8114703ca3096d4c3",
+          "status": "active"
+        }
+      ]
+    },
+    "latest": {
+      "name": "latest",
+      "digest": "sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477",
+      "last_updated": "2026-10-05T11:43:15.294204Z",
+      "tag_last_pushed": "2026-10-05T11:43:15.294204Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:d7b21034aff5899b0a74ccb116deb39789bfc6fa9aba40527dfa8213c995739a",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:f120d88be5ebff0e2a83f1410af70c799f73cd4817565c2795c18d2832375eb6",
+          "status": "active"
+        }
+      ]
+    },
+    "1.4.94": {
+      "name": "1.4.94",
+      "digest": "sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477",
+      "last_updated": "2026-10-05T11:43:12.303492Z",
+      "tag_last_pushed": "2026-10-05T11:43:12.303492Z",
+      "images": [
+        {
+          "architecture": "amd64",
+          "os": "linux",
+          "digest": "sha256:d7b21034aff5899b0a74ccb116deb39789bfc6fa9aba40527dfa8213c995739a",
+          "status": "active"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux",
+          "digest": "sha256:f120d88be5ebff0e2a83f1410af70c799f73cd4817565c2795c18d2832375eb6",
+          "status": "active"
+        }
+      ]
+    }
+  },
+  "workflowResults": [
+    {
+      "conclusion": "success",
+      "databaseId": 37495837634,
+      "headSha": "30c3f40d5721124c466d464004b004053173280c",
+      "name": "Android APK Release",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37495837634"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 37495837665,
+      "headSha": "30c3f40d5721124c466d464004b004053173280c",
+      "name": "iOS App Store Connect Release",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37495837665"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 37495837604,
+      "headSha": "30c3f40d5721124c466d464004b004053173280c",
+      "name": "Desktop Release",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37495837604"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 37495837704,
+      "headSha": "30c3f40d5721124c466d464004b004053173280c",
+      "name": "Server Docker Release",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37495837704"
+    }
+  ],
+  "githubRelease": {
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.95-beta.8",
+    "prerelease": true,
+    "draft": false,
+    "publishedAt": "2026-10-06T16:32:55Z",
+    "latestStable": {
+      "tag": "v1.4.94",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.94",
+      "prerelease": false
+    }
+  },
+  "assetCount": 17,
+  "updaterMetadata": "4/4 Pass; correct beta version, references to actual published assets, both mac architectures and positive Linux embedded blockMapSize",
+  "stableGitHubLatestUnchanged": true,
+  "result": "Pass \u2014 all four normal tag workflows succeeded; non-draft prerelease/assets/metadata and Docker version/beta/stable-channel verification completed",
+  "ios": "Simulator build/test, signing/archive and App Store Connect upload success; public App Store review and TestFlight processing/installation not claimed",
+  "noUserAppUpgradePerformed": true,
+  "noDuplicateManualDispatch": true
+}

@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-10-06T17:04:03.237478+00:00",
+  "jobId": 112380069984,
+  "liveLogQuery": "Unavailable while in progress; this is not a CI failure",
+  "exitCode": 1,
+  "error": "gh: HTTP 404"
+}

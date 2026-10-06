@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-06T16:27:52.272717+00:00",
+  "ticketFinalCommit": "a06cf254bdd5c97fe224208f77d051f7662a66fd",
+  "ticketBranchPush": "Completed",
+  "target": "origin/personal",
+  "targetPreMerge": "96dc5a25f5b4f88d9bb8896596536af5e1f7dbf3",
+  "targetMerge": "8b6edb103346c7be4c101372caf04f77d5821121",
+  "targetMergePush": "Completed",
+  "betaHelper": "bash scripts/desktop-release.sh beta",
+  "betaVersion": "1.4.95-beta.8",
+  "releaseCommit": "30c3f40d5721124c466d464004b004053173280c",
+  "tag": "v1.4.95-beta.8",
+  "tagPeeledCommit": "30c3f40d5721124c466d464004b004053173280c",
+  "betaBranchAndTagPush": "Completed",
+  "sourceAndTicketIncluded": true,
+  "remoteRefs": [
+    "a06cf254bdd5c97fe224208f77d051f7662a66fd\trefs/heads/codex/disable-native-multi-agent-20261006",
+    "30c3f40d5721124c466d464004b004053173280c\trefs/heads/personal",
+    "034ac31fb8d188962829eb7582f3899c04ae1837\trefs/tags/v1.4.95-beta.8",
+    "30c3f40d5721124c466d464004b004053173280c\trefs/tags/v1.4.95-beta.8^{}"
+  ],
+  "publication": "Pending workflow completion",
+  "safeTaskCleanup": "Pending publication",
+  "durableCheckout": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-native-suppression-release-20261006",
+  "sharedPersonalCheckout": "Not edited/stashed/reset/switched; unrelated working changes preserved",
+  "cloneObjectAlternate": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git/objects",
+  "releaseNotesMode": "Generated beta notes; archived internal summary not curated input",
+  "tagOnlyIsNotPublishedBinaries": true
+}

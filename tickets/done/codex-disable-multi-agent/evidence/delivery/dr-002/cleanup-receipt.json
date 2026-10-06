@@ -1,0 +1,81 @@
+{
+  "timestamp": "2026-10-06T17:07:56.394392+00:00",
+  "taskWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006",
+  "taskWorktreeRemoved": true,
+  "ownedWorktreeMetadataRemoved": true,
+  "worktreePrune": "Not required \u2014 exact worktree remove removed owned metadata; no broad prune of unrelated entries",
+  "localTicketBranch": "codex/disable-native-multi-agent-20261006",
+  "localTicketBranchRemoved": true,
+  "remoteTicketBranchCleanup": "Not required; retained development/archive snapshot",
+  "removedExactOwnedUntrackedPaths": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/beta-helper.log",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/clone.log",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/tickets/done/codex-disable-multi-agent/evidence/delivery/dr-002/target-finalization.log",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/autobyteus-application-backend-sdk/dist",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/autobyteus-application-sdk-contracts/dist"
+  ],
+  "allUncommittedLogsVerifiedCopiedBeforeDeletion": true,
+  "sourceTrackedStateCleanBeforeRemoval": true,
+  "verifiedMergedIntoLatestRemotePersonalBeforeCleanup": true,
+  "commands": [
+    {
+      "command": [
+        "git",
+        "--git-dir",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+        "fetch",
+        "origin",
+        "personal"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "From github.com-ryan:AutoByteus/autobyteus-workspace\n * branch                personal   -> FETCH_HEAD\n"
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+        "merge-base",
+        "--is-ancestor",
+        "a06cf254bdd5c97fe224208f77d051f7662a66fd",
+        "refs/remotes/origin/personal"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+        "worktree",
+        "remove",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "--git-dir",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git",
+        "branch",
+        "-d",
+        "codex/disable-native-multi-agent-20261006"
+      ],
+      "exitCode": 0,
+      "stdout": "Deleted branch codex/disable-native-multi-agent-20261006 (was a06cf254b).\n",
+      "stderr": ""
+    }
+  ],
+  "durableFinalizationTargetCheckout": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-native-suppression-release-20261006",
+  "durableCheckoutRetirement": "Not required \u2014 clean personal target/audit checkout retained for authoritative local package; not the dedicated ticket branch/worktree. No app/server/process or generated SDK outputs retained there.",
+  "sharedPersonalWorkingTree": "No edits/stashes/resets/switches; only own worktree/branch metadata and safe tracked-remote fetch, unrelated working changes untouched",
+  "commonGitObjectsAvailableForAuditClone": true,
+  "publicationGatesPassedBeforeCleanup": true,
+  "result": "Completed"
+}
