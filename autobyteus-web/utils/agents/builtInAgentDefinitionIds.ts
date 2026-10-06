@@ -9,7 +9,6 @@ import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
  * server never admits a built-in as an `@` collaborator.
  */
 export const BUILT_IN_AGENT_DEFINITION_IDS: ReadonlySet<string> = new Set([
-  'autobyteus-project-task-manager',
   'autobyteus-retrospective-skill-improver',
   DEFAULT_CHAT_AGENT_DEFINITION_ID,
 ])

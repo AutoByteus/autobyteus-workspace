@@ -81,11 +81,6 @@ it("E-008: separate built nodes cannot patch/link remote identities; local saved
   const a = new NodeFixture(), b = new NodeFixture();
   try {
     await a.setup(); await b.setup();
-    const definitions = await a.gql<{agentDefinitions: Array<{name: string; toolNames: string[]; instructions: string}>}>("{agentDefinitions{name toolNames instructions}}");
-    const manager = definitions.agentDefinitions.find(d => d.name === "Project Task Manager");
-    expect(manager).toBeDefined();
-    expect(manager!.toolNames).toEqual(["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file"]);
-    expect(manager!.instructions).toContain("create_or_update_project");
     const rootPath = path.join(a.root, "registered-source"); await fs.mkdir(rootPath); await fs.writeFile(path.join(rootPath, "source.txt"), "owned source");
     const {createWorkspace: ws} = await a.gql<{createWorkspace: {workspaceId: string; workspaceRootPath: string}}>(
       "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", {i: {rootPath}});
@@ -117,7 +112,7 @@ it("E-008: separate built nodes cannot patch/link remote identities; local saved
     expect(await b.gql(query, {id: projectId})).toEqual({project: null});
     console.info("Built-node HTTP receipt", JSON.stringify({nodeA: a.origin, nodeB: b.origin, projectId, workspaceId: ws.workspaceId,
       savedBeforeRestart: saved.project, remotePatch: rejectedPatch.structuredContent, remoteLink: rejectedLink.structuredContent,
-      afterRestart: patched.structuredContent, managerToolNames: manager!.toolNames}));
+      afterRestart: patched.structuredContent}));
   } finally {
     // Attempt both cleanups even if either one fails.
     const cleanup = await Promise.allSettled([a.cleanup(), b.cleanup()]);

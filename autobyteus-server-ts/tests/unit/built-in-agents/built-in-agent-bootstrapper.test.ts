@@ -8,7 +8,7 @@ import { AgentDefinitionService } from "../../../src/agent-definition/services/a
 import { parseAgentMd, serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import {
-  DAILY_ASSISTANT_AGENT_DEFINITION_ID, PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
+  DAILY_ASSISTANT_AGENT_DEFINITION_ID,
   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -21,6 +21,7 @@ import {
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 
 const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
+const RETIRED_PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID = "autobyteus-project-task-manager";
 const TEMPLATES_DIR = fileURLToPath(new URL("../../../src/built-in-agents/templates/", import.meta.url));
 
 const createTempDataDir = async (): Promise<string> =>
@@ -81,16 +82,16 @@ describe("BuiltInAgentBootstrapper", () => {
     agentDefinitionId,
   );
 
-  it("ships the business-only Manager prompt and selected ordinary tools through real bootstrap", async () => {
-    const services = createServices();
-    await bootstrapBuiltInAgents(services);
-    const prompt = await fs.readFile(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent.md"), "utf8");
-    expect(prompt).toBe(await readTemplate("project-task-manager", "agent.md"));
-    for (const businessDuty of ["list_projects", "list_project_tasks", "create_or_update_project", "user-requested Project changes", "Omitted fields are preserved", "complete desired list", "real IDs", "unconfirmed", "TODO", "recipient_address and task_id", "IN_PROGRESS", "target_agent_run_id", "send_message_to", "results, artifacts and user instructions", "DONE", "completion information is missing"]) expect(prompt).toContain(businessDuty);
-    expect(prompt).not.toMatch(/runtime|resource|cleanup|lifetime|cascade|restore|global Stop|scheduler|polling|notifier|self-DONE|completion[- ]report/i);
-    const config = await readJson(path.join(agentDir(PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID), "agent-config.json"));
-    expect(config.toolNames).toEqual(["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task", "list_available_agents", "delegate_task", "send_message_to", "read_file"]);
-    for (const key of ["inputProcessorNames", "llmResponseProcessorNames", "toolExecutionResultProcessorNames", "toolInvocationPreprocessorNames", "lifecycleProcessorNames"]) expect(config[key]).toEqual([]);
+  it("neither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job", async () => {
+    const retiredDir = agentDir(RETIRED_PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID);
+    await fs.mkdir(retiredDir, { recursive: true });
+    await fs.writeFile(path.join(retiredDir, "agent.md"), "installed copy from an earlier build", "utf-8");
+
+    const result = await bootstrapBuiltInAgents(createServices());
+
+    expect(result.builtInAgents.some(item => item.agentDefinitionId === RETIRED_PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID)).toBe(false);
+    await expect(fs.readFile(path.join(retiredDir, "agent.md"), "utf-8")).resolves.toBe("installed copy from an earlier build");
+    await expect(fs.stat(path.join(retiredDir, "agent-config.json"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
   const compactorAgentDir = (): string => agentDir(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
@@ -122,8 +123,10 @@ describe("BuiltInAgentBootstrapper", () => {
       agentsDir: path.join(tempDataDir, "agents"),
       refreshedCache: true,
     });
-    expect(result.builtInAgents).toHaveLength(3);
-    expect(result.builtInAgents.some(item => item.agentDefinitionId === PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID)).toBe(true);
+    expect(result.builtInAgents.map(item => item.agentDefinitionId)).toEqual([
+      RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+    ]);
     expect(result.builtInAgents.some(item => item.agentDefinitionId === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toBe(false);
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
@@ -405,7 +408,6 @@ describe("BuiltInAgentBootstrapper", () => {
       expect(definition?.toolNames).toContain("list_available_agents");
       expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([
         DAILY_ASSISTANT_AGENT_DEFINITION_ID,
-        PROJECT_TASK_MANAGER_AGENT_DEFINITION_ID,
         RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       ].sort());
     });
