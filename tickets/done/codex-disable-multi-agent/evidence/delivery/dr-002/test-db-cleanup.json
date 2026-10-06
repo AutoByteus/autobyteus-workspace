@@ -1,0 +1,8 @@
+{
+  "removedExactOwnedFiles": [
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "testDBAbsent": true,
+  "preexistingTestDBAbsent": true
+}

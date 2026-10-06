@@ -1,0 +1,6 @@
+# User Verification And Beta Authorization
+
+- User response to DR-001 verification hold: **"finalize and release a new beta please"** (2026-10-06). This explicitly accepts the presented verification basis and instructs repository finalization to recorded origin/personal plus one new beta via the documented helper. No manual desktop test is invented. Stable release and changing release infrastructure are not authorized.
+- Post-acceptance base advanced to `96dc5a25f5b4f88d9bb8896596536af5e1f7dbf3`. Protected delivery edits in local checkpoint `131b5cce3`, then merged as `95b387c07`. New base has independently finalized mention-candidate work and beta.7 version, not a changed Codex policy/thread/MCP source or native override doc.
+- Renewed verification is not required for this narrow ticket: approved semantics and relevant source/docs/tests remain unchanged. Required integrated build/tests and bounded live lifecycle rerun are recorded separately in `evidence/delivery/dr-002/`. Any failing supported contract would block finalization instead of relying on the acceptance.
+- Beta helper uses generated GitHub notes and requires no ticket/curated release-note input. Release scope was newly requested at acceptance, not preapproved during DR-001.

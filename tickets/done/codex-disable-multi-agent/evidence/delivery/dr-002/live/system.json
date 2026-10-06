@@ -1,0 +1,236 @@
+{
+  "result": {
+    "model": "gpt-6.1-sol",
+    "inventories": [
+      {
+        "phase": "fresh",
+        "runId": "native_policy_manager_35d729d64431415c9bdcaa61e9575d14",
+        "threadId": "01a11207-ecc0-77e2-883e-40b08c093723",
+        "model": "gpt-6.1-sol",
+        "argv": [
+          "app-server",
+          "-c",
+          "agents.enabled=false"
+        ],
+        "turnStatus": "completed",
+        "answer": {
+          "tools": [
+            "functions.wait",
+            "functions.request_user_input",
+            "functions.request_user_input_async",
+            "functions.exec",
+            "clock.sleep",
+            "tools.apply_patch",
+            "tools.create_goal",
+            "tools.exec_command",
+            "tools.get_goal",
+            "tools.list_mcp_resource_templates",
+            "tools.list_mcp_resources",
+            "tools.read_mcp_resource",
+            "tools.update_goal",
+            "tools.view_image",
+            "tools.write_stdin",
+            "tools.clock__curr_time",
+            "tools.image_gen__imagegen"
+          ],
+          "collaboration_tools": [],
+          "note": "Listed only callable tools explicitly defined in this conversation; tools.* entries are callable inside functions.exec. Additional deferred tools are mentioned but their definitions and names are not supplied. No AutoByteus or built-in collaboration tool definitions are visible. No tools were executed."
+        },
+        "toolsExecuted": [],
+        "usage": [
+          {
+            "total": {
+              "totalTokens": 7894,
+              "inputTokens": 7575,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 319,
+              "reasoningOutputTokens": 126
+            },
+            "last": {
+              "totalTokens": 7894,
+              "inputTokens": 7575,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 319,
+              "reasoningOutputTokens": 126
+            },
+            "modelContextWindow": 258400
+          }
+        ],
+        "websocketErrorFrames": []
+      },
+      {
+        "phase": "restored",
+        "runId": "native_policy_manager_35d729d64431415c9bdcaa61e9575d14",
+        "threadId": "01a11207-ecc0-77e2-883e-40b08c093723",
+        "model": "gpt-6.1-sol",
+        "argv": [
+          "app-server",
+          "-c",
+          "agents.enabled=false"
+        ],
+        "turnStatus": "completed",
+        "answer": {
+          "tools": [
+            "functions.wait",
+            "functions.request_user_input",
+            "functions.request_user_input_async",
+            "functions.exec",
+            "clock.sleep",
+            "tools.apply_patch",
+            "tools.create_goal",
+            "tools.exec_command",
+            "tools.get_goal",
+            "tools.list_mcp_resource_templates",
+            "tools.list_mcp_resources",
+            "tools.read_mcp_resource",
+            "tools.update_goal",
+            "tools.view_image",
+            "tools.write_stdin",
+            "tools.clock__curr_time",
+            "tools.image_gen__imagegen"
+          ],
+          "collaboration_tools": [],
+          "note": "These are the explicitly supplied callable definitions. tools.* entries are available within functions.exec. Unlisted deferred tools cannot be identified without executing a tool. No AutoByteus or built-in collaboration tools are explicitly defined. No tools were executed."
+        },
+        "toolsExecuted": [],
+        "usage": [
+          {
+            "total": {
+              "totalTokens": 16089,
+              "inputTokens": 15583,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 506,
+              "reasoningOutputTokens": 126
+            },
+            "last": {
+              "totalTokens": 8195,
+              "inputTokens": 8008,
+              "cachedInputTokens": 0,
+              "cacheWriteInputTokens": 0,
+              "outputTokens": 187,
+              "reasoningOutputTokens": 0
+            },
+            "modelContextWindow": 258400
+          }
+        ],
+        "websocketErrorFrames": []
+      }
+    ],
+    "phases": [
+      "owned built Studio ready",
+      "fresh: completed inventory",
+      "ordinary Stop physically closed first Codex generation",
+      "restored: completed inventory",
+      "same saved identity, new client, restored MCP callable and final Stop complete"
+    ],
+    "cleanup": {
+      "studioClosed": true,
+      "clientsClosed": true,
+      "publicListenerReleased": true,
+      "errors": []
+    },
+    "teamId": "native_policy_team_c89e8ba1430f46a08cd497e704925c5b",
+    "freshMcp": {
+      "enabledTools": [
+        "list_projects",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task",
+        "create_or_update_task"
+      ],
+      "toolNames": [
+        "delegate_task",
+        "get_handoff_rules",
+        "create_or_update_task",
+        "send_message_to",
+        "list_projects"
+      ],
+      "handoff": {
+        "handoffs": [
+          {
+            "when": "Only report when explicitly requested",
+            "recipient_address": "/worker"
+          }
+        ]
+      },
+      "projects": {
+        "projects": []
+      },
+      "rejectedTarget": {
+        "accepted": false,
+        "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
+        "message": "Exact AgentRun target 'native-policy-probe-missing-run' is not active.",
+        "target_agent_run_id": null
+      },
+      "ungrantedToolRejected": true
+    },
+    "persistedBinding": {
+      "kind": "configured_agent",
+      "address": "/manager",
+      "agent_definition_id": "native-policy-manager",
+      "role": null,
+      "description": null,
+      "agent_run_id": "native_policy_manager_35d729d64431415c9bdcaa61e9575d14",
+      "platform_agent_run_id": "01a11207-ecc0-77e2-883e-40b08c093723",
+      "launch_configuration": {
+        "runtime_kind": "codex_app_server",
+        "llm_model_identifier": "gpt-6.1-sol",
+        "llm_config": {
+          "reasoning_effort": "low"
+        },
+        "auto_execute_tools": false,
+        "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-native-policy-system-SFr3pZ/workspace"
+      }
+    },
+    "restoredMcp": {
+      "enabledTools": [
+        "list_projects",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task",
+        "create_or_update_task"
+      ],
+      "toolNames": [
+        "list_projects",
+        "delegate_task",
+        "get_handoff_rules",
+        "create_or_update_task",
+        "send_message_to"
+      ],
+      "handoff": {
+        "handoffs": [
+          {
+            "when": "Only report when explicitly requested",
+            "recipient_address": "/worker"
+          }
+        ]
+      },
+      "projects": {
+        "projects": []
+      },
+      "rejectedTarget": {
+        "accepted": false,
+        "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
+        "message": "Exact AgentRun target 'native-policy-probe-missing-run' is not active.",
+        "target_agent_run_id": null
+      },
+      "ungrantedToolRejected": true
+    },
+    "exactThreadIdentityPreserved": true,
+    "twoPhysicalClientCloses": true,
+    "result": "Pass"
+  },
+  "cleanup": {
+    "binaryVersion": "codex-cli 0.160.1",
+    "childExited": true,
+    "exitCode": 0,
+    "signal": null,
+    "privateRootAndAuthRemoved": true,
+    "sourceAuthUnchanged": true,
+    "sourceConfigUnchanged": true
+  },
+  "error": null
+}
