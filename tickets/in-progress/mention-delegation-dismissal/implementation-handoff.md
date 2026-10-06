@@ -191,3 +191,10 @@ These are local implementation checks only; they are not API/E2E sign-off.
 - All live/real-runtime validation of AC-001..AC-015 (above), including the web tree outcome and restart persistence.
 - Rewrite and run the stale `cross-scope-agent-mentions-live-probe.mjs`. Run `task-closure-tree-probe.mjs` and `projects-feature-probe.mjs` (call shapes updated, not executed here).
 - `tests/e2e/projects/task-closure-root-visibility.e2e.test.ts` is env-gated (`RUN_AGY_FAILURE_E2E=1` plus the fake AGY CLI) and was skipped here; its call shapes were updated. The "Project Mutation Regressions" pair should be rerun by API/E2E after a fresh `build`, per TESTING.md.
+
+## Downstream Review Status (informational)
+
+- Code review CRR-001: `Pass` with no findings (code-review-report.md, code-review-revision-record.md). Non-blocking recommendations:
+  - R-CR-1: test harnesses reach the private `collaborators` field through a cast.
+  - R-CR-2: `agent-run-history-catalog-service.ts` is at 499 effective lines.
+- No implementation action was taken. The reviewer forwarded the package to `/api_e2e_engineer`.

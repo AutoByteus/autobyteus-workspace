@@ -316,6 +316,44 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --output-dir <fresh evidence d
   reload and a real backend restart. The probe cleans up its own processes and
   data root; check `cleanup` in its `evidence.json`.
 
+`@` delegation and ad-hoc Tasks (Tasks with no Project, created by a described
+`delegate_task` and closed by `create_or_update_task({task_id, status: "DONE"})`)
+have a gated server E2E beside the closure suite and a live browser probe:
+
+```bash
+RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts --no-watch
+pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agent_sdk --output-dir <fresh dir>
+```
+
+- **`ad-hoc-task-delegation.e2e.test.ts`.** Real HTTP/WS/scoped MCP with the
+  scripted AGY actor, for all three roots. The hosts have no Project tool
+  selected. It covers:
+  - a `@` send adds no collaborator and stores the `delegate_task` note;
+  - `delegate_task` returns `task_id` and writes a text-only
+    `<appData>/ad-hoc-tasks/<id>/`;
+  - the copy's own sub-delegation stays in that Task;
+  - the strict `create_or_update_task` modes (`project_id` with `task_id`
+    rejected, unknown id, create without a Project, a Project Task patched by
+    id);
+  - DONE by `task_id` alone: a live closure, a fenced run-ID message, and a
+    repeated DONE;
+  - Projects listing excludes the ad-hoc Task;
+  - delegation and DONE while `projects/projects.json` (the pending migration)
+    exists;
+  - a brought-in collaborator survives Stop/restore;
+  - permanent delete removes only that run's ad-hoc Tasks.
+
+  Set `AD_HOC_TASK_E2E_EVIDENCE_DIR` to keep a JSON receipt.
+- **`test:e2e:cross-scope-agent-mentions`.** The same journeys with a real
+  model, browser, Nuxt and built backend. It needs a logged-in Claude or Codex
+  CLI (`--runtime codex_app_server`). Reporting copies may be closed by their
+  delegator on its own; the user-driven close is asserted on a copy that never
+  reports. It includes Stop, a real backend restart, a stored bring-in
+  collaborator, an ineligible mention, first-send mentions and the permanent
+  delete. `--ledger-file <abs path>` appends case results. `L01`/`L02` need
+  `--runtime antigravity_cli` and are reported Not Applicable otherwise.
+
 If you change `ProjectsLayout`, `readProjectFile` or `readTaskFile`, first
 repoint `projects-per-folder-v1` to frozen copies (data_migration_guideline §4),
 then rerun the migration tests.

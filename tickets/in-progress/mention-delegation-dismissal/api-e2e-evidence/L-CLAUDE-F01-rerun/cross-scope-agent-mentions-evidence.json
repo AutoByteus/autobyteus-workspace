@@ -1,0 +1,73 @@
+{
+  "startedAt": "2026-10-06T10:45:37.770Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "F01": {
+      "title": "AC-001 alternate (ineligible mention): a mention whose definition no longer exists is refused — notice, draft and highlight kept, nothing sent, no row, no Task",
+      "result": "Pass",
+      "ms": 10918,
+      "details": {
+        "runId": "research_assistant_baf00621fb0f43f0a60520f83cefaaca",
+        "deleted": {
+          "success": true,
+          "message": "Agent definition deleted successfully."
+        },
+        "notice": "Couldn’t add temp-helper to this run\n\n'temp-helper' is not a shared Agent that can be mentioned. Nothing was added.",
+        "draft": "F01-1791283554926 please ask @Temp Helper to check the release notes.",
+        "highlightKept": true,
+        "messageSent": false,
+        "collaborators": 0,
+        "copies": 0,
+        "tasksAdded": 0
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 43532
+    },
+    {
+      "label": "frontend",
+      "pid": 43558
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 43558,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 43532,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-PdKrcS"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-PdKrcS",
+  "backendUrl": "http://127.0.0.1:52632",
+  "frontUrl": "http://127.0.0.1:52633",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "noteTaker": "note-taker",
+    "tempHelper": "temp-helper",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-06T10:45:58.269Z"
+}

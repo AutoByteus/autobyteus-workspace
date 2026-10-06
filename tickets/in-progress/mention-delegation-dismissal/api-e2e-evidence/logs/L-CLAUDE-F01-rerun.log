@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.95-beta.4 test:e2e:cross-scope-agent-mentions /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/autobyteus-web
+> node tests/e2e/cross-scope-agent-mentions-live-probe.mjs --runtime claude_agent_sdk --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE-F01-rerun --cases F01 --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE-run2-ledger.md
+
+F01 Pass AC-001 alternate (ineligible mention): a mention whose definition no longer exists is refused — notice, draft and highlight kept, nothing sent, no row, no Task
+Summary: 1 Pass, 0 Fail, 0 Not Applicable

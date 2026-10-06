@@ -1,0 +1,34 @@
+# L-CLAUDE live probe case ledger
+
+| Case | Timestamp | Event | Configuration | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| A01 | 2026-10-06T10:36:21.220Z | Completed | runtime=claude_agent_sdk model= | Fail — locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="chat-model-list-claude_agent_sdk"]').locator('[data-test="chat-model-option-undefined"]')
+ | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| A02 | 2026-10-06T10:37:21.302Z | Completed | runtime=claude_agent_sdk model= | Fail — locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-agent-run-row"][data-run-id="null"]').first() to be visible
+ | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| A03 | 2026-10-06T10:37:34.055Z | Completed | runtime=claude_agent_sdk model= | Fail — locator.waitFor: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('[data-test="workspace-agent-run-row"][data-run-id="null"]').first() to be visible
+ | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| A04 | 2026-10-06T10:37:34.057Z | Completed | runtime=claude_agent_sdk model= | Fail — fetch failed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| A05 | 2026-10-06T10:37:36.087Z | Completed | runtime=claude_agent_sdk model= | Fail — page.reload: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| A06 | 2026-10-06T10:37:36.098Z | Completed | runtime=claude_agent_sdk model= | Fail — GraphQL: [{"message":"Variable \"$id\" of non-null type \"String!\" must not be null.","locations":[{"line":1,"column":10}]}] | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| S01 | 2026-10-06T10:37:36.100Z | Completed | runtime=claude_agent_sdk model= | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| F01 | 2026-10-06T10:37:36.101Z | Completed | runtime=claude_agent_sdk model= | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| T01 | 2026-10-06T10:37:36.103Z | Completed | runtime=claude_agent_sdk model= | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| T02 | 2026-10-06T10:37:36.104Z | Completed | runtime=claude_agent_sdk model= | Fail — locator.click: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| T03 | 2026-10-06T10:37:36.104Z | Completed | runtime=claude_agent_sdk model= | Fail — locator.click: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| O01 | 2026-10-06T10:37:37.780Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| O02 | 2026-10-06T10:37:37.782Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — locator.click: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| O03 | 2026-10-06T10:37:37.783Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — locator.click: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| L01 | 2026-10-06T10:37:37.783Z | Completed | runtime=claude_agent_sdk model=haiku | Not Applicable | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| L02 | 2026-10-06T10:37:37.784Z | Completed | runtime=claude_agent_sdk model=haiku | Not Applicable | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| P01 | 2026-10-06T10:37:37.785Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| N01 | 2026-10-06T10:37:37.785Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| N02 | 2026-10-06T10:37:37.786Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| N03 | 2026-10-06T10:37:37.791Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — page.goto: Target page, context or browser has been closed | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
+| D01 | 2026-10-06T10:37:37.792Z | Completed | runtime=claude_agent_sdk model=haiku | Fail — own ad-hoc Tasks missing before delete | /Users/normy/autobyteus_org/autobyteus-worktrees/mention-delegation-dismissal/tickets/in-progress/mention-delegation-dismissal/api-e2e-evidence/L-CLAUDE |
