@@ -24,9 +24,14 @@ const timestamp = (value: unknown, fallback: string): string => optional(value) 
 
 type ProjectionContext = { runId: string; memoryDir: string | null; workspaceRootPath: string | null };
 
+/**
+ * Owns the live file-change projection of every run attached to it. Only attached runs are held in
+ * memory, because only they receive FILE_CHANGE events here; any other run is read fresh from disk.
+ */
 export class RunFileChangeService {
   private readonly projectionStore: RunFileChangeProjectionStore;
   private readonly workspaceManager: WorkspaceManager;
+  private readonly attachedRunIds = new Set<string>();
   private readonly projections = new Map<string, RunFileChangeProjection>();
   private readonly queues = new Map<string, Promise<void>>();
 
@@ -39,6 +44,7 @@ export class RunFileChangeService {
   }
 
   attachToRun(run: AgentRun): () => void {
+    this.attachedRunIds.add(run.runId);
     const unsubscribe = run.subscribeToEvents((event: unknown) => {
       if (isAgentRunEvent(event) && event.eventType === AgentRunEventType.FILE_CHANGE) {
         void this.enqueue(this.fromRun(run), event);
@@ -79,22 +85,27 @@ export class RunFileChangeService {
     const before = JSON.stringify(projection);
     this.upsert(projection, entry);
     if (before === JSON.stringify(projection)) return;
-    this.projections.set(context.runId, projection);
+    if (this.attachedRunIds.has(context.runId)) this.projections.set(context.runId, projection);
     if (context.memoryDir) await this.projectionStore.writeProjection(context.memoryDir, projection);
   }
 
   private async load(context: ProjectionContext): Promise<RunFileChangeProjection> {
+    if (!this.attachedRunIds.has(context.runId)) return this.readStored(context);
     const cached = this.projections.get(context.runId);
     if (cached) return cloneRunFileChangeProjection(cached);
+    const projection = await this.readStored(context);
+    if (this.attachedRunIds.has(context.runId)) this.projections.set(context.runId, projection);
+    return cloneRunFileChangeProjection(projection);
+  }
+
+  private async readStored(context: ProjectionContext): Promise<RunFileChangeProjection> {
     const stored = context.memoryDir
       ? await this.projectionStore.readProjection(context.memoryDir)
       : { ...EMPTY_RUN_FILE_CHANGE_PROJECTION, entries: [] };
-    const projection = normalizeRunFileChangeProjection(stored, {
+    return normalizeRunFileChangeProjection(stored, {
       runId: context.runId, workspaceRootPath: context.workspaceRootPath,
       preferTransientContentOnTie: true,
     });
-    this.projections.set(context.runId, projection);
-    return cloneRunFileChangeProjection(projection);
   }
 
   private normalizeEntry(context: ProjectionContext, raw: Record<string, unknown>): RunFileChangeEntry | null {
@@ -124,8 +135,34 @@ export class RunFileChangeService {
     Object.assign(existing, incoming, content, { createdAt: existing.createdAt || incoming.createdAt });
   }
 
-  private clear(runId: string): void { this.projections.delete(runId); this.queues.delete(runId); }
+  private clear(runId: string): void {
+    this.attachedRunIds.delete(runId);
+    this.projections.delete(runId);
+    this.queues.delete(runId);
+  }
 }
 
-let cachedRunFileChangeService: RunFileChangeService | null = null;
-export const getRunFileChangeService = (): RunFileChangeService => cachedRunFileChangeService ??= new RunFileChangeService();
+let processRunFileChangeService: RunFileChangeService | null = null;
+
+export const bindProcessRunFileChangeService = (service: RunFileChangeService): void => {
+  if (!service) {
+    throw new Error("A process RunFileChangeService instance is required.");
+  }
+  if (processRunFileChangeService) {
+    throw new Error("The process RunFileChangeService is already initialized.");
+  }
+  processRunFileChangeService = service;
+};
+
+export const releaseProcessRunFileChangeService = (service: RunFileChangeService): void => {
+  if (processRunFileChangeService === service) {
+    processRunFileChangeService = null;
+  }
+};
+
+export const getRunFileChangeService = (): RunFileChangeService => {
+  if (!processRunFileChangeService) {
+    throw new Error("The process RunFileChangeService is not initialized.");
+  }
+  return processRunFileChangeService;
+};

@@ -71,7 +71,12 @@ Team Communication.
   directory lineage uses TeamRun ids; it is deliberately not a logical member
   path or address encoding.
 - Hydrate active and historical Agent Artifact rows through
-  `RunFileChangeProjectionService` and `getRunFileChanges(runId)`.
+  `RunFileChangeProjectionService` and `getRunFileChanges(runId)`. Active runs
+  are read from the one process `RunFileChangeService` that
+  `GeneralProcessRunSupervisor` binds (`getRunFileChangeService()`). It holds a
+  live projection only for runs attached to it and reads any other run fresh
+  from `file_changes.json`, so every recorded artifact stays listable and
+  previewable without a restart.
 - Serve Agent Artifact bytes by `runId + canonical path` through
   `/runs/:runId/file-change-content`.
 - Keep Team Communication message/reference storage for accepted team-route

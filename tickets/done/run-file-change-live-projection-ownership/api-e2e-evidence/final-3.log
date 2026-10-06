@@ -1,0 +1,616 @@
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24250) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+Custom app data directory set to: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy
+Updated config file path to /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/.env
+Loading environment from: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8001
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8001
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy
+DB DIRECTORY: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/db
+LOGS DIRECTORY: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/logs
+DOWNLOAD DIRECTORY: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/download
+MEMORY DIRECTORY: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T06:05:20.060Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stderr | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Agent definition cache populated with 52 items.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Populating agent definition cache for the first time...
+[2026-10-06T06:05:21.493Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+[2026-10-06T06:05:21.518Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Agent definition cache populated with 52 items.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+In-memory cache: Added new agent definition with ID agy-multi-image-cddc229b-9199-401e-bbd9-074c16544126.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Agent Definition created successfully with ID: agy-multi-image-cddc229b-9199-401e-bbd9-074c16544126
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Creating new workspace for rootPath: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Created and registered workspace ID: agent_ws_416067ca2d96bcfe58dbc8ee1240a507395c22c9b7672aff19609f607c46f2a3
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Creating new workspace for rootPath: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Reusing registered workspace ID: agent_ws_416067ca2d96bcfe58dbc8ee1240a507395c22c9b7672aff19609f607c46f2a3
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+AGY compaction detection off for run agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Agent websocket attached for run agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a
+Created agent session a365ea02-a81a-4166-b7f2-ab38ce751034 for run agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a
+Agent WebSocket connected: session=a365ea02-a81a-4166-b7f2-ab38ce751034, run=agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Closed agent session a365ea02-a81a-4166-b7f2-ab38ce751034
+Agent WebSocket disconnected: a365ea02-a81a-4166-b7f2-ab38ce751034
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Creating new workspace for rootPath: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Reusing registered workspace ID: agent_ws_416067ca2d96bcfe58dbc8ee1240a507395c22c9b7672aff19609f607c46f2a3
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+AGY compaction detection off for run agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn
+Agent websocket attached for run agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a
+Created agent session 79153916-9463-449c-adde-9a67c10b8f55 for run agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a
+Agent WebSocket connected: session=79153916-9463-449c-adde-9a67c10b8f55, run=agy_multi_image_cddc229b_9199_401e_bbd9_074c1654_def451782b054701832712d8b7fe089a
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+In-memory cache: Added new agent definition with ID agy-multi-image-creator-5117183a-b8d3-4ba1-bb12-4474cebd6262.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Agent Definition created successfully with ID: agy-multi-image-creator-5117183a-b8d3-4ba1-bb12-4474cebd6262
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+In-memory cache: Added new agent definition with ID agy-multi-image-reviewer-85934a3c-8906-462a-a9c4-99ec01065e46.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Agent Definition created successfully with ID: agy-multi-image-reviewer-85934a3c-8906-462a-a9c4-99ec01065e46
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+[2026-10-06T06:05:22.616Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-multi-image-team-9fdb9f9c-bb98-4588-aeef-1876a99f0764.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Agent Team Definition created successfully with ID: agy-multi-image-team-9fdb9f9c-bb98-4588-aeef-1876a99f0764
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Creating new workspace for rootPath: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Reusing registered workspace ID: agent_ws_416067ca2d96bcfe58dbc8ee1240a507395c22c9b7672aff19609f607c46f2a3
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Agent team websocket attached for team run agy_multi_image_team_9fdb9f9c_bb98_4588_aeef_187_621a6217109948038c3f461fb8efb9dd
+Created agent session f5ee6b12-5b1e-47e4-ac51-d310bfc27499 for run agy_multi_image_team_9fdb9f9c_bb98_4588_aeef_187_621a6217109948038c3f461fb8efb9dd
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Agent Team WebSocket connected: session=f5ee6b12-5b1e-47e4-ac51-d310bfc27499, run=agy_multi_image_team_9fdb9f9c_bb98_4588_aeef_187_621a6217109948038c3f461fb8efb9dd
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Creating new workspace for rootPath: /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-multi-image-home-s1fMYT/app-data-oyfmZy/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Reusing registered workspace ID: agent_ws_416067ca2d96bcfe58dbc8ee1240a507395c22c9b7672aff19609f607c46f2a3
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+AGY compaction detection off for run agy_multi_image_creator_5117183a_b8d3_4ba1_bb12_8b7892c754e64ee5852c73cbf24035aa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport) > E-002/E-004 Team member: images previewable during the turn and after the team run is terminated
+Closed agent session f5ee6b12-5b1e-47e4-ac51-d310bfc27499
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Closed agent session 79153916-9463-449c-adde-9a67c10b8f55
+Agent WebSocket disconnected: 79153916-9463-449c-adde-9a67c10b8f55
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+[2026-10-06T06:05:24.464Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID agy-multi-image-team-9fdb9f9c-bb98-4588-aeef-1876a99f0764.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Agent Team Definition with ID agy-multi-image-team-9fdb9f9c-bb98-4588-aeef-1876a99f0764 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+In-memory cache: Removed agent definition with ID agy-multi-image-cddc229b-9199-401e-bbd9-074c16544126.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Agent Definition with ID agy-multi-image-cddc229b-9199-401e-bbd9-074c16544126 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+In-memory cache: Removed agent definition with ID agy-multi-image-creator-5117183a-b8d3-4ba1-bb12-4474cebd6262.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Agent Definition with ID agy-multi-image-creator-5117183a-b8d3-4ba1-bb12-4474cebd6262 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+In-memory cache: Removed agent definition with ID agy-multi-image-reviewer-85934a3c-8906-462a-a9c4-99ec01065e46.
+
+stdout | tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts > AGY multi-image turn: every generated image stays previewable (fake AGY transport)
+Agent Definition with ID agy-multi-image-reviewer-85934a3c-8906-462a-a9c4-99ec01065e46 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests) 4445ms
+     ✓ E-001/E-003 standalone: images previewable during the turn, after terminate, and after restore with a new turn  988ms
+     ✓ E-002/E-004 Team member: images previewable during the turn and after the team run is terminated  1843ms
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:24377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+Custom app data directory set to: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB
+Updated config file path to /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/.env
+Loading environment from: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8001
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8001
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/run-file-change-live-projection-ownership/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB
+DB DIRECTORY: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/db
+LOGS DIRECTORY: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/logs
+DOWNLOAD DIRECTORY: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/download
+MEMORY DIRECTORY: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T06:05:28.317Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+DEFINITION_ADMISSION_UNAVAILABLE:agent_team:nested-classroom-test:DEFINITION_REFERENCE_UNRESOLVED:/home/autobyteus/workspace/autobyteus-private-agents/agent-teams/nested-classroom-test
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Creating temp workspace at: /home/autobyteus/workspace
+Created metadata-only FileSystemWorkspace at /home/autobyteus/workspace.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent definition cache populated with 52 items.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Populating agent definition cache for the first time...
+[2026-10-06T06:05:29.654Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+[2026-10-06T06:05:29.678Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent definition cache populated with 52 items.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+In-memory cache: Added new agent definition with ID agy-step-output-04315712-a760-4116-be26-41cc16b5de41.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent Definition created successfully with ID: agy-step-output-04315712-a760-4116-be26-41cc16b5de41
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Created and registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+AGY compaction detection off for run agy_step_output_04315712_a760_4116_be26_41cc16b5_957e675c57754155b4ee2c160c4b14d6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Agent websocket attached for run agy_step_output_04315712_a760_4116_be26_41cc16b5_957e675c57754155b4ee2c160c4b14d6
+Created agent session 1df7d2a5-fcf2-48b5-8130-2a15c8eebe26 for run agy_step_output_04315712_a760_4116_be26_41cc16b5_957e675c57754155b4ee2c160c4b14d6
+Agent WebSocket connected: session=1df7d2a5-fcf2-48b5-8130-2a15c8eebe26, run=agy_step_output_04315712_a760_4116_be26_41cc16b5_957e675c57754155b4ee2c160c4b14d6
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+AGY compaction detection off for run agy_step_output_04315712_a760_4116_be26_41cc16b5_7c072e03835d4b5e8f9c523dc2111fce: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Agent websocket attached for run agy_step_output_04315712_a760_4116_be26_41cc16b5_7c072e03835d4b5e8f9c523dc2111fce
+Created agent session 2e38f83a-9433-4158-8c6f-89eab5bd9658 for run agy_step_output_04315712_a760_4116_be26_41cc16b5_7c072e03835d4b5e8f9c523dc2111fce
+Agent WebSocket connected: session=2e38f83a-9433-4158-8c6f-89eab5bd9658, run=agy_step_output_04315712_a760_4116_be26_41cc16b5_7c072e03835d4b5e8f9c523dc2111fce
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=agy_step_output_04315712_a760_4116_be26_41cc16b5_7c072e03835d4b5e8f9c523dc2111fce step=1 reason=OUTPUT_MISSING
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+AGY compaction detection off for run agy_step_output_04315712_a760_4116_be26_41cc16b5_41430c87fcb041dd9f8038e13ca44faf: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Agent websocket attached for run agy_step_output_04315712_a760_4116_be26_41cc16b5_41430c87fcb041dd9f8038e13ca44faf
+Created agent session e5e54f48-7102-4222-8518-ba8079a063c1 for run agy_step_output_04315712_a760_4116_be26_41cc16b5_41430c87fcb041dd9f8038e13ca44faf
+Agent WebSocket connected: session=e5e54f48-7102-4222-8518-ba8079a063c1, run=agy_step_output_04315712_a760_4116_be26_41cc16b5_41430c87fcb041dd9f8038e13ca44faf
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=agy_step_output_04315712_a760_4116_be26_41cc16b5_41430c87fcb041dd9f8038e13ca44faf step=1 reason=PATH_OUTSIDE_CONVERSATION
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Creating new workspace for rootPath: /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-step-output-home-oPmZK4/app-data-EU9TuB/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Reusing registered workspace ID: agent_ws_84c967a963fad3dc7a836b8f52b55e0db1ad4ea5dd1cf62d6e33f4fc03dc00ff
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+AGY compaction detection off for run agy_step_output_04315712_a760_4116_be26_41cc16b5_80dc41ed7fc84688b8b1766def618c43: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Agent websocket attached for run agy_step_output_04315712_a760_4116_be26_41cc16b5_80dc41ed7fc84688b8b1766def618c43
+Created agent session 2a6db32b-6cf7-4c08-9cc4-b2cd179c6278 for run agy_step_output_04315712_a760_4116_be26_41cc16b5_80dc41ed7fc84688b8b1766def618c43
+Agent WebSocket connected: session=2a6db32b-6cf7-4c08-9cc4-b2cd179c6278, run=agy_step_output_04315712_a760_4116_be26_41cc16b5_80dc41ed7fc84688b8b1766def618c43
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=agy_step_output_04315712_a760_4116_be26_41cc16b5_80dc41ed7fc84688b8b1766def618c43 step=1 reason=IMAGE_MISSING
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session 2a6db32b-6cf7-4c08-9cc4-b2cd179c6278
+Agent WebSocket disconnected: 2a6db32b-6cf7-4c08-9cc4-b2cd179c6278
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session e5e54f48-7102-4222-8518-ba8079a063c1
+Agent WebSocket disconnected: e5e54f48-7102-4222-8518-ba8079a063c1
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session 2e38f83a-9433-4158-8c6f-89eab5bd9658
+Agent WebSocket disconnected: 2e38f83a-9433-4158-8c6f-89eab5bd9658
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session 1df7d2a5-fcf2-48b5-8130-2a15c8eebe26
+Agent WebSocket disconnected: 1df7d2a5-fcf2-48b5-8130-2a15c8eebe26
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+In-memory cache: Removed agent definition with ID agy-step-output-04315712-a760-4116-be26-41cc16b5de41.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent Definition with ID agy-step-output-04315712-a760-4116-be26-41cc16b5de41 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 4118ms
+     ✓ publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history  671ms
+     ✓ keeps DONE successful with output null when AGY's step output is missing  579ms
+     ✓ ignores a reported image outside the conversation brain directory  594ms
+     ✓ ignores a symlinked reported image inside the conversation brain directory  598ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  06:05:07
+   Duration  24.90s (transform 8.45s, setup 32ms, import 15.38s, tests 8.56s, environment 0ms)
+

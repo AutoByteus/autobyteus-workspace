@@ -20,6 +20,19 @@ import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 import type { TaskAgentResourcePort } from "../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import {
+  RunFileChangeService,
+  bindProcessRunFileChangeService,
+  getRunFileChangeService,
+  releaseProcessRunFileChangeService,
+} from "../../../src/services/run-file-changes/run-file-change-service.js";
+
+/** The RunFileChangeService instance the supervisor wired into run activation (it records FILE_CHANGE events). */
+const wiredRunFileChangeService = (supervisor: GeneralProcessRunSupervisor): unknown => (
+  supervisor as unknown as {
+    agentRunManager: { activationRegistry: { resourceManager: { dependencies: { runFileChangeService: unknown } } } };
+  }
+).agentRunManager.activationRegistry.resourceManager.dependencies.runFileChangeService;
 
 const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
   scopeIdentity: "general-process",
@@ -75,6 +88,8 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     expect(initializeOrg).toHaveBeenCalledOnce();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
     expect(getTeamRunService()).toBe(supervisor.teamRunService);
+    expect(getRunFileChangeService()).toBeInstanceOf(RunFileChangeService);
+    expect(getRunFileChangeService()).toBe(wiredRunFileChangeService(supervisor));
 
     const owned = supervisor as unknown as {
       agentRunManager: AgentRunManager;
@@ -99,6 +114,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       "orgs", "teams", "agents", "authority",
     ]);
     expect(() => AgentOrgRunManager.getInstance()).toThrow();
+    expect(() => getRunFileChangeService()).toThrow("not initialized");
   });
 
   it("continues the exact Org, Team, Agent shutdown order and aggregates failures", async () => {
@@ -146,9 +162,28 @@ describe("GeneralProcessRunSupervisor ownership", () => {
       expect(() => new GeneralProcessRunSupervisor(createSupervisorInput())).toThrow("already initialized");
       expect(() => AgentTeamRunManager.getInstance()).toThrow();
       expect(() => AgentOrgRunManager.getInstance()).toThrow();
+      expect(() => getRunFileChangeService()).toThrow("not initialized");
     } finally {
       releaseProcessAgentRunService(conflictingService);
     }
+  });
+
+  it("refuses a second process RunFileChangeService and unwinds its earlier bindings", async () => {
+    const conflictingService = new RunFileChangeService();
+    bindProcessRunFileChangeService(conflictingService);
+    try {
+      expect(() => new GeneralProcessRunSupervisor(createSupervisorInput())).toThrow(
+        "The process RunFileChangeService is already initialized.",
+      );
+      expect(getRunFileChangeService()).toBe(conflictingService);
+      expect(() => AgentRunManager.getInstance()).toThrow();
+    } finally {
+      releaseProcessRunFileChangeService(conflictingService);
+    }
+    const recovered = new GeneralProcessRunSupervisor(createSupervisorInput());
+    expect(getRunFileChangeService()).toBe(wiredRunFileChangeService(recovered));
+    await recovered.close();
+    expect(() => getRunFileChangeService()).toThrow("not initialized");
   });
 
   it("rejects validator-only capabilities before manager mutation", () => {
