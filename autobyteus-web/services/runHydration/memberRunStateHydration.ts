@@ -4,8 +4,9 @@ import type { RunActivity } from '~/types/activity/RunActivity';
 import { fetchRunFileChanges, mergeHydratedRunFileChanges } from './runFileChangeHydrationService';
 
 /**
- * Hydration of one collaboration member's run state (Team and AgentOrg members): the member's
- * projection and its recorded artifacts are fetched together and committed together.
+ * Hydration of one collaboration member's run state (Team members, AgentOrg members and the
+ * collaborators of a standalone run): the member's projection and its recorded artifacts are
+ * fetched together and committed together.
  */
 
 export type MemberRunState<P> = Readonly<{

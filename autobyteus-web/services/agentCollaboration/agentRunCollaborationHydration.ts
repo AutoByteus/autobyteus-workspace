@@ -12,6 +12,11 @@ import { GetAgentRunCollaboration, GetAgentRunCollaborationMemberProjection } fr
 import { getApolloClient } from '~/utils/apolloClient'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
+import {
+  commitMemberRunStates,
+  fetchMemberRunState,
+  type MemberRunStateCommit,
+} from '~/services/runHydration/memberRunStateHydration'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent } from './agentRunCollaborationIndex'
 import { AgentRunCollaborationContext } from './agentRunCollaborationContext'
 
@@ -63,14 +68,14 @@ const resolveWorkspace = async (root: string | null, active: boolean): Promise<W
 
 /**
  * Builds the client context of an Agent root from a view: one AgentContext per child with its
- * stored conversation. Activities are committed only when the caller publishes the context.
+ * stored conversation. Activities and artifacts are committed only when the caller publishes the context.
  */
 export const stageAgentRunCollaborationContext = async (input: Readonly<{
   hostRunId: string
   view: AgentRunCollaborationViewDto
   isCurrent?(): boolean
   activityRevisions?: ReadonlyMap<string, number>
-}>): Promise<{ context: AgentRunCollaborationContext; commitActivities(): void }> => {
+}>): Promise<{ context: AgentRunCollaborationContext; commit(): void }> => {
   const index = new AgentRunCollaborationIndex(input.view.execution_tree)
   const activityStore = useAgentActivityStore()
   const revisions = new Map([...index.agents.keys()].map(id => [id,
@@ -84,7 +89,10 @@ export const stageAgentRunCollaborationContext = async (input: Readonly<{
   const staged = await Promise.all([...index.agents.values()].map(async (child) => {
     const context = createChildContext(child, input.view.execution_tree.createdAt,
       await workspaceFor(child.source.launchConfiguration.workspaceRootPath))
-    const projection = await fetchProjection(input.hostRunId, child)
+    const { projection, fileChanges } = await fetchMemberRunState({
+      runId: child.agentRunId,
+      fetchProjection: () => fetchProjection(input.hostRunId, child),
+    })
     resetRecentEventMonitorBaseline(context)
     context.state.conversation = buildConversationFromProjection(child.agentRunId, projection.conversation, {
       agentDefinitionId: child.source.agentDefinitionId,
@@ -95,21 +103,23 @@ export const stageAgentRunCollaborationContext = async (input: Readonly<{
     primeRecentEventMonitorBaseline(context)
     return {
       entry: Object.freeze({ agentRunId: child.agentRunId, memberAddress: child.address, context }),
-      activities: Object.freeze({
+      memberRunState: Object.freeze({
         runId: child.agentRunId,
-        expectedRevision: revisions.get(child.agentRunId)!,
+        expectedActivityRevision: revisions.get(child.agentRunId)!,
         activities: buildActivitiesFromProjection(projection.activities),
-      }),
+        fileChanges,
+      }) satisfies MemberRunStateCommit,
     }
   }))
   if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')
   const context = new AgentRunCollaborationContext({ hostRunId: input.hostRunId, view: input.view, entries: staged.map((item) => item.entry) })
-  const replacements = staged.map((item) => item.activities)
+  const memberRunStates = staged.map((item) => item.memberRunState)
   return {
     context,
-    commitActivities: () => {
+    // Commits every collaborator's staged state (activities, then artifacts) when the caller publishes the context.
+    commit: () => {
       if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')
-      if (replacements.length && useAgentActivityStore().replaceProjectionActivitiesIfRevisions(replacements) === 'conflict') {
+      if (commitMemberRunStates(memberRunStates) === 'conflict') {
         throw new Error(`Agent collaboration activity changed before '${input.hostRunId}' hydration could commit.`)
       }
     },
