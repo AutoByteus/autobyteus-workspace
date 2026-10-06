@@ -1,0 +1,202 @@
+
+> autobyteus@1.4.95-beta.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/layout/__tests__/WorkspaceToolShell.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts composables/__tests__/useEventMonitorFilePreview.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+
+stderr | composables/__tests__/useEventMonitorFilePreview.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useEventMonitorFilePreview.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (18 tests) 17ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (10 tests) 49ms
+ ❯ components/layout/__tests__/WorkspaceToolShell.spec.ts (8 tests | 8 failed) 38ms
+   × one activation visibly reveals selected B read-only: ordinary first host 14ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × one activation visibly reveals selected B read-only: narrow 4ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × one activation visibly reveals selected B read-only: short height 4ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × one activation visibly reveals selected B read-only: wide visible dock 2ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × one activation visibly reveals selected B read-only: wide user-hidden redocks 3ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:unavailable 3ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:not-regular-file 3ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+   × does not publish after shell disposal, including disposal during the render flush 3ms
+     → [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+ZodError: [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:135:20
+ ❯ Object.execute composables/useWorkspaceHistorySubjectActions.ts:49:11
+ ❯ setupSelectedB components/layout/__tests__/WorkspaceToolShell.spec.ts:75:3
+ ❯ components/layout/__tests__/WorkspaceToolShell.spec.ts:130:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide visible dock
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide user-hidden redocks
+ZodError: [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:135:20
+ ❯ Object.execute composables/useWorkspaceHistorySubjectActions.ts:49:11
+ ❯ setupSelectedB components/layout/__tests__/WorkspaceToolShell.spec.ts:75:3
+ ❯ components/layout/__tests__/WorkspaceToolShell.spec.ts:130:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:unavailable
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:not-regular-file
+ZodError: [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:135:20
+ ❯ Object.execute composables/useWorkspaceHistorySubjectActions.ts:49:11
+ ❯ setupSelectedB components/layout/__tests__/WorkspaceToolShell.spec.ts:75:3
+ ❯ components/layout/__tests__/WorkspaceToolShell.spec.ts:166:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  components/layout/__tests__/WorkspaceToolShell.spec.ts > does not publish after shell disposal, including disposal during the render flush
+ZodError: [
+  {
+    "code": "custom",
+    "message": "AgentOrg snapshot root correlation mismatch.",
+    "path": []
+  }
+]
+ ❯ readAgentOrgRunInspection services/agentOrgExecution/agentOrgRunInspection.ts:10:47
+      8|     variables: { orgRunId }, fetchPolicy: 'network-only', context: { q…
+      9|   if (result.errors?.length) throw new Error(result.errors.map((error:…
+     10|   const envelope = RootExecutionViewDtoSchema.parse(result.data?.getAg…
+       |                                               ^
+     11|   if (envelope.root_subject_kind !== 'agent_org' || envelope.root_run_…
+     12|     throw new Error('AgentOrg inspection root mismatch.')
+ ❯ readInspection stores/agentOrgContextsStore.ts:135:20
+ ❯ Object.execute composables/useWorkspaceHistorySubjectActions.ts:49:11
+ ❯ setupSelectedB components/layout/__tests__/WorkspaceToolShell.spec.ts:75:3
+ ❯ components/layout/__tests__/WorkspaceToolShell.spec.ts:180:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  8 failed | 28 passed (36)
+   Start at  19:33:30
+   Duration  8.49s (transform 4.79s, setup 20.32s, collect 1.33s, tests 103ms, environment 826ms, prepare 509ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

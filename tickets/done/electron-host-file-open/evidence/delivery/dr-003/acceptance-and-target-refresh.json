@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-10-06T18:14:08.196657+00:00",
+  "exactUserMessage": "finalize and release a new beta version",
+  "verificationBasis": "Explicit evidence-based completion/acceptance direction, no manual interaction claimed",
+  "betaPublicationAuthorized": true,
+  "acceptedCandidate": "28c7f549fec82985a22282fb1cd41ddd3669f008",
+  "fetchCommand": "git fetch origin personal",
+  "fetchResult": "Succeeded",
+  "latestRemoteTarget": "e41dc8711d7177c55ac4062200002aff466d9bbc",
+  "targetAdvanced": false,
+  "renewedVerificationNeeded": false,
+  "extraCheckNeeded": false,
+  "noExtraCheckRationale": "Remote target unchanged and contained in accepted integrated candidate; prior 54-test post-integration check/source-package hashes valid."
+}

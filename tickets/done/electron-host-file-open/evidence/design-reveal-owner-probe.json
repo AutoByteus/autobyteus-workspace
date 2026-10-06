@@ -1,0 +1,79 @@
+{
+  "revision": "18755fc0fe5a423ef9f21446c7d84dc9a4437acc",
+  "sources": {
+    "autobyteus-web/composables/useRightSideTabs.ts": "6fbfba9cdfcbdfe6ecaa072d6c28751cacc492bb1008d65134189cb78ca84777",
+    "autobyteus-web/utils/layout/responsiveStripActivation.ts": "c28fbde264e0a936fa9a17dbd501d0f264a1be4ccf68887ac94fe6fd61565bde",
+    "autobyteus-web/utils/layout/responsiveLayoutPolicy.ts": "6d8c112c5747b7d9d0567743301e9e6e059c0e4b2274ea8112264fef0d6e5d5b"
+  },
+  "assertions": "passed",
+  "caseCount": 11,
+  "boundary": "Unchanged actual tabs/policy source transpiled; controlled stores, simple reactive reads and lifecycle hooks. No Vue DOM host, watcher scheduling, Electron, file bytes or user data. Evidence for explicit intent/policy only; not D2 implementation validation.",
+  "rows": [
+    {
+      "kind": "standalone",
+      "lifecycle": "first host mount",
+      "selection": "passive",
+      "actual": "progress"
+    },
+    {
+      "kind": "standalone",
+      "lifecycle": "first host mount",
+      "selection": "explicit",
+      "actual": "files"
+    },
+    {
+      "kind": "standalone",
+      "lifecycle": "new scope with host unmounted",
+      "selection": "explicit",
+      "actual": "files"
+    },
+    {
+      "kind": "team",
+      "lifecycle": "first host mount",
+      "selection": "passive",
+      "actual": "teamMembers"
+    },
+    {
+      "kind": "team",
+      "lifecycle": "first host mount",
+      "selection": "explicit",
+      "actual": "files"
+    },
+    {
+      "kind": "team",
+      "lifecycle": "new scope with host unmounted",
+      "selection": "explicit",
+      "actual": "files"
+    },
+    {
+      "kind": "org",
+      "lifecycle": "first host mount",
+      "selection": "passive",
+      "actual": "teamMembers"
+    },
+    {
+      "kind": "org",
+      "lifecycle": "first host mount",
+      "selection": "explicit",
+      "actual": "files"
+    },
+    {
+      "kind": "org",
+      "lifecycle": "new scope with host unmounted",
+      "selection": "explicit",
+      "actual": "files"
+    },
+    {
+      "lifecycle": "visible dock preference",
+      "width": 992,
+      "presentation": "strip",
+      "stripActivation": "open-drawer"
+    },
+    {
+      "lifecycle": "visible dock preference",
+      "width": 1440,
+      "presentation": "docked",
+      "stripActivation": null
+    }
+  ]
+}

@@ -1,0 +1,269 @@
+
+> autobyteus@1.4.95-beta.8 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useEventMonitorFilePreview.spec.ts components/layout/__tests__/WorkspaceToolShell.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceToolShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useEventMonitorFilePreview.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useEventMonitorFilePreview.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useEventMonitorFilePreview.spec.ts (24 tests) 32ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (10 tests) 48ms
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: ordinary first host
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: narrow
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: short height
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide visible dock
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide visible dock
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide user-hidden redocks
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > one activation visibly reveals selected B read-only: wide user-hidden redocks
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:unavailable
+[FileExplorer] Opening file: /workspace/B/missing.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:unavailable
+[FileExplorer] Determined file type for "/workspace/B/missing.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/missing.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:not-regular-file
+[FileExplorer] Opening file: /workspace/B/missing.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > reveals the stored ordinary error on the fresh drawer with one activation: local-file-preview:not-regular-file
+[FileExplorer] Determined file type for "/workspace/B/missing.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/missing.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real monitor lazily imports the real launcher and reveals the setup-bound fresh Files host
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real monitor lazily imports the real launcher and reveals the setup-bound fresh Files host
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after run-switch
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after run-switch
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after monitor-unmount
+[FileExplorer] Opening file: /workspace/B/brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > real lazy monitor does not reveal/focus obsolete content after monitor-unmount
+[FileExplorer] Determined file type for "/workspace/B/brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/workspace/B/brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary remote-electron, inside true
+[FileExplorer] Opening file: brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary remote-electron, inside true
+[FileExplorer] Determined file type for "brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "brief.md" via GraphQL.
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary embedded-no-bridge, inside true
+[FileExplorer] Opening file: brief.md
+
+stdout | components/layout/__tests__/WorkspaceToolShell.spec.ts > actual selected mapper/Files boundary embedded-no-bridge, inside true
+[FileExplorer] Determined file type for "brief.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: 'brief.md',
+  type: 'Text',
+  mode: 'preview',
+  accessIntent: { source: 'event-monitor', readOnly: true },
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "brief.md" via GraphQL.
+
+ ✓ components/layout/__tests__/WorkspaceToolShell.spec.ts (15 tests) 417ms
+
+ Test Files  3 passed (3)
+      Tests  49 passed (49)
+   Start at  19:49:42
+   Duration  10.07s (transform 5.10s, setup 23.60s, collect 1.47s, tests 497ms, environment 875ms, prepare 529ms)
+

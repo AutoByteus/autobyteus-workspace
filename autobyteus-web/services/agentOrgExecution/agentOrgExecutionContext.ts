@@ -139,6 +139,7 @@ export class AgentOrgExecutionContext {
     const access = { access: 'read_only' as const }
     const common = {
       ...access, root: Object.freeze({ orgRunId: this.orgRunId }), address: agent.address, context,
+      workspaceRootPath: agent.source.launchConfiguration.workspaceRootPath,
       collaborationMessages: this.messagesView(agent.address, agent.agentRunId),
       browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId,
         memberAddress: agent.address, agentRunId: agent.agentRunId }),

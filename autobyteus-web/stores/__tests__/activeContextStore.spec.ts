@@ -8,6 +8,8 @@ import { useActiveContextStore } from '../activeContextStore';
 import { useAgentContextsStore } from '../agentContextsStore';
 import { useAgentSelectionStore } from '../agentSelectionStore';
 import { useAgentTeamContextsStore } from '../agentTeamContextsStore';
+import { useWorkspaceStore } from '../workspace';
+import { useWindowNodeContextStore } from '../windowNodeContextStore';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentTeamRunStore } from '../agentTeamRunStore';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
@@ -326,5 +328,73 @@ describe('activeContextStore interrupt routing', () => {
     expect(activeContextStore.activeAgentContext?.state.runId).toBe(existingMember.state.runId);
     expect(activeContextStore.currentRequirement).toBe('Existing Team draft');
     expect(activeContextStore.currentContextPaths.map((file) => file.id)).toEqual(['existing-team-file']);
+  });
+});
+
+
+describe('activeContextStore selected workspace recovery', () => {
+  beforeEach(() => setActivePinia(createPinia()));
+  const setup = () => {
+    const team = buildTestTeamContext({ teamRunId: 'team-1', rootChildren: [
+      testAgentNode('/B', { agentRunId: 'member-B', workspaceRootPath: '/owned/B' }),
+      testAgentNode('/C', { agentRunId: 'member-C', workspaceRootPath: '/owned/C' }),
+    ], focusedAgentRunId: 'member-B' });
+    useAgentTeamContextsStore().addTeamContext(team);
+    useAgentSelectionStore().selectRun('team-1', 'team');
+    const active = useActiveContextStore();
+    const target = active.activeWorkspaceTarget!;
+    target.context.config.workspaceId = null;
+    target.context.config.workspaceMetadata = null;
+    return { active, target, team: useAgentTeamContextsStore().activeTeamContext! };
+  };
+  const metadata = { workspaceId: 'B', workspaceRootPath: '/owned/B', displayName: 'B', kind: 'filesystem' as const };
+
+  it('publishes only exact selected source metadata into existing config fields', async () => {
+    const { active, target } = setup();
+    const workspace = useWorkspaceStore();
+    const resolve = vi.spyOn(workspace, 'resolveWorkspaceMetadataByRootPath').mockResolvedValue(metadata);
+    const register = vi.spyOn(workspace, 'ensureWorkspaceMetadata');
+    expect(target.workspaceRootPath).toBe('/owned/B');
+    expect(await active.resolveWorkspaceMetadataForTarget(target)).toEqual(metadata);
+    expect(resolve).toHaveBeenCalledWith('/owned/B');
+    expect(target.context.config).toMatchObject({ workspaceId: 'B', workspaceMetadata: metadata });
+    expect(register).not.toHaveBeenCalled();
+  });
+
+  for (const change of ['selection', 'root', 'node', 'wrong-metadata', 'conflicting-id'] as const) {
+    it(`does not fill a stale or mismatched projection: ${change}`, async () => {
+      const { active, target, team } = setup();
+      let complete!: (value: typeof metadata) => void;
+      vi.spyOn(useWorkspaceStore(), 'resolveWorkspaceMetadataByRootPath').mockImplementation(() => new Promise(resolve => { complete = resolve }));
+      const pending = active.resolveWorkspaceMetadataForTarget(target);
+      if (change === 'selection') team.view.focusAgent('member-C');
+      if (change === 'node') useWindowNodeContextStore().bindNodeContext('remote', 'http://127.0.0.1:9876');
+      if (change === 'root') {
+        const tree = JSON.parse(JSON.stringify(team.view.getExecutionTree()));
+        tree.root_team.members[0].launch_configuration.workspace_root_path = '/owned/C';
+        expect(team.view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
+          root_team_run_id: 'team-1', base_change_sequence: 1, execution_tree: tree,
+          closed_task_executions: [], messages: [], agent_input_states: [],
+          agent_statuses: team.view.listAgentContextEntries().map(entry => ({
+            agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
+            status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+          })),
+        } }).disposition).toBe('applied');
+      }
+      if (change === 'conflicting-id') target.context.config.workspaceId = 'C';
+      complete(change === 'wrong-metadata' ? { ...metadata, workspaceRootPath: '/owned/C' } : metadata);
+      expect(await pending).toBeNull();
+      expect(target.context.config.workspaceMetadata).toBeNull();
+      expect(team.view.getAgentContext('member-C')!.config.workspaceId).toBeNull();
+    });
+  }
+
+  it('gets a standalone root only from its own known ID cache', () => {
+    const context = createAgentContext('agent-B');
+    context.config.workspaceId = 'B';
+    useWorkspaceStore().cacheWorkspaceMetadata(metadata);
+    useAgentContextsStore().runs.set('agent-B', context);
+    useAgentSelectionStore().selectRun('agent-B', 'agent');
+    expect(useActiveContextStore().activeWorkspaceTarget?.workspaceRootPath).toBe('/owned/B');
   });
 });

@@ -1,8 +1,14 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import AgentEventMonitor from '../AgentEventMonitor.vue';
+import { WORKSPACE_TOOL_REVEAL_KEY } from '~/composables/layout/useWorkspaceToolReveal';
 import type { Conversation } from '~/types/conversation';
 
+enableAutoUnmount(afterEach);
+const launcher = vi.hoisted(() => ({ create: vi.fn(), open: vi.fn() }));
+vi.mock('~/composables/useEventMonitorFilePreview', () => ({
+  useEventMonitorFilePreview: launcher.create,
+}));
 const compactionActivityRows = [
   {
     kind: 'compaction',
@@ -151,4 +157,64 @@ it('retains the exact historical conversation while removing all composer slots 
   expect(wrapper.find('[data-test="composer-action"]').exists()).toBe(false);
   await wrapper.setProps({ readOnly: false });
   expect(wrapper.find('[data-test="composer"]').exists()).toBe(true);
+});
+
+
+describe('setup-bound lazy file activation', () => {
+  const action = { normalizedCandidate: '/owned/B/brief.md' };
+  const mountMonitor = (revealTool?: any) => mount(AgentEventMonitor, {
+    props: { conversation, browseSubject: { kind: 'run', runId: 'agent-42' } },
+    global: {
+      provide: revealTool ? { [WORKSPACE_TOOL_REVEAL_KEY as symbol]: revealTool } : {},
+      stubs: {
+        AgentUserInputForm: true, CollaboratorAddFailureNotice: true,
+        AgentConversationFeed: { name: 'AgentConversationFeed', template: '<div />', emits: ['file-path-action'] },
+      },
+    },
+  });
+  beforeEach(() => {
+    launcher.create.mockReset().mockImplementation(() => ({ openPath: launcher.open }));
+    launcher.open.mockReset().mockResolvedValue({ status: 'failed', message: 'ordinary failure' });
+  });
+  it('captures the exact local capability in setup, remains passive, then passes it to the lazy launcher', async () => {
+    const reveal = vi.fn();
+    const wrapper = mountMonitor(reveal);
+    await flushPromises();
+    expect(launcher.create).not.toHaveBeenCalled(); expect(reveal).not.toHaveBeenCalled();
+    wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+    await flushPromises();
+    const options = launcher.create.mock.calls[0][0];
+    expect(options.revealTool).toBe(reveal); expect(options.isOriginCurrent()).toBe(true);
+    expect(launcher.open).toHaveBeenCalledWith(action);
+    expect(wrapper.get('[data-testid="event-monitor-file-preview-status"]').text()).toBe('ordinary failure');
+    wrapper.unmount(); expect(options.isOriginCurrent()).toBe(false);
+  });
+  it('passes a null capability for the mobile/no-provider monitor, without setup effects', async () => {
+    const wrapper = mountMonitor();
+    expect(launcher.create).not.toHaveBeenCalled();
+    wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+    await flushPromises(); expect(launcher.create.mock.calls[0][0].revealTool).toBeNull();
+  });
+  for (const invalidation of ['run-switch', 'unmount'] as const) {
+    it(`does not invoke after ${invalidation} during lazy import`, async () => {
+      const wrapper = mountMonitor(vi.fn());
+      wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+      if (invalidation === 'unmount') wrapper.unmount();
+      else await wrapper.setProps({ runId: 'new-run' });
+      await flushPromises(); expect(launcher.create).not.toHaveBeenCalled(); expect(launcher.open).not.toHaveBeenCalled();
+    });
+    it(`invalidates the passed origin and suppresses obsolete result after ${invalidation}`, async () => {
+      let settle!: (result: any) => void;
+      launcher.open.mockReturnValue(new Promise(resolve => { settle = resolve; }));
+      const wrapper = mountMonitor(vi.fn());
+      wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+      await flushPromises();
+      const options = launcher.create.mock.calls[0][0];
+      if (invalidation === 'unmount') wrapper.unmount();
+      else await wrapper.setProps({ runId: 'new-run' });
+      expect(options.isOriginCurrent()).toBe(false);
+      settle({ status: 'failed', message: 'obsolete failure' }); await flushPromises();
+      expect(wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
+    });
+  }
 });

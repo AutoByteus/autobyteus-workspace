@@ -1,0 +1,104 @@
+{
+  "source": "autobyteus-web/composables/useEventMonitorFilePreview.ts",
+  "sourceRevision": "30c3f40d5721124c466d464004b004053173280c",
+  "assertions": "passed",
+  "boundary": "Unchanged production launcher; controlled stores/runtime bridge/mapping/panel. No user app/data reads; no filesystem byte access; not a product reproduction.",
+  "rows": [
+    {
+      "name": "Embedded Electron: known config workspaceId but absent target metadata",
+      "result": {
+        "status": "unavailable",
+        "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+      },
+      "calls": {
+        "capabilityChecks": 0,
+        "mappingChecks": 0,
+        "previews": [],
+        "panels": 0,
+        "tabs": []
+      }
+    },
+    {
+      "name": "Embedded Electron: target lacks ID/metadata, legacy workspace getter still resolves",
+      "result": {
+        "status": "unavailable",
+        "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+      },
+      "calls": {
+        "capabilityChecks": 0,
+        "mappingChecks": 0,
+        "previews": [],
+        "panels": 0,
+        "tabs": []
+      }
+    },
+    {
+      "name": "Embedded Electron control: complete selected metadata",
+      "result": {
+        "status": "opened",
+        "path": "/Users/test-owned/project/publish-brief.md"
+      },
+      "calls": {
+        "capabilityChecks": 1,
+        "mappingChecks": 0,
+        "previews": [
+          [
+            "/Users/test-owned/project/publish-brief.md",
+            "owned-ws",
+            {
+              "accessIntent": {
+                "source": "event-monitor",
+                "readOnly": true
+              }
+            }
+          ]
+        ],
+        "panels": 1,
+        "tabs": [
+          "files"
+        ]
+      }
+    },
+    {
+      "name": "Browser control: mapped selected workspace",
+      "result": {
+        "status": "opened",
+        "path": "publish-brief.md"
+      },
+      "calls": {
+        "capabilityChecks": 0,
+        "mappingChecks": 1,
+        "previews": [
+          [
+            "publish-brief.md",
+            "owned-ws",
+            {
+              "accessIntent": {
+                "source": "event-monitor",
+                "readOnly": true
+              }
+            }
+          ]
+        ],
+        "panels": 1,
+        "tabs": [
+          "files"
+        ]
+      }
+    },
+    {
+      "name": "Remote control: unmapped outside workspace",
+      "result": {
+        "status": "unavailable",
+        "message": "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host"
+      },
+      "calls": {
+        "capabilityChecks": 0,
+        "mappingChecks": 1,
+        "previews": [],
+        "panels": 0,
+        "tabs": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "result": "Blocked \u2014 User/External Prerequisite",
+  "matchingRules": [],
+  "reason": "No code/packaging Local Fix; no requirement/design/Unclear technical issue or upstream classification need; no user acceptance/finalization/cleanup for Delivery Completed. Incoming informational coordination result retained, no new work request to answer; no duplicate blocker bounce.",
+  "handoffSent": false,
+  "waitFor": "Existing user verification request"
+}

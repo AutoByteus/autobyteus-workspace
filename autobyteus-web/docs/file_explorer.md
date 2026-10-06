@@ -125,16 +125,57 @@ references, Agent artifacts, or persisted File Explorer records. The
 Event-Monitor-owned `useEventMonitorFilePreview` launcher is the only
 coordination point for this action. It resolves the runtime locator, calls
 `fileExplorerStore.openFilePreview(...)` with an explicit read-only access
-intent, opens the desktop right panel/selects Files idempotently, and leaves
+intent, awaits the mounted workspace shell's idempotent Files reveal, and leaves
 the center conversation in place. Reopening a path selects the existing tab
 instead of creating a duplicate, while normal user-opened tabs remain intact.
+
+#### Selected Workspace Identity And Visible Presentation
+
+For a selected Agent, Team/Org member, or task child, the launcher's Files
+identity comes first from that context's `config.workspaceId`. A known ID is
+sufficient for trusted native preview even when `workspaceMetadata` is null;
+metadata absence is not evidence that Electron is remote or containerized.
+`ActiveAgentWorkspaceTarget.workspaceRootPath` carries the exact selected
+execution's source-root fact independently of its metadata projection. If the
+selected ID is missing, `activeContextStore.resolveWorkspaceMetadataForTarget`
+resolves metadata only for that root through the existing workspace store and
+fills the same still-current context's ID/metadata. Missing root or failed
+recovery produces ordinary preview failure, not a guessed scope. A selected
+target never falls back to an unrelated launch draft, parent workspace, global
+active workspace, or the linked file's directory. The existing unscoped Files
+fallback is a separate path, not recovery for a selected execution.
+
+`AgentEventMonitor.vue` captures `useWorkspaceToolReveal()` during setup and
+passes that shell-local capability and its origin-currentness predicate into
+the lazily created launcher. After Files content loading settles, including an
+ordinary stored file error, the launcher awaits `revealTool('files')`:
+
+- `WorkspaceToolShell` records `selectTabExplicitly('files')` **before** a
+  fresh tabs host mounts, so its contextual default cannot replace the action.
+- It restores the right-panel visibility preference, then reads the existing
+  reactive responsive policy: a fitting panel docks (including a user-hidden
+  dock); a constrained panel opens the shell's drawer. Repeated activation
+  opens/selects rather than toggling the drawer closed.
+- It awaits Vue's render flush before the launcher schedules guarded active-file
+  tab focus. Existing drawer focus, Escape, and return-to-origin behavior remain
+  owned by the accessible drawer, not by a second preview overlay.
+
+Changing only global panel preference or passively assigning the active tab is
+not a substitute for this visible reveal. There is no global drawer registry,
+copied breakpoint, production strip click, or second tab/viewer owner. A missing
+desktop shell capability fails before content access; mobile branches into its
+existing inline request without requiring that capability. Origin disposal/run
+changes, selected context/run/source-root changes, and node-binding revision
+changes are checked across metadata, content, reveal, and deferred focus so an
+obsolete activation cannot reveal or focus a replacement context. A disposed
+shell action reports failure without changing its UI.
 
 The runtime locator rules are deliberately different by environment:
 
 | Runtime | Locator / behavior |
 | --- | --- |
-| Embedded Electron | The trusted Electron bridge may open an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
-| Browser / remote | The path must be contained by the active workspace root and converted to a workspace-relative locator before the existing authorized content route is used. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
+| Embedded Electron | An embedded node binding **and** trusted local-file bridge permit an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
+| Browser / remote / missing local bridge | The path must be contained by the selected workspace root and converted to a workspace-relative locator before the existing authorized content route is used. A remote-node Electron window never falls back to client-local bytes. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
 | Phone-first `/mobile` | The path must map to the selected run/team/workspace context. A revisioned request carries context, workspace, relative path, read-only intent, and inline presentation; `MobileFiles` rejects stale or mismatched requests and consumes only the current one. |
 
 Path recognition is opt-in to the Event Monitor Markdown renderer and passive

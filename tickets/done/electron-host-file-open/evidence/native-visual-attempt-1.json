@@ -1,0 +1,190 @@
+{
+  "instanceId": "iso-49845-cc35",
+  "fixture": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27",
+  "rootA": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27/A",
+  "rootB": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27/B",
+  "files": {
+    "brief": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27/B/brief.md",
+    "user": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27/B/user.md",
+    "missing": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27/B/missing.md",
+    "directory": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/electron-preview-owned-0tLK27/B/directory.md"
+  },
+  "selectedId": "agent-task-lead",
+  "boundaries": "Saved Org inspection/member projections controlled over GraphQL; initial metadata I/O refused, later metadata query real; native preload/main/bytes and rendered components real; no model/provider/user data.",
+  "requests": [
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": false
+    }
+  ],
+  "errors": [],
+  "observations": [
+    {
+      "at": "2026-10-06T17:16:07.745Z",
+      "command": {
+        "action": "observe"
+      },
+      "result": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+        "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff",
+        "buttons": [
+          {
+            "text": "Chat",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "New chat",
+            "label": "New chat",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Collapse left panel",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agents",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Teams",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Agent Orgs",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Skills",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Memory",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Nodes",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Add workspace",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Temp Workspace",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Settings",
+            "title": "",
+            "label": null,
+            "actionId": null
+          },
+          {
+            "text": "Daily Assistant",
+            "title": "",
+            "label": "Choose what to run (now Daily Assistant)",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Upload files",
+            "label": "Upload files",
+            "actionId": null
+          },
+          {
+            "text": "Temp workspace",
+            "title": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o1f5vA/server-data/temp_workspace",
+            "label": "Workspace: Temp workspace. Change workspace",
+            "actionId": null
+          },
+          {
+            "text": "Auto-approve",
+            "title": "Tools run without asking. Click to ask before running tools.",
+            "label": "Auto-approve tools is on. Tools run without asking. Turn off to ask first.",
+            "actionId": null
+          },
+          {
+            "text": "claude-fable-5\nAutoByteus",
+            "title": "claude-fable-5 · AutoByteus",
+            "label": "Model: claude-fable-5 on AutoByteus. Change model",
+            "actionId": null
+          },
+          {
+            "text": "Off",
+            "title": "Thinking",
+            "label": "Thinking: Off. Change",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Send message",
+            "label": "Send message",
+            "actionId": null
+          },
+          {
+            "text": "",
+            "title": "Show tools",
+            "label": "Show tools",
+            "actionId": null
+          }
+        ]
+      }
+    }
+  ],
+  "cleanup": {
+    "fixtureRemoved": true
+  }
+}

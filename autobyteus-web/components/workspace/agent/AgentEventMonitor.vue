@@ -41,7 +41,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, onBeforeUnmount, ref, toRef } from 'vue';
+import { useWorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import CollaboratorAddFailureNotice from '~/components/agentInput/CollaboratorAddFailureNotice.vue';
@@ -77,6 +78,9 @@ const activityStore = useAgentActivityStore();
 const effectiveRunId = computed(() => props.runId || props.conversation.id);
 const compactionActivities = computed(() => activityStore.getCompactionActivities(effectiveRunId.value));
 const filePreviewStatus = ref('');
+const revealTool = useWorkspaceToolReveal();
+let isLive = true;
+onBeforeUnmount(() => { isLive = false; });
 const browse = useEventMonitorActiveTraceBrowse({
   subject: toRef(props, 'browseSubject'),
   hasEarlierAvailable: () => props.hasEarlierActiveTraceEvents === true,
@@ -86,8 +90,12 @@ const browse = useEventMonitorActiveTraceBrowse({
 const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<void> => {
   // Keep the launcher effect boundary out of Markdown rendering and passive
   // message arrival. It is created only for explicit user activation.
+  const originRunId = effectiveRunId.value;
+  const isOriginCurrent = () => isLive && effectiveRunId.value === originRunId;
   const { useEventMonitorFilePreview } = await import('~/composables/useEventMonitorFilePreview');
-  const result = await useEventMonitorFilePreview().openPath(action);
+  if (!isOriginCurrent()) return;
+  const result = await useEventMonitorFilePreview({ revealTool, isOriginCurrent }).openPath(action);
+  if (!isOriginCurrent()) return;
   filePreviewStatus.value = result.status === 'opened' ? '' : result.message;
 };
 </script>

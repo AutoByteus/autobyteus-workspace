@@ -1,0 +1,1000 @@
+{
+  "startedAt": "2026-10-06T17:57:05.964Z",
+  "platform": "darwin-arm64",
+  "boundaries": "GraphQL saved Org/member fixture + initial metadata failure; subsequent metadata/registration HTTP, native IPC/bytes, production renderer/shell real. Responsive device metrics explicitly emulated.",
+  "cases": {
+    "N-001": {
+      "title": "owned packaged launch and passive selected missing metadata",
+      "result": "Pass",
+      "details": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+        "width": 1200,
+        "height": 768,
+        "target": {
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+          "id": null,
+          "metadata": null
+        },
+        "preview": null,
+        "files": [],
+        "visible": false,
+        "drawer": false,
+        "dock": false,
+        "tabFocused": false,
+        "focusText": "ChatAgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesTemp WorkspaceSettingsLleadOfflineLleadOpen brief\nOpen user tab\nMissing file\nDirectory file\nUnreadable file\nFilesOrgTerminalActivityTokenArtifactsBrowserVNC Viewerwindow.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"http://127.0.0.1:29695/graphql\",restBaseUrl:\"http://127.0.0.1:29695/rest\",defaultNodeBaseUrl:\"http://127.0.0.1:29695\",agentWsEndpoint:\"ws://127.0.0.1:29695/ws/agent\",teamWsEndpoint:\"ws://127.0.0.1:29695/ws/agent-team\",graphqlWsEndpoint:\"ws://127.0.0.1:29695/graphql\",terminalWsEndpoint:\"ws://127.0.0.1:29695/ws/terminal\",fileExplorerWsEndpoint:\"ws://127.0.0.1:29695/ws/file-explorer\",mobileRemoteAccessBuild:false,showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://127.0.0.1:29695/transcribe\",constraints:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}},app:{baseURL:\"./\",buildId:\"4b853b99-1409-49c0-aa3e-90955637390c\",buildAssetsDir:\"_nuxt/\",cdnURL:\"\"}}\n[{\"prerenderedAt\":1,\"serverRendered\":2},1791308174595,false]",
+        "hostOnly": false
+      },
+      "finishedAt": "2026-10-06T17:57:10.551Z"
+    },
+    "N-002": {
+      "title": "one real file action recovers selected B and reveals native read-only content",
+      "result": "Pass",
+      "details": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+        "width": 1200,
+        "height": 768,
+        "target": {
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+          "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+          "metadata": {
+            "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "displayName": "B",
+            "kind": "filesystem"
+          }
+        },
+        "preview": {
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+          "type": "Text",
+          "mode": "preview",
+          "accessIntent": {
+            "source": "event-monitor",
+            "readOnly": true
+          },
+          "content": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n",
+          "url": null,
+          "relativeResourceContext": null,
+          "isLoading": false,
+          "error": null
+        },
+        "files": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md"
+        ],
+        "visible": true,
+        "text": "brief.md\nNATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.",
+        "drawer": true,
+        "dock": false,
+        "tabFocused": true,
+        "focusText": "brief.md",
+        "hostOnly": false
+      },
+      "finishedAt": "2026-10-06T17:57:10.727Z"
+    },
+    "N-003": {
+      "title": "full metadata/reopen/dedupe/other tab/readOnly/focus",
+      "result": "Pass",
+      "details": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+        "width": 1200,
+        "height": 768,
+        "target": {
+          "runId": "agent-task-lead",
+          "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+          "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+          "metadata": {
+            "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "displayName": "B",
+            "kind": "filesystem"
+          }
+        },
+        "preview": {
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+          "type": "Text",
+          "mode": "preview",
+          "accessIntent": {
+            "source": "event-monitor",
+            "readOnly": true
+          },
+          "content": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n",
+          "url": null,
+          "relativeResourceContext": null,
+          "isLoading": false,
+          "error": null
+        },
+        "files": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md"
+        ],
+        "visible": true,
+        "text": "brief.md\nuser.md\nNATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.",
+        "drawer": true,
+        "dock": false,
+        "tabFocused": true,
+        "focusText": "brief.md",
+        "hostOnly": false
+      },
+      "finishedAt": "2026-10-06T17:57:11.109Z"
+    },
+    "N-004": {
+      "title": "native missing/non-regular errors visible without strip click",
+      "result": "Pass",
+      "details": [
+        {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 1200,
+          "height": 768,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "metadata": {
+              "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            }
+          },
+          "preview": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": null,
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": "local-file-preview:unavailable"
+          },
+          "files": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md"
+          ],
+          "visible": true,
+          "text": "brief.md\nuser.md\nmissing.md\nError!The local file is unavailable.",
+          "alert": "Error!The local file is unavailable.",
+          "drawer": true,
+          "dock": false,
+          "tabFocused": true,
+          "focusText": "missing.md",
+          "hostOnly": false
+        },
+        {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 1200,
+          "height": 768,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "metadata": {
+              "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            }
+          },
+          "preview": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/directory.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": null,
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": "local-file-preview:not-regular-file"
+          },
+          "files": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/directory.md"
+          ],
+          "visible": true,
+          "text": "brief.md\nuser.md\nmissing.md\ndirectory.md\nError!The selected local path is not a regular file.",
+          "alert": "Error!The selected local path is not a regular file.",
+          "drawer": true,
+          "dock": false,
+          "tabFocused": true,
+          "focusText": "directory.md",
+          "hostOnly": false
+        },
+        {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 1200,
+          "height": 768,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "metadata": {
+              "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            }
+          },
+          "preview": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/unreadable.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": null,
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": "local-file-preview:unreadable"
+          },
+          "files": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/directory.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/unreadable.md"
+          ],
+          "visible": true,
+          "text": "brief.md\nuser.md\nmissing.md\ndirectory.md\nunreadable.md\nError!The local file cannot be read.",
+          "alert": "Error!The local file cannot be read.",
+          "drawer": true,
+          "dock": false,
+          "tabFocused": true,
+          "focusText": "unreadable.md",
+          "hostOnly": false
+        }
+      ],
+      "finishedAt": "2026-10-06T17:57:11.565Z"
+    },
+    "N-005": {
+      "title": "emulated narrow/short drawer and fitting hidden-to-dock",
+      "result": "Pass",
+      "details": [
+        {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 650,
+          "height": 700,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "metadata": {
+              "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            }
+          },
+          "preview": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          "files": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/directory.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/unreadable.md"
+          ],
+          "visible": true,
+          "text": "brief.md\nuser.md\nmissing.md\ndirectory.md\nunreadable.md\nNATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.",
+          "drawer": true,
+          "dock": false,
+          "tabFocused": true,
+          "focusText": "brief.md",
+          "hostOnly": false
+        },
+        {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 1440,
+          "height": 450,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "metadata": {
+              "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            }
+          },
+          "preview": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          "files": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/directory.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/unreadable.md"
+          ],
+          "visible": true,
+          "text": "brief.md\nuser.md\nmissing.md\ndirectory.md\nunreadable.md\nNATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.",
+          "drawer": true,
+          "dock": false,
+          "tabFocused": true,
+          "focusText": "brief.md",
+          "hostOnly": false
+        },
+        {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 1600,
+          "height": 900,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+            "id": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+            "metadata": {
+              "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+              "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B",
+              "displayName": "B",
+              "kind": "filesystem"
+            }
+          },
+          "preview": {
+            "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "type": "Text",
+            "mode": "preview",
+            "accessIntent": {
+              "source": "event-monitor",
+              "readOnly": true
+            },
+            "content": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n",
+            "url": null,
+            "relativeResourceContext": null,
+            "isLoading": false,
+            "error": null
+          },
+          "files": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/brief.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/user.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/missing.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/directory.md",
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B/unreadable.md"
+          ],
+          "visible": true,
+          "text": "brief.md\nuser.md\nmissing.md\ndirectory.md\nunreadable.md\nNATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.",
+          "drawer": false,
+          "dock": true,
+          "tabFocused": true,
+          "focusText": "brief.md",
+          "hostOnly": false
+        }
+      ],
+      "finishedAt": "2026-10-06T17:57:11.946Z"
+    },
+    "N-009": {
+      "title": "real public workspace-relative content and out-of-root denial",
+      "result": "Pass",
+      "details": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "inside": {
+          "data": {
+            "fileContent": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n"
+          }
+        },
+        "outside": {
+          "data": {
+            "fileContent": "{\"error\":\"Access denied: File is outside the workspace.\"}"
+          }
+        }
+      },
+      "finishedAt": "2026-10-06T17:57:11.966Z"
+    },
+    "N-006": {
+      "title": "pending exact-source metadata cannot reveal after normal member navigation",
+      "result": "Pass",
+      "details": {
+        "before": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965-pending&mode=history&memberAddress=%2Fteam%2Flead&agentRunId=agent-task-lead",
+          "width": 1200,
+          "height": 768,
+          "target": {
+            "runId": "agent-task-lead",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/C",
+            "id": null,
+            "metadata": null
+          },
+          "preview": null,
+          "files": [],
+          "visible": false,
+          "drawer": false,
+          "dock": false,
+          "tabFocused": false,
+          "focusText": "ChatAgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesBTemp WorkspaceSettingsLleadOfflineLleadOpen pending\nFilesOrgTerminalActivityTokenArtifactsBrowserVNC Viewerwindow.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"http://127.0.0.1:29695/graphql\",restBaseUrl:\"http://127.0.0.1:29695/rest\",defaultNodeBaseUrl:\"http://127.0.0.1:29695\",agentWsEndpoint:\"ws://127.0.0.1:29695/ws/agent\",teamWsEndpoint:\"ws://127.0.0.1:29695/ws/agent-team\",graphqlWsEndpoint:\"ws://127.0.0.1:29695/graphql\",terminalWsEndpoint:\"ws://127.0.0.1:29695/ws/terminal\",fileExplorerWsEndpoint:\"ws://127.0.0.1:29695/ws/file-explorer\",mobileRemoteAccessBuild:false,showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://127.0.0.1:29695/transcribe\",constraints:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}},app:{baseURL:\"./\",buildId:\"4b853b99-1409-49c0-aa3e-90955637390c\",buildAssetsDir:\"_nuxt/\",cdnURL:\"\"}}\n[{\"prerenderedAt\":1,\"serverRendered\":2},1791308174595,false]",
+          "hostOnly": false
+        },
+        "after": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&orgRunId=preview-1791309425965-pending&mode=history&memberAddress=%2Fdirector&agentRunId=agent-director",
+          "width": 1200,
+          "height": 768,
+          "target": {
+            "runId": "agent-director",
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/A",
+            "id": null,
+            "metadata": null
+          },
+          "preview": null,
+          "files": [],
+          "visible": false,
+          "drawer": false,
+          "dock": false,
+          "tabFocused": false,
+          "focusText": "ChatAgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesBTemp WorkspaceSettingsDdirector - CTOROfflineContext Files (0)(drag, paste, or upload)FilesOrgTerminalActivityTokenArtifactsBrowserVNC Viewerwindow.__NUXT__={};window.__NUXT__.config={public:{graphqlBaseUrl:\"http://127.0.0.1:29695/graphql\",restBaseUrl:\"http://127.0.0.1:29695/rest\",defaultNodeBaseUrl:\"http://127.0.0.1:29695\",agentWsEndpoint:\"ws://127.0.0.1:29695/ws/agent\",teamWsEndpoint:\"ws://127.0.0.1:29695/ws/agent-team\",graphqlWsEndpoint:\"ws://127.0.0.1:29695/graphql\",terminalWsEndpoint:\"ws://127.0.0.1:29695/ws/terminal\",fileExplorerWsEndpoint:\"ws://127.0.0.1:29695/ws/file-explorer\",mobileRemoteAccessBuild:false,showDebugErrorPanel:false,audio:{targetSampleRate:16000,chunkDuration:5,overlapDuration:.2,channels:1,transcriptionWsEndpoint:\"ws://127.0.0.1:29695/transcribe\",constraints:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}},app:{baseURL:\"./\",buildId:\"4b853b99-1409-49c0-aa3e-90955637390c\",buildAssetsDir:\"_nuxt/\",cdnURL:\"\"}}\n[{\"prerenderedAt\":1,\"serverRendered\":2},1791308174595,false]",
+          "hostOnly": false
+        }
+      },
+      "finishedAt": "2026-10-06T17:57:12.605Z"
+    },
+    "N-007": {
+      "title": "no page errors/write requests/owned file mutations",
+      "result": "Pass",
+      "details": {
+        "pageErrors": [],
+        "writeRequests": 0,
+        "bytesUnchanged": true
+      },
+      "finishedAt": "2026-10-06T17:57:12.610Z"
+    },
+    "N-008": {
+      "title": "owned resources cleaned and ports released",
+      "result": "Pass",
+      "details": {
+        "stop": {
+          "instanceId": "iso-51507-ab1b",
+          "wasRunning": true,
+          "forced": false,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-GiGliV",
+          "dataRootRemoved": true,
+          "controlPortReleased": true,
+          "serverPortReleased": true,
+          "logPath": null
+        },
+        "fixtureRemoved": true,
+        "instances": {
+          "instances": []
+        }
+      },
+      "finishedAt": "2026-10-06T17:57:13.467Z"
+    }
+  },
+  "requests": [
+    {
+      "op": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "preview-1791309425965"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/A"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetServerSettings",
+      "variables": {},
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-director"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-lead-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-team-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-worker-task"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-task-lead"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-task-worker"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "preview-1791309425965"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B"
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "CreateWorkspace",
+      "variables": {
+        "input": {
+          "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/B"
+        }
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "ListCollaborationRootHistory",
+      "variables": {},
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+        "folderPath": ""
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/A"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/C"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/director",
+        "agentRunId": "agent-director"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-director"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-lead-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-lead-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-team-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-team-worker-configured"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/worker",
+        "agentRunId": "agent-worker-task"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-worker-task"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/team/lead",
+        "agentRunId": "agent-task-lead"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-task-lead"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending",
+        "memberAddress": "/team/worker",
+        "agentRunId": "agent-task-worker"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetRunFileChanges",
+      "variables": {
+        "runId": "agent-task-worker"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetAgentOrgRootHistory",
+      "variables": {
+        "orgRunId": "preview-1791309425965-pending"
+      },
+      "metadataEnabled": false
+    },
+    {
+      "op": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH/C"
+      },
+      "metadataEnabled": true
+    },
+    {
+      "op": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "metadataEnabled": true
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "stop": {
+      "instanceId": "iso-51507-ab1b",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-GiGliV",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "fixtureRemoved": true,
+    "instances": {
+      "instances": []
+    }
+  },
+  "fixture": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-preview-proof-BVi6QH",
+  "instance": {
+    "instanceId": "iso-51507-ab1b",
+    "pid": 6278,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:51508",
+    "graphqlUrl": "http://127.0.0.1:51508/graphql",
+    "controlEndpoint": "http://127.0.0.1:51507",
+    "controlPort": 51507,
+    "serverPort": 51508,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-GiGliV",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-GiGliV/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-51507-ab1b.log"
+  },
+  "appAsarSha256": "73a823c370d60f22e119d18eec88fbf8ea5818ec430d2dbe60cdc8666b068e4d",
+  "engine": "148.0.7778.265",
+  "workspaceContentHttp": {
+    "workspaceId": "agent_ws_27788820074c94bec2c4ab54b6c0588aa8ed0f41c23eed23143b5665261c6930",
+    "inside": {
+      "data": {
+        "fileContent": "# NATIVE SELECTED B PROOF\n\nReal native file bytes; incidental read-only preview.\n"
+      }
+    },
+    "outside": {
+      "data": {
+        "fileContent": "{\"error\":\"Access denied: File is outside the workspace.\"}"
+      }
+    }
+  },
+  "finishedAt": "2026-10-06T17:57:13.468Z"
+}

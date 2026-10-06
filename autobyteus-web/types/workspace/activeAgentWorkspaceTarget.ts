@@ -41,6 +41,7 @@ export type WorkspaceAccess = Readonly<{ access: 'live'; interaction: AgentInter
 
 type WorkspaceTargetCore = WorkspaceAccess & Readonly<{
   context: AgentContext
+  workspaceRootPath: string | null
   browse: EventMonitorActiveTraceBrowseSubject
 }>
 

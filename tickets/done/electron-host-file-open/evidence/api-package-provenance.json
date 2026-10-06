@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-06T17:49:46.213959+00:00",
+  "runtimeSourceCommit": "3d8395bb3a58423e06efdff5a5bd6e16f8c738b7",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open",
+  "checks": {
+    "autobyteus-web/composables/useEventMonitorFilePreview.ts": true,
+    "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts": true,
+    "autobyteus-web/services/teamExecution/teamExecutionViewState.ts": true,
+    "autobyteus-web/stores/activeContextStore.ts": true,
+    "autobyteus-web/stores/agentRunCollaborationStore.ts": true,
+    "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts": true,
+    "autobyteus-web/composables/layout/useWorkspaceToolReveal.ts": true,
+    "autobyteus-web/components/layout/WorkspaceToolShell.vue": true,
+    "autobyteus-web/components/workspace/agent/AgentEventMonitor.vue": true,
+    "app.asar": true
+  },
+  "appAsarSha256": "73a823c370d60f22e119d18eec88fbf8ea5818ec430d2dbe60cdc8666b068e4d",
+  "reusePermitted": true
+}

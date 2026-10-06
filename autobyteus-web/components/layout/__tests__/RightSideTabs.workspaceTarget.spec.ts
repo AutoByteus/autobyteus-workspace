@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createPinia, setActivePinia } from 'pinia'
+import { createPinia, getActivePinia, setActivePinia } from 'pinia'
 import { defineComponent, h, nextTick, onBeforeUnmount, onMounted } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
@@ -21,6 +21,9 @@ import RightSideTabs from '../RightSideTabs.vue'
 import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue'
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue'
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { useActiveContextStore } from '~/stores/activeContextStore'
+import { useEventMonitorFilePreview } from '~/composables/useEventMonitorFilePreview'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useFileExplorerStore } from '~/stores/fileExplorer'
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
@@ -33,10 +36,10 @@ import { TreeNode } from '~/utils/fileExplorer/TreeNode'
 // Only the external editor renderer is replaced; both Files consumers, target fallback,
 // global workspace getter, launch draft, History selection and config publication are real.
 const EditorRenderer = defineComponent({
-  name: 'FileViewer', props: ['file'], emits: ['save', 'update:modelValue'],
+  name: 'FileViewer', props: ['file', 'readOnly'], emits: ['save', 'update:modelValue'],
   setup(props, { emit }) {
     const key = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 's') { event.preventDefault(); emit('save') }
+      if (!props.readOnly && (event.ctrlKey || event.metaKey) && event.key === 's') { event.preventDefault(); emit('save') }
     }
     onMounted(() => window.addEventListener('keydown', key))
     onBeforeUnmount(() => window.removeEventListener('keydown', key))
@@ -45,7 +48,11 @@ const EditorRenderer = defineComponent({
 })
 const mounted: ReturnType<typeof mount>[] = []
 afterEach(() => { mounted.splice(0).forEach(wrapper => wrapper.unmount()); vi.restoreAllMocks() })
-beforeEach(() => { setActivePinia(createPinia()); io.query.mockReset(); io.mutate.mockReset(); io.route.query = {} })
+beforeEach(() => {
+  setActivePinia(createPinia()); io.query.mockReset(); io.mutate.mockReset(); io.route.query = {}
+  // Backend readiness is external I/O, not the subject of this component test.
+  vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockResolvedValue(true)
+})
 const flush = async () => { await flushPromises(); await nextTick() }
 const metadata = (id: string) => ({ workspaceId: id, workspaceRootPath: `/workspace/${id}`, displayName: id, kind: 'filesystem' as const })
 const pressSave = async () => {
@@ -60,7 +67,7 @@ const register = (id: string) => {
   state.tree.children = [new TreeNode(`${id}.txt`, `${id}.txt`, true, [], `${id}-file`)]
 }
 const mountPanel = (errors: unknown[]) => {
-  const wrapper = mount(RightSideTabs, { global: { config: { errorHandler: error => { errors.push(error) } }, stubs: {
+  const wrapper = mount(RightSideTabs, { global: { plugins: [getActivePinia()!], config: { errorHandler: error => { errors.push(error) } }, stubs: {
     FileViewer: EditorRenderer, ProgressPanel: true, TerminalPanel: { props: ['workspaceMetadata'], template: '<div />' },
     BrowserPanel: true, VncViewer: true, ArtifactsTab: true, CollaborationOverviewPanel: true,
   } } })
@@ -208,4 +215,68 @@ for (const previouslyMounted of [false, true]) {
     await flush(); expect(control.text()).toContain('editable-A')
     await pressSave(); expect(write).toHaveBeenCalledWith('A', 'A.txt', 'editable-A')
   })
+}
+
+
+for (const knownId of [false, true]) {
+  it(`binds native preview visibly to selected B with null metadata; known ID: ${knownId}`, async () => {
+    const pinia = getActivePinia()!;
+    const workspace = useWorkspaceStore(), files = useFileExplorerStore();
+    register('A');
+    const draftStore = useAgentRunConfigStore();
+    draftStore.setTemplate({ id: 'draft-def', name: 'Draft A' } as any);
+    draftStore.setWorkspaceLoaded('A', '/workspace/A', metadata('A'));
+    const view = JSON.parse(JSON.stringify(taskBearingView()));
+    view.is_active = false; view.agent_statuses = [];
+    view.execution_tree.rootOrg.members[2].members.forEach((agent: any) => {
+      agent.launchConfiguration.workspaceRootPath = '/workspace/B';
+    });
+    io.query.mockImplementation(async ({ variables, query }: any) => {
+      const name = query.definitions.find((entry: any) => entry.kind === 'OperationDefinition')?.name?.value;
+      if (name === 'GetWorkspaceMetadata') throw new Error('initial metadata unavailable');
+      if (variables.agentRunId) return { data: { getAgentOrgMemberRunProjection: { ...variables,
+        conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } };
+      return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } };
+    });
+    useRunHistoryStore().agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any;
+    await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team/lead' });
+    const active = useActiveContextStore(), target = active.activeWorkspaceTarget!;
+    expect(target.workspaceRootPath).toBe('/workspace/B');
+    expect(target.context.config.workspaceMetadata).toBeNull();
+    target.context.config.workspaceId = knownId ? 'B' : null;
+    const resolve = vi.spyOn(workspace, 'resolveWorkspaceMetadataByRootPath').mockResolvedValue(metadata('B'));
+    const acquire = vi.spyOn(workspace, 'acquireFileExplorerLiveSession').mockReturnValue(() => undefined);
+    vi.spyOn(workspace, 'ensureWorkspaceMetadata').mockReturnValue(new Promise(() => {}));
+    const bridge = vi.fn(async (path: string) => ({ success: true, content: `owned native content: ${path}` }));
+    const previousBridge = window.electronAPI;
+    window.electronAPI = { ...previousBridge, readLocalTextFile: bridge };
+    try {
+      await files.openFilePreview('/workspace/B/user.md', 'B');
+      bridge.mockClear();
+      const errors: unknown[] = [];
+      const write = vi.spyOn(files, 'saveFileContentFromEditor');
+      const wrapper = mountPanel(errors); await flush();
+      setActivePinia(pinia);
+      const context = target.context, conversation = context.conversation;
+      expect(useFileExplorerStore() === files).toBe(true);
+      expect(useActiveContextStore() === active).toBe(true);
+      const launch = useEventMonitorFilePreview({ revealTool: async tab => { useRightSideTabs().selectTabExplicitly(tab); await nextTick(); return true; }, isOriginCurrent: () => true });
+      const action = { id: 'native', rawCandidate: '/workspace/B/brief.md', normalizedCandidate: '/workspace/B/brief.md', sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const };
+      expect((await launch.openPath(action)).status).toBe('opened'); await flush();
+      expect(wrapper.getComponent(FileExplorerTabs).props('workspaceId')).toBe('B');
+      expect(wrapper.text()).toContain('owned native content: /workspace/B/brief.md');
+      expect(wrapper.text()).not.toContain('editable-A');
+      expect(files.getOpenFiles('B')).toHaveLength(2);
+      expect(files.getActiveFileData('B')?.accessIntent).toEqual({ source: 'event-monitor', readOnly: true });
+      expect((await launch.openPath(action)).status).toBe('opened'); await flush();
+      expect(bridge).toHaveBeenCalledTimes(1); expect(files.getOpenFiles('B')).toHaveLength(2);
+      expect(active.activeAgentContext).toBe(context); expect(context.conversation).toBe(conversation);
+      expect(draftStore.config?.workspaceId).toBe('A');
+      if (knownId) expect(resolve).not.toHaveBeenCalled();
+      else expect(resolve).toHaveBeenCalledWith('/workspace/B');
+      expect(acquire).not.toHaveBeenCalled();
+      await pressSave(); expect(write).not.toHaveBeenCalled();
+      expect(errors).toEqual([]);
+    } finally { window.electronAPI = previousBridge; }
+  });
 }

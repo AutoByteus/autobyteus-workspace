@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.95-beta.8 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.

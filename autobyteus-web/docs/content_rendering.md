@@ -124,19 +124,37 @@ delegated click/Enter/Space activation, localized accessibility metadata, focus
 visibility, and fenced-code copy/source boundaries remain unchanged. Fenced-code
 actions are rendered beside, not inside, the copied code text.
 
-On explicit click, Enter, or Space, the Event Monitor launcher opens the normal
-Files surface idempotently and requests the existing `FileViewer` path with an
+On explicit click, Enter, or Space, the Event Monitor launcher requests the
+existing `FileViewer` path with an
 explicit `source: 'event-monitor'` and `readOnly: true` intent. Existing file
 tabs are reused by the File Explorer store, and no artifact/reference row or
-persisted record is created. Desktop previews preserve the center feed and
-focus the active file tab when a stable target is available. Phone-first
+persisted record is created. `AgentEventMonitor` captures the local workspace
+shell's reveal capability during setup and passes it into the lazy launcher;
+the launcher does not attempt injection from its asynchronous action handler.
+Once content or an ordinary file error settles, the shell selects Files
+explicitly before mounting its tab host and reveals the fitting dock or its
+responsive drawer from that same activation. No second Files-strip click is
+required, and repeated activation does not close an open drawer. Desktop
+previews preserve the center feed and selected member, wait for the shell's
+render flush, then focus the active file tab only while the originating monitor,
+selected context/source root, and node binding remain current. Existing drawer
+focus/Escape/return handling is retained. Phone-first
 previews are delivered as a typed pending request to `MobileFiles`, where the
 matching workspace/context request is rendered inline without Attach controls,
 an overlay, or automatic full-screen presentation.
 
-Runtime access remains environment-specific: embedded Electron may use the
-trusted local boundary, while browser/remote/mobile clients must map the host
-path inside the active workspace to a workspace-relative locator. Unmapped
+Native preview uses the selected execution's existing workspace ID even when
+its metadata projection is missing. If its ID is also missing, metadata recovery
+uses only that execution's exact source root; an unrelated launch/global
+workspace is never substituted. Scope-recovery failure is ordinary preview
+failure, not proof that the client is remote. The identity and shell ownership
+contract is detailed in [Event Monitor Preview Requests](./file_explorer.md#event-monitor-preview-requests).
+
+Runtime access remains environment-specific: an embedded node binding plus
+trusted Electron local-file bridge may use the native boundary, while
+browser/remote/mobile clients must map the host path inside the selected
+workspace to a workspace-relative locator. A remote-node Electron window must
+not use client-local reads even if a bridge exists. Unmapped
 paths remain copyable and show a localized host-only/unavailable state.
 
 For embedded Electron binary previews, the action path uses the shared
