@@ -13,6 +13,13 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { RunFileChangeProjectionStore } from "../../../src/services/run-file-changes/run-file-change-projection-store.js";
+import {
+  RunFileChangeService,
+  bindProcessRunFileChangeService,
+  releaseProcessRunFileChangeService,
+} from "../../../src/services/run-file-changes/run-file-change-service.js";
 
 const toPosix = (value: string): string => value.replace(/\\/g, "/");
 
@@ -37,6 +44,8 @@ describe("Run file changes API integration", () => {
   const activeRuns = new Map<string, unknown>();
   let ownedAgentRunManager: AgentRunManager | null = null;
   let ownedTeamRunManager: AgentTeamRunManager | null = null;
+  // The process authority that records FILE_CHANGE events for attached runs and serves active-run reads.
+  let processRunFileChanges: RunFileChangeService | null = null;
 
   const getMemoryDir = (): string => path.join(appDataDir, "memory");
 
@@ -157,6 +166,9 @@ describe("Run file changes API integration", () => {
       modelSelectionValidator: { validate: () => undefined } as never,
     });
 
+    processRunFileChanges = new RunFileChangeService();
+    bindProcessRunFileChangeService(processRunFileChanges);
+
     const projectionService = new RunFileChangeProjectionService({
       agentRunManager: {
         getActiveRun: (runId: string) => (activeRuns.get(runId) as any) ?? null,
@@ -171,6 +183,7 @@ describe("Run file changes API integration", () => {
   afterAll(async () => {
     activeRuns.clear();
     await app.close();
+    if (processRunFileChanges) releaseProcessRunFileChangeService(processRunFileChanges);
     if (ownedTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
     if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
     await Promise.all([
@@ -506,5 +519,77 @@ describe("Run file changes API integration", () => {
     expect(response.json()).toEqual({ detail: "File change content is not ready yet" });
 
     activeRuns.delete(runId);
+  });
+
+  it("serves every artifact an attached active run records after an earlier read (regression)", async () => {
+    const runId = `run-live-${Date.now()}`;
+    const runDir = path.join(getMemoryDir(), "agents", runId);
+    await fs.mkdir(runDir, { recursive: true });
+    const listeners = new Set<(event: unknown) => void>();
+    const run = {
+      runId,
+      config: { memoryDir: runDir, workspaceId: null },
+      isActive: () => true,
+      subscribeToEvents: (listener: (event: unknown) => void) => {
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+    };
+    activeRuns.set(runId, run);
+    const detach = processRunFileChanges!.attachToRun(run as never);
+    const imagePath = (name: string): string => toPosix(path.join(externalOutputsDir, `${runId}-${name}.png`));
+    const imageBytes = (name: string): Buffer => Buffer.from(`png-${name}`);
+    const record = async (name: string, status: "available" | "streaming" = "available"): Promise<void> => {
+      if (status === "available") await fs.writeFile(imagePath(name), imageBytes(name));
+      const event: AgentRunEvent = {
+        eventType: AgentRunEventType.FILE_CHANGE,
+        runId,
+        statusHint: null,
+        payload: {
+          path: imagePath(name), type: "image", status, sourceTool: "generated_output",
+          sourceInvocationId: `tool-${name}`, createdAt: timestamp, updatedAt: timestamp,
+        },
+      };
+      for (const listener of listeners) listener(event);
+      const store = new RunFileChangeProjectionStore();
+      const deadline = Date.now() + 2000;
+      while (!(await store.readProjection(runDir)).entries.some((entry) => entry.path === imagePath(name))) {
+        if (Date.now() > deadline) throw new Error(`Timed out recording '${name}'.`);
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+    };
+    const content = (filePath: string) => app.inject({
+      method: "GET",
+      url: `/runs/${encodeURIComponent(runId)}/file-change-content?path=${encodeURIComponent(filePath)}`,
+    });
+    const listPaths = async (): Promise<string[]> => (await execGraphql<{ getRunFileChanges: Array<{ path: string }> }>(
+      "query GetRunFileChanges($runId: String!) { getRunFileChanges(runId: $runId) { path } }",
+      { runId },
+    )).getRunFileChanges.map((entry) => entry.path);
+
+    try {
+      await record("a");
+      expect(await listPaths()).toEqual([imagePath("a")]);
+      const first = await content(imagePath("a"));
+      expect(first.statusCode).toBe(200);
+      expect(first.rawPayload.equals(imageBytes("a"))).toBe(true);
+
+      await record("b");
+      await record("c");
+      await record("d", "streaming");
+
+      expect(await listPaths()).toEqual([imagePath("a"), imagePath("b"), imagePath("c"), imagePath("d")]);
+      for (const name of ["a", "b", "c"]) {
+        const response = await content(imagePath(name));
+        expect(response.statusCode).toBe(200);
+        expect(response.rawPayload.equals(imageBytes(name))).toBe(true);
+        expect(String(response.headers["content-type"])).toContain("image/png");
+      }
+      expect((await content(imagePath("d"))).statusCode).toBe(409);
+      expect((await content(imagePath("unknown"))).json()).toEqual({ detail: "File change not found" });
+    } finally {
+      detach();
+      activeRuns.delete(runId);
+    }
   });
 });
