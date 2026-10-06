@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.95-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/agents utils/collaborators stores/__tests__/runHistoryStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-web
+
+stderr | utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaborators/__tests__/collaboratorMentionText.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaborators/__tests__/draftMentionEligibility.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaborators/__tests__/collaboratorMentionText.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaborators/__tests__/draftMentionEligibility.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts (1 test) 3ms
+ ✓ utils/collaborators/__tests__/draftMentionEligibility.spec.ts (4 tests) 3ms
+ ✓ utils/collaborators/__tests__/collaboratorMentionText.spec.ts (5 tests) 5ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (47 tests) 399ms
+
+ Test Files  4 passed (4)
+      Tests  57 passed (57)
+   Start at  11:00:11
+   Duration  7.78s (transform 3.67s, setup 24.87s, collect 312ms, tests 410ms, environment 1.41s, prepare 848ms)
+

@@ -1,0 +1,23 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: backend-base exited
+
+0 !== null
+
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:94:55
+    at wait (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:37:115)
+    at async startBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:94:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:115:5
+    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:59:39)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:114:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: null,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.1

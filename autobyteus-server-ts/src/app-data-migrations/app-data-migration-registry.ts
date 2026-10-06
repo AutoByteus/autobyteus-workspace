@@ -24,6 +24,7 @@ import { AgentOrgFlatTeamFamiliesV1AppDataMigration } from "./migrations/agent-o
 import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
 import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data-migration.js";
 import { ProjectsPerFolderV1AppDataMigration } from "./migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
+import { RemoveBuiltInProjectTaskManagerMigration } from "./migrations/remove-built-in-project-task-manager-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -77,6 +78,9 @@ export class AppDataMigrationRegistry {
         gatewayLogsDir: path.join(appConfigProvider.config.getLogsDir(), "messaging-gateway"),
       }),
       new ProjectsPerFolderV1AppDataMigration(appConfigProvider.config.getAppDataDir()),
+      new RemoveBuiltInProjectTaskManagerMigration(
+        path.join(appConfigProvider.config.getAgentsDir(), "autobyteus-project-task-manager"),
+      ),
     ];
     this.validateDefinitions();
   }

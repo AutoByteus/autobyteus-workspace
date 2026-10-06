@@ -1,0 +1,1120 @@
+
+> autobyteus@1.4.95-beta.5 test:nuxt /home/autobyteus/workspace/.codex/worktrees/standalone-collaborator-artifact-hydration/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/standalone-collaborator-artifact-hydration/autobyteus-web
+
+stderr | services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts (18 tests | 18 failed) 51ms
+   × TASK-01/02: actual task approval before first inspection survives hydration and renders one exact command 14ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-01/02: actual task approval after first inspection survives hydration and renders one exact command 3ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-01/02: actual task approval during first inspection survives hydration and renders one exact command 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: actual TOOL_APPROVED before selection is not downgraded by history 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: actual TOOL_EXECUTION_STARTED before selection is not downgraded by history 3ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: actual TOOL_DENIED before selection is not downgraded by history 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: actual TOOL_EXECUTION_SUCCEEDED before selection is not downgraded by history 3ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: actual TOOL_EXECUTION_FAILED before selection is not downgraded by history 4ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: actual TOOL_EXECUTION_INTERRUPTED before selection is not downgraded by history 3ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-02/03: missing projected tool retains observed pending while blank history-only call cannot invent it 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: parsed history with no incoming live approval has no permission controls 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-04: disconnect during fetch invalidates live applicability; retry hydrates history without live permission 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-04: inactive during fetch invalidates live applicability; retry hydrates history without live permission 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-04: final Activity commit conflict cannot partially replace conversation or pending approval 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-04: configured Team member retains the same manual decision and context 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: auto task execution retains its actual terminal lifecycle without manufacturing manual controls 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-03: terminal event during the first fetch retries and cannot become pending again 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × TASK-04: superseded selection leaves the existing conversation and Activity untouched 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-01/02: actual task approval before first inspection survives hydration and renders one exact command
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-01/02: actual task approval after first inspection survives hydration and renders one exact command
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-01/02: actual task approval during first inspection survives hydration and renders one exact command
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:68:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: actual TOOL_APPROVED before selection is not downgraded by history
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: actual TOOL_EXECUTION_STARTED before selection is not downgraded by history
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: actual TOOL_DENIED before selection is not downgraded by history
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: actual TOOL_EXECUTION_SUCCEEDED before selection is not downgraded by history
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: actual TOOL_EXECUTION_FAILED before selection is not downgraded by history
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: actual TOOL_EXECUTION_INTERRUPTED before selection is not downgraded by history
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:98:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-02/03: missing projected tool retains observed pending while blank history-only call cannot invent it
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:109:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: parsed history with no incoming live approval has no permission controls
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:119:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-04: disconnect during fetch invalidates live applicability; retry hydrates history without live permission
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-04: inactive during fetch invalidates live applicability; retry hydrates history without live permission
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:127:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-04: final Activity commit conflict cannot partially replace conversation or pending approval
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:140:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-04: configured Team member retains the same manual decision and context
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:152:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: auto task execution retains its actual terminal lifecycle without manufacturing manual controls
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:161:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-03: terminal event during the first fetch retries and cannot become pending again
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:175:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts > TASK-04: superseded selection leaves the existing conversation and Activity untouched
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:101:55
+ ❯ emit services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:44:98
+     42|   const stream = useAgentTeamRunStore().connectToTeamStream(ROOT)!
+     43|   let sequence = 0
+     44|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     45|   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
+     46|   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_…
+ ❯ harness services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:46:3
+ ❯ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts:187:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  18 failed (18)
+   Start at  09:48:07
+   Duration  9.86s (transform 5.33s, setup 8.14s, collect 209ms, tests 51ms, environment 707ms, prepare 282ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

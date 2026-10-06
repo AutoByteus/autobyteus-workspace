@@ -1,0 +1,270 @@
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/standalone-collaborator-artifact-hydration/autobyteus-server-ts
+App data directory: /tmp/scah-browser-main-XxUa4M/data
+Config file path: /tmp/scah-browser-main-XxUa4M/data/.env
+Loading environment from: /tmp/scah-browser-main-XxUa4M/data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../tmp/scah-browser-main-XxUa4M/data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:36541
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /home/autobyteus/workspace/.codex/worktrees/standalone-collaborator-artifact-hydration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:36541
+APP ROOT DIRECTORY: /home/autobyteus/workspace/.codex/worktrees/standalone-collaborator-artifact-hydration/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/scah-browser-main-XxUa4M/data
+DB DIRECTORY: /tmp/scah-browser-main-XxUa4M/data/db
+LOGS DIRECTORY: /tmp/scah-browser-main-XxUa4M/data/logs
+DOWNLOAD DIRECTORY: /tmp/scah-browser-main-XxUa4M/data/download
+MEMORY DIRECTORY: /tmp/scah-browser-main-XxUa4M/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/tmp/scah-browser-main-XxUa4M/data/db/test.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.20                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:43500) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-06T09:43:12.699Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/scah-browser-main-XxUa4M/data/workspaces
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/data/workspaces.
+Initialized TempWorkspace at /tmp/scah-browser-main-XxUa4M/data/workspaces with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-06T09:43:12.915Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-06T09:43:12.915Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791279792929,"pid":43500,"hostname":"c6ca66642ff6","msg":"Server listening at http://127.0.0.1:38355"}
+{"level":30,"time":1791279792982,"pid":43500,"hostname":"c6ca66642ff6","msg":"Server listening at http://127.0.0.1:36541"}
+[2026-10-06T09:43:12.982Z] [INFO] [server.runtime] Server listening on 127.0.0.1:36541
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID host-planner.
+Agent Definition created successfully with ID: host-planner
+In-memory cache: Added new agent definition with ID illustrator.
+Agent Definition created successfully with ID: illustrator
+In-memory cache: Added new agent definition with ID art-lead.
+Agent Definition created successfully with ID: art-lead
+In-memory cache: Added new agent definition with ID painter.
+Agent Definition created successfully with ID: painter
+[2026-10-06T09:44:07.384Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID art-studio.
+Agent Team Definition created successfully with ID: art-studio
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Created and registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+AGY compaction detection off for run host_planner_8354cbb21c26453b8d78c647ac66f361: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run host_planner_8354cbb21c26453b8d78c647ac66f361
+Created agent session dfb95fd6-0e11-43fb-8a55-499fb7856fea for run host_planner_8354cbb21c26453b8d78c647ac66f361
+Agent WebSocket connected: session=dfb95fd6-0e11-43fb-8a55-499fb7856fea, run=host_planner_8354cbb21c26453b8d78c647ac66f361
+Closed agent session dfb95fd6-0e11-43fb-8a55-499fb7856fea
+Agent WebSocket disconnected: dfb95fd6-0e11-43fb-8a55-499fb7856fea
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+AGY compaction detection off for run illustrator_b3a9ca8fffb243aeae902389fe8e123a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+AGY compaction detection off for run painter_817923a6c8fc4632859d7e01805cbe49: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run host_planner_8354cbb21c26453b8d78c647ac66f361
+Created agent session 76550655-ee83-48ad-a36f-2e00f91893aa for run host_planner_8354cbb21c26453b8d78c647ac66f361
+Agent WebSocket connected: session=76550655-ee83-48ad-a36f-2e00f91893aa, run=host_planner_8354cbb21c26453b8d78c647ac66f361
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Closed agent session 76550655-ee83-48ad-a36f-2e00f91893aa
+Agent WebSocket disconnected: 76550655-ee83-48ad-a36f-2e00f91893aa
+Created terminal session 98dfcf28-c35b-4756-8771-6f7bd98b2270 using backend PtySession for target /tmp/scah-browser-main-XxUa4M/home
+Terminal WebSocket connected: 98dfcf28-c35b-4756-8771-6f7bd98b2270
+Terminal websocket attached for cwd /tmp/scah-browser-main-XxUa4M/home
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Closed PTY session 98dfcf28-c35b-4756-8771-6f7bd98b2270
+Terminal WebSocket disconnected: 98dfcf28-c35b-4756-8771-6f7bd98b2270
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Created terminal session e04cd799-c6dc-4a9e-948c-f94f95928c06 using backend PtySession for target /tmp/scah-browser-main-XxUa4M/home
+Terminal WebSocket connected: e04cd799-c6dc-4a9e-948c-f94f95928c06
+Terminal websocket attached for cwd /tmp/scah-browser-main-XxUa4M/home
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Closed PTY session e04cd799-c6dc-4a9e-948c-f94f95928c06
+Terminal WebSocket disconnected: e04cd799-c6dc-4a9e-948c-f94f95928c06
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Created terminal session ffe0ae1c-fecd-4269-94cc-2840322470cb using backend PtySession for target /tmp/scah-browser-main-XxUa4M/home
+Terminal WebSocket connected: ffe0ae1c-fecd-4269-94cc-2840322470cb
+Terminal websocket attached for cwd /tmp/scah-browser-main-XxUa4M/home
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+Closed PTY session ffe0ae1c-fecd-4269-94cc-2840322470cb
+Terminal WebSocket disconnected: ffe0ae1c-fecd-4269-94cc-2840322470cb
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/host_planner_8354cbb21c26453b8d78c647ac66f361/collaboration/art_studio_0a3fe139d7984fb1bb9d543833f147d6/art_lead_7657602152554f569a73310f045335b6/raw_traces_active.jsonl
+In-memory cache: Added new agent definition with ID lead-r.
+Agent Definition created successfully with ID: lead-r
+In-memory cache: Added new agent definition with ID creator-r.
+Agent Definition created successfully with ID: creator-r
+In-memory cache: Added new agent definition with ID designer-r.
+Agent Definition created successfully with ID: designer-r
+[2026-10-06T09:47:26.217Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID content-team-r.
+Agent Team Definition created successfully with ID: content-team-r
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+AGY compaction detection off for run creator_r_6772c9c4c45040f2ba0a33e0f6943f37: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run content_team_r_177df260666b4634849dccc3ab5c5fd7
+Created agent session 67fa0a32-fe1c-4aab-9828-75b964846717 for run content_team_r_177df260666b4634849dccc3ab5c5fd7
+Agent Team WebSocket connected: session=67fa0a32-fe1c-4aab-9828-75b964846717, run=content_team_r_177df260666b4634849dccc3ab5c5fd7
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+AGY compaction detection off for run creator_r_2d5322c0b06b4ec0b1e05e352205f17f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 67fa0a32-fe1c-4aab-9828-75b964846717
+Creating new workspace for rootPath: /tmp/scah-browser-main-XxUa4M/workspace
+Created metadata-only FileSystemWorkspace at /tmp/scah-browser-main-XxUa4M/workspace.
+Reusing registered workspace ID: agent_ws_0584e3746e6bf486e878f77817e85391d766bc774816856e69636a130be9288f
+AGY compaction detection off for run creator_r_b95df95edbac40f195e1a34a5af78a95: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/creator_r_6772c9c4c45040f2ba0a33e0f6943f37/raw_traces_active.jsonl
+Agent websocket attached for run creator_r_6772c9c4c45040f2ba0a33e0f6943f37
+Created agent session d3667162-71c7-4f84-9beb-9380bef71f8c for run creator_r_6772c9c4c45040f2ba0a33e0f6943f37
+Agent WebSocket connected: session=d3667162-71c7-4f84-9beb-9380bef71f8c, run=creator_r_6772c9c4c45040f2ba0a33e0f6943f37
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_teams/content_team_r_177df260666b4634849dccc3ab5c5fd7/lead_r_4165ea80f38948bb8d709461e3638295/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_r_177df260666b4634849dccc3ab5c5fd7
+Created agent session 769430b2-c25a-4d22-8bda-460fe99cc1f9 for run content_team_r_177df260666b4634849dccc3ab5c5fd7
+Agent Team WebSocket connected: session=769430b2-c25a-4d22-8bda-460fe99cc1f9, run=content_team_r_177df260666b4634849dccc3ab5c5fd7
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_teams/content_team_r_177df260666b4634849dccc3ab5c5fd7/lead_r_4165ea80f38948bb8d709461e3638295/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_teams/content_team_r_177df260666b4634849dccc3ab5c5fd7/lead_r_4165ea80f38948bb8d709461e3638295/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agents/creator_r_6772c9c4c45040f2ba0a33e0f6943f37/raw_traces_active.jsonl
+Agent websocket attached for run creator_r_6772c9c4c45040f2ba0a33e0f6943f37
+Created agent session 6620a9ce-754a-4763-8d12-2ba374f19d9c for run creator_r_6772c9c4c45040f2ba0a33e0f6943f37
+Agent WebSocket connected: session=6620a9ce-754a-4763-8d12-2ba374f19d9c, run=creator_r_6772c9c4c45040f2ba0a33e0f6943f37
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_teams/content_team_r_177df260666b4634849dccc3ab5c5fd7/lead_r_4165ea80f38948bb8d709461e3638295/raw_traces_active.jsonl
+Agent team websocket attached for team run content_team_r_177df260666b4634849dccc3ab5c5fd7
+Created agent session 27bfe8cb-a19e-4ab7-b6a2-984ec7ef0b5e for run content_team_r_177df260666b4634849dccc3ab5c5fd7
+Agent Team WebSocket connected: session=27bfe8cb-a19e-4ab7-b6a2-984ec7ef0b5e, run=content_team_r_177df260666b4634849dccc3ab5c5fd7
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_teams/content_team_r_177df260666b4634849dccc3ab5c5fd7/lead_r_4165ea80f38948bb8d709461e3638295/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_teams/content_team_r_177df260666b4634849dccc3ab5c5fd7/lead_r_4165ea80f38948bb8d709461e3638295/raw_traces_active.jsonl
+Created terminal session fa573221-1a92-4031-afee-787af60e95b3 using backend PtySession for target /tmp/scah-browser-main-XxUa4M/home
+Terminal WebSocket connected: fa573221-1a92-4031-afee-787af60e95b3
+Terminal websocket attached for cwd /tmp/scah-browser-main-XxUa4M/home
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_orgs/studio_org_r_c8bd251cb98a4942bc1fb4efa0523045/designer_r_074aa0cf9f184fb497251bf4bd04b3c3/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_orgs/studio_org_r_c8bd251cb98a4942bc1fb4efa0523045/content_team_r_e9c02b181c744ca9a6ea0544e206f26d/lead_r_2e2e5cbb46b64a1fa00ae3742c38e276/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_orgs/studio_org_r_c8bd251cb98a4942bc1fb4efa0523045/designer_r_074aa0cf9f184fb497251bf4bd04b3c3/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_orgs/studio_org_r_c8bd251cb98a4942bc1fb4efa0523045/content_team_r_e9c02b181c744ca9a6ea0544e206f26d/lead_r_2e2e5cbb46b64a1fa00ae3742c38e276/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_orgs/studio_org_r_c8bd251cb98a4942bc1fb4efa0523045/designer_r_074aa0cf9f184fb497251bf4bd04b3c3/raw_traces_active.jsonl
+Memory file missing: /tmp/scah-browser-main-XxUa4M/data/memory/agent_orgs/studio_org_r_c8bd251cb98a4942bc1fb4efa0523045/content_team_r_e9c02b181c744ca9a6ea0544e206f26d/lead_r_2e2e5cbb46b64a1fa00ae3742c38e276/raw_traces_active.jsonl
+Closed agent session d3667162-71c7-4f84-9beb-9380bef71f8c
+Agent WebSocket disconnected: d3667162-71c7-4f84-9beb-9380bef71f8c
+Closed agent session 769430b2-c25a-4d22-8bda-460fe99cc1f9
+Closed agent session 6620a9ce-754a-4763-8d12-2ba374f19d9c
+Agent WebSocket disconnected: 6620a9ce-754a-4763-8d12-2ba374f19d9c
+Closed agent session 27bfe8cb-a19e-4ab7-b6a2-984ec7ef0b5e
+Closed PTY session fa573221-1a92-4031-afee-787af60e95b3
+Terminal WebSocket disconnected: fa573221-1a92-4031-afee-787af60e95b3
+[2026-10-06T09:48:01.415Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-06T09:48:01.458Z] [INFO] [server.runtime] Server closed cleanly.

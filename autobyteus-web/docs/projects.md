@@ -233,13 +233,14 @@ acknowledgement, not raw resource diagnostics or a work assessment. There is no
 batch or Task attachment mutation tool. See the
 [server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-four-agent-tools).
 
-The shipped Project Task Manager is an ordinary reusable Agent available through
-existing Chat/`@`; no Project-page chat or assignment panel is added. It authors
-Projects only when requested by the user, clarifying unknown IDs/desired links. It selects
-real saved Tasks, delegates with `{recipient_address, task_id}`, follows the exact
-returned ingress run ID and explicitly updates status from available results or
-user instructions. It does not supervise physical resources or guarantee worker
-completion reports. Linked dispatch loads saved Task text/context internally;
+No Project manager agent is shipped with the app. Any Agent that selects the
+Project tools can manage Projects through existing Chat/`@`, for example the
+agent repository's Project Task Manager when that repository is configured as an
+agent package root; no Project-page chat or assignment panel is added. Such an
+Agent selects real saved Tasks, delegates with `{recipient_address, task_id}`,
+follows the exact returned ingress run ID and explicitly updates status. The
+feature does not supervise physical resources or guarantee worker completion
+reports. Linked dispatch loads saved Task text/context internally;
 caller description/reference overrides are rejected, and later edits do not
 rewrite delivered work. See the server's
 [saved-ID / agent run resources contract](../../autobyteus-server-ts/docs/modules/projects.md#saved-id-delegation-and-agent-run-resources).

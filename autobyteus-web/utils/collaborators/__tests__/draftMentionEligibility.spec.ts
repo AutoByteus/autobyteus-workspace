@@ -5,7 +5,6 @@ import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 // Mirrors the server's CollaboratorCandidatePolicy (collaborator-candidate-policy.ts).
 const agents = [
   { id: 'autobyteus-daily-assistant', name: 'Daily Assistant', ownershipScope: 'SHARED' },
-  { id: 'autobyteus-project-task-manager', name: 'Project Task Manager', ownershipScope: 'SHARED' },
   { id: 'autobyteus-retrospective-skill-improver', name: 'Retrospective Skill Improver', ownershipScope: 'SHARED' },
   { id: 'designer', name: 'Solution Designer', ownershipScope: 'SHARED' },
   { id: 'reviewer', name: 'Reviewer', ownershipScope: 'SHARED' },
@@ -38,7 +37,6 @@ describe('draftMentionCandidates (New chat `@`)', () => {
   it('never offers the built-in agents (they mirror the server registry)', () => {
     const offered = ids({ kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' })
     expect(offered).not.toContain('agent:autobyteus-daily-assistant')
-    expect(offered).not.toContain('agent:autobyteus-project-task-manager')
     expect(offered).not.toContain('agent:autobyteus-retrospective-skill-improver')
   })
 

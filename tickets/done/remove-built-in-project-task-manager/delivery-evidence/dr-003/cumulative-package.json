@@ -1,0 +1,145 @@
+{
+  "package": "remove-built-in-project-task-manager",
+  "result": "Delivery Completed",
+  "task_size": "Medium",
+  "architectural_risk": "High",
+  "route": "full independent review",
+  "durable_root": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager",
+  "revisions": [
+    "SR-001",
+    "SR-002",
+    "ARCH-REV-001",
+    "IR-001",
+    "CRR-001",
+    "API-REV-001",
+    "CRR-002",
+    "DR-001",
+    "DR-002",
+    "DR-003"
+  ],
+  "artifacts": [
+    {
+      "name": "requirements-doc.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/requirements-doc.md",
+      "sha256": "fa27122686eb788bf4aa322b97379015b03712ff4a309fc12a2f6cc88f4be8e7"
+    },
+    {
+      "name": "investigation-notes.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/investigation-notes.md",
+      "sha256": "a1ac0f1a29d270f11fa28e6e7ba5ef6ad4094ec17a8e6b59bb7c175da3725492"
+    },
+    {
+      "name": "solution-revision-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/solution-revision-record.md",
+      "sha256": "56af06580cc48510864bda1a29c91d4622715435ef16578c0728ace3590d8d64"
+    },
+    {
+      "name": "design-spec.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/design-spec.md",
+      "sha256": "0ab40ad8af05df727c0386f8f34e0d72fa43e06a258dd7c78336c5d2ea01e97d"
+    },
+    {
+      "name": "design-review-report.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/design-review-report.md",
+      "sha256": "5ef36862818f2f283d848cd035ff44c71ed549d61935ca9453809eb1558f4e5a"
+    },
+    {
+      "name": "architecture-review-revision-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/architecture-review-revision-record.md",
+      "sha256": "60d6ecfb3a2a15e65caa57755892c66ccdb10dc11b3f1f567e338428fa46ffc2"
+    },
+    {
+      "name": "implementation-handoff.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/implementation-handoff.md",
+      "sha256": "1544cc494c93aa755c561e9e58fd9b88cdfb61178a0e31cbc6b4f56515e1c897"
+    },
+    {
+      "name": "implementation-revision-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/implementation-revision-record.md",
+      "sha256": "6fc27b2f6daccb33ca4e1da53223cd53c4625c1c58c1dc6a41cc44285ba3722d"
+    },
+    {
+      "name": "code-review-report.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/code-review-report.md",
+      "sha256": "1af55d710762b7771429b823c4b71b02e03d628c7b3d121c93946bc9729ee11a"
+    },
+    {
+      "name": "code-review-revision-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/code-review-revision-record.md",
+      "sha256": "325350996a2f9ecb4163d4d17351e564cce06a9846260434518e37c6683bef0e"
+    },
+    {
+      "name": "api-e2e-coverage-investigation.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/api-e2e-coverage-investigation.md",
+      "sha256": "8b13d024ef4d2262f6322226eb5cca87e7c88b2dbf2f048887140cf441d6caf3"
+    },
+    {
+      "name": "api-e2e-execution-coverage-report.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/api-e2e-execution-coverage-report.md",
+      "sha256": "76fe824d5710b7b6db03d0f19bddd3844604947179df1360c3178176b60bf3df"
+    },
+    {
+      "name": "api-e2e-test-case-ledger.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/api-e2e-test-case-ledger.md",
+      "sha256": "242c59cf935294a41aa3a0f52617b3a6ea2688a9e2da832824b27a9e1eb28a01"
+    },
+    {
+      "name": "api-e2e-revision-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/api-e2e-revision-record.md",
+      "sha256": "07a1bbb1ed36e95ceb151236ee232841fdff6ccd96b889687d2188064ca03ab9"
+    },
+    {
+      "name": "api-e2e-test-review-report.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/api-e2e-test-review-report.md",
+      "sha256": "e018934dcc60d55fde5608c881b6e676758e1305dbde264b40fa5f93d5af9c49"
+    },
+    {
+      "name": "docs-sync-report.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/docs-sync-report.md",
+      "sha256": "a2129253d0b0ce360be06f64bb24e99533bb3a6faea6b6099d3592af882a5031"
+    },
+    {
+      "name": "handoff-summary.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/handoff-summary.md",
+      "sha256": "a96cfbac8335b595ef20f2f2b9b29ccff76370eaeb9d1af77f2788abc0e9aebc"
+    },
+    {
+      "name": "delivery-revision-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/delivery-revision-record.md",
+      "sha256": "8d17f16dc65c237d81e95caf62522d53f935cb9c1f12ff2c375da090cb686192"
+    },
+    {
+      "name": "release-deployment-report.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/release-deployment-report.md",
+      "sha256": "f0f4e6f33a5d44d604315f5a369a6544bd3ad3bdf837be95704bde72c8a8f9fb"
+    },
+    {
+      "name": "release-notes.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/release-notes.md",
+      "sha256": "fad2a674028be1f7bf32f072bdbe84e77b1c9b693e6ca21a808b691aef3cf31a"
+    },
+    {
+      "name": "user-verification-record.md",
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/user-verification-record.md",
+      "sha256": "811653a0f22f6320bf671b44f57f882a4402dcc0feb673e24a882a668635986f"
+    }
+  ],
+  "supplemental_artifacts": [
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/approval-request.sr001.md",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/architecture-review-handoff.sr002.md"
+  ],
+  "behavior_defining_supplements": "N/A \u2014 none applicable",
+  "evidence_directories": [
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/api-e2e-evidence",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/delivery-evidence"
+  ],
+  "review_omissions": "None; full route artifacts present",
+  "user_verification_reference": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/user-verification-record.md",
+  "actual_user_tests_claimed": false,
+  "release_tag": "v1.4.95-beta.5",
+  "release_sha": "0dd5722d7ee4473361831a4bbabf5ad125bcb20c",
+  "repository_merge_sha": "3ecf5100897ba25e085258c24d37290d66ab9d00",
+  "receipt_only_code_change": "None",
+  "blockers": [],
+  "terminal_status": "Prepared for tool-confirmed handoff; final message supplies pushed receipt SHA"
+}

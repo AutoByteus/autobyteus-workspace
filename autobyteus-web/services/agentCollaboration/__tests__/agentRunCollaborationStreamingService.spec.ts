@@ -34,7 +34,7 @@ const setup = () => {
   const socket = Socket.instances[0]!
   socket.frame({ type: 'CONNECTED', payload: { session_id: 's', root_subject_kind: 'agent', root_run_id: 'host-run' } })
   socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view } })
-  return { service, socket, options, context, commit, finish: () => resolve({ context, commitActivities: commit }), retireOwner: () => { current = false } }
+  return { service, socket, options, context, commit, finish: () => resolve({ context, commit }), retireOwner: () => { current = false } }
 }
 it('buffers live input until the snapshot activity commit and context publication complete', async () => {
   const f = setup(); await flush()

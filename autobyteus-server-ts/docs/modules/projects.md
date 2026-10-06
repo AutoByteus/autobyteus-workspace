@@ -28,26 +28,19 @@ forever, then asks the runtime to stop exactly those runs. DONE is neither
 engineering acceptance nor proof that the stop succeeded. Other status writes
 do not start work.
 
-The shipped **Project Task Manager** is an ordinary reusable Agent, invoked
-through the existing Chat or `@`. It is not a Project-page panel or a
-scheduler. Its template is in
-`src/built-in-agents/templates/project-task-manager/` (definition ID
-`autobyteus-project-task-manager`).
-
-The Manager:
-- creates or explicitly patches Projects only when requested by the user,
-  clarifying real workspace IDs and the complete desired list when unknown;
-- selects, reuses or creates real Tasks;
-- discovers an Agent or Team and delegates saved work to it;
-- follows up on the exact ingress run ID that delegation returns;
-- explicitly sets IN_PROGRESS or DONE from the business information available
-  to it.
-
-Its selected tools are the four Project/Task tools plus `list_available_agents`,
-`delegate_task`, `send_message_to` and `read_file`. It has no
-resource-inspection or cleanup-retry duty. This feature does not guarantee
+The server ships no Project manager agent. Any Agent whose definition selects
+the Project tools can manage Projects through the existing Chat or `@`, for
+example the agent repository's **Project Task Manager** (`project-task-manager`,
+with its `project-task-management` skill) when that repository is configured as
+an agent package root. A managing Agent typically selects the four Project/Task
+tools plus `list_available_agents`, `delegate_task` and `send_message_to`. It
+is not a Project-page panel or a scheduler. This feature does not guarantee
 worker completion reports, automatic DONE, scheduling, or a worker self-update
 convention.
+
+Earlier builds shipped a built-in Project Task Manager. It is retired, and
+startup migration `20261006_remove_built_in_project_task_manager` removes its
+installed copy (see the server README).
 
 `ENABLE_PROJECTS` is a default-off, per-node **web visibility** flag. It does
 not gate backend CRUD or tool authorization. Unset values initialize to false,

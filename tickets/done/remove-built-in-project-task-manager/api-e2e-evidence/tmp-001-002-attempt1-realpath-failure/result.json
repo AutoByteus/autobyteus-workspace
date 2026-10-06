@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-10-06T07:18:53.401Z",
+  "baseWorktree": "/tmp/ptm-base-api-e2e",
+  "cases": {
+    "TMP-001a-base-beta-install": {
+      "result": "Fail",
+      "error": "AssertionError [ERR_ASSERTION]: backend-base exited\n\n0 !== null\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:94:55\n    at wait (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:37:115)\n    at async startBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:94:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:115:5\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:59:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:114:3"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "cleanup": {
+    "pid-19858": "already-exited",
+    "provider": "closed",
+    "ownedRootRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-fS554r",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-fS554r/data",
+    "backendUrl": "http://127.0.0.1:55574",
+    "providerOrigin": "http://127.0.0.1:55573"
+  },
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: backend-base exited\n\n0 !== null\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:94:55\n    at wait (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:37:115)\n    at async startBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:94:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:115:5\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:59:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:114:3",
+  "finishedAt": "2026-10-06T07:18:53.522Z"
+}

@@ -60,4 +60,39 @@ describe('runContextHydrationService', () => {
     ]);
     expect(candidate.config).toMatchObject({ agentDefinitionId: 'agent-def', agentDefinitionName: 'Exact Agent' });
   });
+
+  describe('standalone artifacts (unchanged, AC-006)', () => {
+    const resolveWorkspace = vi.fn().mockResolvedValue({
+      workspaceId: 'workspace-1', workspaceRootPath: '/workspace', displayName: 'workspace', kind: 'filesystem',
+    });
+    const load = () => loadRunContextHydrationCandidate({
+      runId: 'run-1', fallbackAgentName: null, resolveWorkspaceMetadataByRootPath: resolveWorkspace,
+    });
+    const answerFileChanges = (response: Record<string, unknown>) => {
+      const base = mocks.query.getMockImplementation()!;
+      mocks.query.mockImplementation(async (options: { query: any }) => (
+        options.query.definitions[0]?.name?.value === 'GetRunFileChanges' ? response : base(options)
+      ));
+    };
+    const artifact = {
+      id: 'run-1:/outputs/1.png', runId: 'run-1', path: '/outputs/1.png', type: 'image', status: 'available',
+      sourceTool: 'generated_output', sourceInvocationId: null, content: null,
+      createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
+    };
+
+    it('carries the run artifacts on the candidate', async () => {
+      answerFileChanges({ data: { getRunFileChanges: [artifact] }, errors: [] });
+      await expect(load()).resolves.toMatchObject({ fileChanges: [artifact] });
+    });
+
+    it('treats a missing artifacts payload as no artifacts', async () => {
+      answerFileChanges({ data: {}, errors: [] });
+      await expect(load()).resolves.toMatchObject({ fileChanges: [] });
+    });
+
+    it('fails the whole open when the artifacts query reports errors', async () => {
+      answerFileChanges({ data: null, errors: [{ message: 'artifacts unavailable' }] });
+      await expect(load()).rejects.toThrow('artifacts unavailable');
+    });
+  });
 });

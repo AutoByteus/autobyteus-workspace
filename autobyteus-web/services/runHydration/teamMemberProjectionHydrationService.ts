@@ -8,6 +8,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
 import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService';
+import { commitMemberRunStates, fetchMemberRunState } from './memberRunStateHydration';
 import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 import {
   primeRecentEventMonitorBaseline,
@@ -64,7 +65,10 @@ const attemptHydration = async (
   const expectedPresentationRevision = agent.state.eventMonitorPresentationRevision;
   const activityStore = useAgentActivityStore();
   const expectedActivityRevision = activityStore.getActivityContentRevision(agentRunId);
-  const projection = await fetchExactTeamMemberProjection(rootTeamRunId, agentRunId);
+  const { projection, fileChanges } = await fetchMemberRunState({
+    runId: agentRunId,
+    fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
+  });
   let conversation = buildConversationFromProjection(
     agentRunId,
     projection.conversation ?? [],
@@ -93,12 +97,13 @@ const attemptHydration = async (
       currentConversation: agent.state.conversation, currentActivities: activityStore.getActivities(agentRunId),
       projectedConversation: conversation, projectedActivities: activities }));
   }
-  const replacement = activityStore.replaceProjectionActivitiesIfRevisions([{
+  const committed = commitMemberRunStates([{
     runId: agentRunId,
-    expectedRevision: expectedActivityRevision,
+    expectedActivityRevision,
     activities,
+    fileChanges,
   }]);
-  if (replacement === 'conflict') return null;
+  if (committed === 'conflict') return null;
 
   resetRecentEventMonitorBaseline(agent);
   agent.state.conversation = conversation;

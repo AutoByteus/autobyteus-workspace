@@ -1,0 +1,23 @@
+{
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager",
+  "saved_head": "5a4e17da0c159bdfe367b7e09c9fa98d94c580f2",
+  "saved_head_in_origin_personal": true,
+  "discarded_only": [
+    "?? autobyteus-application-backend-sdk/dist/",
+    "?? autobyteus-application-sdk-contracts/dist/"
+  ],
+  "worktree_removed": true,
+  "worktree_pruned": true,
+  "local_ticket_branch_deleted": true,
+  "remote_ticket_branch_deleted": true,
+  "finalization_clone_cleanup": "Completed",
+  "user_app_data": "Not touched",
+  "recorded_at": "2026-10-06T09:48:42.992106+00:00",
+  "finalization_clone": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager-finalization",
+  "clone_removed": true,
+  "clone_saved_head": "d526e3f27f15bc890872f43c8450b185af322888",
+  "clone_saved_head_in_personal": true,
+  "all_owned_delivery_workspaces_removed": true,
+  "main_refreshed_to_receipts": "d526e3f27f15bc890872f43c8450b185af322888",
+  "main_dirty_paths_and_tracked_diff_preserved": true
+}

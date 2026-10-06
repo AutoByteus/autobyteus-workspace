@@ -10,9 +10,16 @@ export class ControlledOrgApollo {
     fail(message: string): void;
     graphqlError(message: string): void;
   }> = []
+  /** Recorded artifacts served for `GetRunFileChanges` by runId; answered at once and not queued in `requests`. */
+  fileChangesByRunId = new Map<string, Record<string, unknown>[]>()
   client = new ApolloClient({
     cache: new InMemoryCache(),
     link: new ApolloLink(operation => new Observable<FetchResult>(observer => {
+      if (operation.operationName === 'GetRunFileChanges') {
+        observer.next({ data: { getRunFileChanges: this.fileChangesByRunId.get(operation.variables.runId) ?? [] } })
+        observer.complete()
+        return
+      }
       const request = {
         operation, delivered: false,
         respond(data: Record<string, unknown>) { request.delivered = true; observer.next({ data }); observer.complete() },

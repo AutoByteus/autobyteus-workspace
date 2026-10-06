@@ -13,7 +13,7 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', async ()
   const { buildClosureContext, closureView } = await import('~/services/agentCollaboration/__tests__/agentRootClosureFixture')
   return {
     readAgentRunCollaboration: vi.fn(async () => ({})),
-    stageAgentRunCollaborationContext: vi.fn(async () => ({ context: buildClosureContext(closureView(staged.closed)), commitActivities: () => undefined })),
+    stageAgentRunCollaborationContext: vi.fn(async () => ({ context: buildClosureContext(closureView(staged.closed)), commit: () => undefined })),
   }
 })
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))

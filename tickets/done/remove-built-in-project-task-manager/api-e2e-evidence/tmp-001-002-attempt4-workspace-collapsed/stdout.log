@@ -1,0 +1,19 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="workspace-agent-row"]').filter({ hasText: 'Project Task Manager' }).first()
+
+    at expandAgent (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:171:100)
+    at async expandAll (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:174:35)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:48
+    at async wait (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:109)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:7
+    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:175:3 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1
