@@ -1,0 +1,37 @@
+{
+  "workflow_results": {
+    "Android APK Release": {
+      "run": 37441073844,
+      "result": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37441073844"
+    },
+    "iOS App Store Connect Release": {
+      "run": 37441073741,
+      "result": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37441073741"
+    },
+    "Desktop Release": {
+      "run": 37441073748,
+      "result": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37441073748"
+    },
+    "Server Docker Release": {
+      "run": 37441073732,
+      "result": "success",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37441073732"
+    }
+  },
+  "github_prerelease": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.95-beta.5",
+  "isDraft": false,
+  "isPrerelease": true,
+  "nonempty_assets": 17,
+  "all_four_updater_versions": "1.4.95-beta.5",
+  "stable_latest_tag": "v1.4.94",
+  "docker_version_and_beta_digest": "sha256:0adcedd1b8e4878bb10b75263e1c0e93f970ad544e092a7f1d5bb076844b8600",
+  "docker_platforms": [
+    "linux/amd64",
+    "linux/arm64"
+  ],
+  "ios_testflight_upload": "Workflow success; public App Store approval is external/not requested",
+  "actual_device_install_or_auto_update": "Not tested; hosted publication verification only"
+}

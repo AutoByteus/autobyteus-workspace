@@ -1,0 +1,15 @@
+{
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager",
+  "saved_head": "5a4e17da0c159bdfe367b7e09c9fa98d94c580f2",
+  "saved_head_in_origin_personal": true,
+  "discarded_only": [
+    "?? autobyteus-application-backend-sdk/dist/",
+    "?? autobyteus-application-sdk-contracts/dist/"
+  ],
+  "worktree_removed": true,
+  "worktree_pruned": true,
+  "local_ticket_branch_deleted": true,
+  "remote_ticket_branch_deleted": true,
+  "finalization_clone_cleanup": "Pending records push and main refresh",
+  "user_app_data": "Not touched"
+}

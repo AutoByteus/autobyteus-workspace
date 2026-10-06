@@ -64,3 +64,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 #### DR-003 repository/tag progress receipt
 
 Acceptance hold resolved. Ticket archived/committed/pushed as `5a4e17da0`; merged/pushed into personal as `3ecf51008`. Documented beta helper run once; release commit `0dd5722d7`, tag `v1.4.95-beta.5`, branch/tag pushes complete. Hosted publication/rollout verification and safe cleanup still pending; no terminal completion claimed. Reports/`delivery-evidence/dr-003/repository-release-receipt.json` are authoritative.
+
+#### DR-003 publication and ticket-cleanup receipt
+
+All four workflows success; non-draft beta.5 prerelease/17 nonempty assets/all four updater versions verified; Docker version/beta digest match with amd64/arm64. Ticket worktree removed/pruned and local/remote branch deleted after safe merge. Finalization clone cleanup pending actual receipt push/main refresh/deletion. Current reports/rollout/cleanup receipts are authoritative; no terminal return yet.

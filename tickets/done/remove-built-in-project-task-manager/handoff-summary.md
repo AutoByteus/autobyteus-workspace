@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-003. User acceptance, archive and personal finalization Completed. v1.4.95-beta.5 tag pushed; hosted publication/rollout verification and cleanup pending.**
+- Delivery state: **DR-003. User acceptance, repository finalization, v1.4.95-beta.5 publication/rollout and ticket cleanup Completed. Finalization-clone cleanup pending close-out receipt.**
 - Classification (unchanged by delivery): `task_size=Medium`, `architectural_risk=High`. Route: full independent review (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → Code Review (test code) → Delivery).
 
 | Stage | Revision | Result |
@@ -71,3 +71,7 @@
 ### Finalization/tag receipt
 
 Ticket `5a4e17da0`, merge `3ecf51008`, release `0dd5722d7`, annotated tag `v1.4.95-beta.5`; all pushed. Full receipts in `delivery-evidence/dr-003/repository-release-receipt.json`. No stable release/duplicate workflow dispatch. Hosted workflows and cleanup are still pending, so this is not Delivery Completed yet.
+
+### DR-003 publication and cleanup receipt
+
+All four tag workflows succeeded. Published prerelease has 17 nonempty assets; all four updater files show beta.5. Docker version and beta tags share the verified multi-arch digest. Ticket worktree pruned and local/remote ticket branches deleted safely. Finalization clone remains only for receipt push/main refresh; no Delivery Completed claim until actual deletion. Latest `release-deployment-report.md` and `delivery-evidence/dr-003/rollout-verification.json` are authoritative.
