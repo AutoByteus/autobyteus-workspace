@@ -1,0 +1,1822 @@
+{
+  "recordedAt": "2026-10-06T21:54:36.769033+00:00",
+  "ticket": "electron-host-file-open",
+  "deliveryRevision": "DR-004",
+  "resultAuthority": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/release-deployment-report.md",
+  "taskSize": "Medium",
+  "architecturalRisk": "Low",
+  "route": "Direct low-risk",
+  "upstreamAuthorities": [
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/requirements-doc.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/user-approval-r1.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/user-drawer-clarification.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/investigation-notes.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/design-spec.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/solution-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/architecture-design-complete.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/implementation-design-impact.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/implementation-handoff.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/implementation-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/historical-investigation-result.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/approval-hold-result.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-test-case-ledger.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/solution-coordination-hold.md"
+  ],
+  "independentReviews": {
+    "architecture": "N/A \u2014 not applicable",
+    "source": "N/A \u2014 not applicable",
+    "apiE2eTestCode": "N/A \u2014 not applicable"
+  },
+  "deliveryAuthorities": [
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/docs-sync-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/handoff-summary.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/release-deployment-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/delivery-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/user-verification.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/release-notes.md",
+    "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/artifact-relocation.md"
+  ],
+  "completeTicketInventory": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-coverage-investigation.md",
+      "ticketRelativePath": "api-e2e-coverage-investigation.md",
+      "size": 21883,
+      "sha256": "cc8b97ea5cbd1d50666c6e936a34facc2ea8827ad2a556cbb447e3e686502904"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-execution-coverage-report.md",
+      "ticketRelativePath": "api-e2e-execution-coverage-report.md",
+      "size": 23425,
+      "sha256": "7501566cc7038848cf02397a1b036ec6e58cd55609b306f9460d330ec5e7e935"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-revision-record.md",
+      "ticketRelativePath": "api-e2e-revision-record.md",
+      "size": 4725,
+      "sha256": "51dfdaf871d9cb3f811b5e536a57c0517cb5a81b6eb279fdc4e97a5e8106a793"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/api-e2e-test-case-ledger.md",
+      "ticketRelativePath": "api-e2e-test-case-ledger.md",
+      "size": 18186,
+      "sha256": "0117b5b870f1561ab59764141e5804b5df50a326917896bfb591a2e1068ab1e6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/approval-hold-result.md",
+      "ticketRelativePath": "approval-hold-result.md",
+      "size": 3167,
+      "sha256": "9b2f6e3a76e0f96f861cef7ff0579cb486d6f3dc03f7a1315e11899b2a1e5611"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/architecture-design-complete.md",
+      "ticketRelativePath": "architecture-design-complete.md",
+      "size": 15241,
+      "sha256": "b5d2f4a420811bef48111844496382c55d661e17e93a75193162648af3af8faa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/artifact-relocation.md",
+      "ticketRelativePath": "artifact-relocation.md",
+      "size": 997,
+      "sha256": "1c205b45de0c4d9ab5567ad6704309ee1f1a50b8dc399026b9605df920a84adf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/delivery-revision-record.md",
+      "ticketRelativePath": "delivery-revision-record.md",
+      "size": 13842,
+      "sha256": "374a5fd2842c3bf461a9bfd3015c6f103506e0dcc4e42240bb99bb34ad7bcbd2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/design-spec.md",
+      "ticketRelativePath": "design-spec.md",
+      "size": 42954,
+      "sha256": "a0a99f5c15601728067d846798be3f9f42ac721e417ac64959e4d75224dd2a46"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/docs-sync-report.md",
+      "ticketRelativePath": "docs-sync-report.md",
+      "size": 7207,
+      "sha256": "6baeeb9c1a5b001d8785883b3fc9cf3b8267c32f61ddf1fdef641a376c61f49a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-cumulative.log",
+      "ticketRelativePath": "evidence/api-cumulative.log",
+      "size": 36714,
+      "sha256": "297125abe2572ebabc6a7fdf8dcdec7399001681de92b32fcca5eec3e3e04965"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-electron.log",
+      "ticketRelativePath": "evidence/api-electron.log",
+      "size": 1109,
+      "sha256": "5f6f590bbf1aad8a86e18967f7f119709f02e3be2084a0fdb3feff35ade8ff03"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-focused-rerun.log",
+      "ticketRelativePath": "evidence/api-focused-rerun.log",
+      "size": 11772,
+      "sha256": "b1f131a710bad313d4144981c64f464b0ff50ba80bf90d80b755560254f51452"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-focused.log",
+      "ticketRelativePath": "evidence/api-focused.log",
+      "size": 264763,
+      "sha256": "732d1968eb688695d1f62c2f3b060698b727f75f12e351aecc0c6d27d7835614"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-guard.log",
+      "ticketRelativePath": "evidence/api-guard.log",
+      "size": 205,
+      "sha256": "b3e7ad61c2309a2cb71c6bbf9dda1131ac472546f326e6eeaa62f6580ab04abd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-handoff-rules.json",
+      "ticketRelativePath": "evidence/api-handoff-rules.json",
+      "size": 2513,
+      "sha256": "dce61863fc642cc58c609765e79d62b072559485dc7421cf92220d5cb7dd68fa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-list-after.json",
+      "ticketRelativePath": "evidence/api-list-after.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-list-during.json",
+      "ticketRelativePath": "evidence/api-list-during.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-mobile-final.log",
+      "ticketRelativePath": "evidence/api-mobile-final.log",
+      "size": 2787,
+      "sha256": "9cd82feb6089c602f8d0224c7894ff62bfcae4c167fa96cbb4c622487c9350c3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-mobile.log",
+      "ticketRelativePath": "evidence/api-mobile.log",
+      "size": 2788,
+      "sha256": "6d3ac84458dfe912c20f2cdb66f5693b9158be2a6d7d6bcffb015795e750e638"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/evidence.json",
+      "ticketRelativePath": "evidence/api-native/evidence.json",
+      "size": 13196,
+      "sha256": "0d378bfe4ffc6e4839945d69f4c5d5e524f6132a05de99aa6be5b71e94e6f31b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/first-native-activation.png",
+      "ticketRelativePath": "evidence/api-native/first-native-activation.png",
+      "size": 120673,
+      "sha256": "ad1cc4d4fc825eb8e544bd9cc6ff04b3d1a8d6324cc756d79d985e1b64ca6c18"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/list.json",
+      "ticketRelativePath": "evidence/api-native/list.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/list.log",
+      "ticketRelativePath": "evidence/api-native/list.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/start.json",
+      "ticketRelativePath": "evidence/api-native/start.json",
+      "size": 923,
+      "sha256": "4bb5b46d5943db3c582c644e28a5bd34fed6ba3d3f24aa607c39f77dede87cd5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/start.log",
+      "ticketRelativePath": "evidence/api-native/start.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/stop.json",
+      "ticketRelativePath": "evidence/api-native/stop.json",
+      "size": 382,
+      "sha256": "72825fac5123341b1ef199aa356c218db141e306282e9efaf48f1943b89529bd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native/stop.log",
+      "ticketRelativePath": "evidence/api-native/stop.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-command.log",
+      "ticketRelativePath": "evidence/api-native-command.log",
+      "size": 1084,
+      "sha256": "6737578d7ff1fe5aad6b86fdade5043f5d7152c4e65858f011cf20912cb2c3aa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/directory-file.png",
+      "ticketRelativePath": "evidence/api-native-complete/directory-file.png",
+      "size": 119717,
+      "sha256": "5e6fc44389d3033873abdc77eb02f30f5d3695ee3055992a3ae0778df880a421"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/emulated-wide-redock.png",
+      "ticketRelativePath": "evidence/api-native-complete/emulated-wide-redock.png",
+      "size": 133856,
+      "sha256": "d6de2360cb5e77fd8ce91f5caea7a3d2da68ec38df8a19f121201904e6aab116"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/evidence.json",
+      "ticketRelativePath": "evidence/api-native-complete/evidence.json",
+      "size": 37092,
+      "sha256": "880562a94ce1dba84a1f711ba8f4331497e92c247ed067103974a79d12b53c39"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/failed-N-009.png",
+      "ticketRelativePath": "evidence/api-native-complete/failed-N-009.png",
+      "size": 74875,
+      "sha256": "87d744558b0de4d711de3858d62cd1f9b637f93364a4d4492fea73bf80db375c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/first-native-activation.png",
+      "ticketRelativePath": "evidence/api-native-complete/first-native-activation.png",
+      "size": 127453,
+      "sha256": "83009fd0f511046e0eb4fdafef113cbab17a452ca1aabc59624731772dbd1f7d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/list.json",
+      "ticketRelativePath": "evidence/api-native-complete/list.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/list.log",
+      "ticketRelativePath": "evidence/api-native-complete/list.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/missing-file.png",
+      "ticketRelativePath": "evidence/api-native-complete/missing-file.png",
+      "size": 116015,
+      "sha256": "20fb2331a6676cc86cde45cf257a672f3a36fea35315d3e6e26ad4d9cb9d73fe"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/readonly-deduped.png",
+      "ticketRelativePath": "evidence/api-native-complete/readonly-deduped.png",
+      "size": 130014,
+      "sha256": "c0a3f84bbb8e8c1dfd27c1c37ea90e0554525d18ea37bf78b26ba28a67f14864"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/start.json",
+      "ticketRelativePath": "evidence/api-native-complete/start.json",
+      "size": 923,
+      "sha256": "a35e3f4797279e74a10376d2f2cf3e75188ba82b62403a6383851a785e289953"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/start.log",
+      "ticketRelativePath": "evidence/api-native-complete/start.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/stop.json",
+      "ticketRelativePath": "evidence/api-native-complete/stop.json",
+      "size": 382,
+      "sha256": "d2cae6b2bdf32e9a8f5d70e793b65de70f3292bdd7749c0a5ffc592387801525"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/stop.log",
+      "ticketRelativePath": "evidence/api-native-complete/stop.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete/unreadable-file.png",
+      "ticketRelativePath": "evidence/api-native-complete/unreadable-file.png",
+      "size": 116578,
+      "sha256": "eb5c0053d468dce8cf5e3bd04a55bba8a838e90aa12393db556dc129be4750c8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-complete-command.log",
+      "ticketRelativePath": "evidence/api-native-complete-command.log",
+      "size": 1147,
+      "sha256": "a4cff88a2b61ea70248bfdc9eedfced16b16f053097aec8589f2016c1a29e69b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/directory-file.png",
+      "ticketRelativePath": "evidence/api-native-final/directory-file.png",
+      "size": 119719,
+      "sha256": "3400bb17220cb1dccc90175dcb2bd9a14a98137898b1d05b47de782833e2c0f1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/evidence.json",
+      "ticketRelativePath": "evidence/api-native-final/evidence.json",
+      "size": 24903,
+      "sha256": "cea1b472539a10042fbd2c01085cd8e98c5bdf28ce375dcf6d97b04d3f1853a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/failed-N-004.png",
+      "ticketRelativePath": "evidence/api-native-final/failed-N-004.png",
+      "size": 116951,
+      "sha256": "22c5580fd94b2e7a800dd51b57588c86d85babf94bdfbdbf4973922ceed6e894"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/first-native-activation.png",
+      "ticketRelativePath": "evidence/api-native-final/first-native-activation.png",
+      "size": 127745,
+      "sha256": "83bdaa73f7a7c3a4cd5ecc6bfb9cff7d0d7be4f31315514f326492f6d5730e52"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/list.json",
+      "ticketRelativePath": "evidence/api-native-final/list.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/list.log",
+      "ticketRelativePath": "evidence/api-native-final/list.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/missing-file.png",
+      "ticketRelativePath": "evidence/api-native-final/missing-file.png",
+      "size": 116015,
+      "sha256": "20fb2331a6676cc86cde45cf257a672f3a36fea35315d3e6e26ad4d9cb9d73fe"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/readonly-deduped.png",
+      "ticketRelativePath": "evidence/api-native-final/readonly-deduped.png",
+      "size": 130014,
+      "sha256": "85fef589a3c7b877b0882f77740f9054d74352f9c8a4b905888abbb830e5fcf8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/start.json",
+      "ticketRelativePath": "evidence/api-native-final/start.json",
+      "size": 923,
+      "sha256": "e026005eedba1bd137928a1d339c9a758936e7bbf68c51d6b351ced800a4bbd0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/start.log",
+      "ticketRelativePath": "evidence/api-native-final/start.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/stop.json",
+      "ticketRelativePath": "evidence/api-native-final/stop.json",
+      "size": 382,
+      "sha256": "011a7b1bd29708556fd41c23b3c0557483fef35a0800068805bf708fdb667ac8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final/stop.log",
+      "ticketRelativePath": "evidence/api-native-final/stop.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-final-command.log",
+      "ticketRelativePath": "evidence/api-native-final-command.log",
+      "size": 1111,
+      "sha256": "789b65d5ec9840b4013abc49e6fc13b81e35bfe82c63c24df6cf0ba4746b9456"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/emulated-wide-redock.png",
+      "ticketRelativePath": "evidence/api-native-rerun/emulated-wide-redock.png",
+      "size": 126048,
+      "sha256": "a0c2ed163ae85f4a01c022898da2fa50a47434d61433570c76910051a279df49"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/evidence.json",
+      "ticketRelativePath": "evidence/api-native-rerun/evidence.json",
+      "size": 37317,
+      "sha256": "293c084d11b64c88c7116acb3d582a2fd8c164a2d03e4193362ad18f34e2a579"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/first-native-activation.png",
+      "ticketRelativePath": "evidence/api-native-rerun/first-native-activation.png",
+      "size": 120673,
+      "sha256": "ad1cc4d4fc825eb8e544bd9cc6ff04b3d1a8d6324cc756d79d985e1b64ca6c18"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/list.json",
+      "ticketRelativePath": "evidence/api-native-rerun/list.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/list.log",
+      "ticketRelativePath": "evidence/api-native-rerun/list.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/not-regular-file.png",
+      "ticketRelativePath": "evidence/api-native-rerun/not-regular-file.png",
+      "size": 112870,
+      "sha256": "18d9a4580446e53d7513fed7b0c97ade5f1da31e70affa31ba2e162d43cbbc10"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/readonly-deduped.png",
+      "ticketRelativePath": "evidence/api-native-rerun/readonly-deduped.png",
+      "size": 123125,
+      "sha256": "404b5b4e861a4c502028ecdc9e25bd801e20b1b005ad4b4656ff16e0491d59a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/start.json",
+      "ticketRelativePath": "evidence/api-native-rerun/start.json",
+      "size": 923,
+      "sha256": "abbe1b47075f847b9bec1096c335b7b6d0e6f494f1e29a5493a5f54645340c4e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/start.log",
+      "ticketRelativePath": "evidence/api-native-rerun/start.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/stop.json",
+      "ticketRelativePath": "evidence/api-native-rerun/stop.json",
+      "size": 382,
+      "sha256": "72be2bf4825f5c4c6ee715cea2110869c94950aa2c52c4b0c4297c1099bd88ae"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/stop.log",
+      "ticketRelativePath": "evidence/api-native-rerun/stop.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun/unavailable.png",
+      "ticketRelativePath": "evidence/api-native-rerun/unavailable.png",
+      "size": 108978,
+      "sha256": "dfd7e220651b7b34efd5f3eb64e05c9954626da55ea59e015eb3580453cc0052"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-rerun-command.log",
+      "ticketRelativePath": "evidence/api-native-rerun-command.log",
+      "size": 1105,
+      "sha256": "8197070311bc9b7f988d97d74c7c6317858fdbc82f36df2900c7ff28e2679d26"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/directory-file.png",
+      "ticketRelativePath": "evidence/api-native-verified/directory-file.png",
+      "size": 119717,
+      "sha256": "5e6fc44389d3033873abdc77eb02f30f5d3695ee3055992a3ae0778df880a421"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/emulated-wide-redock.png",
+      "ticketRelativePath": "evidence/api-native-verified/emulated-wide-redock.png",
+      "size": 133856,
+      "sha256": "d6ef10db24f3da852efefd74e1a096c62d131b8517883f38cf8f0febd587b938"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/evidence.json",
+      "ticketRelativePath": "evidence/api-native-verified/evidence.json",
+      "size": 41526,
+      "sha256": "d5759fd57b446b11f1d2d375d811cdaf18996cc3dd6cab99b5a764043d8659e0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/first-native-activation.png",
+      "ticketRelativePath": "evidence/api-native-verified/first-native-activation.png",
+      "size": 127453,
+      "sha256": "83009fd0f511046e0eb4fdafef113cbab17a452ca1aabc59624731772dbd1f7d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/list.json",
+      "ticketRelativePath": "evidence/api-native-verified/list.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/list.log",
+      "ticketRelativePath": "evidence/api-native-verified/list.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/missing-file.png",
+      "ticketRelativePath": "evidence/api-native-verified/missing-file.png",
+      "size": 116073,
+      "sha256": "b337a9c819a22a7ba78cad9b7511a97680b132faf6046d5ede61d1993a389b6a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/readonly-deduped.png",
+      "ticketRelativePath": "evidence/api-native-verified/readonly-deduped.png",
+      "size": 130014,
+      "sha256": "c0a3f84bbb8e8c1dfd27c1c37ea90e0554525d18ea37bf78b26ba28a67f14864"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/start.json",
+      "ticketRelativePath": "evidence/api-native-verified/start.json",
+      "size": 922,
+      "sha256": "14d9a47f1e7f60a4974400db1f1b0d21a0d8c2f3d18e33eff8e73b60a82cc84b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/start.log",
+      "ticketRelativePath": "evidence/api-native-verified/start.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/stop.json",
+      "ticketRelativePath": "evidence/api-native-verified/stop.json",
+      "size": 382,
+      "sha256": "2d2dd260fd05041987a2ab10a5e5c45251d28457036f0dcff36c7e421c5c9baf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/stop.log",
+      "ticketRelativePath": "evidence/api-native-verified/stop.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified/unreadable-file.png",
+      "ticketRelativePath": "evidence/api-native-verified/unreadable-file.png",
+      "size": 116579,
+      "sha256": "0b7d2f49b4440e387205a2b476c864ec1e378a985840d7858ec7e79828538ab1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-native-verified-command.log",
+      "ticketRelativePath": "evidence/api-native-verified-command.log",
+      "size": 1126,
+      "sha256": "679d0ef1bb5bb45b7d66a9f4f6281941e1c63ccb34cb65d51f4d0bc3d0eb36c1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-package-provenance.json",
+      "ticketRelativePath": "evidence/api-package-provenance.json",
+      "size": 1011,
+      "sha256": "47fc9d790bd99b781944ae668486169ea58102e4e8d9ad8c9fc99b6449fafc2e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/api-reference-files.json",
+      "ticketRelativePath": "evidence/api-reference-files.json",
+      "size": 13270,
+      "sha256": "f97dece7b6a730c67502aaa874ae4dfd55a4a0db96d044f26a748d6726a76acb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/baseline-owner-probe.cjs",
+      "ticketRelativePath": "evidence/baseline-owner-probe.cjs",
+      "size": 5009,
+      "sha256": "8831dbe98629b3b750d75a53b85c91c374d984fe408dca7c3e33f105a9664cb6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/baseline-owner-probe.json",
+      "ticketRelativePath": "evidence/baseline-owner-probe.json",
+      "size": 2828,
+      "sha256": "1ef25ab2f3ed03d8d5f589d38f89cece3f1c7217ed7f5bac82473a7abf438e4d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/boundary-tests.log",
+      "ticketRelativePath": "evidence/boundary-tests.log",
+      "size": 7370,
+      "sha256": "5db343aa0ea4ca1639d8191a8159a048195fc4c9bc6eb99779cdb61896656fae"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/changed-tests.log",
+      "ticketRelativePath": "evidence/changed-tests.log",
+      "size": 17723,
+      "sha256": "8ede4b2673dde0207d09812e04c24dee76e269266414847a8d5ba8725b0e11b8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-cumulative-web-tests.log",
+      "ticketRelativePath": "evidence/d2-cumulative-web-tests.log",
+      "size": 32325,
+      "sha256": "d096c103205d2409925f3329cf77b96d1a08b52685cafa32b72897c1f2466a56"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-drawer-tests.log",
+      "ticketRelativePath": "evidence/d2-drawer-tests.log",
+      "size": 1237,
+      "sha256": "18f9949b120bbbb7bfb9116fa6c29e27e7dcc7547cbbb234e461e3ade40c3a7a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-electron-tests.log",
+      "ticketRelativePath": "evidence/d2-electron-tests.log",
+      "size": 874,
+      "sha256": "9c4a73f3b85d98541a43e876b0e97f690c73180bc040a996ecf0a794b3efc6c8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-first-tests.log",
+      "ticketRelativePath": "evidence/d2-first-tests.log",
+      "size": 9313,
+      "sha256": "5f01fdf54c79949891fbd0909daf54eaaa561b396d2f997f67a7092013687ecb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-handoff-rules.json",
+      "ticketRelativePath": "evidence/d2-handoff-rules.json",
+      "size": 1592,
+      "sha256": "920f0d3474347a06412488f2f07d8dc976b2714fc24f7b5fe11d02d6feecb68d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-build-source.json",
+      "ticketRelativePath": "evidence/d2-native-build-source.json",
+      "size": 2443,
+      "sha256": "a44feaa121195ed2455b364cea95a8034ac6ccb5bdf51f252c419e7418659699"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-build.log",
+      "ticketRelativePath": "evidence/d2-native-build.log",
+      "size": 53412,
+      "sha256": "abf068888d1a25e949b21e13e6c787249b321b464b44eb34078dd9f2e22ffcc3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-deduped.png",
+      "ticketRelativePath": "evidence/d2-native-deduped.png",
+      "size": 143028,
+      "sha256": "762fc0e0345078c972cffbbe37b7389a5ac7db9f7ff3db4060ec7a2fe4179423"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-directory-error.png",
+      "ticketRelativePath": "evidence/d2-native-directory-error.png",
+      "size": 120935,
+      "sha256": "8e457ddd3a6d8f212ea7f6bfc86c43311bc212863fb5400df916a1742c082cbf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-first-activation.png",
+      "ticketRelativePath": "evidence/d2-native-first-activation.png",
+      "size": 130667,
+      "sha256": "40a209fc7bdb4cd5643807d1dfa4f51aba87e684055b9b5ed50604013922d6dc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-inspection-controller.cjs",
+      "ticketRelativePath": "evidence/d2-native-inspection-controller.cjs",
+      "size": 10506,
+      "sha256": "773e8ef5ec449b61b216b43605c7069264bddc4e9268167316cd0c4c91877112"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-inspection-notes.md",
+      "ticketRelativePath": "evidence/d2-native-inspection-notes.md",
+      "size": 5044,
+      "sha256": "dca3d90c4cfce9b7ca396d7d30a5d0aeb19193b2caf480b5fc7e9b91e8584b6c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-list-after.json",
+      "ticketRelativePath": "evidence/d2-native-list-after.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-missing-error.png",
+      "ticketRelativePath": "evidence/d2-native-missing-error.png",
+      "size": 117303,
+      "sha256": "1bcd2b02faa64470ef35507b336c2538afebf01ec58fa712e2d16cc153f2b5e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-start.json",
+      "ticketRelativePath": "evidence/d2-native-start.json",
+      "size": 923,
+      "sha256": "8c0a05d836372742b8dc16eab6eef044638318c29e2dcb8c0f05b8ed67724859"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-stop.json",
+      "ticketRelativePath": "evidence/d2-native-stop.json",
+      "size": 382,
+      "sha256": "eef4ebd5fd212d666bfe61bcf56462ef4f744ae99b2191da6d54cf87510d61a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-visual.json",
+      "ticketRelativePath": "evidence/d2-native-visual.json",
+      "size": 72031,
+      "sha256": "8294caa851f592e063f162ca02bf9846f36e8154344d323d25244592a85e2773"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-native-wide-redock.png",
+      "ticketRelativePath": "evidence/d2-native-wide-redock.png",
+      "size": 142461,
+      "sha256": "6f3fa0487fbac414b63bde140ca5902d973a71c96bb87148432d551627e038ca"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-second-tests.log",
+      "ticketRelativePath": "evidence/d2-second-tests.log",
+      "size": 8030,
+      "sha256": "dfc35cebc72f8ee728ff245ed7884b73044ea7ec9092321496168a77cbe5150f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-self-review.md",
+      "ticketRelativePath": "evidence/d2-self-review.md",
+      "size": 2638,
+      "sha256": "955ee35e3218e2d57e7b3e44114cc95720a2f5a5de13e25ac0930326535da70e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/d2-web-guard.log",
+      "ticketRelativePath": "evidence/d2-web-guard.log",
+      "size": 205,
+      "sha256": "b3e7ad61c2309a2cb71c6bbf9dda1131ac472546f326e6eeaa62f6580ab04abd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/blocked-handoff-receipt.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/blocked-handoff-receipt.json",
+      "size": 468,
+      "sha256": "6879c4de967a3564f900880cc2133675a1990e77a9bedde28accabd6ad58eda4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/blocked-handoff-request.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/blocked-handoff-request.json",
+      "size": 8475,
+      "sha256": "e622abb12d043d76a9e6ed7a7437aefb7a40e48a97e0fe09a2cd443bdb78b60c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/cumulative-package.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/cumulative-package.json",
+      "size": 29351,
+      "sha256": "320a2d3029680cfe765c7b0653675cdc5002fbfdec6ad15057c0d0134c455806"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/docs-check.log",
+      "ticketRelativePath": "evidence/delivery/dr-001/docs-check.log",
+      "size": 797,
+      "sha256": "cc40d51ce2c1b31995bbf6d6f25f17b1c31d9d7d4794cfbe054bccf50e3f172b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/handoff-rule-selection.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/handoff-rule-selection.json",
+      "size": 775,
+      "sha256": "2a42b5ea20ac1c3fb529c9aaaa26c7e4b2ef41b5213725481205947bca2c2f3d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/handoff-rules.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/handoff-rules.json",
+      "size": 931,
+      "sha256": "c340a3e2cad7c7fcd6fa00d5d6101b7deb121f9a0b78c044cebbb55ce4d3aa6d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/integrated-base-changed-paths.log",
+      "ticketRelativePath": "evidence/delivery/dr-001/integrated-base-changed-paths.log",
+      "size": 4137,
+      "sha256": "5902666f518f2a0523d1a1816e777d250ea8352e7dc0219a55531c0c0804bf06"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/integrated-base-diff-stat.log",
+      "ticketRelativePath": "evidence/delivery/dr-001/integrated-base-diff-stat.log",
+      "size": 3007,
+      "sha256": "dc37a284aa30da40b0988746c572a8d2d4c27cfbf8027cb6d5f125cfe2a7edea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/integration-receipt.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/integration-receipt.json",
+      "size": 7055,
+      "sha256": "79b40f9c5f3371a2e8d8822ef0aceb6be33d495e63e6320cb797e24760e07f38"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/package-provenance.json",
+      "ticketRelativePath": "evidence/delivery/dr-001/package-provenance.json",
+      "size": 3560,
+      "sha256": "1a9de5988c45cbacc605262d1f4aacc6525badc49f18334a173dc8b788dcd72e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-001/post-integration-web.log",
+      "ticketRelativePath": "evidence/delivery/dr-001/post-integration-web.log",
+      "size": 14174,
+      "sha256": "fa14243d3801e69cd703812a4eb367fcb7564f42665d34dc7dfa2779d2d93c77"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-002/coordination-reconciliation.json",
+      "ticketRelativePath": "evidence/delivery/dr-002/coordination-reconciliation.json",
+      "size": 462,
+      "sha256": "8ba7a31cac064509d882a3abeee701a29060d7a439caa81311f5ae6b92d7d601"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-002/handoff-rule-selection.json",
+      "ticketRelativePath": "evidence/delivery/dr-002/handoff-rule-selection.json",
+      "size": 458,
+      "sha256": "36f44a7d372ee1836eb3a86a356a1a1449fb0468fd890158429f86829fb3f076"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-002/handoff-rules.json",
+      "ticketRelativePath": "evidence/delivery/dr-002/handoff-rules.json",
+      "size": 1929,
+      "sha256": "3e7913e507857d5c453208517e2a832f3f66cfd02c0eae91f2add209f9f77dea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/acceptance-and-target-refresh.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/acceptance-and-target-refresh.json",
+      "size": 744,
+      "sha256": "eb13382183fe656d059978ff697d1cded651783acbd9bb45dd6f342b1381fce7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/android-progress.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/android-progress.json",
+      "size": 5106,
+      "sha256": "29fb2ff7738199468759fe644491987ff1bb242248687bb379a0060d78b8110a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/beta-helper.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/beta-helper.log",
+      "size": 19362,
+      "sha256": "3630735d4db121f674fcac7c3968777472a1ca2b5b70da9d8991bbca49bd5415"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/beta-policy-tests.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/beta-policy-tests.log",
+      "size": 398,
+      "sha256": "bf723642b931555bfff720b9a951cbb4f51413524c8f37958a0f032ceefa593c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/beta-ticket-release-notes.md",
+      "ticketRelativePath": "evidence/delivery/dr-003/beta-ticket-release-notes.md",
+      "size": 1527,
+      "sha256": "850511baaaf572cae2c3a950e8db184a6a6318497fcf3d638a6e3722abf595c6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ci-current.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ci-current.json",
+      "size": 1701,
+      "sha256": "8c737c9b0ee7a840fcb6778f775148a9781c625b697ceef825df9501fd904f07"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ci-final.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ci-final.json",
+      "size": 55912,
+      "sha256": "00619ab571b8ed0875ca52dff71483cb10536637e1ff995a73b419a842aaeb8a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ci-initial.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ci-initial.json",
+      "size": 1290,
+      "sha256": "a79ae114c03a1008d68c93cacd7956b08f5b2a7c2c53b69120c2754fe2a06cb3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ci-snapshots.jsonl",
+      "ticketRelativePath": "evidence/delivery/dr-003/ci-snapshots.jsonl",
+      "size": 27090,
+      "sha256": "ffe9742154a828b5e7274308d3534defe4598b17f27aaa1e396e03513db46ca0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/cleanup-preflight.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/cleanup-preflight.json",
+      "size": 6027,
+      "sha256": "b4f3b549d66a00ae4e01384fc1f408e496150fc0b8b13d90d0d3febb5e5dca18"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress-2.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress-2.json",
+      "size": 14085,
+      "sha256": "dbbe5a09c3eca9b5be0e22a10c7bb0fe39f7cae18c092f01583002449d915aea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress-3.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress-3.json",
+      "size": 14535,
+      "sha256": "98ed5c4dc0f07f0ffa66c6be22320866a01f9ccfc055c2c83f46a1b66a839165"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress-4.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress-4.json",
+      "size": 14535,
+      "sha256": "98ed5c4dc0f07f0ffa66c6be22320866a01f9ccfc055c2c83f46a1b66a839165"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress-5.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress-5.json",
+      "size": 14733,
+      "sha256": "35e796b234ef775c4402ec24989fa6255ab2176a290c159e66646546a214d6ef"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress-6.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress-6.json",
+      "size": 14958,
+      "sha256": "88ca85f06cfec19d15d26bec4a2fbeac19d7347813e5d37dad56fe48ea75cc31"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress-7.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress-7.json",
+      "size": 17335,
+      "sha256": "76de95515962cdc2d44050bf059180a8716a64aada73b898373df9aa424e9922"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-progress.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-progress.json",
+      "size": 13348,
+      "sha256": "a4759b0344b488c4ff7c30cd1ea4e8bd21d097e21de29a49ae8c09a099a782ac"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/desktop-publication-verification.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/desktop-publication-verification.json",
+      "size": 10212,
+      "sha256": "d003680bfe8c55e2d68021397aefecac5e08ae896bc779912cb63e7d72d1afd8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-1-4-95-beta-9-verified.txt",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-1-4-95-beta-9-verified.txt",
+      "size": 674,
+      "sha256": "ebd58a73b7e34423f5e50a9c8b3cb06cc153fa7c79382a780d47b8acd9b0e37a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-beta-before.txt",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-beta-before.txt",
+      "size": 647,
+      "sha256": "d0d0906c5487adb4cf4acf5cde73e3e9bbebb5b0fab79a8af5d8f204a01aa2c4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-beta-verified.txt",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-beta-verified.txt",
+      "size": 647,
+      "sha256": "d5e5ef3d32ed804f6d25aa5f07b83f784ca2f422c01fa62089234b513ed4910c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-latest-verified.txt",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-latest-verified.txt",
+      "size": 653,
+      "sha256": "f343d9ed6a4dd61ef52429bd800e363a9f7214dc7ca9ed16bf08e59a896ccd0c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-progress-2.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-progress-2.json",
+      "size": 3597,
+      "sha256": "fd41a8833014bc63b83b6dc578e4e9dbef073e1283a602a50f0f71883154bbfc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-progress-3.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-progress-3.json",
+      "size": 3597,
+      "sha256": "fd41a8833014bc63b83b6dc578e4e9dbef073e1283a602a50f0f71883154bbfc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-progress-4.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-progress-4.json",
+      "size": 3597,
+      "sha256": "fd41a8833014bc63b83b6dc578e4e9dbef073e1283a602a50f0f71883154bbfc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-progress.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-progress.json",
+      "size": 3597,
+      "sha256": "fd41a8833014bc63b83b6dc578e4e9dbef073e1283a602a50f0f71883154bbfc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-publication-verification.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-publication-verification.json",
+      "size": 525,
+      "sha256": "64e80e1381813a2d1f740376cac08432607a1a48bed49c9cdcab00a3db263afb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-stable-before.txt",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-stable-before.txt",
+      "size": 653,
+      "sha256": "f343d9ed6a4dd61ef52429bd800e363a9f7214dc7ca9ed16bf08e59a896ccd0c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/docker-status-latest.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/docker-status-latest.json",
+      "size": 125,
+      "sha256": "069645bd3be8ec3865f3ba40751210ed23a5bcaba41ce0dd641f877244ca17f9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/finalizer-clone.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/finalizer-clone.log",
+      "size": 106,
+      "sha256": "542c6405125f21e26a90794ad78c3c94d73d35d1eb605e4e28b32adbefc51264"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/instance-list-before-cleanup.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/instance-list-before-cleanup.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ios-progress-2.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ios-progress-2.json",
+      "size": 3547,
+      "sha256": "f8501c3c665a6389f3cce44d24d8a59d4ab78224b66cca708d8916da58697c1b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ios-progress-3.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ios-progress-3.json",
+      "size": 3547,
+      "sha256": "f8501c3c665a6389f3cce44d24d8a59d4ab78224b66cca708d8916da58697c1b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ios-progress-4.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ios-progress-4.json",
+      "size": 7477,
+      "sha256": "00fa44e0f06139aed0b1b38f199510b1f016673e7e572cb8bbbfbafba7e1e849"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/ios-progress.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/ios-progress.json",
+      "size": 3511,
+      "sha256": "098bad0f6c13167fa3b2802878f8abbfd81c8835330e6e6b7843d21f0cc7a4e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/pre-finalization-hygiene.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/pre-finalization-hygiene.log",
+      "size": 332,
+      "sha256": "0bdbd60c733394069d425998aeb2ab8785ddad5367acdb0981f9856e262890cc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/pre-release-handoff-summary.md",
+      "ticketRelativePath": "evidence/delivery/dr-003/pre-release-handoff-summary.md",
+      "size": 10721,
+      "sha256": "d23b65b807f595dca3e0345afff34c9238f09e303c6d79e5c7c457239793aafb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/pre-release-release-deployment-report.md",
+      "ticketRelativePath": "evidence/delivery/dr-003/pre-release-release-deployment-report.md",
+      "size": 12624,
+      "sha256": "099d71b95a60429b3c1dd220dd3d788a3b90826896c12daf4f50561dc00f6835"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/publication-verification-attempt-1.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/publication-verification-attempt-1.log",
+      "size": 687,
+      "sha256": "6909f3ebeb6be216e3b971a5188b41eed94f56020830e4c84f8537c446cf6674"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/release-api.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/release-api.json",
+      "size": 31575,
+      "sha256": "a69ea2d65292b6d42358cfed2e8886e137e19696361631b3c91508e108f6c7de"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/release-progress.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/release-progress.json",
+      "size": 5681,
+      "sha256": "83afb100b869fc1aad810a5027d73ed60e7a4c76a29a7c8c7e17d0194d0b346a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/release-version-tests.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/release-version-tests.log",
+      "size": 121,
+      "sha256": "de54de5c84bc6d7f00f25dcb9a2cd7c9ec1159eac0dcad4ca45f8ec233dee0a9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/repository-finalization-receipt.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/repository-finalization-receipt.json",
+      "size": 1810,
+      "sha256": "a671c32e39bb30acc1ca197ad31ea9dec03a1ca7e0d348a036f594b786629388"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/stable-release-after.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/stable-release-after.json",
+      "size": 33162,
+      "sha256": "614e516d92fc49bbd7b6f1800057364fb82d30fa893e6917bd87d44d18accc10"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/stable-release-before.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/stable-release-before.json",
+      "size": 33162,
+      "sha256": "0bc10268def6b0334acdf922e787d3c2e19d0bf0b1fbb6113ee7e5d133d57255"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/status-after-interruption.json",
+      "ticketRelativePath": "evidence/delivery/dr-003/status-after-interruption.json",
+      "size": 644,
+      "sha256": "d18229430c41430ea964c740ceabc568a9a69b68aa17e314f7a1b95bcda57da4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/target-finalization.log",
+      "ticketRelativePath": "evidence/delivery/dr-003/target-finalization.log",
+      "size": 36098,
+      "sha256": "e4dec9d2c579481986c1f8dec90f04faf759299420e180fa1d1c174f33142ff8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/updater-metadata/AutoByteus_personal_android-1.4.95-beta.9-release.apk.sha256",
+      "ticketRelativePath": "evidence/delivery/dr-003/updater-metadata/AutoByteus_personal_android-1.4.95-beta.9-release.apk.sha256",
+      "size": 120,
+      "sha256": "677d17a03249d2a0d8b810d1dcbaceb1c422a445f40b5f4310922a51ed02f8b7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/updater-metadata/latest-linux-arm64.yml",
+      "ticketRelativePath": "evidence/delivery/dr-003/updater-metadata/latest-linux-arm64.yml",
+      "size": 438,
+      "sha256": "73cae92c77f61f3ea5060d481dfb2f894ef5cd560daa0853b99bae82f8edf005"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/updater-metadata/latest-linux.yml",
+      "ticketRelativePath": "evidence/delivery/dr-003/updater-metadata/latest-linux.yml",
+      "size": 434,
+      "sha256": "5126c546a82bd59b479c9215cff5956a8e44fbc9eb219affe34db1d902574c8c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/updater-metadata/latest-mac.yml",
+      "ticketRelativePath": "evidence/delivery/dr-003/updater-metadata/latest-mac.yml",
+      "size": 939,
+      "sha256": "e5c819ca700a1d786d62969e44ee5328690b22a547edcad556d5161778537a47"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/updater-metadata/latest.yml",
+      "ticketRelativePath": "evidence/delivery/dr-003/updater-metadata/latest.yml",
+      "size": 375,
+      "sha256": "43106ea32d114ff44b197cc11d1e2d03175f85cf563b46447c07c712cc00c1ee"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-003/verify-publication.py",
+      "ticketRelativePath": "evidence/delivery/dr-003/verify-publication.py",
+      "size": 3983,
+      "sha256": "24f6c45cada707c4aba82a007b9fe822cc1feca47cadde5bbf1607b1ad08d4ec"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-created-release-id.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-created-release-id.json",
+      "size": 6386,
+      "sha256": "1d02b57337b7cebaa8bffc18b20ca6a91ea1d2dc339052c6711dd8a23a951e1c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-failed-job-annotations.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-failed-job-annotations.json",
+      "size": 583,
+      "sha256": "e212b54d942c5aebe6a95435017fa9b21c68cd20238ae1a378acbd56cffc01e3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-failed-job-api.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-failed-job-api.json",
+      "size": 2493,
+      "sha256": "e17d1ecdd93c75a156dd912e99a9248d57e3b5dcdea722ef478b40ffb410748f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-failed-run-api.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-failed-run-api.json",
+      "size": 13317,
+      "sha256": "5d03e569b31b1f599500ece442e698bf3b61b47939856e27eaf967df85c53be9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-publish-failure.log",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-publish-failure.log",
+      "size": 2709,
+      "sha256": "0337e748916f1ea748baf89c3d562d431c003b56d582539f0a3600402c8b4196"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-publish-job-full.log",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-publish-job-full.log",
+      "size": 150206,
+      "sha256": "4d3f83a64e3fa1639e9b0db8614e1445bf13e56420ec3d44c0bec3e93bf02c23"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-publish-recovery.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-publish-recovery.json",
+      "size": 945,
+      "sha256": "505a872420b54e68d6d8a541065e1759abd608f2323366b6c0109a19478463a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-publish-rerun.log",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-publish-rerun.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-recovery-final.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-recovery-final.json",
+      "size": 5464,
+      "sha256": "216dd907430facce618e4de34e48d9ab37a16b209e8437de66482d638599d3a8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/android-recovery-log.txt",
+      "ticketRelativePath": "evidence/delivery/dr-004/android-recovery-log.txt",
+      "size": 607090,
+      "sha256": "59979db017f164d11e822b0b931b9d64b9a814396ee6008c0418cd4ff416a80a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/ci-current.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/ci-current.json",
+      "size": 59283,
+      "sha256": "a4fdb2eb0f445ae63565a85376dc289433bf3953e4659b4f9fea737225221e45"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/ci-final.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/ci-final.json",
+      "size": 59283,
+      "sha256": "a4fdb2eb0f445ae63565a85376dc289433bf3953e4659b4f9fea737225221e45"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/ci-initial.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/ci-initial.json",
+      "size": 1387,
+      "sha256": "9631359e2d9045bc174bdbb60d4147fb296e7f93713db9b020f4d3aaf7420a54"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/ci-snapshots.jsonl",
+      "ticketRelativePath": "evidence/delivery/dr-004/ci-snapshots.jsonl",
+      "size": 327921,
+      "sha256": "7b5a9f9c8269da492047205e1ed87b70bf2ded88b032be4f2e7050c685edcd70"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/cleanup-preflight.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/cleanup-preflight.json",
+      "size": 6202,
+      "sha256": "0e5bc196c06d2ff34a952c28d2e0f0c7d8491332a7bc32c3828a70ad1df8e67a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/desktop-publication-verification.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/desktop-publication-verification.json",
+      "size": 9691,
+      "sha256": "f681d1f315c4cd63cbbcb4828b6ce5adff64d7b2cfadb011cc88b9dfe2cc97a0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/docker-1-4-95-verified.txt",
+      "ticketRelativePath": "evidence/delivery/dr-004/docker-1-4-95-verified.txt",
+      "size": 653,
+      "sha256": "08aba9b5b317639c55af8e38a0b56fa5a2f3b711aaef2abd60494e59be4bcc74"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/docker-beta-verified.txt",
+      "ticketRelativePath": "evidence/delivery/dr-004/docker-beta-verified.txt",
+      "size": 647,
+      "sha256": "c3824b90f5c6448befb24cd0a1277788c051c26cacb558964c4993de3879d195"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/docker-latest-verified.txt",
+      "ticketRelativePath": "evidence/delivery/dr-004/docker-latest-verified.txt",
+      "size": 653,
+      "sha256": "471cd9c837baf53c534b823ee2a66771c1793bf82b41ed9d3afdc8bd6bd0f910"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/docker-publication-verification.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/docker-publication-verification.json",
+      "size": 883,
+      "sha256": "a53367fd9b11f4c23dbdea40ab5f629c7714f729478a24fd17ffa8bc5086285e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/hygiene-disposition.txt",
+      "ticketRelativePath": "evidence/delivery/dr-004/hygiene-disposition.txt",
+      "size": 238,
+      "sha256": "d581d24557438e84a22c5eddd98eb780c468418ca34991080915bd1cd3c085b3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/instance-list-before-cleanup.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/instance-list-before-cleanup.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/pre-stable-handoff-summary.md",
+      "ticketRelativePath": "evidence/delivery/dr-004/pre-stable-handoff-summary.md",
+      "size": 3870,
+      "sha256": "fd2d0839572b04290f27bccb34e19da03889d361d61a31c4fca18a3fdb9fe038"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/pre-stable-release-deployment-report.md",
+      "ticketRelativePath": "evidence/delivery/dr-004/pre-stable-release-deployment-report.md",
+      "size": 8409,
+      "sha256": "2648f41ccdd1d44e24562e0e216bf0ec1e0784d9bb3067464e42a1c59513bfa4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/release-after-android-failure.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/release-after-android-failure.json",
+      "size": 133,
+      "sha256": "010563d2cfb8f1e87f700936ce59ee3a33364da46e3db41b0049227918ece74d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/release-api.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/release-api.json",
+      "size": 33988,
+      "sha256": "f06aa390965000ab152516400e06aa938812d3e2d6710670d92a3e8c7798f632"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/release-before-notes-correction.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/release-before-notes-correction.json",
+      "size": 33769,
+      "sha256": "0525785579a453c82ac842da43bb8817084fc7a7beae1f30a75686980d7b3055"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/release-notes-correction.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/release-notes-correction.json",
+      "size": 1066,
+      "sha256": "136b891d54a8e5a3557ea41065ac1bd85d25424a9456f62980a26d577b612c29"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/release-notes-patch.log",
+      "ticketRelativePath": "evidence/delivery/dr-004/release-notes-patch.log",
+      "size": 72,
+      "sha256": "b6daff063b45a9ee6dd93e0f74f7831a157082236942e28e89c9478c8fb96715"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/release-policy-tests.log",
+      "ticketRelativePath": "evidence/delivery/dr-004/release-policy-tests.log",
+      "size": 134,
+      "sha256": "29fa26f8c5c587de01afdb89113ebf6cbf871f1ccd22bcf59bc6826e6f449408"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-authorization-and-base.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-authorization-and-base.json",
+      "size": 1309,
+      "sha256": "34f6dea6e138e301988f4db75ceafbfa067d41f3543f77dadce9892bba5004e7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-execution-pre-consolidation-report.md",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-execution-pre-consolidation-report.md",
+      "size": 9598,
+      "sha256": "d5d6a6c99db30109e0131d5538a854d8de44293c19bc091a0a9bfd18987e9950"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-helper.log",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-helper.log",
+      "size": 1294,
+      "sha256": "5b3dddf17ef98a9a80d4d6c0f654c5902958e0f9ac6a488f66030bbe90f39b7d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-notes-source-log.txt",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-notes-source-log.txt",
+      "size": 5511,
+      "sha256": "3e0d1a4771d5abae894e5f98cf0ea8eaaf4c01d3f770dba8bb2ec6b06a2a3cba"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-release-after.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-release-after.json",
+      "size": 33988,
+      "sha256": "f06aa390965000ab152516400e06aa938812d3e2d6710670d92a3e8c7798f632"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-release-before.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-release-before.json",
+      "size": 33162,
+      "sha256": "0bc10268def6b0334acdf922e787d3c2e19d0bf0b1fbb6113ee7e5d133d57255"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-release-receipt.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-release-receipt.json",
+      "size": 970,
+      "sha256": "00ad7d28415f13dc98ed379f90706a89cc2ca692a0da5e914ba5dd3f46629505"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/stable-source-provenance.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/stable-source-provenance.json",
+      "size": 2165,
+      "sha256": "10992f1cc3fcce25db301edb21fdc332e6fb6bacce282bd86c40af980818ddfa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/tagged-curated-release-notes.md",
+      "ticketRelativePath": "evidence/delivery/dr-004/tagged-curated-release-notes.md",
+      "size": 2727,
+      "sha256": "1eff959ba82c22ff39685f7b2b8a60e537773b5ec81875e8167c6b530fb60641"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/task-cleanup-commands.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/task-cleanup-commands.json",
+      "size": 33069,
+      "sha256": "1ecf9fcafb8e3f33f9dd80747ae4fac7f361f14bd587a692955f07a2c50dac34"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/task-cleanup-receipt.json",
+      "ticketRelativePath": "evidence/delivery/dr-004/task-cleanup-receipt.json",
+      "size": 1832,
+      "sha256": "dda5a6af781805ab9e1fcd39930c7ea548d43c807d00797dbb556ede78b3d38b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/updater-metadata/AutoByteus_personal_android-1.4.95-release.apk.sha256",
+      "ticketRelativePath": "evidence/delivery/dr-004/updater-metadata/AutoByteus_personal_android-1.4.95-release.apk.sha256",
+      "size": 113,
+      "sha256": "68e21a07a0839995f189faea6814899871a971ee064b707aa45529335f23f2c6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/updater-metadata/latest-linux-arm64.yml",
+      "ticketRelativePath": "evidence/delivery/dr-004/updater-metadata/latest-linux-arm64.yml",
+      "size": 417,
+      "sha256": "130640c6816783bc7a5cf8b3d42d88864bd88c571e19eb419d0487ebf8ec5987"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/updater-metadata/latest-linux.yml",
+      "ticketRelativePath": "evidence/delivery/dr-004/updater-metadata/latest-linux.yml",
+      "size": 413,
+      "sha256": "7529d8a1f17228b90432e7f8303b68ad87b54fe64f102fb98e1e8febbde82edd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/updater-metadata/latest-mac.yml",
+      "ticketRelativePath": "evidence/delivery/dr-004/updater-metadata/latest-mac.yml",
+      "size": 897,
+      "sha256": "ced6cfed53bfe80c7b28dd6c525ed1bdc12244ddb2b24f9612eae03ceb68f175"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/updater-metadata/latest.yml",
+      "ticketRelativePath": "evidence/delivery/dr-004/updater-metadata/latest.yml",
+      "size": 354,
+      "sha256": "b9673167ad380c8547bed73121726b325d954bb767fd3e8529ffac136fccbfd3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/delivery/dr-004/verify-publication.py",
+      "ticketRelativePath": "evidence/delivery/dr-004/verify-publication.py",
+      "size": 3945,
+      "sha256": "34f777ab9d1654251f7fb6209347e25765eca4539cb080a561907e366da26873"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/design-reveal-owner-probe.cjs",
+      "ticketRelativePath": "evidence/design-reveal-owner-probe.cjs",
+      "size": 4671,
+      "sha256": "1311411c4a5ac531858f42db0d9a8113940b6488cf79dfab962311770d41ab43"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/design-reveal-owner-probe.json",
+      "ticketRelativePath": "evidence/design-reveal-owner-probe.json",
+      "size": 2317,
+      "sha256": "f3907c488eff63606fa2a951151b3cd548dd6467120af6b4031afe3cecf0cf82"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/electron-tests.log",
+      "ticketRelativePath": "evidence/electron-tests.log",
+      "size": 877,
+      "sha256": "3752f6a8fe517fa8b18b7042bf149aee3c106cc8984acea8edf8adb23eb0fc94"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/final-web-tests-2.log",
+      "ticketRelativePath": "evidence/final-web-tests-2.log",
+      "size": 24577,
+      "sha256": "1125f0b5e6e7975662c3a9db1b3f5e232ee85b80b0a8c7e8577afb33ba58ea57"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/final-web-tests.log",
+      "ticketRelativePath": "evidence/final-web-tests.log",
+      "size": 28983,
+      "sha256": "5ec87eaec727ecae37562cdcfc56c638993ef3677b1e9812605ba28c15e64020"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/focused-tests.log",
+      "ticketRelativePath": "evidence/focused-tests.log",
+      "size": 17069,
+      "sha256": "5220933f503da03fa168e09829ac9eb2c58dd565495d2298b56ddec415c9e93f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/historical-owner-probe.cjs",
+      "ticketRelativePath": "evidence/historical-owner-probe.cjs",
+      "size": 5435,
+      "sha256": "0dab571640c10df26588eca6de7fa24213e8e6de5f2d99c7728ab1713428ed4c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/historical-owner-probe.json",
+      "ticketRelativePath": "evidence/historical-owner-probe.json",
+      "size": 13869,
+      "sha256": "77f0bb6cb609ad6f5e426b033c3322eb7bae515f45f8a2caf9c704abc663c1aa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/implementation-install.log",
+      "ticketRelativePath": "evidence/implementation-install.log",
+      "size": 3264,
+      "sha256": "28af9e142433774d7a84f87ad0a8748b6b808f672b66a227e5d45050ae73510f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/initial-tests.log",
+      "ticketRelativePath": "evidence/initial-tests.log",
+      "size": 9461,
+      "sha256": "956d50641eafa379873d6edee755b45ee23b7a0c87b80b83f1dd4a43ca6416ee"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/introducing-commit.diff",
+      "ticketRelativePath": "evidence/introducing-commit.diff",
+      "size": 2364,
+      "sha256": "8065da66e1c101b3cdec6aabf56cbcf98f647149dd72879b45898134f1a9a4aa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-after-manual-files.png",
+      "ticketRelativePath": "evidence/native-after-manual-files.png",
+      "size": 130811,
+      "sha256": "b82b75c0a1203cf3d557d9892f8a847343d594b369ede85167e4d57c0e9a399f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-build-source.json",
+      "ticketRelativePath": "evidence/native-build-source.json",
+      "size": 1399,
+      "sha256": "e33f81af2385b5c9963e65b9024e65345644cb0b9ad2ac2b108a6e771eee2872"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-build.log",
+      "ticketRelativePath": "evidence/native-build.log",
+      "size": 53637,
+      "sha256": "86fd57547249d4510b1a0fdabf88db8ac50d47b0daab470b0cfc3d2a7c9abfa4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-directory-error.png",
+      "ticketRelativePath": "evidence/native-directory-error.png",
+      "size": 121090,
+      "sha256": "93c960d0f2514e10fcf812fe924c09a33531d72d9685eccdb4b806ca574a8e3f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-inspection-controller.cjs",
+      "ticketRelativePath": "evidence/native-inspection-controller.cjs",
+      "size": 7397,
+      "sha256": "aa03315fface0f049366ea4a810073327431bd7539867e25a22a97980eee7e1e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-inspection-notes.md",
+      "ticketRelativePath": "evidence/native-inspection-notes.md",
+      "size": 2694,
+      "sha256": "2c73a57283d53e9a89c1fcfc26dd4d3bc8671285af24ca81cea1a357e88ad321"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-list-after.json",
+      "ticketRelativePath": "evidence/native-list-after.json",
+      "size": 99,
+      "sha256": "05ede36f648b396616da6b8c8ef1330adeb7b962814a10dea45ba7bdb6746ab5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-missing-file-error.png",
+      "ticketRelativePath": "evidence/native-missing-file-error.png",
+      "size": 117421,
+      "sha256": "df1e994727bc1ade393e6f5a646ee2330809edcfe1c3816e4e8da987ee61f129"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-readonly-deduped.png",
+      "ticketRelativePath": "evidence/native-readonly-deduped.png",
+      "size": 128487,
+      "sha256": "756bbac2ca40558337d166206fc22f5399c552b41eb8b73c1244f726be606403"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-recovered-brief.png",
+      "ticketRelativePath": "evidence/native-recovered-brief.png",
+      "size": 85478,
+      "sha256": "d45ba3c42227e3fd5c9d0585abfbb8275148eee855b17c8e78adfab1cdf007af"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-start.json",
+      "ticketRelativePath": "evidence/native-start.json",
+      "size": 922,
+      "sha256": "84262a344cfa0dc37901f2019ee314816b1a8f9e5f8678d138991d94be49f929"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-stop.json",
+      "ticketRelativePath": "evidence/native-stop.json",
+      "size": 382,
+      "sha256": "67f8ce3137adcdb74ffbd5c9be4d3a5ce27739edd99d915ef27a29d00a00612a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-visual-attempt-1.json",
+      "ticketRelativePath": "evidence/native-visual-attempt-1.json",
+      "size": 5886,
+      "sha256": "4ab0268ff5724e22af615b37354d512b1737c48cf6185de488820829644046c0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/native-visual.json",
+      "ticketRelativePath": "evidence/native-visual.json",
+      "size": 55068,
+      "sha256": "3963f69a9100f143d6d2f3ef0466e08f0d8d0a98d765f24c70176031399c9b5b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/nuxt-prepare.log",
+      "ticketRelativePath": "evidence/nuxt-prepare.log",
+      "size": 136,
+      "sha256": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/panel-baseline.log",
+      "ticketRelativePath": "evidence/panel-baseline.log",
+      "size": 5613,
+      "sha256": "750a4d8d1f268e42f3590f865588e42da02e48683ffbba663bb6418e752abe15"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/panel-debug.log",
+      "ticketRelativePath": "evidence/panel-debug.log",
+      "size": 8136,
+      "sha256": "87a6215ba78ef99daed91029669ae31366bda6fc358c53a1fc711068299502d8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/panel-final.log",
+      "ticketRelativePath": "evidence/panel-final.log",
+      "size": 9161,
+      "sha256": "72093cfe47c8a9ac6b32da07ee60632ddbf960d272eb6f0aeb77678a7e4338df"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/panel-isolation.log",
+      "ticketRelativePath": "evidence/panel-isolation.log",
+      "size": 9373,
+      "sha256": "602da6a4b1174a0c22a0379dc4a5f536ff78868b71ef407848f095b5b858abc4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/panel-tests-fixed.log",
+      "ticketRelativePath": "evidence/panel-tests-fixed.log",
+      "size": 9882,
+      "sha256": "6efc827f4a58802a7654a371889a4bafa4f943e32a65b7c46c2c9c935d2e017c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/panel-tests.log",
+      "ticketRelativePath": "evidence/panel-tests.log",
+      "size": 10746,
+      "sha256": "9a142ba86d57a1a3713ac330d25355d7ba40780fa2016ae7154174e4fae90717"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/evidence/web-guard.log",
+      "ticketRelativePath": "evidence/web-guard.log",
+      "size": 205,
+      "sha256": "b3e7ad61c2309a2cb71c6bbf9dda1131ac472546f326e6eeaa62f6580ab04abd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/handoff-summary.md",
+      "ticketRelativePath": "handoff-summary.md",
+      "size": 3924,
+      "sha256": "c7c771afb6f5d74d05b80d11598b3f969bf4d92ec3134f1ad8b5fecb815791d4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/historical-investigation-result.md",
+      "ticketRelativePath": "historical-investigation-result.md",
+      "size": 6795,
+      "sha256": "fedfe9bcc5fcb6e365a7fff4753e57079580e9d61679b264828a03c1ff308f4c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/implementation-design-impact.md",
+      "ticketRelativePath": "implementation-design-impact.md",
+      "size": 8370,
+      "sha256": "ff2603318820c5a71fefb79ae846a4c838682fc470d4b4a38b0949341d40f538"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/implementation-handoff.md",
+      "ticketRelativePath": "implementation-handoff.md",
+      "size": 17259,
+      "sha256": "2e3fa49fdc0db343e983ae2ae7db3d994b0a145d6ab4458f5bce43663a959e3e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/implementation-revision-record.md",
+      "ticketRelativePath": "implementation-revision-record.md",
+      "size": 7961,
+      "sha256": "0770fef86c7dec0be58b4c666e5d2050343435df9714f778fb0eb2b33ef51108"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/investigation-notes.md",
+      "ticketRelativePath": "investigation-notes.md",
+      "size": 28456,
+      "sha256": "4cfa5f0eae0f17e9f498c27adc3ecbc0a843b88aef6488f8669d7fe6ee73a400"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/release-deployment-report.md",
+      "ticketRelativePath": "release-deployment-report.md",
+      "size": 12201,
+      "sha256": "415ad54a584d31c3ec0071f3073d52b89ccb458538cd8f1e8ed7c7cce33dd17c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/release-notes.md",
+      "ticketRelativePath": "release-notes.md",
+      "size": 2944,
+      "sha256": "85d63f5906df7633df98328187b5a55ed1fa97af1369895b30e73ef15b486dac"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/requirements-doc.md",
+      "ticketRelativePath": "requirements-doc.md",
+      "size": 15039,
+      "sha256": "dc388eaef32f1cc2ec65358525ad2dccc530de0bb5334516d5a85102721e5b83"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/solution-coordination-hold.md",
+      "ticketRelativePath": "solution-coordination-hold.md",
+      "size": 8069,
+      "sha256": "23c56dd7a575248f86a23921b4cfaedfa5193c7d6d1f992850b344c5470e87eb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/solution-revision-record.md",
+      "ticketRelativePath": "solution-revision-record.md",
+      "size": 11501,
+      "sha256": "f247311c9ad481fa9e4803958475048d4928bf8ae112ae9634bef8d90bbaa9f8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/user-approval-r1.md",
+      "ticketRelativePath": "user-approval-r1.md",
+      "size": 1690,
+      "sha256": "e40a47a915af5c4ba7fcc2e65a259c2d0b27ca8468be7d72d021e008c0f45c50"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/user-drawer-clarification.md",
+      "ticketRelativePath": "user-drawer-clarification.md",
+      "size": 936,
+      "sha256": "a1c6a9e1166e7e31e1eb05280e9a1f0eb6a0e2679cf2bbe6b51eb40ff9a2cf1a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/tickets/done/electron-host-file-open/user-verification.md",
+      "ticketRelativePath": "user-verification.md",
+      "size": 2754,
+      "sha256": "bc2b56d2c668a80dcfb3154605d0845e6e8770fafd7cb3a75c8d328882eaaa4f"
+    }
+  ],
+  "ticketInventoryCount": 272,
+  "selectedSourceTestDocSnapshot": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/.github/release-notes/release-notes.md",
+      "repositoryRelativePath": ".github/release-notes/release-notes.md",
+      "sha256": "85d63f5906df7633df98328187b5a55ed1fa97af1369895b30e73ef15b486dac"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/.github/workflows/release-android.yml",
+      "repositoryRelativePath": ".github/workflows/release-android.yml",
+      "sha256": "f512abae58c5029d080e456cdd5818c405c2916058f83d3dcdbf2109eb938a7d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/.github/workflows/release-desktop.yml",
+      "repositoryRelativePath": ".github/workflows/release-desktop.yml",
+      "sha256": "1836abebac118e1ac8a8c525cfcf67c370df68c69801fe6a30d773169a610876"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/.github/workflows/release-ios.yml",
+      "repositoryRelativePath": ".github/workflows/release-ios.yml",
+      "sha256": "29bf2783a5919411b0bc89561f895e2d1b4550b2da829e6b4e61119598d82893"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/.github/workflows/release-server-docker.yml",
+      "repositoryRelativePath": ".github/workflows/release-server-docker.yml",
+      "sha256": "a334a301f5adab25c9ca722dc4d406cb0b08f454231e0a52eba26741161ad3e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/AGENTS.md",
+      "repositoryRelativePath": "AGENTS.md",
+      "sha256": "a4b41b315d17056853e74111ab629572c44c3992b8e9f6055518c95de08f6029"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/DESIGN.md",
+      "repositoryRelativePath": "DESIGN.md",
+      "sha256": "cca1f0f067ede06295b9a3774aacd3e333202f859494e7368b15595fb3bfd7df"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/TESTING.md",
+      "repositoryRelativePath": "TESTING.md",
+      "sha256": "47e2110060d8cf07b0e33887f0ff670bf70b2037c8925645bc8cdd1dbc361364"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/AGENTS.md",
+      "repositoryRelativePath": "autobyteus-web/AGENTS.md",
+      "sha256": "55bff1be8c3ce304d18f129dfeedd5ad56ef09c450a66f94fea5a644fb83b06f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/components/layout/WorkspaceToolShell.vue",
+      "repositoryRelativePath": "autobyteus-web/components/layout/WorkspaceToolShell.vue",
+      "sha256": "22d5affe9e4352b0ef045006cf31f4cd9653fb7ae2c4314ba109d2f1e38a39e6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/components/layout/__tests__/WorkspaceToolShell.spec.ts",
+      "repositoryRelativePath": "autobyteus-web/components/layout/__tests__/WorkspaceToolShell.spec.ts",
+      "sha256": "9f43390cfefb03868a658f59c28102a7a5e920f141147fd0f3aea2dc97d2c968"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/components/workspace/agent/AgentEventMonitor.vue",
+      "repositoryRelativePath": "autobyteus-web/components/workspace/agent/AgentEventMonitor.vue",
+      "sha256": "65645ccfa1af15e075bce859b019d03b1f4ebb2dfb44249e0e2ce52404f8822b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts",
+      "repositoryRelativePath": "autobyteus-web/composables/__tests__/useEventMonitorFilePreview.mobileBoundary.spec.ts",
+      "sha256": "2f10f6f56c7d2cf4b57ee9d7bea5a7e84e2351035026e6ba6e925561d678573b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/composables/__tests__/useEventMonitorFilePreview.spec.ts",
+      "repositoryRelativePath": "autobyteus-web/composables/__tests__/useEventMonitorFilePreview.spec.ts",
+      "sha256": "04789a507485ad15ef9c23310d92f527c0166b562e03db22573cddb6d9f8d7a4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/composables/layout/useWorkspaceToolReveal.ts",
+      "repositoryRelativePath": "autobyteus-web/composables/layout/useWorkspaceToolReveal.ts",
+      "sha256": "286261a7fa782221a28f5df22e82026c6b0250159c12158c960be624a41f8ba3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/composables/useEventMonitorFilePreview.ts",
+      "repositoryRelativePath": "autobyteus-web/composables/useEventMonitorFilePreview.ts",
+      "sha256": "51001b22ecd76a3a966b34a1d1d8fce053ef055d2f1a801572c766f7cb530e9d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/docs/content_rendering.md",
+      "repositoryRelativePath": "autobyteus-web/docs/content_rendering.md",
+      "sha256": "6909ddf6c5d24673d15820d4caf22d4abadfde2f77df7b0ac5caf8f3bc8512aa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/docs/file_explorer.md",
+      "repositoryRelativePath": "autobyteus-web/docs/file_explorer.md",
+      "sha256": "d4c77908d2ed35540815c39b2879f8f364c292df20a22ba540cea458310ea2a2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/package.json",
+      "repositoryRelativePath": "autobyteus-web/package.json",
+      "sha256": "34554a0b0a6fc09e0257b9fd477315e8a0c493c679103a9b35e37105c26e799e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "repositoryRelativePath": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "sha256": "09b358311bc294324ac67e21514d1c3993f4c714abb83533b200613827304406"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "repositoryRelativePath": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "sha256": "91d9a30e3614a6875f2131df86119447637cd534106c69c4716fd961342989a5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/stores/activeContextStore.ts",
+      "repositoryRelativePath": "autobyteus-web/stores/activeContextStore.ts",
+      "sha256": "40f86def29b18cdf1edb1afa6f61779247c00a64093950cfbb48121d0b5d613a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "repositoryRelativePath": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "sha256": "4d54cd362db3778da8f77069d8597cff68024cd992c178eb199f6b2165d518fd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs",
+      "repositoryRelativePath": "autobyteus-web/tests/e2e/event-monitor-file-preview-probe.mjs",
+      "sha256": "64a1719abd4ad665ed76c7eea87de686aaee2c642a09fd80c5d63f9f5c09ba1e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+      "repositoryRelativePath": "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+      "sha256": "2f6407da41084bd3020544d90078a8467ac845ac34277cd07ff41d6db1a13fe5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/docs/isolated-app-instances.md",
+      "repositoryRelativePath": "docs/isolated-app-instances.md",
+      "sha256": "eea3b15503ecb71a151103ebcd3f00d5e84124afaef50f113dd050581c1e30d6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/scripts/desktop-release.sh",
+      "repositoryRelativePath": "scripts/desktop-release.sh",
+      "sha256": "a733c85fe3f6349e1b556cdbce7aeca48688f41d630c547597e7fff9b8611ea4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open/scripts/release_versions.py",
+      "repositoryRelativePath": "scripts/release_versions.py",
+      "sha256": "a6aa27c4a4a603f60b81bcd6ede44e0c549badde46e8cc158ceb7693ea105e1c"
+    }
+  ],
+  "fullRepositoryAuthority": "origin/personal and immutable v1.4.95 (stable334438b5ac6b84caa6e109b2b5b6867f7b66370b) / v1.4.95-beta.9; snapshot is not runnable checkout",
+  "inventorySelfExclusion": "This manifest excludes its own hash to avoid recursion; all other actual ticket files indexed. Rebuilt after final local receipt updates.",
+  "historicalPathResolution": "Original specialist execution path strings retained; same ticket-relative suffix resolves under durable archive via artifact-relocation.md"
+}

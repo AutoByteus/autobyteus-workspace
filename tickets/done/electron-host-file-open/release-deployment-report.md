@@ -1,7 +1,7 @@
 # Delivery / Release / Deployment Report — electron-host-file-open
 
 ## Current Authority / Scope
-**DR-004 — Repository finalized; beta publication verified; stable 1.4.95 tag/push completed. Stable Desktop/Android/iOS publication verified; Docker rollout and owned cleanup Pending. Not Delivery Completed yet.**
+**DR-004 — Repository finalized; beta publication verified; stable 1.4.95 tag/push completed. Stable publication/rollout fully verified; task worktree/local branch cleanup Completed, finalizer clone cleanup Pending. Not Delivery Completed yet.**
 
 R1 Approved / Ready D2 / SR-004 / IR-002 / API-REV-001 Pass95%; **Medium / Low / Direct low-risk**. Independent architecture/source/test-code review **N/A — not applicable**, never inferred Pass.
 
@@ -38,7 +38,7 @@ Bootstrap target origin/personal retained. `dr-003/repository-finalization-recei
 Applicable **Yes**, explicit beta then stable authority. **Release Script / documented tag-push workflows**:
 - Beta command `bash scripts/desktop-release.sh beta`: completed once; generated GitHub notes policy, ticket beta summary retained historically under dr-003. Beta17 assets/four downloaded updater files/Android checksum Pass; stable GitHub latest remained1.4.94. All four beta runs success. Registry version+beta match sha256:8e60ac085e12b6e5ba1e6c275d23160bd3a0e9bfe388ba4df22819e8f1666531 and latest unchanged from prior sha256:f1b4472202e489763122a7a14990aa251b0d8066d9a3a7297b06736773fbc477. Raw/final receipts under dr-003; no replay.
 - Stable command `bash scripts/desktop-release.sh release 1.4.95 --release-notes tickets/done/electron-host-file-open/release-notes.md`: **helper/tag pushes Completed**. Curated archived note used and copied byte-exact to tagged .github note. No manual tag or duplicate dispatch.
-- Stable workflows: Desktop **37521238496**, Android **37521238492**, iOS **37521238453**, Docker **37521238480**, each event push for stable334438b5a. Desktop/Android/iOS **Completed / success** (Android publisher-only retry succeeded). GitHub17 assets/four updater files/Android checksum, stable-latest1.4.95 and exact corrected notes body **Pass**. Docker still **In progress**, registry and cleanup **Pending**.
+- Stable workflows: Desktop **37521238496**, Android **37521238492**, iOS **37521238453**, Docker **37521238480**, each event push for stable334438b5a. Desktop/Android/iOS **Completed / success** (Android publisher-only retry succeeded). GitHub17 assets/four updater files/Android checksum, stable-latest1.4.95 and exact corrected notes body **Pass**. Docker **Completed / success**; version1.4.95, latest and forward beta alias share verified multi-arch digest sha256:f9b17bcc52ebc7f0a0e08da6c32eaa40bbb0bd1995c55653a8dc6ac35cae1cad (linux/amd64 and linux/arm64). Publication/rollout **Completed**, cleanup **Pending**.
 - Notes correction **Completed**: additional prior-ticket inspection identified one-time Projects migration caution; canonical/current note corrected after tag, original tagged note retained. Published body patched after Desktop/Android publishers succeeded, exact canonical notes match; no re-tag or new release. `dr-004/release-notes-correction.json`.
 - Published binaries/installations limits: verify uploaded assets, downloaded metadata/checksum hashes and updater references; no independent download/hash/install of all large binaries or OS certification. iOS CI archive/upload success is not independent App Store/TestFlight processing or user installation.
 
@@ -54,8 +54,8 @@ Applicable **Yes**, explicit beta then stable authority. **Release Script / docu
 - Exact installed user node/version/bridge/config, physical phone/full remote native/other OS/accessibility/provider/restart/performance/full typecheck/all-repo remain excluded. Preexisting repository Dependabot notice is not a new security audit or certification; no dependency source change in this delivery.
 
 ## Owned Cleanup
-- Dedicated task worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open`: **Pending** after publication, remote ancestry, owned-path status and durable archive checks.
-- Worktree prune/local `codex/electron-host-file-open` branch cleanup: **Pending**; do not alter user personal branch/shared files.
+- Dedicated task worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/electron-host-file-open`: **Completed**, removed after all publication gates, durable archive/hash validation and unchanged owned-path status check.
+- Worktree prune/local `codex/electron-host-file-open` branch cleanup: **Completed**, branch689d80138 proven ancestor of remote personal and stable tag first. Force removes only inventoried generated SDK outputs/byte-preserved owned logs, and proven-durable local branch; no unknown/tracked uncommitted paths. Shared user HEAD9d3d0299e and tracked dirty-file hashes unchanged. task-cleanup-receipt.json and task-cleanup-commands.json.
 - Independent finalizer clone: **Pending** exact-path removal after receipt push/snapshot verification.
 - Remote ticket branch deletion **Not required**, retain durable pushed history.
 - Durable snapshot `/Users/normy/autobyteus_org/autobyteus-delivery/electron-host-file-open` retained intentionally, not runnable temp scaffolding.
@@ -67,7 +67,10 @@ If selected binding/readOnly/reveal or containment regresses, stop promotion and
 ## Final Gates / Routing
 - Explicit user completion/acceptance **Yes** (evidence-based, no manual test claim).
 - Repository finalization **Completed**.
-- Beta publication **Completed**; stable Desktop/Android/iOS **Completed**; Docker publication/rollout **Pending**.
-- Applicable safe cleanup **Pending**.
+- Beta and stable publication/rollout **Completed**.
+- Task worktree/prune/local branch cleanup **Completed**; finalizer clone cleanup **Pending**.
 - Technical failure/escalation **None**; these are active Delivery-owned publication/cleanup gates, not requirement/design ambiguity.
-- Successful terminal eligible **No**; terminal sent **No**. Only return Delivery Completed after stable verification, notes correction and safe cleanup receipts pass.
+- Successful terminal eligible **No**; terminal sent **No**. Only return Delivery Completed after finalizer removal/receipt preservation. Final post-clone cleanup and actual last-push receipt reside in durable archive; origin contains the pre-removal snapshot so it never predicts a cleanup that has not happened.
+
+## Receipt durability boundary
+Final receipt push and immutable source/tag ancestry are recorded in evidence/delivery/dr-004/repository-close-receipt.json in the retained inspection archive after the push confirms. Source/docs/evidence up to task cleanup are committed to personal. Finalizer-removal proof and tool-confirmed terminal receipt are necessarily appended locally to the durable inspection authority after removing the temporary checkout; no additional checkout/release is created merely to replay delivery.

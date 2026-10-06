@@ -77,3 +77,8 @@ Android metadata/build/APK artifact validation passed; publisher failed after ch
 Android publisher-only retry completed/success; built artifact and immutable stable source/tag retained, no source change. android-recovery-final.json/log evidence. iOS run also completed/success; Desktop and Docker still in progress on fresh query.
 
 Stable Desktop/Android/iOS completed/success; published non-draft non-prerelease GitHub1.4.95 is latest stable with17 uploaded assets, four downloaded updater metadata/version/hash/reference checks and Android checksum Pass. Corrected migration caution published byte-equivalent (whitespace-normalized) to canonical notes after both GitHub publishers; original tagged note retained. Docker and cleanup remain Pending.
+
+All four stable workflows now completed/success at exact stable334438b5a. Docker version1.4.95/latest/beta digest f9b17bcc52ebc7f0a0e08da6c32eaa40bbb0bd1995c55653a8dc6ac35cae1cad, linux/amd64+linux/arm64, read-only registry Pass. No live container deployment/installation. All publication gates passed; final owned cleanup/terminal gates continue.
+
+#### DR-004 cleanup progress
+Publication gates complete. Exact owned task worktree removed, registry pruned and local codex/electron-host-file-open branch deleted after durable archive/unchanged paths/remote personal+stable ancestry checks. Only generated SDK dist and byte-preserved owned logs were untracked; shared user HEAD and tracked dirty hashes unchanged. task-cleanup-receipt.json/commands. Finalizer clone removal pending after final receipt push; terminal not yet eligible. Current archive authorities will append actual removal and tool-confirmed transfer after the temporary clone is gone, without replaying finalization/release.

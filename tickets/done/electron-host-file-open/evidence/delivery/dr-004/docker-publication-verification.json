@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-06T21:51:33.921850+00:00",
+  "result": "Pass",
+  "digests": {
+    "1.4.95": "sha256:f9b17bcc52ebc7f0a0e08da6c32eaa40bbb0bd1995c55653a8dc6ac35cae1cad",
+    "latest": "sha256:f9b17bcc52ebc7f0a0e08da6c32eaa40bbb0bd1995c55653a8dc6ac35cae1cad",
+    "beta": "sha256:f9b17bcc52ebc7f0a0e08da6c32eaa40bbb0bd1995c55653a8dc6ac35cae1cad"
+  },
+  "platforms": {
+    "1.4.95": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "latest": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "beta": [
+      "linux/amd64",
+      "linux/arm64"
+    ]
+  },
+  "stableLatestMatchesVersion": true,
+  "forwardBetaAliasMatchesStableVersion": true,
+  "method": "Read-only remote registry manifest inspection; no image pull/container launch",
+  "limits": "Manifest/channel verification and successful CI build/push; no live production container deployment or app installation"
+}
