@@ -8,6 +8,7 @@ import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absol
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import { normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata';
 import { mobileWorkContextKey } from '~/types/mobileWork';
 
 export type EventMonitorFilePreviewResult =
@@ -90,13 +91,35 @@ export function useEventMonitorFilePreview() {
       }
 
       const workspaceTarget = activeContextStore.activeWorkspaceTarget;
-      const activeMetadata = workspaceTarget
+      const bindingRevision = windowNodeContextStore.bindingRevision;
+      const runId = workspaceTarget?.context.state.runId;
+      const sourceRoot = normalizeWorkspaceRootPath(workspaceTarget?.workspaceRootPath);
+      const isCurrent = () => {
+        const current = activeContextStore.activeWorkspaceTarget;
+        return windowNodeContextStore.bindingRevision === bindingRevision
+          && (workspaceTarget
+            ? current?.context === workspaceTarget.context && current.context.state.runId === runId
+              && normalizeWorkspaceRootPath(current.workspaceRootPath) === sourceRoot
+            : !current);
+      };
+      const failed = (): EventMonitorFilePreviewResult => ({
+        status: 'failed',
+        message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'),
+      });
+      let activeMetadata = workspaceTarget
         ? workspaceTarget.context.config.workspaceMetadata
         : workspaceStore.activeWorkspaceMetadata;
       const activeWorkspace = workspaceTarget ? null : workspaceStore.activeWorkspace;
-      const workspaceId = activeMetadata?.workspaceId || activeWorkspace?.workspaceId || '';
+      let workspaceId = workspaceTarget?.context.config.workspaceId
+        || activeMetadata?.workspaceId || activeWorkspace?.workspaceId || '';
+      if (workspaceTarget && !workspaceTarget.context.config.workspaceId) {
+        activeMetadata = await activeContextStore.resolveWorkspaceMetadataForTarget(workspaceTarget);
+        if (!isCurrent() || !activeMetadata) return failed();
+        workspaceId = workspaceTarget.context.config.workspaceId || '';
+      }
       if (!workspaceId) {
-        return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
+        return workspaceTarget ? failed()
+          : unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
       }
 
       let locator: EventMonitorPreviewLocator | null = null;
@@ -105,7 +128,7 @@ export function useEventMonitorFilePreview() {
       } else {
         const mappedLocator = mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, {
           workspaceId,
-          workspaceRootPath: activeMetadata?.workspaceRootPath || activeWorkspace?.absolutePath,
+          workspaceRootPath: workspaceTarget?.workspaceRootPath || activeMetadata?.workspaceRootPath || activeWorkspace?.absolutePath,
         });
         if (mappedLocator) {
           locator = {
@@ -119,6 +142,7 @@ export function useEventMonitorFilePreview() {
         return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
       }
 
+      if (!isCurrent()) return failed();
       const previewPath = locator.kind === 'local-absolute' ? locator.path : locator.relativePath;
       await fileExplorerStore.openFilePreview(previewPath, locator.workspaceId, {
         accessIntent: { source: 'event-monitor', readOnly: true },
@@ -127,12 +151,14 @@ export function useEventMonitorFilePreview() {
         import('~/composables/useRightPanel'),
         import('~/composables/useRightSideTabs'),
       ]);
+      if (!isCurrent()) return failed();
       const { openRightPanel } = useRightPanel();
       const { setActiveTab } = useRightSideTabs();
       openRightPanel();
       setActiveTab('files');
       if (typeof window !== 'undefined') {
         window.setTimeout(() => {
+          if (!isCurrent()) return;
           document
             .querySelector<HTMLElement>('[data-event-monitor-active-file-tab="true"]')
             ?.focus();

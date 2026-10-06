@@ -275,3 +275,18 @@ async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof sta
   staged.commit()
   return staged.context
 }
+
+
+it('exposes the exact selected Org task source root even with no metadata projection', async () => {
+  const view = JSON.parse(JSON.stringify(taskBearingView()));
+  view.is_active = false;
+  view.execution_tree.rootOrg.members[0].launchConfiguration.workspaceRootPath = '/parent';
+  view.execution_tree.rootOrg.members[1].launchConfiguration.workspaceRootPath = '/child';
+  mocks.resolveWorkspaceMetadataByRootPath.mockResolvedValue(null);
+  mocks.query.mockImplementation(async ({ variables }: any) => ({ data: { getAgentOrgMemberRunProjection: {
+    ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+  } } }));
+  const { context } = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view });
+  context.select({ kind: 'agent_execution', agentRunId: 'agent-worker-task' });
+  expect(context.selectedTarget()).toMatchObject({ workspaceRootPath: '/child', context: { config: { workspaceMetadata: null, workspaceId: null } } });
+});

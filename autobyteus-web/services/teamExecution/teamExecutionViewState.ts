@@ -1,3 +1,4 @@
+import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { computed, reactive, ref, shallowRef } from 'vue';
 import {
@@ -52,6 +53,7 @@ export interface TeamExecutionViewState {
   getFocusedAgentAccess(): 'live' | 'read_only';
   getFocusedNavigationRow(): TeamExecutionNavigationRow | null;
   getAgentContext(agentRunId: string): AgentContext | null;
+  getAgentWorkspaceRootPath(agentRunId: string): string | null;
   getAgentExecutionLocation(agentRunId: string): TeamAgentExecutionLocation | null;
   getMemberAddress(agentRunId: string): AgentTeamAddress | null;
   hasAgentRun(agentRunId: string): boolean;
@@ -472,6 +474,12 @@ export const createTeamExecutionViewState = (
       (row) => row.agentRunId === focusedAgentRunId.value,
     ) ?? null,
     getAgentContext: (agentRunId) => publication.value.contexts.get(agentRunId.trim()) ?? null,
+    getAgentWorkspaceRootPath: (agentRunId) => {
+      const location = publication.value.locations.get(agentRunId.trim());
+      return location
+        ? teamAgentSourceAt(publication.value.tree, location.memberAddress)?.launch_configuration.workspace_root_path ?? null
+        : null;
+    },
     getAgentExecutionLocation: (agentRunId) => publication.value.locations.get(agentRunId.trim()) ?? null,
     getMemberAddress: (agentRunId) => publication.value.locations.get(agentRunId.trim())?.memberAddress ?? null,
     hasAgentRun: (agentRunId) => publication.value.contexts.has(agentRunId.trim()),

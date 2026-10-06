@@ -273,6 +273,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       host: Object.freeze({ hostRunId }),
       address: child.address,
       context,
+      workspaceRootPath: child.source.launchConfiguration.workspaceRootPath,
       collaborationMessages: collaboration.messagesView(child.agentRunId),
       // A child is not a top-level run package: its pages come from the host's collaboration package.
       browse: Object.freeze({ kind: 'standaloneMember' as const, hostRunId, memberAddress: child.address, agentRunId: child.agentRunId }),

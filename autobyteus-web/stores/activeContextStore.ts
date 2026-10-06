@@ -1,5 +1,9 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
+import { useWorkspaceStore } from './workspace';
+import { useWindowNodeContextStore } from './windowNodeContextStore';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { normalizeWorkspaceRootPath, workspaceMetadataFromWorkspaceInfo } from '~/utils/workspaceMetadata';
 import { useRoute } from 'vue-router';
 import { useAgentSelectionStore } from './agentSelectionStore';
 import { useAgentContextsStore } from './agentContextsStore';
@@ -40,6 +44,8 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   const agentOrgContextsStore = useAgentOrgContextsStore();
   const agentRunCollaborationStore = useAgentRunCollaborationStore();
   const route = useRoute();
+  const workspaceStore = useWorkspaceStore();
+  const windowNodeContextStore = useWindowNodeContextStore();
 
   const standaloneTeamView = (team: AgentTeamContext): TeamWorkspaceContextView => {
     const view = team.view;
@@ -100,6 +106,11 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       const collaborationMessages = agentRunCollaborationStore.hostMessagesView(context.state.runId);
       return Object.freeze({
         kind: 'standalone_agent', access: 'live', context,
+        workspaceRootPath: context.config.workspaceMetadata?.workspaceRootPath
+          || (context.config.workspaceId
+            ? workspaceStore.workspaceMetadataById[context.config.workspaceId]?.workspaceRootPath
+              || workspaceMetadataFromWorkspaceInfo(workspaceStore.workspaces[context.config.workspaceId] ?? { workspaceId: context.config.workspaceId })?.workspaceRootPath
+            : null) || null,
         ...(collaborationMessages ? { collaborationMessages } : {}),
         interaction: Object.freeze({
           send: async () => { await agentRunStore.sendUserInputAndSubscribe(); },
@@ -118,6 +129,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       const teamView = standaloneTeamView(team);
       const target = {
         kind: 'standalone_team_member' as const, context, team: teamView,
+        workspaceRootPath: team.view.getAgentWorkspaceRootPath(context.state.runId),
         collaborationMessages: standaloneTeamMessagesView(team),
         browse: Object.freeze({
           kind: 'teamMember' as const, teamRunId: team.view.getRootTeamRunId(),
@@ -147,6 +159,31 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
     return null;
   });
+
+  const resolveWorkspaceMetadataForTarget = async (
+    target: ActiveAgentWorkspaceTarget,
+  ): Promise<WorkspaceMetadata | null> => {
+    const rootPath = normalizeWorkspaceRootPath(target.workspaceRootPath);
+    const runId = target.context.state.runId;
+    const bindingRevision = windowNodeContextStore.bindingRevision;
+    const isCurrent = () => {
+      const current = activeWorkspaceTarget.value;
+      return windowNodeContextStore.bindingRevision === bindingRevision
+        && current?.context === target.context && current.context.state.runId === runId
+        && normalizeWorkspaceRootPath(current.workspaceRootPath) === rootPath;
+    };
+    if (!rootPath || !isCurrent()) return null;
+    const projected = target.context.config.workspaceMetadata;
+    const metadata = projected && normalizeWorkspaceRootPath(projected.workspaceRootPath) === rootPath
+      ? projected : await workspaceStore.resolveWorkspaceMetadataByRootPath(rootPath);
+    if (!isCurrent() || !metadata?.workspaceId
+      || normalizeWorkspaceRootPath(metadata.workspaceRootPath) !== rootPath
+      || (target.context.config.workspaceId && target.context.config.workspaceId !== metadata.workspaceId)) return null;
+    target.context.config = {
+      ...target.context.config, workspaceId: metadata.workspaceId, workspaceMetadata: metadata,
+    };
+    return metadata;
+  };
 
   const activeAgentContext = computed<AgentContext | null>(() => {
     return activeWorkspaceTarget.value?.context ?? null;
@@ -279,6 +316,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   return {
     activeAgentContext,
     activeWorkspaceTarget,
+    resolveWorkspaceMetadataForTarget,
     submissionPending,
     currentStatus,
     currentRequirement,

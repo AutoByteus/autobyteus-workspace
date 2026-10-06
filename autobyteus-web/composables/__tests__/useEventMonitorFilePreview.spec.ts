@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useEventMonitorFilePreview } from '../useEventMonitorFilePreview';
 
 const {
+  activeContextStoreMock,
   fileExplorerStoreMock,
   mobileWorkStoreMock,
   windowNodeContextStoreMock,
@@ -12,9 +13,10 @@ const {
   openRightPanelMock,
   setActiveTabMock,
 } = vi.hoisted(() => ({
+  activeContextStoreMock: { activeWorkspaceTarget: null as any, resolveWorkspaceMetadataForTarget: vi.fn() },
   fileExplorerStoreMock: { openFilePreview: vi.fn() },
-  mobileWorkStoreMock: { currentContext: null, requestFilePreview: vi.fn() },
-  windowNodeContextStoreMock: { isEmbeddedWindow: false },
+  mobileWorkStoreMock: { currentContext: null as any, requestFilePreview: vi.fn() },
+  windowNodeContextStoreMock: { isEmbeddedWindow: false, bindingRevision: 0 },
   workspaceStoreMock: {
     activeWorkspaceMetadata: {
       workspaceId: 'workspace-1',
@@ -32,6 +34,8 @@ const {
   openRightPanelMock: vi.fn(),
   setActiveTabMock: vi.fn(),
 }));
+
+vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => activeContextStoreMock }));
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
@@ -78,6 +82,9 @@ vi.mock('~/composables/useRightSideTabs', () => ({
 describe('useEventMonitorFilePreview', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    activeContextStoreMock.activeWorkspaceTarget = null;
+    activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockReset();
+    windowNodeContextStoreMock.bindingRevision = 0;
     mobileWorkStoreMock.currentContext = null;
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     isMobileRemoteAccessRuntimeMock.mockReturnValue(false);
@@ -120,4 +127,115 @@ describe('useEventMonitorFilePreview', () => {
     expect(setActiveTabMock).toHaveBeenCalledWith('files');
     expect(document.activeElement).toBe(activeFileTab);
   });
+});
+
+const action = {
+  id: 'markdown', rawCandidate: '/owned/B/brief.md', normalizedCandidate: '/owned/B/brief.md',
+  sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const,
+};
+const selected = (id: string | null = 'B', root: string | null = '/owned/B') => ({
+  kind: 'standalone_team_member', workspaceRootPath: root,
+  context: { state: { runId: 'member-B' }, config: { workspaceId: id, workspaceMetadata: null } },
+});
+
+describe('selected execution preview identity', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    activeContextStoreMock.activeWorkspaceTarget = selected();
+    activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockReset();
+    windowNodeContextStoreMock.isEmbeddedWindow = true;
+    windowNodeContextStoreMock.bindingRevision = 0;
+    hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(true);
+    isMobileRemoteAccessRuntimeMock.mockReturnValue(false);
+    mapAbsolutePathToWorkspaceRelativeMock.mockReturnValue(null);
+    fileExplorerStoreMock.openFilePreview.mockResolvedValue(undefined);
+  });
+
+  it('opens known selected ID without metadata, query or unrelated global A', async () => {
+    expect(await useEventMonitorFilePreview().openPath(action)).toEqual({ status: 'opened', path: action.normalizedCandidate });
+    expect(activeContextStoreMock.resolveWorkspaceMetadataForTarget).not.toHaveBeenCalled();
+    expect(fileExplorerStoreMock.openFilePreview).toHaveBeenCalledWith(action.normalizedCandidate, 'B', {
+      accessIntent: { source: 'event-monitor', readOnly: true },
+    });
+  });
+
+  it('recovers a missing ID through the exact target boundary', async () => {
+    const target = selected(null);
+    activeContextStoreMock.activeWorkspaceTarget = target;
+    const metadata = { workspaceId: 'B', workspaceRootPath: '/owned/B' };
+    activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockImplementation(async captured => {
+      expect(captured).toBe(target);
+      captured.context.config.workspaceId = 'B';
+      activeContextStoreMock.activeWorkspaceTarget = { ...captured }; // Computed wrapper can change.
+      return metadata;
+    });
+    expect((await useEventMonitorFilePreview().openPath(action)).status).toBe('opened');
+    expect(fileExplorerStoreMock.openFilePreview.mock.calls[0]?.[1]).toBe('B');
+  });
+
+  for (const change of ['selection', 'root', 'node'] as const) {
+    it(`does not open/publish after ${change} changes during recovery`, async () => {
+      activeContextStoreMock.activeWorkspaceTarget = selected(null);
+      activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockImplementation(async target => {
+        if (change === 'selection') activeContextStoreMock.activeWorkspaceTarget = selected('C');
+        if (change === 'root') activeContextStoreMock.activeWorkspaceTarget = { ...target, workspaceRootPath: '/owned/C' };
+        if (change === 'node') windowNodeContextStoreMock.bindingRevision++;
+        return { workspaceId: 'B', workspaceRootPath: '/owned/B' };
+      });
+      expect((await useEventMonitorFilePreview().openPath(action)).status).toBe('failed');
+      expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+      expect(openRightPanelMock).not.toHaveBeenCalled();
+    });
+  }
+
+  it('does not switch/focus the new selection after content loading', async () => {
+    fileExplorerStoreMock.openFilePreview.mockImplementation(async () => {
+      activeContextStoreMock.activeWorkspaceTarget = selected('C');
+    });
+    expect((await useEventMonitorFilePreview().openPath(action)).status).toBe('failed');
+    expect(setActiveTabMock).not.toHaveBeenCalled();
+  });
+
+  it('reports failed recovery as ordinary preview failure, not host-only refusal', async () => {
+    activeContextStoreMock.activeWorkspaceTarget = selected(null, null);
+    activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockResolvedValue(null);
+    expect(await useEventMonitorFilePreview().openPath(action)).toMatchObject({ status: 'failed', message: expect.stringContaining('file_preview_failed') });
+    expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+  });
+
+  for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
+    it(`refuses outside-workspace in ${runtime} without native fallback`, async () => {
+      windowNodeContextStoreMock.isEmbeddedWindow = runtime !== 'remote-electron';
+      hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(runtime !== 'embedded-no-bridge');
+      expect((await useEventMonitorFilePreview().openPath(action)).status).toBe('unavailable');
+      expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+    });
+  }
+
+  it('maps selected source root in a remote window without metadata', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = false;
+    mapAbsolutePathToWorkspaceRelativeMock.mockReturnValue({ workspaceId: 'B', relativePath: 'brief.md' });
+    expect(await useEventMonitorFilePreview().openPath(action)).toEqual({ status: 'opened', path: 'brief.md' });
+    expect(mapAbsolutePathToWorkspaceRelativeMock).toHaveBeenCalledWith(action.normalizedCandidate, { workspaceId: 'B', workspaceRootPath: '/owned/B' });
+    expect(hasTrustedElectronLocalFileCapabilityMock).not.toHaveBeenCalled();
+  });
+});
+
+
+describe('preserved mobile containment', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    isMobileRemoteAccessRuntimeMock.mockReturnValue(true);
+    mobileWorkStoreMock.currentContext = { kind: 'workspace', workspaceId: 'B', rootPath: '/owned/B' };
+  });
+  for (const inside of [true, false]) {
+    it(`uses only mapped workspace content on mobile; inside: ${inside}`, async () => {
+      mapAbsolutePathToWorkspaceRelativeMock.mockReturnValue(inside ? { workspaceId: 'B', relativePath: 'brief.md' } : null);
+      expect((await useEventMonitorFilePreview().openPath(action)).status).toBe(inside ? 'opened' : 'unavailable');
+      expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+      expect(hasTrustedElectronLocalFileCapabilityMock).not.toHaveBeenCalled();
+      if (inside) expect(mobileWorkStoreMock.requestFilePreview).toHaveBeenCalledWith(expect.objectContaining({ workspaceId: 'B', relativePath: 'brief.md', readOnly: true }));
+      else expect(mobileWorkStoreMock.requestFilePreview).not.toHaveBeenCalled();
+    });
+  }
 });
