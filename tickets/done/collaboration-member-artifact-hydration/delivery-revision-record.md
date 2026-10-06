@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Code Reviewer delivery handoff (CRR-001 Pass 9.4, CRR-002 test-code N/A, API-REV-001 Pass 95%) | N/A | Blocked: merge-introduced test failure; Local Fix routed to `/implementation_engineer` | `release-deployment-report.md`, `delivery-evidence/web-vitest-integrated.log` |
+| DR-002 | Code Reviewer re-handoff after IR-002 (CRR-003 Pass, CRR-004 N/A, API-REV-002 Pass 95%) | DR-001: Blocked | Integrated with `f777a6559`, checks pass apart from the pre-existing set, docs synced, awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/web-vitest-integrated-round2.log`, 3 web docs |
 
 ## Revision Entries
 
@@ -29,3 +30,27 @@
 - Remaining blockers, rollback concerns, or untested scope:
   - The merge-introduced spec failure.
   - The real-stack browser evidence predates the integration with the closed-task filtering.
+
+### DR-002 — Fix integrated, docs synced, held for verification
+
+- Delivery round and trigger: Round 2. The trigger was the `/code_reviewer` re-handoff after IR-002 `dc552c3ab`.
+- Triggering upstream report, verification, or evidence: `code-review-report.md` (CRR-003), `api-e2e-execution-coverage-report.md` (API-REV-002), `api-e2e-evidence/round2/`.
+- Prior authoritative result: DR-001, `Blocked` (Local Fix).
+- Current authoritative result:
+  - Checkpoint `382037cc7`.
+  - Merged `origin/personal@f777a6559` (receipts only) as `b11448837`.
+  - Post-integration web rerun: 20 failed and 2025 passed. Every failure is in the pre-existing set proven against base and pre-merge refs in DR-001.
+  - Docs updated: web `agent_artifacts.md`, `agent_teams.md`, `agent_orgs.md`.
+- Docs sync report: `docs-sync-report.md`
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: `delivery-evidence/web-vitest-integrated-round2.log`
+- User verification/finalization state: awaiting user verification
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal return message/reference: N/A
+- Why this delivery revision was recorded: it records that the DR-001 blocker is resolved and the integrated handoff state is ready.
+- Next recipient/action: user verification. Then archive, commit, push, and merge into `personal`. Run a release only if the user asks for one, then clean up.
+- Remaining blockers, rollback concerns, or untested scope:
+  - None blocking.
+  - REQ-006 is pending the user's decision.
+  - AC-005 and AC-007 are unit-only.

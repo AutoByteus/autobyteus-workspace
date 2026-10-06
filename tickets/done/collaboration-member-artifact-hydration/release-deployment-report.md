@@ -4,14 +4,15 @@
 
 - Frontend-only fix (`autobyteus-web`).
 - Finalization target: `origin/personal`.
-- Delivery is **Blocked** at the post-integration check (DR-001).
+- DR-001 was Blocked at the post-integration check and was resolved by IR-002.
+- DR-002: integrated, docs synced, awaiting user verification.
 
 ## Handoff Summary
 
-- Handoff summary artifact: not yet written. It is held until the post-integration check passes.
-- Handoff summary status: `Blocked`
+- Handoff summary artifact: `handoff-summary.md`
+- Handoff summary status: `Updated` (DR-002)
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -53,34 +54,62 @@ Root cause of the merge-introduced failure:
 - Handoff state current with latest tracked remote base: `Yes`, in the branch; it is not yet verified.
 - Blocker: the post-integration rerun fails on this ticket's own spec.
 
-## User Verification
+### Round 2 refresh (DR-002)
 
-- Initial explicit user completion/verification received: `No`. It was not requested because delivery is blocked.
+- Fix received: IR-002 `dc552c3ab`, with CRR-003 Pass and API-REV-002 Pass on the merged stack.
+- Latest tracked remote base checked: `origin/personal@f777a6559`. It advanced by 1 commit, which only adds `task-run-resources-workspace-cleanup` release receipts under `tickets/done/`.
+- Local checkpoint commit: `Completed` (`382037cc7`; round-2 ticket artifacts)
+- Integration: `Merge` `b11448837`, with no conflicts
+- Post-integration check rerun:
+  - Command: `pnpm -C autobyteus-web test:nuxt --run services stores components/workspace composables`
+  - Result: **`Passed`**. 20 failed and 2025 passed, across 3 failed and 239 passed files.
+  - All 20 failures are the pre-existing set that also fails on base `3c8e49ad5` and on the pre-merge ticket `404ec96da`, shown in the table above:
+    - `teamTaskApprovalHydration` ×18
+    - `AgentCompactionLiveFlow` ×1
+    - `workspaceSelectionComposition` ×1
+  - `teamRunContextHydrationService.spec.ts` passes.
+  - Log: `delivery-evidence/web-vitest-integrated-round2.log`
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes`
 
 ## Docs Sync Result
 
-- Not started. Docs sync is held until the integrated state passes its checks.
+- Docs sync artifact: `docs-sync-report.md`
+- Docs sync result: `Updated`
+- Docs updated: `autobyteus-web/docs/agent_artifacts.md`, `agent_teams.md`, `agent_orgs.md`
+
+## User Verification
+
+- Initial explicit user completion/verification received: `No` (pending)
 
 ## Repository Finalization
 
-- Ticket branch: `codex/collaboration-member-artifact-hydration` @ `692509f83` (local, not pushed)
-- Repository finalization status: not started
+- Ticket branch: `codex/collaboration-member-artifact-hydration` (local, not pushed)
+- Repository finalization status: pending user verification
 
-## Escalation / Reroute
+## Release / Publication / Deployment
 
-- Classification: `Local Fix` (test fixture code; production code merged without conflict)
-- Recommended recipient: `/implementation_engineer`
-- Why final handoff could not complete: the post-integration check fails in this ticket's own spec, `teamRunContextHydrationService.spec.ts`.
-- Suggested fix: add `closedTaskExecutions: []` to the mock at line 327.
-- Also requested:
-  - Confirm that `memberRunStateHydration` and the Team and Org commit paths still compose correctly with the closed-task filtering from `task-run-resources-workspace-cleanup`, on the merged branch.
-  - Rerun the changed specs.
-  - Re-check that the API/E2E browser evidence (AC-001..AC-004) still holds, or state why it does.
+- Applicable: to be decided by the user. `release-notes.md` is prepared.
+
+## Environment Or Persisted-Data Transition Notes
+
+- No persistence or API change. Delivery action required: `None`.
+
+## Rollback Criteria
+
+- Revert the final merge into `personal` if any of these appear:
+  - Team or Org open or member selection regresses.
+  - Duplicate or reverted artifacts appear after hydration.
+- No data migration is involved.
+
+## Escalation / Reroute (DR-001, resolved)
+
+- Classification: `Local Fix`. It was routed to `/implementation_engineer` and resolved by IR-002 `dc552c3ab`.
 
 ## Final Status
 
 - Explicit user testing/verification complete: `No`
 - Repository finalization complete: `No`
-- Unresolved blocker: merge-introduced failure in `teamRunContextHydrationService.spec.ts`. This is a Local Fix for implementation.
+- Unresolved blocker: `None` (awaiting user verification)
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`

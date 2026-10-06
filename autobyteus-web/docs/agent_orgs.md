@@ -648,7 +648,12 @@ report for the exact acceptance scope.
   (by address) and delegated task-Team (by `teamRunId`) expansion state.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
-  hydration.
+  hydration. Each member's projection and its recorded Agent Artifacts
+  (`getRunFileChanges`) are fetched and committed together through
+  `services/runHydration/memberRunStateHydration.ts`. This includes members of
+  nested Teams, so member Artifacts lists are complete after a reload and on
+  historical runs. An artifact fetch failure fails the Org open, as a
+  projection failure does.
 - `components/agentOrgs/AgentOrgExperience.vue`: catalog/detail/authoring and
   captured-identity Delete confirmation.
 - `components/agentOrgs/AgentOrgAvatar.vue` and `AgentOrgAvatarEditor.vue`:
