@@ -290,3 +290,41 @@ describe('bounded reveal acceptance and focus', () => {
     expect(revealToolMock).not.toHaveBeenCalled(); button.remove();
   });
 });
+
+
+// Selection/navigation/node changes during real user awaits must not focus a replacement.
+describe('selected identity across reveal and deferred focus', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    activeContextStoreMock.activeWorkspaceTarget = selected();
+    windowNodeContextStoreMock.bindingRevision = 0;
+    windowNodeContextStoreMock.isEmbeddedWindow = true;
+    isMobileRemoteAccessRuntimeMock.mockReturnValue(false);
+    hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(true);
+    fileExplorerStoreMock.openFilePreview.mockReset().mockResolvedValue(undefined);
+    revealToolMock.mockReset().mockResolvedValue(true);
+  });
+  afterEach(() => { document.body.innerHTML = ''; });
+  for (const phase of ['reveal', 'deferred-focus'] as const) {
+    for (const change of ['selection', 'source-root', 'node'] as const) {
+      it(`rejects ${change} during ${phase}`, async () => {
+        const origin = document.createElement('button');
+        const replacement = document.createElement('button');
+        replacement.dataset.eventMonitorActiveFileTab = 'true';
+        document.body.append(origin, replacement); origin.focus();
+        const focus = vi.spyOn(replacement, 'focus');
+        const invalidate = () => {
+          if (change === 'selection') activeContextStoreMock.activeWorkspaceTarget = selected('C');
+          if (change === 'source-root') activeContextStoreMock.activeWorkspaceTarget.workspaceRootPath = '/owned/C';
+          if (change === 'node') windowNodeContextStoreMock.bindingRevision++;
+        };
+        if (phase === 'reveal') revealToolMock.mockImplementation(async () => { invalidate(); return true; });
+        const result = await useEventMonitorFilePreview(options()).openPath(action);
+        expect(result.status).toBe(phase === 'reveal' ? 'failed' : 'opened');
+        if (phase === 'deferred-focus') invalidate();
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(focus).not.toHaveBeenCalled(); expect(document.activeElement).toBe(origin);
+      });
+    }
+  }
+});

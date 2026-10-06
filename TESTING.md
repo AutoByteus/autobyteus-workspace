@@ -71,6 +71,28 @@ Notes:
   `CHROME_REMOTE_DEBUGGING_PORT=<controlPort>` (as reported by `start`) and
   `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
 
+### Event Monitor Native File Preview Regression
+
+Run `pnpm -C autobyteus-web test:e2e:event-monitor-file-preview --output-dir <fresh-dir>`.
+This builds the current worktree by default and owns an isolated desktop instance,
+free ports, private data and A/B/C file fixtures. Graphical macOS/Linux, a non-root account and installed
+dependencies are required; no model credentials are used. `--skip-build` is valid
+only for a verified source-current worktree artifact, never the installed user app.
+Optional `--ledger-file <initialized-absolute-path>` records each case immediately.
+
+Saved Org/member projections and initial metadata failure are controlled at GraphQL;
+subsequent metadata/registration HTTP, Markdown action, lazy monitor, shell, Files,
+preload/main and native file bytes are real. Cases assert selected null-ID recovery,
+one-activation visible read-only content/error, full metadata, focus/Escape/Return,
+other-tab preservation/dedupe, owned permission-denied errors, actual relative-content
+HTTP/path denial, no writes and stale metadata after member navigation.
+Narrow/short/wide-hidden presentation cases use CDP **renderer device-metrics
+emulation**, not OS window resizing. Remote/mobile containment has colocated owner
+coverage; this probe does not certify a paired phone, remote native window, exact
+installed user state, permission dialogs or other operating systems. Inspect retained
+JSON/DOM-backed case results, screenshots and cleanup receipts: only owned resources
+are removed, and both reported ports must be free.
+
 ### Team Reload Member Freshness Regression
 
 Run `pnpm -C autobyteus-web test:e2e:team-reload-member-freshness` from the

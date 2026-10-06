@@ -18,6 +18,7 @@ vi.mock('~/services/agentOrgExecution/agentOrgReferenceProjection', () => ({
 }));
 
 import WorkspaceToolShell from '../WorkspaceToolShell.vue';
+import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue';
 import { useWorkspaceToolReveal, type WorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { RESPONSIVE_WORKSPACE_SHELL_KEY } from '~/composables/layout/useResponsiveWorkspaceShell';
@@ -83,7 +84,9 @@ const setupSelectedB = async () => {
   return { pinia, workspace, files, draft, active, target, bridge };
 };
 
-const mountShell = (pinia: any, width: number, height: number) => {
+const mountShell = (pinia: any, width: number, height: number, realMonitor = false) => {
+  const selected = useActiveContextStore().activeWorkspaceTarget!;
+  const monitorRun = ref(selected.context.state.runId);
   const viewport = ref({ width, height });
   const right = useRightPanel();
   const policy = computed(() => resolveResponsiveWorkspaceShellState({
@@ -104,19 +107,31 @@ const mountShell = (pinia: any, width: number, height: number) => {
     };
     return () => h('button', { 'data-test': 'file-origin', onClick: activate }, 'Open selected file');
   } });
+  const MonitorConsumer = defineComponent({ setup: () => () => h(AgentEventMonitor, {
+    conversation: selected.context.conversation, runId: monitorRun.value,
+    browseSubject: { kind: 'run', runId: monitorRun.value },
+  }) });
   const errors: unknown[] = [];
   const wrapper = mount(WorkspaceToolShell, {
-    attachTo: document.body, slots: { default: Consumer }, global: {
+    attachTo: document.body, slots: { default: realMonitor ? MonitorConsumer : Consumer }, global: {
       plugins: [pinia], provide: { [RESPONSIVE_WORKSPACE_SHELL_KEY as symbol]: policy },
       config: { errorHandler: error => errors.push(error) },
       stubs: {
+        AgentUserInputForm: true, CollaboratorAddFailureNotice: true,
+        // Only the feed trigger is stubbed; the monitor's real async import, launcher,
+        // captured provider, selection/Files store and enclosing shell remain real.
+        AgentConversationFeed: { emits: ['file-path-action'], setup(_, { emit }) {
+          return () => h('button', { 'data-test': 'file-origin', onClick: () => emit('file-path-action', {
+            id: path, rawCandidate: path, normalizedCandidate: path, sourceKind: 'prose', displayLabel: path, previewType: 'Text',
+          }) }, 'Open selected file');
+        } },
         FileViewer: { props: ['file', 'readOnly'], template: '<article data-test="rendered-file" :data-read-only="readOnly">{{ file.content }}</article>' },
         ProgressPanel: true, TerminalPanel: true, BrowserPanel: true, VncViewer: true, ArtifactsTab: true, CollaborationOverviewPanel: true,
       },
     },
   });
   wrappers.push(wrapper); setActivePinia(pinia);
-  return { wrapper, viewport, policy, right, result, errors, reveal: () => reveal, setPath: (value: string) => { path = value; } };
+  return { wrapper, viewport, policy, right, result, errors, monitorRun, reveal: () => reveal, setPath: (value: string) => { path = value; } };
 };
 
 for (const [label, width, height, hidden, expected] of [
@@ -186,3 +201,72 @@ it('does not publish after shell disposal, including disposal during the render 
   expect(await capability('files')).toBe(false);
   expect(useRightSideTabs().activeTab.value).toBe('progress'); expect(shell.right.isRightPanelVisible.value).toBe(false);
 });
+
+
+it('real monitor lazily imports the real launcher and reveals the setup-bound fresh Files host', async () => {
+  const selected = await setupSelectedB();
+  const shell = mountShell(selected.pinia, 992, 700, true); await flush();
+  expect(selected.bridge).not.toHaveBeenCalled();
+  expect(selected.files.getOpenFiles('B')).toHaveLength(0);
+  expect(shell.wrapper.find('#contentViewer').exists()).toBe(false);
+  await shell.wrapper.get('[data-test="file-origin"]').trigger('click'); await flush();
+  expect(shell.wrapper.get('#contentViewer').isVisible()).toBe(true);
+  expect(shell.wrapper.get('[data-test="rendered-file"]').text()).toContain('/workspace/B/brief.md');
+  expect(shell.wrapper.get('[data-test="rendered-file"]').attributes('data-read-only')).toBe('true');
+  expect(shell.wrapper.getComponent(FileExplorerTabs).props('workspaceId')).toBe('B');
+  expect(shell.wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
+  expect(selected.bridge).toHaveBeenCalledOnce(); expect(shell.errors).toEqual([]);
+});
+
+for (const invalidation of ['run-switch', 'monitor-unmount'] as const) {
+  it(`real lazy monitor does not reveal/focus obsolete content after ${invalidation}`, async () => {
+    const selected = await setupSelectedB();
+    let settle!: (value: any) => void;
+    selected.bridge.mockImplementation(() => new Promise(resolve => { settle = resolve; }));
+    const shell = mountShell(selected.pinia, 992, 700, true); await flush();
+    await shell.wrapper.get('[data-test="file-origin"]').trigger('click'); await flush();
+    expect(selected.bridge).toHaveBeenCalledOnce();
+    if (invalidation === 'run-switch') shell.monitorRun.value = 'new-run';
+    if (invalidation === 'monitor-unmount') shell.wrapper.unmount();
+    await nextTick(); settle({ success: true, content: 'obsolete bytes' }); await flush();
+    expect(document.querySelector('[data-test="workspace-right-tool-drawer"]')).toBeNull();
+    expect(document.querySelector('#contentViewer')).toBeNull();
+    expect(shell.wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
+    expect(shell.errors).toEqual([]);
+  });
+}
+
+for (const runtime of ['remote-electron', 'embedded-no-bridge'] as const) {
+  for (const inside of [true, false]) {
+    it(`actual selected mapper/Files boundary ${runtime}, inside ${inside}`, async () => {
+      const selected = await setupSelectedB();
+      selected.target.context.config.workspaceId = 'B';
+      if (runtime === 'remote-electron') useWindowNodeContextStore().bindNodeContext('remote', 'http://127.0.0.1:9999');
+      else window.electronAPI = { ...previousBridge, readLocalTextFile: undefined } as any;
+      const originalQuery = io.query.getMockImplementation()!;
+      io.query.mockImplementation(async ({ query, variables }: any) => {
+        const op = query.definitions.find((entry: any) => entry.kind === 'OperationDefinition')?.name?.value;
+        if (op !== 'GetFileContent') return originalQuery({ query, variables });
+        expect(variables).toMatchObject({ workspaceId: 'B', filePath: 'brief.md' });
+        return { data: { fileContent: 'authorized B relative bytes' } };
+      });
+      const shell = mountShell(selected.pinia, 992, 700, true); await flush();
+      if (!inside) shell.setPath('/workspace/A/private.md');
+      await shell.wrapper.get('[data-test="file-origin"]').trigger('click'); await flush();
+      expect(selected.bridge).not.toHaveBeenCalled();
+      const contentReads = io.query.mock.calls.filter(([request]) =>
+        request.query.definitions.some((entry: any) => entry.name?.value === 'GetFileContent'));
+      if (inside) {
+        expect(shell.wrapper.get('[data-test="rendered-file"]').text()).toBe('authorized B relative bytes');
+        expect(selected.files.getActiveFile('B')).toBe('brief.md');
+        expect(selected.files.getActiveFileData('B')?.accessIntent?.readOnly).toBe(true);
+        expect(contentReads).toHaveLength(1);
+      } else {
+        expect(contentReads).toHaveLength(0); expect(selected.files.getOpenFiles('B')).toHaveLength(0);
+        expect(shell.wrapper.find('#contentViewer').exists()).toBe(false);
+        expect(shell.wrapper.get('[data-testid="event-monitor-file-preview-status"]').text()).toContain('host workspace');
+      }
+      expect(shell.errors).toEqual([]);
+    });
+  }
+}
