@@ -1,20 +1,26 @@
-# AutoByteus 1.4.94
+# AutoByteus 1.4.95
 
-## Improvements
-- Skills → Sources accepts public GitHub repository URLs alongside local folders. Their skills join the catalog, updates are explicit and confirmed, and removal deletes only the managed copy. Note that confirmed updates or removal discard local edits in the managed copy; use a local source for skills you edit.
-- Activity → Background Tasks shows the shell command a Claude background task is running. Long commands are truncated to one line; click to expand.
-- Switching members with the Org (Messages) tab open in long-running Agent Orgs now takes well under 0.1 s instead of several seconds. Reference files in Messages are shown compactly, with a file count per message and a "Show all" list.
-- Org and Team run configuration no longer waits for unrelated runtime discovery, and a failed inherited model catalog can be retried directly.
-- A standalone agent run's token usage now includes its collaborators. Agent-to-agent messages name the sender's full address, and the Event Monitor's earlier-events page shows who sent each message.
-- Project descriptions can be dictated by voice and reviewed before Save. Task dictation no longer shows a success banner.
-- Projects now appears right after Agent Orgs in the navigation.
+## What's new
 
-## Fixes
-- Context compaction is now shown and recorded reliably across runtimes:
-  - Claude Agent SDK: each compaction (`/compact` or automatic) is one activity that ends Completed or Failed.
-  - Codex: a compaction cut off by Stop, a failed turn or a Codex exit now ends as Failed instead of staying "started".
-  - Antigravity (CLI 1.2.16 or later): automatic compactions are now detected.
-  - In all three, history is archived once per successful compaction, and reopened runs start after the latest one.
-- Antigravity tool calls show their actual inputs, including file content and options, in live Activity and reopened history.
-- A collaborator in a standalone run can no longer delegate a task to itself.
-- More reliable iOS release builds: the release UI tests no longer fail intermittently on slow build machines. App behavior is unchanged.
+- Unified run settings: start Agents and Teams in New chat, customize member settings in one panel, and reuse a run's settings with “+”. Agent Orgs use a shorter launch page with the same controls.
+- `@` now asks your agent to delegate to an Agent or Team. Agents and Teams already in the run are available in the menu too, so your agent can reach an existing instance rather than create an unnecessary copy.
+- Delegated copies can be closed by marking their Task done. Finished Task runs leave the Workspaces tree and remain closed after restart, while conversation history and workspace files remain available.
+- The separately selectable `create_or_update_project` tool supports Project creation and partial updates. Omitted fields are preserved; explicit workspace lists replace links without deleting workspace folders or Tasks.
+
+## Fixes and improvements
+
+- Clicking a supported local file in the Electron Event Monitor now uses the selected Agent/member workspace even when metadata is incomplete. The same click shows the read-only preview or ordinary file error in the responsive Files drawer or dock; reopening reuses its tab.
+- Team, Org member and standalone collaborator file artifacts hydrate with their run state. Active-run file changes use their bound process authority.
+- Cleaner delegated rows and smoother removal of finished Task runs in the Workspaces tree.
+- AutoByteus-launched Codex clients now effectively disable Codex's competing native-agent collaboration features. AutoByteus collaboration and ordinary Codex tools remain available; running clients are not force-restarted.
+- The default built-in agent is named Daily Assistant. Task-authoring text is simpler while existing editor controls remain available.
+
+## Upgrade notes
+
+- **Task-tool callers:** updating an existing Task with `create_or_update_task` now takes `task_id` without `project_id`; sending both is rejected. Update external agent packages that use the old call shape.
+- The built-in Project Task Manager has been removed. Use the Project Task Manager from the agent repository by configuring that repository as an agent package root. On startup, the old built-in `agents/autobyteus-project-task-manager/` app-data folder is deleted without a backup. Other agents, Projects, Tasks and histories are retained; past conversations with the removed agent stay readable but cannot be continued.
+- The Electron preview fix adds no edit/save access and does not broaden remote/browser/mobile file access.
+
+## Known limitation
+
+Closed Team members may still appear in the members panel, running list and token-usage display even though their finished Task runs are hidden from the Workspaces tree.
