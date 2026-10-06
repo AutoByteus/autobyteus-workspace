@@ -127,6 +127,16 @@ workspace membership and duplicates. Project reads sort by case-insensitive
 name, then ID. Views compute `taskCount` and `openTaskCount` (non-DONE) from the
 Task folders.
 
+Agent mutations use `createProjectRecord` / `patchProjectRecord`, returning the
+committed record without Task or workspace-availability enrichment. A patch
+merges supplied fields and resolves the complete link list against the current
+record inside the existing catalog write callback; adapters never pre-read and
+merge. Retained links preserve omitted descriptions in this patch path. The
+active UI/GraphQL `createProject` facade calls the same creation write once,
+then enriches its view; full-form `updateProject` retains its existing omitted-
+description clearing policy. Both paths share the workspace resolver. No new
+persisted shape, migration, Task/history write or locking owner is introduced.
+
 `ProjectTaskService` applies only the supplied fields to the **current** Task.
 - Creation requires trimmed, non-empty text and creates a TODO Task with a fresh
   UUID. Creation never reads an existing `agent_run_resources.json`.
@@ -529,14 +539,17 @@ Coverage:
 - `tests/unit/agent-tools/project-tasks`
 - `tests/unit/context-files` (preserved)
 - `tests/architecture/projects-boundaries.test.ts`
-- `tests/e2e/projects/{projects-graphql,project-task-boundaries,projects-startup-migration}.e2e.test.ts`.
+- `tests/e2e/projects/{projects-graphql,project-task-boundaries,project-mutation-node-locality,projects-startup-migration}.e2e.test.ts`.
   The startup-migration e2e covers both startup entrypoints, the gate before
   and after, and retry.
 - MCP route, runtime exposure and startup tests.
 
 Real temporary byte fixtures and HTTP, default MCP and native tests are
 distinct from injected fault contracts. Run
-`pnpm -C autobyteus-server-ts prepare:shared` before downstream server checks.
+`pnpm -C autobyteus-server-ts prepare:shared` before source-level server checks.
+The node-locality suite requires current server `prebuild` and `build` as well;
+see [Project mutation regressions](../../../TESTING.md#project-mutation-regressions)
+for commands, fixture ownership and evidence limits.
 
 - [Frontend Projects](../../../autobyteus-web/docs/projects.md)
 - [Workspaces](workspaces.md)
