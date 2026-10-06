@@ -39,6 +39,7 @@ const agentView = (overrides = {}) => ({
         { address: "/code_reviewer", agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z" },
       ],
     },
+    closed_task_executions: [],
     communication_messages: {
       schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run",
       messages: [{

@@ -62,7 +62,7 @@ const configure = (input: { serverUrl: string; run: Run }) => {
     const member = createTeamAgentContext({ tree, agentRunId: input.run.runId, address, workspaceMetadata: null });
     if (!member) throw new Error('Missing exact current Team member source');
     const view = createTeamExecutionViewState({ rootTeamRunId: input.run.rootId, rootActive: true,
-      executionTree: tree, configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
+      executionTree: tree, closedTaskExecutions: [], configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: input.run.runId,
       agentContexts: [{ agentRunId: input.run.runId, memberAddress: address, agentContext: member }],
       createAgentContext: (agentRunId, memberAddress, nextTree) => createTeamAgentContext({ tree: nextTree,

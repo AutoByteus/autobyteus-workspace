@@ -8,8 +8,10 @@ import {
 import {
   agentOrgAgentStatusDtoSchema,
   agentOrgCommunicationMessageDtoSchema,
+  closedTaskExecutionsDtoSchema,
   collaboratorEntryDtoSchema,
   taskExecutionDtoSchema,
+  taskExecutionsClosedEventDtoSchema,
 } from "./agent-org-execution-dtos.js";
 
 const timestamp = nonEmptyStringSchema;
@@ -42,6 +44,7 @@ export const agentRunCollaborationViewDtoSchema = z.object({
   base_change_sequence: z.number().int().nonnegative(),
   is_active: z.boolean(),
   execution_tree: agentRunCollaborationTreeDtoSchema,
+  closed_task_executions: closedTaskExecutionsDtoSchema,
   communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,
   agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: nonEmptyStringSchema, state: agentInputStateSchema }).strict()),
@@ -55,6 +58,7 @@ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", 
   }).strict(),
   z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
   z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
+  taskExecutionsClosedEventDtoSchema,
 ]);
 
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;

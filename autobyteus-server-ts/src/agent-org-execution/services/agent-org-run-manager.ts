@@ -22,12 +22,18 @@ import { validateAgentOrgStatePackage } from "./agent-org-state-package-validato
 import { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 import type { AgentOrgExecutionScopeBuilder } from "./agent-org-execution-scope-builder.js";
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
+import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 
 export type AgentOrgRunManagerOptions = Readonly<{
   modelSelectionValidator?: RunModelSelectionValidator;
   workspaces?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   memoryDir: string;
   scopeBuilder: AgentOrgExecutionScopeBuilder;
+  /** The Task side's neutral port; the manager reads closure for stored reads. */
+  taskAgentResources?: TaskAgentResourcePort;
   executionTreeStore?: AgentOrgRunExecutionTreeStore;
   communicationStore?: AgentOrgCommunicationMessagesV1Store;
   tokenUsageRunStore?: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
@@ -48,6 +54,7 @@ export class AgentOrgRunManager {
   private readonly tokenUsageRunStore: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
   private readonly layout: AgentMemoryLayout;
   private readonly scopeBuilder: AgentOrgExecutionScopeBuilder;
+  private readonly taskAgentResources?: TaskAgentResourcePort;
   private readonly executionTreeStore: AgentOrgRunExecutionTreeStore;
   private readonly communicationStore: AgentOrgCommunicationMessagesV1Store;
   private readonly packageCatalog: AgentOrgRunPackageCatalog;
@@ -76,6 +83,7 @@ export class AgentOrgRunManager {
     this.workspaces = options.workspaces;
     this.layout = new AgentMemoryLayout(options.memoryDir);
     this.scopeBuilder = options.scopeBuilder;
+    this.taskAgentResources = options.taskAgentResources;
     this.tokenUsageRunStore = options.tokenUsageRunStore ?? new TokenUsageRunStore();
     this.executionTreeStore = options.executionTreeStore ?? new AgentOrgRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new AgentOrgCommunicationMessagesV1Store();
@@ -174,9 +182,16 @@ export class AgentOrgRunManager {
       // inspection has none; retained contexts initialize as offline.
       const statuses = Object.freeze([]);
       return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0,
-        snapshot: Object.freeze({ tree: state.executionTree,
+        snapshot: Object.freeze({ tree: state.executionTree, closedTaskExecutions: this.closedTaskExecutionsFor(orgRunId, state.executionTree),
           messages: state.communicationMessages, statuses, inputStates: [] }) });
     });
+  }
+
+  /** Closed (Task DONE) task executions of the given tree of this Org (stored, or the active snapshot's). */
+  closedTaskExecutionsFor(orgRunIdInput: string, tree: AgentOrgRunExecutionTreeFile): readonly TaskExecutionReference[] {
+    const index = new AgentOrgExecutionIndex(tree);
+    return listClosedTaskExecutions({ port: this.taskAgentResources, root: createAgentOrgRootExecutionIdentity(required(orgRunIdInput, "orgRunId")),
+      contains: (reference) => index.getTaskExecution(reference) !== null });
   }
 
   getRunConfig(orgRunIdInput: string): Promise<AgentOrgRunConfig> {

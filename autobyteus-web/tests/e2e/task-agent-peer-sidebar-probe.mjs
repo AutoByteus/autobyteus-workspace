@@ -30,6 +30,18 @@ const getArg = (name, fallback = undefined) => {
     : fallback;
 };
 const timeoutMs = Number(getArg('timeout-ms', '90000'));
+
+// Rows removed by a collapse leave the tree with the 200 ms `tree-row` transition (aria-hidden and inert at
+// once; see components/workspace/history/treeRowLeave.css). Absence is asserted once that leave has settled.
+const LEAVE_SETTLE_MS = 1500;
+const afterLeave = async (predicate) => {
+  const deadline = Date.now() + LEAVE_SETTLE_MS;
+  while (Date.now() < deadline) {
+    if (await predicate()) return true;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  return Boolean(await predicate());
+};
 const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/task-agent-peer-sidebar'));
 const explicitPort = getArg('port');
 const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
@@ -301,14 +313,14 @@ try {
     assert(await member.getAttribute('aria-level') === '3' && await member.getAttribute('aria-expanded') === null, 'Task-Team member has phantom task child');
     const teamRow = page.locator('[data-transient-kind="task_team"]');
     await teamRow.getByRole('button').click();
-    assert(await nested.count() === 0, 'Task-Team collapse does not hide descendants');
+    assert(await afterLeave(async () => await nested.count() === 0), 'Task-Team collapse does not hide descendants');
     await teamRow.getByRole('button').click();
     await nested.waitFor({ state: 'visible' });
     await nested.click();
     await selectedConversation('peer-nested-task');
     await screenshot('task-team-containment');
     await outer.click();
-    assert(await page.locator('[role="treeitem"]').count() === 0, 'Outer Team collapse left rows visible');
+    assert(await afterLeave(async () => await page.locator('[role="treeitem"]').count() === 0), 'Outer Team collapse left rows visible');
     await outer.click();
     await taskA.waitFor({ state: 'visible' });
     await taskB.waitFor({ state: 'visible' });

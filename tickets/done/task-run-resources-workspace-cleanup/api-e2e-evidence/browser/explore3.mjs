@@ -1,0 +1,46 @@
+import fs from 'node:fs';
+import * as L from './lib.mjs';
+const x = JSON.parse(fs.readFileSync(new URL('./explore-agent.json', import.meta.url)));
+const aIds = x.nodes.slice(0, 3).map(n => n.agentRunId);
+const browser = await L.chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const errors = []; page.on('pageerror', e => errors.push(e.message)); page.on('console', m => { if (m.type()==='error') errors.push(m.text()); });
+await page.goto(L.state().frontendUrl + '/workspace', { waitUntil: 'networkidle', timeout: 120000 });
+await L.sleep(1500);
+await page.locator('[data-test="workspace-row"]').nth(1).click(); await L.sleep(800);
+await page.locator('[data-test="workspace-agent-row"]').first().click(); await L.sleep(800);
+await page.locator('[data-test="workspace-agent-run-row"]').first().click(); await L.sleep(2500);
+const worker = page.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${aIds[0]}"]`);
+await worker.click(); await L.sleep(2500);
+console.log('worker selected', await worker.getAttribute('aria-selected'), 'focused', await worker.evaluate(e => document.activeElement === e));
+console.log('center text', (await page.locator('[data-test="workspace-center-pane"]').innerText()).slice(0, 300).replace(/\n/g,' | '));
+await page.screenshot({ path: new URL('./explore-3-before.png', import.meta.url).pathname });
+// Sample every animation frame from DONE on.
+await page.evaluate((ids) => {
+  window.__samples = []; const t0 = performance.now();
+  const tick = () => { const rows = ids.map(id => { const e = document.querySelector(`[data-agent-run-id="${id}"]`);
+      if (!e) return null; const cs = getComputedStyle(e); return { op: cs.opacity, h: e.getBoundingClientRect().height, hidden: e.getAttribute('aria-hidden'), inert: e.inert, cls: e.className.split(' ').filter(c=>c.startsWith('tree-row')).join(' ') }; });
+    window.__samples.push({ t: Math.round(performance.now() - t0), rows, active: document.activeElement?.getAttribute('data-test') + ':' + (document.activeElement?.getAttribute('aria-label')||'').slice(0,40) });
+    if (performance.now() - t0 < 1500) requestAnimationFrame(tick); };
+  window.__startSampling = () => { window.__samples = []; requestAnimationFrame(tick); };
+}, aIds);
+const root = x.root; const input = await L.managerInput(root);
+const doneSentAt = Date.now();
+await page.evaluate(() => {
+  const obs = new MutationObserver(() => { const e = document.querySelector('.tree-row-leave-active, [aria-hidden="true"][data-test="workspace-team-transient-execution-row"]'); if (e && !window.__leaveSeen) { window.__leaveSeen = performance.now(); window.__startSampling(); } });
+  obs.observe(document.body, { subtree: true, childList: true, attributes: true });
+});
+input.send(L.callTool('create_or_update_task', { project_id: x.projectId, task_id: x.taskA, status: 'DONE' }));
+await L.until('rows gone', async () => (await page.locator(`[data-agent-run-id="${aIds[0]}"]`).count()) === 0, 30000);
+await L.sleep(1600);
+const samples = await page.evaluate(() => window.__samples);
+console.log('latency ms (approx, DONE send → leave start)', Date.now() - doneSentAt);
+console.log(JSON.stringify(samples.filter((s,i)=> i<3 || i%4===0).slice(0, 30)));
+const runRow = page.locator('[data-test="workspace-agent-run-row"]').first();
+console.log('run row selected?', await runRow.getAttribute('aria-selected'), await runRow.getAttribute('class'));
+console.log('active', await page.evaluate(() => document.activeElement?.getAttribute('data-test')));
+console.log('center text', (await page.locator('[data-test="workspace-center-pane"]').innerText()).slice(0, 300).replace(/\n/g,' | '));
+console.log('remaining rows', (await page.locator('[data-test="workspace-team-transient-execution-row"]').allInnerTexts()).join(' / '));
+await page.screenshot({ path: new URL('./explore-3-after.png', import.meta.url).pathname });
+console.log('ERRORS', JSON.stringify(errors.slice(0,10)));
+input.close(); await browser.close();

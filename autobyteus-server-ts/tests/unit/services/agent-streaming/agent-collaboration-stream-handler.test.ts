@@ -14,7 +14,7 @@ const fakeRoot = (hostLive = true) => ({
   isHostLive: () => hostLive,
   getExecutionTreeSnapshot: () => tree,
   openPackageSnapshotConnection: vi.fn(async () => ({
-    snapshot: { tree, messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] },
+    snapshot: { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] },
     baseChangeSequence: 0,
     subscribe: vi.fn(() => () => undefined),
     close: vi.fn(),

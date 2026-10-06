@@ -50,7 +50,7 @@ export interface TeamAgentExecutionLocation {
 
 export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
   | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' }
-  | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>;
+  | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>;
 
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>

@@ -9,6 +9,7 @@ import {
   type TeamReferenceFileDto,
   type TeamRunExecutionTreeDto,
   type TeamStreamServerMessage,
+  type TeamTaskExecutionReferenceDto,
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import { isCollaboratorTeamEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -52,6 +53,7 @@ export const projectTeamExecutionViewSnapshot = (
     root_team_run_id: rootTeamRunId,
     base_change_sequence: baseChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree),
+    closed_task_executions: snapshot.closedTaskExecutions.map(projectTaskExecutionReference),
     messages: snapshot.messages.messages.map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
@@ -86,6 +88,11 @@ export const projectSequencedTeamRunEvent = (
       } });
     case TeamRunEventSourceType.TASK_EXECUTION:
       return projectTaskExecutionStarted(root, event.taskExecution, changeSequence);
+    case TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED:
+      return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_CLOSED", payload: {
+        change_sequence: changeSequence,
+        task_executions: event.taskExecutions.map(projectTaskExecutionReference),
+      } });
     case TeamRunEventSourceType.COLLABORATOR:
       return parseTeamStreamServerMessage({ type: "COLLABORATOR_ADDED", payload: {
         change_sequence: changeSequence,
@@ -93,6 +100,9 @@ export const projectSequencedTeamRunEvent = (
       } });
   }
 };
+
+const projectTaskExecutionReference = (reference: TaskExecutionReference): TeamTaskExecutionReferenceDto =>
+  "agentRunId" in reference ? { agent_run_id: reference.agentRunId } : { team_run_id: reference.teamRunId };
 
 export const projectCommunicationMessage = (
   message: TeamCommunicationMessageV1,

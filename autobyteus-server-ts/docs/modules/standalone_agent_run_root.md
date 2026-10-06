@@ -141,13 +141,15 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
 - **Collaboration stream** `/ws/agent-collaboration/:hostRunId`: `connect` resolves the root and
   makes the host ready (a stopped run's host starts when its collaboration view is opened), then
   sends the Agent-root snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
-  host's live state), events (`agent_presentation`, `task_execution_started`, `communication`,
-  `collaborator_added`) and lifecycle. Commands target children only and use the active root as
+  host's live state, plus the required `closed_task_executions` beside the unfiltered tree),
+  events (`agent_presentation`, `task_execution_started`, `task_executions_closed` (published
+  before a DONE Task's runs are stopped), `communication`, `collaborator_added`) and lifecycle. Commands target children only and use the active root as
   is (only when no root is active is it resolved and its host made ready, as on connect); a
   command to the host is rejected (`AGENT_ROOT_HOST_COMMAND_REJECTED`). A run that cannot host collaborators closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stored package
-  (children offline) and never restores. `agentRunCollaborationMemberProjection` and
+  (children offline; `closed_task_executions` read by the manager against the stored tree) and
+  never restores. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation (sender
   addresses of agent-to-agent deliveries are resolved from the root's index).
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId)` lists the `@` options.

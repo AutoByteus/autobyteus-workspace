@@ -31,6 +31,7 @@ const snapshot = (linked: boolean) => ({
       },
     }],
   }),
+  closedTaskExecutions: [],
   messages: emptyStandaloneRootMessages(HOST),
   statuses: [],
   inputStates: [],

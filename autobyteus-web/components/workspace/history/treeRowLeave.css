@@ -1,0 +1,27 @@
+/* A row that leaves the tree (its Task is DONE) fades and its height closes in 200 ms; the rows
+   below move up with it. New rows appear at once. Reduced motion removes rows immediately. */
+.tree-row-move {
+  transition: transform 200ms ease-out;
+}
+/* After the move rule on purpose: a row can start leaving while it still carries the move class
+   (its own FLIP move in progress), and its leave must still fade and collapse. */
+.tree-row-leave-active {
+  overflow: hidden;
+  transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out, transform 200ms ease-out;
+}
+.tree-row-leave-from {
+  opacity: 1;
+  max-height: 2rem;
+}
+.tree-row-leave-to {
+  opacity: 0;
+  max-height: 0;
+  min-height: 0;
+  margin-top: 0 !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tree-row-leave-active,
+  .tree-row-move {
+    transition: none;
+  }
+}

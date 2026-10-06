@@ -1,0 +1,140 @@
+{
+  "attempt-1": {
+    "movingClassBefore": false,
+    "intermediateOpacityFrames": 9,
+    "framesWithMoveAndLeave": 0,
+    "transitionWhileBoth": null,
+    "sample": [
+      {
+        "t": 0,
+        "classes": "",
+        "opacity": 1,
+        "transitionProperty": "all"
+      },
+      {
+        "t": 37,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 1,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 87,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.622074,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 137,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.315523,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 187,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.093232,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 237,
+        "present": false
+      }
+    ],
+    "removedAt": {
+      "t": 237,
+      "present": false
+    }
+  },
+  "attempt-2": {
+    "movingClassBefore": false,
+    "intermediateOpacityFrames": 9,
+    "framesWithMoveAndLeave": 0,
+    "transitionWhileBoth": null,
+    "sample": [
+      {
+        "t": 0,
+        "classes": "",
+        "opacity": 1,
+        "transitionProperty": "all"
+      },
+      {
+        "t": 40,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.864704,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 90,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.511898,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 140,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.2308,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 190,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.0445941,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 240,
+        "present": false
+      }
+    ],
+    "removedAt": {
+      "t": 240,
+      "present": false
+    }
+  },
+  "attempt-3": {
+    "movingClassBefore": false,
+    "intermediateOpacityFrames": 9,
+    "framesWithMoveAndLeave": 0,
+    "transitionWhileBoth": null,
+    "sample": [
+      {
+        "t": 0,
+        "classes": "",
+        "opacity": 1,
+        "transitionProperty": "all"
+      },
+      {
+        "t": 34,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 1,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 84,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.622382,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 134,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.315765,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 184,
+        "classes": "tree-row-leave-active tree-row-leave-to",
+        "opacity": 0.0933837,
+        "transitionProperty": "opacity, max-height, margin-top, transform"
+      },
+      {
+        "t": 233,
+        "present": false
+      }
+    ],
+    "removedAt": {
+      "t": 233,
+      "present": false
+    }
+  }
+}

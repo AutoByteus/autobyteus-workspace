@@ -81,13 +81,38 @@ include:
   change, each with exact `agent_execution`;
 - Team-only events: `TASK_EXECUTION_STARTED` (a delegated child committed under
   its host TeamRun, with nullable `delegator_agent_run_id`),
+  `TASK_EXECUTIONS_CLOSED` (task executions whose Task became DONE; see below),
   `TEAM_COMMUNICATION_MESSAGE`, and `MEMBER_INPUT_MESSAGE` with their explicit
   exact execution/participant addresses;
+- the view: `TEAM_EXECUTION_VIEW_SNAPSHOT` (`root_team_run_id`,
+  `base_change_sequence`, `execution_tree`, the required `closed_task_executions`,
+  `messages`, `agent_statuses`, `agent_input_states`);
 - control: `CONNECTED`, `TEAM_RUN_LIFECYCLE`, `AGENT_COMMAND_ACK`; and
 - `ERROR`, either correlated to an `agent_execution` or explicitly uncorrelated.
 
 Unknown fields and invalid union combinations are rejected. The browser parses
 the same shared schema before mutating application state.
+
+### Closed task executions (Task DONE)
+
+The execution tree is never filtered: every task execution stays in
+`execution_tree`, so message participants and history keep their identities.
+Closure is a separate fact beside the tree:
+
+- `closed_task_executions` in the snapshot lists, as `{agent_run_id}` or
+  `{team_run_id}` references, the root's task executions whose Task is DONE. It is
+  read at the same point as the tree, so it is consistent with
+  `base_change_sequence`.
+- `TASK_EXECUTIONS_CLOSED {change_sequence, task_executions}` is a sequenced
+  event (a non-empty list of the same references). When DONE asks an active root
+  to stop a Task's runs, the root publishes the released runs that are closed and
+  present in its tree **before** it stops them, whatever the stop outcome. A
+  repeated DONE re-publishes the same references; applying them again is a no-op.
+- The Workspaces tree leaves out each closed task execution and everything under
+  it. Other Team surfaces keep listing them.
+- Stored reads carry the same list: the Team resume config (`closedTaskExecutions`
+  beside `executionTree`). A root that was not active at DONE shows the closure on
+  its next read.
 
 ## Segment Contract
 

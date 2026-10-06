@@ -355,6 +355,15 @@ recipient event monitor, not as ordinary Messages. Fresh message/status and
 refocus; snapshots are the recovery path, not a
 substitute for normal live publication.
 
+When a Task becomes DONE, its task executions leave the Org's Workspaces rows
+(with a short fade; at once under reduced motion). The Org view and the
+`agent_org` history item carry `closed_task_executions` beside the unfiltered
+tree, so rows rendered from the history item before the Org context hydrates
+already leave them out; a live `task_executions_closed` event updates a mounted
+view in place. A selected closed agent hands selection to the agent that
+delegated its outermost closed execution, when that agent is still listed. The
+Team tab keeps messages with closed runs.
+
 The left **Workspaces** hierarchy remains mounted across configuration, active,
 focused, and stopped/history states. Within each Workspace it retains the
 existing Agent and **Teams** groups and places **Orgs** (**组织** in zh-CN) as

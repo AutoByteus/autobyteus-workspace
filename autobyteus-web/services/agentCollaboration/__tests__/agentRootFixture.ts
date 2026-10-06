@@ -7,7 +7,7 @@ type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentR
 export const agentRootView = (): MutableView => ({
   base_change_sequence: 4,
   is_active: true,
-  execution_tree: {
+  closed_task_executions: [], execution_tree: {
     subjectKind: 'agent', createdAt: created,
     host: { address: '/research_assistant', agentRunId: 'host-run', agentDefinitionId: 'research-assistant' },
     // Each collaborator is one hosted instance whose runs are recorded in its entry.

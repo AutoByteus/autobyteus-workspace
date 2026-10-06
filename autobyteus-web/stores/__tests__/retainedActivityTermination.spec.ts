@@ -44,7 +44,7 @@ const setup = () => {
     const snapshot: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>['payload'] = {
       root_team_run_id: ROOT,
       base_change_sequence: 0,
-      execution_tree: team.view.getExecutionTree(),
+      closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
       messages: [],
       agent_input_states: [],
       agent_statuses: team.view.listAgentContextEntries().map(e => ({
@@ -140,7 +140,7 @@ it('BEH-003: later normal Send restores, hydrates and admits exact input without
   io.mutate.mockResolvedValue({ data: { restoreAgentTeamRun: { success: true } } })
   io.query.mockImplementation(async ({ query, variables }) => {
     const name = query.definitions[0].name.value
-    if (name === 'GetTeamRunResumeConfig') return { data: { getTeamRunResumeConfig: { teamRunId: ROOT, isActive: true, executionTree: t.team.view.getExecutionTree(), modelConfigEditability: { editable: false, reason: 'active' } } } }
+    if (name === 'GetTeamRunResumeConfig') return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: ROOT, isActive: true, executionTree: t.team.view.getExecutionTree(), modelConfigEditability: { editable: false, reason: 'active' } } } }
     if (name === 'GetTeamMemberRunProjection') return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [{ kind: 'message', role: 'assistant', content: 'Historical conversation', ts: 1 }],
       activities: variables.agentRunId === 'empty' ? [] : [
         { kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `Instructions for ${variables.agentRunId}`, ts: 1 },

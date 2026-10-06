@@ -44,7 +44,7 @@ export const inspectionData = (active: boolean) => ({ getAgentOrgRunInspection: 
 export const historyData = (active: boolean) => ({ listCollaborationRootHistory: [{
   __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run',
   created_at: '2026-09-01T00:00:00.000Z', archived_at: null, is_active: active,
-  summary: 'Exact retained conversation', org: taskBearingView().execution_tree,
+  summary: 'Exact retained conversation', org: taskBearingView().execution_tree, closed_task_executions: [],
 }] })
 export const memberData = (variables: Operation['variables'], label: string) => ({ getAgentOrgMemberRunProjection: {
   __typename: 'AgentOrgMemberRunProjection', agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,

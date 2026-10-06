@@ -1,0 +1,14 @@
+{
+  "backendUrl": "http://127.0.0.1:54217",
+  "frontendUrl": "http://127.0.0.1:54218",
+  "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/trrwc-browser-stack-b3ofEL",
+  "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/trrwc-browser-stack-b3ofEL/workspace",
+  "backendPid": 5020,
+  "frontendPid": 97361,
+  "launcherPid": 97022,
+  "backendStarts": 2,
+  "stoppedAt": "2026-10-06T07:13:41.240Z",
+  "dataRootRemoved": true,
+  "backendExit": 0,
+  "frontendExit": "SIGTERM"
+}

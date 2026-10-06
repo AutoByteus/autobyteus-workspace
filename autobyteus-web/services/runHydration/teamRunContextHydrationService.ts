@@ -2,6 +2,7 @@ import {
   teamRunExecutionTreeDtoSchema,
   type TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts';
+import { closedTaskExecutionsDtoSchema } from '@autobyteus/collaboration-stream-contracts';
 import { getApolloClient } from '~/utils/apolloClient';
 import {
   GetTeamMemberRunProjection,
@@ -69,6 +70,7 @@ interface ResumeGraphqlData {
     teamRunId: string;
     isActive: boolean;
     executionTree: unknown;
+    closedTaskExecutions: unknown;
     modelConfigEditability: RunModelConfigEditability;
   } | null;
 }
@@ -245,6 +247,7 @@ const hydrateCurrentTeamRunContext = async (
   const raw = response.data?.getTeamRunResumeConfig;
   if (!raw) throw new Error(`Team resume config payload missing for '${input.teamRunId}'.`);
   const tree = teamRunExecutionTreeDtoSchema.parse(raw.executionTree);
+  const closedTaskExecutions = closedTaskExecutionsDtoSchema.parse(raw.closedTaskExecutions);
   if (raw.teamRunId !== input.teamRunId || tree.root_team.team_run_id !== input.teamRunId) {
     throw new Error(`Team execution tree root identity mismatch for '${input.teamRunId}'.`);
   }
@@ -307,6 +310,7 @@ const hydrateCurrentTeamRunContext = async (
     rootTeamRunId: input.teamRunId,
     rootActive: raw.isActive,
     executionTree: tree,
+    closedTaskExecutions,
     messages,
     configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
     initialFocusedAgentRunId,

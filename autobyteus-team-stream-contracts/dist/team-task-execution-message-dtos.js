@@ -7,6 +7,16 @@ export const teamTaskExecutionStartedPayloadSchema = z.object({
     parent_team_run_id: nonEmptyStringSchema,
     execution: z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema]),
 }).strict();
+/** Identity of one task execution node (a task Agent or a task Team) of the root's execution tree. */
+export const teamTaskExecutionReferenceDtoSchema = z.union([
+    z.object({ agent_run_id: nonEmptyStringSchema }).strict(),
+    z.object({ team_run_id: nonEmptyStringSchema }).strict(),
+]);
+/** These task executions were closed (their Task became DONE); the tree keeps them, the Workspaces listing leaves them out. */
+export const teamTaskExecutionsClosedPayloadSchema = z.object({
+    change_sequence: z.number().int().positive(),
+    task_executions: z.array(teamTaskExecutionReferenceDtoSchema).min(1),
+}).strict();
 /** A collaborator entry was committed at the root; it precedes any task execution at its address. */
 export const teamCollaboratorAddedPayloadSchema = z.object({
     change_sequence: z.number().int().positive(),

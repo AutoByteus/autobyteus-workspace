@@ -33,7 +33,7 @@ const createHarness = (state = 'connected') => {
     type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
       root_team_run_id: 'team-1',
       base_change_sequence: 0,
-      execution_tree: team.view.getExecutionTree(),
+      closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
       messages: [],
       agent_input_states: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({

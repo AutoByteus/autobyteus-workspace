@@ -1,0 +1,15 @@
+import { createRequire } from 'node:module';
+import fs from 'node:fs';
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-web/package.json');
+const { chromium } = require('playwright-core');
+const state = JSON.parse(fs.readFileSync(new URL('./stack-state.json', import.meta.url)));
+const browser = await chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const errors = []; page.on('pageerror', e => errors.push(e.message)); page.on('console', m => { if (m.type()==='error') errors.push(m.text()); });
+await page.goto(state.frontendUrl + (process.argv[2] ?? '/'), { waitUntil: 'networkidle', timeout: 120000 });
+await page.waitForTimeout(3000);
+await page.screenshot({ path: new URL('./explore.png', import.meta.url).pathname });
+console.log('URL', page.url());
+console.log((await page.locator('body').innerText()).slice(0, 2000));
+console.log('ERRORS', JSON.stringify(errors.slice(0, 10)));
+await browser.close();

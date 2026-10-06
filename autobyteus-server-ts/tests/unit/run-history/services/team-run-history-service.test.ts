@@ -31,7 +31,7 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
     deleteTeamRun: vi.fn(async () => ({ success: true, message: "deleted" })),
   };
   const treeStore = { read: vi.fn(async () => input.storedTree === undefined ? tree : input.storedTree) };
-  const manager = { hasManagedTeamRun: vi.fn(() => Boolean(input.active)) };
+  const manager = { hasManagedTeamRun: vi.fn(() => Boolean(input.active)), closedTaskExecutionsFor: vi.fn(() => []) };
   const live = { getCatalogListLiveProjection: vi.fn(() => ({
     isActive: input.active ?? false,
     memberStatusSnapshots: input.active ? [{ agentRunId: "worker-run", status: "running" }] : [],
@@ -81,12 +81,17 @@ describe("TeamRunHistoryService current execution tree", () => {
   });
 
   it("returns exact resume identity/tree and reports missing current packages", async () => {
-    await expect(harness({ active: true }).service.getTeamRunResumeConfig("team-1")).resolves.toEqual({
+    const active = harness({ active: true });
+    // The stored closure read goes through the root-kind manager, against the same stored tree.
+    active.manager.closedTaskExecutionsFor.mockReturnValue([{ agentRunId: "worker-run" }] as never);
+    await expect(active.service.getTeamRunResumeConfig("team-1")).resolves.toEqual({
       teamRunId: "team-1",
       isActive: true,
       executionTree: tree,
+      closedTaskExecutions: [{ agentRunId: "worker-run" }],
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
     });
+    expect(active.manager.closedTaskExecutionsFor).toHaveBeenCalledWith("team-1", tree);
     await expect(harness({ storedTree: null }).service.getTeamRunResumeConfig("missing"))
       .rejects.toThrow("execution tree not found");
   });

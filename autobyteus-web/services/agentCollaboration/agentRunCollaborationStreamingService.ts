@@ -53,6 +53,8 @@ export class AgentRunCollaborationStreamingService {
     reportError(message: string): void
     /** A collaborator was added in place (its new Team opens once). */
     onCollaboratorAdded?(context: AgentRunCollaborationContext): void
+    /** Task executions were closed in place (Task DONE); a selected one leaves with its rows. */
+    onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
 
   connect(): void {
@@ -205,6 +207,8 @@ export class AgentRunCollaborationStreamingService {
         this.connect()
       } else if (message.payload.event.kind === 'collaborator_added') {
         this.options.onCollaboratorAdded?.(this.context)
+      } else if (message.payload.event.kind === 'task_executions_closed') {
+        this.options.onTaskExecutionsClosed?.(this.context)
       }
       return
     }

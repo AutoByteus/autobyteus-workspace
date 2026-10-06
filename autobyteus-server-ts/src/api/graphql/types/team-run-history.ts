@@ -19,6 +19,10 @@ class TeamRunResumeConfigPayload {
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
 
+  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE. */
+  @Field(() => GraphQLJSON)
+  closedTaskExecutions!: unknown;
+
   @Field(() => RunModelConfigEditabilityObject)
   modelConfigEditability!: RunModelConfigEditabilityObject;
 }
@@ -89,6 +93,7 @@ export class TeamRunHistoryResolver {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree),
+      closedTaskExecutions: config.closedTaskExecutions,
       modelConfigEditability: config.modelConfigEditability,
     };
   }

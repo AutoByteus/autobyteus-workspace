@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.4.95-beta.3",
+  "version": "1.4.95-beta.4",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "Apache-2.0",
@@ -58,6 +58,7 @@
     "test:e2e:agent-org-role-labels": "node tests/e2e/agent-org-role-labels-probe.mjs",
     "test:e2e:agent-org-draft-retention": "node tests/e2e/agent-org-draft-retention-probe.mjs",
     "test:e2e:agent-org-task-team-disclosure": "node tests/e2e/agent-org-task-team-disclosure-probe.mjs",
+    "test:e2e:task-closure-tree": "node tests/e2e/task-closure-tree-probe.mjs",
     "test:e2e:system-instruction-activity": "node tests/e2e/system-instruction-activity-probe.mjs",
     "test:e2e:background-tasks-panel": "node tests/e2e/background-tasks-panel-probe.mjs",
     "test:e2e:codex-command-failure-detail": "node tests/e2e/codex-command-failure-detail-probe.mjs",

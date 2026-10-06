@@ -7,6 +7,7 @@ const state={run_instance_id:'instance',revision:2,recoverableBlock:block,entrie
 const snapshot=()=>({root_subject_kind:'agent_org',root_run_id:'org',root_org:{
  base_change_sequence:0,is_active:true,
  execution_tree:{subjectKind:'agent_org',createdAt:'2026-09-01',archivedAt:null,applicationBinding:null,handoffs:[],rootOrg:{address:'/',orgDefinitionId:'definition',orgDefinitionName:'Org',orgRunId:'org',defaultLaunchConfiguration:launch,collaborators:[],members:[{address:'/worker',agentDefinitionId:'worker',role:null,description:null,agentRunId:'run',platformAgentRunId:null,launchConfiguration:launch}],taskExecutions:[]}},
+ closed_task_executions:[],
  communication_messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:'org',messages:[]},
  agent_statuses:[{member_address:'/worker',agent_run_id:'run',status:'error',trigger:null,tool_name:null,error_message:null,error_details:null,recoverableBlock:block}],
  agent_input_states:[{agent_run_id:'run',state:structuredClone(state)}],

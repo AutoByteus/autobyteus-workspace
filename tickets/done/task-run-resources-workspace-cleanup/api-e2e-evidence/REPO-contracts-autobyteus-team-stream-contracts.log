@@ -1,0 +1,60 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/task-run-resources-workspace-cleanup/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 1 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 2.456875
+  type: 'test'
+  ...
+# Subtest: the Team tree carries collaborators and COLLABORATOR_ADDED carries one entry
+ok 2 - the Team tree carries collaborators and COLLABORATOR_ADDED carries one entry
+  ---
+  duration_ms: 1.835875
+  type: 'test'
+  ...
+# Subtest: the Team snapshot requires its closed task executions beside the unfiltered tree
+ok 3 - the Team snapshot requires its closed task executions beside the unfiltered tree
+  ---
+  duration_ms: 5.085875
+  type: 'test'
+  ...
+# Subtest: TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+ok 4 - TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty
+  ---
+  duration_ms: 0.581084
+  type: 'test'
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 5 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 3.439
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 6 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.622708
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 7 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.483292
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 126.243625

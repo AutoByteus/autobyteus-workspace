@@ -41,7 +41,7 @@ const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'OpenAI'
   canonicalName: id, description: null, configSchema: { type: 'object',
     properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } }, recommended: false })
 const deferred = () => { let resolve!: (x: any) => void; const promise = new Promise<any>(r => resolve = r); return { promise, resolve } }
-const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { teamRunId: tree.root_team.team_run_id, isActive: false, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
+const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: tree.root_team.team_run_id, isActive: false, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
 beforeEach(async () => {
   vi.clearAllMocks(); setActivePinia(createPinia()); createdTree = null
   canonical = JSON.parse(JSON.stringify(buildTestTeamContext({ teamRunId: 'source', teamDefinitionId: 'definition', teamDefinitionName: 'Source Team',

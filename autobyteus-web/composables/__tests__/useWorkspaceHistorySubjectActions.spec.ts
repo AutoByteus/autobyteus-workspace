@@ -25,7 +25,7 @@ beforeEach(() => {
       configured: new Map([['/team', {}], ['/team/coordinator', {}]]) },
   }))
   mocks.history.agentOrgHistory = [{ rootRunId: 'org-run', isActive: true,
-    executionTree: { rootOrg: { collaborators: [], orgDefinitionId: 'org-def' } } }]
+    closedTaskExecutions: [], executionTree: { rootOrg: { collaborators: [], orgDefinitionId: 'org-def' } } }]
 })
 
 describe('Org browse is inspection and Stop retains the same exact route', () => {
