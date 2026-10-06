@@ -342,16 +342,27 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   - delegation and DONE while `projects/projects.json` (the pending migration)
     exists;
   - a brought-in collaborator survives Stop/restore;
+  - definitions already in the run (that collaborator; a Team/Org run's
+    configured members) are `@` candidates, while the run's own definition is
+    not. Mentioning one stores `…, already in this run` with the in-run
+    guidance and adds nothing;
   - permanent delete removes only that run's ad-hoc Tasks.
 
-  Set `AD_HOC_TASK_E2E_EVIDENCE_DIR` to keep a JSON receipt.
+  Set `AD_HOC_TASK_E2E_EVIDENCE_DIR` to keep a JSON receipt. The in-process
+  server inherits `AUTOBYTEUS_AGENT_PACKAGE_ROOTS` (and the skill and
+  application root variables) from your shell and then lists those packages as
+  candidates too. It only reads them, but prefix the command with
+  `env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS`
+  for a run that does not depend on your machine.
 - **`test:e2e:cross-scope-agent-mentions`.** The same journeys with a real
   model, browser, Nuxt and built backend. It needs a logged-in Claude or Codex
   CLI (`--runtime codex_app_server`). Reporting copies may be closed by their
   delegator on its own; the user-driven close is asserted on a copy that never
   reports. It includes Stop, a real backend restart, a stored bring-in
-  collaborator, an ineligible mention, first-send mentions and the permanent
-  delete. `--ledger-file <abs path>` appends case results. `L01`/`L02` need
+  collaborator that is then `@`-mentioned (listed, noted as already in the run,
+  never duplicated), Team/Org/New chat menus that offer configured members, the
+  menu and notice copy, an ineligible mention, first-send mentions and the
+  permanent delete. `--ledger-file <abs path>` appends case results. `L01`/`L02` need
   `--runtime antigravity_cli` and are reported Not Applicable otherwise.
 
 If you change `ProjectsLayout`, `readProjectFile` or `readTaskFile`, first
