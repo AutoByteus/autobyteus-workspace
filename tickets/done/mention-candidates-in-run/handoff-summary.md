@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-001. The branch is current with the latest base and docs are synced. Awaiting your explicit verification.** Nothing is pushed, merged or released yet.
+- Delivery state: **The user verified on 2026-10-06 ("finalize and release a new beta"); see `user-verification-record.md`.** Finalization into `personal` and one new beta are in progress; the outcomes are recorded in `release-deployment-report.md` (DR-002).
 - Classification (unchanged): `task_size=Medium`, `architectural_risk=Low`.
   - Route: direct low-risk (Solution Designer → Implementation → API/E2E → Delivery).
   - Architecture review, source review and test-code review: `N/A — not applicable`.
