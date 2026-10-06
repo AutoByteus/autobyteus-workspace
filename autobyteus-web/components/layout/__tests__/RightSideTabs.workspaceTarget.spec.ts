@@ -260,7 +260,7 @@ for (const knownId of [false, true]) {
       const context = target.context, conversation = context.conversation;
       expect(useFileExplorerStore() === files).toBe(true);
       expect(useActiveContextStore() === active).toBe(true);
-      const launch = useEventMonitorFilePreview();
+      const launch = useEventMonitorFilePreview({ revealTool: async tab => { useRightSideTabs().selectTabExplicitly(tab); await nextTick(); return true; }, isOriginCurrent: () => true });
       const action = { id: 'native', rawCandidate: '/workspace/B/brief.md', normalizedCandidate: '/workspace/B/brief.md', sourceKind: 'prose' as const, displayLabel: 'brief.md', previewType: 'Text' as const };
       expect((await launch.openPath(action)).status).toBe('opened'); await flush();
       expect(wrapper.getComponent(FileExplorerTabs).props('workspaceId')).toBe('B');

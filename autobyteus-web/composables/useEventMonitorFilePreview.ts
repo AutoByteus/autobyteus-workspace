@@ -1,3 +1,4 @@
+import type { WorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { useLocalization } from '~/composables/useLocalization';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
@@ -36,7 +37,10 @@ const contextWorkspace = (context: ReturnType<typeof useMobileWorkStore>['curren
   return null;
 };
 
-export function useEventMonitorFilePreview() {
+export function useEventMonitorFilePreview(options: {
+  revealTool: WorkspaceToolReveal | null;
+  isOriginCurrent: () => boolean;
+}) {
   const fileExplorerStore = useFileExplorerStore();
   const mobileWorkStore = useMobileWorkStore();
   const windowNodeContextStore = useWindowNodeContextStore();
@@ -47,6 +51,11 @@ export function useEventMonitorFilePreview() {
   const unavailable = (key: string): EventMonitorFilePreviewResult => ({
     status: 'unavailable',
     message: t(key),
+  });
+
+  const failed = (): EventMonitorFilePreviewResult => ({
+    status: 'failed',
+    message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'),
   });
 
   const openMobilePath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
@@ -73,6 +82,7 @@ export function useEventMonitorFilePreview() {
       return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
     }
 
+    if (!options.isOriginCurrent()) return failed();
     mobileWorkStore.requestFilePreview({
       contextKey: mobileWorkContextKey(context),
       workspaceId: locator.workspaceId,
@@ -86,26 +96,24 @@ export function useEventMonitorFilePreview() {
 
   const openPath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
     try {
+      if (!options.isOriginCurrent()) return failed();
       if (isMobileRemoteAccessRuntime()) {
         return await openMobilePath(action);
       }
 
+      if (!options.revealTool) return failed();
       const workspaceTarget = activeContextStore.activeWorkspaceTarget;
       const bindingRevision = windowNodeContextStore.bindingRevision;
       const runId = workspaceTarget?.context.state.runId;
       const sourceRoot = normalizeWorkspaceRootPath(workspaceTarget?.workspaceRootPath);
       const isCurrent = () => {
         const current = activeContextStore.activeWorkspaceTarget;
-        return windowNodeContextStore.bindingRevision === bindingRevision
+        return options.isOriginCurrent() && windowNodeContextStore.bindingRevision === bindingRevision
           && (workspaceTarget
             ? current?.context === workspaceTarget.context && current.context.state.runId === runId
               && normalizeWorkspaceRootPath(current.workspaceRootPath) === sourceRoot
             : !current);
       };
-      const failed = (): EventMonitorFilePreviewResult => ({
-        status: 'failed',
-        message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'),
-      });
       let activeMetadata = workspaceTarget
         ? workspaceTarget.context.config.workspaceMetadata
         : workspaceStore.activeWorkspaceMetadata;
@@ -147,15 +155,9 @@ export function useEventMonitorFilePreview() {
       await fileExplorerStore.openFilePreview(previewPath, locator.workspaceId, {
         accessIntent: { source: 'event-monitor', readOnly: true },
       });
-      const [{ useRightPanel }, { useRightSideTabs }] = await Promise.all([
-        import('~/composables/useRightPanel'),
-        import('~/composables/useRightSideTabs'),
-      ]);
       if (!isCurrent()) return failed();
-      const { openRightPanel } = useRightPanel();
-      const { setActiveTab } = useRightSideTabs();
-      openRightPanel();
-      setActiveTab('files');
+      const revealed = await options.revealTool('files');
+      if (!revealed || !isCurrent()) return failed();
       if (typeof window !== 'undefined') {
         window.setTimeout(() => {
           if (!isCurrent()) return;
