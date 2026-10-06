@@ -1,0 +1,198 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [31m❯[39m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 8412[2mms[22m[39m
+[31m     [31m×[31m E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart[39m[33m 1829[2mms[22m[39m
+[31m     [31m×[31m E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued[39m[33m 1665[2mms[22m[39m
+[31m     [31m×[31m E-003 Studio fresh install: creates no installed copy and records nothing to remove[39m[33m 1819[2mms[22m[39m
+[31m     [31m×[31m E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record[39m[33m 3098[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts[2m > [22mretired built-in Project Task Manager at the actual startup entrypoints[2m > [22mE-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart
+[31m[1mAssertionError[22m: expected undefined to match object { status: 'SUCCEEDED', …(5) }[39m
+
+[32m- Expected:[39m 
+{
+  "attempts": 1,
+  "errorMessage": null,
+  "recoveryAction": "NONE",
+  "requiredOnStartup": true,
+  "status": "SUCCEEDED",
+  "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+}
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts:[2m242:37[22m[39m
+    [90m240| [39m
+    [90m241| [39m    [35mconst[39m first [33m=[39m [35mawait[39m [34mstudio[39m()[33m;[39m
+    [90m242| [39m    expect(await first.migration()).toMatchObject({ status: "SUCCEEDED…
+    [90m   | [39m                                    [31m^[39m
+    [90m243| [39m      summary[33m:[39m [32m"Scanned 1; migrated 1; skipped 0; failed 0."[39m })[33m;[39m
+    [90m244| [39m    expect(await fs.readFile((await first.migration()).logPath, "utf8"…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts[2m > [22mretired built-in Project Task Manager at the actual startup entrypoints[2m > [22mE-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued
+[31m[1mAssertionError[22m: expected undefined to match object { status: 'FAILED', attempts: 1, …(3) }[39m
+
+[32m- Expected:[39m 
+{
+  "attempts": 1,
+  "canRetry": false,
+  "errorMessage": "The retired built-in Project Task Manager folder could not be removed; the cleanup retries on the next start.",
+  "recoveryAction": "RESTART_TO_RETRY",
+  "status": "FAILED",
+}
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts:[2m267:38[22m[39m
+    [90m265| [39m    // 1. Removal fails: the app starts and serves; the failure is rec…
+    [90m266| [39m    [35mconst[39m failed [33m=[39m [35mawait[39m [34mstudio[39m()[33m;[39m
+    [90m267| [39m    expect(await failed.migration()).toMatchObject({ status: "FAILED",…
+    [90m   | [39m                                     [31m^[39m
+    [90m268| [39m    expect(await fs.readFile((await failed.migration()).logPath, "utf8…
+    [90m269| [39m    const manual = (await failed.gql(`mutation($id:String!){runAppData…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts[2m > [22mretired built-in Project Task Manager at the actual startup entrypoints[2m > [22mE-003 Studio fresh install: creates no installed copy and records nothing to remove
+[31m[1mAssertionError[22m: expected undefined to match object { status: 'SUCCEEDED', …(2) }[39m
+
+[32m- Expected:[39m 
+{
+  "attempts": 1,
+  "status": "SUCCEEDED",
+  "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+}
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts:[2m336:37[22m[39m
+    [90m334| [39m
+    [90m335| [39m    [35mconst[39m first [33m=[39m [35mawait[39m [34mstudio[39m()[33m;[39m
+    [90m336| [39m    expect(await first.migration()).toMatchObject({ status: "SUCCEEDED…
+    [90m   | [39m                                    [31m^[39m
+    [90m337| [39m    expect(await fs.readFile((await first.migration()).logPath, "utf8"…
+    [90m338| [39m    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqu…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts[2m > [22mretired built-in Project Task Manager at the actual startup entrypoints[2m > [22mE-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2m❯[22m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts:[2m359:43[22m[39m
+    [90m357| [39m    [35mawait[39m [34mblockRemoval[39m([35mfalse[39m)[33m;[39m
+    [90m358| [39m    [35mconst[39m removed [33m=[39m [35mawait[39m [34mstandalone[39m([32m"removed.mjs"[39m)[33m;[39m
+    [90m359| [39m    [34mexpect[39m([35mawait[39m [34mexists[39m([34minstalledCopy[39m()))[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m   | [39m                                          [31m^[39m
+    [90m360| [39m    [34mexpect[39m(removed[33m.[39mprojectTaskManagers)[33m.[39m[34mtoEqual[39m([[33mREPOSITORY_ID[39m])[33m;[39m
+    [90m361| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[90m (4)[39m
+[2m   Start at [22m 09:13:35
+[2m   Duration [22m 8.96s[2m (transform 38ms, setup 16ms, import 56ms, tests 8.41s, environment 0ms)[22m
+

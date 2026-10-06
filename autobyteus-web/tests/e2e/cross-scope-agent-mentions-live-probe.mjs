@@ -1042,7 +1042,7 @@ defineCase('N01', 'New chat: the heading switcher picks the target; `@` mentions
 
 // run-settings-ui-unification AF-009 / REQ-012: the first message of a new run keeps its `@` mentions, and the
 // server admits them. The client list mirrors the server's CollaboratorCandidatePolicy (design AR-001).
-const BUILT_IN_AGENT_IDS = ['autobyteus-daily-assistant', 'autobyteus-project-task-manager', 'autobyteus-retrospective-skill-improver']
+const BUILT_IN_AGENT_IDS = ['autobyteus-daily-assistant', 'autobyteus-retrospective-skill-improver']
 const newChatInput = (page) => page.locator(`${sel('chat-composer')} textarea`).first()
 const typeFirstMessageWithMention = async (page, prefix, query, id, rest) => {
   const input = newChatInput(page)

@@ -1,0 +1,78 @@
+{
+  "startedAt": "2026-10-06T07:22:51.578Z",
+  "baseWorktree": "/private/tmp/ptm-base-api-e2e",
+  "cases": {
+    "TMP-001a-base-beta-install": {
+      "result": "Pass",
+      "stop": "SIGTERM",
+      "observed": {
+        "installedCopyWrittenByBase": {
+          "agent.md": true,
+          "agent-config.json": true
+        },
+        "catalogProjectTaskManagers": [
+          "autobyteus-project-task-manager",
+          "project-task-manager"
+        ],
+        "oldRunId": "project_task_manager_a523491fcf114f8dad9ce81a9577239d",
+        "otherRunId": "field_notes_writer_5b7b1009c0e74f12a2db26f1aaf1b300",
+        "userAgentId": "field-notes-writer",
+        "projectId": "project_6c129214-3159-4ad3-b1c9-796887151cce"
+      }
+    },
+    "TMP-001b-new-version-upgrade": {
+      "result": "Pass",
+      "observed": {
+        "migration": {
+          "migrationId": "20261006_remove_built_in_project_task_manager",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+          "recoveryAction": "NONE"
+        },
+        "catalogProjectTaskManagers": [
+          "project-task-manager"
+        ],
+        "preservedByteIdentical": true,
+        "oldHistoryGroup": {
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "agentName": "Project Task Manager",
+          "runs": [
+            {
+              "runId": "project_task_manager_a523491fcf114f8dad9ce81a9577239d",
+              "summary": "Plan my launch Project.",
+              "isActive": false,
+              "status": "offline"
+            }
+          ]
+        }
+      }
+    },
+    "TMP-002a-history-panel-lists-old-run": {
+      "result": "Fail",
+      "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nSettings\nNo agent or team run selected\n\nChoose an agent or team, or open run history to continue.\n\nChoose an agent or team\nOpen runs/history\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r000\nl/home $ -upgrade-probe-ukNiUl",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-row\"]').filter({ hasText: 'Project Task Manager' }).first()\n\n    at expandAgent (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:171:100)\n    at async expandAll (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:174:35)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:48\n    at async wait (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:109)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:7\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:175:3"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "pid-30081": "already-exited",
+    "pid-30094": "SIGTERM",
+    "pid-30121": "SIGTERM",
+    "provider": "closed",
+    "ownedRootRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-ukNiUl",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-ukNiUl/data",
+    "backendUrl": "http://127.0.0.1:56445",
+    "providerOrigin": "http://127.0.0.1:56444",
+    "frontendUrl": "http://127.0.0.1:56446"
+  },
+  "model": "retired-ptm-fixture:lmstudio@127.0.0.1:56444",
+  "result": "Fail",
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-row\"]').filter({ hasText: 'Project Task Manager' }).first()\n\n    at expandAgent (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:171:100)\n    at async expandAll (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:174:35)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:48\n    at async wait (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:109)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:7\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:175:3",
+  "finishedAt": "2026-10-06T07:24:00.065Z"
+}

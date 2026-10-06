@@ -1,0 +1,54 @@
+[
+  {
+    "type": "CONNECTED",
+    "payload": {
+      "agent_id": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3",
+      "session_id": "3b04d9e0-d49f-4574-a982-77f1cd95cf5a"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "offline",
+      "recoverableBlock": null,
+      "agent_id": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "initializing",
+      "recoverableBlock": null,
+      "agent_id": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "error",
+      "recoverableBlock": null,
+      "agent_id": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3",
+      "error_message": "AgentDefinition with ID autobyteus-project-task-manager not found."
+    }
+  },
+  {
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3",
+      "message_id": "e2e-46af8bf9-6d2f-4638-bbd9-93499434e055",
+      "dedupe_key": "agent_run_input:e2e:e2e-46af8bf9-6d2f-4638-bbd9-93499434e055",
+      "state": "failed",
+      "accepted": false,
+      "duplicate": false,
+      "code": "RUN_NOT_FOUND",
+      "message": "AgentDefinition with ID autobyteus-project-task-manager not found.",
+      "status": {
+        "status": "error",
+        "recoverableBlock": null,
+        "agent_id": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3",
+        "error_message": "AgentDefinition with ID autobyteus-project-task-manager not found."
+      }
+    }
+  }
+]

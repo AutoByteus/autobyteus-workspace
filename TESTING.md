@@ -109,13 +109,13 @@ Project/Task/context/assignment/registry/folder preservation. Original Task and
 full-form API coverage remains. The sibling node-locality suite and
 `tests/fixtures/project-mutation-http-node.mjs` use **current dist**, two private
 HOME/data/SQLite nodes and free ports, real public registration/HTTP/GraphQL,
-Manager bootstrap and graceful restart. Rebuild before running it; do not use
+direct MCP Project tool calls and graceful restart. Rebuild before running it; do not use
 an installed or pre-change backend. Serialize shared-output builds in the same
 worktree: clean/rebuild operations can invalidate another build's module graph.
 
 Session/actor acquisition is scripted; the stored assignment is representative
 current-format state, and the opaque history sentinel proves non-interference
-only. This is not live delegation/history replay, Manager Chat/`@`, desktop,
+only. This is not live delegation/history replay, managing-agent Chat/`@`, desktop,
 paid inference or explicit user-verification proof. Real workspace IDs and the
 complete desired list remain caller inputs; no discovery tool is supplied.
 Inspect actual saved-value and cleanup receipts: owned children must exit,

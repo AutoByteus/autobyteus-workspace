@@ -1,0 +1,112 @@
+{
+  "startedAt": "2026-10-06T07:27:01.954Z",
+  "baseWorktree": "/private/tmp/ptm-base-api-e2e",
+  "cases": {
+    "TMP-001a-base-beta-install": {
+      "result": "Pass",
+      "stop": "SIGTERM",
+      "observed": {
+        "installedCopyWrittenByBase": {
+          "agent.md": true,
+          "agent-config.json": true
+        },
+        "catalogProjectTaskManagers": [
+          "autobyteus-project-task-manager",
+          "project-task-manager"
+        ],
+        "oldRunId": "project_task_manager_fedd439d17584fcaa44c3f1d9eb0210e",
+        "otherRunId": "field_notes_writer_09ca483d76114a2bae0e46a491944f90",
+        "userAgentId": "field-notes-writer",
+        "projectId": "project_0bedcddc-55e5-4f87-9a4a-06cd8f7eaaa7"
+      }
+    },
+    "TMP-001b-new-version-upgrade": {
+      "result": "Pass",
+      "observed": {
+        "migration": {
+          "migrationId": "20261006_remove_built_in_project_task_manager",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+          "recoveryAction": "NONE"
+        },
+        "catalogProjectTaskManagers": [
+          "project-task-manager"
+        ],
+        "preservedByteIdentical": true,
+        "oldHistoryGroup": {
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "agentName": "Project Task Manager",
+          "runs": [
+            {
+              "runId": "project_task_manager_fedd439d17584fcaa44c3f1d9eb0210e",
+              "summary": "Plan my launch Project.",
+              "isActive": false,
+              "status": "offline"
+            }
+          ]
+        }
+      }
+    },
+    "TMP-002a-history-panel-lists-old-run": {
+      "result": "Pass",
+      "observed": {
+        "agentRows": [
+          "FN\nField Notes Writer\n(1)",
+          "PT\nProject Task Manager\n(1)"
+        ],
+        "runRows": [
+          "Write field notes.\nnow",
+          "Plan my launch Project.\nnow"
+        ]
+      }
+    },
+    "TMP-002b-open-and-read-old-run": {
+      "result": "Pass",
+      "observed": {
+        "readable": true
+      }
+    },
+    "TMP-002c-continue-old-run-fails-like-deleted-agent": {
+      "result": "Pass",
+      "observed": {
+        "failureLines": [
+          "Error",
+          "An Error Occurred",
+          "AgentDefinition with ID autobyteus-project-task-manager not found."
+        ],
+        "pageErrorsSoFar": []
+      }
+    },
+    "TMP-002d-app-keeps-working": {
+      "result": "Pass",
+      "observed": {
+        "otherRunReplies": 2,
+        "runRows": [
+          "Write field notes.\nnow",
+          "Plan my launch Project.\nnow"
+        ]
+      }
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "pid-35920": "already-exited",
+    "pid-36101": "SIGTERM",
+    "pid-36156": "SIGTERM",
+    "provider": "closed",
+    "ownedRootRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-hTw9EB",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-hTw9EB/data",
+    "backendUrl": "http://127.0.0.1:57178",
+    "providerOrigin": "http://127.0.0.1:57177",
+    "frontendUrl": "http://127.0.0.1:57179"
+  },
+  "model": "retired-ptm-fixture:lmstudio@127.0.0.1:57177",
+  "result": "Pass",
+  "finishedAt": "2026-10-06T07:27:32.339Z"
+}

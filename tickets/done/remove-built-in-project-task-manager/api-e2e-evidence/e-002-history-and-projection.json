@@ -1,0 +1,45 @@
+{
+  "group": {
+    "agentDefinitionId": "autobyteus-project-task-manager",
+    "agentName": "Project Task Manager",
+    "runs": [
+      {
+        "runId": "project_task_manager_356fa8d824694236a06fb9afe7b9c0f3",
+        "status": "offline",
+        "isActive": false
+      }
+    ]
+  },
+  "conversation": [
+    {
+      "kind": "message",
+      "role": "user",
+      "messageId": "e2e-920059f0-2843-4de9-ba16-cea8110bf21f",
+      "dedupeKey": "agent_run_input:e2e:e2e-920059f0-2843-4de9-ba16-cea8110bf21f",
+      "content": "Plan my launch Project.",
+      "media": null,
+      "ts": 1791270798.451
+    },
+    {
+      "kind": "message",
+      "role": "assistant",
+      "content": "Reply to: launch plan",
+      "media": null,
+      "ts": 1791270798.472
+    }
+  ],
+  "migration": {
+    "migrationId": "20261006_remove_built_in_project_task_manager",
+    "status": "SUCCEEDED",
+    "attempts": 2,
+    "recoveryAction": "NONE",
+    "canRetry": false,
+    "requiredOnStartup": true,
+    "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+    "errorMessage": null,
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-e2e-7NWPQ2/logs/app-data-migrations/20261006_remove_built_in_project_task_manager-2026-10-06T07-13-20-111Z.log"
+  },
+  "serverLogTail": [
+    "SEND_MESSAGE command not accepted for agent run project_task_manager_356fa8d824694236a06fb9afe7b9c0f3: [RUN_NOT_FOUND] AgentDefinition with ID autobyteus-project-task-manager not found."
+  ]
+}

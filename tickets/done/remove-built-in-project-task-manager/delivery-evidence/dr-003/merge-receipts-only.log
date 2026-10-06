@@ -1,0 +1,5 @@
+Merge made by the 'ort' strategy.
+ .../delivery-revision-record.md                    | 26 +++++++++
+ .../handoff-summary.md                             |  7 ++-
+ .../release-deployment-report.md                   | 68 ++++++++++++++++++----
+ 3 files changed, 90 insertions(+), 11 deletions(-)

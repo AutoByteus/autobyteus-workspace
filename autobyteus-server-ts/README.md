@@ -189,6 +189,18 @@ listable, and those runs replay as ordinary user and assistant messages. The
 Docker all-in-one `gateway.log` file in the logs directory and any Docker named
 volume created for gateway memory are outside these roots and are not removed.
 
+Required startup migration `20261006_remove_built_in_project_task_manager`
+permanently deletes the installed copy of the retired built-in Project Task
+Manager, `agents/autobyteus-project-task-manager/` in app data, with no backup.
+Earlier builds rewrote that folder from a shipped template on every start, so it
+holds no user edits. A missing folder is skipped. A folder that cannot be removed
+records `FAILED` without blocking startup. The migration is startup-only: it is
+retried on the next start, not from the Server Migrations retry action, because
+the agent catalog is built once at startup. Nothing else is touched: run history
+(including conversations with the retired agent, which stay readable but can no
+longer be continued), Projects and Tasks, other agents, and every agent in
+package roots, including the agent repository's `project-task-manager`.
+
 ### Production migration practice
 
 - Follow the canonical

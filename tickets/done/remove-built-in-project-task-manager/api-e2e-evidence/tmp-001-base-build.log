@@ -1,0 +1,102 @@
+Preparing worktree (detached HEAD 1aa918298)
+Updating files:  12% (6498/52902)Updating files:  13% (6878/52902)Updating files:  14% (7407/52902)Updating files:  15% (7936/52902)Updating files:  16% (8465/52902)Updating files:  17% (8994/52902)Updating files:  18% (9523/52902)Updating files:  18% (9725/52902)Updating files:  19% (10052/52902)Updating files:  20% (10581/52902)Updating files:  21% (11110/52902)Updating files:  22% (11639/52902)Updating files:  23% (12168/52902)Updating files:  24% (12697/52902)Updating files:  25% (13226/52902)Updating files:  26% (13755/52902)Updating files:  26% (13886/52902)Updating files:  27% (14284/52902)Updating files:  28% (14813/52902)Updating files:  29% (15342/52902)Updating files:  30% (15871/52902)Updating files:  31% (16400/52902)Updating files:  32% (16929/52902)Updating files:  32% (16953/52902)Updating files:  33% (17458/52902)Updating files:  34% (17987/52902)Updating files:  35% (18516/52902)Updating files:  36% (19045/52902)Updating files:  37% (19574/52902)Updating files:  38% (20103/52902)Updating files:  39% (20632/52902)Updating files:  39% (20972/52902)Updating files:  40% (21161/52902)Updating files:  41% (21690/52902)Updating files:  42% (22219/52902)Updating files:  43% (22748/52902)Updating files:  44% (23277/52902)Updating files:  45% (23806/52902)Updating files:  45% (23848/52902)Updating files:  46% (24335/52902)Updating files:  47% (24864/52902)Updating files:  48% (25393/52902)Updating files:  49% (25922/52902)Updating files:  50% (26451/52902)Updating files:  51% (26981/52902)Updating files:  52% (27510/52902)Updating files:  53% (28039/52902)Updating files:  54% (28568/52902)Updating files:  54% (28653/52902)Updating files:  55% (29097/52902)Updating files:  56% (29626/52902)Updating files:  57% (30155/52902)Updating files:  58% (30684/52902)Updating files:  59% (31213/52902)Updating files:  60% (31742/52902)Updating files:  61% (32271/52902)Updating files:  62% (32800/52902)Updating files:  62% (33271/52902)Updating files:  63% (33329/52902)Updating files:  64% (33858/52902)Updating files:  65% (34387/52902)Updating files:  66% (34916/52902)Updating files:  67% (35445/52902)Updating files:  68% (35974/52902)Updating files:  69% (36503/52902)Updating files:  69% (36560/52902)Updating files:  70% (37032/52902)Updating files:  71% (37561/52902)Updating files:  72% (38090/52902)Updating files:  73% (38619/52902)Updating files:  74% (39148/52902)Updating files:  75% (39677/52902)Updating files:  76% (40206/52902)Updating files:  77% (40735/52902)Updating files:  78% (41264/52902)Updating files:  78% (41710/52902)Updating files:  79% (41793/52902)Updating files:  80% (42322/52902)Updating files:  81% (42851/52902)Updating files:  82% (43380/52902)Updating files:  83% (43909/52902)Updating files:  84% (44438/52902)Updating files:  84% (44523/52902)Updating files:  85% (44967/52902)Updating files:  86% (45496/52902)Updating files:  87% (46025/52902)Updating files:  88% (46554/52902)Updating files:  89% (47083/52902)Updating files:  89% (47580/52902)Updating files:  90% (47612/52902)Updating files:  91% (48141/52902)Updating files:  92% (48670/52902)Updating files:  93% (49199/52902)Updating files:  94% (49728/52902)Updating files:  95% (50257/52902)Updating files:  96% (50786/52902)Updating files:  96% (50989/52902)Updating files:  97% (51315/52902)Updating files:  98% (51844/52902)Updating files:  99% (52373/52902)Updating files: 100% (52902/52902)Updating files: 100% (52902/52902), done.
+HEAD is now at 1aa918298 docs(delivery): record delegated-row-clean-style finalization and v1.4.95-beta.3 receipts
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1689
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1689, reused 971, downloaded 0, added 0
+Progress: resolved 1689, reused 1687, downloaded 0, added 210
+Progress: resolved 1689, reused 1687, downloaded 0, added 481
+Progress: resolved 1689, reused 1687, downloaded 0, added 612
+Progress: resolved 1689, reused 1687, downloaded 0, added 845
+Progress: resolved 1689, reused 1687, downloaded 0, added 1024
+Progress: resolved 1689, reused 1687, downloaded 0, added 1421
+Progress: resolved 1689, reused 1687, downloaded 0, added 1689, done
+ WARN  Failed to create bin at /private/tmp/ptm-base-api-e2e/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ptm-base-api-e2e/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ptm-base-api-e2e/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ptm-base-api-e2e/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/tmp/ptm-base-api-e2e/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/tmp/ptm-base-api-e2e/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ptm-base-api-e2e/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ptm-base-api-e2e/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ptm-base-api-e2e/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9.5s using pnpm v10.28.2
+
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/ptm-base-api-e2e/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ptm-base-api-e2e/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 122ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/ptm-base-api-e2e/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ptm-base-api-e2e/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 91ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.20                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 build /private/tmp/ptm-base-api-e2e/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /private/tmp/ptm-base-api-e2e/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+BASE_SETUP_EXIT 0

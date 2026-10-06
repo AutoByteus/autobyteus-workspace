@@ -1,0 +1,685 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [32m✓[39m tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 24899[2mms[22m[39m
+     [33m[2m✓[22m[39m E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart [33m 5575[2mms[22m[39m
+     [33m[2m✓[22m[39m E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued [33m 6391[2mms[22m[39m
+     [33m[2m✓[22m[39m E-003 Studio fresh install: creates no installed copy and records nothing to remove [33m 5079[2mms[22m[39m
+     [33m[2m✓[22m[39m E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record [33m 7852[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts[2m > [22m[2mfamily candidate scope and durable interruption boundaries[2m > [22m[2madds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification
+[22m[39mFAMILY_MIGRATION_IO_ONLY {"addedExcludedBytes":22020096,"small":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":6.288582999999562},"large":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":1.948250000000371}}
+
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 2029[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1703[2mms[22m[39m
+(node:54976) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/custom-provider-readable-id-app-data-migration.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 1156[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:54981) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts [2m([22m[2m24 tests[22m[2m)[22m[33m 977[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts[2m > [22m[2minitial family locator transition: actual files, no user data[2m > [22m[2mpreserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 815[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 694[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:54999) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts[2m > [22m[2mruns the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/authoring-migration-PYrC9M
+
+[90mstdout[2m | tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts[2m > [22m[2mruns the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/unit/app-data-migrations/definition-nonmutation-startup.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 762[2mms[22m[39m
+   [33m[2m✓[22m[39m runs the complete production registry on a fresh pre-ticket data root, preserving authored configs while migrating runtime history [33m 605[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:55005) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts[2m > [22m[2mAgentOrg first-message summary startup migration[2m > [22m[2mis registered after every exact prerequisite as required startup-only
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-history-first-message-summary-v1-app-data-migration.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 479[2mms[22m[39m
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-iCNlg9
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstderr[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mSkipping agent 'autobyteus-project-task-manager' due to parse error: agent.md must start with '---' frontmatter delimiter (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-iCNlg9/agents/autobyteus-project-task-manager/agent.md)
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mInitialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mneither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-fItLyv
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2msyncs registry-defined built-ins and initializes only declared built-in settings
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-2t1JDU
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mpreserves existing built-in settings and leaves featured settings untouched
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-bX5DZ5
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2moverwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents
+[22m[39mAgent definition cache populated with 4 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-ShcJWc
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-ShcJWc
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite user package roots while syncing the app-data built-ins
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-opMNAP
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstderr[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mSkipping agent 'autobyteus-memory-compactor' due to parse error: agent.md must start with '---' frontmatter delimiter (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-opMNAP/agents/autobyteus-memory-compactor/agent.md)
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mdoes not overwrite even invalid historical compactor instructions
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-29PN4M
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mcreates the Daily Assistant at the stable default ID with the exact approved template and config
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-x5dHqm
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrefreshes an existing same-ID old identity without rewriting history or saved references
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-iEieNi
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mIn-memory cache: Updated agent definition with ID autobyteus-daily-assistant.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mAgent Definition with ID autobyteus-daily-assistant updated successfully.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mreplaces edited files and agent-local skills from the template on the next startup
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-8qajEW
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts[2m > [22m[2mBuiltInAgentBootstrapper[2m > [22m[2mDaily Assistant (platform-owned)[2m > [22m[2mrecreates a missing file from the template
+[22m[39mAgent definition cache populated with 2 items.
+
+ [32m✓[39m tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 385[2mms[22m[39m
+(node:55011) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 399[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:55021) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/released-tree-skip-version-GczAGq
+
+[90mstdout[2m | tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts[2m > [22m[2mruns 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 264[2mms[22m[39m
+(node:55034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 249[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:55043) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts[2m > [22m[2mMigrateNativeWorkingContextSnapshotsV5Migration[2m > [22m[2mruns the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 251[2mms[22m[39m
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:55049) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-hQNy2C/app-data
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mAgent definition cache populated with 4 items.
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mremoves the installed copy once, lists exactly one Project Task Manager and preserves everything else across restarts
+[22m[39mAgent definition cache populated with 4 items.
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/app-data
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstderr[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mrecords nothing to remove on an install that never had the built-in
+[22m[39mAgent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-eW77Q0/agent-repository
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/retired-ptm-startup-4z6YbI/app-data
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mAgent definition cache populated with 5 items.
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 22 predefined settings
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts[2m > [22m[2mRetired built-in Project Task Manager on the startup path[2m > [22m[2mlets startup continue when the removal fails, then retries and succeeds on the next start
+[22m[39mAgent definition cache populated with 4 items.
+
+ [32m✓[39m tests/integration/app-data-migrations/remove-built-in-project-task-manager-startup.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 233[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:55051) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts[2m > [22m[2mprojects-per-folder-v1 migration (SR-024)[2m > [22m[2mis a registered required STARTUP_ONLY definition
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 183[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:55366) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/app-data-migrations/app-data-migration-runner.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+ [32m✓[39m tests/integration/app-data-migrations/app-data-migration-summary-schema-migration.integration.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 9764[2mms[22m[39m
+     [33m[2m✓[22m[39m rewrites a large released summary in place and preserves nullable and scalar evidence [33m 1752[2mms[22m[39m
+     [33m[2m✓[22m[39m applies cleanly to a fresh database [33m 753[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back the legacy schema and value for wrong JSON source type [33m 1433[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back the legacy schema and value for negative integer [33m 1347[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back the legacy schema and value for fractional number [33m 1452[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back the legacy schema and value for missing count [33m 1470[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back the legacy schema and value for malformed JSON [33m 1557[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/team-run-v1-package-promoter.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 175[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts[2m > [22m[2mRunHistoryIndexV2AppDataMigration[2m > [22m[2muses persistence-only label lookup without claiming the process definition service
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 116[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/custom-provider-v1-app-data-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 107[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/app-data-migration-record-repository.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/raw-trace-rotation-layout-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 122[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/team-run-migration-state-classifier.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 112[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/team-run-history-index-reconciler.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56405) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts[2m > [22m[2mTeamRunExecutionTreeV1AppDataMigration[2m > [22m[2mregisters the final TeamRun migration exactly once without the removed intermediate ID
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 80[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/remove-external-messaging-data-migration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 87[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts[2m > [22m[2mRemoveExternalRuntimeWorkingContextSnapshotsMigration[2m > [22m[2mpreserves snapshots when metadata is invalid or mismatched and reports actionable failures
+[22m[39mFailed reading run metadata for invalid-run: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+[90mstderr[2m | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts[2m > [22m[2mRemoveExternalRuntimeWorkingContextSnapshotsMigration[2m > [22m[2mpreserves snapshots when metadata is invalid or mismatched and reports actionable failures
+[22m[39mFailed reading run metadata for mismatched-directory: Run metadata identity or required fields are invalid.
+
+[90mstderr[2m | tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts[2m > [22m[2mRemoveExternalRuntimeWorkingContextSnapshotsMigration[2m > [22m[2mreports a failed unlink, retains stale generic inspection with independent raws, and removes it on retry
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-snapshot-cleanup-YIjvau/agents/codex-unlink-failure/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 88[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56409) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts[2m > [22m[2mTeamAgentMemoryLayoutAppDataMigration[2m > [22m[2mregisters required-on-startup ANYTIME recovery after V1 and gates canonical snapshot migrations
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/team-agent-memory-layout-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts[2m > [22m[2mTeamRunHistoryIndexV2AppDataMigration[2m > [22m[2mkeeps optional persistence label fallback local without claiming the process service
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+Initialized server settings service with 22 predefined settings
+
+ [32m✓[39m tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 81[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56419) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts[2m > [22m[2mTeamRunExecutionTreeV2AppDataMigration[2m > [22m[2mis registered once immediately after its memory-layout prerequisite
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/team-run-execution-tree-v2-app-data-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/remove-built-in-project-task-manager-migration.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56423) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts[2m > [22m[2mTeamCommunicationProjectionAddressMigration[2m > [22m[2mis registered as a startup-required app-data migration
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/team-run-predecessor-source-resolver.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/released-skill-access-mode-frozen-shapes.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56427) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts[2m > [22m[2mRawTraceActiveFileNameMigration[2m > [22m[2mregisters external cleanup then both raw-layout prerequisites before native snapshot conversion
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/remove-global-skill-discovery-mode-migration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/legacy-token-usage-run-fold.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/custom-provider-migration-name-snapshot.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/custom-provider-migration-name-snapshot.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-token-attribution-repository.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 1244[2mms[22m[39m
+     [33m[2m✓[22m[39m enumerates 501 exact claimed roots over three pages without duplicates or omissions [33m 306[2mms[22m[39m
+     [33m[2m✓[22m[39m rolls back an exact root when member 251 has a contradictory claim, then corrects all 501 members and validates current readiness [33m 938[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/predecessor-team-communication-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/agent-org-token-attribution-transition-classification.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/team-execution-address-normalizer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/token-usage-team-run-v1-row-planner.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/integration/app-data-migrations/team-context-file-golden-files.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/app-data-migrations/team-context-file-golden-files.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 93[2mms[22m[39m
+[90mstdout[2m | tests/integration/app-data-migrations/agent-org-exact-reference.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/app-data-migrations/agent-org-exact-reference.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 203[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/legacy-token-usage-source-decoder.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/predecessor-team-metadata-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/app-data-migration-summary-formatter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/built-in-agents/built-in-agent-templates.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/built-in-agents/built-in-agent-templates.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/app-data-migrations/predecessor-team-run-planner.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m55 passed[39m[22m[90m (55)[39m
+[2m      Tests [22m [1m[32m369 passed[39m[22m[90m (369)[39m
+[2m   Start at [22m 09:33:37
+[2m   Duration [22m 98.50s[2m (transform 7.26s, setup 342ms, import 42.57s, tests 48.39s, environment 5ms)[22m
+

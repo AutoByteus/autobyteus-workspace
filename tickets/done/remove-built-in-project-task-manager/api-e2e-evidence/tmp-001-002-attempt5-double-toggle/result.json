@@ -1,0 +1,78 @@
+{
+  "startedAt": "2026-10-06T07:24:12.652Z",
+  "baseWorktree": "/private/tmp/ptm-base-api-e2e",
+  "cases": {
+    "TMP-001a-base-beta-install": {
+      "result": "Pass",
+      "stop": "SIGTERM",
+      "observed": {
+        "installedCopyWrittenByBase": {
+          "agent.md": true,
+          "agent-config.json": true
+        },
+        "catalogProjectTaskManagers": [
+          "autobyteus-project-task-manager",
+          "project-task-manager"
+        ],
+        "oldRunId": "project_task_manager_e06f2a0f43f9440aaf7185753ac03408",
+        "otherRunId": "field_notes_writer_68bb74504220478c89c2108a1e69e331",
+        "userAgentId": "field-notes-writer",
+        "projectId": "project_9f9c5e62-d6c2-4534-94ea-49137f0a77a0"
+      }
+    },
+    "TMP-001b-new-version-upgrade": {
+      "result": "Pass",
+      "observed": {
+        "migration": {
+          "migrationId": "20261006_remove_built_in_project_task_manager",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+          "recoveryAction": "NONE"
+        },
+        "catalogProjectTaskManagers": [
+          "project-task-manager"
+        ],
+        "preservedByteIdentical": true,
+        "oldHistoryGroup": {
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "agentName": "Project Task Manager",
+          "runs": [
+            {
+              "runId": "project_task_manager_e06f2a0f43f9440aaf7185753ac03408",
+              "summary": "Plan my launch Project.",
+              "isActive": false,
+              "status": "offline"
+            }
+          ]
+        }
+      }
+    },
+    "TMP-002a-history-panel-lists-old-run": {
+      "result": "Fail",
+      "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nNo task history in this workspace.\nworkspace\nSettings\nNo agent or team run selected\n\nChoose an agent or team, or open run history to continue.\n\nChoose an agent or team\nOpen runs/history\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r000\na/home $ -upgrade-probe-GZpV6a",
+      "error": "locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-row\"]').first() to be visible\n\n    at expandAll (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:177:71)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:185:48\n    at async wait (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:109)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:185:7\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:3"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "pid-30638": "already-exited",
+    "pid-30651": "SIGTERM",
+    "pid-30679": "SIGTERM",
+    "provider": "closed",
+    "ownedRootRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-GZpV6a",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-GZpV6a/data",
+    "backendUrl": "http://127.0.0.1:56626",
+    "providerOrigin": "http://127.0.0.1:56625",
+    "frontendUrl": "http://127.0.0.1:56627"
+  },
+  "model": "retired-ptm-fixture:lmstudio@127.0.0.1:56625",
+  "result": "Fail",
+  "error": "locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-agent-row\"]').first() to be visible\n\n    at expandAll (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:177:71)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:185:48\n    at async wait (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:38:109)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:185:7\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:180:3",
+  "finishedAt": "2026-10-06T07:25:20.580Z"
+}

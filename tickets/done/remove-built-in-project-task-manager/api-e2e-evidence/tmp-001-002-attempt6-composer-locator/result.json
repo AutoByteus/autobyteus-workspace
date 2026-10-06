@@ -1,0 +1,97 @@
+{
+  "startedAt": "2026-10-06T07:25:37.880Z",
+  "baseWorktree": "/private/tmp/ptm-base-api-e2e",
+  "cases": {
+    "TMP-001a-base-beta-install": {
+      "result": "Pass",
+      "stop": "SIGTERM",
+      "observed": {
+        "installedCopyWrittenByBase": {
+          "agent.md": true,
+          "agent-config.json": true
+        },
+        "catalogProjectTaskManagers": [
+          "autobyteus-project-task-manager",
+          "project-task-manager"
+        ],
+        "oldRunId": "project_task_manager_7d5d6a19caa34c76a2a746d9109ac6a9",
+        "otherRunId": "field_notes_writer_f24ccb2af57049c987ccf2fc6d818f94",
+        "userAgentId": "field-notes-writer",
+        "projectId": "project_99363259-15e7-4739-bcb7-a9ea414a4f2d"
+      }
+    },
+    "TMP-001b-new-version-upgrade": {
+      "result": "Pass",
+      "observed": {
+        "migration": {
+          "migrationId": "20261006_remove_built_in_project_task_manager",
+          "status": "SUCCEEDED",
+          "attempts": 1,
+          "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+          "recoveryAction": "NONE"
+        },
+        "catalogProjectTaskManagers": [
+          "project-task-manager"
+        ],
+        "preservedByteIdentical": true,
+        "oldHistoryGroup": {
+          "agentDefinitionId": "autobyteus-project-task-manager",
+          "agentName": "Project Task Manager",
+          "runs": [
+            {
+              "runId": "project_task_manager_7d5d6a19caa34c76a2a746d9109ac6a9",
+              "summary": "Plan my launch Project.",
+              "isActive": false,
+              "status": "offline"
+            }
+          ]
+        }
+      }
+    },
+    "TMP-002a-history-panel-lists-old-run": {
+      "result": "Pass",
+      "observed": {
+        "agentRows": [
+          "FN\nField Notes Writer\n(1)",
+          "PT\nProject Task Manager\n(1)"
+        ],
+        "runRows": [
+          "Write field notes.\nnow",
+          "Plan my launch Project.\nnow"
+        ]
+      }
+    },
+    "TMP-002b-open-and-read-old-run": {
+      "result": "Pass",
+      "observed": {
+        "readable": true
+      }
+    },
+    "TMP-002c-continue-old-run-fails-like-deleted-agent": {
+      "result": "Fail",
+      "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('textbox', { name: 'Message' }).last()\n\n    at sendUi (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:163:51)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:206:11\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:204:3",
+      "body": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nworkspace\nFN\nField Notes Writer\n(1)\nWrite field notes.\nnow\nPT\nProject Task Manager\n(1)\nPlan my launch Project.\nnow\nSettings\nPT\nPlan my launch Project.\nOffline\nYou\nPlan my launch Project.\nPT\nProject Task Manager\n\nReply to: launch plan\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\n0 running · 0 total\nActivity\n1 Events\nSystem instructions\nAutoByteus-supplied · Native configured system prompt\nCaptured Oct 6, 2026, 9:25:41 AM · 7659 characters\nAVAILABLE"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "pid-32790": "already-exited",
+    "pid-32803": "SIGTERM",
+    "pid-32828": "SIGTERM",
+    "provider": "closed",
+    "ownedRootRemoved": true
+  },
+  "isolation": {
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-lb857T",
+    "data": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ptm-upgrade-probe-lb857T/data",
+    "backendUrl": "http://127.0.0.1:56857",
+    "providerOrigin": "http://127.0.0.1:56856",
+    "frontendUrl": "http://127.0.0.1:56858"
+  },
+  "model": "retired-ptm-fixture:lmstudio@127.0.0.1:56856",
+  "result": "Fail",
+  "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('textbox', { name: 'Message' }).last()\n\n    at sendUi (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:163:51)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:206:11\n    at async record (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:60:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager/tickets/in-progress/remove-built-in-project-task-manager/api-e2e-evidence/tmp-001-002-upgrade-browser-probe.mjs:204:3",
+  "finishedAt": "2026-10-06T07:26:40.684Z"
+}
