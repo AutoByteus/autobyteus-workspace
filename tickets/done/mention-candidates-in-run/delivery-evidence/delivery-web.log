@@ -1,0 +1,161 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mention-candidates-in-run/autobyteus-web
+
+stderr | components/chat/__tests__/chatThinkingMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatThinkingControl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/chatDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatThinkingMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatThinkingControl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/chatDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/chatThinkingMenu.spec.ts (9 tests) 6ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts (5 tests) 46ms
+ ✓ components/chat/__tests__/ChatThinkingControl.spec.ts (9 tests) 69ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts (11 tests) 110ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests) 216ms
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts > focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts (1 test) 32ms
+ ✓ stores/__tests__/chatDraftStore.spec.ts (20 tests) 39ms
+ ✓ components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts (3 tests) 66ms
+ ✓ components/agentInput/__tests__/TeamComposerPublication.spec.ts (4 tests) 109ms
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatMessageInput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatModelMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaborators/__tests__/collaboratorMentionText.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaborators/__tests__/draftMentionEligibility.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatApprovalToggle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatComposerMenus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatMessageInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatModelMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaborators/__tests__/collaboratorMentionText.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/collaborators/__tests__/collaboratorMentionText.spec.ts (6 tests) 4ms
+ ✓ components/chat/__tests__/ChatModelMenu.spec.ts (5 tests) 61ms
+ ✓ components/chat/__tests__/ChatMessageInput.spec.ts (4 tests) 58ms
+stdout | components/chat/__tests__/chatComposerMenus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaborators/__tests__/draftMentionEligibility.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/chatComposerMenus.spec.ts (4 tests) 4ms
+stdout | components/chat/__tests__/ChatApprovalToggle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/collaborators/__tests__/draftMentionEligibility.spec.ts (4 tests) 4ms
+ ✓ components/chat/__tests__/ChatApprovalToggle.spec.ts (2 tests) 13ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (8 tests) 128ms
+stdout | components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts (2 tests) 12ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 58ms
+
+ Test Files  18 passed (18)
+      Tests  119 passed (119)
+   Start at  17:40:35
+   Duration  10.85s (transform 4.61s, setup 79.04s, collect 4.31s, tests 1.04s, environment 4.85s, prepare 2.99s)
+

@@ -256,16 +256,21 @@ describe('chatDraftStore', () => {
       expect(store.draft!.teamAgentOverrides).toEqual({})
     })
 
-    it('drops a chosen mention that the new target already places (its text stays)', () => {
+    it('keeps a chosen mention the new Team target places, and drops one that becomes the target itself (its text stays)', () => {
       mocks.definitions.push({ id: 'writer-agent', name: 'Writer', ownershipScope: 'SHARED' })
       const store = useChatDraftStore()
       const draft = store.startForDefinition({ kind: 'agent', agentDefinitionId: 'codex' }, {
         carried: { workspace: null, runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.5', llmConfig: null, autoExecuteTools: true },
       })
       draft.context.requirement = '@Writer please'
-      draft.context.requestedMentions = [{ kind: 'agent', definitionId: 'writer-agent', name: 'Writer' }]
+      const writer = { kind: 'agent' as const, definitionId: 'writer-agent', name: 'Writer' }
+      draft.context.requestedMentions = [writer]
 
+      // A member of the Team being launched can be mentioned (REQ-005).
       store.retarget({ kind: 'team', teamDefinitionId: 'team-1' })
+      expect(store.draft!.context.requestedMentions).toEqual([writer])
+      // The target's own definition never can.
+      store.retarget({ kind: 'agent', agentDefinitionId: 'writer-agent' })
       expect(store.draft!.context.requestedMentions).toEqual([])
       expect(store.draft!.context.requirement).toBe('@Writer please')
     })

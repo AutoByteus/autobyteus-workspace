@@ -5,8 +5,10 @@ import {
   collaboratorMentionsDtoSchema,
 } from "../dist/index.js";
 
-const productTeam = { name: "Product Team", kind: "agent_team", address: "/product_team" };
-const reviewer = { name: "Code Reviewer (v2)", kind: "agent", address: "/code_reviewer" };
+const productTeam = { name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false };
+const reviewer = { name: "Code Reviewer (v2)", kind: "agent", address: "/code_reviewer", inRun: false };
+const GUIDANCE = "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.";
+const IN_RUN_GUIDANCE = "One already in this run can instead be messaged directly with send_message_to at its address, or use delegate_task for a separate copy.";
 
 test("composes the note after the user's text, steering to delegate_task, and parses it back", () => {
   const content = collaboratorMentionNote.compose("Please ask @Product Team for a UI", [productTeam, reviewer]);
@@ -16,12 +18,35 @@ test("composes the note after the user's text, steering to delegate_task, and pa
     "[Mentioned collaborators]",
     "- Product Team (Agent Team) at /product_team",
     "- Code Reviewer (v2) (Agent) at /code_reviewer",
-    "Delegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and removes it from the run.",
+    GUIDANCE,
   ].join("\n"));
   assert.deepEqual(collaboratorMentionNote.parse(content), {
     text: "Please ask @Product Team for a UI",
     collaborators: [productTeam, reviewer],
   });
+});
+
+test("an entry already in the run is marked, and the guidance then also offers send_message_to (AC-003)", () => {
+  const packageCreator = { name: "Agent Package Creator", kind: "agent", address: "/agent_package_creator", inRun: true };
+  const content = collaboratorMentionNote.compose("please ask @Agent Package Creator", [packageCreator, productTeam]);
+  assert.equal(content, [
+    "please ask @Agent Package Creator",
+    "",
+    "[Mentioned collaborators]",
+    "- Agent Package Creator (Agent) at /agent_package_creator, already in this run",
+    "- Product Team (Agent Team) at /product_team",
+    `${GUIDANCE} ${IN_RUN_GUIDANCE}`,
+  ].join("\n"));
+  assert.deepEqual(collaboratorMentionNote.parse(content), {
+    text: "please ask @Agent Package Creator",
+    collaborators: [packageCreator, productTeam],
+  });
+});
+
+test("a note with no in-run mention is byte-identical to the previous release (AC-004)", () => {
+  const content = collaboratorMentionNote.compose("x", [reviewer]);
+  assert.equal(content, `x\n\n[Mentioned collaborators]\n- Code Reviewer (v2) (Agent) at /code_reviewer\n${GUIDANCE}`);
+  assert.ok(!content.includes("already in this run"));
 });
 
 test("a note saved with the collaborator-messaging guidance still parses", () => {

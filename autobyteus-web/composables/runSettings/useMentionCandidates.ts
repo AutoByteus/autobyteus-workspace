@@ -41,7 +41,7 @@ export function useMentionCandidates(source: Ref<MentionCandidateSource | null>)
     return current.kind === 'draft' ? current.focusedName : current.scope.focusedName
   })
 
-  /** Each opening asks again: what is "in the run" changes as collaborators join. */
+  /** Each opening asks again: the shared catalog (and the run's own definition) can change. */
   const refresh = (): void => {
     const current = source.value
     if (!current) return

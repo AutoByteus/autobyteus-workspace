@@ -364,17 +364,24 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   (`{kind, definition_id}[]`, at most 8) is resolved by the root
   (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
   inside its operation gate, before it is posted. Every mention is re-validated
-  by the shared candidate policy (shared, not an Org, not a built-in, not
-  already in the run) and answered with its name, kind and address: its entry's
-  address when the definition is already a collaborator, otherwise its catalog
-  address. **Nothing is written, allocated, hosted or published.** The `@` caller
+  by the shared candidate policy (`requireEligible`: shared, not an Org, not a
+  built-in, not the run's own definition; it may already be in the run) and
+  answered with its name, kind, address and `inRun`: a definition already in the
+  run resolves to its collaborator entry's address, else its preferred in-run
+  placement address (a configured member, an Org mounted Team, a collaborator-Team
+  member); any other to its catalog address. **Nothing is written, allocated,
+  hosted or published.** The `@` caller
   (Team, Org and collaboration stream handlers, and the standalone host path
   `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned collaborators]`
   note with each name, kind and address, telling the agent to `delegate_task` to
   the address, follow up by the returned run ID and, when the result also has a
   `task_id`, mark that Task DONE with `create_or_update_task` once the work is
-  finished. Runnability is checked when the agent delegates. An ineligible
+  finished. An entry already in the run reads `- Name (Agent) at /address, already
+  in this run`, and the guidance then adds that such an agent or team can instead
+  be messaged directly with `send_message_to` at its address, or `delegate_task`
+  used for a separate copy; a note with no in-run mention is unchanged.
+  Runnability is checked when the agent delegates. An ineligible
   mention returns `COLLABORATOR_ADD_FAILED` with its name and reason: nothing is
   posted and the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`,
   Team-stream `ERROR`, collaboration-stream ack; each carries
@@ -383,7 +390,10 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   still parses the guidance lines of notes saved by earlier releases.
 - **Admission (agent-initiated bring-in, DS-001).** `CollaboratorAdmission.ensure`
   (`collaborator-admission.ts`), run by the root's `*Collaborators.bringInAt`:
-  1. the definition is re-validated by the shared candidate policy;
+  1. the definition is re-validated by the shared candidate policy
+     (`requireAdmissible` = `requireEligible` plus "not already in the run unless
+     it is a collaborator whose entry is reused"), so a bring-in never creates a
+     second instance;
   2. each new placement (an Agent, or every member of a Team) is checked with
      `RunModelSelectionValidator.validateMany` against the run's runtime, model,
      model settings and workspace;
@@ -439,13 +449,15 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   then collaborator entry, then collaborator-Team member; ties go to the
   smallest address), any other at its catalog address. Listing never writes, so
   a standalone run that only lists gets no `collaboration/` package.
-- **In the run.** Every entry, and every member Agent of a collaborator Team,
-  counts as in the run, so it is not offered again. A failed add writes no
-  entry, so the definition stays offerable.
+- **In the run.** Configured placements, every entry, and every member Agent of a
+  collaborator Team count as in the run: they are never brought in again, and
+  `@` addresses that instance. A failed add writes no entry.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId)` lists the `@` options of an active or stored root from the same
   policy: shared Agents (minus built-ins such as the Daily Assistant), then
-  shared Agent Teams, in catalog order, minus what is in the run.
+  shared Agent Teams, in catalog order, **including** definitions already in the
+  run; only the run's own definition (the standalone host Agent, or a Team run's
+  Team) is left out. Application-owned runs list none.
 
 The shared policy, admission, runnability validator, identity allocator, entry
 builder, catalog address map, message-recipient resolution, catalog delegation

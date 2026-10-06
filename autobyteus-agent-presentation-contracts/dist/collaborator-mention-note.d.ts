@@ -29,6 +29,8 @@ export type MentionedCollaborator = Readonly<{
     name: string;
     kind: CollaboratorMentionKind;
     address: string;
+    /** Already in the run (a configured member or a collaborator); saved notes parse as `false`. */
+    inRun: boolean;
 }>;
 export type ParsedCollaboratorMentionNote = Readonly<{
     /** The user's own text before the note; empty for a mention-only message. */
@@ -37,9 +39,10 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 }>;
 /**
  * The one owner of the mention-note wording (server compose, web parse). The note tells the
- * focused agent to delegate the work to each mentioned address:
+ * focused agent to delegate the work to each mentioned address. An entry already in the run is
+ * marked so, and the guidance then also offers messaging that instance directly:
  *
- *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team" }])
+ *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false }])
  *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nDelegate the work with delegate_task …"
  */
 export declare const composeCollaboratorMentionNote: (text: string, collaborators: readonly MentionedCollaborator[]) => string;

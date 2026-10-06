@@ -216,8 +216,8 @@ describe("Agent root of a standalone run", () => {
       mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
     });
     expect(resolved).toEqual({ admitted: true, collaborators: [
-      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
-      { name: "Product Team", kind: "agent_team", address: "/product_team" },
+      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: false },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false },
     ] });
     expect(await f.store.readTree(dir, HOST)).toBeNull();
     expect(f.catalogFlag).not.toHaveBeenCalled();
@@ -244,8 +244,13 @@ describe("Agent root of a standalone run", () => {
     ]);
     expect(stored.taskExecutions).toEqual([]);
     expect(f.catalogFlag).toHaveBeenCalledOnce();
-    // Entries (and a Team's member Agents) are in the run.
-    expect((await policy.listCandidates(root.collaboratorPort())).candidates).toEqual([]);
+    // Entries (and a Team's member Agents) are in the run and still offered for `@` (REQ-001, AC-001).
+    expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
+      .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
+    await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "lead" }] }))
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Lead", kind: "agent", address: "/product_team/lead", inRun: true }] });
+    // The host's own definition is never offered (it is the run itself).
+    expect((await policy.listCandidates(root.collaboratorPort())).candidates.some((c) => c.definitionId === "research-assistant")).toBe(false);
     // A collaborator execution that got no message yet is Offline.
     expect(root.getAgentStatusSnapshots().map((snapshot) => [snapshot.execution.memberAddress, snapshot.details.status])).toEqual(
       expect.arrayContaining([["/product_team/designer", "offline"]]),
@@ -451,7 +456,7 @@ describe("agent-initiated collaborators of a standalone run", () => {
     expect(f.handles.get("code-reviewer-run-1")!.handle.reserveInput).toHaveBeenCalledTimes(2);
     // `@` after the agent's bring-in resolves to the instance's address and adds nothing (AC-010).
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer" }] });
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: true }] });
     expect(root.getExecutionTreeSnapshot().collaborators).toHaveLength(1);
   });
 
