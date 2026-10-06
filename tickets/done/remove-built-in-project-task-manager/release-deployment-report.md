@@ -2,7 +2,7 @@
 
 ## Scope / Current Status
 
-**DR-003: User acceptance received; finalization and NEW BETA publication in progress.**
+**DR-003: User acceptance and repository finalization Completed; NEW BETA v1.4.95-beta.5 tag pushed. Hosted publication/rollout verification in progress.**
 `task_size=Medium`, `architectural_risk=High`, full independent-review route. Finalization target `origin/personal`. No stable release authorized.
 
 ## Cumulative Basis / Docs
@@ -57,7 +57,16 @@ Limits: packaged Electron shell not exercised locally, no personal tests claimed
 ## Final Gate Status
 
 - Explicit user acceptance: Completed.
-- Repository finalization: In progress.
-- Release/publication/rollout: Pending.
+- Repository finalization: Completed.
+- Release/publication/rollout: Tag/version pushed; hosted workflows in progress.
 - Safe ticket/branch/finalization-clone cleanup: Pending.
 - Delivery Completed terminal return: Not yet eligible.
+
+## Authoritative Repository / Tag Receipts
+
+- Archive/final ticket commit `5a4e17da0c159bdfe367b7e09c9fa98d94c580f2`, ticket push Completed.
+- Updated clean personal to checked `8e9f855a9`; merged --no-ff as `3ecf5100897ba25e085258c24d37290d66ab9d00`; merge tree identical to ticket; personal push Completed.
+- `bash scripts/desktop-release.sh beta` run exactly once on clean finalized personal. Release commit `0dd5722d7ee4473361831a4bbabf5ad125bcb20c`; package `1.4.95-beta.5`; annotated tag `v1.4.95-beta.5` (`1795ef258b33db277ce41dce0b51913f14ded30d`) resolves to release commit. Branch/tag pushes Completed. No stable tag and no duplicate dispatch.
+- Single tag-triggered runs: Desktop 37441073748, Android 37441073844, iOS 37441073741, Docker 37441073732. All currently in progress; not yet certified publication.
+- Receipts: `delivery-evidence/dr-003/repository-release-receipt.json`, `beta-release.log`, `final-merge.log`, `workflows-initial.json`. Earlier pending fields describe pre-finalization plan and are superseded by this section.
+- Cleanup/Delivery Completed remain gated on applicable publication/rollout verification.

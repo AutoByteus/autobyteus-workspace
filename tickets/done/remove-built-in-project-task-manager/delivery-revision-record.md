@@ -60,3 +60,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Terminal return: Not yet eligible.
 - Rationale: resume only unfinished delivery gates; preserve DR-001/DR-002 and prior release history. No stable release or duplicate dispatch.
 - Residual risks unchanged: packaged shell not exercised locally, no personal tests claimed, irreversible template deletion per approved DEC-001, unsupported downgrade.
+
+#### DR-003 repository/tag progress receipt
+
+Acceptance hold resolved. Ticket archived/committed/pushed as `5a4e17da0`; merged/pushed into personal as `3ecf51008`. Documented beta helper run once; release commit `0dd5722d7`, tag `v1.4.95-beta.5`, branch/tag pushes complete. Hosted publication/rollout verification and safe cleanup still pending; no terminal completion claimed. Reports/`delivery-evidence/dr-003/repository-release-receipt.json` are authoritative.

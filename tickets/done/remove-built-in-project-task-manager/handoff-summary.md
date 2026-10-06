@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **DR-003. Explicit user acceptance received; final integration/checks passed. Repository finalization and NEW BETA publication in progress.**
+- Delivery state: **DR-003. User acceptance, archive and personal finalization Completed. v1.4.95-beta.5 tag pushed; hosted publication/rollout verification and cleanup pending.**
 - Classification (unchanged by delivery): `task_size=Medium`, `architectural_risk=High`. Route: full independent review (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → Code Review (test code) → Delivery).
 
 | Stage | Revision | Result |
@@ -67,3 +67,7 @@
 - Latest base `8e9f855a9`, integrated `526bac6a3`; no material removal behavior change/no renewed verification required. Build + 369 server tests + 64 web tests + final sanitized smoke Pass.
 - Ticket archived before final commit. Finalization target personal; one new beta via documented helper. Precise repository/publication/cleanup receipts will be appended to current release report.
 - Full cumulative artifact manifest will accompany the terminal receipt; historical upstream absolute in-progress paths are remapped there to durable done paths.
+
+### Finalization/tag receipt
+
+Ticket `5a4e17da0`, merge `3ecf51008`, release `0dd5722d7`, annotated tag `v1.4.95-beta.5`; all pushed. Full receipts in `delivery-evidence/dr-003/repository-release-receipt.json`. No stable release/duplicate workflow dispatch. Hosted workflows and cleanup are still pending, so this is not Delivery Completed yet.

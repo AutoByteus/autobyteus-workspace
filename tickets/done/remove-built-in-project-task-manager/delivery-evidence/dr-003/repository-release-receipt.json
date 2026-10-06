@@ -1,0 +1,21 @@
+{
+  "package": "remove-built-in-project-task-manager",
+  "revision": "DR-003",
+  "at": "2026-10-06T09:10:34.891068+00:00",
+  "ticket_commit": "5a4e17da0c159bdfe367b7e09c9fa98d94c580f2",
+  "ticket_push": "Completed",
+  "target_checked": "8e9f855a931d9bf3479107548785610658a81430",
+  "merge_commit": "3ecf5100897ba25e085258c24d37290d66ab9d00",
+  "merge_tree_equals_ticket": true,
+  "personal_push": "Completed",
+  "release_commit": "0dd5722d7ee4473361831a4bbabf5ad125bcb20c",
+  "release_tag": "v1.4.95-beta.5",
+  "annotated_tag_object": "1795ef258b33db277ce41dce0b51913f14ded30d",
+  "package_version": "1.4.95-beta.5",
+  "release_helper": "bash scripts/desktop-release.sh beta",
+  "branch_and_tag_push": "Completed",
+  "duplicate_dispatch": false,
+  "workflow_count": 4,
+  "publication": "Pending workflow completion",
+  "cleanup": "Pending publication verification"
+}
