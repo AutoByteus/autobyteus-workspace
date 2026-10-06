@@ -14,7 +14,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
-import { ListProjectsTool, ListProjectTasksTool, CreateOrUpdateTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
+import { ListProjectsTool, ListProjectTasksTool, CreateOrUpdateProjectTool, CreateOrUpdateTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { registerProjectTaskTools } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
@@ -25,11 +25,28 @@ import { resetProjectTaskContextStoreForTests } from "../../../src/projects/cont
 // test-owned files. No Project adapter/service/auth/multipart doubles. The unused publication
 // capability is supplied because a real run scope requires it; it must never be called here.
 // No model request, Manager package or interactive same-window node switching is represented.
-const names = ["list_projects", "list_project_tasks", "create_or_update_task"];
+const names = ["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task"];
 const FILES = "storedFilename displayName mimeType sizeBytes locator";
 const TASK = `taskId projectId description status createdAt updatedAt contextFiles { ${FILES} }`;
 type FileRef = { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator: string };
 type Task = { taskId: string; projectId: string; description: string; status: string; createdAt: string; updatedAt: string; contextFiles: FileRef[] };
+const PROJECT = "projectId name description createdAt updatedAt taskCount openTaskCount workspaces { workspaceId workspaceRootPath description addedAt availability }";
+type Link = { workspaceId: string; workspaceRootPath: string; description: string; addedAt: string; availability: string };
+type Project = { projectId: string; name: string; description: string; createdAt: string; updatedAt: string; workspaces: Link[]; taskCount: number; openTaskCount: number };
+// Snapshot content AND directory entries; detect deletions, rewrites and unexpected additions.
+const snapshot = async (directory: string): Promise<Record<string, string>> => {
+  const entries: Record<string, string> = {};
+  const walk = async (dir: string) => {
+    for (const entry of await fs.readdir(dir, { withFileTypes: true }).catch(error => {
+      if (error.code === "ENOENT") return []; throw error;
+    })) {
+      const full = path.join(dir, entry.name), relative = path.relative(directory, full);
+      if (entry.isDirectory()) { entries[relative + "/"] = "directory"; await walk(full); }
+      else entries[relative] = (await fs.readFile(full)).toString("base64");
+    }
+  };
+  await walk(directory); return entries;
+};
 const reset = () => { resetProjectTaskServiceForTests(); resetProjectServiceForTests(); resetProjectStoreForTests(); resetProjectTaskContextStoreForTests(); };
 
 describe("Project Task production HTTP boundaries", () => {
@@ -53,6 +70,30 @@ describe("Project Task production HTTP boundaries", () => {
     "mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: { name } })).createProject.projectId;
   const list = async (projectId: string) => (await gql<{ projectTasks: Task[] }>(
     `query($id:String!){projectTasks(projectId:$id){${TASK}}}`, { id: projectId })).projectTasks;
+  const readProject = async (projectId: string) => (await gql<{ project: Project }>(
+    `query($id:String!){project(projectId:$id){${PROJECT}}}`, { id: projectId })).project;
+  const registerWorkspace = async (folder: string) => {
+    const rootPath = path.join(root, folder); await fs.mkdir(rootPath);
+    await fs.writeFile(path.join(rootPath, "source.txt"), `untouched ${folder} bytes`);
+    return (await gql<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
+      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath } })).createWorkspace;
+  };
+  const projectCall = async (args: Record<string, unknown>) => {
+    const result = await call("create_or_update_project", args);
+    expect(result.isError).not.toBe(true);
+    expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
+    return result.structuredContent.project as Pick<Project, "projectId" | "name" | "description"> & { workspaces: Array<Pick<Link, "workspaceId" | "description">> };
+  };
+  const expectProjectError = async (args: Record<string, unknown>, code: string) => {
+    const before = await snapshot(path.join(root, "projects"));
+    const native = await new CreateOrUpdateProjectTool().execute(null, args).then(
+      () => { throw new Error("Expected native rejection"); }, (error: Error) => JSON.parse(error.message));
+    expect(native.error.code).toBe(code); expect(native.error.message).not.toBe("");
+    const result = await call("create_or_update_project", args);
+    expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
+    expect(JSON.parse(result.content[0].text)).toEqual(native);
+    expect(await snapshot(path.join(root, "projects"))).toEqual(before);
+  };
   const draft = async (projectId: string, taskId?: string) => {
     const response = await fetch(`${origin}/rest/projects/${projectId}/task-context-drafts`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(taskId ? { taskId } : {}) });
     expect(response.status).toBe(200); return await response.json() as { draftId: string };
@@ -62,9 +103,9 @@ describe("Project Task production HTTP boundaries", () => {
     return fetch(`${origin}/rest/projects/${projectId}/task-context-drafts/${draftId}/context-files`, { method: "POST", body: data });
   };
   beforeAll(async () => {
-    flags = Object.fromEntries(Object.entries(process.env).filter(([k, v]) => k.startsWith("ENABLE_") && v !== undefined)) as Record<string, string>;
+    flags = Object.fromEntries(Object.entries(process.env).filter(([k, v]) => (k.startsWith("ENABLE_") || k.startsWith("AUTOBYTEUS_")) && v !== undefined)) as Record<string, string>;
     for (const key of Object.keys(flags)) delete process.env[key];
-    originalTemp = process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR;
+    originalTemp = flags.AUTOBYTEUS_TEMP_WORKSPACE_DIR;
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-http-e2e-"));
     process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = path.join(root, "temp_workspace");
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
@@ -85,14 +126,19 @@ describe("Project Task production HTTP boundaries", () => {
     const listed = await rpc(one.descriptor.serverUrl, "tools/list");
     expect(listed.body.result.tools.map((t: { name: string }) => t.name)).toEqual(["list_projects"]);
     expect((await rpc(one.descriptor.serverUrl, "tools/call", { name: "create_or_update_task", arguments: {} })).body.error).toBeDefined();
+    expect((await rpc(one.descriptor.serverUrl, "tools/call", { name: "create_or_update_project", arguments: { name: "Unauthorized" } })).body.error).toBeDefined();
+    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.find((t: { name: string }) => t.name === "create_or_update_project").inputSchema.properties.workspaces.items.properties.workspace_id.type).toBe("string");
     authority.runSessions.deactivateForRun("read-only");
     expect((await rpc(one.descriptor.serverUrl, "ping")).status).toBe(404);
   }, 120000);
   afterAll(async () => {
     authority?.close(); if (app) await app.close(); reset(); appConfigProvider.resetForTests();
     if (originalTemp === undefined) delete process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR; else process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = originalTemp;
-    for (const key of Object.keys(process.env)) if (key.startsWith("ENABLE_")) delete process.env[key]; Object.assign(process.env, flags);
-    if (root) await fs.rm(root, { recursive: true, force: true });
+    for (const key of Object.keys(process.env)) if (key.startsWith("ENABLE_") || key.startsWith("AUTOBYTEUS_")) delete process.env[key]; Object.assign(process.env, flags);
+    if (origin) await expect(fetch(origin, {signal: AbortSignal.timeout(1500)})).rejects.toThrow();
+    if (mcpUrl) await expect(fetch(mcpUrl, {signal: AbortSignal.timeout(1500)})).rejects.toThrow();
+    if (root) { await fs.rm(root, { recursive: true, force: true }); await expect(fs.stat(root)).rejects.toMatchObject({code: "ENOENT"}); }
+    console.info("Owned HTTP fixture cleanup: Studio/MCP listeners closed, data directory removed.");
   }, 30000);
 
   it("API-MCP: selected default host executes equivalent compact mutations and detailed native reads while UI remains off", async () => {
@@ -185,19 +231,24 @@ describe("Project Task production HTTP boundaries", () => {
     await expect(fs.stat(replacementPath)).rejects.toMatchObject({ code: "ENOENT" });
     expect(await fs.readFile(original, "utf8")).toBe("original workspace bytes");
   }, 30000);
-  it("API-MCP collision: selected protected Project adapter wins over a configured MCP name", async () => {
-    const original = defaultToolRegistry.getToolDefinition("list_projects")!;
-    const collision = new ToolDefinition("list_projects", "Configured same-name tool", ToolOrigin.MCP, "MCP",
+  it.each(["list_projects", "create_or_update_project"])("API-MCP collision: selected protected %s adapter wins over a configured MCP name", async (name) => {
+    const original = defaultToolRegistry.getToolDefinition(name)!;
+    const collision = new ToolDefinition(name, "Configured same-name tool", ToolOrigin.MCP, "MCP",
       () => new ParameterSchema(), () => null, { metadata: { mcp_server_id: "collision-fixture" },
         customFactory: () => { throw new Error("Colliding remote tool must not be invoked"); } });
     defaultToolRegistry.registerTool(collision);
     try {
       const selected = authority.runSessions.activateForRun({ owner: { runId: "collision" },
         sender: buildAgentRunMessageSenderContext({ senderRunId: "collision", senderName: "collision" }),
-        runtimeExposure: buildRuntimeAgentToolExposure(["list_projects"]) });
+        runtimeExposure: buildRuntimeAgentToolExposure([name]) });
       expect(selected.kind).toBe("active"); if (selected.kind !== "active") throw new Error("Missing collision session");
-      const result = await rpc(selected.descriptor.serverUrl, "tools/call", { name: "list_projects", arguments: {} });
-      expect(result.body.result.structuredContent.projects).toEqual(JSON.parse(await new ListProjectsTool().execute(null)).projects);
+      expect(selected.descriptor.enabledTools).toEqual([name]);
+      const listed = await rpc(selected.descriptor.serverUrl, "tools/list");
+      expect(listed.body.result.tools.map((t: {name: string}) => t.name)).toEqual([name]);
+      const result = await rpc(selected.descriptor.serverUrl, "tools/call", { name, arguments: name === "list_projects" ? {} : {name: "Protected mutation"} });
+      expect(result.body.error).toBeUndefined(); expect(result.body.result.isError).not.toBe(true);
+      if (name === "list_projects") expect(result.body.result.structuredContent.projects).toEqual(JSON.parse(await new ListProjectsTool().execute(null)).projects);
+      else expect(await readProject(result.body.result.structuredContent.project.projectId)).toMatchObject({name: "Protected mutation", description: "", workspaces: []});
       authority.runSessions.deactivateForRun("collision");
     } finally { defaultToolRegistry.registerTool(original); }
   });
@@ -229,6 +280,141 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await list(projectId)).toHaveLength(1);
     await gql("mutation($id:String!){deleteProject(projectId:$id)}", { id: projectId });
     await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically", async () => {
+    const created = await projectCall({name: "  Agent authored  ", description: "  Saved goal  "});
+    expect(created).toEqual({projectId: expect.stringMatching(/^project_/), name: "Agent authored", description: "Saved goal", workspaces: []});
+    const initial = await readProject(created.projectId);
+    expect(initial).toMatchObject({...created, taskCount: 0, openTaskCount: 0});
+    expect(Number.isFinite(Date.parse(initial.createdAt))).toBe(true);
+    const nativeCreated = JSON.parse(await new CreateOrUpdateProjectTool().execute(null, {name: " Native authored "})).project;
+    expect(nativeCreated).toEqual({projectId: expect.stringMatching(/^project_/), name: "Native authored", description: "", workspaces: []});
+    expect(await readProject(nativeCreated.projectId)).toMatchObject(nativeCreated);
+    const defaults = await projectCall({name: "HTTP defaults"});
+    expect(defaults).toMatchObject({description: "", workspaces: []});
+    const summary = (await call("list_projects", {})).structuredContent;
+    expect(summary).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
+    expect(summary.projects).toContainEqual({projectId: created.projectId, name: created.name, description: created.description});
+    for (const patch of [{name: "Renamed authored"}, {description: "New goal"}, {description: "   "}, {name: "Combined authored", description: "Combined goal"}]) {
+      const args = {project_id: ` ${created.projectId} `, ...patch};
+      const ack = await projectCall(args);
+      expect(JSON.parse(await new CreateOrUpdateProjectTool().execute(null, args))).toEqual({project: ack});
+      const read = await readProject(created.projectId);
+      expect(read).toMatchObject({...ack, createdAt: initial.createdAt, workspaces: []});
+      expect(Date.parse(read.updatedAt)).toBeGreaterThanOrEqual(Date.parse(initial.updatedAt));
+      if (!Object.hasOwn(patch, "description")) expect(read.description).toBe("Saved goal");
+      if (!Object.hasOwn(patch, "name")) expect(read.name).toBe("Renamed authored");
+      if (patch.description === "   ") expect(read.description).toBe("");
+    }
+    const invalid: Array<[Record<string, unknown>, string]> = [
+      [{}, "PROJECT_NAME_REQUIRED"], [{name: " "}, "PROJECT_NAME_REQUIRED"],
+      [{name: 12}, "PROJECT_TOOL_ARGUMENT_INVALID"], [{name: "x", description: null}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      [{name: "x", extra: true}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      [{project_id: null, name: "No implicit create"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      [{project_id: "", name: "No implicit create"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      [{project_id: 12, name: "No coercion"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+      [{project_id: created.projectId}, "PROJECT_PATCH_REQUIRED"],
+      [{project_id: "missing", name: "No upsert"}, "PROJECT_NOT_FOUND"],
+      [{name: " native AUTHORED "}, "PROJECT_NAME_TAKEN"],
+      [{project_id: created.projectId, name: "NATIVE AUTHORED", description: "Must not save"}, "PROJECT_NAME_TAKEN"],
+    ];
+    for (const [args, code] of invalid) await expectProjectError(args, code);
+  });
+
+  it("E-006: real registered links retain snapshots/descriptions; lists replace, blanks and [] clear only associations", async () => {
+    const a = await registerWorkspace("tool-workspace-a"), b = await registerWorkspace("tool-workspace-b"), c = await registerWorkspace("tool-workspace-c");
+    const roots = [a, b, c].map(w => w.workspaceRootPath);
+    const beforeFolders = await Promise.all(roots.map(snapshot));
+    const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
+    const created = await projectCall({name: "Linked authored", description: "Project goal", workspaces: [
+      {workspace_id: ` ${a.workspaceId} `, description: " Frontend "}, {workspace_id: b.workspaceId},
+    ]});
+    expect(created.workspaces).toEqual([{workspaceId: a.workspaceId, description: "Frontend"}, {workspaceId: b.workspaceId, description: ""}]);
+    const nativeCreated = JSON.parse(await new CreateOrUpdateProjectTool().execute(null, {name: "Native linked", workspaces: [{workspace_id: c.workspaceId}]})).project;
+    const nativeInitial = await readProject(nativeCreated.projectId);
+    expect(nativeInitial).toMatchObject({workspaces: [{...c, description: "", availability: "AVAILABLE", addedAt: expect.any(String)}]});
+    const initial = await readProject(created.projectId);
+    expect(initial.workspaces).toEqual([expect.objectContaining({...a, description: "Frontend", availability: "AVAILABLE"}), expect.objectContaining({...b, description: "", availability: "AVAILABLE"})]);
+    await projectCall({project_id: created.projectId, description: "Edited goal"});
+    expect((await readProject(created.projectId)).workspaces).toEqual(initial.workspaces);
+    const replacement = {project_id: created.projectId, workspaces: [{workspace_id: a.workspaceId}, {workspace_id: c.workspaceId, description: " Backend "}]};
+    const replaced = await projectCall(replacement);
+    expect(JSON.parse(await new CreateOrUpdateProjectTool().execute(null, replacement))).toEqual({project: replaced});
+    const linked = await readProject(created.projectId);
+    expect(linked).toMatchObject({name: initial.name, description: "Edited goal", createdAt: initial.createdAt});
+    expect(linked.workspaces[0]).toEqual(initial.workspaces[0]);
+    expect(linked.workspaces[1]).toMatchObject({...c, description: "Backend", availability: "AVAILABLE"});
+    expect(linked.workspaces.map(w => w.workspaceId)).toEqual([a.workspaceId, c.workspaceId]); // not append
+    await projectCall({project_id: created.projectId, workspaces: [{workspace_id: a.workspaceId, description: "  "}, {workspace_id: c.workspaceId}]});
+    expect((await readProject(created.projectId)).workspaces).toEqual([{...linked.workspaces[0], description: ""}, linked.workspaces[1]]);
+    const malformed: unknown[] = [null, "", "[]", {}, [null], [12], [[]], [{workspace_id: null}], [{workspace_id: " "}], [{workspace_id: 12}],
+      [{workspace_id: a.workspaceId, description: null}], [{workspace_id: a.workspaceId, description: 12}], [{workspace_id: a.workspaceId, workspaceRootPath: a.workspaceRootPath}]];
+    for (const workspaces of malformed) await expectProjectError({project_id: created.projectId, name: "Must not rename", description: "Must not change", workspaces}, "PROJECT_TOOL_ARGUMENT_INVALID");
+    for (const args of [
+      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: ` ${a.workspaceId} `}]},
+      {name: "Must not create duplicate links", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: a.workspaceId}]},
+    ]) await expectProjectError(args, "WORKSPACE_ALREADY_LINKED");
+    for (const args of [
+      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: "agent_ws_missing"}]},
+      {name: "Must not create unknown links", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: "agent_ws_missing"}]},
+    ]) await expectProjectError(args, "WORKSPACE_NOT_REGISTERED");
+    const cleared = await projectCall({project_id: created.projectId, workspaces: []});
+    expect(cleared.workspaces).toEqual([]);
+    expect(await readProject(created.projectId)).toMatchObject({projectId: created.projectId, createdAt: initial.createdAt, name: initial.name, description: "Edited goal", workspaces: []});
+    expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
+    expect(await Promise.all(roots.map(snapshot))).toEqual(beforeFolders);
+    // Supported retained-link policy also works after an ordinary public unregistration.
+    await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", {i: {workspaceId: c.workspaceId}});
+    const retained = {project_id: nativeCreated.projectId, workspaces: [{workspace_id: c.workspaceId}]};
+    const ack = await projectCall(retained);
+    expect(JSON.parse(await new CreateOrUpdateProjectTool().execute(null, retained))).toEqual({project: ack});
+    const reread = await readProject(nativeCreated.projectId);
+    expect(reread.workspaces[0]).toEqual({...nativeInitial.workspaces[0], availability: "UNREGISTERED"});
+    expect(await Promise.all(roots.map(snapshot))).toEqual(beforeFolders);
+  });
+
+  it("E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction", async () => {
+    const workspace = await registerWorkspace("protected-source");
+    // Existing supported full-form creation, NOT a tool-created-only fixture.
+    const old = (await gql<{createProject: Project}>(`mutation($i:CreateProjectInput!){createProject(input:$i){${PROJECT}}}`, {
+      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceId: workspace.workspaceId, description: "Saved link"}]},
+    })).createProject;
+    const otherId = await createProject("Unrelated preserved");
+    const d = await draft(old.projectId);
+    const file = await (await upload(old.projectId, d.draftId, "existing task context bytes")).json() as FileRef;
+    const task = (await gql<{createProjectTask: Task}>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`, {
+      i: {projectId: old.projectId, description: "Existing assigned task", contextDraft: {draftId: d.draftId, storedFilenames: [file.storedFilename]}},
+    })).createProjectTask;
+    // Minimum current-format persisted assignment; no model/run launch needed for preservation.
+    const resources = path.join(root, "projects", old.projectId, "tasks", task.taskId, "agent_run_resources.json");
+    await fs.writeFile(resources, JSON.stringify({taskId: task.taskId, agentRunResources: [{role: "assigned", assignedBy: "fixture-manager",
+      hostRoot: {kind: "agent", runId: "fixture-root"}, agentRun: {kind: "agent", agentRunId: "fixture-worker"},
+      linkedAt: task.createdAt, start: "started", closedAt: null}]}, null, 2));
+    // Opaque preservation sentinel: not inference/history replay certification.
+    const historyDir = path.join(root, "memory", "agents", "fixture-worker");
+    await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
+    reset();
+    const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
+    expect(businessBefore.tasks[0].assignments).toEqual([{targetAgentRunId: "fixture-worker", kind: "agent", assignedBy: "fixture-manager", outcome: "accepted"}]);
+    const protectedDirs = [path.join(root, "projects", old.projectId, "tasks"), path.join(root, "projects", otherId), historyDir, workspace.workspaceRootPath];
+    const before = await Promise.all(protectedDirs.map(snapshot));
+    const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
+    const originalRecord = await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8");
+    expect(await readProject(old.projectId)).toEqual({...old, taskCount: 1, openTaskCount: 1});
+    expect(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8")).toBe(originalRecord); // no migration/read rewrite
+    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_id: workspace.workspaceId}]}, {workspaces: []}]) {
+      await projectCall({project_id: old.projectId, ...patch}); reset();
+      const project = await readProject(old.projectId);
+      expect(project).toMatchObject({projectId: old.projectId, createdAt: old.createdAt, taskCount: 1, openTaskCount: 1});
+      expect(await list(old.projectId)).toEqual([task]);
+      expect((await call("list_project_tasks", {project_id: old.projectId})).structuredContent).toEqual(businessBefore);
+      expect(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).text()).toBe("existing task context bytes");
+      expect(await Promise.all(protectedDirs.map(snapshot))).toEqual(before);
+      expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
+    }
+    expect(Object.keys(JSON.parse(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8"))).sort()).toEqual(
+      ["projectId", "name", "description", "createdAt", "updatedAt", "workspaces"].sort());
   });
 
 });
