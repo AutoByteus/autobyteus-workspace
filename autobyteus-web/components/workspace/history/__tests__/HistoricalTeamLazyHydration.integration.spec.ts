@@ -406,6 +406,10 @@ describe('Historical team lazy hydration integration', () => {
         };
       }
 
+      if (query === 'GetRunFileChanges') {
+        return { data: { getRunFileChanges: [] }, errors: [] };
+      }
+
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 

@@ -65,7 +65,7 @@ export class AgentOrgStreamingService {
 
   constructor(private readonly options: Readonly<{
     orgRunId: string
-    publish(context: AgentOrgExecutionContext, commitActivities: () => void): void
+    publish(context: AgentOrgExecutionContext, commit: () => void): void
     onInactive?(): void
     onExecutionTreeChanged?(): void
     reportError(message: string): void
@@ -148,7 +148,7 @@ export class AgentOrgStreamingService {
         const candidate = shallowReactive(staged.context)
         candidate.setActive(false)
         candidate.select(this.context?.selection ?? null)
-        this.options.publish(candidate, staged.commitActivities)
+        this.options.publish(candidate, staged.commit)
         this.context = candidate
         this.options.onInactive?.()
         this.disconnect()
@@ -306,7 +306,7 @@ export class AgentOrgStreamingService {
       // action happens to invalidate the consumer.
       const candidate = shallowReactive(staged.context)
       if (previousFocus) candidate.select(previousFocus)
-      this.options.publish(candidate, staged.commitActivities)
+      this.options.publish(candidate, staged.commit)
       this.context = candidate
       this.recoveryCheckpoint = null
       this.recoveryFocus = null

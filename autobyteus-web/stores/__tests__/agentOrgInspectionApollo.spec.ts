@@ -5,6 +5,7 @@ import { ControlledOrgApollo, OrgTestSocket, historyData, inspectionData, member
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
 import { useRunHistoryStore } from '../runHistoryStore'
 import { useAgentActivityStore } from '../agentActivityStore'
+import { useRunFileChangesStore } from '../runFileChangesStore'
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { GetAgentOrgRunInspection, GetAgentOrgMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
@@ -202,8 +203,28 @@ it('stream staging and inspection staging independently acquire the same exact m
   const first = await requests(MEMBER, 7)
   const inspection = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false) })
   const second = (await requests(MEMBER, 14)).slice(-7)
-  releaseMembers(second, 'final'); const staged = await inspection; staged.commitActivities()
+  releaseMembers(second, 'final'); const staged = await inspection; staged.commit()
   releaseMembers(first, 'old'); await stream
   expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)).toEqual(['final:agent-director'])
   expect(JSON.stringify(staged.context.getAgentContext('agent-director')!.conversation)).toContain('final:agent-director')
+})
+
+it('opening a historical Org loads each member artifact list, including nested Team members (AC-004)', async () => {
+  const artifact = (runId: string, name: string) => ({
+    __typename: 'RunFileChangeEntry', id: `${runId}:/outputs/${name}`, runId, path: `/outputs/${name}`, type: 'image',
+    status: 'available', sourceTool: 'generated_output', sourceInvocationId: null, content: null,
+    createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
+  })
+  for (const runId of ['agent-director', 'agent-task-lead']) {
+    transport.fileChangesByRunId.set(runId, [artifact(runId, '1.png'), artifact(runId, '2.png')])
+  }
+  const open = orgs.openForInspection('org-run')
+  ;(await requests(ROOT, 1))[0]!.respond(inspectionData(false))
+  releaseMembers(await requests(MEMBER, 7), 'historical')
+  await open
+
+  const files = useRunFileChangesStore()
+  expect(orgs.contexts['org-run']?.isActive).toBe(false)
+  expect(files.getArtifactsForRun('agent-director').map((entry) => entry.path)).toEqual(['/outputs/1.png', '/outputs/2.png'])
+  expect(files.getArtifactsForRun('agent-task-lead').map((entry) => entry.path)).toEqual(['/outputs/1.png', '/outputs/2.png'])
 })

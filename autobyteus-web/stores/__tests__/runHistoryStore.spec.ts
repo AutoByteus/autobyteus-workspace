@@ -516,7 +516,7 @@ describe('runHistoryStore', () => {
         resumeConfig: { teamRunId, isActive: true, metadata },
         hydratedContext,
         projectionByAgentRunId: new Map([[member.agentRunId, { agentRunId: member.agentRunId }]]),
-        activityReplacements: [],
+        memberRunStates: [],
       };
     });
     mutateMock.mockReset();

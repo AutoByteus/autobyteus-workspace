@@ -35,7 +35,7 @@ import {
   type TeamRunHydrationCandidate,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import {
-  commitTeamRunHydrationActivities,
+  commitTeamRunHydration,
   markCommittedTeamRunHydrationAuthority,
 } from '~/services/runHydration/teamRunHydrationCommit';
 import { ensureRunHistoryWorkspaceByRootPath, resolveRunHistoryWorkspaceMetadataByRootPath } from '~/stores/runHistoryLoadActions';
@@ -307,7 +307,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           if (contexts.getTeamContextById(rootTeamRunId) !== expectedContext) {
             throw new Error(`Team context '${rootTeamRunId}' changed before restore commit.`);
           }
-          commitTeamRunHydrationActivities(hydrated);
+          commitTeamRunHydration(hydrated);
           contexts.replaceTeamContext(rootTeamRunId, expectedContext, hydrated.hydratedContext);
           markCommittedTeamRunHydrationAuthority(hydrated);
           team = hydrated.hydratedContext;
@@ -478,7 +478,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         transferDraftPendingInputs(currentDraft, context);
         const contexts = useAgentTeamContextsStore();
         if (contexts.getTeamContextById(result.teamRunId)) throw new Error(`TeamRun '${result.teamRunId}' is already registered.`);
-        commitTeamRunHydrationActivities(candidate);
+        commitTeamRunHydration(candidate);
         contexts.addTeamContext(context);
         markCommittedTeamRunHydrationAuthority(candidate);
         useAgentSelectionStore().promoteTeamDraftLaunch(currentDraft.draftId, result.teamRunId);

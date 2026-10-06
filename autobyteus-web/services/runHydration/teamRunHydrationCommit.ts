@@ -1,14 +1,12 @@
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { TeamRunHydrationCandidate } from './teamRunContextHydrationService';
 import { markTeamMemberProjectionAuthoritative } from './teamMemberProjectionHydrationService';
+import { commitMemberRunStates } from './memberRunStateHydration';
 
-export const commitTeamRunHydrationActivities = (
+/** Commits every hydrated member's state (activities, then artifacts); throws when activity changed meanwhile. */
+export const commitTeamRunHydration = (
   candidate: TeamRunHydrationCandidate,
 ): void => {
-  const result = useAgentActivityStore().replaceProjectionActivitiesIfRevisions(
-    candidate.activityReplacements,
-  );
-  if (result === 'conflict') {
+  if (commitMemberRunStates(candidate.memberRunStates) === 'conflict') {
     throw new Error(`Team activity for '${candidate.teamRunId}' changed before projection commit.`);
   }
 };

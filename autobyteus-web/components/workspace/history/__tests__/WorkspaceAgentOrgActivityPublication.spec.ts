@@ -80,6 +80,7 @@ beforeEach(() => {
       conversation: [{ kind: 'message', role: 'user', content: `Retained ${variables.agentRunId}`, ts: 1700000000 }],
       activities: [], hasEarlierActiveTraceEvents: false,
     } } }
+    if (name === 'GetRunFileChanges') return { data: { getRunFileChanges: [] } }
     throw new Error(`Unexpected query ${name}`)
   })
 })

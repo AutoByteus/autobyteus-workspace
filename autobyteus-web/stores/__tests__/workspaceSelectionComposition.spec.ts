@@ -45,7 +45,7 @@ const setup = async () => {
   await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
   apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'retained')));
   const candidate = await staged;
-  candidate.commitActivities();
+  candidate.commit();
   const orgs = useAgentOrgContextsStore(); orgs.contexts['org-run'] = shallowReactive(candidate.context);
   orgs.select('org-run', '/team/worker');
   const context = orgs.contextFor('org-run')!;

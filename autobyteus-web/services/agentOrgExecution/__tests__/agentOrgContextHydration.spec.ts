@@ -5,6 +5,7 @@ import type {
 } from '@autobyteus/collaboration-stream-contracts'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
+import { useRunFileChangesStore } from '~/stores/runFileChangesStore'
 import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { projectAgentOrgHistoryRows } from '~/utils/agentOrgHistoryRows'
@@ -28,6 +29,7 @@ vi.mock('~/stores/runHistoryStore', () => ({
 import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 
 import { taskBearingView } from './taskBearingOrgFixture'
+import { GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 
 const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org:org-run',
@@ -78,7 +80,9 @@ describe('staged AgentOrg context hydration and publication', () => {
       address: '/team/lead',
       context: { state: { runId: 'agent-lead-configured' } },
     })
-    expect(mocks.query).toHaveBeenCalledTimes(7)
+    const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
+    expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(7)
+    expect(queried(GetRunFileChanges)).toHaveLength(7)
     expect(mocks.query).toHaveBeenCalledWith(expect.objectContaining({
       variables: {
         orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
@@ -104,11 +108,65 @@ describe('staged AgentOrg context hydration and publication', () => {
       source: 'inspection', orgRunId: 'org-run', view: taskBearingView(),
     })
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
-    staged.commitActivities()
+    staged.commit()
 
     expect(useAgentActivityStore().getActivities('agent-director')).toEqual([
       expect.objectContaining({ kind: 'tool', invocationId: 'tool-1', status: 'success' }),
     ])
+  })
+
+  describe('member artifacts', () => {
+    const artifact = (runId: string, name: string) => ({
+      id: `${runId}:/outputs/${name}`, runId, path: `/outputs/${name}`, type: 'image', status: 'available',
+      sourceTool: 'generated_output', sourceInvocationId: null, content: null,
+      createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
+    })
+    const serve = (failingArtifactsFor?: string) => mocks.query.mockImplementation(async ({ query, variables }) => {
+      if (query === GetRunFileChanges) {
+        return variables.runId === failingArtifactsFor
+          ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.runId}` }] }
+          : { data: { getRunFileChanges: [artifact(variables.runId, '1.png'), artifact(variables.runId, '2.png')] } }
+      }
+      return { data: { getAgentOrgMemberRunProjection: {
+        agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+      } } }
+    })
+    const paths = (runId: string) => useRunFileChangesStore().getArtifactsForRun(runId).map((entry) => entry.path)
+
+    it.each([true, false])('commits every member artifact list on publication, including nested Team members (active=%s; AC-003, AC-004)', async (active) => {
+      serve()
+      const view = structuredClone(taskBearingView())
+      view.is_active = active
+      if (!active) view.agent_statuses = []
+      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view })
+      expect(paths('agent-director')).toEqual([])
+
+      staged.commit()
+
+      for (const { agentRunId } of staged.context.listAgentContextEntries()) {
+        expect(paths(agentRunId)).toEqual(['/outputs/1.png', '/outputs/2.png'])
+      }
+      expect(paths('agent-task-lead')).toEqual(['/outputs/1.png', '/outputs/2.png'])
+    })
+
+    it('writes no artifacts when member activity changed before publication', async () => {
+      serve()
+      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView() })
+      useAgentActivityStore().upsertSystemInstructionActivity('agent-director', {
+        kind: 'system_instruction', activityId: 'live', content: 'live', timestamp: new Date(),
+      })
+
+      expect(() => staged.commit()).toThrow("AgentOrg activity changed before 'org-run' hydration could commit.")
+      expect(paths('agent-director')).toEqual([])
+      expect(paths('agent-task-lead')).toEqual([])
+    })
+
+    it('fails staging when one member artifacts fail, as for its projection (AC-007)', async () => {
+      serve('agent-task-lead')
+      await expect(stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: taskBearingView() }))
+        .rejects.toThrow('artifacts unavailable for agent-task-lead')
+      expect(paths('agent-director')).toEqual([])
+    })
   })
 
   it('never creates a workspace while observationally hydrating an active result', async () => {
@@ -213,6 +271,6 @@ describe('staged AgentOrg context hydration and publication', () => {
 
 async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source'>) {
   const staged = await stageAgentOrgExecutionContext({ ...input, source: 'stream' })
-  staged.commitActivities()
+  staged.commit()
   return staged.context
 }

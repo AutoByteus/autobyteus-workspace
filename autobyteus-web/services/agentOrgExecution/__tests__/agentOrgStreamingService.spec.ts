@@ -25,7 +25,7 @@ vi.mock('~/utils/apolloClient', () => ({
     : mocks.query(request) }),
 }))
 vi.mock('../agentOrgContextHydration', () => ({
-  stageAgentOrgExecutionContext: async (input: unknown) => ({ context: await mocks.hydrate(input), commitActivities: vi.fn() }),
+  stageAgentOrgExecutionContext: async (input: unknown) => ({ context: await mocks.hydrate(input), commit: vi.fn() }),
 }))
 
 import { AgentOrgStreamingService } from '../agentOrgStreamingService'

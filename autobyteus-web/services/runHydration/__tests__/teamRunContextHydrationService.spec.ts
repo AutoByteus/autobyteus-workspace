@@ -5,6 +5,11 @@ import {
   hydrateTeamRunContextForStreamRecovery,
 } from '../teamRunContextHydrationService';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
+import { commitTeamRunHydration, markCommittedTeamRunHydrationAuthority } from '../teamRunHydrationCommit';
+import { isTeamMemberProjectionAuthoritative } from '../teamMemberProjectionHydrationService';
 
 const {
   queryMock,
@@ -64,10 +69,10 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     expect(result.focusedAgentRunId).toBe('run-a');
     expect(result.hydratedContext.view.getMemberAddress('run-a')).toBe('/member-a');
     expect(memberContext?.state.runId).toBe('run-a');
-    expect(result.activityReplacements).toEqual([
-      expect.objectContaining({ runId: 'run-a', expectedRevision: 0 }),
+    expect(result.memberRunStates).toEqual([
+      expect.objectContaining({ runId: 'run-a', expectedActivityRevision: 0 }),
     ]);
-    expect(result.activityReplacements[0]?.activities).toEqual([
+    expect(result.memberRunStates[0]?.activities).toEqual([
       expect.objectContaining({ activityId: projectedActivity.activityId }),
     ]);
   });
@@ -146,7 +151,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     expect(result.focusedAgentRunId).toBe('run-a');
     expect(result.projectionByAgentRunId.get('run-a')).toEqual(expect.objectContaining({ agentRunId: 'run-a' }));
     expect(result.projectionByAgentRunId.get('run-b')).toBeNull();
-    expect(result.activityReplacements.map((replacement) => replacement.runId)).toEqual(['run-a']);
+    expect(result.memberRunStates.map((replacement) => replacement.runId)).toEqual(['run-a']);
   });
 
   it('rejects a requested root that disagrees with the execution tree', async () => {
@@ -263,5 +268,95 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
       ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
     })).rejects.toThrow(error);
+  });
+});
+
+describe('Team open loads each member artifact list with its run state', () => {
+  const twoMemberTree = () => buildTestTeamContext({
+    teamRunId: 'team-artifacts',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Artifact Team',
+    coordinatorAddress: '/member-a',
+    rootChildren: [
+      testAgentNode('/member-a', { agentRunId: 'run-a', agentDefinitionId: 'agent-a', llmModelIdentifier: 'gpt-test' }),
+      testAgentNode('/member-b', { agentRunId: 'run-b', agentDefinitionId: 'agent-b', llmModelIdentifier: 'gpt-test' }),
+    ],
+  }).view.getExecutionTree();
+  const artifact = (runId: string, name: string) => ({
+    id: `${runId}:/outputs/${name}`, runId, path: `/outputs/${name}`, type: 'image', status: 'available',
+    sourceTool: 'generated_output', sourceInvocationId: null, content: null,
+    createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
+  });
+  const serve = (input: { isActive: boolean; failingArtifactsFor?: string }) => {
+    const tree = twoMemberTree();
+    queryMock.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
+      if (query === GetRunFileChanges) {
+        return variables.runId === input.failingArtifactsFor
+          ? { data: null, errors: [{ message: `artifacts unavailable for ${String(variables.runId)}` }] }
+          : { data: { getRunFileChanges: [artifact(String(variables.runId), '1.png'), artifact(String(variables.runId), '2.png')] }, errors: [] };
+      }
+      if (variables.agentRunId) {
+        return { data: { getTeamMemberRunProjection: {
+          agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
+        } }, errors: [] };
+      }
+      return { data: { getTeamRunResumeConfig: { teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree } }, errors: [] };
+    });
+  };
+  const open = () => hydrateLiveTeamRunContext({
+    teamRunId: 'team-artifacts',
+    agentRunId: 'run-a',
+    resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+    ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
+  });
+  const paths = (runId: string) => useRunFileChangesStore().getArtifactsForRun(runId).map((entry) => entry.path);
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    vi.clearAllMocks();
+    fetchTeamCommunicationMock.mockResolvedValue([]);
+  });
+
+  it.each([true, false])('commits every member artifact list when the Team opens (active=%s; AC-001, AC-002)', async (isActive) => {
+    serve({ isActive });
+    const candidate = await open();
+    expect(paths('run-a')).toEqual([]);
+
+    commitTeamRunHydration(candidate);
+    markCommittedTeamRunHydrationAuthority(candidate);
+
+    expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
+    expect(paths('run-b')).toEqual(['/outputs/1.png', '/outputs/2.png']);
+    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(true);
+  });
+
+  it('leaves a nonfocused member whose artifacts fail unhydrated, so it is loaded again on selection (AC-007)', async () => {
+    serve({ isActive: true, failingArtifactsFor: 'run-b' });
+    const candidate = await open();
+
+    expect(candidate.projectionByAgentRunId.get('run-b')).toBeNull();
+    expect(candidate.memberRunStates.map((state) => state.runId)).toEqual(['run-a']);
+    commitTeamRunHydration(candidate);
+    markCommittedTeamRunHydrationAuthority(candidate);
+    expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
+    expect(paths('run-b')).toEqual([]);
+    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(false);
+  });
+
+  it('fails the open when the focused member artifacts fail, as for its projection (AC-007)', async () => {
+    serve({ isActive: true, failingArtifactsFor: 'run-a' });
+    await expect(open()).rejects.toThrow('artifacts unavailable for run-a');
+  });
+
+  it('writes no artifacts when Team activity changed before the commit', async () => {
+    serve({ isActive: true });
+    const candidate = await open();
+    useAgentActivityStore().upsertSystemInstructionActivity('run-a', {
+      kind: 'system_instruction', activityId: 'live', content: 'live', timestamp: new Date(),
+    });
+
+    expect(() => commitTeamRunHydration(candidate)).toThrow("Team activity for 'team-artifacts' changed before projection commit.");
+    expect(paths('run-a')).toEqual([]);
+    expect(paths('run-b')).toEqual([]);
   });
 });
