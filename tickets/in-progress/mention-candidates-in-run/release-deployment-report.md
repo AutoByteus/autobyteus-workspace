@@ -61,7 +61,8 @@
 
 ## Rollback Criteria
 
-- Revert the merge on `personal`. Notes saved with the in-run form still render as chips in older builds only if their parser accepts the suffix. The contracts package keeps the parsing, so a revert would show raw note text for those messages; this is low impact.
+- Revert the merge on `personal` (and cut a new beta if one was released). There is no data migration.
+- Not verified: an older build may show the raw note text for messages saved with the new "already in this run" note form. This is cosmetic.
 
 ## Final Status
 
