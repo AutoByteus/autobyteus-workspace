@@ -257,8 +257,15 @@ Team history is backed by the native Team package under
 Agents plus delegated child executions; it has no configured child Team.
 
 Opening a current or historical run hydrates its stored execution tree and exact
-member projection. Current definitions are not used to reinterpret the stored
-topology. External provider IDs remain provider bindings, not local AgentRun
+member projection. Each member's recorded Agent Artifacts
+(`getRunFileChanges(memberRunId)`) are fetched with its projection and committed
+with it through `services/runHydration/memberRunStateHydration.ts`. As a
+result, a member's Artifacts list is complete after a page reload and on
+historical runs. Live `FILE_CHANGE` rows that are newer than the fetched ones
+are kept. An artifact fetch failure is handled exactly like a failure of that
+member's projection: the focused member fails the open, and a non-focused
+member stays unhydrated and is loaded again on selection. Current definitions
+are not used to reinterpret the stored topology. External provider IDs remain provider bindings, not local AgentRun
 identity.
 
 Every delegated child recorded in the tree stays selectable in active and

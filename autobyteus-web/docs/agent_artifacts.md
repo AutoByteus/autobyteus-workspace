@@ -186,7 +186,9 @@ flowchart LR
 | --- | --- | --- |
 | Agent Artifact store | `autobyteus-web/stores/runFileChangesStore.ts` | Owns hydrated/live rows for touched files and generated outputs. |
 | Agent Artifact stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | Applies `FILE_CHANGE` payloads into the Agent Artifact store. |
-| Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads `getRunFileChanges(runId)`. |
+| Agent Artifact fetch/commit | `autobyteus-web/services/runHydration/runFileChangeHydrationService.ts` | Fetches `getRunFileChanges(runId)` (`fetchRunFileChanges`) and writes rows into the store, by replacing them (`hydrateRunFileChanges`) or by merging them so live entries with a newer `updatedAt` are kept (`mergeHydratedRunFileChanges`). |
+| Standalone Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads a standalone run's artifacts with its run context. |
+| Collaboration member run-state hydration | `autobyteus-web/services/runHydration/memberRunStateHydration.ts` | Shared owner for Team and Agent Org members. `fetchMemberRunState` fetches a member's projection and its artifacts in parallel. `commitMemberRunStates` commits all member Activity in one revision-guarded replacement, then merges each member's artifacts. On a revision conflict nothing is written, artifacts included. |
 | Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel. |
 | Mobile Artifacts view | `autobyteus-web/components/mobile/MobileArtifacts.vue` | Displays only run-scoped Agent Artifacts for the mobile-selected agent run or focused team member run, using the same run artifact store and `ArtifactContentViewer` rather than the desktop right-panel layout. |
 | Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run. |

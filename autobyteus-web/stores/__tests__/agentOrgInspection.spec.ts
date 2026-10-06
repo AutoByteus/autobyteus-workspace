@@ -3,7 +3,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises } from '@vue/test-utils'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 const mocks = vi.hoisted(() => ({ query: vi.fn(), instances: [] as any[] }))
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query }) }))
+// Member artifacts are not under test here: answered empty without reaching the scenario's query mock.
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => options.query?.definitions?.[0]?.name?.value === 'GetRunFileChanges' ? Promise.resolve({ data: { getRunFileChanges: [] } }) : mocks.query(options) }) }))
 vi.mock('~/services/agentOrgExecution/agentOrgStreamingService', () => ({ AgentOrgStreamingService: class {
   connect = vi.fn(); disconnect = vi.fn(); isReady = () => true
   constructor(readonly options: any) { mocks.instances.push(this) }

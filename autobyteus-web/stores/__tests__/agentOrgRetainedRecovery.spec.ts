@@ -6,7 +6,8 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 import { GetAgentOrgExecutionCheckpoint, GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), activity: vi.fn(), terminate: vi.fn(), finalize: vi.fn() }))
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
+// Member artifacts are not under test here: answered empty without reaching the scenario's query mock.
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => options.query?.definitions?.[0]?.name?.value === 'GetRunFileChanges' ? Promise.resolve({ data: { getRunFileChanges: [] } }) : mocks.query(options), mutate: mocks.mutate }) }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true, getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org' }) }) }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))

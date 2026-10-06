@@ -9,7 +9,7 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries'
-import { GetAgentOrgMemberRunProjection, GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
+import { GetAgentOrgMemberRunProjection, GetAgentOrgRunInspection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), instances: [] as any[], ready: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
@@ -57,6 +57,7 @@ const setup = async (active = true) => {
     if (query === GetAgentOrgMemberRunProjection) return { data: { getAgentOrgMemberRunProjection: {
       ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
     } } }
+    if (query === GetRunFileChanges) return { data: { getRunFileChanges: [] } }
     throw new Error('Unexpected query')
   })
   // Model the already hydrated current route, without mounting the history drawer.
@@ -162,6 +163,6 @@ describe('exact Org task inspection independent of history drawer initialization
 
 async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source'>) {
   const staged = await stageAgentOrgExecutionContext({ ...input, source: 'stream' })
-  staged.commitActivities()
+  staged.commit()
   return staged.context
 }
