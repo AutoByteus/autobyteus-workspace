@@ -10,6 +10,14 @@
   "worktree_pruned": true,
   "local_ticket_branch_deleted": true,
   "remote_ticket_branch_deleted": true,
-  "finalization_clone_cleanup": "Pending records push and main refresh",
-  "user_app_data": "Not touched"
+  "finalization_clone_cleanup": "Completed",
+  "user_app_data": "Not touched",
+  "recorded_at": "2026-10-06T09:48:42.992106+00:00",
+  "finalization_clone": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager-finalization",
+  "clone_removed": true,
+  "clone_saved_head": "d526e3f27f15bc890872f43c8450b185af322888",
+  "clone_saved_head_in_personal": true,
+  "all_owned_delivery_workspaces_removed": true,
+  "main_refreshed_to_receipts": "d526e3f27f15bc890872f43c8450b185af322888",
+  "main_dirty_paths_and_tracked_diff_preserved": true
 }

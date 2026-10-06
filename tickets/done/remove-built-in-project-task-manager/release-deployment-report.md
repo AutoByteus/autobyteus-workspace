@@ -2,7 +2,7 @@
 
 ## Scope And Status
 
-**DR-003: Repository finalization, beta publication/rollout verification and ticket cleanup Completed. Finalization-clone cleanup pending receipt push/main refresh.**
+**DR-003: Delivery Completed. Explicit user acceptance, repository finalization, beta publication/rollout verification and all safe cleanup gates Completed.**
 Classification unchanged: `task_size=Medium`, `architectural_risk=High`, full independent-review route. Target `origin/personal`; user requested one NEW BETA, not stable.
 
 ## Cumulative Authority / Docs Sync
@@ -68,7 +68,7 @@ All four single tag-triggered workflows **success**:
 - Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager`: Removed/pruned after confirming HEAD `5a4e17da0` is in origin/personal. Only untracked regenerated SDK dist folders discarded; no uncommitted source/docs lost.
 - Local and remote `codex/remove-built-in-project-task-manager`: Deleted after safe merge/publication.
 - Tests' owned processes/temp data cleaned; no user app/data touched. No preview app was started by Delivery.
-- Finalization clone: pending deletion after this receipt commit/push and main refresh; close-out receipt will record actual deletion, not a promise. `delivery-evidence/dr-003/cleanup.json`.
+- Finalization clone `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-built-in-project-task-manager-finalization`: Removed after confirming clean HEAD `d526e3f27` was pushed and present in personal; main refreshed first with unrelated dirty paths/diff unchanged. Actual completed cleanup receipt: `delivery-evidence/dr-003/cleanup.json`.
 
 ## Data Transition / Rollback / Residual Limits
 
@@ -83,5 +83,9 @@ Limits: packaged shell not interactively exercised locally; no personal user tes
 - Repository finalization: Completed.
 - Applicable release/publication/rollout: Completed.
 - Safe ticket worktree/branches cleanup: Completed.
-- Finalization-clone cleanup: Pending final receipt push/main refresh/removal.
-- Delivery Completed terminal return: Not yet eligible until that final cleanup receipt.
+- Finalization-clone cleanup: Completed.
+- Delivery Completed terminal return: Eligible; required handoff prepared for rule-based return. The actual send tool confirms delivery, not this pre-send artifact.
+
+## Durable Completion Receipt
+
+All owning delivery worktrees/clones and local/remote ticket branches removed. Durable artifacts live under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-built-in-project-task-manager/`; `delivery-evidence/dr-003/cumulative-package.json` enumerates the full reviewed chain, authoritative delivery reports and retained evidence. Repository/tag/publication/cleanup receipts are authoritative. Final receipt-only edits do not alter released application source or require a second beta. No unresolved blocker; result **Delivery Completed**. Terminal message supplies final pushed receipt-commit SHA after this commit is made; no self-referential SHA or premature sent claim is fabricated.
