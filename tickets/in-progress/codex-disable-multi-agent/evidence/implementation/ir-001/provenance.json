@@ -1,0 +1,54 @@
+{
+  "package": "codex-disable-multi-agent-20261006",
+  "implementation_revision": "IR-001",
+  "approved_requirements": "SR-004 / SD-AP-001",
+  "design_revision": "SR-005",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006",
+  "branch": "codex/disable-native-multi-agent-20261006",
+  "base_commit": "f48dbfbf39bbf9ed76116943e304248ca387dc7f",
+  "source_commit": "ce028688bb452500578d5e8ff3633e72ac72b54e",
+  "node": "v22.23.1",
+  "pnpm": "10.28.2",
+  "platform": "Darwin",
+  "architecture": "arm64",
+  "source_sha256": {
+    "autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-launch-config.ts": "f84ffbdc8b1d4b0733c5f4622762426199e1993a6a5389bd0d79db4d66e78a47",
+    "autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-launch-config.test.ts": "2504b83763f92046ac58450646debc7e3e998ff1b5288351923e0b5e08037fa8",
+    "autobyteus-server-ts/dist/runtime-management/codex/client/codex-app-server-launch-config.js": "4b6bec9bca58087840af4c9b451f2737441b5d902f6f6aac01167b3bac4d25f3"
+  },
+  "result": "Implementation Complete \u2014 local self-checks only",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "checks": {
+    "dependency_install_exit": 0,
+    "prebuild_exit": 0,
+    "old_source_new_unit_exit": 1,
+    "old_source_new_unit_failed": 12,
+    "old_source_new_unit_passed": 1,
+    "launch_config_unit_exit": 0,
+    "launch_config_unit_passed": 13,
+    "server_build_exit": 0,
+    "focused_serialized_unit_exit": 0,
+    "focused_serialized_unit_files": 6,
+    "focused_serialized_unit_passed": 62,
+    "built_composition_smoke_exit": 0,
+    "diff_check_exit": 0
+  },
+  "cleanup": {
+    "test_database_files_removed": [
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-disable-multi-agent-20261006/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+    ],
+    "test_database_files_remaining": [],
+    "codex_processes_started": 0,
+    "application_instances_started": 0,
+    "auth_or_personal_config_files_accessed": false,
+    "user_processes_restarted": false
+  },
+  "limits": [
+    "No changed-source native tool definitions/live inventory/system MCP/lifecycle API-E2E run; API/E2E-owned.",
+    "Initial focused-unit run overlapped shared prebuild; retained separately, final run serialized after build.",
+    "SDK dist outputs are untracked build prerequisites, not staged source.",
+    "No release, deploy, merge or push."
+  ]
+}

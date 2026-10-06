@@ -1,0 +1,278 @@
+{
+  "config": {
+    "model": "gpt-6.1-sol",
+    "review_model": null,
+    "model_context_window": null,
+    "model_auto_compact_token_limit": null,
+    "model_auto_compact_token_limit_scope": null,
+    "model_provider": null,
+    "approval_policy": "never",
+    "approvals_reviewer": null,
+    "sandbox_mode": null,
+    "sandbox_workspace_write": null,
+    "forced_chatgpt_workspace_id": null,
+    "forced_login_method": null,
+    "web_search": "disabled",
+    "tools": null,
+    "instructions": null,
+    "developer_instructions": null,
+    "compact_prompt": null,
+    "model_reasoning_effort": "low",
+    "model_reasoning_summary": null,
+    "model_verbosity": null,
+    "service_tier": null,
+    "analytics": {
+      "enabled": false
+    },
+    "apps": null,
+    "browser_use": null,
+    "computer_use": null,
+    "desktop": null,
+    "mcp_oauth_callback_port": null,
+    "project_doc_fallback_filenames": [],
+    "background_terminal_max_timeout": 300000,
+    "log_dir": null,
+    "experimental_realtime_ws_base_url": null,
+    "features": {
+      "network_proxy": null,
+      "apps": false,
+      "hooks": false,
+      "plugins": false,
+      "api_key_model_discovery": false,
+      "auth_elicitation": true,
+      "background_paginated_rollout_migration": false,
+      "codex_apps_mcp_2026_07_28": false,
+      "mcp_2026_07_28": false,
+      "memories": false,
+      "mentions_v2": true,
+      "remote_control": false,
+      "remote_plugin": true,
+      "tool_suggest": true,
+      "windows_sandbox_service": false
+    },
+    "hooks": null,
+    "goals": null,
+    "experimental_use_unified_exec_tool": null,
+    "hide_agent_reasoning": false,
+    "mcp_servers": {},
+    "thread_unload_delay_secs": null,
+    "marketplaces": {},
+    "project_root_markers": [
+      ".git"
+    ],
+    "auto_review": null,
+    "memories": null,
+    "plugins": {},
+    "model_providers": {},
+    "windows": null,
+    "show_raw_agent_reasoning": null,
+    "openai_base_url": null,
+    "experimental_compact_prompt_file": null,
+    "sqlite_home": null,
+    "mcp_enterprise_managed_auth": null,
+    "experimental_realtime_start_instructions": null,
+    "mcp_oauth_credentials_store": "auto",
+    "model_catalog_json": null,
+    "notify": null,
+    "feedback": {
+      "enabled": false
+    },
+    "disable_paste_burst": null,
+    "cloud": null,
+    "permissions": null,
+    "apps_mcp_product_sku": null,
+    "experimental_realtime_ws_backend_prompt": null,
+    "notice": null,
+    "mcp_oauth_callback_url": null,
+    "js_repl_node_path": null,
+    "agents": {
+      "enabled": false,
+      "max_concurrent_threads_per_session": null,
+      "max_depth": null,
+      "default_subagent_model": null,
+      "default_subagent_reasoning_effort": null,
+      "job_max_runtime_seconds": null,
+      "interrupt_message": null
+    },
+    "suppress_unstable_features_warning": null,
+    "include_apps_instructions": true,
+    "model_post_turn_compact_threshold_percent": null,
+    "tool_suggest": null,
+    "experimental_thread_store_endpoint": null,
+    "responses_api_metadata": null,
+    "audio": null,
+    "js_repl_node_module_dirs": null,
+    "check_for_update_on_startup": null,
+    "skills": null,
+    "ghost_snapshot": null,
+    "shell_environment_policy": {
+      "inherit": null,
+      "ignore_default_excludes": null,
+      "exclude": null,
+      "set": null,
+      "include_only": null,
+      "filters": null,
+      "experimental_use_profile": null
+    },
+    "project_doc_max_bytes": 32768,
+    "orchestrator": null,
+    "allow_symlinked_codex_home": null,
+    "mcp_optional_startup_grace_ms": null,
+    "profile": null,
+    "history": {
+      "persistence": "save-all",
+      "max_bytes": null
+    },
+    "plan_mode_reasoning_effort": null,
+    "file_opener": "vscode",
+    "experimental_realtime_ws_model": null,
+    "oss_provider": null,
+    "include_permissions_instructions": true,
+    "tool_output_token_limit": null,
+    "include_environment_context": true,
+    "allow_login_shell": true,
+    "cli_auth_credentials_store": "file",
+    "tui": null,
+    "realtime": null,
+    "experimental_thread_store": null,
+    "personality": null,
+    "experimental_realtime_webrtc_call_base_url": null,
+    "default_permissions": null,
+    "model_instructions_file": null,
+    "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+    "projects": null,
+    "include_collaboration_mode_instructions": true,
+    "experimental_realtime_ws_startup_context": null,
+    "otel": null,
+    "profiles": {}
+  },
+  "origins": {
+    "model_reasoning_effort": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "model": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "cli_auth_credentials_store": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "analytics.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "features.plugins": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+    },
+    "features.apps": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+    },
+    "web_search": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "approval_policy": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "agents.enabled": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+    },
+    "features.hooks": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305"
+    },
+    "feedback.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    }
+  },
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:b67ae373509080fa9596e85a0e3ccd412297931ca78747831520d6c519eb0305",
+      "config": {
+        "features": {
+          "apps": false,
+          "plugins": false,
+          "hooks": false
+        },
+        "agents": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-1t64sezw/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0",
+      "config": {
+        "model": "gpt-6.1-sol",
+        "model_reasoning_effort": "low",
+        "approval_policy": "never",
+        "cli_auth_credentials_store": "file",
+        "web_search": "disabled",
+        "analytics": {
+          "enabled": false
+        },
+        "feedback": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "/etc/codex/config.toml"
+      },
+      "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "config": {}
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "case": "agents_off",
+  "overrides": [
+    "-c",
+    "agents.enabled=false"
+  ],
+  "file_config": "",
+  "thread_config": null,
+  "private_root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2",
+  "command": [
+    "/Users/normy/.local/bin/codex",
+    "app-server",
+    "--listen",
+    "stdio://",
+    "-c",
+    "features.enable_request_compression=false",
+    "-c",
+    "features.apps=false",
+    "-c",
+    "features.plugins=false",
+    "-c",
+    "features.hooks=false",
+    "-c",
+    "agents.enabled=false"
+  ],
+  "initialize": {
+    "userAgent": "isolated_multi_agent_probe/0.160.1 (Mac OS 26.5.2; arm64) unknown (isolated_multi_agent_probe; 1.0)",
+    "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2/home/.codex",
+    "platformFamily": "unix",
+    "platformOs": "macos"
+  },
+  "effective_agents": {
+    "enabled": false,
+    "max_concurrent_threads_per_session": null,
+    "max_depth": null,
+    "default_subagent_model": null,
+    "default_subagent_reasoning_effort": null,
+    "job_max_runtime_seconds": null,
+    "interrupt_message": null
+  },
+  "effective_multi_agent_features": {},
+  "thread_start": {
+    "thread": {
+      "id": "01a111cc-6d29-7173-98b6-93d0c34ce71c",
+      "environments": [
+        {
+          "environmentId": "local",
+          "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2/workspace",
+          "runtimeWorkspaceRoots": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2/workspace"
+          ]
+        }
+      ],
+      "extra": null,
+      "sessionId": "01a111cc-6d29-7173-98b6-93d0c34ce71c",
+      "forkedFromId": null,
+      "parentThreadId": null,
+      "preview": "",
+      "ephemeral": true,
+      "section": null,
+      "sectionEnteredAt": null,
+      "projectId": null,
+      "historyMode": "paginated",
+      "modelProvider": "local_probe",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": null,
+      "createdAt": 1791299972,
+      "updatedAt": 1791299972,
+      "recencyAt": 1791299972,
+      "status": {
+        "type": "idle"
+      },
+      "path": null,
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2/workspace",
+      "cliVersion": "0.160.1",
+      "originator": "isolated_multi_agent_probe",
+      "source": "vscode",
+      "canAcceptDirectInput": true,
+      "threadSource": null,
+      "agentNickname": null,
+      "agentRole": null,
+      "gitInfo": null,
+      "name": null,
+      "daybreakEnabled": null,
+      "turns": []
+    },
+    "model": "gpt-6.1-sol",
+    "modelProvider": "local_probe",
+    "serviceTier": null,
+    "disabledPluginIds": [],
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2/workspace",
+    "runtimeWorkspaceRoots": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-_vsxrxq2/workspace"
+    ],
+    "instructionSources": [],
+    "approvalPolicy": "never",
+    "approvalsReviewer": "user",
+    "sandbox": {
+      "type": "readOnly",
+      "networkAccess": false
+    },
+    "activePermissionProfile": null,
+    "reasoningEffort": null,
+    "multiAgentMode": "explicitRequestOnly"
+  },
+  "request_path": "/v1/responses",
+  "all_tool_names": [
+    "functions.exec",
+    "functions.wait",
+    "functions.request_user_input",
+    "functions.request_user_input_async",
+    "clock.sleep"
+  ],
+  "collaboration_tool_names": [],
+  "captured": true,
+  "process_exit_code": 0,
+  "cleanup": {
+    "process_exited": true,
+    "private_root_removed": true,
+    "mock_server_closed": true
+  }
+}

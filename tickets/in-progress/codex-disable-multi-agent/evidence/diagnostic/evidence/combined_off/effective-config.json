@@ -1,0 +1,365 @@
+{
+  "config": {
+    "model": "gpt-6.1-sol",
+    "review_model": null,
+    "model_context_window": null,
+    "model_auto_compact_token_limit": null,
+    "model_auto_compact_token_limit_scope": null,
+    "model_provider": "local_probe",
+    "approval_policy": "never",
+    "approvals_reviewer": null,
+    "sandbox_mode": null,
+    "sandbox_workspace_write": null,
+    "forced_chatgpt_workspace_id": null,
+    "forced_login_method": null,
+    "web_search": "disabled",
+    "tools": null,
+    "instructions": null,
+    "developer_instructions": null,
+    "compact_prompt": null,
+    "model_reasoning_effort": null,
+    "model_reasoning_summary": null,
+    "model_verbosity": null,
+    "service_tier": null,
+    "analytics": {
+      "enabled": false
+    },
+    "apps": null,
+    "browser_use": null,
+    "computer_use": null,
+    "desktop": null,
+    "tool_suggest": null,
+    "features": {
+      "multi_agent_v2": false,
+      "network_proxy": null,
+      "apps": false,
+      "enable_request_compression": false,
+      "hooks": false,
+      "multi_agent": false,
+      "plugins": false,
+      "api_key_model_discovery": false,
+      "auth_elicitation": true,
+      "background_paginated_rollout_migration": false,
+      "codex_apps_mcp_2026_07_28": false,
+      "mcp_2026_07_28": false,
+      "memories": false,
+      "mentions_v2": true,
+      "remote_control": false,
+      "remote_plugin": true,
+      "tool_suggest": true,
+      "windows_sandbox_service": false
+    },
+    "notice": null,
+    "profile": null,
+    "audio": null,
+    "suppress_unstable_features_warning": null,
+    "plugins": {},
+    "sqlite_home": null,
+    "model_post_turn_compact_threshold_percent": null,
+    "plan_mode_reasoning_effort": null,
+    "include_environment_context": true,
+    "otel": null,
+    "feedback": {
+      "enabled": false
+    },
+    "hide_agent_reasoning": false,
+    "cli_auth_credentials_store": "file",
+    "include_collaboration_mode_instructions": true,
+    "openai_base_url": null,
+    "realtime": null,
+    "permissions": null,
+    "mcp_oauth_callback_port": null,
+    "experimental_realtime_ws_startup_context": null,
+    "experimental_thread_store_endpoint": null,
+    "project_root_markers": [
+      ".git"
+    ],
+    "projects": null,
+    "memories": null,
+    "mcp_enterprise_managed_auth": null,
+    "js_repl_node_path": null,
+    "background_terminal_max_timeout": 300000,
+    "js_repl_node_module_dirs": null,
+    "personality": null,
+    "orchestrator": null,
+    "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+    "mcp_optional_startup_grace_ms": null,
+    "agents": {
+      "enabled": false,
+      "max_concurrent_threads_per_session": null,
+      "max_depth": null,
+      "default_subagent_model": null,
+      "default_subagent_reasoning_effort": null,
+      "job_max_runtime_seconds": null,
+      "interrupt_message": null
+    },
+    "check_for_update_on_startup": null,
+    "profiles": {},
+    "experimental_realtime_ws_base_url": null,
+    "tui": null,
+    "experimental_realtime_start_instructions": null,
+    "marketplaces": {},
+    "mcp_oauth_credentials_store": "auto",
+    "include_apps_instructions": true,
+    "cloud": null,
+    "shell_environment_policy": {
+      "inherit": null,
+      "ignore_default_excludes": null,
+      "exclude": null,
+      "set": null,
+      "include_only": null,
+      "filters": null,
+      "experimental_use_profile": null
+    },
+    "history": {
+      "persistence": "save-all",
+      "max_bytes": null
+    },
+    "project_doc_max_bytes": 32768,
+    "model_catalog_json": null,
+    "tool_output_token_limit": null,
+    "goals": null,
+    "model_providers": {
+      "local_probe": {
+        "name": "Local diagnostic mock",
+        "base_url": "http://127.0.0.1:59957/v1",
+        "model_catalog_url": null,
+        "env_key": null,
+        "env_key_instructions": null,
+        "experimental_bearer_token": null,
+        "auth": null,
+        "gateway_oauth": null,
+        "aws": null,
+        "wire_api": "responses",
+        "query_params": null,
+        "http_headers": null,
+        "env_http_headers": null,
+        "request_max_retries": null,
+        "stream_max_retries": null,
+        "stream_idle_timeout_ms": null,
+        "websocket_connect_timeout_ms": null,
+        "requires_openai_auth": false,
+        "supports_websockets": false,
+        "supports_standalone_web_search": false
+      }
+    },
+    "skills": null,
+    "experimental_realtime_ws_backend_prompt": null,
+    "allow_login_shell": true,
+    "mcp_oauth_callback_url": null,
+    "experimental_thread_store": null,
+    "experimental_compact_prompt_file": null,
+    "include_permissions_instructions": true,
+    "experimental_realtime_ws_model": null,
+    "notify": null,
+    "ghost_snapshot": null,
+    "log_dir": null,
+    "disable_paste_burst": null,
+    "allow_symlinked_codex_home": null,
+    "thread_unload_delay_secs": null,
+    "model_instructions_file": null,
+    "file_opener": "vscode",
+    "hooks": null,
+    "windows": null,
+    "responses_api_metadata": null,
+    "experimental_use_unified_exec_tool": null,
+    "mcp_servers": {},
+    "default_permissions": null,
+    "auto_review": null,
+    "show_raw_agent_reasoning": null,
+    "experimental_realtime_webrtc_call_base_url": null,
+    "project_doc_fallback_filenames": [],
+    "apps_mcp_product_sku": null,
+    "oss_provider": null
+  },
+  "origins": {
+    "agents.enabled": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "features.plugins": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "model_providers.local_probe.requires_openai_auth": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "features.enable_request_compression": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "model_providers.local_probe.name": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "model_providers.local_probe.wire_api": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "model": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "features.apps": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "model_providers.local_probe.supports_websockets": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "analytics.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "feedback.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "model_provider": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "features.multi_agent_v2.enabled": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "features.hooks": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "features.multi_agent": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5"
+    },
+    "web_search": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "model_providers.local_probe.base_url": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    },
+    "approval_policy": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f"
+    }
+  },
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:70b0af45dab1e79e38109c33105a814e8a067e1ac6580862e436dc3029d32bf5",
+      "config": {
+        "features": {
+          "enable_request_compression": false,
+          "apps": false,
+          "plugins": false,
+          "hooks": false,
+          "multi_agent": false,
+          "multi_agent_v2": false
+        },
+        "agents": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-dspb5cpx/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:16fcdcfa6734f02402eb7f44652604b27f6183cce3c556b6007a4e289054c48f",
+      "config": {
+        "model": "gpt-6.1-sol",
+        "model_provider": "local_probe",
+        "approval_policy": "never",
+        "web_search": "disabled",
+        "model_providers": {
+          "local_probe": {
+            "name": "Local diagnostic mock",
+            "base_url": "http://127.0.0.1:59957/v1",
+            "wire_api": "responses",
+            "requires_openai_auth": false,
+            "supports_websockets": false
+          }
+        },
+        "analytics": {
+          "enabled": false
+        },
+        "feedback": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "/etc/codex/config.toml"
+      },
+      "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "config": {}
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "config": {
+    "model": "gpt-6.1-sol",
+    "review_model": null,
+    "model_context_window": null,
+    "model_auto_compact_token_limit": null,
+    "model_auto_compact_token_limit_scope": null,
+    "model_provider": null,
+    "approval_policy": "never",
+    "approvals_reviewer": null,
+    "sandbox_mode": null,
+    "sandbox_workspace_write": null,
+    "forced_chatgpt_workspace_id": null,
+    "forced_login_method": null,
+    "web_search": "disabled",
+    "tools": null,
+    "instructions": null,
+    "developer_instructions": null,
+    "compact_prompt": null,
+    "model_reasoning_effort": "low",
+    "model_reasoning_summary": null,
+    "model_verbosity": null,
+    "service_tier": null,
+    "analytics": {
+      "enabled": false
+    },
+    "apps": null,
+    "browser_use": null,
+    "computer_use": null,
+    "desktop": null,
+    "include_collaboration_mode_instructions": true,
+    "model_catalog_json": null,
+    "shell_environment_policy": {
+      "inherit": null,
+      "ignore_default_excludes": null,
+      "exclude": null,
+      "set": null,
+      "include_only": null,
+      "filters": null,
+      "experimental_use_profile": null
+    },
+    "include_apps_instructions": true,
+    "ghost_snapshot": null,
+    "allow_symlinked_codex_home": null,
+    "experimental_use_unified_exec_tool": null,
+    "include_permissions_instructions": true,
+    "personality": null,
+    "notice": null,
+    "project_doc_fallback_filenames": [],
+    "tool_output_token_limit": null,
+    "js_repl_node_module_dirs": null,
+    "goals": null,
+    "mcp_optional_startup_grace_ms": null,
+    "hooks": null,
+    "thread_unload_delay_secs": null,
+    "orchestrator": null,
+    "plan_mode_reasoning_effort": null,
+    "suppress_unstable_features_warning": null,
+    "profiles": {},
+    "marketplaces": {},
+    "mcp_oauth_callback_port": null,
+    "auto_review": null,
+    "apps_mcp_product_sku": null,
+    "experimental_compact_prompt_file": null,
+    "js_repl_node_path": null,
+    "experimental_thread_store_endpoint": null,
+    "oss_provider": null,
+    "check_for_update_on_startup": null,
+    "tui": null,
+    "show_raw_agent_reasoning": null,
+    "projects": null,
+    "agents": null,
+    "experimental_realtime_ws_startup_context": null,
+    "hide_agent_reasoning": false,
+    "experimental_realtime_start_instructions": null,
+    "skills": null,
+    "plugins": {},
+    "disable_paste_burst": null,
+    "memories": null,
+    "model_instructions_file": null,
+    "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+    "profile": null,
+    "file_opener": "vscode",
+    "allow_login_shell": true,
+    "realtime": null,
+    "cloud": null,
+    "mcp_enterprise_managed_auth": null,
+    "features": {
+      "network_proxy": null,
+      "apps": false,
+      "hooks": false,
+      "plugins": false,
+      "api_key_model_discovery": false,
+      "auth_elicitation": true,
+      "background_paginated_rollout_migration": false,
+      "codex_apps_mcp_2026_07_28": false,
+      "mcp_2026_07_28": false,
+      "memories": false,
+      "mentions_v2": true,
+      "remote_control": false,
+      "remote_plugin": true,
+      "tool_suggest": true,
+      "windows_sandbox_service": false
+    },
+    "include_environment_context": true,
+    "tool_suggest": null,
+    "windows": null,
+    "project_doc_max_bytes": 32768,
+    "experimental_realtime_webrtc_call_base_url": null,
+    "audio": null,
+    "permissions": null,
+    "mcp_oauth_callback_url": null,
+    "background_terminal_max_timeout": 300000,
+    "experimental_thread_store": null,
+    "project_root_markers": [
+      ".git"
+    ],
+    "history": {
+      "persistence": "save-all",
+      "max_bytes": null
+    },
+    "model_providers": {},
+    "experimental_realtime_ws_base_url": null,
+    "openai_base_url": null,
+    "responses_api_metadata": null,
+    "feedback": {
+      "enabled": false
+    },
+    "otel": null,
+    "notify": null,
+    "model_post_turn_compact_threshold_percent": null,
+    "default_permissions": null,
+    "cli_auth_credentials_store": "file",
+    "mcp_servers": {},
+    "experimental_realtime_ws_model": null,
+    "mcp_oauth_credentials_store": "auto",
+    "log_dir": null,
+    "experimental_realtime_ws_backend_prompt": null,
+    "sqlite_home": null
+  },
+  "origins": {
+    "features.hooks": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2"
+    },
+    "analytics.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "model": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "web_search": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "approval_policy": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "features.plugins": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2"
+    },
+    "cli_auth_credentials_store": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "feedback.enabled": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "model_reasoning_effort": {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+    },
+    "features.apps": {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2"
+    }
+  },
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2",
+      "config": {
+        "features": {
+          "apps": false,
+          "plugins": false,
+          "hooks": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+        "profile": null
+      },
+      "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0",
+      "config": {
+        "model": "gpt-6.1-sol",
+        "model_reasoning_effort": "low",
+        "approval_policy": "never",
+        "cli_auth_credentials_store": "file",
+        "web_search": "disabled",
+        "analytics": {
+          "enabled": false
+        },
+        "feedback": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "/etc/codex/config.toml"
+      },
+      "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "config": {}
+    }
+  ]
+}

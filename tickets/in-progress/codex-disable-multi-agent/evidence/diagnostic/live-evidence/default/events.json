@@ -1,0 +1,1961 @@
+[
+  {
+    "id": 1,
+    "result": {
+      "userAgent": "autobyteus-server-ts/0.160.1 (Mac OS 26.5.2; arm64) unknown (autobyteus-server-ts; 0.1.1)",
+      "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex",
+      "platformFamily": "unix",
+      "platformOs": "macos"
+    }
+  },
+  {
+    "method": "remoteControl/status/changed",
+    "params": {
+      "status": "disabled",
+      "serverName": "MacBookPro",
+      "installationId": "1f3cc426-6cc3-4e40-8765-d0313b108c9b",
+      "environmentId": null
+    },
+    "emittedAtMs": 1791300356420
+  },
+  {
+    "id": 2,
+    "result": {
+      "config": {
+        "model": "gpt-6.1-sol",
+        "review_model": null,
+        "model_context_window": null,
+        "model_auto_compact_token_limit": null,
+        "model_auto_compact_token_limit_scope": null,
+        "model_provider": null,
+        "approval_policy": "never",
+        "approvals_reviewer": null,
+        "sandbox_mode": null,
+        "sandbox_workspace_write": null,
+        "forced_chatgpt_workspace_id": null,
+        "forced_login_method": null,
+        "web_search": "disabled",
+        "tools": null,
+        "instructions": null,
+        "developer_instructions": null,
+        "compact_prompt": null,
+        "model_reasoning_effort": "low",
+        "model_reasoning_summary": null,
+        "model_verbosity": null,
+        "service_tier": null,
+        "analytics": {
+          "enabled": false
+        },
+        "apps": null,
+        "browser_use": null,
+        "computer_use": null,
+        "desktop": null,
+        "include_collaboration_mode_instructions": true,
+        "model_catalog_json": null,
+        "shell_environment_policy": {
+          "inherit": null,
+          "ignore_default_excludes": null,
+          "exclude": null,
+          "set": null,
+          "include_only": null,
+          "filters": null,
+          "experimental_use_profile": null
+        },
+        "include_apps_instructions": true,
+        "ghost_snapshot": null,
+        "allow_symlinked_codex_home": null,
+        "experimental_use_unified_exec_tool": null,
+        "include_permissions_instructions": true,
+        "personality": null,
+        "notice": null,
+        "project_doc_fallback_filenames": [],
+        "tool_output_token_limit": null,
+        "js_repl_node_module_dirs": null,
+        "goals": null,
+        "mcp_optional_startup_grace_ms": null,
+        "hooks": null,
+        "thread_unload_delay_secs": null,
+        "orchestrator": null,
+        "plan_mode_reasoning_effort": null,
+        "suppress_unstable_features_warning": null,
+        "profiles": {},
+        "marketplaces": {},
+        "mcp_oauth_callback_port": null,
+        "auto_review": null,
+        "apps_mcp_product_sku": null,
+        "experimental_compact_prompt_file": null,
+        "js_repl_node_path": null,
+        "experimental_thread_store_endpoint": null,
+        "oss_provider": null,
+        "check_for_update_on_startup": null,
+        "tui": null,
+        "show_raw_agent_reasoning": null,
+        "projects": null,
+        "agents": null,
+        "experimental_realtime_ws_startup_context": null,
+        "hide_agent_reasoning": false,
+        "experimental_realtime_start_instructions": null,
+        "skills": null,
+        "plugins": {},
+        "disable_paste_burst": null,
+        "memories": null,
+        "model_instructions_file": null,
+        "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+        "profile": null,
+        "file_opener": "vscode",
+        "allow_login_shell": true,
+        "realtime": null,
+        "cloud": null,
+        "mcp_enterprise_managed_auth": null,
+        "features": {
+          "network_proxy": null,
+          "apps": false,
+          "hooks": false,
+          "plugins": false,
+          "api_key_model_discovery": false,
+          "auth_elicitation": true,
+          "background_paginated_rollout_migration": false,
+          "codex_apps_mcp_2026_07_28": false,
+          "mcp_2026_07_28": false,
+          "memories": false,
+          "mentions_v2": true,
+          "remote_control": false,
+          "remote_plugin": true,
+          "tool_suggest": true,
+          "windows_sandbox_service": false
+        },
+        "include_environment_context": true,
+        "tool_suggest": null,
+        "windows": null,
+        "project_doc_max_bytes": 32768,
+        "experimental_realtime_webrtc_call_base_url": null,
+        "audio": null,
+        "permissions": null,
+        "mcp_oauth_callback_url": null,
+        "background_terminal_max_timeout": 300000,
+        "experimental_thread_store": null,
+        "project_root_markers": [
+          ".git"
+        ],
+        "history": {
+          "persistence": "save-all",
+          "max_bytes": null
+        },
+        "model_providers": {},
+        "experimental_realtime_ws_base_url": null,
+        "openai_base_url": null,
+        "responses_api_metadata": null,
+        "feedback": {
+          "enabled": false
+        },
+        "otel": null,
+        "notify": null,
+        "model_post_turn_compact_threshold_percent": null,
+        "default_permissions": null,
+        "cli_auth_credentials_store": "file",
+        "mcp_servers": {},
+        "experimental_realtime_ws_model": null,
+        "mcp_oauth_credentials_store": "auto",
+        "log_dir": null,
+        "experimental_realtime_ws_backend_prompt": null,
+        "sqlite_home": null
+      },
+      "origins": {
+        "features.hooks": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2"
+        },
+        "analytics.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "model": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "web_search": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "approval_policy": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "features.plugins": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2"
+        },
+        "cli_auth_credentials_store": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "feedback.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "model_reasoning_effort": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0"
+        },
+        "features.apps": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2"
+        }
+      },
+      "layers": [
+        {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:2be923c03faffe13d02d8d895d12622fb479494da4bb80c245afb0f7680379f2",
+          "config": {
+            "features": {
+              "apps": false,
+              "plugins": false,
+              "hooks": false
+            }
+          }
+        },
+        {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:1b1becc124d31f83d69b0e0cf76aa84475f2704312abe93263999c78439aa3a0",
+          "config": {
+            "model": "gpt-6.1-sol",
+            "model_reasoning_effort": "low",
+            "approval_policy": "never",
+            "cli_auth_credentials_store": "file",
+            "web_search": "disabled",
+            "analytics": {
+              "enabled": false
+            },
+            "feedback": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "name": {
+            "type": "system",
+            "file": "/etc/codex/config.toml"
+          },
+          "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "config": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "result": {
+      "thread": {
+        "id": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+        "environments": [
+          {
+            "environmentId": "local",
+            "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+            "runtimeWorkspaceRoots": [
+              "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace"
+            ]
+          }
+        ],
+        "extra": null,
+        "sessionId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+        "forkedFromId": null,
+        "parentThreadId": null,
+        "preview": "",
+        "ephemeral": true,
+        "section": null,
+        "sectionEnteredAt": null,
+        "projectId": null,
+        "historyMode": "paginated",
+        "modelProvider": "openai",
+        "model": "gpt-6.1-sol",
+        "reasoningEffort": "low",
+        "createdAt": 1791300356,
+        "updatedAt": 1791300356,
+        "recencyAt": 1791300356,
+        "status": {
+          "type": "idle"
+        },
+        "path": null,
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+        "cliVersion": "0.160.1",
+        "originator": "autobyteus-server-ts",
+        "source": "vscode",
+        "canAcceptDirectInput": true,
+        "threadSource": null,
+        "agentNickname": null,
+        "agentRole": null,
+        "gitInfo": null,
+        "name": null,
+        "daybreakEnabled": null,
+        "turns": []
+      },
+      "model": "gpt-6.1-sol",
+      "modelProvider": "openai",
+      "serviceTier": null,
+      "disabledPluginIds": [],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+      "runtimeWorkspaceRoots": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace"
+      ],
+      "instructionSources": [],
+      "approvalPolicy": "never",
+      "approvalsReviewer": "user",
+      "sandbox": {
+        "type": "readOnly",
+        "networkAccess": false
+      },
+      "activePermissionProfile": null,
+      "reasoningEffort": "low",
+      "multiAgentMode": "explicitRequestOnly"
+    }
+  },
+  {
+    "method": "thread/started",
+    "params": {
+      "thread": {
+        "id": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+        "environments": [
+          {
+            "environmentId": "local",
+            "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+            "runtimeWorkspaceRoots": [
+              "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace"
+            ]
+          }
+        ],
+        "extra": null,
+        "sessionId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+        "forkedFromId": null,
+        "parentThreadId": null,
+        "preview": "",
+        "ephemeral": true,
+        "section": null,
+        "sectionEnteredAt": null,
+        "projectId": null,
+        "historyMode": "paginated",
+        "modelProvider": "openai",
+        "model": "gpt-6.1-sol",
+        "reasoningEffort": "low",
+        "createdAt": 1791300356,
+        "updatedAt": 1791300356,
+        "recencyAt": 1791300356,
+        "status": {
+          "type": "idle"
+        },
+        "path": null,
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-live-probe-r3cw96xt/workspace",
+        "cliVersion": "0.160.1",
+        "originator": "autobyteus-server-ts",
+        "source": "vscode",
+        "canAcceptDirectInput": true,
+        "threadSource": null,
+        "agentNickname": null,
+        "agentRole": null,
+        "gitInfo": null,
+        "name": null,
+        "daybreakEnabled": null,
+        "turns": []
+      }
+    },
+    "emittedAtMs": 1791300356473
+  },
+  {
+    "id": 4,
+    "result": {
+      "turn": {
+        "id": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "inProgress",
+        "error": null,
+        "startedAt": null,
+        "completedAt": null,
+        "durationMs": null
+      }
+    }
+  },
+  {
+    "method": "thread/status/changed",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      }
+    },
+    "emittedAtMs": 1791300356486
+  },
+  {
+    "method": "turn/started",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turn": {
+        "id": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "inProgress",
+        "error": null,
+        "startedAt": 1791300356,
+        "completedAt": null,
+        "durationMs": null
+      }
+    },
+    "emittedAtMs": 1791300356486
+  },
+  {
+    "method": "account/updated",
+    "params": {
+      "authMode": "chatgpt",
+      "planType": "pro"
+    },
+    "emittedAtMs": 1791300356834
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "userMessage",
+        "id": "01a111d2-5093-7e80-b08f-8d0375e3813b",
+        "clientId": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+            "text_elements": []
+          }
+        ]
+      },
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "startedAtMs": 1791300358291
+    },
+    "emittedAtMs": 1791300358291
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "userMessage",
+        "id": "01a111d2-5093-7e80-b08f-8d0375e3813b",
+        "clientId": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "What tools do you currently have available in THIS conversation?\nInspect the actual tool definitions available to you, not your general knowledge of Codex.\nList all direct callable tools with their namespace-qualified names in tools.\nSeparately list every built-in multi-agent/collaboration tool in collaboration_tools.\nIf no multi-agent/collaboration tools are available, use an empty array and explain that in note.\nDo not execute any tools, spawn any agents, read any files, or change anything. Just report the definitions you can see.\nReturn only JSON with keys tools (string array), collaboration_tools (string array), and note (string).",
+            "text_elements": []
+          }
+        ]
+      },
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "completedAtMs": 1791300358291
+    },
+    "emittedAtMs": 1791300358291
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "reasoning",
+        "id": "rs_0dddb232cb2d2571016ac51308aa7c87d292a8a2f951be5df2",
+        "summary": [],
+        "content": []
+      },
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "startedAtMs": 1791300360667
+    },
+    "emittedAtMs": 1791300360667
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "reasoning",
+        "id": "rs_0dddb232cb2d2571016ac51308aa7c87d292a8a2f951be5df2",
+        "summary": [],
+        "content": []
+      },
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "completedAtMs": 1791300364407
+    },
+    "emittedAtMs": 1791300364407
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+        "text": "",
+        "phase": "final_answer",
+        "memoryCitation": null,
+        "delivery": null,
+        "questions": null
+      },
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "startedAtMs": 1791300364407
+    },
+    "emittedAtMs": 1791300364407
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "{\""
+    },
+    "emittedAtMs": 1791300364407
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "tools"
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\":[\""
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".wait"
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".request"
+    },
+    "emittedAtMs": 1791300364529
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_user"
+    },
+    "emittedAtMs": 1791300364606
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_input"
+    },
+    "emittedAtMs": 1791300364609
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300364609
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300364611
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".request"
+    },
+    "emittedAtMs": 1791300364616
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_user"
+    },
+    "emittedAtMs": 1791300364616
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_input"
+    },
+    "emittedAtMs": 1791300364616
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_async"
+    },
+    "emittedAtMs": 1791300364621
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300364621
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "functions"
+    },
+    "emittedAtMs": 1791300364741
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".exec"
+    },
+    "emittedAtMs": 1791300364751
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300364751
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "clock"
+    },
+    "emittedAtMs": 1791300364751
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".sleep"
+    },
+    "emittedAtMs": 1791300364751
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300364753
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300364754
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".follow"
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "up"
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_task"
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300364936
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".inter"
+    },
+    "emittedAtMs": 1791300364937
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "rupt"
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agent"
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".list"
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agents"
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365053
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365167
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365181
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".send"
+    },
+    "emittedAtMs": 1791300365181
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_message"
+    },
+    "emittedAtMs": 1791300365190
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365190
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365198
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365198
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".spawn"
+    },
+    "emittedAtMs": 1791300365198
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agent"
+    },
+    "emittedAtMs": 1791300365294
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365301
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365303
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365306
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".wait"
+    },
+    "emittedAtMs": 1791300365310
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agent"
+    },
+    "emittedAtMs": 1791300365312
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\"],"
+    },
+    "emittedAtMs": 1791300365312
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\""
+    },
+    "emittedAtMs": 1791300365313
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365420
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365431
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_tools"
+    },
+    "emittedAtMs": 1791300365431
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\":[\""
+    },
+    "emittedAtMs": 1791300365433
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365433
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365438
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".follow"
+    },
+    "emittedAtMs": 1791300365439
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "up"
+    },
+    "emittedAtMs": 1791300365443
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_task"
+    },
+    "emittedAtMs": 1791300365575
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365575
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365576
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365577
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".inter"
+    },
+    "emittedAtMs": 1791300365578
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "rupt"
+    },
+    "emittedAtMs": 1791300365594
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agent"
+    },
+    "emittedAtMs": 1791300365594
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365594
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365695
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365704
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".list"
+    },
+    "emittedAtMs": 1791300365742
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agents"
+    },
+    "emittedAtMs": 1791300365742
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365742
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365742
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365742
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".send"
+    },
+    "emittedAtMs": 1791300365742
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_message"
+    },
+    "emittedAtMs": 1791300365827
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365829
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365838
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365838
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".spawn"
+    },
+    "emittedAtMs": 1791300365840
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agent"
+    },
+    "emittedAtMs": 1791300365843
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\",\""
+    },
+    "emittedAtMs": 1791300365848
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "coll"
+    },
+    "emittedAtMs": 1791300365848
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "aboration"
+    },
+    "emittedAtMs": 1791300365969
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".wait"
+    },
+    "emittedAtMs": 1791300365977
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "_agent"
+    },
+    "emittedAtMs": 1791300365978
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\"],"
+    },
+    "emittedAtMs": 1791300365980
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\""
+    },
+    "emittedAtMs": 1791300365982
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "note"
+    },
+    "emittedAtMs": 1791300365982
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "\":\""
+    },
+    "emittedAtMs": 1791300365985
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "Listed"
+    },
+    "emittedAtMs": 1791300365987
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " the"
+    },
+    "emittedAtMs": 1791300366100
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " direct"
+    },
+    "emittedAtMs": 1791300366120
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " callable"
+    },
+    "emittedAtMs": 1791300366241
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " definitions"
+    },
+    "emittedAtMs": 1791300366389
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " visible"
+    },
+    "emittedAtMs": 1791300366395
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " in"
+    },
+    "emittedAtMs": 1791300366397
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " this"
+    },
+    "emittedAtMs": 1791300366398
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " conversation"
+    },
+    "emittedAtMs": 1791300366399
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "."
+    },
+    "emittedAtMs": 1791300366406
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " Collaboration"
+    },
+    "emittedAtMs": 1791300366527
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300366625
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " are"
+    },
+    "emittedAtMs": 1791300366625
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " also"
+    },
+    "emittedAtMs": 1791300366625
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " included"
+    },
+    "emittedAtMs": 1791300366625
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " in"
+    },
+    "emittedAtMs": 1791300366625
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300366625
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "."
+    },
+    "emittedAtMs": 1791300366643
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " Nested"
+    },
+    "emittedAtMs": 1791300366653
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300366654
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " accessible"
+    },
+    "emittedAtMs": 1791300366798
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " through"
+    },
+    "emittedAtMs": 1791300366801
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " functions"
+    },
+    "emittedAtMs": 1791300366804
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".exec"
+    },
+    "emittedAtMs": 1791300366804
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " are"
+    },
+    "emittedAtMs": 1791300366806
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " not"
+    },
+    "emittedAtMs": 1791300366825
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " direct"
+    },
+    "emittedAtMs": 1791300366825
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " callable"
+    },
+    "emittedAtMs": 1791300366825
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300366929
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "."
+    },
+    "emittedAtMs": 1791300366933
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " No"
+    },
+    "emittedAtMs": 1791300366944
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " tools"
+    },
+    "emittedAtMs": 1791300366944
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " were"
+    },
+    "emittedAtMs": 1791300366944
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": " executed"
+    },
+    "emittedAtMs": 1791300366944
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": ".\""
+    },
+    "emittedAtMs": 1791300366944
+  },
+  {
+    "method": "item/agentMessage/delta",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "itemId": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+      "delta": "}"
+    },
+    "emittedAtMs": 1791300366944
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+        "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\",\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"collaboration_tools\":[\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"note\":\"Listed the direct callable definitions visible in this conversation. Collaboration tools are also included in tools. Nested tools accessible through functions.exec are not direct callable tools. No tools were executed.\"}",
+        "phase": "final_answer",
+        "memoryCitation": null,
+        "delivery": null,
+        "questions": null
+      },
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "completedAtMs": 1791300367010
+    },
+    "emittedAtMs": 1791300367010
+  },
+  {
+    "method": "thread/tokenUsage/updated",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turnId": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+      "tokenUsage": {
+        "total": {
+          "totalTokens": 11014,
+          "inputTokens": 10765,
+          "cachedInputTokens": 0,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 249,
+          "reasoningOutputTokens": 106
+        },
+        "last": {
+          "totalTokens": 11014,
+          "inputTokens": 10765,
+          "cachedInputTokens": 0,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 249,
+          "reasoningOutputTokens": 106
+        },
+        "modelContextWindow": 258400
+      }
+    },
+    "emittedAtMs": 1791300367025
+  },
+  {
+    "method": "account/rateLimits/updated",
+    "params": {
+      "rateLimits": {
+        "limitId": "codex",
+        "limitName": null,
+        "normalModelSlug": null,
+        "primary": {
+          "usedPercent": 79,
+          "windowDurationMins": 10080,
+          "resetsAt": 1791602554
+        },
+        "secondary": null,
+        "credits": {
+          "hasCredits": true,
+          "unlimited": false,
+          "balance": "52468.2486640000"
+        },
+        "individualLimit": null,
+        "spendControlReached": null,
+        "planType": "pro",
+        "rateLimitReachedType": null
+      }
+    },
+    "emittedAtMs": 1791300367025
+  },
+  {
+    "method": "thread/status/changed",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "status": {
+        "type": "idle"
+      }
+    },
+    "emittedAtMs": 1791300367025
+  },
+  {
+    "method": "turn/completed",
+    "params": {
+      "threadId": "01a111d2-4950-7452-a26d-2dd61a3bfedc",
+      "turn": {
+        "id": "01a111d2-4982-7c10-9d0c-7546cb53a2cd",
+        "items": [
+          {
+            "type": "agentMessage",
+            "id": "msg_0dddb232cb2d2571016ac5130c560c87d2b396bbfc5f88d38d",
+            "text": "{\"tools\":[\"functions.wait\",\"functions.request_user_input\",\"functions.request_user_input_async\",\"functions.exec\",\"clock.sleep\",\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"collaboration_tools\":[\"collaboration.followup_task\",\"collaboration.interrupt_agent\",\"collaboration.list_agents\",\"collaboration.send_message\",\"collaboration.spawn_agent\",\"collaboration.wait_agent\"],\"note\":\"Listed the direct callable definitions visible in this conversation. Collaboration tools are also included in tools. Nested tools accessible through functions.exec are not direct callable tools. No tools were executed.\"}",
+            "phase": "final_answer",
+            "memoryCitation": null,
+            "delivery": null,
+            "questions": null
+          }
+        ],
+        "itemsView": "summary",
+        "status": "completed",
+        "error": null,
+        "startedAt": 1791300356,
+        "completedAt": 1791300367,
+        "durationMs": 10539
+      }
+    },
+    "emittedAtMs": 1791300367025
+  }
+]

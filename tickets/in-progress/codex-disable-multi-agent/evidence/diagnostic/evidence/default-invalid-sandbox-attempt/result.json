@@ -1,0 +1,36 @@
+{
+  "case": "default",
+  "overrides": [],
+  "file_config": "",
+  "thread_config": null,
+  "private_root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-bfwgcbs_",
+  "command": [
+    "/Users/normy/.local/bin/codex",
+    "app-server",
+    "--listen",
+    "stdio://",
+    "-c",
+    "features.enable_request_compression=false",
+    "-c",
+    "features.apps=false",
+    "-c",
+    "features.plugins=false",
+    "-c",
+    "features.hooks=false"
+  ],
+  "initialize": {
+    "userAgent": "isolated_multi_agent_probe/0.160.1 (Mac OS 26.5.2; arm64) unknown (isolated_multi_agent_probe; 1.0)",
+    "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-bfwgcbs_/home/.codex",
+    "platformFamily": "unix",
+    "platformOs": "macos"
+  },
+  "effective_agents": null,
+  "effective_multi_agent_features": {},
+  "error": "RuntimeError(\"thread/start: {'code': -32600, 'message': 'Invalid request: unknown variant `readOnly`, expected one of `read-only`, `workspace-write`, `danger-full-access`'}\")",
+  "process_exit_code": 0,
+  "cleanup": {
+    "process_exited": true,
+    "private_root_removed": true,
+    "mock_server_closed": true
+  }
+}

@@ -1,0 +1,624 @@
+[
+  {
+    "id": 1,
+    "result": {
+      "userAgent": "isolated_multi_agent_probe/0.160.1 (Mac OS 26.5.2; arm64) unknown (isolated_multi_agent_probe; 1.0)",
+      "codexHome": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex",
+      "platformFamily": "unix",
+      "platformOs": "macos"
+    }
+  },
+  {
+    "method": "remoteControl/status/changed",
+    "params": {
+      "status": "disabled",
+      "serverName": "MacBookPro",
+      "installationId": "ef5d5906-7560-4132-908d-6b2805db97ad",
+      "environmentId": null
+    },
+    "emittedAtMs": 1791299973780
+  },
+  {
+    "id": 2,
+    "result": {
+      "config": {
+        "model": "gpt-6.1-sol",
+        "review_model": null,
+        "model_context_window": null,
+        "model_auto_compact_token_limit": null,
+        "model_auto_compact_token_limit_scope": null,
+        "model_provider": "local_probe",
+        "approval_policy": "never",
+        "approvals_reviewer": null,
+        "sandbox_mode": null,
+        "sandbox_workspace_write": null,
+        "forced_chatgpt_workspace_id": null,
+        "forced_login_method": null,
+        "web_search": "disabled",
+        "tools": null,
+        "instructions": null,
+        "developer_instructions": null,
+        "compact_prompt": null,
+        "model_reasoning_effort": null,
+        "model_reasoning_summary": null,
+        "model_verbosity": null,
+        "service_tier": null,
+        "analytics": {
+          "enabled": false
+        },
+        "apps": null,
+        "browser_use": null,
+        "computer_use": null,
+        "desktop": null,
+        "experimental_realtime_ws_startup_context": null,
+        "project_doc_fallback_filenames": [],
+        "skills": null,
+        "hooks": null,
+        "oss_provider": null,
+        "notify": null,
+        "thread_unload_delay_secs": null,
+        "mcp_servers": {},
+        "background_terminal_max_timeout": 300000,
+        "model_providers": {
+          "local_probe": {
+            "name": "Local diagnostic mock",
+            "base_url": "http://127.0.0.1:59959/v1",
+            "model_catalog_url": null,
+            "env_key": null,
+            "env_key_instructions": null,
+            "experimental_bearer_token": null,
+            "auth": null,
+            "gateway_oauth": null,
+            "aws": null,
+            "wire_api": "responses",
+            "query_params": null,
+            "http_headers": null,
+            "env_http_headers": null,
+            "request_max_retries": null,
+            "stream_max_retries": null,
+            "stream_idle_timeout_ms": null,
+            "websocket_connect_timeout_ms": null,
+            "requires_openai_auth": false,
+            "supports_websockets": false,
+            "supports_standalone_web_search": false
+          }
+        },
+        "tui": null,
+        "experimental_thread_store_endpoint": null,
+        "tool_suggest": null,
+        "features": {
+          "network_proxy": null,
+          "apps": false,
+          "enable_request_compression": false,
+          "hooks": false,
+          "plugins": false,
+          "api_key_model_discovery": false,
+          "auth_elicitation": true,
+          "background_paginated_rollout_migration": false,
+          "codex_apps_mcp_2026_07_28": false,
+          "mcp_2026_07_28": false,
+          "memories": false,
+          "mentions_v2": true,
+          "remote_control": false,
+          "remote_plugin": true,
+          "tool_suggest": true,
+          "windows_sandbox_service": false
+        },
+        "auto_review": null,
+        "realtime": null,
+        "hide_agent_reasoning": false,
+        "experimental_compact_prompt_file": null,
+        "project_doc_max_bytes": 32768,
+        "mcp_oauth_callback_url": null,
+        "feedback": {
+          "enabled": false
+        },
+        "default_permissions": null,
+        "orchestrator": null,
+        "profile": null,
+        "mcp_oauth_callback_port": null,
+        "ghost_snapshot": null,
+        "audio": null,
+        "responses_api_metadata": null,
+        "cloud": null,
+        "check_for_update_on_startup": null,
+        "chatgpt_base_url": "https://chatgpt.com/backend-api/",
+        "include_environment_context": true,
+        "plan_mode_reasoning_effort": null,
+        "model_post_turn_compact_threshold_percent": null,
+        "apps_mcp_product_sku": null,
+        "experimental_realtime_ws_base_url": null,
+        "sqlite_home": null,
+        "experimental_thread_store": null,
+        "projects": null,
+        "disable_paste_burst": null,
+        "windows": null,
+        "experimental_realtime_ws_model": null,
+        "profiles": {},
+        "include_apps_instructions": true,
+        "experimental_realtime_start_instructions": null,
+        "goals": null,
+        "mcp_enterprise_managed_auth": null,
+        "include_permissions_instructions": true,
+        "experimental_use_unified_exec_tool": null,
+        "allow_symlinked_codex_home": null,
+        "js_repl_node_path": null,
+        "marketplaces": {},
+        "cli_auth_credentials_store": "file",
+        "allow_login_shell": true,
+        "model_catalog_json": null,
+        "plugins": {},
+        "openai_base_url": null,
+        "suppress_unstable_features_warning": null,
+        "project_root_markers": [
+          ".git"
+        ],
+        "memories": null,
+        "experimental_realtime_ws_backend_prompt": null,
+        "file_opener": "vscode",
+        "include_collaboration_mode_instructions": true,
+        "notice": null,
+        "model_instructions_file": null,
+        "permissions": null,
+        "mcp_oauth_credentials_store": "auto",
+        "js_repl_node_module_dirs": null,
+        "shell_environment_policy": {
+          "inherit": null,
+          "ignore_default_excludes": null,
+          "exclude": null,
+          "set": null,
+          "include_only": null,
+          "filters": null,
+          "experimental_use_profile": null
+        },
+        "history": {
+          "persistence": "save-all",
+          "max_bytes": null
+        },
+        "experimental_realtime_webrtc_call_base_url": null,
+        "agents": {
+          "enabled": false,
+          "max_concurrent_threads_per_session": null,
+          "max_depth": null,
+          "default_subagent_model": null,
+          "default_subagent_reasoning_effort": null,
+          "job_max_runtime_seconds": null,
+          "interrupt_message": null
+        },
+        "otel": null,
+        "personality": null,
+        "mcp_optional_startup_grace_ms": null,
+        "tool_output_token_limit": null,
+        "log_dir": null,
+        "show_raw_agent_reasoning": null
+      },
+      "origins": {
+        "features.apps": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:545236083d11225818e1258b1c9e7ce27c80e55f7386d21290d6e09133445ba4"
+        },
+        "model_providers.local_probe.name": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "feedback.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "model_providers.local_probe.wire_api": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "model_providers.local_probe.supports_websockets": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "approval_policy": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "model_providers.local_probe.base_url": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "model_providers.local_probe.requires_openai_auth": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "analytics.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "model_provider": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "model": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "features.hooks": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:545236083d11225818e1258b1c9e7ce27c80e55f7386d21290d6e09133445ba4"
+        },
+        "features.plugins": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:545236083d11225818e1258b1c9e7ce27c80e55f7386d21290d6e09133445ba4"
+        },
+        "features.enable_request_compression": {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:545236083d11225818e1258b1c9e7ce27c80e55f7386d21290d6e09133445ba4"
+        },
+        "web_search": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        },
+        "agents.enabled": {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e"
+        }
+      },
+      "layers": [
+        {
+          "name": {
+            "type": "sessionFlags"
+          },
+          "version": "sha256:545236083d11225818e1258b1c9e7ce27c80e55f7386d21290d6e09133445ba4",
+          "config": {
+            "features": {
+              "enable_request_compression": false,
+              "apps": false,
+              "plugins": false,
+              "hooks": false
+            }
+          }
+        },
+        {
+          "name": {
+            "type": "user",
+            "file": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/home/.codex/config.toml",
+            "profile": null
+          },
+          "version": "sha256:08a791f54713ad9ba36cf1fa00078b6d996d09f9a48f6a131563109a51dfef9e",
+          "config": {
+            "model": "gpt-6.1-sol",
+            "model_provider": "local_probe",
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "model_providers": {
+              "local_probe": {
+                "name": "Local diagnostic mock",
+                "base_url": "http://127.0.0.1:59959/v1",
+                "wire_api": "responses",
+                "requires_openai_auth": false,
+                "supports_websockets": false
+              }
+            },
+            "analytics": {
+              "enabled": false
+            },
+            "feedback": {
+              "enabled": false
+            },
+            "agents": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "name": {
+            "type": "system",
+            "file": "/etc/codex/config.toml"
+          },
+          "version": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "config": {}
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "result": {
+      "thread": {
+        "id": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+        "environments": [
+          {
+            "environmentId": "local",
+            "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace",
+            "runtimeWorkspaceRoots": [
+              "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace"
+            ]
+          }
+        ],
+        "extra": null,
+        "sessionId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+        "forkedFromId": null,
+        "parentThreadId": null,
+        "preview": "",
+        "ephemeral": true,
+        "section": null,
+        "sectionEnteredAt": null,
+        "projectId": null,
+        "historyMode": "paginated",
+        "modelProvider": "local_probe",
+        "model": "gpt-6.1-sol",
+        "reasoningEffort": null,
+        "createdAt": 1791299973,
+        "updatedAt": 1791299973,
+        "recencyAt": 1791299973,
+        "status": {
+          "type": "idle"
+        },
+        "path": null,
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace",
+        "cliVersion": "0.160.1",
+        "originator": "isolated_multi_agent_probe",
+        "source": "vscode",
+        "canAcceptDirectInput": true,
+        "threadSource": null,
+        "agentNickname": null,
+        "agentRole": null,
+        "gitInfo": null,
+        "name": null,
+        "daybreakEnabled": null,
+        "turns": []
+      },
+      "model": "gpt-6.1-sol",
+      "modelProvider": "local_probe",
+      "serviceTier": null,
+      "disabledPluginIds": [],
+      "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace",
+      "runtimeWorkspaceRoots": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace"
+      ],
+      "instructionSources": [],
+      "approvalPolicy": "never",
+      "approvalsReviewer": "user",
+      "sandbox": {
+        "type": "readOnly",
+        "networkAccess": false
+      },
+      "activePermissionProfile": null,
+      "reasoningEffort": null,
+      "multiAgentMode": "explicitRequestOnly"
+    }
+  },
+  {
+    "method": "thread/started",
+    "params": {
+      "thread": {
+        "id": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+        "environments": [
+          {
+            "environmentId": "local",
+            "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace",
+            "runtimeWorkspaceRoots": [
+              "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace"
+            ]
+          }
+        ],
+        "extra": null,
+        "sessionId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+        "forkedFromId": null,
+        "parentThreadId": null,
+        "preview": "",
+        "ephemeral": true,
+        "section": null,
+        "sectionEnteredAt": null,
+        "projectId": null,
+        "historyMode": "paginated",
+        "modelProvider": "local_probe",
+        "model": "gpt-6.1-sol",
+        "reasoningEffort": null,
+        "createdAt": 1791299973,
+        "updatedAt": 1791299973,
+        "recencyAt": 1791299973,
+        "status": {
+          "type": "idle"
+        },
+        "path": null,
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-agent-probe-8agode2g/workspace",
+        "cliVersion": "0.160.1",
+        "originator": "isolated_multi_agent_probe",
+        "source": "vscode",
+        "canAcceptDirectInput": true,
+        "threadSource": null,
+        "agentNickname": null,
+        "agentRole": null,
+        "gitInfo": null,
+        "name": null,
+        "daybreakEnabled": null,
+        "turns": []
+      }
+    },
+    "emittedAtMs": 1791299973806
+  },
+  {
+    "id": 4,
+    "result": {
+      "turn": {
+        "id": "01a111cc-72af-7513-8f58-49fe283142eb",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "inProgress",
+        "error": null,
+        "startedAt": null,
+        "completedAt": null,
+        "durationMs": null
+      }
+    }
+  },
+  {
+    "method": "thread/status/changed",
+    "params": {
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      }
+    },
+    "emittedAtMs": 1791299973810
+  },
+  {
+    "method": "turn/started",
+    "params": {
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "turn": {
+        "id": "01a111cc-72af-7513-8f58-49fe283142eb",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "inProgress",
+        "error": null,
+        "startedAt": 1791299973,
+        "completedAt": null,
+        "durationMs": null
+      }
+    },
+    "emittedAtMs": 1791299973810
+  },
+  {
+    "method": "item/started",
+    "params": {
+      "item": {
+        "type": "userMessage",
+        "id": "01a111cc-72b7-7ba2-b9fd-7b442708d458",
+        "clientId": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "Reply OK; do not execute tools.",
+            "text_elements": []
+          }
+        ]
+      },
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "turnId": "01a111cc-72af-7513-8f58-49fe283142eb",
+      "startedAtMs": 1791299973815
+    },
+    "emittedAtMs": 1791299973815
+  },
+  {
+    "method": "item/completed",
+    "params": {
+      "item": {
+        "type": "userMessage",
+        "id": "01a111cc-72b7-7ba2-b9fd-7b442708d458",
+        "clientId": null,
+        "content": [
+          {
+            "type": "text",
+            "text": "Reply OK; do not execute tools.",
+            "text_elements": []
+          }
+        ]
+      },
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "turnId": "01a111cc-72af-7513-8f58-49fe283142eb",
+      "completedAtMs": 1791299973815
+    },
+    "emittedAtMs": 1791299973815
+  },
+  {
+    "method": "thread/status/changed",
+    "params": {
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "status": {
+        "type": "systemError"
+      }
+    },
+    "emittedAtMs": 1791299973820
+  },
+  {
+    "method": "error",
+    "params": {
+      "error": {
+        "message": "{\"error\": {\"message\": \"Intentional local diagnostic capture; no inference\", \"type\": \"invalid_request_error\", \"code\": \"probe_complete\"}}",
+        "codexErrorInfo": "other",
+        "additionalDetails": null,
+        "misalignment": null
+      },
+      "willRetry": false,
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "turnId": "01a111cc-72af-7513-8f58-49fe283142eb"
+    },
+    "emittedAtMs": 1791299973820
+  },
+  {
+    "method": "turn/completed",
+    "params": {
+      "threadId": "01a111cc-729a-79c3-926d-b9e3bb8484cc",
+      "turn": {
+        "id": "01a111cc-72af-7513-8f58-49fe283142eb",
+        "items": [],
+        "itemsView": "notLoaded",
+        "status": "failed",
+        "error": {
+          "message": "{\"error\": {\"message\": \"Intentional local diagnostic capture; no inference\", \"type\": \"invalid_request_error\", \"code\": \"probe_complete\"}}",
+          "codexErrorInfo": "other",
+          "additionalDetails": null,
+          "misalignment": null
+        },
+        "startedAt": 1791299973,
+        "completedAt": 1791299973,
+        "durationMs": 11
+      }
+    },
+    "emittedAtMs": 1791299973820
+  }
+]
