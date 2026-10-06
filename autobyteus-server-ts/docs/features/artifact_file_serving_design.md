@@ -23,7 +23,12 @@ metadata and do not create Team Communication reference rows.
    MCP forms).
 4. `RunFileChangeService` consumes `FILE_CHANGE`, canonicalizes path identity,
    and updates the run projection. Team-member projections remain scoped to the
-   member run id.
+   member run id. The general process has exactly one `RunFileChangeService`:
+   `GeneralProcessRunSupervisor` constructs it, attaches it to every activated
+   run through `AgentRunResourceManager`, and binds it as the process authority
+   (`bindProcessRunFileChangeService` / `releaseProcessRunFileChangeService`).
+   `getRunFileChangeService()` returns that bound instance and throws when none
+   is bound; no module creates a default instance.
 5. Metadata-only state persists to `<run-memory-dir>/file_changes.json`;
    team-member runs use the canonical memory location resolved from the root
    TeamRun id, physical ancestor TeamRun ids, rooted member address, and AgentRun
@@ -31,6 +36,15 @@ metadata and do not create Team Communication reference rows.
 6. The frontend hydrates rows through `getRunFileChanges(runId)` and applies live
    `FILE_CHANGE` updates through `runFileChangesStore`.
 7. The viewer fetches `/runs/:runId/file-change-content?path=...`.
+
+List hydration and content serving read active runs from the process
+authority, resolved on every request. A `RunFileChangeService` keeps an
+in-memory projection only for runs attached to it, from `attachToRun` until
+detach, because only those runs receive its `FILE_CHANGE` events. That live
+projection also carries transient streaming `content`. For any other run it
+returns a fresh normalized read of `file_changes.json` and caches nothing, so a
+read can never pin a stale snapshot. Application execution scopes own their own
+scope-local instance and never bind it as the process authority.
 
 ## Team Communication Reference Flow
 
@@ -62,7 +76,7 @@ intentionally omit the team projection fields consumed by this flow.
 | Owner | Path | Responsibility |
 | --- | --- | --- |
 | File-change event derivation | `src/agent-execution/events/processors/file-change/*` | Derives `FILE_CHANGE` from explicit mutation/generated-output semantics. |
-| Run file-change projection | `src/services/run-file-changes/*` | Run-scoped metadata projection and path identity. |
+| Run file-change projection | `src/services/run-file-changes/*` | Run-scoped metadata projection and path identity; live projections for attached runs only; process authority binding. |
 | Run file-change historical read | `src/run-history/services/run-file-change-projection-service.ts` | Active/historical run reads, including team-member run ids. |
 | Run file-change API | `src/api/graphql/types/run-file-changes.ts`, `src/api/rest/run-file-changes.ts` | List and preview Agent Artifacts. |
 | Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
