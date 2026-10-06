@@ -3,7 +3,7 @@
 ## Document Status
 - Package identifier: `electron-host-file-open`
 - Status: **Approved**
-- Current solution revision: SR-003 (approved requirements baseline R1 from SR-001/SR-002, 2026-10-06).
+- Current solution revision: SR-004 (approved requirements baseline R1 from SR-001/SR-002, 2026-10-06).
 - Owner: Solution Designer.
 - Authorities read: solution-designer SKILL.md; references/requirements-engineering.md; root AGENTS.md, DESIGN.md, TESTING.md; web/server AGENTS.md (2026-10-06).
 - User approval: **Received** in current user follow-up “...go ahead because it's very clear.” Exact basis R1 (SR-001, evidence-only SR-002); approval and reproduction-disclosure reference: user-approval-r1.md.
@@ -100,7 +100,7 @@ Corrective behavior only; retain existing Files viewer, read-only controls, focu
 | REQ-004 | UC-001 | BEH-003 | AC-006 | SCN-004 |
 
 ## Readiness
-Current behavior evidence-backed, desired/preserved behavior explicit, scope clear, criteria traceable/testable, supported scenarios identified, uncertainty visible: **Yes**. Product design applicability: **N/A**. Content ready for approval: **Yes**. Approved basis ready for design: **Yes — R1 approved; user-approval-r1.md**. Design: **Ready D1 at design-spec.md**, task_size Medium / architectural_risk Low; independent review applicability determined by handoff rules, recorded in architecture-design-complete.md. Requirements remain R1; no intended behavior change.
+Current behavior evidence-backed, desired/preserved behavior explicit, scope clear, criteria traceable/testable, supported scenarios identified, uncertainty visible: **Yes**. Product design applicability: **N/A**. Content ready for approval: **Yes**. Approved basis ready for design: **Yes — R1 approved; user-approval-r1.md**. Design: **Ready D2 at design-spec.md**, task_size Medium / architectural_risk Low; independent review applicability determined by handoff rules, recorded in architecture-design-complete.md. Requirements remain R1; no intended behavior change.
 
 ## Evidence-Only Follow-Up SR-002
 Historical source probe dates the false refusal to 3d59992a4 (Sept 1 2026), integrated into personal Sept 21, first containing release tag v1.4.70. v1.4.69 source opens the same controlled path. Dynamic collaborator contexts added Oct 1 (bcff48200) may explain more recent visibility; exact user runtime attribution remains uncertain. See historical-investigation-result.md and canonical investigation E-012–015. Intended behavior/ACs/R1 approval basis unchanged; approval still pending.
@@ -109,4 +109,9 @@ Historical source probe dates the false refusal to 3d59992a4 (Sept 1 2026), inte
 User go-ahead authorizes R1 corrective scope; see user-approval-r1.md. Earlier pending-status statements in the SR-002 historical follow-up describe that earlier round, not current status. No requirements behavior changes. Design phase may now proceed; exact installed-runtime attribution remains uncertain and validation must not overclaim.
 
 ## Approved Architecture Basis
-R1/SR-003 is approved and internally consistent. D1 maps all approved behavior to existing selected-context, Files and byte-access owners; see design-spec.md. The exact installed-state assumption remains a disclosed validation limitation, not an approval gap.
+R1/SR-003 is approved and internally consistent. D2 maps all approved behavior to existing selected-context, Files and byte-access owners; see design-spec.md. The exact installed-state assumption remains a disclosed validation limitation, not an approval gap.
+
+## SR-004 Design-Only Recovery
+IR-001 / DI-001 native evidence showed correct selected bytes but no automatic Files drawer reveal. D2 completes that technical presentation path. R1 intended behavior, stable IDs, supported scenarios and user-approval-r1.md are unchanged: AC-001/002 already require visible content, AC-006 already requires visible ordinary error. No new visual/access policy or behavior-defining supplement; renewed approval is not required. IR-001 is partial implementation evidence, not acceptance completion.
+
+Reported user clarification, received via Implementation Engineer at user-drawer-clarification.md (commit887417ee1): “ahhh. okayy. basilaly click the file will open the file drawer good notice”. This confirms the same one-activation visible preview in the default drawer presentation, not an instruction to replace fitting desktop docks or change mobile UI. Recorded as clarification evidence, not a new R2 or release authority.
