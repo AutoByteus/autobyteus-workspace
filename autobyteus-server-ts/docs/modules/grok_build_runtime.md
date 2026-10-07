@@ -240,6 +240,45 @@ Some usage data is deliberately left out:
 
 Analytics labels the runtime "Grok Build".
 
+## Context compaction
+
+Grok compacts a session's context itself, either automatically when the
+context passes its threshold or on a `/compact` prompt (sent as a normal
+message; Grok runs it natively). It reports compaction through
+`_x.ai/session_notification` updates inside the active turn:
+
+- automatic: `auto_compact_started {tokens_used, context_window, percentage}`
+  then `auto_compact_completed {tokens_before, tokens_after, elapsed_ms}`;
+- manual `/compact`: only `auto_compact_completed` (no start);
+- `auto_compact_failed` and `auto_compact_cancelled` exist in the CLI but were
+  not observed (Grok 1.0.46).
+
+The two notifications share no id; each carries only its own
+`_meta.eventId`. The Grok profile maps them to runtime-neutral `compaction`
+effects. `AcpSessionUpdateConverter` keeps at most one open compaction per
+session, pairs a completion with the open start in order, and uses the start's
+event id as the operation id (`provider_event_id`) so live and history views
+show one activity. A completion without a start is a manual compaction.
+`buildGrokBuildCompactionStatusPayload` gives the `COMPACTION_STATUS` payloads
+their Grok identity (`runtime_kind GROK_BUILD`, provider `grok`):
+
+| Phase | Source surface | Status | Rotation | Details |
+| --- | --- | --- | --- | --- |
+| start | `grok.auto_compact_started` | `compacting` | no | tokens used, context window, percentage |
+| completion | `grok.auto_compact_completed` | `compacted` | yes | trigger `auto`/`manual`, `pre_tokens`, `post_tokens`, `duration_ms` |
+| failed/cancelled report | `grok.auto_compact_failed` / `grok.auto_compact_cancelled` | `failed` | no | `error_message` |
+| turn ended first | `grok.compaction_abandoned` | `failed` | no | `error_message` with the reason |
+
+A cancel during an automatic compaction ends the turn with no completion, so
+every turn ending (completed, cancelled, interrupted, failed, session close or
+process exit) first closes a still-open compaction as failed, then emits the
+turn event. Only the completion rotates raw traces. Notifications outside a
+turn, including those `session/load` replays on restore, are ignored, and the
+recorder deduplicates a completion by its boundary key. A cancelled manual
+`/compact` produces no notification and records nothing. A `/compact` with
+nothing to compact still reports a completion (equal token counts) and is
+recorded as one boundary, as Grok reports it.
+
 ## Skills
 
 Configured skills are symlinked into `.grok/skills/<name>` in the run working
@@ -301,3 +340,11 @@ migrated.
   `GROK_E2E_STEP_TIMEOUT_MS`. It covers standalone approve/deny/interrupt/
   restore, a mixed Team with a Grok member talking to Claude, and an Org
   relay with restore.
+- **Compaction.** Unit suites replay real Grok 1.0.46 compaction traffic
+  (`tests/fixtures/grok-acp/compaction-*.jsonl`) through the ACP session and the
+  memory recorder. The opt-in live test
+  `tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts` (`RUN_GROK_E2E=1`)
+  runs Grok with a temporary `GROK_HOME` (a symlink to the user's `auth.json` and
+  `auto_compact_threshold_percent = 10`; `~/.grok` is never written). In one
+  four-turn run it interrupts an automatic compaction, completes another, and
+  runs `/compact`.

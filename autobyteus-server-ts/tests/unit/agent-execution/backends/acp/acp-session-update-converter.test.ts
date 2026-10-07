@@ -75,4 +75,85 @@ describe("AcpSessionUpdateConverter", () => {
     expect(events).toEqual([expect.objectContaining({ eventType: AgentRunEventType.ERROR, statusHint: "ERROR", payload: {
       code: "ACP_PROMPT_FAILED", message: "429 Too Many Requests", error_scope: "turn", error_effect: "terminal", turn_id: "t" } })]);
   });
+
+  describe("provider compaction tracking", () => {
+    /** Echoes the builder input so the tracker's decisions are visible. */
+    const compactionProfile: AcpAgentSessionProfile = {
+      ...profile,
+      buildCompactionStatusPayload: (input) => ({ ...input }),
+    };
+    const effect = (phase: "started" | "completed" | "failed" | "cancelled", eventId: string | null, details = {}) =>
+      ({ kind: "compaction" as const, phase, eventId, details });
+    const started = () => {
+      const converter = new AcpSessionUpdateConverter("run-1", compactionProfile);
+      converter.startTurn("t");
+      converter.compaction("s", effect("started", "e-47", { tokens_used: 1 }));
+      return converter;
+    };
+
+    it("pairs a completion with the open start by order and gives both the start's operation id", () => {
+      const converter = new AcpSessionUpdateConverter("run-1", compactionProfile);
+      converter.startTurn("t");
+      const [start] = converter.compaction("s", effect("started", "e-47"));
+      const [done] = converter.compaction("s", effect("completed", "e-50", { tokens_before: 2 }));
+      expect(start).toMatchObject({ eventType: "COMPACTION_STATUS", statusHint: null,
+        payload: { phase: "started", operationId: "e-47", eventId: "e-47", trigger: "auto", sessionId: "s", turnId: "t" } });
+      expect(done?.payload).toMatchObject({ phase: "completed", operationId: "e-47", eventId: "e-50", trigger: "auto",
+        details: { tokens_before: 2 } });
+      expect(types(converter.completeTurn("end_turn"))).toEqual(["TURN_COMPLETED"]);
+    });
+
+    it("treats a completion without a start as a manual compaction under its own id", () => {
+      const converter = new AcpSessionUpdateConverter("run-1", compactionProfile);
+      converter.startTurn("t");
+      expect(converter.compaction("s", effect("completed", "e-84"))[0]?.payload)
+        .toMatchObject({ phase: "completed", operationId: "e-84", trigger: "manual" });
+    });
+
+    it.each([
+      ["completeTurn(end_turn)", (c: AcpSessionUpdateConverter) => c.completeTurn("end_turn"), "TURN_COMPLETED", "Turn ended before the compaction completed."],
+      ["completeTurn(cancelled)", (c: AcpSessionUpdateConverter) => c.completeTurn("cancelled"), "TURN_COMPLETED", "Turn was cancelled before the compaction completed."],
+      ["interruptTurn", (c: AcpSessionUpdateConverter) => c.interruptTurn(), "TURN_INTERRUPTED", "Turn was interrupted before the compaction completed."],
+      ["failTurn", (c: AcpSessionUpdateConverter) => c.failTurn("X", "boom"), "ERROR", "Turn failed before the compaction completed."],
+    ])("closes an open compaction as abandoned before the %s event", (_name, end, terminal, reason) => {
+      const converter = started();
+      const events = end(converter);
+      expect(types(events)).toEqual(["COMPACTION_STATUS", terminal]);
+      expect(events[0]?.payload).toMatchObject({ phase: "abandoned", operationId: "e-47", reason, trigger: "auto" });
+      converter.startTurn("t2");
+      expect(types(converter.completeTurn("end_turn"))).toEqual(["TURN_COMPLETED"]);
+    });
+
+    it.each(["failed", "cancelled"] as const)("closes the open compaction on a provider %s notification", (phase) => {
+      const converter = started();
+      expect(converter.compaction("s", effect(phase, "e-49", { error: "x" }))[0]?.payload)
+        .toMatchObject({ phase, operationId: "e-47", eventId: "e-49", trigger: "auto" });
+      expect(types(converter.completeTurn("end_turn"))).toEqual(["TURN_COMPLETED"]);
+    });
+
+    it("closes an unexpected open start as superseded before opening the new one", () => {
+      const converter = started();
+      const events = converter.compaction("s", effect("started", "e-60"));
+      expect(events.map((event) => [event.payload.phase, event.payload.operationId])).toEqual([["abandoned", "e-47"], ["started", "e-60"]]);
+      expect(events[0]?.payload.reason).toBe("A new compaction started before this one completed.");
+    });
+
+    it("emits nothing outside a turn or for a profile without a compaction builder", () => {
+      const idle = new AcpSessionUpdateConverter("run-1", compactionProfile);
+      expect(idle.compaction("s", effect("completed", "e-1"))).toEqual([]);
+      const plain = new AcpSessionUpdateConverter("run-1", profile);
+      plain.startTurn("t");
+      expect(plain.compaction("s", effect("started", "e-1"))).toEqual([]);
+      expect(types(plain.completeTurn("end_turn"))).toEqual(["TURN_COMPLETED"]);
+    });
+
+    it("gives an id-less compaction a turn-scoped operation id", () => {
+      const converter = new AcpSessionUpdateConverter("run-1", compactionProfile);
+      converter.startTurn("t");
+      const [start] = converter.compaction("s", effect("started", null));
+      const [done] = converter.compaction("s", effect("completed", null));
+      expect(start?.payload.operationId).toBe("t:compaction:1");
+      expect(done?.payload.operationId).toBe("t:compaction:1");
+    });
+  });
 });

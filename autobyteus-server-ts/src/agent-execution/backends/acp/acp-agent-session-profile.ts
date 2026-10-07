@@ -31,10 +31,30 @@ export type AcpToolCallProjection = Readonly<{
 
 export type AcpMcpServerStatus = "ready" | "unavailable" | "pending";
 
+/** Provider-reported phase of a context compaction. */
+export type AcpCompactionPhase = "started" | "completed" | "failed" | "cancelled";
+
 /** Typed outcome of an agent extension notification; everything else is ignored. */
 export type AcpExtEffect =
   | Readonly<{ kind: "usage"; payload: Record<string, unknown> }>
-  | Readonly<{ kind: "mcp_status"; server: string; status: AcpMcpServerStatus; detail: string | null }>;
+  | Readonly<{ kind: "mcp_status"; server: string; status: AcpMcpServerStatus; detail: string | null }>
+  /** `details` are the agent's own fields, read back only by the profile's payload builder. */
+  | Readonly<{ kind: "compaction"; phase: AcpCompactionPhase; eventId: string | null; details: Record<string, unknown> }>;
+
+/**
+ * One COMPACTION_STATUS to build. `operationId` identifies the compaction across its events;
+ * `abandoned` is the session closing an open compaction whose turn ended first.
+ */
+export type AcpCompactionStatusInput = Readonly<{
+  sessionId: string;
+  turnId: string;
+  phase: AcpCompactionPhase | "abandoned";
+  operationId: string;
+  eventId: string | null;
+  details: Record<string, unknown>;
+  trigger: "auto" | "manual" | null;
+  reason: string | null;
+}>;
 
 export type AcpExtNotificationContext = Readonly<{
   sessionId: string;
@@ -61,4 +81,6 @@ export interface AcpAgentSessionProfile {
     params: Record<string, unknown>,
     context: AcpExtNotificationContext,
   ): AcpExtEffect[];
+  /** Runtime identity of compaction statuses; profiles without it produce no compaction events. */
+  buildCompactionStatusPayload?(input: AcpCompactionStatusInput): Record<string, unknown>;
 }

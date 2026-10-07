@@ -178,8 +178,12 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
       if (effect.kind === "mcp_status") {
         this.mcpStatuses.set(effect.server, { status: effect.status });
         for (const waiter of [...this.mcpWaiters]) this.settleMcpWaiter(waiter);
-      } else if (this.isInTurn()) {
-        // Usage applies only within a turn; replayed usage during `session/load` is dropped.
+      } else if (!this.isInTurn()) {
+        // Usage and compaction apply only within a turn; `session/load` replays are dropped.
+        continue;
+      } else if (effect.kind === "compaction") {
+        this.options.emit(this.converter.compaction(sessionId, effect));
+      } else {
         this.options.emit(this.converter.usage(effect.payload));
         this.callOrdinal += 1;
       }

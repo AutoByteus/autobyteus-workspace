@@ -8,6 +8,10 @@ import type {
 } from "../acp/acp-agent-session-profile.js";
 import { buildGrokBuildCallUsagePayload } from "./grok-build-call-usage.js";
 import {
+  buildGrokBuildCompactionStatusPayload,
+  interpretGrokCompactionUpdate,
+} from "./grok-build-compaction-status-payload.js";
+import {
   GROK_MCP_READY_TIMEOUT_MS,
   GROK_MCP_SERVER_STATUS_METHOD,
   interpretGrokMcpServerStatus,
@@ -22,7 +26,8 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /**
  * Grok Build session concerns: `_meta.rules` carries the composed AutoByteus prompt into
  * Grok's system prompt, `_meta.yoloMode` mirrors auto-execute, Agent Tools MCP attaches over
- * HTTP, and only per-call usage and MCP readiness are read from `_x.ai/*` traffic.
+ * HTTP, and only per-call usage, context compaction and MCP readiness are read from
+ * `_x.ai/*` traffic.
  */
 export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
   newSessionMeta: (input: Readonly<{ composedPrompt: string; autoExecuteTools: boolean }>) => ({
@@ -49,12 +54,17 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
       const effect = interpretGrokMcpServerStatus(params);
       return effect ? [effect] : [];
     }
-    if (method === GROK_SESSION_NOTIFICATION_METHOD && isRecord(params.update)
-      && params.update.sessionUpdate === "response_completed") {
-      const payload = buildGrokBuildCallUsagePayload(params.update.usage, context);
-      return payload ? [{ kind: "usage", payload }] : [];
+    if (method === GROK_SESSION_NOTIFICATION_METHOD && isRecord(params.update)) {
+      if (params.update.sessionUpdate === "response_completed") {
+        const payload = buildGrokBuildCallUsagePayload(params.update.usage, context);
+        return payload ? [{ kind: "usage", payload }] : [];
+      }
+      const compaction = interpretGrokCompactionUpdate(params.update, params);
+      if (compaction) return [compaction];
     }
     // Announcements, settings, queue/session bookkeeping, turn totals: never chat content.
     return [];
   },
+
+  buildCompactionStatusPayload: buildGrokBuildCompactionStatusPayload,
 });
