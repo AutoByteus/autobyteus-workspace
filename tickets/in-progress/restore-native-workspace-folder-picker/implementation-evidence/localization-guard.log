@@ -1,0 +1,7 @@
+
+> autobyteus@1.4.96-beta.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Failed.
+components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts:7: direct localization/messages import is forbidden outside localization/runtime and localization/messages.
+ ELIFECYCLE  Command failed with exit code 1.
