@@ -1,0 +1,8 @@
+# Final merge receipt (reconstructed from git)
+target before: 93d1b18b4
+merge: 395d0840c730cd402913e7b4ebe055d43578758d
+parents: 93d1b18b4df023d694441a9bd623e6ec9372d60c 6e27961bdad83efae85da42d4e84ec9c9d314652
+subject: Merge verified projects-always-on
+merge tree: 4007139404e2fbab4994552052c39cf356493eec
+ticket head 6e27961bd tree: 4007139404e2fbab4994552052c39cf356493eec
+push: 93d1b18b4..395d0840c

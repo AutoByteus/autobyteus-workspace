@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass from `/api_e2e_engineer` (direct route) | N/A | Base current; docs synced; waiting for user verification and the `82960e903` decision | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
+| DR-002 | User verification + beta request; follow-up `0446c378c` | DR-001 | Finalized (`395d0840c`), beta `v1.4.96-beta.5` published and verified, cleaned up | `user-verification-record.md`, `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-002/` |
 
 ## Revision Entries
 
@@ -32,3 +33,15 @@
   - No blockers.
   - The 49 server baseline failures are reported (recommended for a separate baseline-repair ticket).
   - The PT-E2E-005/006 timing flake is contained.
+
+### DR-002 — Verified, finalized, beta.5 released, cleaned up
+
+- Delivery round and trigger: "finalze and release a new beta." (2026-10-07). The user-requested follow-up `0446c378c` (drop the "Show" picker label) was included.
+- Current authoritative result: finalized and beta released.
+  - Merge `395d0840c`.
+  - Release commit `5316a0cad`, tag `v1.4.96-beta.5`. The hygiene check passed before tagging.
+  - All 4 workflows succeeded. 17 assets, updater metadata at `1.4.96-beta.5`, Docker digest `sha256:09b3919b…` on both tags.
+  - Worktree and branches removed.
+- Baseline fix `82960e903`: kept, since the user did not ask to remove it after the keep recommendation.
+- Terminal return to `/solution_designer`: deferred. The user then requested a stable release (DR-003), and the terminal package is sent after it.
+- Next action: stable `v1.4.96`.
