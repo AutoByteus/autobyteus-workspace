@@ -627,6 +627,12 @@ delegated its outermost closed execution (Org root), and keyboard focus
 on a leaving row moves to that row. Messages with closed runs stay in the Team
 tab, and nothing is deleted from disk. Only the Workspaces tree and the main
 view follow closure; other Team surfaces still list closed members.
+Reactivation reverses closure for one execution. After the Task leaves DONE,
+the assigning run messages the execution's run ID. The root then publishes
+`task_executions_reopened` / `TASK_EXECUTIONS_REOPENED`, and
+`removeReopenedTaskExecutions` drops that reference from the closed set. The
+execution is listed again without reload, and its still-closed helpers stay
+hidden. Snapshots and stored reads follow the same Task-side view.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

@@ -150,7 +150,8 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
   sends the Agent-root snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
   host's live state, plus the required `closed_task_executions` beside the unfiltered tree),
   events (`agent_presentation`, `task_execution_started`, `task_executions_closed` (published
-  before a DONE Task's runs are stopped), `communication`, `collaborator_added`) and lifecycle. Commands target children only and use the active root as
+  before a DONE Task's runs are stopped), `task_executions_reopened` (published when the
+  assigner reactivates a closed copy), `communication`, `collaborator_added`) and lifecycle. Commands target children only and use the active root as
   is (only when no root is active is it resolved and its host made ready, as on connect); a
   command to the host is rejected (`AGENT_ROOT_HOST_COMMAND_REJECTED`). A run that cannot host collaborators closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.

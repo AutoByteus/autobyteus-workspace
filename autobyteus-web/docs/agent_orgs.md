@@ -360,7 +360,10 @@ When a Task becomes DONE, its task executions leave the Org's Workspaces rows
 `agent_org` history item carry `closed_task_executions` beside the unfiltered
 tree, so rows rendered from the history item before the Org context hydrates
 already leave them out; a live `task_executions_closed` event updates a mounted
-view in place. A selected closed agent hands selection to the agent that
+view in place. When the delegating agent reactivates a closed execution (it
+reopens the Task, then messages the execution's run ID), a live
+`task_executions_reopened` event lists it again. Its still-closed helpers stay
+hidden. A selected closed agent hands selection to the agent that
 delegated its outermost closed execution, when that agent is still listed. The
 Team tab keeps messages with closed runs.
 
