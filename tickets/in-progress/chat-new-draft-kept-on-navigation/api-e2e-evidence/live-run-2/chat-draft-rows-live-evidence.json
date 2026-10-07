@@ -1,0 +1,747 @@
+{
+  "startedAt": "2026-10-07T08:40:38.007Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "D00": {
+      "title": "Seed: a real New chat send leaves no row (REQ-006) and records the run to visit",
+      "result": "Pass",
+      "ms": 8805,
+      "details": {
+        "seedRunId": "daily_assistant_78075014ff684094a7990e14b52fb937",
+        "model": "gpt-5.6-luna",
+        "models": [
+          "gpt-5.6-luna",
+          "gpt-5.6-sol",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-sol",
+          "gpt-6.1-sol"
+        ],
+        "store": {
+          "openId": "chat-draft-2",
+          "drafts": [
+            {
+              "id": "chat-draft-2",
+              "listed": false,
+              "text": "",
+              "files": 0,
+              "starting": false
+            }
+          ]
+        }
+      }
+    },
+    "D01": {
+      "title": "AC-001 alternates + VIS-001: attachment, lone /command, skill chip and settings alone make no row; a textless New chat is not kept",
+      "result": "Pass",
+      "ms": 1915,
+      "details": {
+        "chips": "/probe-notes",
+        "before": {
+          "openId": "chat-draft-3",
+          "drafts": [
+            {
+              "id": "chat-draft-3",
+              "listed": false,
+              "text": "",
+              "files": 1,
+              "starting": false
+            }
+          ]
+        },
+        "after": {
+          "openId": "chat-draft-4",
+          "drafts": [
+            {
+              "id": "chat-draft-4",
+              "listed": false,
+              "text": "",
+              "files": 0,
+              "starting": false
+            }
+          ]
+        }
+      }
+    },
+    "D02": {
+      "title": "SCN-001 Team (AC-001/002, VIS-002/004): row at the first character; leave to a run; the row restores target, image, text, workspace, model, thinking, Ask first and member customization",
+      "result": "Pass",
+      "ms": 7653,
+      "details": {
+        "s1": {
+          "target": "Probe Team",
+          "text": "Team draft: compare the screenshot with the seed run answer",
+          "contextFiles": "1",
+          "images": [
+            {
+              "src": "http://127.0.0.1:49757/rest/drafts/agent-runs/temp-chat-1791362464685-4/context-files/ctx_530d02540c39__draft-screenshot.png",
+              "loaded": true
+            }
+          ],
+          "workspace": "team-folder",
+          "approval": "Ask first",
+          "approvalPressed": "false",
+          "model": "GPT-5.6-Luna (default reasoning: medium) Codex",
+          "thinking": "High",
+          "members": "1 of 2 customized · Edit · Reset",
+          "chips": null,
+          "caretInBox": true
+        },
+        "s2": {
+          "target": "Probe Team",
+          "text": "Team draft: compare the screenshot with the seed run answer",
+          "contextFiles": "1",
+          "images": [
+            {
+              "src": "http://127.0.0.1:49757/rest/drafts/agent-runs/temp-chat-1791362464685-4/context-files/ctx_530d02540c39__draft-screenshot.png",
+              "loaded": true
+            }
+          ],
+          "workspace": "team-folder",
+          "approval": "Ask first",
+          "approvalPressed": "false",
+          "model": "GPT-5.6-Luna (default reasoning: medium) Codex",
+          "thinking": "High",
+          "members": "1 of 2 customized · Edit · Reset",
+          "chips": null,
+          "caretInBox": true
+        },
+        "writer": "Customized\n·\nGPT-5.6-Luna (default reasoning: medium) · Codex · Auto-approve",
+        "caretInBoxAfterReentry": true,
+        "motion": [
+          {
+            "kind": "added",
+            "id": "chat-draft-4",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-enter-from chat-draft-row-enter-active",
+            "duration": "0.15s, 0.15s",
+            "timing": "ease-out, ease-out",
+            "t": 13060.10000000149
+          }
+        ]
+      }
+    },
+    "D03": {
+      "title": "SCN-001 Agent (AC-002): skill chip, @ mention, image, model and thinking restored after another page; editing does not reorder",
+      "result": "Pass",
+      "ms": 4121,
+      "details": {
+        "s1": {
+          "target": "Probe Helper",
+          "text": "@Probe Writer  Agent draft: ask the writer about the notes",
+          "contextFiles": "1",
+          "images": [
+            {
+              "src": "http://127.0.0.1:49757/rest/drafts/agent-runs/temp-chat-1791362472366-5/context-files/ctx_3022f7003777__second-shot.png",
+              "loaded": true
+            }
+          ],
+          "workspace": "Temp workspace",
+          "approval": "Auto-approve",
+          "approvalPressed": "true",
+          "model": "GPT-5.6-Sol (default reasoning: low) Codex",
+          "thinking": "Low",
+          "members": null,
+          "chips": "/probe-notes",
+          "caretInBox": true
+        },
+        "s2": {
+          "target": "Probe Helper",
+          "text": "@Probe Writer  Agent draft: ask the writer about the notes",
+          "contextFiles": "1",
+          "images": [
+            {
+              "src": "http://127.0.0.1:49757/rest/drafts/agent-runs/temp-chat-1791362472366-5/context-files/ctx_3022f7003777__second-shot.png",
+              "loaded": true
+            }
+          ],
+          "workspace": "Temp workspace",
+          "approval": "Auto-approve",
+          "approvalPressed": "true",
+          "model": "GPT-5.6-Sol (default reasoning: low) Codex",
+          "thinking": "Low",
+          "members": null,
+          "chips": "/probe-notes",
+          "caretInBox": true
+        },
+        "order": [
+          "@Probe Writer Agent draft: ask the writer about the notes",
+          "Team draft: compare the screenshot with the seed run answer (edited)"
+        ]
+      }
+    },
+    "D04": {
+      "title": "SCN-002 (AC-003/004): Chat, pencil, catalog Run, Team Run, run header + and tree + start fresh and keep both drafts",
+      "result": "Pass",
+      "ms": 16743,
+      "details": {
+        "chat": {
+          "target": "Daily Assistant",
+          "text": "",
+          "files": "0",
+          "rows": [
+            "@Probe Writer Agent draft: ask the writer about the notes",
+            "Team draft: compare the screenshot with the seed run answer (edited)"
+          ],
+          "selected": 0,
+          "chatSelected": true,
+          "stored": 3
+        },
+        "pencil": {
+          "target": "Daily Assistant",
+          "text": "",
+          "files": "0",
+          "rows": [
+            "@Probe Writer Agent draft: ask the writer about the notes",
+            "Team draft: compare the screenshot with the seed run answer (edited)"
+          ],
+          "selected": 0,
+          "chatSelected": true,
+          "stored": 3
+        },
+        "agent catalog Run": {
+          "target": "Probe Writer",
+          "text": "",
+          "files": "0",
+          "rows": [
+            "@Probe Writer Agent draft: ask the writer about the notes",
+            "Team draft: compare the screenshot with the seed run answer (edited)"
+          ],
+          "selected": 0,
+          "chatSelected": true,
+          "stored": 3
+        },
+        "team catalog Run": {
+          "target": "Probe Team",
+          "text": "",
+          "files": "0",
+          "rows": [
+            "@Probe Writer Agent draft: ask the writer about the notes",
+            "Team draft: compare the screenshot with the seed run answer (edited)"
+          ],
+          "selected": 0,
+          "chatSelected": true,
+          "stored": 3
+        },
+        "run header +": {
+          "target": "Daily Assistant",
+          "text": "",
+          "files": "0",
+          "rows": [
+            "@Probe Writer Agent draft: ask the writer about the notes",
+            "Team draft: compare the screenshot with the seed run answer (edited)"
+          ],
+          "selected": 0,
+          "chatSelected": true,
+          "stored": 3
+        },
+        "workspace tree +": {
+          "target": "Daily Assistant",
+          "text": "",
+          "files": "0",
+          "rows": [
+            "@Probe Writer Agent draft: ask the writer about the notes",
+            "Team draft: compare the screenshot with the seed run answer (edited)"
+          ],
+          "selected": 0,
+          "chatSelected": true,
+          "stored": 3
+        }
+      }
+    },
+    "D05": {
+      "title": "SCN-005 (AC-007, VIS-005) + retarget keeps the same draft: Empty draft until left, via a row, Chat or another page",
+      "result": "Pass",
+      "ms": 2937,
+      "details": {
+        "afterRetarget": [
+          {
+            "id": "chat-draft-12",
+            "text": "Temporary words to clear",
+            "selected": true,
+            "ariaLabel": "Draft: Temporary words to clear — Probe Writer",
+            "title": "Temporary words to clear\nProbe Writer",
+            "xOpacity": "1",
+            "xLabel": "Discard draft: Temporary words to clear"
+          },
+          {
+            "id": "chat-draft-5",
+            "text": "@Probe Writer Agent draft: ask the writer about the notes",
+            "selected": false,
+            "ariaLabel": "Draft: @Probe Writer Agent draft: ask the writer about the notes — Probe Helper",
+            "title": "@Probe Writer Agent draft: ask the writer about the notes\nProbe Helper",
+            "xOpacity": "0",
+            "xLabel": "Discard draft: @Probe Writer Agent draft: ask the writer about the notes"
+          },
+          {
+            "id": "chat-draft-4",
+            "text": "Team draft: compare the screenshot with the seed run answer (edited)",
+            "selected": false,
+            "ariaLabel": "Draft: Team draft: compare the screenshot with the seed run answer (edited) — Probe Team",
+            "title": "Team draft: compare the screenshot with the seed run answer (edited)\nProbe Team",
+            "xOpacity": "0",
+            "xLabel": "Discard draft: Team draft: compare the screenshot with the seed run answer (edited)"
+          }
+        ],
+        "emptyRow": {
+          "text": "Empty draft",
+          "italic": "italic",
+          "color": "rgb(153, 153, 153)"
+        },
+        "viaRow": [
+          "@Probe Writer Agent draft: ask the writer about the notes",
+          "Team draft: compare the screenshot with the seed run answer (edited)"
+        ],
+        "viaChat": [
+          "@Probe Writer Agent draft: ask the writer about the notes",
+          "Team draft: compare the screenshot with the seed run answer (edited)"
+        ],
+        "viaPage": [
+          "@Probe Writer Agent draft: ask the writer about the notes",
+          "Team draft: compare the screenshot with the seed run answer (edited)"
+        ]
+      }
+    },
+    "D06": {
+      "title": "AC-005 alternate + RU-4: a Team launch failure and an agent failure before registration keep the user on New chat with the draft and row",
+      "result": "Pass",
+      "ms": 13349,
+      "details": {
+        "injected": [
+          "team",
+          "workspace"
+        ],
+        "team": {
+          "route": "/chat",
+          "rows": [
+            {
+              "id": "chat-draft-5",
+              "text": "@Probe Writer Agent draft: ask the writer about the notes",
+              "selected": false,
+              "ariaLabel": "Draft: @Probe Writer Agent draft: ask the writer about the notes — Probe Helper",
+              "title": "@Probe Writer Agent draft: ask the writer about the notes\nProbe Helper",
+              "xOpacity": "0",
+              "xLabel": "Discard draft: @Probe Writer Agent draft: ask the writer about the notes"
+            },
+            {
+              "id": "chat-draft-4",
+              "text": "Team draft: compare the screenshot with the seed run answer (edited)",
+              "selected": true,
+              "ariaLabel": "Draft: Team draft: compare the screenshot with the seed run answer (edited) — Probe Team",
+              "title": "Team draft: compare the screenshot with the seed run answer (edited)\nProbe Team",
+              "xOpacity": "1",
+              "xLabel": "Discard draft: Team draft: compare the screenshot with the seed run answer (edited)"
+            }
+          ],
+          "toast": "Injected launch failure (probe)"
+        },
+        "agent": {
+          "route": "/chat",
+          "rows": [
+            {
+              "id": "chat-draft-5",
+              "text": "@Probe Writer Agent draft: ask the writer about the notes",
+              "selected": true,
+              "ariaLabel": "Draft: @Probe Writer Agent draft: ask the writer about the notes — Probe Helper",
+              "title": "@Probe Writer Agent draft: ask the writer about the notes\nProbe Helper",
+              "xOpacity": "1",
+              "xLabel": "Discard draft: @Probe Writer Agent draft: ask the writer about the notes"
+            },
+            {
+              "id": "chat-draft-4",
+              "text": "Team draft: compare the screenshot with the seed run answer (edited)",
+              "selected": false,
+              "ariaLabel": "Draft: Team draft: compare the screenshot with the seed run answer (edited) — Probe Team",
+              "title": "Team draft: compare the screenshot with the seed run answer (edited)\nProbe Team",
+              "xOpacity": "0",
+              "xLabel": "Discard draft: Team draft: compare the screenshot with the seed run answer (edited)"
+            }
+          ],
+          "toast": "The selected workspace could not be opened."
+        },
+        "agentBefore": {
+          "target": "Probe Helper",
+          "text": "@Probe Writer  Agent draft: ask the writer about the notes",
+          "contextFiles": "1",
+          "images": [
+            {
+              "src": "http://127.0.0.1:49757/rest/drafts/agent-runs/temp-chat-1791362472366-5/context-files/ctx_3022f7003777__second-shot.png",
+              "loaded": true
+            }
+          ],
+          "workspace": "agent-folder",
+          "approval": "Auto-approve",
+          "approvalPressed": "true",
+          "model": "GPT-5.6-Sol (default reasoning: low) Codex",
+          "thinking": "Low",
+          "members": null,
+          "chips": "/probe-notes",
+          "caretInBox": false
+        }
+      }
+    },
+    "D07": {
+      "title": "SCN-003 (AC-005, RU-2): real Team and Agent sends from re-entered drafts; only the sent row goes; attachments, skill and mention reach the runs",
+      "result": "Pass",
+      "ms": 14639,
+      "details": {
+        "teamRun": {
+          "teamRunId": "probe_team_953c8d928add4250878eac98bcf07d24",
+          "summary": "Team draft: compare the screenshot with the seed run answer (edited)"
+        },
+        "teamImages": [
+          {
+            "src": "http://127.0.0.1:49757/rest/team-runs/probe_team_953c8d928add4250878eac98bcf07d24/agent-runs/probe_helper_10c04649018c4a45afaf93fe2feeb4fa/context-files/ctx_530d02540c39__draft-screenshot.png",
+            "loaded": true
+          }
+        ],
+        "agentRunId": "probe_helper_373c869281f345b09079c0bf8235757f",
+        "firstUser": "Use the probe-notes skill for this request.\n\n@Probe Writer  Agent draft: ask the writer about the notes\n\n[Mentioned collaborators]\n- Probe Writer (Agent) at /probe_writer\nDelegate the work with delegate_task to its address; it returns a run ID to follow up with. If it also returns a task_id, call create_or_update_task with that task_id and status DONE when the work is finished; this stops it and r",
+        "cfg": {
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": {
+            "reasoning_effort": "low"
+          },
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-zAhS5k/agent-folder",
+          "agentDefinitionId": "probe-helper"
+        },
+        "agentImages": [
+          {
+            "src": "http://127.0.0.1:49757/rest/runs/probe_helper_373c869281f345b09079c0bf8235757f/context-files/ctx_3022f7003777__second-shot.png",
+            "loaded": true
+          }
+        ]
+      }
+    },
+    "D08": {
+      "title": "REQ-006 mapping: an agent first send that fails after registration shows its error in the temp run and the row goes; other rows stay",
+      "result": "Pass",
+      "ms": 2148,
+      "details": {
+        "injected": 1,
+        "route": "/chat?id=temp-chat-1791362524466-18",
+        "rows": [
+          {
+            "id": "chat-draft-17",
+            "text": "Bystander draft Q",
+            "selected": false,
+            "ariaLabel": "Draft: Bystander draft Q — Daily Assistant",
+            "title": "Bystander draft Q\nDaily Assistant",
+            "xOpacity": "0",
+            "xLabel": "Discard draft: Bystander draft Q"
+          }
+        ]
+      }
+    },
+    "D09": {
+      "title": "RU-1: opening another draft while a send is in flight keeps it open; the launch still lands in its run and removes only the sent row",
+      "result": "Pass",
+      "ms": 14234,
+      "details": {
+        "during": [
+          "Empty draft",
+          "Bystander draft Q"
+        ],
+        "opened": {
+          "rows": [
+            {
+              "id": "chat-draft-17",
+              "text": "Bystander draft Q",
+              "selected": true,
+              "ariaLabel": "Draft: Bystander draft Q — Daily Assistant",
+              "title": "Bystander draft Q\nDaily Assistant",
+              "xOpacity": "1",
+              "xLabel": "Discard draft: Bystander draft Q"
+            }
+          ],
+          "text": "Bystander draft Q"
+        },
+        "store": {
+          "openId": "chat-draft-17",
+          "drafts": [
+            {
+              "id": "chat-draft-17",
+              "listed": true,
+              "text": "Bystander draft Q",
+              "files": 0,
+              "starting": false
+            }
+          ]
+        },
+        "back": {
+          "rows": [
+            {
+              "id": "chat-draft-17",
+              "text": "Bystander draft Q",
+              "selected": true,
+              "ariaLabel": "Draft: Bystander draft Q — Daily Assistant",
+              "title": "Bystander draft Q\nDaily Assistant",
+              "xOpacity": "1",
+              "xLabel": "Discard draft: Bystander draft Q"
+            }
+          ],
+          "text": "Bystander draft Q"
+        }
+      }
+    },
+    "D10": {
+      "title": "SCN-004 (AC-006): × without confirmation; focus to the next row, else previous, else Chat; discarding the open draft shows a blank New chat",
+      "result": "Pass",
+      "ms": 4063,
+      "details": {
+        "rest": "0",
+        "hover": "1",
+        "leaveMs": 177,
+        "focus1": {
+          "test": "chat-draft-row",
+          "id": "chat-draft-17"
+        },
+        "focus2": {
+          "test": "chat-draft-row",
+          "id": "chat-draft-22"
+        },
+        "focusImmediate": "app-left-panel-chat",
+        "focusAfter1200ms": "app-left-panel-chat",
+        "motion": [
+          {
+            "kind": "leave",
+            "id": "chat-draft-21",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-leave-from chat-draft-row-leave-active",
+            "duration": "0.15s, 0.15s",
+            "timing": "ease-out, ease-out",
+            "t": 87834.40000000596
+          },
+          {
+            "kind": "removed",
+            "id": "chat-draft-21",
+            "t": 88011.40000000596
+          },
+          {
+            "kind": "leave",
+            "id": "chat-draft-17",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-leave-from chat-draft-row-leave-active",
+            "duration": "0.15s, 0.15s",
+            "timing": "ease-out, ease-out",
+            "t": 88242.70000000298
+          },
+          {
+            "kind": "removed",
+            "id": "chat-draft-17",
+            "t": 88411.70000000298
+          },
+          {
+            "kind": "leave",
+            "id": "chat-draft-22",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-leave-from chat-draft-row-leave-active",
+            "duration": "0.15s, 0.15s",
+            "timing": "ease-out, ease-out",
+            "t": 88754.5
+          },
+          {
+            "kind": "removed",
+            "id": "chat-draft-22",
+            "t": 88928.60000000149
+          }
+        ]
+      }
+    },
+    "D11": {
+      "title": "AC-008/009 (VIS-003/006/007): seven long drafts, one line each, geometry and colours, scroll and resize, keyboard order, focus ring, motion and reduced motion, collapsed strip unchanged",
+      "result": "Pass",
+      "ms": 12528,
+      "details": {
+        "problems": [],
+        "geo": {
+          "top": 50,
+          "height": 32,
+          "textLeft": 44,
+          "oneLine": true,
+          "font": "13px/20px",
+          "weight": "400",
+          "color": "rgb(26, 26, 26)",
+          "bg": "rgb(230, 230, 230)",
+          "radius": "6px",
+          "xW": 24,
+          "xH": 24,
+          "xRightGap": 6,
+          "xCenter": 0,
+          "xColor": "rgb(153, 153, 153)",
+          "selected": true
+        },
+        "enter": [
+          {
+            "kind": "added",
+            "id": "chat-draft-24",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-enter-from chat-draft-row-enter-active",
+            "duration": "0.15s, 0.15s",
+            "timing": "ease-out, ease-out",
+            "t": 91113.40000000596
+          },
+          {
+            "kind": "added",
+            "id": "chat-draft-25",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-enter-from chat-draft-row-enter-active",
+            "duration": "0.15s, 0.15s",
+            "timing": "ease-out, ease-out",
+            "t": 92219.5
+          }
+        ],
+        "enterCount": 7,
+        "rowsAddedWhileTyping": 0,
+        "section": {
+          "clientHeight": 300,
+          "scrollHeight": 532
+        },
+        "resized": 385,
+        "order": [
+          "app-left-panel-new-chat",
+          "Collapse left panel",
+          "chat-draft-row",
+          "chat-draft-discard",
+          "chat-draft-row"
+        ],
+        "ring": {
+          "test": "chat-draft-row",
+          "shadow": "rgb(255, 255, 255) 0px 0px 0px 0px inset, rgb(99, 102, 241) 0px 0px 0px 2px inset, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "reduced": [
+          {
+            "kind": "added",
+            "id": "chat-draft-31",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-enter-from chat-draft-row-enter-active",
+            "duration": "0s",
+            "timing": "ease",
+            "t": 100469.80000000447
+          },
+          {
+            "kind": "leave",
+            "id": "chat-draft-31",
+            "cls": "chat-draft-row group relative mt-px first:mt-0.5 chat-draft-row-leave-from chat-draft-row-leave-active",
+            "duration": "0s",
+            "timing": "ease",
+            "t": 100851.10000000149
+          },
+          {
+            "kind": "removed",
+            "id": "chat-draft-31",
+            "t": 100877.60000000149
+          }
+        ],
+        "stripBefore": 0,
+        "strip": {
+          "chat": {
+            "tags": "svg,DIV",
+            "text": "Chat"
+          },
+          "agents": {
+            "tags": "svg,DIV",
+            "text": "Agents"
+          },
+          "digits": false
+        },
+        "reopened": {
+          "route": "/chat",
+          "rows": 7,
+          "panel": true
+        }
+      }
+    },
+    "D12": {
+      "title": "VIS-008 / TR-010: narrow drawer (390×844, touch): same rows, × always visible, tapping a row opens the draft and closes the drawer",
+      "result": "Pass",
+      "ms": 2513,
+      "details": {
+        "rows": [
+          "Long draft 7: in the frontend I got one problem, it shows this but the output is actually different from what I expected",
+          "Long draft 6: in the frontend I got one problem, it shows this but the output is actually different from what I expected",
+          "Long draft 5: in the frontend I got one problem, it shows this but the output is actually different from what I expected",
+          "Long draft 4: in the frontend I got one problem, it shows this but the output is actually different from what I expected",
+          "Long draft 3: in the frontend I got one problem, it shows this but the output is actually different from what I expected",
+          "Long draft 2: in the frontend I got one problem, it shows this but the output is actually different from what I expected",
+          "Long draft 1: in the frontend I got one problem, it shows this but the output is actually different from what I expected"
+        ],
+        "opened": "Long draft 5: in the frontend I got one problem, it shows this but the output is actually different from what I expected"
+      }
+    },
+    "D13": {
+      "title": "AC-010 / REQ-011: reload → no rows, a blank New chat, no draft text in browser storage",
+      "result": "Pass",
+      "ms": 2150,
+      "details": {
+        "newLocalKeys": [
+          "autobyteus.chat.lastModel"
+        ],
+        "indexedDb": [],
+        "sessionKeys": [],
+        "beforeKeys": [
+          "autobyteus.chat.lastModel",
+          "autobyteus.localization.preference-mode",
+          "autobyteus.node_registry.v1",
+          "autobyteus.app-left-panel.primary-nav-height"
+        ]
+      }
+    },
+    "D14": {
+      "title": "Localization zh-CN: 草稿 list, 草稿: row name, 丢弃草稿 ×, 空草稿",
+      "result": "Pass",
+      "ms": 2560,
+      "details": {
+        "typed": {
+          "list": "草稿",
+          "rows": [
+            {
+              "id": "chat-draft-1",
+              "text": "你好草稿",
+              "selected": true,
+              "ariaLabel": "草稿: 你好草稿 — Daily Assistant",
+              "title": "你好草稿\nDaily Assistant",
+              "xOpacity": "1",
+              "xLabel": "丢弃草稿: 你好草稿"
+            }
+          ],
+          "xTitle": "丢弃草稿"
+        },
+        "cleared": "空草稿"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 58252
+    },
+    {
+      "label": "frontend",
+      "pid": 59789
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 59789,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 58252,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-zAhS5k"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-zAhS5k",
+  "backendUrl": "http://127.0.0.1:49757",
+  "frontUrl": "http://127.0.0.1:49758",
+  "browserErrors": [],
+  "dialogs": [],
+  "portsFree": [
+    {
+      "port": 49757,
+      "free": true
+    },
+    {
+      "port": 49758,
+      "free": true
+    }
+  ],
+  "completedAt": "2026-10-07T08:42:44.944Z"
+}

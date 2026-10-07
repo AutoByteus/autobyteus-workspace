@@ -1,0 +1,19 @@
+
+> autobyteus@1.4.95 test:e2e:chat-draft-rows-live /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-draft-persistence/autobyteus-web
+> node tests/e2e/chat-draft-rows-live-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-draft-persistence/tickets/in-progress/chat-new-draft-kept-on-navigation/api-e2e-evidence/live-run-4 --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-draft-persistence/tickets/in-progress/chat-new-draft-kept-on-navigation/api-e2e-test-case-ledger.md
+
+D00 Pass Seed: a real New chat send leaves no row (REQ-006) and records the run to visit
+D01 Pass AC-001 alternates + VIS-001: attachment, lone /command, skill chip and settings alone make no row; a textless New chat is not kept
+D02 Pass SCN-001 Team (AC-001/002, VIS-002/004): row at the first character; leave to a run; the row restores target, image, text, workspace, model, thinking, Ask first and member customization
+D03 Pass SCN-001 Agent (AC-002): skill chip, @ mention, image, model and thinking restored after another page; editing does not reorder
+D04 Pass SCN-002 (AC-003/004): Chat, pencil, catalog Run, Team Run, run header + and tree + start fresh and keep both drafts
+D05 Pass SCN-005 (AC-007, VIS-005) + retarget keeps the same draft: Empty draft until left, via a row, Chat or another page
+D06 Pass AC-005 alternate + RU-4: a Team launch failure and an agent failure before registration keep the user on New chat with the draft and row
+D07 Pass SCN-003 (AC-005, RU-2): real Team and Agent sends from re-entered drafts; only the sent row goes; attachments, skill and mention reach the runs
+D08 Pass REQ-006 mapping: an agent first send that fails after registration shows its error in the temp run and the row goes; other rows stay
+D09 Pass RU-1: opening another draft while a send is in flight keeps it open; the launch still lands in its run and removes only the sent row
+D10 Pass SCN-004 (AC-006): × without confirmation; focus to the next row, else previous, else Chat; discarding the open draft shows a blank New chat
+D11 Pass AC-008/009 (VIS-003/006/007): seven long drafts, one line each, geometry and colours, scroll and resize, keyboard order, focus ring, motion and reduced motion, collapsed strip unchanged
+D12 Pass VIS-008 / TR-010: narrow drawer (390×844, touch): same rows, × always visible, tapping a row opens the draft and closes the drawer
+D13 Pass AC-010 / REQ-011: reload → no rows, a blank New chat, no draft text in browser storage
+D14 Pass Localization zh-CN: 草稿 list, 草稿: row name, 丢弃草稿 ×, 空草稿
