@@ -1,0 +1,232 @@
+[codex/project-workspace-path e87093f09] chore(delivery): archive user-accepted project workspace paths
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 220 files changed, 3190 insertions(+), 18 deletions(-)
+ rename tickets/{in-progress => done}/project-workspace-path/analysis-result.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-coverage-investigation.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-001-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-002-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-003-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-004-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-005-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-006-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-007-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-008-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-009-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-010-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-011-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-012-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-013-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-014-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-015-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-016-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/continuous-board-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool-1.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool-2.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool-3.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/frontend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-a-backend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-a-migrate.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-b-backend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-b-migrate.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/ordinary-task-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/result.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-en-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-en-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-required.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-save-error.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-zh-CN-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-zh-CN-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-en-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-en-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-required.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-upload-error.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-zh-CN-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-zh-CN-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-001-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-002-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-003-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-004-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-005-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-006-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-007-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-008-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-009-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-010-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-011-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-012-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-013-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-014-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-015-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-016-pass.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/continuous-board-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool-1.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool-2.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool-3.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/frontend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-a-backend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-a-migrate.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-b-backend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-b-migrate.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/ordinary-task-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/result.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-en-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-en-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-required.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-save-error.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-zh-CN-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-zh-CN-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-en-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-en-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-required.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-upload-error.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-zh-CN-1512.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-zh-CN-390.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/build-and-source-receipt.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/build.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/cleanup.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/commands.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/feed-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/feed-receipt/project-change-feed.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/graphql-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/http-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/nodes-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/nuxt-prepare.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/owner.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/prebuild.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/projects-all-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/source-diff-check.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/startup-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-evidence/api-001/web-1.log (100%)
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/build.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/launch-notes.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/manual-setup-receipt.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/start.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/stop.json
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-execution-coverage-report.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-revision-record.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-test-case-ledger.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/api-e2e-test-review-report.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/architecture-review-revision-record.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/cleanup.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/cumulative-diff-check.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/owner-tests.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/prebuild.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/source-audit.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/source-diff-check.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-evidence/crr-001/web-tests.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-report.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/code-review-revision-record.md (100%)
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/continuous-board-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool-1.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool-2.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool-3.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/frontend.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-a-backend.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-a-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-b-backend.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-b-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/ordinary-task-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/result.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-required.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-save-error.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-required.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-upload-error.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/build-and-source-receipt.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/build-output-entry.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/build.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/cleanup.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/commands.md
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/docs-diff-check.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/integration.txt
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/isolated-app-list.json
+ rename tickets/{in-progress/project-workspace-path/implementation-evidence/ir-001 => done/project-workspace-path/delivery-evidence/dr-001}/nuxt-prepare.log (100%)
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/prebuild.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/project-boundaries.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-002/acceptance-and-target-preflight.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-002/commands.md
+ create mode 100644 tickets/done/project-workspace-path/delivery-revision-record.md
+ rename tickets/{in-progress => done}/project-workspace-path/design-review-report.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/design-spec.md (100%)
+ create mode 100644 tickets/done/project-workspace-path/docs-sync-report.md
+ create mode 100644 tickets/done/project-workspace-path/handoff-summary.md
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/browser-warnings.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/build-receipt.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/downstream-contract-fixtures.txt (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/editor-narrow-error-focused.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/editor-narrow-error.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/install.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/localization-boundary.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/migration-freeze.log (100%)
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/nuxt-prepare.log
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/paths-narrow.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/paths-wide.png (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/prebuild-final.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/prebuild.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview-backend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview-cleanup.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview-frontend.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview-migrate.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview-persistence.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview-target.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/preview.mjs (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/rendered-check.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/server-build-final.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/server-build.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/server-unit-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/server-unit-2.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/server-unit-final.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/source-guardrails.json (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/web-boundary.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/web-unit-1.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/web-unit-2.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-evidence/ir-001/web-unit-final.log (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-handoff.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/implementation-revision-record.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/investigation-notes.md (100%)
+ create mode 100644 tickets/done/project-workspace-path/release-deployment-report.md
+ create mode 100644 tickets/done/project-workspace-path/release-notes.md
+ rename tickets/{in-progress => done}/project-workspace-path/requirements-doc.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/solution-handoff.md (100%)
+ rename tickets/{in-progress => done}/project-workspace-path/solution-revision-record.md (100%)

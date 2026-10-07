@@ -1,14 +1,14 @@
 # Handoff Summary — Project workspace paths
 
 ## Current Authoritative State
-**DR-002: explicitly accepted for finalization; repository finalization in progress.** No new version or release, per user.
+**DR-002: Delivery Completed.** Explicitly accepted, archived, merged/pushed to personal and safely cleaned up. No new version or release, per user.
 
-- Final durable artifact location: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path` (available after target merge); ticket archived before final commit.
-- Working branch `codex/project-workspace-path`; **Medium/High; Reviewed route** unchanged. SR-002/AP-001, SR-003, ARCH-REV-001 Pass, IR-001, CRR-001/002 Pass, API-REV-001 Pass/95.00% retained.
+- Final durable artifact location: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path` (present on personal); ticket archived before final commit.
+- Final content commit `e87093f09396c1e7b4ac38864fb3e048d7a1564e`; published ticket branch `origin/codex/project-workspace-path` retained, local branch/worktree removed; **Medium/High; Reviewed route** unchanged. SR-002/AP-001, SR-003, ARCH-REV-001 Pass, IR-001, CRR-001/002 Pass, API-REV-001 Pass/95.00% retained.
 - User on 2026-10-07: **“finalize ,and no need to release a new version”**. This is explicit completion acceptance after the verification hold. Manual isolated Electron build/setup/testing/shutdown are separately recorded in `api-e2e-evidence/manual-electron-20261007/`.
 - User-tested source/integrated HEAD `8448cd18af3fb08b13cb8d47291c9ba89794b9d3`; after-acceptance remote refresh remains origin/personal `af50bdd4056b9341e53494ad393b6283136a00ed`. No new commits, no re-integration or further executable rerun needed; no source/test changes since checks/manual build.
 - Finalization target **origin/personal**. Target checkout has unrelated non-overlapping edits; preserve their recorded hashes/index without reset/stash/commit.
-- Current finalization state and receipts: release-deployment-report.md and delivery-evidence/dr-002/.
+- Personal was fast-forwarded to the ticket content commit and pushed; completion evidence is a subsequent docs-only receipt on personal, whose exact SHA is supplied with terminal handoff. All original unrelated main-checkout edits/status entries preserved. Receipts: release-deployment-report.md and delivery-evidence/dr-002/.
 
 ## User-Visible Result
 Tool rows accept `workspace_path` and optional description. GraphQL, feed and UI use `workspaceRootPath`; saved associations have exactly `workspaceRootPath` and `description`. Picker and typed paths share this representation. Invalid or canonical duplicate inputs reject atomically; omitted/replaced/empty lists keep approved semantics.
@@ -28,7 +28,7 @@ DR-001 automation remains web-equivalent evidence, not a complete packaged-produ
 Other OSs/physical remote nodes, customer data, live models, optional voice, comprehensive a11y and released-app upgrade remain unclaimed. Manual profile was deliberately retained with `--keep`; do not delete it during repository cleanup. No normal app/data touched. Unrelated running isolated apps are not this task's resources.
 
 ## Continuation / Rollback
-Accepted finalization only: archive → final ticket commit → ticket push → safe target update → target merge/push → owned worktree/local branch cleanup. No release/version/tag/deployment. User data transition remains **Directly Usable — No Migration**. Matching backend/web contracts required; reduced saves do not support downgrading to old ID-required binaries or concurrent mixed-version writers. Historical absolute paths in upstream reports are provenance; the canonical complete package below maps them to the archived directory.
+Completed in order: archive → final ticket commit e87093f09 → ticket push → safe target update → target fast-forward/push → owned worktree/local branch cleanup. Both remote refs verified at content completion; docs-only terminal report receipt follows on personal. No release/version/tag/deployment. User data transition remains **Directly Usable — No Migration**. Matching backend/web contracts required; reduced saves do not support downgrading to old ID-required binaries or concurrent mixed-version writers. Historical absolute paths in upstream reports are provenance; the canonical complete package below maps them to the archived directory.
 
 ## Authoritative Delivery Artifacts
 - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/docs-sync-report.md`

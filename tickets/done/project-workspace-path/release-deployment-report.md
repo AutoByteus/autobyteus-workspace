@@ -4,7 +4,7 @@
 - Current round **DR-002**, 2026-10-07; prior DR-001 integrated validation/docs Pass with user-verification hold.
 - **task_size Medium; architectural_risk High; Reviewed route** retained. SR-002/AP-001, SR-003, ARCH-REV-001, IR-001, CRR-001/002 and API-REV-001 Pass/95.00% unchanged.
 - Canonical archive: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path`. handoff-summary.md, docs-sync-report.md and delivery-revision-record.md are authoritative with this report.
-- **Current result: Finalization in progress.** No terminal completion until final push and cleanup receipts pass.
+- **Current result: Delivery Completed.** User acceptance, content finalization and safe repository cleanup passed; no release required. Completion reports are published by a docs-only receipt commit before terminal dispatch.
 
 ## Integration / Post-Acceptance Refresh
 - Bootstrap origin/personal `5316a0cad19498819a8a50c594b72c0197d8b6a1`; initial fetched base `af50bdd4056b9341e53494ad393b6283136a00ed`.
@@ -25,11 +25,11 @@
 
 ## Repository Finalization
 - Bootstrap target: **origin/personal**, per solution-handoff/investigation.
-- Ticket branch: codex/project-workspace-path; content/finalization commit **pending**.
-- Ticket branch push: **pending**.
+- Ticket branch: codex/project-workspace-path; content/finalization commit **e87093f09396c1e7b4ac38864fb3e048d7a1564e** (archived docs/evidence and accepted feature).
+- Ticket branch push: **Completed**, origin/codex/project-workspace-path at e87093f09; ticket-push.log.
 - Main checkout personal starts at refreshed origin base. Its six unrelated tracked modifications do not overlap incoming ticket paths; index clean. Hashes and status retained in delivery-evidence/dr-002/acceptance-and-target-preflight.json. Preserve unrelated untracked files/builds as well; do not reset/stash/stage them.
-- Target update / merge / push: **pending**.
-- Finalization status: **In progress**; no technical blocker currently.
+- Target update: **Completed / already current** at af50bdd40 (`git merge --ff-only origin/personal`). Target merge: **Completed**, fast-forward `git merge --ff-only codex/project-workspace-path` to e87093f09. Target push: **Completed**, `git push origin personal`; remote SHA verified. Exact logs in delivery-evidence/dr-002/.
+- Finalization status: **Completed**. Content commit e87093f09 exists on both remote branches. Final completion reports are a separate docs-only receipt on personal; resolve their commit with `git log -1 -- tickets/done/project-workspace-path/delivery-evidence/dr-002/final-repository-state.json`. Final terminal message supplies its exact pushed SHA. All six unrelated modified files and original status entries were preserved; no stash/reset/staging of unrelated work.
 
 ## Release / Version / Deployment
 - Explicit user exclusion: **no new version/release**.
@@ -40,7 +40,7 @@
 ## Cleanup
 - DR-001 automated runtimes/data/ports: **Completed**, receipts in delivery-evidence/dr-001/cleanup.json.
 - Manual instance `iso-63742-da32`: **Stopped gracefully**, control63742/server63743 released per stop.json. Its private data root `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QcUOVN` is **intentionally retained (--keep)**; deleting it is Not required. Current isolated-app list excludes this task's instance; unrelated running instances are untouched.
-- Worktree removal/prune and local ticket branch deletion: **pending**, only after target push and retained archive verified.
+- Ticket worktree removal: **Completed** after remote push and archive verification. Local codex/project-workspace-path deletion: **Completed**, safe `git branch -d`. Registration removed by `git worktree remove`; extra prune **Not required** (no global prune of unrelated worktrees). Logs/absence checks retained; task-generated SDK/build outputs removed with owned worktree. Post-commit logs copied to main archive with equal SHA256 before removal.
 - Remote ticket branch: retain as published audit branch; deletion **Not required**.
 
 ## Data / Rollback / Remaining Limits
@@ -51,6 +51,6 @@ DR-001 automated counts and API95.00% remain attributed; counts overlap. Manual 
 ## Final Status / Routing
 - Explicit user verification/acceptance: **Completed**.
 - Docs/integrated validation: **Completed**.
-- Repository finalization / safe worktree cleanup: **Pending**.
+- Repository finalization / safe worktree cleanup: **Completed**.
 - Release/deployment/rollout: **Not required**.
-- Defect classification/reroute: **None**. Terminal eligibility **No until pending gates complete**; no successful terminal message sent yet.
+- Defect classification/reroute: **None**; unresolved blocker **None**. Terminal eligibility **Yes**, after publication of this completion receipt. Terminal dispatch will use the exact successful rule returned by get_handoff_rules; no successful message claimed before tool confirmation. Final tool receipt is recorded separately, without replaying completed finalization.

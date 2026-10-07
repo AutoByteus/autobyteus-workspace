@@ -1,0 +1,490 @@
+Updating af50bdd40..e87093f09
+Fast-forward
+ TESTING.md                                         |   25 +-
+ .../docs/modules/agent_tools_mcp_server.md         |   14 +-
+ autobyteus-server-ts/docs/modules/projects.md      |  107 +-
+ .../project-tasks/project-task-tool-contract.ts    |   15 +-
+ .../project-tasks/project-task-tool-manifest.ts    |    4 +-
+ .../src/api/graphql/types/projects.ts              |   16 +-
+ .../projects-per-folder-v1-app-data-migration.ts   |   11 +-
+ .../released-project-folder-v1.ts                  |   42 +
+ .../projects/changes/project-change-messages.ts    |    6 +-
+ autobyteus-server-ts/src/projects/domain/models.ts |   12 +-
+ .../src/projects/domain/project-errors.ts          |    2 +-
+ .../src/projects/services/project-service.ts       |  101 +-
+ .../src/projects/stores/project-store.ts           |    8 +-
+ .../src/workspaces/workspace-manager.ts            |    7 +
+ .../e2e/projects/project-change-feed.e2e.test.ts   |   31 +-
+ .../project-mutation-node-locality.e2e.test.ts     |   37 +-
+ .../projects/project-task-boundaries.e2e.test.ts   |   75 +-
+ .../e2e/projects/projects-graphql.e2e.test.ts      |  128 +-
+ .../projects-startup-migration.e2e.test.ts         |   44 +-
+ .../project-tasks/project-task-tools.test.ts       |   44 +-
+ .../tests/unit/api/graphql/projects-schema.test.ts |   21 +-
+ ...ojects-per-folder-v1-app-data-migration.test.ts |   21 +-
+ .../tests/unit/projects/ad-hoc-tasks.test.ts       |    2 +-
+ .../tests/unit/projects/project-change-hub.test.ts |   16 +
+ .../projects/project-change-publication.test.ts    |    2 +-
+ .../tests/unit/projects/project-service.test.ts    |  165 +-
+ .../unit/projects/project-store-per-folder.test.ts |   24 +
+ .../projects/project-task-context-store.test.ts    |    2 +-
+ .../unit/projects/project-task-service.test.ts     |    2 +-
+ .../task-agent-resource-reactivation.test.ts       |    2 +-
+ .../unit/projects/task-agent-resources.test.ts     |    2 +-
+ .../unit/workspaces/workspace-manager.test.ts      |   20 +
+ .../components/projects/ProjectEditor.vue          |   30 +-
+ .../components/projects/ProjectWorkspaceEntry.vue  |   16 +-
+ .../components/projects/ProjectWorkspaceRow.vue    |    3 +-
+ .../components/projects/ProjectWorkspacesPanel.vue |   14 +-
+ .../projects/__tests__/ProjectDetail.spec.ts       |   12 +-
+ .../projects/__tests__/ProjectEditor.spec.ts       |   74 +-
+ autobyteus-web/docs/projects.md                    |   42 +-
+ autobyteus-web/graphql/queries/projectQueries.ts   |    2 -
+ .../localization/messages/en/projects.ts           |    7 +-
+ .../localization/messages/zh-CN/projects.ts        |    7 +-
+ .../stores/__tests__/projectStore.spec.ts          |   12 +-
+ autobyteus-web/stores/projectStore.ts              |   12 +-
+ .../tests/e2e/projects-feature-probe.mjs           |  112 +-
+ autobyteus-web/types/project.ts                    |    6 +-
+ autobyteus-web/types/projectWorkspaceDraft.ts      |    2 +-
+ .../projects/__tests__/linkableWorkspaces.spec.ts  |   41 -
+ .../utils/projects/linkableWorkspaces.ts           |   28 -
+ .../utils/projects/projectErrorMessageKey.ts       |    2 +-
+ .../done/project-workspace-path/analysis-result.md |   41 +
+ .../api-e2e-coverage-investigation.md              |   93 +
+ .../api-e2e-evidence/api-001/browser-1.log         |   37 +
+ .../api-001/browser-1/PT-E2E-001-pass.png          |  Bin 0 -> 48384 bytes
+ .../api-001/browser-1/PT-E2E-002-pass.png          |  Bin 0 -> 47232 bytes
+ .../api-001/browser-1/PT-E2E-003-pass.png          |  Bin 0 -> 97432 bytes
+ .../api-001/browser-1/PT-E2E-004-pass.png          |  Bin 0 -> 98987 bytes
+ .../api-001/browser-1/PT-E2E-005-pass.png          |  Bin 0 -> 52977 bytes
+ .../api-001/browser-1/PT-E2E-006-pass.png          |  Bin 0 -> 58769 bytes
+ .../api-001/browser-1/PT-E2E-007-pass.png          |  Bin 0 -> 51689 bytes
+ .../api-001/browser-1/PT-E2E-008-pass.png          |  Bin 0 -> 52549 bytes
+ .../api-001/browser-1/PT-E2E-009-pass.png          |  Bin 0 -> 56805 bytes
+ .../api-001/browser-1/PT-E2E-010-pass.png          |  Bin 0 -> 56274 bytes
+ .../api-001/browser-1/PT-E2E-011-pass.png          |  Bin 0 -> 50707 bytes
+ .../api-001/browser-1/PT-E2E-012-pass.png          |  Bin 0 -> 34174 bytes
+ .../api-001/browser-1/PT-E2E-013-pass.png          |  Bin 0 -> 34174 bytes
+ .../api-001/browser-1/PT-E2E-014-pass.png          |  Bin 0 -> 34174 bytes
+ .../api-001/browser-1/PT-E2E-015-pass.png          |  Bin 0 -> 50695 bytes
+ .../api-001/browser-1/PT-E2E-016-pass.png          |  Bin 0 -> 58155 bytes
+ .../api-001/browser-1/continuous-board-390.png     |  Bin 0 -> 38641 bytes
+ .../api-001/browser-1/external-tool-1.json         |    1 +
+ .../api-001/browser-1/external-tool-2.json         |    1 +
+ .../api-001/browser-1/external-tool-3.json         |    1 +
+ .../api-001/browser-1/external-tool.log            |   24 +
+ .../api-001/browser-1/frontend.log                 |   91 +
+ .../api-001/browser-1/node-a-backend.log           |  286 ++
+ .../api-001/browser-1/node-a-migrate.log           |   92 +
+ .../api-001/browser-1/node-b-backend.log           |  138 +
+ .../api-001/browser-1/node-b-migrate.log           |   92 +
+ .../api-001/browser-1/ordinary-task-390.png        |  Bin 0 -> 28640 bytes
+ .../api-e2e-evidence/api-001/browser-1/result.json |  809 ++++++
+ .../api-001/browser-1/task-edit-en-1512.png        |  Bin 0 -> 54297 bytes
+ .../api-001/browser-1/task-edit-en-390.png         |  Bin 0 -> 34316 bytes
+ .../api-001/browser-1/task-edit-required.png       |  Bin 0 -> 53070 bytes
+ .../api-001/browser-1/task-edit-save-error.png     |  Bin 0 -> 60075 bytes
+ .../api-001/browser-1/task-edit-zh-CN-1512.png     |  Bin 0 -> 52234 bytes
+ .../api-001/browser-1/task-edit-zh-CN-390.png      |  Bin 0 -> 33261 bytes
+ .../api-001/browser-1/task-new-en-1512.png         |  Bin 0 -> 47774 bytes
+ .../api-001/browser-1/task-new-en-390.png          |  Bin 0 -> 28640 bytes
+ .../api-001/browser-1/task-new-required.png        |  Bin 0 -> 50382 bytes
+ .../api-001/browser-1/task-new-upload-error.png    |  Bin 0 -> 54353 bytes
+ .../api-001/browser-1/task-new-zh-CN-1512.png      |  Bin 0 -> 45390 bytes
+ .../api-001/browser-1/task-new-zh-CN-390.png       |  Bin 0 -> 27257 bytes
+ .../api-e2e-evidence/api-001/browser-2.log         |   37 +
+ .../api-001/browser-2/PT-E2E-001-pass.png          |  Bin 0 -> 50707 bytes
+ .../api-001/browser-2/PT-E2E-002-pass.png          |  Bin 0 -> 47232 bytes
+ .../api-001/browser-2/PT-E2E-003-pass.png          |  Bin 0 -> 97082 bytes
+ .../api-001/browser-2/PT-E2E-004-pass.png          |  Bin 0 -> 99055 bytes
+ .../api-001/browser-2/PT-E2E-005-pass.png          |  Bin 0 -> 52977 bytes
+ .../api-001/browser-2/PT-E2E-006-pass.png          |  Bin 0 -> 58769 bytes
+ .../api-001/browser-2/PT-E2E-007-pass.png          |  Bin 0 -> 51689 bytes
+ .../api-001/browser-2/PT-E2E-008-pass.png          |  Bin 0 -> 52549 bytes
+ .../api-001/browser-2/PT-E2E-009-pass.png          |  Bin 0 -> 56805 bytes
+ .../api-001/browser-2/PT-E2E-010-pass.png          |  Bin 0 -> 56805 bytes
+ .../api-001/browser-2/PT-E2E-011-pass.png          |  Bin 0 -> 50707 bytes
+ .../api-001/browser-2/PT-E2E-012-pass.png          |  Bin 0 -> 34174 bytes
+ .../api-001/browser-2/PT-E2E-013-pass.png          |  Bin 0 -> 34174 bytes
+ .../api-001/browser-2/PT-E2E-014-pass.png          |  Bin 0 -> 34174 bytes
+ .../api-001/browser-2/PT-E2E-015-pass.png          |  Bin 0 -> 50734 bytes
+ .../api-001/browser-2/PT-E2E-016-pass.png          |  Bin 0 -> 58155 bytes
+ .../api-001/browser-2/continuous-board-390.png     |  Bin 0 -> 38641 bytes
+ .../api-001/browser-2/external-tool-1.json         |    1 +
+ .../api-001/browser-2/external-tool-2.json         |    1 +
+ .../api-001/browser-2/external-tool-3.json         |    1 +
+ .../api-001/browser-2/external-tool.log            |   24 +
+ .../api-001/browser-2/frontend.log                 |   21 +
+ .../api-001/browser-2/node-a-backend.log           |  286 ++
+ .../api-001/browser-2/node-a-migrate.log           |   92 +
+ .../api-001/browser-2/node-b-backend.log           |  138 +
+ .../api-001/browser-2/node-b-migrate.log           |   92 +
+ .../api-001/browser-2/ordinary-task-390.png        |  Bin 0 -> 28640 bytes
+ .../api-e2e-evidence/api-001/browser-2/result.json |  822 ++++++
+ .../api-001/browser-2/task-edit-en-1512.png        |  Bin 0 -> 54283 bytes
+ .../api-001/browser-2/task-edit-en-390.png         |  Bin 0 -> 34316 bytes
+ .../api-001/browser-2/task-edit-required.png       |  Bin 0 -> 53070 bytes
+ .../api-001/browser-2/task-edit-save-error.png     |  Bin 0 -> 60075 bytes
+ .../api-001/browser-2/task-edit-zh-CN-1512.png     |  Bin 0 -> 52234 bytes
+ .../api-001/browser-2/task-edit-zh-CN-390.png      |  Bin 0 -> 33261 bytes
+ .../api-001/browser-2/task-new-en-1512.png         |  Bin 0 -> 47774 bytes
+ .../api-001/browser-2/task-new-en-390.png          |  Bin 0 -> 28640 bytes
+ .../api-001/browser-2/task-new-required.png        |  Bin 0 -> 50382 bytes
+ .../api-001/browser-2/task-new-upload-error.png    |  Bin 0 -> 54353 bytes
+ .../api-001/browser-2/task-new-zh-CN-1512.png      |  Bin 0 -> 45140 bytes
+ .../api-001/browser-2/task-new-zh-CN-390.png       |  Bin 0 -> 27257 bytes
+ .../api-001/build-and-source-receipt.json          |   35 +
+ .../api-e2e-evidence/api-001/build.log             |   35 +
+ .../api-e2e-evidence/api-001/cleanup.json          |   24 +
+ .../api-e2e-evidence/api-001/commands.md           |   25 +
+ .../api-e2e-evidence/api-001/feed-1.log            |  559 ++++
+ .../api-001/feed-receipt/project-change-feed.json  |  157 +
+ .../api-e2e-evidence/api-001/graphql-1.log         |  330 +++
+ .../api-e2e-evidence/api-001/http-1.log            |  327 +++
+ .../api-e2e-evidence/api-001/nodes-1.log           |  105 +
+ .../api-e2e-evidence/api-001/nuxt-prepare.log      |    4 +
+ .../api-e2e-evidence/api-001/owner.log             | 1303 +++++++++
+ .../api-e2e-evidence/api-001/prebuild.log          |   24 +
+ .../api-e2e-evidence/api-001/projects-all-1.log    | 3074 ++++++++++++++++++++
+ .../api-e2e-evidence/api-001/source-diff-check.log |    0
+ .../api-e2e-evidence/api-001/startup-1.log         |  103 +
+ .../api-e2e-evidence/api-001/web-1.log             |  138 +
+ .../manual-electron-20261007/build.log             |  671 +++++
+ .../manual-electron-20261007/launch-notes.md       |   19 +
+ .../manual-setup-receipt.json                      |   26 +
+ .../manual-electron-20261007/start.json            |   20 +
+ .../manual-electron-20261007/stop.json             |   15 +
+ .../api-e2e-execution-coverage-report.md           |  125 +
+ .../api-e2e-revision-record.md                     |   26 +
+ .../api-e2e-test-case-ledger.md                    |  120 +
+ .../api-e2e-test-review-report.md                  |   83 +
+ .../architecture-review-revision-record.md         |   33 +
+ .../code-review-evidence/crr-001/cleanup.json      |   10 +
+ .../crr-001/cumulative-diff-check.log              |   10 +
+ .../code-review-evidence/crr-001/owner-tests.log   | 1236 ++++++++
+ .../code-review-evidence/crr-001/prebuild.log      |   24 +
+ .../code-review-evidence/crr-001/source-audit.json |  194 ++
+ .../crr-001/source-diff-check.log                  |    0
+ .../code-review-evidence/crr-001/web-tests.log     |   42 +
+ .../project-workspace-path/code-review-report.md   |  234 ++
+ .../code-review-revision-record.md                 |   58 +
+ .../delivery-evidence/dr-001/browser-1.log         |   37 +
+ .../dr-001/browser-1/PT-E2E-001-pass.png           |  Bin 0 -> 50707 bytes
+ .../dr-001/browser-1/PT-E2E-002-pass.png           |  Bin 0 -> 47232 bytes
+ .../dr-001/browser-1/PT-E2E-003-pass.png           |  Bin 0 -> 97183 bytes
+ .../dr-001/browser-1/PT-E2E-004-pass.png           |  Bin 0 -> 99202 bytes
+ .../dr-001/browser-1/PT-E2E-005-pass.png           |  Bin 0 -> 52977 bytes
+ .../dr-001/browser-1/PT-E2E-006-pass.png           |  Bin 0 -> 58769 bytes
+ .../dr-001/browser-1/PT-E2E-007-pass.png           |  Bin 0 -> 51689 bytes
+ .../dr-001/browser-1/PT-E2E-008-pass.png           |  Bin 0 -> 52549 bytes
+ .../dr-001/browser-1/PT-E2E-009-pass.png           |  Bin 0 -> 56805 bytes
+ .../dr-001/browser-1/PT-E2E-010-pass.png           |  Bin 0 -> 56805 bytes
+ .../dr-001/browser-1/PT-E2E-011-pass.png           |  Bin 0 -> 50707 bytes
+ .../dr-001/browser-1/PT-E2E-012-pass.png           |  Bin 0 -> 34174 bytes
+ .../dr-001/browser-1/PT-E2E-013-pass.png           |  Bin 0 -> 34174 bytes
+ .../dr-001/browser-1/PT-E2E-014-pass.png           |  Bin 0 -> 34174 bytes
+ .../dr-001/browser-1/PT-E2E-015-pass.png           |  Bin 0 -> 50734 bytes
+ .../dr-001/browser-1/PT-E2E-016-pass.png           |  Bin 0 -> 58145 bytes
+ .../dr-001/browser-1/continuous-board-390.png      |  Bin 0 -> 38641 bytes
+ .../dr-001/browser-1/external-tool-1.json          |    1 +
+ .../dr-001/browser-1/external-tool-2.json          |    1 +
+ .../dr-001/browser-1/external-tool-3.json          |    1 +
+ .../dr-001/browser-1/external-tool.log             |   24 +
+ .../dr-001/browser-1/frontend.log                  |   87 +
+ .../dr-001/browser-1/node-a-backend.log            |  286 ++
+ .../dr-001/browser-1/node-a-migrate.log            |   92 +
+ .../dr-001/browser-1/node-b-backend.log            |  138 +
+ .../dr-001/browser-1/node-b-migrate.log            |   92 +
+ .../dr-001/browser-1/ordinary-task-390.png         |  Bin 0 -> 28640 bytes
+ .../delivery-evidence/dr-001/browser-1/result.json |  822 ++++++
+ .../dr-001/browser-1/task-edit-en-1512.png         |  Bin 0 -> 54283 bytes
+ .../dr-001/browser-1/task-edit-en-390.png          |  Bin 0 -> 34316 bytes
+ .../dr-001/browser-1/task-edit-required.png        |  Bin 0 -> 53070 bytes
+ .../dr-001/browser-1/task-edit-save-error.png      |  Bin 0 -> 60075 bytes
+ .../dr-001/browser-1/task-edit-zh-CN-1512.png      |  Bin 0 -> 52234 bytes
+ .../dr-001/browser-1/task-edit-zh-CN-390.png       |  Bin 0 -> 33261 bytes
+ .../dr-001/browser-1/task-new-en-1512.png          |  Bin 0 -> 47774 bytes
+ .../dr-001/browser-1/task-new-en-390.png           |  Bin 0 -> 28640 bytes
+ .../dr-001/browser-1/task-new-required.png         |  Bin 0 -> 50382 bytes
+ .../dr-001/browser-1/task-new-upload-error.png     |  Bin 0 -> 54353 bytes
+ .../dr-001/browser-1/task-new-zh-CN-1512.png       |  Bin 0 -> 45390 bytes
+ .../dr-001/browser-1/task-new-zh-CN-390.png        |  Bin 0 -> 27257 bytes
+ .../dr-001/build-and-source-receipt.json           |   66 +
+ .../dr-001/build-output-entry.json                 |    7 +
+ .../delivery-evidence/dr-001/build.log             |   35 +
+ .../delivery-evidence/dr-001/cleanup.json          |   33 +
+ .../delivery-evidence/dr-001/commands.md           |   25 +
+ .../delivery-evidence/dr-001/docs-diff-check.log   |    0
+ .../delivery-evidence/dr-001/integration.txt       |   23 +
+ .../dr-001/isolated-app-list.json                  |   43 +
+ .../delivery-evidence/dr-001/nuxt-prepare.log      |    4 +
+ .../delivery-evidence/dr-001/prebuild.log          |   24 +
+ .../dr-001/project-boundaries.log                  |  339 +++
+ .../dr-002/acceptance-and-target-preflight.json    |   25 +
+ .../delivery-evidence/dr-002/commands.md           |    8 +
+ .../delivery-revision-record.md                    |   30 +
+ .../project-workspace-path/design-review-report.md |  292 ++
+ tickets/done/project-workspace-path/design-spec.md |  231 ++
+ .../project-workspace-path/docs-sync-report.md     |   34 +
+ .../done/project-workspace-path/handoff-summary.md |   58 +
+ .../ir-001/browser-warnings.json                   |    1 +
+ .../ir-001/build-receipt.json                      |    7 +
+ .../ir-001/downstream-contract-fixtures.txt        |  106 +
+ .../ir-001/editor-narrow-error-focused.png         |  Bin 0 -> 38294 bytes
+ .../ir-001/editor-narrow-error.png                 |  Bin 0 -> 34158 bytes
+ .../implementation-evidence/ir-001/install.log     |   28 +
+ .../ir-001/localization-boundary.log               |    5 +
+ .../ir-001/migration-freeze.log                    |    2 +
+ .../ir-001/nuxt-prepare.log                        |    4 +
+ .../ir-001/paths-narrow.png                        |  Bin 0 -> 45486 bytes
+ .../implementation-evidence/ir-001/paths-wide.png  |  Bin 0 -> 64548 bytes
+ .../ir-001/prebuild-final.log                      |   24 +
+ .../implementation-evidence/ir-001/prebuild.log    |   24 +
+ .../ir-001/preview-backend.log                     |  132 +
+ .../ir-001/preview-cleanup.json                    |   24 +
+ .../ir-001/preview-frontend.log                    |   27 +
+ .../ir-001/preview-migrate.log                     |   91 +
+ .../ir-001/preview-persistence.json                |   19 +
+ .../ir-001/preview-target.json                     |    6 +
+ .../implementation-evidence/ir-001/preview.mjs     |   33 +
+ .../ir-001/rendered-check.md                       |   34 +
+ .../ir-001/server-build-final.log                  |   35 +
+ .../ir-001/server-build.log                        |   45 +
+ .../ir-001/server-unit-1.log                       | 1328 +++++++++
+ .../ir-001/server-unit-2.log                       | 1301 +++++++++
+ .../ir-001/server-unit-final.log                   | 1308 +++++++++
+ .../ir-001/source-guardrails.json                  |  112 +
+ .../ir-001/web-boundary.log                        |    5 +
+ .../implementation-evidence/ir-001/web-unit-1.log  |  138 +
+ .../implementation-evidence/ir-001/web-unit-2.log  |  138 +
+ .../ir-001/web-unit-final.log                      |  138 +
+ .../implementation-handoff.md                      |  116 +
+ .../implementation-revision-record.md              |   24 +
+ .../project-workspace-path/investigation-notes.md  |  106 +
+ .../release-deployment-report.md                   |   56 +
+ .../done/project-workspace-path/release-notes.md   |   13 +
+ .../project-workspace-path/requirements-doc.md     |   70 +
+ .../project-workspace-path/solution-handoff.md     |   57 +
+ .../solution-revision-record.md                    |   59 +
+ 267 files changed, 21788 insertions(+), 526 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/released-project-folder-v1.ts
+ delete mode 100644 autobyteus-web/utils/projects/__tests__/linkableWorkspaces.spec.ts
+ delete mode 100644 autobyteus-web/utils/projects/linkableWorkspaces.ts
+ create mode 100644 tickets/done/project-workspace-path/analysis-result.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/continuous-board-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool-1.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool-2.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool-3.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/external-tool.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/frontend.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-a-backend.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-a-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-b-backend.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/node-b-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/ordinary-task-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/result.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-required.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-save-error.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-edit-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-required.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-upload-error.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-1/task-new-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/continuous-board-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool-1.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool-2.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool-3.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/external-tool.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/frontend.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-a-backend.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-a-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-b-backend.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/node-b-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/ordinary-task-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/result.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-required.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-save-error.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-edit-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-required.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-upload-error.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/browser-2/task-new-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/build-and-source-receipt.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/build.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/cleanup.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/commands.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/feed-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/feed-receipt/project-change-feed.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/graphql-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/http-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/nodes-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/nuxt-prepare.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/owner.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/prebuild.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/projects-all-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/source-diff-check.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/startup-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/api-001/web-1.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/build.log
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/launch-notes.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/manual-setup-receipt.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/start.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-evidence/manual-electron-20261007/stop.json
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-revision-record.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/project-workspace-path/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/project-workspace-path/architecture-review-revision-record.md
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/cleanup.json
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/cumulative-diff-check.log
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/owner-tests.log
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/prebuild.log
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/source-audit.json
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/source-diff-check.log
+ create mode 100644 tickets/done/project-workspace-path/code-review-evidence/crr-001/web-tests.log
+ create mode 100644 tickets/done/project-workspace-path/code-review-report.md
+ create mode 100644 tickets/done/project-workspace-path/code-review-revision-record.md
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/continuous-board-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool-1.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool-2.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool-3.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/external-tool.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/frontend.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-a-backend.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-a-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-b-backend.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/node-b-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/ordinary-task-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/result.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-required.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-save-error.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-edit-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-en-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-en-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-required.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-upload-error.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-zh-CN-1512.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/browser-1/task-new-zh-CN-390.png
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/build-and-source-receipt.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/build-output-entry.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/build.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/cleanup.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/commands.md
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/docs-diff-check.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/integration.txt
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/isolated-app-list.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/nuxt-prepare.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/prebuild.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-001/project-boundaries.log
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-002/acceptance-and-target-preflight.json
+ create mode 100644 tickets/done/project-workspace-path/delivery-evidence/dr-002/commands.md
+ create mode 100644 tickets/done/project-workspace-path/delivery-revision-record.md
+ create mode 100644 tickets/done/project-workspace-path/design-review-report.md
+ create mode 100644 tickets/done/project-workspace-path/design-spec.md
+ create mode 100644 tickets/done/project-workspace-path/docs-sync-report.md
+ create mode 100644 tickets/done/project-workspace-path/handoff-summary.md
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/browser-warnings.json
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/build-receipt.json
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/downstream-contract-fixtures.txt
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/editor-narrow-error-focused.png
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/editor-narrow-error.png
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/install.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/localization-boundary.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/migration-freeze.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/nuxt-prepare.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/paths-narrow.png
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/paths-wide.png
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/prebuild-final.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/prebuild.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview-backend.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview-cleanup.json
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview-frontend.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview-migrate.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview-persistence.json
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview-target.json
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/preview.mjs
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/rendered-check.md
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/server-build-final.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/server-build.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/server-unit-1.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/server-unit-2.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/server-unit-final.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/source-guardrails.json
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/web-boundary.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/web-unit-1.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/web-unit-2.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-evidence/ir-001/web-unit-final.log
+ create mode 100644 tickets/done/project-workspace-path/implementation-handoff.md
+ create mode 100644 tickets/done/project-workspace-path/implementation-revision-record.md
+ create mode 100644 tickets/done/project-workspace-path/investigation-notes.md
+ create mode 100644 tickets/done/project-workspace-path/release-deployment-report.md
+ create mode 100644 tickets/done/project-workspace-path/release-notes.md
+ create mode 100644 tickets/done/project-workspace-path/requirements-doc.md
+ create mode 100644 tickets/done/project-workspace-path/solution-handoff.md
+ create mode 100644 tickets/done/project-workspace-path/solution-revision-record.md
