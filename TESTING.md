@@ -22,6 +22,7 @@ package's script from its own directory.
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
 | Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
+| Grok Build compaction live E2E | Real `grok` CLI automatic compaction (interrupted, then completed) and `/compact` through the server, with raw-trace rotation | `RUN_GROK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts --no-watch` (temporary `GROK_HOME` with a symlinked `auth.json` and a 10% auto-compaction threshold; never writes `~/.grok`; one four-turn run on the user's Grok credits; set `GROK_E2E_EVIDENCE_DIR` to keep evidence on failure, never `auth.json`). Zero-credit replay of the same flows (automatic, Stop, `/compact`) through the real server with the fake Grok CLI, no gate: `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts --no-watch` |
 | Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run`; the interrupted-compaction cases alone (interrupt, terminate and app-server crash during an automatic compaction): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts --no-watch` (lowers the test app server's auto-compaction limit; a few turns of Codex quota per case) |
 | Claude compaction live E2E | Real Claude CLI/SDK `/compact`, Stop and CLI process exit during compaction, raw-trace rotation and reopened history, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts --no-watch`; add `RUN_CLAUDE_AUTO_COMPACTION_E2E=1` for the costly auto-compaction case (~300K input tokens) |
 | Claude background-task live E2E | Real Claude CLI/SDK background Bash tasks for a standalone agent and a team member: `BACKGROUND_TASK_UPDATED` snapshots with the shell `command` (explicit background and CLI auto-background, which the test enables itself), completion, failure, Stop+terminate and CLI crash, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-background-task.e2e.test.ts tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts --no-watch` |
@@ -538,6 +539,38 @@ removes its private data even on failure. It never uses the installed app or
 user data. Controlled upstream fixtures do not replace a separately attributed
 public GitHub transport smoke. These are web/backend feature checks, not
 Windows or Electron-shell certification, nor exhaustive process-crash proof.
+
+### Chat Draft Rows Regression
+
+Run from the repository root with installed workspace dependencies, Chrome and a
+logged-in CLI for the selected runtime (default Codex):
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-web exec nuxt prepare
+pnpm -C autobyteus-web test:e2e:chat-draft-rows-live --output-dir <fresh-dir> [--ledger-file <initialized absolute path>] [--cases D00,D04] [--runtime codex_app_server] [--model <id>]
+```
+
+The probe owns a built backend (`dist/app.js`), Nuxt dev, a disposable
+SQLite/data root on free ports and a fresh headless Chrome. It never touches a
+running desktop app or the user's data. `--output-dir` resolves from
+`autobyteus-web/`. `--serve-only` starts the owned stack, prints its URLs and
+waits for Ctrl+C. Cases D00–D14 cover the New chat Draft rows under the Chat
+row:
+
+- drafts kept across Chat, the pencil, Run, `+` and workspace-tree `+`;
+- re-entry with an uploaded attachment, `×` discard and "Empty draft";
+- row geometry, tokens, motion and reduced motion;
+- the narrow drawer with touch, the collapsed strip, keyboard order and focus;
+- reload with nothing stored, and zh-CN;
+- real Agent and Team first sends. Only these call the model, with tiny prompts.
+  The sent row keeps its text until the run opens.
+
+Failed sends are injected as GraphQL error responses, so the real client
+failure paths run but the server-side causes are not reproduced. Inspect
+`chat-draft-rows-live-evidence.json`, the screenshots and the cleanup receipts.
+This is a web-equivalent check, not packaged Electron proof.
 
 ## Choosing the path
 

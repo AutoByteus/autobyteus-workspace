@@ -1,0 +1,5 @@
+[cli]
+auto_update = false
+
+[session]
+auto_compact_threshold_percent = 10

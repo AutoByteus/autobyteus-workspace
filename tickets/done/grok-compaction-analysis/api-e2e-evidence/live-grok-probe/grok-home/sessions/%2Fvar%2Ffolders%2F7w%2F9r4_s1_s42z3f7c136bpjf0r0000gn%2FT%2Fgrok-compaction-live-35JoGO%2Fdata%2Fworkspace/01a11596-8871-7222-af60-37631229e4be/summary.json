@@ -1,0 +1,23 @@
+{
+  "info": {
+    "id": "01a11596-8871-7222-af60-37631229e4be",
+    "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-compaction-live-35JoGO/data/workspace"
+  },
+  "agent_id": "ag1.50e975ce20a74960ba92b6e1e1f667a9",
+  "attempt_id": "at1.1d53ced086284468a9f1f51641ff8c87",
+  "session_summary": "Exact reply request OK ONE instruction",
+  "created_at": "2026-10-07T08:59:09.317291Z",
+  "updated_at": "2026-10-07T08:59:16.617603Z",
+  "num_messages": 4,
+  "num_chat_messages": 6,
+  "current_model_id": "grok-4.7",
+  "next_trace_turn": 1,
+  "chat_format_version": 1,
+  "request_id": "3a83f344-d51b-471c-8243-cd9a365f3ee3",
+  "grok_home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-compaction-live-35JoGO/grok-home",
+  "last_active_at": "2026-10-07T08:59:13.178790Z",
+  "generated_title": "Exact reply request OK ONE instruction",
+  "agent_name": "grok-build-plan",
+  "sandbox_profile": "off",
+  "reasoning_effort": "low"
+}

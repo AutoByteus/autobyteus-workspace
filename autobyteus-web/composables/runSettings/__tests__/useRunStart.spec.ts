@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
     startForDefinition: vi.fn(),
     startNewChat: vi.fn(),
     retarget: vi.fn(),
+    openDraft: vi.fn(),
   },
   org: { start: vi.fn(), startSettings: null as any },
   seed: vi.fn(),
@@ -127,6 +128,13 @@ describe('useRunStart (the single start intent)', () => {
     await useRunStart().newChat()
     expect(mocks.chat.startNewChat).toHaveBeenCalledWith()
     expect(mocks.chat.startForDefinition).not.toHaveBeenCalled()
+    expect(mocks.push).toHaveBeenCalledWith('/chat')
+  })
+
+  it('a Draft row opens New chat with that kept draft (REQ-003)', async () => {
+    await useRunStart().openChatDraft('chat-draft-2')
+    expect(mocks.chat.openDraft).toHaveBeenCalledWith('chat-draft-2')
+    expect(mocks.chat.startNewChat).not.toHaveBeenCalled()
     expect(mocks.push).toHaveBeenCalledWith('/chat')
   })
 

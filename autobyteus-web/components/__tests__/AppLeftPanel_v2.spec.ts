@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
+import { createPinia, setActivePinia } from 'pinia'
 import AppLeftPanel from '../AppLeftPanel.vue'
+import { useChatDraftStore } from '~/stores/chatDraftStore'
+import { useAppLayoutStore } from '~/stores/appLayoutStore'
 
 const {
   applicationsCapabilityStoreMock,
@@ -23,6 +26,7 @@ const {
   },
   runStartMock: {
     newChat: vi.fn().mockResolvedValue(undefined),
+    openChatDraft: vi.fn().mockResolvedValue(undefined),
   },
   beginSelectionIntent: vi.fn(),
 }))
@@ -86,6 +90,62 @@ describe('AppLeftPanel Component', () => {
     expect(runStartMock.newChat).toHaveBeenCalledTimes(2)
     // Neither path pushes /chat itself; the intent owns the navigation.
     expect(routerMock.push).not.toHaveBeenCalledWith('/chat')
+  })
+
+  describe('Draft rows under the Chat row (chat-new-draft-kept-on-navigation)', () => {
+    beforeEach(() => setActivePinia(createPinia()))
+    const mountPanel = () => mount(AppLeftPanel, {
+      global: { stubs: { Icon: true, WorkspaceAgentRunsTreePanel: true }, mocks: { $route: routeMock, $router: routerMock } },
+    })
+    const chatRow = (wrapper: ReturnType<typeof mountPanel>) => wrapper.get('[data-test="app-left-panel-chat"]')
+    const keepDraft = (text: string) => {
+      const draft = useChatDraftStore().startNewChat()
+      draft.context.requirement = text
+      return draft
+    }
+
+    it('places the rows directly under the Chat row, before Agents', () => {
+      routeMock.path = '/agents'
+      keepDraft('kept draft')
+      useChatDraftStore().startNewChat()
+      const wrapper = mountPanel()
+
+      const chatItem = chatRow(wrapper).element.closest('li')!
+      const rows = wrapper.get('[data-test="chat-draft-rows"]').element
+      expect(rows.parentElement).toBe(chatItem)
+      expect(chatItem.nextElementSibling?.textContent).toContain('Agents')
+      expect(wrapper.findAll('[data-test="chat-draft-row"]')).toHaveLength(1)
+    })
+
+    it('the Chat row is not selected while the open draft’s row is (REQ-003); a blank New chat selects it', async () => {
+      routeMock.path = '/chat'
+      const draft = keepDraft('open draft')
+      const wrapper = mountPanel()
+      expect(chatRow(wrapper).classes()).not.toContain('bg-gray-100')
+      expect(wrapper.get('[data-test="chat-draft-row"]').attributes('aria-current')).toBe('page')
+
+      useChatDraftStore().startNewChat()
+      await nextTick()
+      expect(chatRow(wrapper).classes()).toContain('bg-gray-100')
+      expect(wrapper.find('[aria-current="page"]').exists()).toBe(false)
+      expect(useChatDraftStore().drafts.map((entry) => entry.id)).toContain(draft.id)
+    })
+
+    it('a row opens its draft through the start intent and closes the narrow drawer', async () => {
+      routeMock.path = '/chat'
+      const draft = keepDraft('reopen me')
+      useChatDraftStore().startNewChat()
+      const closeMobileMenu = vi.spyOn(useAppLayoutStore(), 'closeMobileMenu')
+      const wrapper = mountPanel()
+
+      await wrapper.get('[data-test="chat-draft-row"]').trigger('click')
+      await flushPromises()
+
+      expect(beginSelectionIntent).toHaveBeenCalledTimes(1)
+      expect(runStartMock.openChatDraft).toHaveBeenCalledWith(draft.id)
+      expect(closeMobileMenu).toHaveBeenCalled()
+      expect(routerMock.push).not.toHaveBeenCalled()
+    })
   })
 
   it('hides Applications link when the capability is disabled', () => {

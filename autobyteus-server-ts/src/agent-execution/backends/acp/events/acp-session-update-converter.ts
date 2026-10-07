@@ -2,6 +2,8 @@ import type { SessionUpdate, ToolCallUpdate } from "@agentclientprotocol/sdk";
 import { AgentRunEventType, type AgentRunEvent, type AgentRunStatusHint } from "../../../domain/agent-run-event.js";
 import type {
   AcpAgentSessionProfile,
+  AcpCompactionStatusInput,
+  AcpExtEffect,
   AcpToolCallProjection,
   AcpToolCallSnapshot,
   AcpToolCallStatus,
@@ -17,6 +19,19 @@ type TrackedToolCall = {
 };
 
 type OpenSegment = { id: string; kind: "text" | "reasoning" };
+
+type AcpCompactionEffect = Extract<AcpExtEffect, { kind: "compaction" }>;
+
+/** A compaction the agent reported started and has not completed. */
+type OpenCompaction = { operationId: string; sessionId: string };
+
+const ABANDON_REASON = {
+  ended: "Turn ended before the compaction completed.",
+  cancelled: "Turn was cancelled before the compaction completed.",
+  interrupted: "Turn was interrupted before the compaction completed.",
+  failed: "Turn failed before the compaction completed.",
+  superseded: "A new compaction started before this one completed.",
+} as const;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === "object" && !Array.isArray(value);
@@ -48,6 +63,8 @@ export class AcpSessionUpdateConverter {
   private openSegment: OpenSegment | null = null;
   private segmentCounter = 0;
   private readonly toolCalls = new Map<string, TrackedToolCall>();
+  private openCompaction: OpenCompaction | null = null;
+  private compactionCounter = 0;
 
   constructor(private readonly runId: string, private readonly profile: AcpAgentSessionProfile) {}
 
@@ -65,6 +82,7 @@ export class AcpSessionUpdateConverter {
     this.openSegment = null;
     this.segmentCounter = 0;
     this.toolCalls.clear();
+    this.openCompaction = null;
     return [this.event(AgentRunEventType.TURN_STARTED, { turn_id: turnId }, "ACTIVE")];
   }
 
@@ -125,10 +143,36 @@ export class AcpSessionUpdateConverter {
     ];
   }
 
+  /**
+   * A provider compaction within the turn. One compaction runs at a time per session, so a
+   * completion pairs with the open start in order (no shared id is required); a completion
+   * without a start is a manual compaction.
+   */
+  compaction(sessionId: string, effect: AcpCompactionEffect): AgentRunEvent[] {
+    const turnId = this.turnId;
+    if (!turnId || !this.profile.buildCompactionStatusPayload) return [];
+    const base = { sessionId, turnId, eventId: effect.eventId, details: effect.details, reason: null };
+    if (effect.phase === "started") {
+      const events = this.closeOpenCompaction(turnId, ABANDON_REASON.superseded);
+      const operationId = effect.eventId ?? this.nextCompactionId(turnId);
+      this.openCompaction = { operationId, sessionId };
+      events.push(this.compactionStatus({ ...base, phase: "started", operationId, trigger: "auto" }));
+      return events;
+    }
+    const open = this.openCompaction;
+    this.openCompaction = null;
+    const operationId = open?.operationId ?? effect.eventId ?? this.nextCompactionId(turnId);
+    const trigger = effect.phase === "completed" ? (open ? "auto" : "manual") : (open ? "auto" : null);
+    return [this.compactionStatus({ ...base, phase: effect.phase, operationId, trigger })];
+  }
+
   completeTurn(stopReason: string): AgentRunEvent[] {
     const turnId = this.turnId;
     if (!turnId) return [];
-    const events = [...this.closeOpenSegment(turnId), ...this.interruptOpenToolCalls(turnId)];
+    const events = [
+      ...this.closeOpenSegment(turnId), ...this.interruptOpenToolCalls(turnId),
+      ...this.closeOpenCompaction(turnId, stopReason === "cancelled" ? ABANDON_REASON.cancelled : ABANDON_REASON.ended),
+    ];
     events.push(this.event(AgentRunEventType.TURN_COMPLETED, { turn_id: turnId, provider_stop_reason: stopReason }, "IDLE"));
     this.turnId = null;
     return events;
@@ -137,7 +181,10 @@ export class AcpSessionUpdateConverter {
   interruptTurn(): AgentRunEvent[] {
     const turnId = this.turnId;
     if (!turnId) return [];
-    const events = [...this.closeOpenSegment(turnId), ...this.interruptOpenToolCalls(turnId)];
+    const events = [
+      ...this.closeOpenSegment(turnId), ...this.interruptOpenToolCalls(turnId),
+      ...this.closeOpenCompaction(turnId, ABANDON_REASON.interrupted),
+    ];
     events.push(this.event(AgentRunEventType.TURN_INTERRUPTED, { turn_id: turnId }, "IDLE"));
     this.turnId = null;
     return events;
@@ -147,12 +194,35 @@ export class AcpSessionUpdateConverter {
   failTurn(code: string, message: string): AgentRunEvent[] {
     const turnId = this.turnId;
     if (!turnId) return [];
-    const events = [...this.closeOpenSegment(turnId), ...this.interruptOpenToolCalls(turnId)];
+    const events = [
+      ...this.closeOpenSegment(turnId), ...this.interruptOpenToolCalls(turnId),
+      ...this.closeOpenCompaction(turnId, ABANDON_REASON.failed),
+    ];
     events.push(this.event(AgentRunEventType.ERROR, {
       code, message, error_scope: "turn", error_effect: "terminal", turn_id: turnId,
     }, "ERROR"));
     this.turnId = null;
     return events;
+  }
+
+  /** A started compaction its turn outlived ends failed (no rotation) under the same operation id. */
+  private closeOpenCompaction(turnId: string, reason: string): AgentRunEvent[] {
+    const open = this.openCompaction;
+    if (!open) return [];
+    this.openCompaction = null;
+    return [this.compactionStatus({
+      sessionId: open.sessionId, turnId, phase: "abandoned", operationId: open.operationId,
+      eventId: null, details: {}, trigger: "auto", reason,
+    })];
+  }
+
+  private compactionStatus(input: AcpCompactionStatusInput): AgentRunEvent {
+    return this.event(AgentRunEventType.COMPACTION_STATUS, this.profile.buildCompactionStatusPayload!(input));
+  }
+
+  private nextCompactionId(turnId: string): string {
+    this.compactionCounter += 1;
+    return `${turnId}:compaction:${this.compactionCounter}`;
   }
 
   private appendChunk(turnId: string, kind: OpenSegment["kind"], text: string): AgentRunEvent[] {

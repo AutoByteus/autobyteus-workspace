@@ -24,13 +24,18 @@ and `/workspace` execution-link queries accept team links only.
 
 ## New Chat Draft
 
-`stores/chatDraftStore.ts` owns one New chat draft: an unregistered `temp-*`
-`AgentContext` (text, files, skills, mentions, runtime, model, model config)
-plus the chat-only choices: the target (an agent or a team; never an Org), a
-`RunWorkspaceChoice`, auto-approve, a Team's member overrides
-(`teamAgentOverrides`, by member address) and `starting`. It never sends or
-routes: `chatLaunchService` launches and `composables/runSettings/useRunStart.ts`
-routes. Every start intent goes through `useRunStart`:
+`stores/chatDraftStore.ts` owns the New chat drafts (`drafts`, in start order)
+and the one open draft (`openDraftId`; `draft` is the open one). Each `ChatDraft`
+has a stable `id` (`chat-draft-<n>`, never the context run id, which changes on
+promotion), `listed`, an unregistered `temp-*` `AgentContext` (text, files,
+skills, mentions, runtime, model, model config) plus the chat-only choices: the
+target (an agent or a team; never an Org), a `RunWorkspaceChoice`, auto-approve,
+a Team's member overrides (`teamAgentOverrides`, by member address), `starting`
+and `sentText`. Drafts are session-only Pinia state; nothing is persisted, so a
+reload starts with none. The store never sends or routes: `chatLaunchService`
+launches and `composables/runSettings/useRunStart.ts` routes. Every start intent
+goes through `useRunStart`, and every start opens a fresh draft (see
+[Draft rows](#draft-rows) for what happens to the one being left):
 
 | Intent | `useRunStart` | Draft action | Initial settings |
 | --- | --- | --- | --- |
@@ -40,11 +45,51 @@ routes. Every start intent goes through `useRunStart`:
 | **+** on an Agent run view | `copyAgentFromConfig(config)` | `startForDefinition(target, { copied })` | the displayed agent's workspace, runtime, model, model config and approval |
 | **+** on a Team run | `copyTeamRun` | `startForDefinition(target, { copied })` | the run's root settings and member overrides; team defaults if the run cannot be read |
 | Heading switcher | `switchTarget` | `retarget(target)` (or a new draft from the Org page) | workspace, approval and model config carried; member overrides reset |
+| Draft row | `openChatDraft(id)` | `openDraft(id)` | the kept draft exactly as it was left |
 
 Copied and carried settings stay as they are; their runtimes' availability and
 catalogs load before Send is offered. The Agent **+** copies the agent on screen:
 the view passes its displayed `AgentRunConfig`, so the run's own agent and an
 `@` collaborator child copy alike, with no lookup by run id.
+
+### Draft rows
+
+A New chat becomes a Draft once it has typed text. `chatDraftHasText` is the one
+rule: the trimmed text of `chatDraftText(draft)` (`sentText ?? context.requirement`)
+is non-empty and is not a lone `/command` still being typed. Attachments, skills,
+mentions, target and settings alone do not make a Draft. The store sets
+`listed` at the first text.
+
+- **Leaving.** Every start and `openDraft` first leaves the open draft. A
+  draft with text stays kept; one without text is removed unless it is
+  `starting`. There is no single-draft mode.
+- **Rows.** `components/chat/ChatDraftRows.vue` renders one row per kept draft
+  directly under the Chat row in `AppLeftPanel.vue`, newest first, as a list
+  named "Drafts". `composables/chat/useChatDraftRows.ts` owns the projection
+  (read-only over the store): which drafts are rows, preview (text with
+  whitespace collapsed, one line, truncated), tooltip (text and target name),
+  accessible name ("Draft: text — target"), `selected` and `rowSelected`.
+- **Selection.** On the New chat surface (`/chat` without `id`) the open draft's
+  row is selected (`aria-current="page"`), and the Chat row is then not active.
+  While it is shown, a listed draft whose text was cleared stays a row that reads
+  "Empty draft"; it is dropped once left. Off the New chat surface, rows without
+  text are hidden.
+- **Open.** Clicking a row calls `useRunStart().openChatDraft(id)` (`openDraft`,
+  then `/chat`) and closes the narrow left drawer. `ChatNewSurface` keys the
+  composer by `draft.id`, so the draft's text, attachments, skills and mentions
+  come back as they were.
+- **Discard.** The row's × (`discardDraft`) removes the draft without
+  confirmation. A draft being sent is never discarded. If it was the open
+  draft, a plain fresh New chat opens. Focus moves to the next row, else the
+  previous row, else the Chat row. × shows on hover, focus and the selected row,
+  and always on touch (`hover: none`).
+- **Motion.** Rows fade and change height over 150 ms (`TransitionGroup`), with
+  no motion under `prefers-reduced-motion`.
+- **Strings** are `shell.components.AppLeftPanel.drafts` / `draft` /
+  `discard_draft` / `draft_empty` (en, zh-CN).
+
+Dropped or discarded drafts leave their server-side draft attachment uploads
+in place, as replacing the draft did before.
 
 The displayed name does not change the default definition ID
 `autobyteus-daily-assistant`. New Chat uses the current Daily Assistant definition
@@ -209,11 +254,20 @@ Chat names models the same way on every surface that uses the chat model menu (D
 
 Agent launch order: mark the draft `starting` → resolve the workspace →
 `agentContextsStore.registerDraftRun(context)` (registers and selects without
-shell navigation) → await send → route to `/chat?id=<selected id>` → reset the
-draft. A successful first send promotes the temp id, so the route carries the
-permanent id and the model is remembered as last-used. A failed first send
-lands on `/chat?id=<temp>` with the message and error kept. A workspace failure
-before registration leaves the New chat untouched.
+shell navigation) → await send → route to `/chat?id=<selected id>` →
+`finishSentDraft(draft)`. A successful first send promotes the temp id, so the
+route carries the permanent id and the model is remembered as last-used. A
+failed first send lands on `/chat?id=<temp>` with the message and error kept;
+the message now belongs to that run, so the draft is finished as if sent. A
+workspace failure before registration leaves the New chat and its row
+untouched.
+
+`finishSentDraft` removes the sent draft and its row. It opens a plain fresh
+New chat only if that draft is still the open one; a draft the user opened
+during the send stays open. While a draft is `starting`, `sentText` holds the
+text being sent (the agent send clears the composer first), so its row keeps
+that text until the draft is finished. A launch failure that keeps the draft
+(`clearStarting`) clears `sentText`, and the draft returns to its typed text.
 
 Team launch (`launchTeamChat`): a team config with the draft's runtime, model,
 model config, auto-approve and workspace for every member, plus each customized
@@ -222,8 +276,9 @@ teamAgentOverrides)`). The model catalog of every effective runtime is loaded
 before the Team launch draft is created in `teamRunConfigStore`, focused on the
 coordinator. The first message goes to the coordinator through
 `sendMessageToFocusedMember`, with its `@` mentions and the chat draft as the
-explicit attachment owner, then the app routes to `/workspace`. On failure the
-orphan team draft and selection are removed and the New chat stays intact.
+explicit attachment owner, then the app routes to `/workspace` and finishes
+the sent draft. On failure the orphan team draft and selection are removed and
+the New chat and its row stay intact.
 
 `composables/chat/useChatRouteRunSync.ts` (used by `pages/chat.vue`) replaces
 `/chat?id=temp-*` with the permanent id whenever the displayed context is

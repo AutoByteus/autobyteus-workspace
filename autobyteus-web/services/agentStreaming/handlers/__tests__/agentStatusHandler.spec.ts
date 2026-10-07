@@ -479,6 +479,50 @@ describe('agentStatusHandler', () => {
       expect(mockContext.state.compactionStatus).toMatchObject({ activityId: expectedActivityId, phase: 'failed' });
     });
 
+    it('renders Grok automatic, abandoned and manual compactions as one row each', () => {
+      // Payload shapes from the server's Grok builder (ACP converter pairs by operation id).
+      const grok = (fields: Record<string, unknown>) => ({
+        kind: 'provider_compaction_boundary',
+        runtime_kind: 'GROK_BUILD',
+        provider: 'grok',
+        provider_session_id: 'session-1',
+        provider_timestamp: null,
+        semantic_compaction: false,
+        ...fields,
+      }) as CompactionStatusPayload;
+
+      // Automatic compaction: started → completed on the same operation id.
+      handleCompactionStatus(grok({ status: 'compacting', source_surface: 'grok.auto_compact_started',
+        boundary_key: 'grok:session-1:started:47', provider_event_id: '47', turn_id: 'turn-2',
+        rotation_eligible: false, trigger: 'auto' }), mockContext);
+      handleCompactionStatus(grok({ status: 'compacted', source_surface: 'grok.auto_compact_completed',
+        boundary_key: 'grok:session-1:completed:48', provider_event_id: '47', turn_id: 'turn-2',
+        rotation_eligible: true, trigger: 'auto', pre_tokens: 29164, post_tokens: 12259, duration_ms: 15000 }), mockContext);
+      // Interrupted automatic compaction: started → abandoned (failed) on the same id.
+      handleCompactionStatus(grok({ status: 'compacting', source_surface: 'grok.auto_compact_started',
+        boundary_key: 'grok:session-1:started:50', provider_event_id: '50', turn_id: 'turn-3',
+        rotation_eligible: false, trigger: 'auto' }), mockContext);
+      handleCompactionStatus(grok({ status: 'failed', source_surface: 'grok.compaction_abandoned',
+        boundary_key: 'grok:session-1:failed:50', provider_event_id: '50', turn_id: 'turn-3',
+        rotation_eligible: false, trigger: 'auto',
+        error_message: 'Turn was interrupted before the compaction completed.' }), mockContext);
+      // Manual /compact: completion only.
+      handleCompactionStatus(grok({ status: 'compacted', source_surface: 'grok.auto_compact_completed',
+        boundary_key: 'grok:session-1:completed:84', provider_event_id: '84', turn_id: 'turn-4',
+        rotation_eligible: true, trigger: 'manual', pre_tokens: 32537, post_tokens: 21637 }), mockContext);
+
+      const calls = mockActivityStore.upsertCompactionActivity.mock.calls.map((call) => call[1] as Record<string, unknown>);
+      expect(calls.map((activity) => [activity.activityId, activity.phase])).toEqual([
+        ['compaction:provider:grok:session-1:47:turn-2', 'started'],
+        ['compaction:provider:grok:session-1:47:turn-2', 'completed'],
+        ['compaction:provider:grok:session-1:50:turn-3', 'started'],
+        ['compaction:provider:grok:session-1:50:turn-3', 'failed'],
+        ['compaction:provider:grok:session-1:84:turn-4', 'completed'],
+      ]);
+      expect(calls[3]).toMatchObject({ errorMessage: 'Turn was interrupted before the compaction completed.' });
+      expect(new Set(calls.map((activity) => activity.activityId)).size).toBe(3);
+    });
+
     it('reuses a previous active provider row before falling back to a new boundary key', () => {
       handleCompactionStatus({
         kind: 'provider_compaction_boundary',

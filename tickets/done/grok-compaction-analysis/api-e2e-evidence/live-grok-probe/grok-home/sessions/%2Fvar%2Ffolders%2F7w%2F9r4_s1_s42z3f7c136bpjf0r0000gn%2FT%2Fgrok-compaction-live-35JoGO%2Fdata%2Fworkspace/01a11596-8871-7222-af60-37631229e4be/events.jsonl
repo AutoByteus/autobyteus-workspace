@@ -1,0 +1,8 @@
+{"ts":"2026-10-07T08:59:09.419Z","type":"mcp_config_resolved","servers":[{"name":"autobyteus_agent_tools","transport":"http","source":"local"}],"disabled":[]}
+{"ts":"2026-10-07T08:59:09.435Z","type":"mcp_server_starting","server_name":"autobyteus_agent_tools","transport":"http","target":"http://127.0.0.1:52924/mcp/agent-tools/agtrun_jyMKZWKJxfug9iWZiTOAcXfiscsV_IJ2zVBXLqth7Ls","timeout_sec":30}
+{"ts":"2026-10-07T08:59:09.465Z","type":"mcp_server_connected","server_name":"autobyteus_agent_tools","transport":"http","tool_count":3,"duration_ms":28,"tools":["send_message_to","delegate_task","create_or_update_task"]}
+{"ts":"2026-10-07T08:59:09.467Z","type":"mcp_init_completed","total_servers":1,"succeeded":1,"failed":0,"auth_required":0,"total_tools":3,"duration_ms":32,"is_reinit":false}
+{"ts":"2026-10-07T08:59:09.554Z","type":"turn_started","session_id":"01a11596-8871-7222-af60-37631229e4be","turn_number":0,"model_id":"grok-4.7","yolo_mode":true,"conversation_message_count":3,"session_relationship":"primary","schema_version":"1.0"}
+{"ts":"2026-10-07T08:59:10.634Z","type":"loop_started","loop_index":0}
+{"ts":"2026-10-07T08:59:10.646Z","type":"phase_changed","phase":"waiting_for_model"}
+{"ts":"2026-10-07T08:59:13.098Z","type":"turn_ended","outcome":"error"}

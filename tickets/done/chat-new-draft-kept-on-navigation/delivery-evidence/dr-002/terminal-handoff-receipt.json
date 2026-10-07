@@ -1,0 +1,10 @@
+{
+  "ticket": "chat-new-draft-kept-on-navigation",
+  "deliveryRevision": "DR-002",
+  "classification": "Delivery Completed",
+  "rule": "Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates",
+  "recipientAddress": "/solution_designer",
+  "sentAt": "2026-10-07",
+  "result": { "accepted": true, "code": "DELIVERED", "target_agent_run_id": "solution_designer_d004a7177a2f4eebb1b66cff5b776924" },
+  "finalState": { "merge": "55d6db0c1", "releaseCommit": "154bedc84", "tag": "v1.4.96-beta.2", "receiptCommit": "569aceedc" }
+}

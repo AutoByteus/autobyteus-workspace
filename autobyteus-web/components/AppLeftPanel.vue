@@ -13,71 +13,77 @@
       >
         <nav :aria-label="$t('shell.components.AppLeftPanel.primary_navigation')">
           <ul class="space-y-1">
-            <li v-for="(item, itemIndex) in primaryNavItems" :key="item.key" class="relative">
-              <button
-                type="button"
-                class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors"
-                :class="[
-                  item.key === 'chat' ? 'pr-20' : itemIndex === 0 ? 'pr-12' : '',
-                  isPrimaryNavActive(item.key)
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-700 hover:bg-gray-100',
-                ]"
-                @click="navigateToPrimary(item.key)"
-              >
-                <svg
-                  v-if="item.icon === SHELL_NODES_NETWORK_ICON"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="h-4 w-4 flex-shrink-0"
-                  aria-hidden="true"
-                  data-testid="nodes-network-icon"
+            <li v-for="(item, itemIndex) in primaryNavItems" :key="item.key">
+              <div class="relative">
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors"
+                  :class="[
+                    item.key === 'chat' ? 'pr-20' : itemIndex === 0 ? 'pr-12' : '',
+                    isNavRowActive(item.key)
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-700 hover:bg-gray-100',
+                  ]"
+                  :data-test="item.key === 'chat' ? 'app-left-panel-chat' : undefined"
+                  @click="navigateToPrimary(item.key)"
                 >
-                  <rect x="9" y="3" width="6" height="6" rx="1.5" />
-                  <rect x="4" y="15" width="6" height="6" rx="1.5" />
-                  <rect x="14" y="15" width="6" height="6" rx="1.5" />
-                  <path d="M12 9v3" />
-                  <path d="M7 15v-1a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1" />
-                </svg>
-                <Icon v-else :icon="item.icon" class="h-4 w-4 flex-shrink-0" />
-                <span class="truncate">{{ t(item.labelKey) }}</span>
-              </button>
+                  <svg
+                    v-if="item.icon === SHELL_NODES_NETWORK_ICON"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-4 w-4 flex-shrink-0"
+                    aria-hidden="true"
+                    data-testid="nodes-network-icon"
+                  >
+                    <rect x="9" y="3" width="6" height="6" rx="1.5" />
+                    <rect x="4" y="15" width="6" height="6" rx="1.5" />
+                    <rect x="14" y="15" width="6" height="6" rx="1.5" />
+                    <path d="M12 9v3" />
+                    <path d="M7 15v-1a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <Icon v-else :icon="item.icon" class="h-4 w-4 flex-shrink-0" />
+                  <span class="truncate">{{ t(item.labelKey) }}</span>
+                </button>
 
-              <button
-                v-if="item.key === 'chat'"
-                type="button"
-                data-test="app-left-panel-new-chat"
-                class="absolute right-10 top-1/2 inline-flex -translate-y-1/2 rounded-md p-2 transition-colors"
-                :title="$t('shell.components.AppLeftPanel.new_chat')"
-                :aria-label="$t('shell.components.AppLeftPanel.new_chat')"
-                :class="isPrimaryNavActive(item.key)
-                  ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
-                  : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
-                @click.stop="startNewChat"
-              >
-                <Icon icon="heroicons:pencil-square" class="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
-              </button>
+                <button
+                  v-if="item.key === 'chat'"
+                  type="button"
+                  data-test="app-left-panel-new-chat"
+                  class="absolute right-10 top-1/2 inline-flex -translate-y-1/2 rounded-md p-2 transition-colors"
+                  :title="$t('shell.components.AppLeftPanel.new_chat')"
+                  :aria-label="$t('shell.components.AppLeftPanel.new_chat')"
+                  :class="isNavRowActive(item.key)
+                    ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+                    : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
+                  @click.stop="startNewChat"
+                >
+                  <Icon icon="heroicons:pencil-square" class="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+                </button>
 
-              <button
-                v-if="itemIndex === 0"
-                type="button"
-                class="absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex"
-                :title="$t('shell.components.AppLeftPanel.collapse_left_panel')"
-                :class="isPrimaryNavActive(item.key)
-                  ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
-                  : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
-                @click.stop="toggleLeftPanel"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect width="18" height="18" x="3" y="3" rx="2"/>
-                  <path d="M9 3v18"/>
-                </svg>
-              </button>
+                <button
+                  v-if="itemIndex === 0"
+                  type="button"
+                  class="absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex"
+                  :title="$t('shell.components.AppLeftPanel.collapse_left_panel')"
+                  :class="isNavRowActive(item.key)
+                    ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+                    : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
+                  @click.stop="toggleLeftPanel"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2"/>
+                    <path d="M9 3v18"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Kept New chats with typed text, directly under the Chat row (REQ-002). -->
+              <ChatDraftRows v-if="item.key === 'chat'" @open="openChatDraft" />
             </li>
           </ul>
         </nav>
@@ -132,6 +138,9 @@ import {
 } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 import { useRunStart } from '~/composables/runSettings/useRunStart';
+import { useChatDraftRows } from '~/composables/chat/useChatDraftRows';
+import ChatDraftRows from '~/components/chat/ChatDraftRows.vue';
+import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { resolveSelectionRoute, type RunSelectionRouteInput } from '~/services/workspace/workspaceNavigationService';
 
 const { t } = useLocalization();
@@ -153,6 +162,11 @@ const {
 } = useAppLeftPanelSectionResize();
 
 const runStart = useRunStart();
+const { rowSelected } = useChatDraftRows();
+
+// While a Draft row is selected, it (not the Chat row) is the selected row (REQ-003).
+const isNavRowActive = (key: ShellPrimaryNavKey): boolean =>
+  isPrimaryNavActive(key) && !(key === 'chat' && rowSelected.value);
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
 const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
@@ -176,7 +190,7 @@ const openNewChat = async (): Promise<void> => {
 
 const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
   useAgentSelectionStore().beginSelectionIntent();
-  // Chat always opens a fresh New chat.
+  // Chat always opens a fresh New chat; drafts with typed text stay listed (REQ-004).
   if (key === 'chat') {
     await openNewChat();
     return;
@@ -188,6 +202,18 @@ const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
 const startNewChat = async (): Promise<void> => {
   useAgentSelectionStore().beginSelectionIntent();
   await openNewChat();
+};
+
+// A Draft row re-enters its draft (REQ-003). Already on /chat there is no route change to close
+// the narrow drawer, so it is closed here.
+const openChatDraft = async (draftId: string): Promise<void> => {
+  useAgentSelectionStore().beginSelectionIntent();
+  try {
+    await runStart.openChatDraft(draftId);
+  } catch (error) {
+    console.error('AppLeftPanel navigation error:', error);
+  }
+  useAppLayoutStore().closeMobileMenu();
 };
 
 const navigateToSettings = async (): Promise<void> => {

@@ -1,0 +1,10 @@
+remote personal: 7d130309ea1c646edd856aa8c5f44ee2da94d8a6
+55d6db0c1 Merge verified chat-new-draft-kept-on-navigation
+0c3b8a073 docs(delivery): sync chat Draft rows docs and archive chat-new-draft-kept-on-navigation
+ec4c73929 Merge remote-tracking branch 'origin/personal' into codex/chat-composer-draft-persistence
+remote: 
+remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   7d130309e..55d6db0c1  personal -> personal

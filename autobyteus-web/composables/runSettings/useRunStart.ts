@@ -119,9 +119,18 @@ export function useRunStart() {
     await openChat(target, { carried })
   }
 
-  /** The Chat nav and its "new chat" pencil: a fresh plain New chat (the Chat-nav settings rule). */
+  /**
+   * The Chat nav and its "new chat" pencil: a fresh plain New chat (the Chat-nav settings rule).
+   * Like every start, it keeps earlier drafts with typed text as Draft rows (REQ-004).
+   */
   const newChat = async () => {
     chatDraftStore.startNewChat()
+    await router.push('/chat')
+  }
+
+  /** A Draft row: New chat with that kept draft, as it was left (REQ-003). */
+  const openChatDraft = async (draftId: string) => {
+    chatDraftStore.openDraft(draftId)
     await router.push('/chat')
   }
 
@@ -131,5 +140,5 @@ export function useRunStart() {
     await router.push('/chat')
   }
 
-  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChat, newChatInWorkspace }
+  return { runAgent, runTeam, runOrg, copyAgentFromConfig, copyTeamRun, copyOrgRun, switchTarget, newChat, newChatInWorkspace, openChatDraft }
 }

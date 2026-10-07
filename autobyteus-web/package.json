@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.4.96-beta.1",
+  "version": "1.4.96-beta.2",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "Apache-2.0",
@@ -67,6 +67,7 @@
     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
     "test:e2e:project-manager-ux": "node tests/e2e/project-manager-ux-probe.mjs",
     "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",
+    "test:e2e:chat-draft-rows-live": "node tests/e2e/chat-draft-rows-live-probe.mjs",
     "test:e2e:chat-composer-polish": "node tests/e2e/chat-composer-polish-probe.mjs",
     "test:e2e:chat-composer-menus-open-upward": "node tests/e2e/chat-composer-menus-open-upward-probe.mjs",
     "test:e2e:cross-scope-agent-mentions": "node tests/e2e/cross-scope-agent-mentions-live-probe.mjs",
