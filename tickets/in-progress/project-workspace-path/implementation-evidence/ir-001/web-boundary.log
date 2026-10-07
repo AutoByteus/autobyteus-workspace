@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.96-beta.5 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.

@@ -1,0 +1,106 @@
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:85:    const {createWorkspace: ws} = await a.gql<{createWorkspace: {workspaceId: string; workspaceRootPath: string}}>(
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:86:      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", {i: {rootPath}});
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:87:    const created = await a.call("create_or_update_project", {name: "Node local", description: "Saved goal", workspaces: [{workspace_id: ws.workspaceId, description: "Source"}]});
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:89:    const query = "query($id:String!){project(projectId:$id){projectId name description createdAt updatedAt workspaces{workspaceId workspaceRootPath description addedAt availability}}}";
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:91:    expect(saved.project).toMatchObject({...created.structuredContent.project, workspaces: [{...ws, description: "Source", availability: "AVAILABLE", addedAt: expect.any(String)}]});
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:96:    const rejectedLink = await b.call("create_or_update_project", {name: "No remote registration", workspaces: [{workspace_id: ws.workspaceId}]});
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:110:    expect(patched).toMatchObject({structuredContent: {project: {projectId, name: "Node local", description: "After restart", workspaces: [{workspaceId: ws.workspaceId, description: "Source"}]}}});
+autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts:113:    console.info("Built-node HTTP receipt", JSON.stringify({nodeA: a.origin, nodeB: b.origin, projectId, workspaceId: ws.workspaceId,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:64:  workspaces { workspaceId workspaceRootPath displayName description addedAt availability }
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:79:  workspaceId: string;
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:83:  addedAt: string;
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:128:    initialActiveWorkspaceIds = new Set(workspaceManager.getAllWorkspaces().map((ws) => ws.workspaceId));
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:141:      if (!initialActiveWorkspaceIds.has(workspace.workspaceId)) {
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:144:          ?.delete(workspace.workspaceId);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:180:    const data = await execOk<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:181:      `mutation($input: CreateWorkspaceInput!) { createWorkspace(input: $input) { workspaceId workspaceRootPath } }`,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:187:  const removeWorkspace = async (workspaceId: string) => {
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:190:      { input: { workspaceId } },
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:211:  const addLink = async (projectId: string, workspaceId: string, description?: string) =>
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:212:    (await execOk<{ addProjectWorkspace: ProjectResult }>(ADD_LINK, { input: { projectId, workspaceId, description } }))
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:309:    const linked = await addLink(projectA.projectId, prototype.workspaceId, "  UI prototype workspace  ");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:312:        workspaceId: prototype.workspaceId,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:320:    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceId: prototype.workspaceId } }, "WORKSPACE_ALREADY_LINKED");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:321:    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceId: "temp_ws_default" } }, "WORKSPACE_NOT_REGISTERED");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:322:    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceId: "agent_ws_not_registered" } }, "WORKSPACE_NOT_REGISTERED");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:323:    await expectErrorCode(ADD_LINK, { input: { projectId: "project_missing", workspaceId: marketingWs.workspaceId } }, "PROJECT_NOT_FOUND");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:326:    const shared = await addLink(projectB.projectId, prototype.workspaceId, "Brand site mockups");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:327:    expect(shared.workspaces[0]).toMatchObject({ workspaceId: prototype.workspaceId, description: "Brand site mockups" });
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:332:    expect(newRoot.workspaceId).toMatch(/^agent_ws_/);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:333:    const withNewRoot = await addLink(projectA.projectId, newRoot.workspaceId, "Fresh root");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:334:    expect(withNewRoot.workspaces.map((link) => link.workspaceId)).toEqual([prototype.workspaceId, newRoot.workspaceId]);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:336:      [prototype.workspaceId]: prototype.workspaceRootPath,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:337:      [marketingWs.workspaceId]: marketingWs.workspaceRootPath,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:338:      [newRoot.workspaceId]: newRoot.workspaceRootPath,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:348:    await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:349:    await addLink(project.projectId, marketingWs.workspaceId, "Marketing");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:351:    const removal = await removeWorkspace(prototype.workspaceId);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:358:        workspaceId: prototype.workspaceId,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:364:      expect.objectContaining({ workspaceId: marketingWs.workspaceId, availability: "AVAILABLE" }),
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:368:    expect(reRegistered.workspaceId).toBe(prototype.workspaceId);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:371:    expect(restored?.workspaces[0]).toMatchObject({ workspaceId: prototype.workspaceId, availability: "AVAILABLE" });
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:374:    await removeWorkspace(marketingWs.workspaceId);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:376:      input: { projectId: project.projectId, workspaceId: marketingWs.workspaceId, description: "Old marketing" },
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:380:      input: { projectId: project.projectId, workspaceId: marketingWs.workspaceId },
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:382:    expect(unlinked.workspaces.map((link) => link.workspaceId)).toEqual([prototype.workspaceId]);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:383:    await expectErrorCode(REMOVE_LINK, { input: { projectId: project.projectId, workspaceId: marketingWs.workspaceId } }, "WORKSPACE_LINK_NOT_FOUND");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:391:    await addLink(doomed.projectId, prototype.workspaceId, "UI");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:392:    await addLink(doomed.projectId, superrepo.workspaceId, "Main");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:393:    await addLink(kept.projectId, prototype.workspaceId, "Brand UI");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:404:      expect.objectContaining({ workspaceId: prototype.workspaceId, description: "Brand UI", availability: "AVAILABLE" }),
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:406:    const workspaces = await execOk<{ workspaces: Array<{ workspaceId: string }> }>(`query { workspaces { workspaceId } }`);
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:407:    expect(workspaces.workspaces.map((ws) => ws.workspaceId)).toEqual(
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:408:      expect.arrayContaining([prototype.workspaceId, superrepo.workspaceId]),
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:415:    await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:431:        workspaces: [expect.objectContaining({ workspaceId: prototype.workspaceId, availability: "AVAILABLE" })],
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:503:    await addLink(doomed.projectId, prototype.workspaceId, "UI");
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:533:        workspaceId: prototype.workspaceId,
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:536:        addedAt: "2026-09-21T09:30:00.000Z",
+autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts:554:        workspaces: [expect.objectContaining({ workspaceId: prototype.workspaceId, description: "UI prototype workspace", availability: "AVAILABLE" })],
+autobyteus-server-ts/tests/e2e/projects/project-change-feed.e2e.test.ts:41:  workspaces { workspaceId workspaceRootPath displayName description addedAt availability } taskCount openTaskCount }}`;
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:33:const PROJECT = "projectId name description createdAt updatedAt taskCount openTaskCount workspaces { workspaceId workspaceRootPath description addedAt availability }";
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:34:type Link = { workspaceId: string; workspaceRootPath: string; description: string; addedAt: string; availability: string };
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:78:    return (await gql<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:79:      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath } })).createWorkspace;
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:85:    return result.structuredContent.project as Pick<Project, "projectId" | "name" | "description"> & { workspaces: Array<Pick<Link, "workspaceId" | "description">> };
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:130:    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.find((t: { name: string }) => t.name === "create_or_update_project").inputSchema.properties.workspaces.items.properties.workspace_id.type).toBe("string");
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:257:    const registered = (await gql<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:258:      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath: `${missingPath}/../not-created-folder` } })).createWorkspace;
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:263:    const fields = "projectId name taskCount openTaskCount workspaces { workspaceId workspaceRootPath description addedAt availability }";
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:264:    const updated = await gql<{ updateProject: { taskCount: number; openTaskCount: number; workspaces: Array<{ addedAt: string }> } }>(
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:265:      `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate existing", description: "saved", workspaces: [{ workspaceId: registered.workspaceId, description: "normalized registration" }] } });
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:271:      query: "mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", variables: { i: { name: "AGGREGATE EXISTING", workspaces: [{ workspaceId: registered.workspaceId }] } } }) });
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:274:    expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toContain(registered.workspaceId);
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:275:    await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", { i: { workspaceId: registered.workspaceId } });
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:276:    const reread = await gql<{ updateProject: { workspaces: Array<{ addedAt: string }> } }>(
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:277:      `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate renamed", description: "saved", workspaces: [{ workspaceId: registered.workspaceId, description: "retained unregistered" }] } });
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:278:    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: missingPath, availability: "UNREGISTERED", addedAt: updated.updateProject.workspaces[0]!.addedAt });
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:330:      {workspace_id: ` ${a.workspaceId} `, description: " Frontend "}, {workspace_id: b.workspaceId},
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:332:    expect(created.workspaces).toEqual([{workspaceId: a.workspaceId, description: "Frontend"}, {workspaceId: b.workspaceId, description: ""}]);
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:333:    const nativeCreated = JSON.parse(await new CreateOrUpdateProjectTool().execute(null, {name: "Native linked", workspaces: [{workspace_id: c.workspaceId}]})).project;
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:335:    expect(nativeInitial).toMatchObject({workspaces: [{...c, description: "", availability: "AVAILABLE", addedAt: expect.any(String)}]});
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:340:    const replacement = {project_id: created.projectId, workspaces: [{workspace_id: a.workspaceId}, {workspace_id: c.workspaceId, description: " Backend "}]};
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:347:    expect(linked.workspaces.map(w => w.workspaceId)).toEqual([a.workspaceId, c.workspaceId]); // not append
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:348:    await projectCall({project_id: created.projectId, workspaces: [{workspace_id: a.workspaceId, description: "  "}, {workspace_id: c.workspaceId}]});
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:350:    const malformed: unknown[] = [null, "", "[]", {}, [null], [12], [[]], [{workspace_id: null}], [{workspace_id: " "}], [{workspace_id: 12}],
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:351:      [{workspace_id: a.workspaceId, description: null}], [{workspace_id: a.workspaceId, description: 12}], [{workspace_id: a.workspaceId, workspaceRootPath: a.workspaceRootPath}]];
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:354:      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: ` ${a.workspaceId} `}]},
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:355:      {name: "Must not create duplicate links", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: a.workspaceId}]},
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:358:      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: "agent_ws_missing"}]},
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:359:      {name: "Must not create unknown links", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: "agent_ws_missing"}]},
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:367:    await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", {i: {workspaceId: c.workspaceId}});
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:368:    const retained = {project_id: nativeCreated.projectId, workspaces: [{workspace_id: c.workspaceId}]};
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:380:      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceId: workspace.workspaceId, description: "Saved link"}]},
+autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts:405:    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_id: workspace.workspaceId}]}, {workspaces: []}]) {
+142:const PROJECT_FIELDS = 'projectId name description taskCount openTaskCount workspaces { workspaceId workspaceRootPath displayName description availability }';
+152:  addLink: async (node, projectId, workspaceId, description) => (await gql(node, `mutation($i: AddProjectWorkspaceInput!) { addProjectWorkspace(input: $i) { ${PROJECT_FIELDS} } }`, { i: { projectId, workspaceId, description } })).addProjectWorkspace,
+153:  registerWorkspace: async (node, rootPath) => (await gql(node, 'mutation($i: CreateWorkspaceInput!) { createWorkspace(input: $i) { workspaceId workspaceRootPath } }', { i: { rootPath } })).createWorkspace,
+154:  removeWorkspace: async (node, workspaceId) => (await gql(node, 'mutation($i: RemoveWorkspaceInput!) { removeWorkspace(input: $i) { success message } }', { i: { workspaceId } })).removeWorkspace,
+155:  workspaceIds: async node => (await gql(node, '{ workspaces { workspaceId } }')).workspaces.map(item => item.workspaceId),
+313:    await page.getByTestId('workspace-select-0').selectOption(ws.workspaceId);
+316:    await page.getByTestId('workspace-mode-existing-0').click(); assert(await page.getByTestId('workspace-select-0').inputValue() === ws.workspaceId, 'Existing draft retained');
+320:    const saved = await api.project(nodeA, project.projectId); assert(saved.workspaces.length === 2, 'Two aggregate links saved'); assert(!existsSync(newRoot), 'New folder is registration only, not mkdir');
+325:    await api.removeWorkspace(nodeA, ws.workspaceId); await goto(`/projects/${project.projectId}?tab=workspaces`);
+326:    await page.getByTestId(`project-workspace-row-${ws.workspaceId}`).getByText('Unavailable', { exact: true }).waitFor();
+332:  await runCase('PT-E2E-004', 'Aggregate save failure retains Project; separate successful registration remains, no mkdir', async obs => {
+335:    const pathValue = path.join(ownedRoot, 'registration-survives'); await page.getByTestId('workspace-path-2').fill(pathValue);
