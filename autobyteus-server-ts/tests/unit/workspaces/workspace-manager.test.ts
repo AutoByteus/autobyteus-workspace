@@ -1,3 +1,5 @@
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { Skill } from "../../../src/skills/domain/models.js";
 import fs from "node:fs";
@@ -185,6 +187,9 @@ describe("WorkspaceManager", () => {
   });
 
   it("removes a registered workspace entry without deleting workspace files", async () => {
+    // This unit has no process supervisor; provide its empty run catalogs explicitly.
+    vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({ listActiveRuns: () => [] } as unknown as AgentRunManager);
+    vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({ listManagedTeamRunIds: () => [] } as unknown as AgentTeamRunManager);
     const rootPath = createTempRoot();
     const filePath = path.join(rootPath, "keep.txt");
     fs.writeFileSync(filePath, "preserved", "utf-8");
