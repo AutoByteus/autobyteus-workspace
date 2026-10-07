@@ -62,8 +62,12 @@ describe("collaboration public result contracts", () => {
 
   it("keeps the delegate spawn and not-started outcomes strict and mutually exclusive", () => {
     expect(DelegateTaskResultSchema.parse({
-      target_agent_run_id: "fresh-task-ingress",
-    })).toEqual({ target_agent_run_id: "fresh-task-ingress" });
+      target_agent_run_id: "fresh-task-ingress", target_kind: "team",
+    })).toEqual({ target_agent_run_id: "fresh-task-ingress", target_kind: "team" });
+    // The kind is required on success and is only `agent` or `team` (REQ-010); never on not-started.
+    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: "fresh-task-ingress" })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: "fresh-task-ingress", target_kind: "agent_team" })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: null, target_kind: "agent", message: "Activation failed." })).toThrow();
     expect(DelegateTaskResultSchema.parse({
       target_agent_run_id: null,
       message: "Activation failed.",
@@ -120,8 +124,11 @@ describe("collaboration public result contracts", () => {
         target_agent_run_id: null,
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {
-        target_agent_run_id: "fresh-task-ingress",
+        target_agent_run_id: "fresh-task-ingress", target_kind: "agent",
       })).toBe(true);
+      expect(ajv.validate(delegateSchema, {
+        target_agent_run_id: "fresh-task-ingress",
+      })).toBe(false);
       expect(ajv.validate(delegateSchema, {
         target_agent_run_id: null,
         message: "Activation failed.",

@@ -290,10 +290,15 @@ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects --no-watch
 What these suites cover:
 - **Project unit tests.** The per-folder store and Delete, which keeps
   `agent_run_resources.json`. Task agent run resources: roles, link-before-
-  resources, closed-forever, current assignments versus `assignmentsUnavailable`,
-  and the damaged-file policy (Q-3). Also saved-ID payloads, compact business
-  results, DONE close-then-stop, retry by repeated DONE with nothing about the
-  stop persisted, and reopen.
+  resources, closed until the assigner reactivates, current assignments versus
+  `assignmentsUnavailable`, and the damaged-file policy (Q-3). Also saved-ID
+  payloads, compact business results, DONE close-then-stop, retry by repeated
+  DONE with nothing about the stop persisted, and reopen. Reactivation (reopen
+  the Task, then the assigner messages the run ID) is covered on the Task side by
+  `tests/unit/projects/task-agent-resource-reactivation.test.ts` and in the
+  runtime by `tests/unit/agent-collaboration/root-task-reactivation.test.ts`
+  (sequencing and refusals) and `task-reactivation-backends.test.ts` (actual
+  registries for all three root kinds).
 - **RootTeam/catalog helper integration.** Same-address helpers isolated per
   Task, borrowed advisers that are never adopted, exact stop sets, and closed
   ingress.
@@ -337,6 +342,53 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --output-dir <fresh evidence d
   rows under an Agent run, the Team tab keeping messages, and closed runs staying absent after
   reload and a real backend restart. The probe cleans up its own processes and
   data root; check `cleanup` in its `evidence.json`.
+
+Reactivation (after DONE the agent reopens the Task, then the assigner messages
+the run ID `delegate_task` returned) has the same two layers:
+
+```bash
+RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts --no-watch
+pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,BR-011 --output-dir <fresh evidence dir>
+```
+
+- **`task-reactivation-root-visibility.e2e.test.ts`.** Real HTTP/WS/scoped MCP
+  with the scripted AGY actor, in all three roots. It covers:
+  - `target_kind` (`agent` / `team`) on `delegate_task` results;
+  - while the Task is DONE, a message is refused with the reopen-first hint and
+    the Task files are byte-identical;
+  - a status change alone reopens nothing;
+  - helper, non-assigner (a Task copy or a configured teammate) and Team member
+    refusals;
+  - the assigner's message reopens exactly the worker:
+    - one `task_executions_reopened` / `TASK_EXECUTIONS_REOPENED` event;
+    - the snapshot without it;
+    - the same run, its earlier conversation and its provider-conversation
+      binding;
+    - only its `closedAt` back to `null`; `task.json` untouched;
+  - an unchanged second message;
+  - DONE → TODO → reactivate again;
+  - a Team copy restored as a whole via its coordinator;
+  - a deleted Task (`TASK_NOT_FOUND`);
+  - a Task with no Project reopened by `task_id`;
+  - a DONE from another root racing the message. Every allowed ordering leaves
+    a DONE Task with a closed entry, no live worker process and refused input.
+
+  With `RUN_CLAUDE_E2E=1` and a logged-in `claude`, one more case gives the
+  worker a real Claude model. It must recall a codeword from before DONE.
+  `TASK_REACTIVATION_E2E_EVIDENCE_DIR` keeps a JSON receipt.
+- **`test:e2e:task-closure-tree` BR-008..BR-011.** In a real browser for Agent,
+  Team and Org roots:
+  - nothing reappears while the Task is DONE or on a status change alone;
+  - the assigner's message brings the worker row back live, and a Task Team
+    and its members via the coordinator;
+  - helpers stay hidden;
+  - the conversation continues and a fresh load keeps the rows.
+
+  BR-011 (needs BR-008..010 in the same run) adds two real backend restarts. The
+  rows survive the first; then DONE, a restart, reopen and a message reactivate
+  the worker live with its whole conversation. Before sending to a stopped
+  root, the probe calls the root's restore mutation, as the app does.
 
 `@` delegation and ad-hoc Tasks (Tasks with no Project, created by a described
 `delegate_task` and closed by `create_or_update_task({task_id, status: "DONE"})`)

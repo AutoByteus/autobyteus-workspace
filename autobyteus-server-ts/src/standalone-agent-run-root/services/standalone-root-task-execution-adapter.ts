@@ -66,6 +66,7 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
   publishTaskExecutionStarted(host: TaskExecutionHostIdentity, taskExecution: TaskExecutionReference): void;
   publishTaskExecutionsClosed(taskExecutions: readonly TaskExecutionReference[]): void;
+  publishTaskExecutionsReopened(taskExecutions: readonly TaskExecutionReference[]): void;
   publishAgentOffline(identity: CollaborationMemberExecutionIdentity): void;
   enterLifecycleFailStop(): void;
   memoryLocator?: RootedAgentMemoryLocator;
@@ -192,9 +193,22 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     }
     return entry.kind === "agent" ? this.options.rootAgents.releaseTask(entry.agentRunId) : this.options.teams.releaseTask(entry.teamRunId);
   }
+  discardReleasedExecution(reference: TaskExecutionReference): void {
+    this.registrations.delete(taskExecutionReferenceKey(reference));
+    const entry = this.options.getIndex().getTaskExecution(reference); if (!entry) return;
+    if (entry.host.hostKind === "team") this.options.teams.getManaged(entry.host.hostRunId)?.discardReleasedDirectTaskExecution(reference);
+    else if (entry.kind === "agent") this.options.rootAgents.discardReleasedTask(entry.agentRunId);
+    // A task TeamRun is registered in the directory wherever it is hosted.
+    if (entry.kind === "team") this.options.teams.discardReleasedTask(entry.teamRunId);
+  }
+  taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
+    const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];
+    return innermost && this.ingressAgentRunId(innermost) === agentRunId ? referenceOf(innermost) : null;
+  }
 
   containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
   publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void { this.options.publishTaskExecutionsClosed(references); }
+  publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void { this.options.publishTaskExecutionsReopened(references); }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);

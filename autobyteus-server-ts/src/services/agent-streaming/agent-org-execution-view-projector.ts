@@ -89,6 +89,9 @@ export const projectAgentOrgExecutionEvent = (
     case "task_executions_closed":
       event = { kind: "task_executions_closed" as const, task_executions: source.taskExecutions };
       break;
+    case "task_executions_reopened":
+      event = { kind: "task_executions_reopened" as const, task_executions: source.taskExecutions };
+      break;
   }
   return RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent_org",

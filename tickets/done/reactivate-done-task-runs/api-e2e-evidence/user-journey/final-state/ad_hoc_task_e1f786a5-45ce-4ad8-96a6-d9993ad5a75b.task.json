@@ -1,0 +1,8 @@
+{
+  "taskId": "ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b",
+  "description": "Please review this one-sentence help-center text for our Offline Sync feature (ships in version 4.2):\n\n\"Offline Sync let you works without internet and it sync later automatic.\"\n\nScope: Check grammar, clarity, and tone for a user-facing help-center article. List each problem you find, then give a corrected version of the sentence (one or two options are fine). Keep the meaning: users can work without an internet connection, and their changes sync automatically when they reconnect. Don't add claims about conflict handling, platforms, or settings; those haven't been confirmed.\n\nDone when: You have sent your findings and the suggested rewrite back to me, the Release Manager (/release_manager).",
+  "referenceFiles": [],
+  "status": "DONE",
+  "createdAt": "2026-10-07T07:03:09.002Z",
+  "updatedAt": "2026-10-07T07:08:28.845Z"
+}

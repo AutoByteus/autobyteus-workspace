@@ -98,10 +98,19 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   cancelOwnedExecution(reference: TaskExecutionReference): void;
   /** Exact release of a committed copy; `EXACT_RELEASE_AUTHORITY_UNAVAILABLE` when the root holds none. */
   releaseOwnedExecution(reference: TaskExecutionReference): Promise<AgentOperationResult>;
+  /**
+   * Reactivation, after the exact release settled: drops the released (fenced or terminated)
+   * authority and retained registration of exactly this copy, so restore builds a fresh one.
+   */
+  discardReleasedExecution(reference: TaskExecutionReference): void;
+  /** The task execution whose ingress (the Agent itself, or a Team's coordinator) is this agent run; `null` otherwise. */
+  taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null;
   /** The reference is a task execution node of this root's current tree (at any depth). */
   containsTaskExecution(reference: TaskExecutionReference): boolean;
   /** Publishes the root's sequenced "task executions closed" event (Task DONE) into its publisher. */
   publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void;
+  /** Publishes the root's sequenced "task executions reopened" event (reactivation) into its publisher. */
+  publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void;
   /** Index-only containment chain for idle shutdown and restore. */
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[];
   isLive(reference: TaskExecutionReference): boolean;

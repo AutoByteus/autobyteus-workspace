@@ -2,7 +2,8 @@ import type { TaskExecutionReferenceDto } from '@autobyteus/collaboration-stream
 import type { TeamTaskExecutionReferenceDto } from '@autobyteus/team-stream-contracts'
 
 /**
- * Task closure (DONE) in the Workspaces listing, shared by the Agent, Team and Org roots.
+ * Task closure (DONE) in the Workspaces listing, shared by the Agent, Team and Org roots. A closed
+ * task execution is listed again when its assigner reactivates it.
  * The execution tree is never filtered: a root view keeps every node and participant. Only its
  * listing leaves out each closed task execution and everything under it.
  */
@@ -32,6 +33,15 @@ export const mergeClosedTaskExecutions = (
     merged.push(reference)
   }
   return merged
+}
+
+/** Removes reactivated references (their assigner reopened them): their subtree is listed again, except helpers that are still closed. */
+export const removeReopenedTaskExecutions = (
+  current: readonly TaskExecutionReference[],
+  reopened: readonly TaskExecutionReference[],
+): TaskExecutionReference[] => {
+  const keys = new Set(reopened.map(taskExecutionReferenceKey))
+  return current.filter((reference) => !keys.has(taskExecutionReferenceKey(reference)))
 }
 
 /** How one root's tree is walked: the run key of a node (`agent:` / `team:`) and its child nodes. */

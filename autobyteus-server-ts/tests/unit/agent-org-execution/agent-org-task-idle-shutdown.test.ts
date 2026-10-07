@@ -114,7 +114,7 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
 
     const delegated = await f.owner.delegateTask(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Complete the task" });
     const childId = kind === "agent" ? "task-agent-1" : "task-team-1-lead";
-    expect(delegated).toEqual({ target_agent_run_id: childId, task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(delegated).toEqual({ target_agent_run_id: childId, target_kind: kind === "agent" ? "agent" : "team", task_id: expect.stringMatching(/^ad_hoc_task_/) });
     await f.drain();
 
     // One durable tree write carries the execution and its delegator; no records sidecar exists.

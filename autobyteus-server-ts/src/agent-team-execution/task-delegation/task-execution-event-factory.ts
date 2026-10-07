@@ -19,3 +19,9 @@ export const taskExecutionsClosedEvent = (taskExecutions: readonly TaskExecution
   eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED,
   taskExecutions,
 });
+
+/** These closed task executions were reactivated by their assigner (after their Task-side reopen committed). */
+export const taskExecutionsReopenedEvent = (taskExecutions: readonly TaskExecutionReference[]): TeamRunEvent => ({
+  eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_REOPENED,
+  taskExecutions,
+});

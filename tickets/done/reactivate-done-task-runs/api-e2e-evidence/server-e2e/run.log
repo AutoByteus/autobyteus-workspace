@@ -1,0 +1,997 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:19577) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-07T07:13:44.299Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-07T07:13:44.486Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-07T07:13:44.486Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tra-manager-08347a.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tra-manager-08347a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tra-worker-08347a.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tra-worker-08347a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tra-helper-08347a.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tra-helper-08347a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID tra-assistant-08347a.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: tra-assistant-08347a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-07T07:13:44.645Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID tra-squad-08347a.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: tra-squad-08347a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-07T07:13:44.664Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID tra-team-08347a.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: tra-team-08347a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreated and registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_manager_08347a_c42aadd0a31747f1ac1644fb2a243420: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAgent websocket attached for run tra_manager_08347a_c42aadd0a31747f1ac1644fb2a243420
+Created agent session f128c73e-9ccc-4cf2-90ab-279178de0cca for run tra_manager_08347a_c42aadd0a31747f1ac1644fb2a243420
+Agent WebSocket connected: session=f128c73e-9ccc-4cf2-90ab-279178de0cca, run=tra_manager_08347a_c42aadd0a31747f1ac1644fb2a243420
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agents/tra_manager_08347a_c42aadd0a31747f1ac1644fb2a243420/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_6208406f39ea4a18a8b6d31abca1f8c9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_helper_08347a_23cda83b137548bda3cd667657b3afc2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_assistant_08347a_d407749b8057423dabf0d3a2522f636e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_6aa0c75349db44d48a5aab178f253504: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_5ebe424cc07d4a9c9a4a2eb33d9ae6d3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_f9067432290540fcb3ac46b9b5f8f1b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_be7cf623438c4a20bc16d7f28e239bed: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_6208406f39ea4a18a8b6d31abca1f8c9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_6208406f39ea4a18a8b6d31abca1f8c9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_6aa0c75349db44d48a5aab178f253504: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mAGY compaction detection off for run tra_worker_08347a_f9067432290540fcb3ac46b9b5f8f1b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO
+[22m[39mClosed agent session f128c73e-9ccc-4cf2-90ab-279178de0cca
+Agent WebSocket disconnected: f128c73e-9ccc-4cf2-90ab-279178de0cca
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session f44314ca-4c59-4dfd-a52c-dd93eb2ebedd for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=f44314ca-4c59-4dfd-a52c-dd93eb2ebedd, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_manager_08347a_81844c5c5af245e79c5854d5f49d8a35/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_manager_08347a_81844c5c5af245e79c5854d5f49d8a35/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_manager_08347a_81844c5c5af245e79c5854d5f49d8a35/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_manager_08347a_81844c5c5af245e79c5854d5f49d8a35/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_manager_08347a_81844c5c5af245e79c5854d5f49d8a35: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_manager_08347a_81844c5c5af245e79c5854d5f49d8a35/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_2d0fd7a54c45439e8feb62d5246bff1e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_helper_08347a_1590596120ab412ebbccf3b7d773014a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_assistant_08347a_c015da4b177c4ffd8790ae81fbee108a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_0f61c2d6fdab4df39155466f29912c13: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_4f5f40dba63c40a994d96779ca2d52d7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_2b172d1d13544ca4a3b2761e3a39c75a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session f377c21f-c90c-48e8-86c9-4e4b4531ebc4 for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=f377c21f-c90c-48e8-86c9-4e4b4531ebc4, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session f44314ca-4c59-4dfd-a52c-dd93eb2ebedd
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session 9b0b95a9-187c-47ae-9910-8609658a6a5b for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=9b0b95a9-187c-47ae-9910-8609658a6a5b, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session f377c21f-c90c-48e8-86c9-4e4b4531ebc4
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_worker_08347a_5a61bd54dbdb46379ff89c8cc8059a40/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_worker_08347a_5a61bd54dbdb46379ff89c8cc8059a40/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_worker_08347a_5a61bd54dbdb46379ff89c8cc8059a40/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_worker_08347a_5a61bd54dbdb46379ff89c8cc8059a40/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_5a61bd54dbdb46379ff89c8cc8059a40: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_teams/tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f/tra_worker_08347a_5a61bd54dbdb46379ff89c8cc8059a40/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_2d0fd7a54c45439e8feb62d5246bff1e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session 5bd410c5-3bc9-4e58-96e4-9d0f28d91170 for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=5bd410c5-3bc9-4e58-96e4-9d0f28d91170, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session 9b0b95a9-187c-47ae-9910-8609658a6a5b
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session f9cf2ee8-0daf-4853-8bf8-c4f2cfa82c6b for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=f9cf2ee8-0daf-4853-8bf8-c4f2cfa82c6b, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session 5bd410c5-3bc9-4e58-96e4-9d0f28d91170
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_2d0fd7a54c45439e8feb62d5246bff1e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session a7bd237a-f695-45f3-8f30-d6010a400102 for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=a7bd237a-f695-45f3-8f30-d6010a400102, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session f9cf2ee8-0daf-4853-8bf8-c4f2cfa82c6b
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_0f61c2d6fdab4df39155466f29912c13: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session 1bb31049-c596-44e5-a827-56238cf28c5d for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=1bb31049-c596-44e5-a827-56238cf28c5d, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session a7bd237a-f695-45f3-8f30-d6010a400102
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent team websocket attached for team run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+Created agent session e2fef874-6028-41d0-b3ae-7505f02d3ead for run tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAgent Team WebSocket connected: session=e2fef874-6028-41d0-b3ae-7505f02d3ead, run=tra_team_08347a_2c0a3c8180f74fc5b48081c6c5c8e32f
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session 1bb31049-c596-44e5-a827-56238cf28c5d
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_2b172d1d13544ca4a3b2761e3a39c75a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate
+[22m[39mClosed agent session e2fef874-6028-41d0-b3ae-7505f02d3ead
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_manager_08347a_2bcfa96e95ab42d6ab4a70a3117e95d9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_manager_08347a_2bcfa96e95ab42d6ab4a70a3117e95d9/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_manager_08347a_2bcfa96e95ab42d6ab4a70a3117e95d9/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_manager_08347a_2bcfa96e95ab42d6ab4a70a3117e95d9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_manager_08347a_2bcfa96e95ab42d6ab4a70a3117e95d9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_manager_08347a_2bcfa96e95ab42d6ab4a70a3117e95d9/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_ddf11e869edd4de4a30b8412485dc490: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_helper_08347a_b1d613bd73d84ab79eb99c6df9721159: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_assistant_08347a_fed3851696f34f8b9a3676f4802160cc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_71ba37ef2cfa4d7ba32feeef9281478d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_db36c22aec5d4cc587040fbf72bc7df8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_def1e7e46e73455297c43626a32d4752: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_helper_08347a_15fc7baf90e04286a775d1d5b520d028/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_helper_08347a_15fc7baf90e04286a775d1d5b520d028/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_helper_08347a_15fc7baf90e04286a775d1d5b520d028/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_helper_08347a_15fc7baf90e04286a775d1d5b520d028: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_org_08347a_2ff9f595dfcf44a388423663330badc5/tra_helper_08347a_15fc7baf90e04286a775d1d5b520d028/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_ddf11e869edd4de4a30b8412485dc490: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_ddf11e869edd4de4a30b8412485dc490: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_71ba37ef2cfa4d7ba32feeef9281478d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: the same journey through the Org stream; an Org member cannot reactivate
+[22m[39mAGY compaction detection off for run tra_worker_08347a_def1e7e46e73455297c43626a32d4752: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mAGY compaction detection off for run tra_manager_08347a_e1574376e545430abc90d5b06263f79a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mAgent websocket attached for run tra_manager_08347a_e1574376e545430abc90d5b06263f79a
+Created agent session fb48ebf9-3295-4165-986c-e0b9fb7ec4be for run tra_manager_08347a_e1574376e545430abc90d5b06263f79a
+Agent WebSocket connected: session=fb48ebf9-3295-4165-986c-e0b9fb7ec4be, run=tra_manager_08347a_e1574376e545430abc90d5b06263f79a
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mAGY compaction detection off for run tra_manager_08347a_fb5041b591ac4a839ef965cbb3fe6270: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mAgent websocket attached for run tra_manager_08347a_fb5041b591ac4a839ef965cbb3fe6270
+Created agent session b41d709b-69f6-4c73-852a-637b4b08c017 for run tra_manager_08347a_fb5041b591ac4a839ef965cbb3fe6270
+Agent WebSocket connected: session=b41d709b-69f6-4c73-852a-637b4b08c017, run=tra_manager_08347a_fb5041b591ac4a839ef965cbb3fe6270
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agents/tra_manager_08347a_e1574376e545430abc90d5b06263f79a/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mAGY compaction detection off for run tra_worker_08347a_0eb53f9d9b3f4259ab92a405597272be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agents/tra_manager_08347a_fb5041b591ac4a839ef965cbb3fe6270/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mAGY compaction detection off for run tra_worker_08347a_0eb53f9d9b3f4259ab92a405597272be: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mTASK_AGENT_RESOURCE_STOP_FAILED {
+  taskId: [32m'project_task_2b66ef3f-7a8c-4807-ab5c-2e02564ce368'[39m,
+  hostRoot: {
+    rootSubjectKind: [32m'agent'[39m,
+    rootRunId: [32m'tra_manager_08347a_e1574376e545430abc90d5b06263f79a'[39m
+  },
+  agentRun: { agentRunId: [32m'tra_worker_08347a_0eb53f9d9b3f4259ab92a405597272be'[39m },
+  error: {
+    code: [32m'RUNTIME_RELEASE_PENDING'[39m,
+    message: [32m'Exact Agent release remains pending.'[39m
+  }
+}
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mTASK_AGENT_RESOURCE_STOP_FAILED {
+  taskId: [32m'project_task_2b66ef3f-7a8c-4807-ab5c-2e02564ce368'[39m,
+  hostRoot: {
+    rootSubjectKind: [32m'agent'[39m,
+    rootRunId: [32m'tra_manager_08347a_e1574376e545430abc90d5b06263f79a'[39m
+  },
+  agentRun: { agentRunId: [32m'tra_worker_08347a_0eb53f9d9b3f4259ab92a405597272be'[39m },
+  error: {
+    code: [32m'RUNTIME_RELEASE_PENDING'[39m,
+    message: [32m'Exact Agent release remains pending.'[39m
+  }
+}
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mClosed agent session b41d709b-69f6-4c73-852a-637b4b08c017
+Agent WebSocket disconnected: b41d709b-69f6-4c73-852a-637b4b08c017
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mQR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry
+[22m[39mClosed agent session fb48ebf9-3295-4165-986c-e0b9fb7ec4be
+Agent WebSocket disconnected: fb48ebf9-3295-4165-986c-e0b9fb7ec4be
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mAGY compaction detection off for run tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/memory/agent_orgs/tra_claude_org_08347a_53a7c439ad92499a8f87d54426536122/tra_manager_08347a_31f9f424459c4099a2172ef6acbdc4ba/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+(node:19577) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-reactivation-e2e-TLflos/workspace.
+
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mReusing registered workspace ID: agent_ws_234413533f98cf64d1b0d5b1cb5b02e48814239b0e4404d007cd3eb886cff2ae
+
+(node:19577) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task, create_or_update_task, mcp__autobyteus_agent_tools__create_or_update_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts[2m > [22m[2mReactivating a DONE Task's worker by run ID in every root (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mreal model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 53306[2mms[22m[39m
+     [33m[2m✓[22m[39m standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO [33m 13340[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate [33m 6924[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Org root: the same journey through the Org stream; an Org member cannot reactivate [33m 6318[2mms[22m[39m
+     [33m[2m✓[22m[39m QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry [33m 13362[2mms[22m[39m
+     [33m[2m✓[22m[39m real model (Claude Agent SDK) worker: after DONE, reopen and the assigner's message, it recalls its pre-DONE conversation (AC-001) [33m 12857[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 09:13:31
+[2m   Duration [22m 65.74s[2m (transform 8.63s, setup 18ms, import 11.75s, tests 53.31s, environment 0ms)[22m
+

@@ -660,7 +660,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     const taskCommands = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
       delegateTask: vi.fn(async () => ({
-        target_agent_run_id: "run-reviewer",
+        target_agent_run_id: "run-reviewer", target_kind: "agent",
       })),
     });
     const memberExecutionContext = testMemberExecutionContext({

@@ -195,7 +195,10 @@ unfiltered execution tree, so closed rows stay hidden after reload, restart and
 Task deletion. A selected or focused closed row hands selection and focus to the
 delegating Manager. Messages with closed runs stay in the Team tab, and nothing
 is deleted from disk. Reopening the Task and delegating again shows the new runs
-only. Other Team surfaces (the members panel, running list and token usage)
+only. When the delegating agent reactivates a closed child (it reopens the Task,
+then messages the child's run ID), the stream publishes
+`TASK_EXECUTIONS_REOPENED` and the child's rows return without reload; its own
+still-closed helpers stay hidden. Other Team surfaces (the members panel, running list and token usage)
 still list closed members.
 
 ## Workspace History Sidebar Task Peers

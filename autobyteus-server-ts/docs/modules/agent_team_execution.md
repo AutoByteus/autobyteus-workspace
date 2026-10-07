@@ -460,8 +460,9 @@ work packet is the child's first message: the delegator's address and AgentRun
 ID, the description, and any reference files. The result is a strict union:
 
 ```text
-{ target_agent_run_id: "<child ingress AgentRun ID>" }                         // started
-{ target_agent_run_id: "<child ingress AgentRun ID>", task_id: "ad_hoc_task_…" } // started; Task created
+{ target_agent_run_id: "<child ingress AgentRun ID>", target_kind: "agent" }   // started (an Agent copy)
+{ target_agent_run_id: "<coordinator AgentRun ID>", target_kind: "team" }      // started (a Team copy)
+{ target_agent_run_id: "<child ingress AgentRun ID>", target_kind: "agent", task_id: "ad_hoc_task_…" } // started; Task created
 { target_agent_run_id: null, message: "<why nothing started>" }
 ```
 
@@ -515,14 +516,20 @@ the definition/address, decides what DONE stops. The Manager, borrowed unowned
 runs and other Tasks are outside that set.
 
 The idle/wake rules below apply to unowned children and to Task-owned children
-while their record is open. A closed record is final. Explicit DONE closes the
-Task's runs forever: they can never receive input, be woken or be restored,
-including after restart or after the Task is deleted. DONE cancels registered
+while their record is open. Explicit DONE closes the Task's runs: while a
+record is closed its runs receive no input and are never woken or restored,
+including after restart; a deleted Task's runs stay closed. DONE cancels registered
 preparations and requests an exact stop of each closed run on every authority
 the root still holds. Stop failures are logged and kept in memory only, never
 persisted. Repeating DONE requests the stop again. A stop failure is never
 reported as success, and DONE never terminates the whole root. History remains
-inspectable. Reopening the Task starts nothing and does not revive old copies.
+inspectable. Reopening the Task starts nothing and does not revive old copies by
+itself. After the agent reopens the Task, the run that assigned the work can
+reactivate exactly that copy by messaging its run ID (for a Team, its
+coordinator): the root settles the previous stop, discards the released handle
+or TeamRun, reopens that one record and restores the copy with its conversation
+through the wake path below. Helpers stay closed. See
+[Reactivation](projects.md#reactivation).
 
 - **Liveness (one predicate, runtime-only, never persisted).** A task Agent is
   live only while its registry holds a handle **and** that handle's AgentRun is

@@ -1,0 +1,157 @@
+{
+  "startedAt": "2026-10-07T06:51:10.418Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-008": {
+      "result": "Pass",
+      "description": "Agent root reactivation: refused while DONE, status alone shows nothing, worker and Task Team rows return live, helpers stay hidden, reload",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_raagent_6bc4_9bf0b15de4a54168959ac58aec1266d6",
+          "managerRunId": "manager_raagent_6bc4_9bf0b15de4a54168959ac58aec1266d6"
+        },
+        "worker": {
+          "agentRunId": "release_notes_writer_raagent_6bc4_372246739bff4e77a3a2f73ee3c9eb74"
+        },
+        "helperRefs": [
+          {
+            "agentRunId": "fact_checker_raagent_6bc4_3ae372fa32c94869931d479a1f883741"
+          },
+          {
+            "agentRunId": "researcher_raagent_6bc4_2eb1064b20234ec1a776e0211a4ee0f7"
+          }
+        ],
+        "teamRef": {
+          "teamRunId": "docs_review_team_raagent_6bc4_ad86b08c012845e3b27db774865bdff3"
+        },
+        "coordinator": "release_notes_writer_raagent_6bc4_1b9e99e46df942fb82470801ace94485",
+        "reappearMs": 31
+      }
+    },
+    "BR-009": {
+      "result": "Pass",
+      "description": "Agent Team root reactivation (same journey)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_rateam_2b8d_01e2d3bd619847b3a987b57ecb8282d3",
+          "managerRunId": "manager_rateam_2b8d_97681b1b8a5247a1a779791029217399"
+        },
+        "worker": {
+          "agentRunId": "release_notes_writer_rateam_2b8d_394f1769d1534d8f8bf40d5ab259c8a8"
+        },
+        "helperRefs": [
+          {
+            "agentRunId": "fact_checker_rateam_2b8d_e3391725826c4f95a361b6d50b922ef6"
+          },
+          {
+            "agentRunId": "researcher_rateam_2b8d_b837f56438454d37885e32f4b3434c6e"
+          }
+        ],
+        "teamRef": {
+          "teamRunId": "docs_review_team_rateam_2b8d_c2d9943821e645528ef9d10dbb12d9bd"
+        },
+        "coordinator": "release_notes_writer_rateam_2b8d_227b88854e5244d390ca68f4a5c93d55",
+        "reappearMs": 40
+      }
+    },
+    "BR-010": {
+      "result": "Pass",
+      "description": "Agent Org root reactivation (same journey)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_raorg_be4a_c0aaa00308c5498faeb4aecd01cb4b07",
+          "managerRunId": "manager_raorg_be4a_fa2dab7d3bc54d84a6478db7d4b2a2ec"
+        },
+        "worker": {
+          "agentRunId": "release_notes_writer_raorg_be4a_a0b2197153ee438e85d5f77c4346e8b2"
+        },
+        "helperRefs": [
+          {
+            "agentRunId": "fact_checker_raorg_be4a_9b567a43e8cb4d2681d9c295954a20f6"
+          },
+          {
+            "agentRunId": "researcher_raorg_be4a_3439a0ae3c5b47debde4ca8bbf878d56"
+          }
+        ],
+        "teamRef": {
+          "teamRunId": "docs_review_team_raorg_be4a_6b54908c4d6c49478943873b4be4b3da"
+        },
+        "coordinator": "release_notes_writer_raorg_be4a_0db7ce52811a4d56bb33cd8adbc4697a",
+        "reappearMs": 81
+      }
+    },
+    "BR-011": {
+      "result": "Pass",
+      "description": "Real backend restart: reactivated rows stay; DONE, restart, reopen and message reactivate the worker again",
+      "details": {
+        "firstRestart": {
+          "before": 15731,
+          "after": 40950,
+          "starts": 2
+        },
+        "afterRestart": {
+          "agent": {
+            "workerVisible": true,
+            "teamVisible": true,
+            "helpersSeen": []
+          },
+          "team": {
+            "workerVisible": true,
+            "teamVisible": true,
+            "helpersSeen": []
+          },
+          "org": {
+            "workerVisible": true,
+            "teamVisible": true,
+            "helpersSeen": []
+          }
+        },
+        "secondRestart": {
+          "before": 40950,
+          "after": 46855,
+          "starts": 3
+        },
+        "afterSecond": {
+          "agent": {
+            "reactivated": true,
+            "status": "IN_PROGRESS"
+          },
+          "team": {
+            "reactivated": true,
+            "status": "IN_PROGRESS"
+          },
+          "org": {
+            "reactivated": true,
+            "status": "IN_PROGRESS"
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 15762,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 46855,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:50915",
+    "frontendUrl": "http://127.0.0.1:50916",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-BXV1MS"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-07T06:52:39.171Z"
+}

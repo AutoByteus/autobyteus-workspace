@@ -27,15 +27,19 @@ export const SEND_MESSAGE_TO_LLM_DESCRIPTION = lines(
   "not yet in the run is brought in on first use, and later messages reach that",
   "same instance. A run ID reaches an existing AgentRun only, including a",
   "shut-down delegated agent (restored with its conversation), and never brings",
-  "anything in. On success, it returns the exact AgentRun that accepted the",
-  "message as flat target_agent_run_id; on rejection, target_agent_run_id is null.",
+  "anything in. A copy whose Task is DONE is stopped: the run that assigned it",
+  "can continue with it by first moving the Task to TODO or IN_PROGRESS with",
+  "create_or_update_task and then messaging the run ID delegate_task returned,",
+  "which reactivates the copy with its conversation. On success, it returns the",
+  "exact AgentRun that accepted the message as flat target_agent_run_id; on",
+  "rejection, target_agent_run_id is null.",
 );
 
 export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =
   "Canonical absolute non-root Agent-or-AgentTeam address beginning with '/'. It reaches the one instance at that address: an Agent's instance, or an AgentTeam instance's coordinator; inside your own team instance, a teammate's address reaches the member of that same instance. An available agent or team that is not yet in the run is brought in on first use. Provide either recipient_address or target_agent_run_id, never both.";
 
 export const SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION =
-  "Exact AgentRun.runId to receive a work request, result, or blocker: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
+  "Exact AgentRun.runId to receive a work request, result, or blocker: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. A delegated copy whose Task is DONE is reactivated only by the run that assigned it, after it moves the Task to TODO or IN_PROGRESS. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
 
 export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
   "Use exactly one work source: task_id alone uses the saved Task description and files;",
@@ -47,12 +51,15 @@ export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
   "the run. Every call spawns another copy, so copies can work in parallel; an",
   "AgentTeam copy's coordinator receives the work. The first message includes",
   "your address and AgentRun ID so the copy can reply. On success it returns the",
-  "copy's target_agent_run_id; if nothing was started,",
+  "copy's target_agent_run_id and target_kind (agent, or team for an AgentTeam",
+  "copy whose coordinator is the run ID); if nothing was started,",
   "target_agent_run_id is null and message explains why. Follow up on the copy",
   "only by its run ID through send_message_to. A description-only delegation",
   "that creates a Task also returns its task_id; when the work is finished, call",
   "create_or_update_task with that task_id and status DONE, which stops the copy",
-  "and removes it from the run.",
+  "and removes it from the run. To continue with the same copy later, move the",
+  "Task to TODO or IN_PROGRESS first, then message its run ID: that reactivates",
+  "it with its conversation.",
 );
 
 export const DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION =
@@ -111,7 +118,8 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "- The work description and reference files become the copy's first message,",
   "  together with your address and AgentRun ID.",
   "- On success, `target_agent_run_id` is the new copy (for an AgentTeam, its",
-  "  coordinator). If `target_agent_run_id` is null, nothing was started and",
+  "  coordinator) and `target_kind` says whether it is an `agent` or a `team`.",
+  "  If `target_agent_run_id` is null, nothing was started and",
   "  `message` explains why; correct the problem and delegate again, or report",
   "  the failure.",
   "- A description-only delegation that creates a Task also returns its",
@@ -121,7 +129,11 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "Follow up on a copy only through `send_message_to` with its",
   "`target_agent_run_id`, in both directions. A copy that stays quiet is shut",
   "down after a while; a message to its run ID restores it with its",
-  "conversation, so follow-ups remain possible unless its Task is DONE.",
+  "conversation. A copy whose Task is `DONE` is stopped. To continue with it, the",
+  "run that assigned the work first moves the Task out of `DONE` (for example to",
+  "`IN_PROGRESS`) with `create_or_update_task`, then messages the copy's run ID;",
+  "that reactivates it with its conversation. Setting the status alone starts",
+  "nothing.",
   "",
   "### Rule-Based Handoffs",
   "",

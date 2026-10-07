@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import type { RootTaskExecutionAdapter } from "./root-task-execution-adapter.js";
+import type { RegisteredTaskActivation, RootTaskExecutionAdapter } from "./root-task-execution-adapter.js";
 import {
   taskAgentResourceRejectionCode,
   type TaskAgentResourceOwner,
@@ -85,21 +85,42 @@ export class RootTaskAgentResourceScope<T> {
       registered[index]?.operation.cancel();
       this.adapter.cancelOwnedExecution(entry.agentRun);
     });
-    return Promise.all(eligible.map(async ({ agentRun, closed: wasClosed }, index): Promise<TaskAgentResourceStopResult> => {
-      if (!wasClosed) return { agentRun, stopped: false, error: { code: "TASK_AGENT_RESOURCE_NOT_CLOSED", message: "Only a closed Task agent run is stopped." } };
-      const releases: Promise<AgentOperationResult>[] = [this.adapter.releaseOwnedExecution(agentRun)];
-      const registration = registered[index];
-      if (registration) releases.push(registration.operation.release());
-      const settled = await Promise.allSettled(releases);
-      const fault = settled.find((value): value is PromiseRejectedResult => value.status === "rejected");
-      if (fault) {
-        return { agentRun, stopped: false, error: { code: "TASK_RELEASE_FAILED", message: fault.reason instanceof Error ? fault.reason.message : String(fault.reason) } };
-      }
-      const refused = settled.flatMap(value => value.status === "fulfilled" ? [value.value] : [])
-        .find(result => !result.accepted && result.code !== NO_AUTHORITY);
-      return refused ? { agentRun, stopped: false, error: { code: refused.code ?? "TASK_RELEASE_PENDING",
-        message: refused.message ?? "Exact release was not confirmed; repeat DONE." } } : { agentRun, stopped: true };
-    }));
+    return Promise.all(eligible.map(({ agentRun, closed: wasClosed }, index): Promise<TaskAgentResourceStopResult> => wasClosed
+      ? this.settleExactRelease(agentRun, registered[index] ?? null)
+      : Promise.resolve({ agentRun, stopped: false, error: { code: "TASK_AGENT_RESOURCE_NOT_CLOSED", message: "Only a closed Task agent run is stopped." } })));
+  }
+
+  /**
+   * Reactivation of one closed copy: settles its previous stop by invoking every exact release
+   * authority the root still holds (idempotent, as a repeated DONE does), then drops that released
+   * authority so restore builds a fresh copy. While a release is unconfirmed nothing is dropped and
+   * it rejects TASK_REACTIVATION_STOP_PENDING.
+   */
+  async discardReleasedExecution(agentRun: TaskExecutionReference): Promise<void> {
+    const registration = this.adapter.registrationFor(agentRun);
+    registration?.operation.cancel();
+    this.adapter.cancelOwnedExecution(agentRun);
+    const settled = await this.settleExactRelease(agentRun, registration);
+    if (!settled.stopped) {
+      throw new TaskDelegationError("TASK_REACTIVATION_STOP_PENDING",
+        `The previous stop of this Task work has not finished (${settled.error?.message ?? "release pending"}); try again shortly.`);
+    }
+    this.adapter.discardReleasedExecution(agentRun);
+  }
+
+  /** `stopped` only when each invoked release is accepted or the root holds no authority at all for the agent run. */
+  private async settleExactRelease(agentRun: TaskExecutionReference, registration: RegisteredTaskActivation | null): Promise<TaskAgentResourceStopResult> {
+    const releases: Promise<AgentOperationResult>[] = [this.adapter.releaseOwnedExecution(agentRun)];
+    if (registration) releases.push(registration.operation.release());
+    const settled = await Promise.allSettled(releases);
+    const fault = settled.find((value): value is PromiseRejectedResult => value.status === "rejected");
+    if (fault) {
+      return { agentRun, stopped: false, error: { code: "TASK_RELEASE_FAILED", message: fault.reason instanceof Error ? fault.reason.message : String(fault.reason) } };
+    }
+    const refused = settled.flatMap(value => value.status === "fulfilled" ? [value.value] : [])
+      .find(result => !result.accepted && result.code !== NO_AUTHORITY);
+    return refused ? { agentRun, stopped: false, error: { code: refused.code ?? "TASK_RELEASE_PENDING",
+      message: refused.message ?? "Exact release was not confirmed; repeat DONE." } } : { agentRun, stopped: true };
   }
 }
 

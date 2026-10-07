@@ -8,8 +8,8 @@ business status and optional saved context files. Users create/edit/delete;
 selected agent tools can create or change text/status. Project Tasks remain
 business records, distinct from execution children. Saved-ID delegation starts
 fresh copies for a Task, and the server records them as the Task's agent run
-resources. Explicit DONE closes those runs forever and asks the platform to
-stop only them. Other status writes do not start work. DONE is neither
+resources. Explicit DONE closes those runs and asks the platform to stop only
+them. Other status writes do not start work. DONE is neither
 engineering acceptance nor proof that the stop has finished.
 
 The per-node ENABLE_PROJECTS visibility capability remains **default-off**.
@@ -251,7 +251,10 @@ scheduler, auto-DONE, new status UI, mobile delivery, client/script/skill, or
 feature-default change.
 
 Reopening a Task to TODO or IN_PROGRESS starts nothing. A later deliberate
-delegation adds new runs, and old ones stay closed. Task and Project Delete
+delegation adds new runs, and old ones stay closed, unless the agent that
+assigned one messages its run ID after reopening the Task: that reactivates
+exactly that worker with its conversation, and its rows reappear (see the
+server's [Reactivation](../../autobyteus-server-ts/docs/modules/projects.md#reactivation)). Task and Project Delete
 remove metadata and context only. They do not cancel work, and they keep the
 Task's `agent_run_resources.json` and the run history.
 

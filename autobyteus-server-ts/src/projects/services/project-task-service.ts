@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import type {
-  TaskAgentResourceLinkInput, TaskAgentResourcePort, TaskAgentResourceReleaseRequest, TaskAgentResourceRole,
+  TaskAgentResourceLinkInput, TaskAgentResourcePort, TaskAgentResourceReleaseRequest, TaskAgentResourceReopenInput,
+  TaskAgentResourceReopenResult, TaskAgentResourceRole,
 } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -236,6 +237,21 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   openAgentRuns(taskId: string, role: TaskAgentResourceRole) { return this.resources.openAgentRuns(taskId, role); }
   closedAgentRunsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedAgentRunsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
+  /** Advisory: lets the runtime refuse an ineligible sender before it touches any runtime state. */
+  async assertReopenable(input: TaskAgentResourceReopenInput): Promise<void> {
+    const location = await this.reopenLocation(input.agentRun);
+    this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
+    await this.assertTaskNotDone(location);
+  }
+  /** The reactivation commit: re-validated under the Task's serialization, so a DONE is entirely before or after. Status is never written. */
+  async reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult> {
+    const location = await this.reopenLocation(input.agentRun);
+    return this.resources.serialize(location.taskId, async () => {
+      this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
+      await this.assertTaskNotDone(location);
+      return { taskId: location.taskId, reopened: await this.resources.reopenAssignment(location, input.agentRun, input.requestedBy) };
+    });
+  }
 
   /** Creates the Task with no Project (text only) and links the agent run as its assignment. */
   private async linkAdHocTask(link: AssignedLink, content: NonNullable<AssignedLink["adHocTask"]>): Promise<string> {
@@ -258,6 +274,25 @@ export class ProjectTaskService implements TaskAgentResourcePort {
       if (closed) this.release.release(location.taskId, this.resources.closedByHostRoot(location.taskId));
     }
     return written!;
+  }
+  private async reopenLocation(agentRun: TaskExecutionReference): Promise<TaskLocation> {
+    await this.resources.load();
+    const location = this.resources.locationOf(agentRun);
+    if (!location) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
+    return location;
+  }
+  /** Reactivation needs the Task to exist and be TODO or IN_PROGRESS; only the agent changes that status. */
+  private async assertTaskNotDone(location: TaskLocation): Promise<void> {
+    const task = location.projectId === null
+      ? await this.adHocTasks.read(location.taskId)
+      // A deleted Project took its Tasks with it.
+      : await this.store.readTask(location.projectId, location.taskId)
+        .catch((error: unknown) => { if ((error as { code?: unknown }).code === "PROJECT_NOT_FOUND") return null; throw error; });
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
+    if (task.status === "DONE") {
+      throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
+        "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.");
+    }
   }
   private async uniqueTask(taskId: string) {
     if (typeof taskId !== "string" || !taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");

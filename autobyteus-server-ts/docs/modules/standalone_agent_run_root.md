@@ -110,8 +110,10 @@ copies and further delegations belong to the same Task even when hosted as
 root-level siblings. Existing unowned collaborators are borrowed, not adopted.
 Explicit DONE closes and stops exactly that Task's runs. It never stops the
 host or unrelated collaborators, and never deletes history. Closed copies
-cannot be woken after root restore, and reopening the Task does not restart
-them.
+cannot be woken, also after root restore, and reopening the Task does not
+restart them by itself. After the agent reopens the Task, the host (the
+assigner) reactivates one copy by messaging its run ID
+([Reactivation](projects.md#reactivation)).
 
 See [Project Task agent run resources](projects.md#saved-id-delegation-and-agent-run-resources),
 [message scope](agent_communication.md#task-linked-message-scope) and
@@ -148,7 +150,8 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
   sends the Agent-root snapshot (`root_subject_kind: "agent"`, `root_agent`; `is_active` is the
   host's live state, plus the required `closed_task_executions` beside the unfiltered tree),
   events (`agent_presentation`, `task_execution_started`, `task_executions_closed` (published
-  before a DONE Task's runs are stopped), `communication`, `collaborator_added`) and lifecycle. Commands target children only and use the active root as
+  before a DONE Task's runs are stopped), `task_executions_reopened` (published when the
+  assigner reactivates a closed copy), `communication`, `collaborator_added`) and lifecycle. Commands target children only and use the active root as
   is (only when no root is active is it resolved and its host made ready, as on connect); a
   command to the host is rejected (`AGENT_ROOT_HOST_COMMAND_REJECTED`). A run that cannot host collaborators closes the
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.

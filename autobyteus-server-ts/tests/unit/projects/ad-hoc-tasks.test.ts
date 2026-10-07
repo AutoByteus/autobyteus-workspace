@@ -89,7 +89,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     expect(tasks.isOpen({ agentRunId: "helper-1" })).toBe(false);
     expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
     expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
-    // Closed is forever: no new sub-work joins it. Repeating DONE re-requests the stop and changes nothing else.
+    // A closed copy takes no new sub-work (only its assigner's reactivation reopens it). Repeating DONE re-requests the stop and changes nothing else.
     await expect(tasks.linkAgentRun({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, agentRun: { agentRunId: "late" } }))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     const before = await taskFile(taskId);

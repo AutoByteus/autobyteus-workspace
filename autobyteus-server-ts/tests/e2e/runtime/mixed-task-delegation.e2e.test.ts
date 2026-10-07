@@ -497,7 +497,9 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       const { result, startIndex } = await callToolVia(connection, coordinatorRunId, "delegate_task", {
         recipient_address: `/${runtime}_worker`, description,
       }, `${runtime} spawn`);
-      expect(Object.keys(result ?? {})).toEqual(["target_agent_run_id"]);
+      // A spawn result: the ingress and its kind (plus task_id when the delegation created a Task); nothing else.
+      expect(Object.keys(result ?? {}).filter((key) => key !== "task_id")).toEqual(["target_agent_run_id", "target_kind"]);
+      expect(result!.target_kind).toBe("agent");
       const childRunId = String(result!.target_agent_run_id);
       expect(childRunId).not.toBe(root.runIdByAddress.get(`/${runtime}_worker`));
 
@@ -803,7 +805,8 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
         `Now call send_message_to exactly once with these exact JSON arguments: ${JSON.stringify({ recipient_address: "/coordinator", content: teamAck })}. ` +
         "Then reply with the single word DONE.",
     }, "task Team spawn");
-    expect(Object.keys(teamSpawn.result ?? {})).toEqual(["target_agent_run_id"]);
+    expect(Object.keys(teamSpawn.result ?? {}).filter((key) => key !== "task_id")).toEqual(["target_agent_run_id", "target_kind"]);
+    expect(teamSpawn.result!.target_kind).toBe("team");
     const leadRunId = String(teamSpawn.result!.target_agent_run_id);
     expect(leadRunId).not.toBe(org.runIdByAddress.get("/squad/lead"));
     const teamStarted = await waitForMessageAfter(connection.messages, teamSpawn.startIndex, (message) =>

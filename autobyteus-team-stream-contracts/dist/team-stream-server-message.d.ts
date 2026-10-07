@@ -2,7 +2,7 @@ import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamCollaboratorAddedPayloadSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema } from "./team-task-execution-message-dtos.js";
+import { teamCollaboratorAddedPayloadSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema, teamTaskExecutionsReopenedPayloadSchema } from "./team-task-execution-message-dtos.js";
 export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     root_team_run_id: z.ZodString;
     base_change_sequence: z.ZodNumber;
@@ -1034,6 +1034,16 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         }, z.core.$strict>]>>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"TASK_EXECUTIONS_REOPENED">;
+    payload: z.ZodObject<{
+        change_sequence: z.ZodNumber;
+        task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            agent_run_id: z.ZodString;
+        }, z.core.$strict>, z.ZodObject<{
+            team_run_id: z.ZodString;
+        }, z.core.$strict>]>>;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"COLLABORATOR_ADDED">;
     payload: z.ZodObject<{
         change_sequence: z.ZodNumber;
@@ -1158,6 +1168,9 @@ export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
 }> | Readonly<{
     type: "TASK_EXECUTIONS_CLOSED";
     payload: z.infer<typeof teamTaskExecutionsClosedPayloadSchema>;
+}> | Readonly<{
+    type: "TASK_EXECUTIONS_REOPENED";
+    payload: z.infer<typeof teamTaskExecutionsReopenedPayloadSchema>;
 }> | Readonly<{
     type: "COLLABORATOR_ADDED";
     payload: z.infer<typeof teamCollaboratorAddedPayloadSchema>;

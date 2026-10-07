@@ -78,6 +78,11 @@ export class TeamRun {
     }
     return this.backend.releaseDirectTaskExecution(reference);
   }
+  /** Reactivation, after an accepted exact release: the released copy's proof and retained authority no longer apply. */
+  discardReleasedDirectTaskExecution(reference: TaskExecutionReference): void {
+    this.releasedTaskExecutions.delete(taskExecutionReferenceKey(reference));
+    this.backend.discardReleasedDirectTaskExecution(reference);
+  }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.backend.hasLiveDirectTaskExecution(reference); }
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
     return this.backend.tryShutDownDirectTaskExecutionIfQuiet(reference);

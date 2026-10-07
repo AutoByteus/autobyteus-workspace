@@ -216,6 +216,10 @@ export class FlatTeamExecutionManager {
   releaseDirectTaskExecution(reference: TaskExecutionReference): Promise<AgentOperationResult> {
     return "agentRunId" in reference ? this.taskAgents.release(reference.agentRunId) : this.taskTeams.release(reference.teamRunId);
   }
+  discardReleasedDirectTaskExecution(reference: TaskExecutionReference): void {
+    if ("agentRunId" in reference) this.taskAgents.discardReleased(reference.agentRunId);
+    else this.taskTeams.discardReleased(reference.teamRunId);
+  }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
     if (!this.isActive()) return false;
     return "agentRunId" in reference
