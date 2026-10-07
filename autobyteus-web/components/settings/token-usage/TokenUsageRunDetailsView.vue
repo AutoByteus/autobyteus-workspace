@@ -4,7 +4,7 @@
       <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" :aria-label="t('settings.components.settings.TokenUsageAnalytics.runControls')">
         <div class="flex flex-wrap items-end gap-3">
           <div class="flex flex-wrap items-end gap-2">
-            <label class="grid gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <label class="grid gap-1 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
               {{ t('settings.components.settings.TokenUsageStatistics.runsCreated') }}
               <input
                 id="token-usage-start-date"
@@ -16,7 +16,7 @@
               >
             </label>
             <span class="pb-2 text-sm text-slate-400">{{ t('settings.components.settings.TokenUsageStatistics.rangeSeparator') }}</span>
-            <label class="grid gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <label class="grid gap-1 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
               <span class="sr-only">{{ t('settings.components.settings.TokenUsageStatistics.endDateAriaLabel') }}</span>
               <input
                 id="token-usage-end-date"

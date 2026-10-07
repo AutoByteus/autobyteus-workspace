@@ -66,7 +66,7 @@
       </summary>
       <div class="mt-3 max-h-64 overflow-auto rounded-xl border border-slate-200">
         <table class="min-w-full text-sm">
-          <thead class="sticky top-0 bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          <thead class="sticky top-0 bg-slate-50 text-left text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
             <tr>
               <th class="px-3 py-2">UTC</th>
               <th class="px-3 py-2 text-right">{{ metricLabel }}</th>
@@ -191,8 +191,8 @@ const accessibleChartLabel = computed(() => {
 
 <style scoped>
 .trend-visual { display: grid; grid-template-columns: 56px minmax(0, 1fr); height: 270px; }
-.chart-y-axis { color: #64748b; display: flex; flex-direction: column; font-size: 10px; padding: 0 10px 42px 0; text-align: right; }
-.chart-y-axis > strong { color: #475569; font-size: 10px; font-weight: 700; margin-bottom: 8px; white-space: nowrap; }
+.chart-y-axis { color: #64748b; display: flex; flex-direction: column; font-size: 0.625rem; padding: 0 10px 42px 0; text-align: right; }
+.chart-y-axis > strong { color: #475569; font-size: 0.625rem; font-weight: 700; margin-bottom: 8px; white-space: nowrap; }
 .chart-y-labels { display: flex; flex: 1; flex-direction: column; justify-content: space-between; }
 .line-chart-shell { display: flex; flex-direction: column; min-width: 0; }
 .line-plot { border-bottom: 1.5px solid #94a3b8; border-left: 1.5px solid #94a3b8; flex: 1; min-height: 0; position: relative; }
@@ -201,18 +201,18 @@ const accessibleChartLabel = computed(() => {
 .trend-line { fill: none; stroke: #2563eb; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5; }
 .trend-point-wrap { position: absolute; width: 0; }
 .trend-point { background: white; border: 2px solid #2563eb; border-radius: 999px; box-shadow: 0 0 0 2px rgb(37 99 235 / 8%); display: block; height: 8px; position: absolute; transform: translate(-50%, -50%); width: 8px; }
-.line-x-labels { color: #64748b; font-size: 10px; height: 25px; position: relative; }
+.line-x-labels { color: #64748b; font-size: 0.625rem; height: 25px; position: relative; }
 .line-x-labels span { padding-top: 8px; position: absolute; transform: translateX(-50%); white-space: nowrap; }
 .line-x-labels span::before { background: #94a3b8; content: ''; height: 5px; left: 50%; position: absolute; top: 0; width: 1px; }
 .line-x-labels span.first { transform: none; }
 .line-x-labels span.first::before { left: 0; }
 .line-x-labels span.last { transform: translateX(-100%); }
 .line-x-labels span.last::before { left: 100%; }
-.chart-x-title { color: #64748b; font-size: 10px; font-weight: 500; text-align: center; }
+.chart-x-title { color: #64748b; font-size: 0.625rem; font-weight: 500; text-align: center; }
 @media (max-width: 640px) {
   .trend-visual { grid-template-columns: 46px minmax(0, 1fr); height: 205px; }
-  .chart-y-axis { font-size: 9px; padding-right: 7px; }
-  .chart-y-axis > strong, .line-x-labels, .chart-x-title { font-size: 9px; }
+  .chart-y-axis { font-size: 0.5625rem; padding-right: 7px; }
+  .chart-y-axis > strong, .line-x-labels, .chart-x-title { font-size: 0.5625rem; }
   .line-x-labels span:nth-child(2), .line-x-labels span:nth-child(4) { display: none; }
   .trend-point { height: 7px; width: 7px; }
 }
