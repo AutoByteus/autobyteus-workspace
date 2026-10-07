@@ -139,8 +139,14 @@ worktree: clean/rebuild operations can invalidate another build's module graph.
 Session/actor acquisition is scripted; the stored assignment is representative
 current-format state, and the opaque history sentinel proves non-interference
 only. This is not live delegation/history replay, managing-agent Chat/`@`, desktop,
-paid inference or explicit user-verification proof. Real workspace IDs and the
-complete desired list remain caller inputs; no discovery tool is supplied.
+paid inference or explicit user-verification proof. Absolute node-local folder paths
+and the complete desired list are caller inputs. Project Save needs no workspace
+registration or folder existence; global workspace registration IDs remain unchanged.
+The suites assert path-only acknowledgements/storage, canonical duplicates and
+invalid-patch atomicity, no registration/mkdir side effects, equal-path references
+on separate nodes and Project-identity isolation. Historical migration fixtures
+retain their released ID/timestamp fields; current reads project paths without
+rewriting them and ordinary Project saves emit only path/description.
 Inspect actual saved-value and cleanup receipts: owned children must exit,
 listeners close and private roots disappear. Never use the user's app/data.
 
@@ -153,8 +159,10 @@ pnpm -C autobyteus-web test:e2e:projects --voice-input --output-dir=<fresh-direc
 ```
 
 The existing probe builds this worktree's server, creates disposable SQLite
-nodes, and owns Nuxt/Chrome and cleanup. Chrome and installed dependencies are
-required; `--skip-server-build` is valid only after a current-worktree server build.
+nodes, and owns Nuxt/Chrome and cleanup. Its core cases also prove picker/manual
+path authoring, exact two-field Project JSON, no Save registration, special-character
+path edit/unlink/reload and canonical duplicate/invalid-patch rejection. Chrome
+and installed dependencies are required; `--skip-server-build` is valid only after a current-worktree server build.
 `--ledger-file=<initialized-absolute-path>` appends every case's result. Relative
 output paths resolve from `autobyteus-web/`; existing output directories are refused.
 

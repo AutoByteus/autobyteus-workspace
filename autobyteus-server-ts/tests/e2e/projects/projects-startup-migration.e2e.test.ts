@@ -38,7 +38,7 @@ const start = (entry: string, args: string[] = []) => {
     ["HOME", "PATH", "USER", "LANG", "LC_ALL", "TMPDIR", "SHELL", "TERM"]
       .flatMap(key => process.env[key] === undefined ? [] : [[key, process.env[key]]]),
   );
-  Object.assign(env, { DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
+  Object.assign(env, { HOME: path.join(root, "home"), DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
     AUTOBYTEUS_AGENT_PACKAGE_ROOTS: "", LMSTUDIO_HOSTS: "http://127.0.0.1:1" });
   const child = spawn(process.execPath, [entry, ...args], { env, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child); const index = logs.push("") - 1;
@@ -125,7 +125,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
   it("Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart", async () => {
     await fs.access(path.resolve("dist/app.js"));
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-startup-migration-"));
-    await fs.mkdir(projectsDir());
+    await fs.mkdir(projectsDir()); await fs.mkdir(path.join(root, "home"));
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
     // Released rows: valid Project with saved files + DONE Task + invalid Task, unshipped dev residue row,
     // invalid row, duplicate id, a row without `tasks`, and the actual HEAD-writer released row.
@@ -171,6 +171,12 @@ describe("released Projects data is upgraded once at both actual startup entrypo
       { projectId: "cf622a33-4f56-4208-9baa-851813ba9570", name: "Released array witness", taskCount: 1 },
     ]));
     expect(listed.projects).toHaveLength(3);
+    const historicalFile = path.join(projectsDir(), "project_ctx/project.json");
+    const historicalBytes = await fs.readFile(historicalFile, "utf8");
+    expect(JSON.parse(historicalBytes).workspaces).toEqual(rows[0].workspaces); // old four-field output remains frozen
+    expect((await first.gql('{project(projectId:"project_ctx"){workspaces{workspaceRootPath description availability}}}')).project.workspaces)
+      .toEqual([{workspaceRootPath: "/work/site", description: "repo", availability: "UNREGISTERED"}]);
+    expect(await fs.readFile(historicalFile, "utf8")).toBe(historicalBytes);
     const tasks = (await first.gql(`query($id:String!){projectTasks(projectId:$id){taskId status contextFiles{storedFilename}}}`, { id: "project_ctx" })).projectTasks;
     expect(tasks.map((t: { taskId: string; status: string }) => [t.taskId, t.status]).sort()).toEqual([["project_task_ctx", "IN_PROGRESS"], ["project_task_done", "DONE"]]);
     const saved = await fetch(`${first.origin}/rest/projects/project_ctx/tasks/project_task_ctx/context-files/ctx_0ad25cc6cad1__requirements.txt`);
@@ -197,7 +203,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
   it("Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication", async () => {
     await fs.access(path.resolve("dist/app.js"));
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-startup-migration-"));
-    await fs.mkdir(projectsDir());
+    await fs.mkdir(projectsDir()); await fs.mkdir(path.join(root, "home"));
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
     const source = path.join(projectsDir(), "projects.json");
     const assertGatedOnly = async (app: Awaited<ReturnType<typeof studio>>) => {
@@ -260,7 +266,7 @@ describe("released Projects data is upgraded once at both actual startup entrypo
   it("Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close", async () => {
     await fs.access(path.resolve("dist/index.js"));
     root = await fs.mkdtemp(path.join(os.tmpdir(), "project-startup-migration-"));
-    await fs.mkdir(projectsDir());
+    await fs.mkdir(projectsDir()); await fs.mkdir(path.join(root, "home"));
     await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
     const source = path.join(projectsDir(), "projects.json");
     const healthyStartClose = `for (const round of [1, 2]) {
@@ -301,4 +307,34 @@ describe("released Projects data is upgraded once at both actual startup entrypo
     expect(JSON.parse(await fs.readFile(path.join(projectsDir(), pid, "tasks", tid, "task.json"), "utf8")).description).toBe("Ordinary first metadata write");
     expect(await fs.readFile(path.join(projectsDir(), "projects.pre-folders.json"))).toEqual(sourceBytes);
   }, 180_000);
+  it.each(["Studio", "Standalone"])("%s: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras", async entry => {
+    root = await fs.mkdtemp(path.join(os.tmpdir(), "project-current-startup-"));
+    await fs.mkdir(projectsDir()); await fs.mkdir(path.join(root, "home"));
+    await fs.writeFile(path.join(root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+    const {tasks: _tasks, ...historical} = JSON.parse(await fs.readFile(fixture("projects-per-folder-v1/released-with-context-drafts-and-residue.json"), "utf8"))[0];
+    const file = path.join(projectsDir(), historical.projectId, "project.json");
+    await fs.mkdir(path.dirname(file));
+    const original = JSON.stringify(historical, null, 2) + "\n";
+    await fs.writeFile(file, original);
+    const before = await snapshot(projectsDir());
+    if (entry === "Standalone") {
+      expect(await standaloneEntry("current.mjs", `const host=await startStandaloneApplicationHost(options);
+        if((await fetch(host.url+'/_autobyteus/health')).status!==200)throw Error('Health failed');
+        await host.close();console.log('CURRENT_CLOSED');`)).toContain("CURRENT_CLOSED");
+      expect(await snapshot(projectsDir())).toEqual(before);
+    }
+    const first = await studio();
+    const query = 'query($id:String!){project(projectId:$id){projectId workspaces{workspaceRootPath description availability}}}';
+    const expected = {projectId: historical.projectId, workspaces: [{workspaceRootPath: "/work/site", description: "repo", availability: "UNREGISTERED"}]};
+    expect((await first.gql(query, {id: historical.projectId})).project).toEqual(expected);
+    expect(await snapshot(projectsDir())).toEqual(before);
+    await stop(first.child);
+    const second = await studio();
+    expect((await second.gql(query, {id: historical.projectId})).project).toEqual(expected);
+    expect(await fs.readFile(file, "utf8")).toBe(original);
+    await second.gql('mutation($i:UpdateProjectInput!){updateProject(input:$i){projectId}}', {i: {projectId: historical.projectId, name: historical.name, description: "Ordinary save"}});
+    expect(JSON.parse(await fs.readFile(file, "utf8")).workspaces).toEqual([{workspaceRootPath: "/work/site", description: "repo"}]);
+    expect(await exists(path.join(projectsDir(), "projects.pre-folders.json"))).toBe(false); // no new conversion/sweep
+  }, 180_000);
+
 });

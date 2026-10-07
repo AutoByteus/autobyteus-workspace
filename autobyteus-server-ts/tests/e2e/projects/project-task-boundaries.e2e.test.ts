@@ -30,8 +30,8 @@ const FILES = "storedFilename displayName mimeType sizeBytes locator";
 const TASK = `taskId projectId description status createdAt updatedAt contextFiles { ${FILES} }`;
 type FileRef = { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator: string };
 type Task = { taskId: string; projectId: string; description: string; status: string; createdAt: string; updatedAt: string; contextFiles: FileRef[] };
-const PROJECT = "projectId name description createdAt updatedAt taskCount openTaskCount workspaces { workspaceId workspaceRootPath description addedAt availability }";
-type Link = { workspaceId: string; workspaceRootPath: string; description: string; addedAt: string; availability: string };
+const PROJECT = "projectId name description createdAt updatedAt taskCount openTaskCount workspaces { workspaceRootPath description availability }";
+type Link = { workspaceRootPath: string; description: string; availability: string };
 type Project = { projectId: string; name: string; description: string; createdAt: string; updatedAt: string; workspaces: Link[]; taskCount: number; openTaskCount: number };
 // Snapshot content AND directory entries; detect deletions, rewrites and unexpected additions.
 const snapshot = async (directory: string): Promise<Record<string, string>> => {
@@ -82,7 +82,7 @@ describe("Project Task production HTTP boundaries", () => {
     const result = await call("create_or_update_project", args);
     expect(result.isError).not.toBe(true);
     expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
-    return result.structuredContent.project as Pick<Project, "projectId" | "name" | "description"> & { workspaces: Array<Pick<Link, "workspaceId" | "description">> };
+    return result.structuredContent.project as Pick<Project, "projectId" | "name" | "description"> & { workspaces: Array<Pick<Link, "workspaceRootPath" | "description">> };
   };
   const expectProjectError = async (args: Record<string, unknown>, code: string) => {
     const before = await snapshot(path.join(root, "projects"));
@@ -127,7 +127,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect(listed.body.result.tools.map((t: { name: string }) => t.name)).toEqual(["list_projects"]);
     expect((await rpc(one.descriptor.serverUrl, "tools/call", { name: "create_or_update_task", arguments: {} })).body.error).toBeDefined();
     expect((await rpc(one.descriptor.serverUrl, "tools/call", { name: "create_or_update_project", arguments: { name: "Unauthorized" } })).body.error).toBeDefined();
-    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.find((t: { name: string }) => t.name === "create_or_update_project").inputSchema.properties.workspaces.items.properties.workspace_id.type).toBe("string");
+    expect((await rpc(mcpUrl, "tools/list")).body.result.tools.find((t: { name: string }) => t.name === "create_or_update_project").inputSchema.properties.workspaces.items.properties.workspace_path.type).toBe("string");
     authority.runSessions.deactivateForRun("read-only");
     expect((await rpc(one.descriptor.serverUrl, "ping")).status).toBe(404);
   }, 120000);
@@ -260,22 +260,22 @@ describe("Project Task production HTTP boundaries", () => {
     const projectId = await createProject("Aggregate existing");
     const task = (await call("create_or_update_task", { project_id: projectId, description: "Done still counts" })).structuredContent.task as Task;
     await call("create_or_update_task", { task_id: task.taskId, status: "DONE" });
-    const fields = "projectId name taskCount openTaskCount workspaces { workspaceId workspaceRootPath description addedAt availability }";
-    const updated = await gql<{ updateProject: { taskCount: number; openTaskCount: number; workspaces: Array<{ addedAt: string }> } }>(
-      `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate existing", description: "saved", workspaces: [{ workspaceId: registered.workspaceId, description: "normalized registration" }] } });
+    const fields = "projectId name taskCount openTaskCount workspaces { workspaceRootPath description availability }";
+    const updated = await gql<{ updateProject: { taskCount: number; openTaskCount: number; workspaces: Link[] } }>(
+      `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate existing", description: "saved", workspaces: [{ workspaceRootPath: registered.workspaceRootPath, description: "normalized registration" }] } });
     expect(updated.updateProject).toMatchObject({ taskCount: 1, openTaskCount: 0 });
     const projectsDir = path.join(root, "projects");
     const projectFiles = async () => (await fs.readdir(projectsDir)).sort();
     const before = { entries: await projectFiles(), project: await fs.readFile(path.join(projectsDir, projectId, "project.json"), "utf8") };
     const failure = await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({
-      query: "mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", variables: { i: { name: "AGGREGATE EXISTING", workspaces: [{ workspaceId: registered.workspaceId }] } } }) });
+      query: "mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", variables: { i: { name: "AGGREGATE EXISTING", workspaces: [{ workspaceRootPath: registered.workspaceRootPath }] } } }) });
     expect((await failure.json()).errors[0].extensions.code).toBe("PROJECT_NAME_TAKEN");
     expect({ entries: await projectFiles(), project: await fs.readFile(path.join(projectsDir, projectId, "project.json"), "utf8") }).toEqual(before);
     expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toContain(registered.workspaceId);
     await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", { i: { workspaceId: registered.workspaceId } });
-    const reread = await gql<{ updateProject: { workspaces: Array<{ addedAt: string }> } }>(
-      `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate renamed", description: "saved", workspaces: [{ workspaceId: registered.workspaceId, description: "retained unregistered" }] } });
-    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: missingPath, availability: "UNREGISTERED", addedAt: updated.updateProject.workspaces[0]!.addedAt });
+    const reread = await gql<{ updateProject: { workspaces: Link[] } }>(
+      `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate renamed", description: "saved", workspaces: [{ workspaceRootPath: registered.workspaceRootPath, description: "retained unregistered" }] } });
+    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: missingPath, availability: "UNREGISTERED" });
     expect(await list(projectId)).toHaveLength(1);
     await gql("mutation($id:String!){deleteProject(projectId:$id)}", { id: projectId });
     await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
@@ -321,43 +321,56 @@ describe("Project Task production HTTP boundaries", () => {
     for (const [args, code] of invalid) await expectProjectError(args, code);
   });
 
-  it("E-006: real registered links retain snapshots/descriptions; lists replace, blanks and [] clear only associations", async () => {
+  it("E-006: path links retain descriptions; lists replace, blanks and [] clear only associations", async () => {
     const a = await registerWorkspace("tool-workspace-a"), b = await registerWorkspace("tool-workspace-b"), c = await registerWorkspace("tool-workspace-c");
     const roots = [a, b, c].map(w => w.workspaceRootPath);
     const beforeFolders = await Promise.all(roots.map(snapshot));
     const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");
     const created = await projectCall({name: "Linked authored", description: "Project goal", workspaces: [
-      {workspace_id: ` ${a.workspaceId} `, description: " Frontend "}, {workspace_id: b.workspaceId},
+      {workspace_path: ` ${a.workspaceRootPath} `, description: " Frontend "}, {workspace_path: b.workspaceRootPath},
     ]});
-    expect(created.workspaces).toEqual([{workspaceId: a.workspaceId, description: "Frontend"}, {workspaceId: b.workspaceId, description: ""}]);
-    const nativeCreated = JSON.parse(await new CreateOrUpdateProjectTool().execute(null, {name: "Native linked", workspaces: [{workspace_id: c.workspaceId}]})).project;
+    expect(created.workspaces).toEqual([{workspaceRootPath: a.workspaceRootPath, description: "Frontend"}, {workspaceRootPath: b.workspaceRootPath, description: ""}]);
+    const missingPath = path.join(root, "unregistered missing #?雪");
+    const direct = await projectCall({name: "Direct path", workspaces: [{workspace_path: missingPath}]});
+    expect(direct.workspaces).toEqual([{workspaceRootPath: missingPath, description: ""}]);
+    expect(JSON.parse(await fs.readFile(path.join(root, "projects", direct.projectId, "project.json"), "utf8")).workspaces).toEqual(direct.workspaces);
+    const nativeDirect = JSON.parse(await new CreateOrUpdateProjectTool().execute(null, {name: "Native direct path", workspaces: [{workspace_path: missingPath}]})).project;
+    expect(nativeDirect.workspaces).toEqual(direct.workspaces);
+    expect(JSON.parse(await fs.readFile(path.join(root, "projects", nativeDirect.projectId, "project.json"), "utf8")).workspaces).toEqual(direct.workspaces);
+    expect((await readProject(direct.projectId)).workspaces[0]).toMatchObject({workspaceRootPath: missingPath, availability: "UNREGISTERED"});
+    await expect(fs.stat(missingPath)).rejects.toMatchObject({code: "ENOENT"});
+    expect(await fs.readFile(path.join(root, "workspaces.json"), "utf8")).toBe(registry);
+    const nativeCreated = JSON.parse(await new CreateOrUpdateProjectTool().execute(null, {name: "Native linked", workspaces: [{workspace_path: c.workspaceRootPath}]})).project;
     const nativeInitial = await readProject(nativeCreated.projectId);
-    expect(nativeInitial).toMatchObject({workspaces: [{...c, description: "", availability: "AVAILABLE", addedAt: expect.any(String)}]});
+    expect(nativeInitial).toMatchObject({workspaces: [{workspaceRootPath: c.workspaceRootPath, description: "", availability: "AVAILABLE"}]});
     const initial = await readProject(created.projectId);
-    expect(initial.workspaces).toEqual([expect.objectContaining({...a, description: "Frontend", availability: "AVAILABLE"}), expect.objectContaining({...b, description: "", availability: "AVAILABLE"})]);
+    expect(initial.workspaces).toEqual([expect.objectContaining({workspaceRootPath: a.workspaceRootPath, description: "Frontend", availability: "AVAILABLE"}), expect.objectContaining({workspaceRootPath: b.workspaceRootPath, description: "", availability: "AVAILABLE"})]);
     await projectCall({project_id: created.projectId, description: "Edited goal"});
     expect((await readProject(created.projectId)).workspaces).toEqual(initial.workspaces);
-    const replacement = {project_id: created.projectId, workspaces: [{workspace_id: a.workspaceId}, {workspace_id: c.workspaceId, description: " Backend "}]};
+    const replacement = {project_id: created.projectId, workspaces: [{workspace_path: a.workspaceRootPath}, {workspace_path: c.workspaceRootPath, description: " Backend "}]};
     const replaced = await projectCall(replacement);
     expect(JSON.parse(await new CreateOrUpdateProjectTool().execute(null, replacement))).toEqual({project: replaced});
     const linked = await readProject(created.projectId);
     expect(linked).toMatchObject({name: initial.name, description: "Edited goal", createdAt: initial.createdAt});
     expect(linked.workspaces[0]).toEqual(initial.workspaces[0]);
-    expect(linked.workspaces[1]).toMatchObject({...c, description: "Backend", availability: "AVAILABLE"});
-    expect(linked.workspaces.map(w => w.workspaceId)).toEqual([a.workspaceId, c.workspaceId]); // not append
-    await projectCall({project_id: created.projectId, workspaces: [{workspace_id: a.workspaceId, description: "  "}, {workspace_id: c.workspaceId}]});
+    expect(linked.workspaces[1]).toMatchObject({workspaceRootPath: c.workspaceRootPath, description: "Backend", availability: "AVAILABLE"});
+    expect(linked.workspaces.map(w => w.workspaceRootPath)).toEqual([a.workspaceRootPath, c.workspaceRootPath]); // not append
+    await projectCall({project_id: created.projectId, workspaces: [{workspace_path: a.workspaceRootPath, description: "  "}, {workspace_path: c.workspaceRootPath}]});
     expect((await readProject(created.projectId)).workspaces).toEqual([{...linked.workspaces[0], description: ""}, linked.workspaces[1]]);
-    const malformed: unknown[] = [null, "", "[]", {}, [null], [12], [[]], [{workspace_id: null}], [{workspace_id: " "}], [{workspace_id: 12}],
-      [{workspace_id: a.workspaceId, description: null}], [{workspace_id: a.workspaceId, description: 12}], [{workspace_id: a.workspaceId, workspaceRootPath: a.workspaceRootPath}]];
+    const malformed: unknown[] = [null, "", "[]", {}, [null], [12], [[]], [{workspace_path: null}], [{workspace_path: " "}], [{workspace_path: 12}],
+      [{workspace_path: a.workspaceRootPath, description: null}], [{workspace_path: a.workspaceRootPath, description: 12}], [{workspace_path: a.workspaceRootPath, workspaceRootPath: a.workspaceRootPath}], [{workspace_id: a.workspaceId}]];
     for (const workspaces of malformed) await expectProjectError({project_id: created.projectId, name: "Must not rename", description: "Must not change", workspaces}, "PROJECT_TOOL_ARGUMENT_INVALID");
     for (const args of [
-      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: ` ${a.workspaceId} `}]},
-      {name: "Must not create duplicate links", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: a.workspaceId}]},
+      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_path: a.workspaceRootPath}, {workspace_path: `${a.workspaceRootPath}/../tool-workspace-a/`}]},
+      {name: "Must not create duplicate links", workspaces: [{workspace_path: a.workspaceRootPath}, {workspace_path: a.workspaceRootPath}]},
     ]) await expectProjectError(args, "WORKSPACE_ALREADY_LINKED");
     for (const args of [
-      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: "agent_ws_missing"}]},
-      {name: "Must not create unknown links", workspaces: [{workspace_id: a.workspaceId}, {workspace_id: "agent_ws_missing"}]},
-    ]) await expectProjectError(args, "WORKSPACE_NOT_REGISTERED");
+      {project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_path: a.workspaceRootPath}, {workspace_path: "agent_ws_missing"}]},
+      {name: "Must not create unknown links", workspaces: [{workspace_path: a.workspaceRootPath}, {workspace_path: "agent_ws_missing"}]},
+    ]) await expectProjectError(args, "WORKSPACE_PATH_INVALID");
+    for (const workspace_path of ["relative/folder", "~/folder", "/invalid\0path", "file:///tmp/folder"]) {
+      await expectProjectError({project_id: created.projectId, name: "Must not rename", workspaces: [{workspace_path}]}, "WORKSPACE_PATH_INVALID");
+    }
     const cleared = await projectCall({project_id: created.projectId, workspaces: []});
     expect(cleared.workspaces).toEqual([]);
     expect(await readProject(created.projectId)).toMatchObject({projectId: created.projectId, createdAt: initial.createdAt, name: initial.name, description: "Edited goal", workspaces: []});
@@ -365,7 +378,7 @@ describe("Project Task production HTTP boundaries", () => {
     expect(await Promise.all(roots.map(snapshot))).toEqual(beforeFolders);
     // Supported retained-link policy also works after an ordinary public unregistration.
     await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", {i: {workspaceId: c.workspaceId}});
-    const retained = {project_id: nativeCreated.projectId, workspaces: [{workspace_id: c.workspaceId}]};
+    const retained = {project_id: nativeCreated.projectId, workspaces: [{workspace_path: c.workspaceRootPath}]};
     const ack = await projectCall(retained);
     expect(JSON.parse(await new CreateOrUpdateProjectTool().execute(null, retained))).toEqual({project: ack});
     const reread = await readProject(nativeCreated.projectId);
@@ -377,7 +390,7 @@ describe("Project Task production HTTP boundaries", () => {
     const workspace = await registerWorkspace("protected-source");
     // Existing supported full-form creation, NOT a tool-created-only fixture.
     const old = (await gql<{createProject: Project}>(`mutation($i:CreateProjectInput!){createProject(input:$i){${PROJECT}}}`, {
-      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceId: workspace.workspaceId, description: "Saved link"}]},
+      i: {name: "Existing preserved", description: "Saved goal", workspaces: [{workspaceRootPath: workspace.workspaceRootPath, description: "Saved link"}]},
     })).createProject;
     const otherId = await createProject("Unrelated preserved");
     const d = await draft(old.projectId);
@@ -402,7 +415,7 @@ describe("Project Task production HTTP boundaries", () => {
     const originalRecord = await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8");
     expect(await readProject(old.projectId)).toEqual({...old, taskCount: 1, openTaskCount: 1});
     expect(await fs.readFile(path.join(root, "projects", old.projectId, "project.json"), "utf8")).toBe(originalRecord); // no migration/read rewrite
-    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_id: workspace.workspaceId}]}, {workspaces: []}]) {
+    for (const patch of [{name: "Existing renamed"}, {description: ""}, {workspaces: [{workspace_path: workspace.workspaceRootPath}]}, {workspaces: []}]) {
       await projectCall({project_id: old.projectId, ...patch}); reset();
       const project = await readProject(old.projectId);
       expect(project).toMatchObject({projectId: old.projectId, createdAt: old.createdAt, taskCount: 1, openTaskCount: 1});

@@ -61,7 +61,7 @@ const stashFeatureFlagEnv = (): Record<string, string> => {
 
 const PROJECT_FIELDS = `
   projectId name description createdAt updatedAt
-  workspaces { workspaceId workspaceRootPath displayName description addedAt availability }
+  workspaces { workspaceRootPath displayName description availability }
   openTaskCount
 `;
 const TASK_FIELDS = "taskId projectId description status createdAt updatedAt";
@@ -76,11 +76,9 @@ type TaskResult = {
 };
 
 type ProjectWorkspaceResult = {
-  workspaceId: string;
   workspaceRootPath: string;
   displayName: string;
   description: string;
-  addedAt: string;
   availability: "AVAILABLE" | "UNREGISTERED";
 };
 
@@ -208,8 +206,8 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     (await execOk<{ projects: ProjectResult[] }>(`query { projects { ${PROJECT_FIELDS} } }`)).projects;
 
   const ADD_LINK = `mutation($input: AddProjectWorkspaceInput!) { addProjectWorkspace(input: $input) { ${PROJECT_FIELDS} } }`;
-  const addLink = async (projectId: string, workspaceId: string, description?: string) =>
-    (await execOk<{ addProjectWorkspace: ProjectResult }>(ADD_LINK, { input: { projectId, workspaceId, description } }))
+  const addLink = async (projectId: string, workspaceRootPath: string, description?: string) =>
+    (await execOk<{ addProjectWorkspace: ProjectResult }>(ADD_LINK, { input: { projectId, workspaceRootPath, description } }))
       .addProjectWorkspace;
 
   const createTask = async (projectId: string, description: string) =>
@@ -300,16 +298,15 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(readProjectsJson()).toHaveLength(2);
   });
 
-  it("API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links", async () => {
+  it("API-003: links paths with registry availability and rejects relative and duplicate links", async () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const marketingWs = await registerWorkspace("autobyteus-marketing");
     const projectA = await createProject("autobyteus");
     const projectB = await createProject("brand");
 
-    const linked = await addLink(projectA.projectId, prototype.workspaceId, "  UI prototype workspace  ");
+    const linked = await addLink(projectA.projectId, prototype.workspaceRootPath, "  UI prototype workspace  ");
     expect(linked.workspaces).toEqual([
       expect.objectContaining({
-        workspaceId: prototype.workspaceId,
         workspaceRootPath: prototype.workspaceRootPath,
         displayName: "autobyteus-web-prototype",
         description: "UI prototype workspace",
@@ -317,26 +314,75 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       }),
     ]);
 
-    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceId: prototype.workspaceId } }, "WORKSPACE_ALREADY_LINKED");
-    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceId: "temp_ws_default" } }, "WORKSPACE_NOT_REGISTERED");
-    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceId: "agent_ws_not_registered" } }, "WORKSPACE_NOT_REGISTERED");
-    await expectErrorCode(ADD_LINK, { input: { projectId: "project_missing", workspaceId: marketingWs.workspaceId } }, "PROJECT_NOT_FOUND");
+    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceRootPath: prototype.workspaceRootPath } }, "WORKSPACE_ALREADY_LINKED");
+    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceRootPath: "temp_ws_default" } }, "WORKSPACE_PATH_INVALID");
+    await expectErrorCode(ADD_LINK, { input: { projectId: projectA.projectId, workspaceRootPath: "agent_ws_not_registered" } }, "WORKSPACE_PATH_INVALID");
+    await expectErrorCode(ADD_LINK, { input: { projectId: "project_missing", workspaceRootPath: marketingWs.workspaceRootPath } }, "PROJECT_NOT_FOUND");
 
     // AC-006: the same workspace may be linked to another Project with its own description.
-    const shared = await addLink(projectB.projectId, prototype.workspaceId, "Brand site mockups");
-    expect(shared.workspaces[0]).toMatchObject({ workspaceId: prototype.workspaceId, description: "Brand site mockups" });
+    const shared = await addLink(projectB.projectId, prototype.workspaceRootPath, "Brand site mockups");
+    expect(shared.workspaces[0]).toMatchObject({ workspaceRootPath: prototype.workspaceRootPath, description: "Brand site mockups" });
     expect((await getProject(projectA.projectId))?.workspaces[0]?.description).toBe("UI prototype workspace");
 
-    // Register-then-link (REQ-005): the new root goes through the unchanged createWorkspace mutation first.
+    // Picker fixture: registration remains a separate unchanged API; it is not a Save prerequisite.
     const newRoot = await registerWorkspace("new-root");
     expect(newRoot.workspaceId).toMatch(/^agent_ws_/);
-    const withNewRoot = await addLink(projectA.projectId, newRoot.workspaceId, "Fresh root");
-    expect(withNewRoot.workspaces.map((link) => link.workspaceId)).toEqual([prototype.workspaceId, newRoot.workspaceId]);
+    const withNewRoot = await addLink(projectA.projectId, newRoot.workspaceRootPath, "Fresh root");
+    expect(withNewRoot.workspaces.map((link) => link.workspaceRootPath)).toEqual([prototype.workspaceRootPath, newRoot.workspaceRootPath]);
     expect(JSON.parse(readWorkspacesJson())).toMatchObject({
       [prototype.workspaceId]: prototype.workspaceRootPath,
       [marketingWs.workspaceId]: marketingWs.workspaceRootPath,
       [newRoot.workspaceId]: newRoot.workspaceRootPath,
     });
+  });
+
+  it("PATH-001: aggregate/direct path writes are exact, registration-free and invalid combined patches are atomic", async () => {
+    const CREATE = `mutation($input:CreateProjectInput!){createProject(input:$input){${PROJECT_FIELDS}}}`;
+    const UPDATE = `mutation($input:UpdateProjectInput!){updateProject(input:$input){${PROJECT_FIELDS}}}`;
+    const UPDATE_LINK = `mutation($input:UpdateProjectWorkspaceInput!){updateProjectWorkspace(input:$input){${PROJECT_FIELDS}}}`;
+    const REMOVE_LINK = `mutation($input:RemoveProjectWorkspaceInput!){removeProjectWorkspace(input:$input){${PROJECT_FIELDS}}}`;
+    const picker = await registerWorkspace("autobyteus-web-prototype");
+    const registry = readWorkspacesJson();
+    const missing = path.join(rootsDir, "not created #?雪");
+    const other = path.join(rootsDir, "another absent");
+    const links = [{workspaceRootPath: picker.workspaceRootPath, description: "Picker"}, {workspaceRootPath: missing, description: "Manual"}];
+    const created = (await execOk<{createProject: ProjectResult}>(CREATE, {input: {name: "Paths", description: "Goal", workspaces: links}})).createProject;
+    const file = path.join(appDataDir, "projects", created.projectId, "project.json");
+    const disk = () => JSON.parse(fs.readFileSync(file, "utf8"));
+    expect(disk().workspaces).toEqual(links);
+    expect(created.workspaces.map(w => w.availability)).toEqual(["AVAILABLE", "UNREGISTERED"]);
+    expect(Object.keys(created.workspaces[0]!).sort()).toEqual(["availability", "description", "displayName", "workspaceRootPath"]);
+    const task = await createTask(created.projectId, "Preserved Task");
+    const before = snapshotProjectsDir();
+    for (const [workspaces, code] of [
+      [[{workspaceRootPath: missing}, {workspaceRootPath: `${missing}/../not created #?雪/`}], "WORKSPACE_ALREADY_LINKED"],
+      [[{workspaceRootPath: "relative"}], "WORKSPACE_PATH_INVALID"],
+      [[{workspaceRootPath: " "}], "WORKSPACE_PATH_INVALID"],
+      [[{workspaceRootPath: "/bad\0path"}], "WORKSPACE_PATH_INVALID"],
+    ] as const) {
+      await expectErrorCode(UPDATE, {input: {projectId: created.projectId, name: "Must not save", description: "Must not save", workspaces}}, code);
+      expect(snapshotProjectsDir()).toEqual(before);
+    }
+    // Removed ID/time fields reject at the real GraphQL schema, not through an alias.
+    for (const workspaces of [[{workspaceId: picker.workspaceId}], [{workspaceRootPath: null}], [{workspaceRootPath: 12}]]) {
+      expect((await exec(UPDATE, {input: {projectId: created.projectId, name: "No write", workspaces}})).errors?.length).toBeGreaterThan(0);
+      expect(snapshotProjectsDir()).toEqual(before);
+    }
+    expect((await exec(`{project(projectId:"${created.projectId}"){workspaces{workspaceId addedAt}}}`)).errors).toHaveLength(2);
+    await execOk(UPDATE, {input: {projectId: created.projectId, name: "Metadata only", description: "Changed"}});
+    expect(disk().workspaces).toEqual(links); // omitted list preserves
+    await execOk(UPDATE, {input: {projectId: created.projectId, name: "Metadata only", workspaces: [{workspaceRootPath: missing}, links[0]]}});
+    expect(disk().workspaces).toEqual([{workspaceRootPath: missing, description: ""}, links[0]]); // full-form description omission clears; order follows input
+    await addLink(created.projectId, other, "Added without registration");
+    await execOk(UPDATE_LINK, {input: {projectId: created.projectId, workspaceRootPath: `${missing}/.`, description: "Edited"}});
+    expect(disk().workspaces).toEqual([{workspaceRootPath: missing, description: "Edited"}, links[0], {workspaceRootPath: other, description: "Added without registration"}]);
+    await execOk(REMOVE_LINK, {input: {projectId: created.projectId, workspaceRootPath: `${missing}/.`}});
+    expect(disk().workspaces.map((w: {workspaceRootPath: string}) => w.workspaceRootPath)).toEqual([picker.workspaceRootPath, other]);
+    await execOk(UPDATE, {input: {projectId: created.projectId, name: "Cleared", workspaces: []}});
+    expect(disk().workspaces).toEqual([]);
+    expect(await listTasks(created.projectId)).toEqual([task]);
+    expect(readWorkspacesJson()).toBe(registry);
+    expect(fs.existsSync(missing)).toBe(false); expect(fs.existsSync(other)).toBe(false);
   });
 
   it("API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration", async () => {
@@ -345,8 +391,8 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const marketingWs = await registerWorkspace("autobyteus-marketing");
     const project = await createProject("autobyteus");
-    await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
-    await addLink(project.projectId, marketingWs.workspaceId, "Marketing");
+    await addLink(project.projectId, prototype.workspaceRootPath, "UI prototype workspace");
+    await addLink(project.projectId, marketingWs.workspaceRootPath, "Marketing");
 
     const removal = await removeWorkspace(prototype.workspaceId);
     expect(removal.success).toBe(true);
@@ -355,32 +401,31 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const afterRemoval = await getProject(project.projectId);
     expect(afterRemoval?.workspaces).toEqual([
       expect.objectContaining({
-        workspaceId: prototype.workspaceId,
         workspaceRootPath: prototype.workspaceRootPath,
         displayName: "autobyteus-web-prototype",
         description: "UI prototype workspace",
         availability: "UNREGISTERED",
       }),
-      expect.objectContaining({ workspaceId: marketingWs.workspaceId, availability: "AVAILABLE" }),
+      expect.objectContaining({ workspaceRootPath: marketingWs.workspaceRootPath, availability: "AVAILABLE" }),
     ]);
 
     const reRegistered = await registerWorkspace("autobyteus-web-prototype");
     expect(reRegistered.workspaceId).toBe(prototype.workspaceId);
     const restored = await getProject(project.projectId);
     expect(restored?.workspaces).toHaveLength(2);
-    expect(restored?.workspaces[0]).toMatchObject({ workspaceId: prototype.workspaceId, availability: "AVAILABLE" });
+    expect(restored?.workspaces[0]).toMatchObject({ workspaceRootPath: prototype.workspaceRootPath, availability: "AVAILABLE" });
 
     // An unregistered link can be edited and unlinked.
     await removeWorkspace(marketingWs.workspaceId);
     const edited = (await execOk<{ updateProjectWorkspace: ProjectResult }>(UPDATE_LINK, {
-      input: { projectId: project.projectId, workspaceId: marketingWs.workspaceId, description: "Old marketing" },
+      input: { projectId: project.projectId, workspaceRootPath: marketingWs.workspaceRootPath, description: "Old marketing" },
     })).updateProjectWorkspace;
     expect(edited.workspaces[1]).toMatchObject({ description: "Old marketing", availability: "UNREGISTERED" });
     const unlinked = (await execOk<{ removeProjectWorkspace: ProjectResult }>(REMOVE_LINK, {
-      input: { projectId: project.projectId, workspaceId: marketingWs.workspaceId },
+      input: { projectId: project.projectId, workspaceRootPath: marketingWs.workspaceRootPath },
     })).removeProjectWorkspace;
-    expect(unlinked.workspaces.map((link) => link.workspaceId)).toEqual([prototype.workspaceId]);
-    await expectErrorCode(REMOVE_LINK, { input: { projectId: project.projectId, workspaceId: marketingWs.workspaceId } }, "WORKSPACE_LINK_NOT_FOUND");
+    expect(unlinked.workspaces.map((link) => link.workspaceRootPath)).toEqual([prototype.workspaceRootPath]);
+    await expectErrorCode(REMOVE_LINK, { input: { projectId: project.projectId, workspaceRootPath: marketingWs.workspaceRootPath } }, "WORKSPACE_LINK_NOT_FOUND");
   });
 
   it("API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged", async () => {
@@ -388,9 +433,9 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const superrepo = await registerWorkspace("autobyteus-superrepo");
     const doomed = await createProject("autobyteus");
     const kept = await createProject("brand");
-    await addLink(doomed.projectId, prototype.workspaceId, "UI");
-    await addLink(doomed.projectId, superrepo.workspaceId, "Main");
-    await addLink(kept.projectId, prototype.workspaceId, "Brand UI");
+    await addLink(doomed.projectId, prototype.workspaceRootPath, "UI");
+    await addLink(doomed.projectId, superrepo.workspaceRootPath, "Main");
+    await addLink(kept.projectId, prototype.workspaceRootPath, "Brand UI");
     const workspacesBefore = readWorkspacesJson();
 
     const DELETE = `mutation($projectId: String!) { deleteProject(projectId: $projectId) }`;
@@ -401,7 +446,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     expect(await getProject(doomed.projectId)).toBeNull();
     expect((await listProjects()).map((project) => project.name)).toEqual(["brand"]);
     expect((await getProject(kept.projectId))?.workspaces).toEqual([
-      expect.objectContaining({ workspaceId: prototype.workspaceId, description: "Brand UI", availability: "AVAILABLE" }),
+      expect.objectContaining({ workspaceRootPath: prototype.workspaceRootPath, description: "Brand UI", availability: "AVAILABLE" }),
     ]);
     const workspaces = await execOk<{ workspaces: Array<{ workspaceId: string }> }>(`query { workspaces { workspaceId } }`);
     expect(workspaces.workspaces.map((ws) => ws.workspaceId)).toEqual(
@@ -412,7 +457,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
   it("API-006: a restarted Projects subsystem reads the same persisted Projects", async () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const project = await createProject("autobyteus", "AutoByteus product");
-    await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
+    await addLink(project.projectId, prototype.workspaceRootPath, "UI prototype workspace");
     const task = await createTask(project.projectId, "Write release notes for 1.4.87\nInclude Projects and Tasks");
     const persistedBefore = snapshotProjectsDir();
 
@@ -428,7 +473,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
         projectId: project.projectId,
         name: "autobyteus",
         description: "AutoByteus product",
-        workspaces: [expect.objectContaining({ workspaceId: prototype.workspaceId, availability: "AVAILABLE" })],
+        workspaces: [expect.objectContaining({ workspaceRootPath: prototype.workspaceRootPath, availability: "AVAILABLE" })],
         openTaskCount: 1,
       }),
     ]);
@@ -500,7 +545,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const doomed = await createProject("autobyteus");
     const kept = await createProject("brand");
-    await addLink(doomed.projectId, prototype.workspaceId, "UI");
+    await addLink(doomed.projectId, prototype.workspaceRootPath, "UI");
     for (let index = 1; index <= 5; index += 1) {
       await createTask(doomed.projectId, `Doomed task ${index}`);
     }
@@ -551,13 +596,28 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       expect.objectContaining({
         projectId: releasedRow.projectId, name: "autobyteus", description: "AutoByteus product",
         createdAt: releasedRow.createdAt, updatedAt: releasedRow.updatedAt, openTaskCount: 0,
-        workspaces: [expect.objectContaining({ workspaceId: prototype.workspaceId, description: "UI prototype workspace", availability: "AVAILABLE" })],
+        workspaces: [expect.objectContaining({ workspaceRootPath: prototype.workspaceRootPath, description: "UI prototype workspace", availability: "AVAILABLE" })],
       }),
     ]);
+    const migratedPath = path.join(appDataDir, "projects", releasedRow.projectId, "project.json");
+    const migratedBytes = fs.readFileSync(migratedPath, "utf8");
+    expect(JSON.parse(migratedBytes).workspaces).toEqual(releasedRow.workspaces); // frozen migration still writes released shape
+    await getProject(releasedRow.projectId);
+    expect(fs.readFileSync(migratedPath, "utf8")).toBe(migratedBytes); // ordinary current read never rewrites
     expect(await listTasks(releasedRow.projectId)).toEqual([]);
 
     const task = await createTask(releasedRow.projectId, "First task on a released Project");
     const [persisted] = readProjectsJson() as Array<Record<string, unknown>>;
     expect(persisted).toEqual({ ...releasedRow, tasks: [expect.objectContaining({ taskId: task.taskId, projectId: releasedRow.projectId, status: "TODO" })] });
+    const taskPath = path.join(appDataDir, "projects", releasedRow.projectId, "tasks", task.taskId, "task.json");
+    const taskBytes = fs.readFileSync(taskPath, "utf8");
+    await execOk(`mutation($input:UpdateProjectInput!){updateProject(input:$input){${PROJECT_FIELDS}}}`, {
+      input: {projectId: releasedRow.projectId, name: releasedRow.name, description: "Ordinary save"},
+    });
+    expect(JSON.parse(fs.readFileSync(migratedPath, "utf8")).workspaces).toEqual([
+      {workspaceRootPath: prototype.workspaceRootPath, description: "UI prototype workspace"},
+    ]);
+    expect(fs.readFileSync(taskPath, "utf8")).toBe(taskBytes);
+    expect(fs.readFileSync(path.join(appDataDir, "projects", "projects.pre-folders.json"), "utf8")).toBe(releasedContent);
   });
 });

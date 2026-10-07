@@ -38,7 +38,7 @@ const PROJECT_TASKS = `query($id:String!){projectTasks(projectId:$id){taskId pro
   contextFiles { storedFilename displayName mimeType sizeBytes locator } root { ${ROOT_FIELDS} }}}`;
 const TASKS_WITHOUT_PROJECT = `query{tasksWithoutProject{taskId description status referenceFiles createdAt updatedAt root { ${ROOT_FIELDS} }}}`;
 const PROJECT = `query($id:String!){project(projectId:$id){projectId name description createdAt updatedAt
-  workspaces { workspaceId workspaceRootPath displayName description addedAt availability } taskCount openTaskCount }}`;
+  workspaces { workspaceRootPath displayName description availability } taskCount openTaskCount }}`;
 
 const taskNodes = (tree: unknown): TaskNode[] => {
   const found: TaskNode[] = [];
@@ -317,6 +317,25 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(closed.code).toBe(4401);
     expect(closed).toEqual(siblingClosed);
     first.socket.close(); second.socket.close();
+    await Promise.all([first.closed, second.closed]);
+    // Normal disconnected-client recovery: no replay, snapshot then future path updates.
+    const workspaceRootPath = path.join(dataDir, "feed missing #?雪");
+    const update = `mutation($i:UpdateProjectInput!){updateProject(input:$i){projectId}}`;
+    await graphql(update, {i: {projectId, name: "Feed path", workspaces: [{workspaceRootPath, description: "Saved offline"}]}});
+    await until(() => feedProject(monitor.frames, projectId)?.workspaces[0]?.description === "Saved offline", "offline change published");
+    const reconnected = await openFeed();
+    await until(() => reconnected.frames.length > 0, "reconnected");
+    expect(reconnected.frames).toEqual([{type: "connected"}]);
+    const snapshot = (await graphql(PROJECT, {id: projectId})).project;
+    expect(snapshot.workspaces).toEqual([{workspaceRootPath, description: "Saved offline", displayName: "feed missing #?雪", availability: "UNREGISTERED"}]);
+    await graphql(`mutation($i:UpdateProjectWorkspaceInput!){updateProjectWorkspace(input:$i){projectId}}`, {i: {projectId, workspaceRootPath, description: "Live edit"}});
+    await until(() => feedProject(reconnected.frames, projectId)?.workspaces[0]?.description === "Live edit", "live path edit");
+    expect(feedProject(reconnected.frames, projectId)).toEqual((await graphql(PROJECT, {id: projectId})).project);
+    await graphql(`mutation($i:RemoveProjectWorkspaceInput!){removeProjectWorkspace(input:$i){projectId}}`, {i: {projectId, workspaceRootPath}});
+    await until(() => feedProject(reconnected.frames, projectId)?.workspaces.length === 0, "live unlink");
+    expect(feedProject(reconnected.frames, projectId)).toEqual((await graphql(PROJECT, {id: projectId})).project);
+    reconnected.socket.close(); await reconnected.closed;
+    await expect(fs.stat(workspaceRootPath)).rejects.toMatchObject({code: "ENOENT"});
     evidence.contract = { remoteRejection: closed, siblingRejection: siblingClosed };
   }, 60000);
 
@@ -326,10 +345,18 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const record: Record<string, unknown> = {};
     // AC-001: the agent creates a Project; it arrives (QR-001: ~2 s on a local node).
     let from = monitor.frames.length;
-    const created = await root.managerCalls(callTool("create_or_update_project", { name: `PCF Launch ${randomUUID().slice(0, 6)}`, description: "Agent-made." }));
+    const created = await root.managerCalls(callTool("create_or_update_project", { name: `PCF Launch ${randomUUID().slice(0, 6)}`, description: "Agent-made.", workspaces: [{workspace_path: path.join(dataDir, "missing #?雪"), description: "Agent path"}] }));
     const projectId = (JSON.stringify(created).match(/"projectId":"([^"]+)"/) ?? [])[1]!;
     expect(projectId, JSON.stringify(created)).toBeTruthy();
     await until(() => monitor.frames.slice(from).some((f) => f.type === "project_upserted" && f.project.projectId === projectId), "project arrives", 2_000);
+    await until(async () => expectEqual(feedProject(monitor.frames, projectId), (await graphql(PROJECT, {id: projectId})).project), "agent path matches snapshot");
+    expect(feedProject(monitor.frames, projectId).workspaces).toEqual([{
+      workspaceRootPath: path.join(dataDir, "missing #?雪"), description: "Agent path", displayName: "missing #?雪", availability: "UNREGISTERED",
+    }]);
+    expect(JSON.parse(await fs.readFile(path.join(dataDir, "projects", projectId, "project.json"), "utf8")).workspaces).toEqual([
+      {workspaceRootPath: path.join(dataDir, "missing #?雪"), description: "Agent path"},
+    ]);
+    await expect(fs.stat(path.join(dataDir, "missing #?雪"))).rejects.toMatchObject({code: "ENOENT"});
     // AC-002: the agent creates a Task; it arrives with no root; the Project's counts follow.
     from = monitor.frames.length;
     const taskCreated = await root.managerCalls(callTool("create_or_update_task", { project_id: projectId,

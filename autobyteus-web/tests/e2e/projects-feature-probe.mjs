@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Isolated browser/API regression for the feature-flagged Projects module: the Projects slice
+// Isolated browser/API regression for the always-available Projects module: the Projects slice
 // Current ordinary-page/continuous-row/context/Refresh contract: PROJ-TASK-MANAGER-20261002-001.
 // Replaces obsolete overlay/card assertions; injected same-window rebinding is not a user journey.
 // Starts disposable backend nodes and a Nuxt frontend bound to A, then drives real journeys in headless
@@ -102,12 +102,12 @@ const createNode = async (ownedRoot, name) => {
   const dataRoot = path.join(ownedRoot, name);
   const databasePath = path.join(dataRoot, 'db', `${name}.db`);
   await fs.mkdir(path.dirname(databasePath), { recursive: true });
-  for (const folder of ['logs', 'memory', 'temp_workspace']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
+  for (const folder of ['logs', 'memory', 'temp_workspace', 'home']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
   const port = await choosePort();
   const url = `http://127.0.0.1:${port}`;
   const databaseUrl = pathToFileURL(databasePath).href;
   const env = {
-    ...scrubbedEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl,
+    ...scrubbedEnv(), HOME: path.join(dataRoot, 'home'), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: '', AUTOBYTEUS_SKILLS_PATHS: '', APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl,
     AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
@@ -139,7 +139,7 @@ const gql = async (node, query, variables = {}) => {
   }
   return body.data;
 };
-const PROJECT_FIELDS = 'projectId name description taskCount openTaskCount workspaces { workspaceId workspaceRootPath displayName description availability }';
+const PROJECT_FIELDS = 'projectId name description taskCount openTaskCount workspaces { workspaceRootPath displayName description availability }';
 const TASK_FIELDS = 'taskId projectId description status createdAt updatedAt contextFiles { storedFilename displayName mimeType sizeBytes locator }';
 const api = {
   // projects-always-on: settings are written through the ordinary server-settings API (Advanced).
@@ -149,7 +149,7 @@ const api = {
   projects: async node => (await gql(node, `{ projects { ${PROJECT_FIELDS} } }`)).projects,
   project: async (node, projectId) => (await gql(node, `query($id: String!) { project(projectId: $id) { ${PROJECT_FIELDS} } }`, { id: projectId })).project,
   createProject: async (node, name, description = '') => (await gql(node, `mutation($i: CreateProjectInput!) { createProject(input: $i) { ${PROJECT_FIELDS} } }`, { i: { name, description } })).createProject,
-  addLink: async (node, projectId, workspaceId, description) => (await gql(node, `mutation($i: AddProjectWorkspaceInput!) { addProjectWorkspace(input: $i) { ${PROJECT_FIELDS} } }`, { i: { projectId, workspaceId, description } })).addProjectWorkspace,
+  addLink: async (node, projectId, workspaceRootPath, description) => (await gql(node, `mutation($i: AddProjectWorkspaceInput!) { addProjectWorkspace(input: $i) { ${PROJECT_FIELDS} } }`, { i: { projectId, workspaceRootPath, description } })).addProjectWorkspace,
   registerWorkspace: async (node, rootPath) => (await gql(node, 'mutation($i: CreateWorkspaceInput!) { createWorkspace(input: $i) { workspaceId workspaceRootPath } }', { i: { rootPath } })).createWorkspace,
   removeWorkspace: async (node, workspaceId) => (await gql(node, 'mutation($i: RemoveWorkspaceInput!) { removeWorkspace(input: $i) { success message } }', { i: { workspaceId } })).removeWorkspace,
   workspaceIds: async node => (await gql(node, '{ workspaces { workspaceId } }')).workspaces.map(item => item.workspaceId),
@@ -162,6 +162,10 @@ const readWorkspacesJson = node => fs.readFile(path.join(node.dataRoot, 'workspa
 
 // ---------------------------------------------------------------- current browser journeys
 let page, frontendUrl, homePath, ownedRoot, nodeA, nodeB, frontend, browser;
+const projectMutations = [];
+const savedLinks = async id => JSON.parse(await fs.readFile(path.join(nodeA.dataRoot, 'projects', id, 'project.json'), 'utf8')).workspaces;
+// CSS string escaping via JSON handles quotes/backslashes; do not interpolate a path into a test-id.
+const workspaceRow = rootPath => page.getByTestId('project-workspace-row').and(page.locator(`[data-path=${JSON.stringify(rootPath)}]`));
 const pathname = () => new URL(page.url()).pathname;
 const goto = async target => { await page.goto(`${frontendUrl}${target}`, { waitUntil: 'domcontentloaded', timeout: 60000 }); };
 const board = async projectId => { await goto(`/projects/${projectId}`); await page.getByTestId('project-task-columns').waitFor({ timeout: timeoutMs }); };
@@ -280,6 +284,11 @@ try {
   const context = await browser.newContext({ viewport: { width: 1512, height: 862 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
   await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage(); page.on('pageerror', e => evidence.browserErrors.push(e.message));
+  page.on('request', request => {
+    if (!request.url().includes('/graphql') || request.method() !== 'POST') return;
+    const body = request.postDataJSON();
+    if (/mutation\b/.test(body?.query || '')) projectMutations.push(body);
+  });
   await goto('/'); await page.locator('nav[aria-label="Primary navigation"]').waitFor(); homePath = pathname();
   let project, task, ws;
 
@@ -305,42 +314,89 @@ try {
     await waitFor('3 second notice cleared', async () => !(await page.locator('[role="status"]').filter({ hasText: 'Project created.' }).count()), 7000);
     assert(!new URL(page.url()).searchParams.has('notice'), 'Notice marker removed');
   });
-  await runCase('PT-E2E-003', 'Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab', async obs => {
+  await runCase('PT-E2E-003', 'Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing', async obs => {
     const existingRoot = path.join(ownedRoot, 'original-workspace'); await fs.mkdir(existingRoot); await fs.writeFile(path.join(existingRoot, 'sentinel.txt'), 'keep original');
     ws = await api.registerWorkspace(nodeA, existingRoot);
+    const registryBefore = await readWorkspacesJson(nodeA), requestsFrom = projectMutations.length;
     await page.getByTestId('project-edit-button').click(); await page.getByTestId('project-editor-page').waitFor(); await expectNoOverlay();
     await page.getByTestId('project-add-workspace-inline').click();
-    await page.getByTestId('workspace-select-0').selectOption(ws.workspaceId);
+    await page.getByTestId('workspace-select-0').selectOption(ws.workspaceRootPath);
     await page.getByTestId('workspace-description-0').fill('existing context');
-    await page.getByTestId('workspace-mode-new-0').click(); await page.getByTestId('workspace-path-0').fill(path.join(ownedRoot, 'not-created'));
-    await page.getByTestId('workspace-mode-existing-0').click(); assert(await page.getByTestId('workspace-select-0').inputValue() === ws.workspaceId, 'Existing draft retained');
+    await page.getByTestId('workspace-mode-new-0').click();
+    assert(await page.getByTestId('workspace-path-0').inputValue() === ws.workspaceRootPath, 'Picker supplies the same manual path');
+    await page.getByTestId('workspace-path-0').fill(path.join(ownedRoot, 'not-created'));
+    await page.getByTestId('workspace-mode-existing-0').click();
+    assert(await page.getByTestId('workspace-select-0').inputValue() === '', 'Unmatched manual value cannot hide behind picker');
+    await page.getByTestId('workspace-select-0').selectOption(ws.workspaceRootPath);
     await page.getByTestId('project-add-workspace-inline').click(); await page.getByTestId('workspace-mode-new-1').click();
-    const newRoot = path.join(ownedRoot, 'never-mkdir'); await page.getByTestId('workspace-path-1').fill(`${newRoot}/../never-mkdir`); await page.getByTestId('workspace-description-1').fill('registered only');
+    const newRoot = path.join(ownedRoot, 'never-mkdir #?雪' + (process.platform === 'win32' ? '' : '\\folder'));
+    await page.getByTestId('workspace-path-1').fill(`${newRoot}/../${path.basename(newRoot)}`); await page.getByTestId('workspace-description-1').fill('manual reference');
     await page.getByTestId('project-form-submit').click(); await page.getByTestId('project-task-columns').waitFor();
-    const saved = await api.project(nodeA, project.projectId); assert(saved.workspaces.length === 2, 'Two aggregate links saved'); assert(!existsSync(newRoot), 'New folder is registration only, not mkdir');
-    obs.links = saved.workspaces;
-    await page.getByTestId('project-tab-workspaces').click(); await page.getByTestId('project-add-workspace-button').click(); await page.getByTestId('project-editor-page').waitFor();
+    const expected = [{workspaceRootPath: ws.workspaceRootPath, description: 'existing context'}, {workspaceRootPath: newRoot, description: 'manual reference'}];
+    assert(JSON.stringify(await savedLinks(project.projectId)) === JSON.stringify(expected), 'Disk entries contain exactly path and description');
+    assert(await readWorkspacesJson(nodeA) === registryBefore, 'Save does not change registry'); assert(!existsSync(newRoot), 'Save does not create folder');
+    assert(!projectMutations.slice(requestsFrom).some(r => /createWorkspace\(/.test(r.query)), 'No browser createWorkspace on Save');
+    const saved = await api.project(nodeA, project.projectId);
+    assert(saved.workspaces[0].availability === 'AVAILABLE' && saved.workspaces[1].availability === 'UNREGISTERED', 'Availability is registration, not Save admission');
+    obs.links = saved.workspaces; obs.disk = expected; obs.manualPath = newRoot;
+    await page.getByTestId('project-tab-workspaces').click();
+    await workspaceRow(newRoot).getByTestId('project-workspace-edit').click(); await page.getByTestId('project-editor-page').waitFor();
+    assert(new URL(page.url()).searchParams.get('workspacePath') === newRoot, 'Special-character route roundtrips exact path');
+    await waitFor('path-targeted description focus', () => page.getByTestId('workspace-description-1').evaluate(e => e === document.activeElement));
+    await page.getByTestId('workspace-description-1').fill('edited #?雪'); await page.getByTestId('project-form-submit').click();
+    await workspaceRow(newRoot).getByText('edited #?雪', {exact: true}).waitFor();
+    await page.reload(); await workspaceRow(newRoot).getByText('edited #?雪', {exact: true}).waitFor();
+    await workspaceRow(newRoot).getByTestId('project-workspace-unlink').click();
+    await waitFor('unlinked row', async () => await workspaceRow(newRoot).count() === 0);
+    await page.reload(); await page.getByTestId('project-workspace-list').waitFor();
+    assert(await workspaceRow(newRoot).count() === 0, 'Unlink persists after reload');
+    assert(!existsSync(newRoot) && await readWorkspacesJson(nodeA) === registryBefore, 'Edit/unlink has no directory or registry side effects');
+    // Re-add manual link for the existing restart/cascade cases below, through the real editor.
+    await page.getByTestId('project-add-workspace-button').click(); await page.getByTestId('project-editor-page').waitFor();
+    await page.getByTestId('workspace-mode-new-1').click(); await page.getByTestId('workspace-path-1').fill(newRoot);
+    await page.getByTestId('project-form-submit').click(); await workspaceRow(newRoot).waitFor();
+    await page.getByTestId('project-add-workspace-button').click(); await page.getByTestId('project-editor-page').waitFor();
     await page.getByTestId('project-editor-cancel').click(); await waitFor('origin Workspaces', () => new URL(page.url()).searchParams.get('tab') === 'workspaces');
     assert((await api.project(nodeA, project.projectId)).workspaces.length === 2, 'Add/Cancel preserves links');
     await api.removeWorkspace(nodeA, ws.workspaceId); await goto(`/projects/${project.projectId}?tab=workspaces`);
-    await page.getByTestId(`project-workspace-row-${ws.workspaceId}`).getByText('Unavailable', { exact: true }).waitFor();
-    await page.getByTestId('project-edit-button').click(); await page.getByTestId('project-editor-page').waitFor();
+    await workspaceRow(ws.workspaceRootPath).getByText('Unavailable', {exact: true}).waitFor();
+    await workspaceRow(ws.workspaceRootPath).getByTestId('project-workspace-edit').click(); await page.getByTestId('project-editor-page').waitFor();
     await page.getByTestId('workspace-description-0').fill('still linked unavailable'); await page.getByTestId('project-form-submit').click();
-    await waitFor('origin Workspaces', () => new URL(page.url()).searchParams.get('tab') === 'workspaces');
+    await workspaceRow(ws.workspaceRootPath).getByText('still linked unavailable', {exact: true}).waitFor();
     assert((await api.project(nodeA, project.projectId)).workspaces[0].availability === 'UNREGISTERED', 'Saved unavailable link preserved');
+    assert(await fs.readFile(path.join(existingRoot, 'sentinel.txt'), 'utf8') === 'keep original', 'Original folder bytes survive');
   });
-  await runCase('PT-E2E-004', 'Aggregate save failure retains Project; separate successful registration remains, no mkdir', async obs => {
+  await runCase('PT-E2E-004', 'Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders', async obs => {
     await goto(`/projects/${project.projectId}/edit`); await page.getByTestId('project-editor-page').waitFor();
     await page.getByTestId('project-add-workspace-inline').click(); await page.getByTestId('workspace-mode-new-2').click();
-    const pathValue = path.join(ownedRoot, 'registration-survives'); await page.getByTestId('workspace-path-2').fill(pathValue);
-    const before = await api.project(nodeA, project.projectId);
-    const handler = async route => { const body = route.request().postDataJSON(); if (body.query?.includes('updateProject(')) await route.fulfill({ status: 503, body: 'unavailable' }); else await route.continue(); };
+    const before = await api.project(nodeA, project.projectId), registryBefore = await readWorkspacesJson(nodeA), requestsFrom = projectMutations.length;
+    const bytesBefore = await fs.readFile(path.join(nodeA.dataRoot, 'projects', project.projectId, 'project.json'), 'utf8');
+    await page.getByTestId('project-name-input').fill('Invalid must not save');
+    const isProjectUpdate = response => response.url().endsWith('/graphql')
+      && response.request().method() === 'POST' && response.request().postDataJSON()?.query?.includes('updateProject(');
+    obs.rejections = [];
+    for (const [invalid, code] of [['relative/folder', 'WORKSPACE_PATH_INVALID'], [`${ws.workspaceRootPath}/../${path.basename(ws.workspaceRootPath)}/`, 'WORKSPACE_ALREADY_LINKED']]) {
+      await page.getByTestId('workspace-path-2').fill(invalid);
+      const [response] = await Promise.all([page.waitForResponse(isProjectUpdate), page.getByTestId('project-form-submit').click()]);
+      const body = await response.json(); assert(body.errors?.[0]?.extensions?.code === code, 'Expected fresh GraphQL rejection ' + code);
+      await page.locator('[role="alert"]').first().waitFor(); obs.rejections.push({invalid, code, responseStatus: response.status()});
+      assert(await fs.readFile(path.join(nodeA.dataRoot, 'projects', project.projectId, 'project.json'), 'utf8') === bytesBefore, 'Invalid combined patch saves nothing');
+    }
+    await page.getByTestId('project-name-input').fill(before.name);
+    const pathValue = path.join(ownedRoot, 'failed-save-no-registration'); await page.getByTestId('workspace-path-2').fill(pathValue);
+    let rejectedSaves = 0;
+    const handler = async route => { const body = route.request().postDataJSON(); if (body.query?.includes('updateProject(')) { rejectedSaves++; await route.fulfill({ status: 503, body: 'unavailable' }); } else await route.continue(); };
     await page.route('**/graphql', handler);
-    try { await page.getByTestId('project-form-submit').click(); await page.locator('[role="alert"]').first().waitFor(); }
+    try {
+      const [response] = await Promise.all([page.waitForResponse(isProjectUpdate), page.getByTestId('project-form-submit').click()]);
+      assert(response.status() === 503 && rejectedSaves === 1, 'Fault-injected transport boundary exercised exactly once');
+      await page.locator('[role="alert"]').first().waitFor(); obs.rejectedSaves = rejectedSaves;
+    }
     finally { await page.unroute('**/graphql', handler); }
     assert(JSON.stringify(await api.project(nodeA, project.projectId)) === JSON.stringify(before), 'Failed Project save leaves prior Project unchanged');
-    const registry = await readWorkspacesJson(nodeA); assert(registry.includes(pathValue), 'Registration survives separate Project failure'); assert(!existsSync(pathValue), 'No physical folder');
-    await page.getByTestId('project-editor-cancel').click(); obs.registeredPath = pathValue;
+    assert(await readWorkspacesJson(nodeA) === registryBefore && !existsSync(pathValue), 'Failed Save neither registers nor creates directory');
+    assert(!projectMutations.slice(requestsFrom).some(r => /createWorkspace\(/.test(r.query)), 'No browser registration on any Save attempt');
+    await page.getByTestId('project-editor-cancel').click(); obs.absentPath = pathValue;
   });
   await runCase('PT-E2E-005', 'Task ordinary composer validation, search-preserving Cancel, typed/file save clears search', async obs => {
     await board(project.projectId); await search().fill('old search'); await page.getByTestId('project-tasks-new-button').click(); await page.getByTestId('task-page-heading').waitFor(); await expectNoOverlay();
@@ -549,6 +605,16 @@ finally {
   }
   for (const [name, child] of [['frontend', frontend], ['nodeA', nodeA?.process], ['nodeB', nodeB?.process]]) {
     try { evidence.cleanup[name] = await stop(child); } catch (e) { evidence.cleanup[name] = String(e); evidence.result = 'Fail'; }
+  }
+  for (const [name, url] of [['frontend', frontendUrl], ['nodeA', nodeA?.url], ['nodeB', nodeB?.url]]) {
+    if (!url) continue;
+    try {
+      await new Promise((resolve, reject) => {
+        const socket = net.createServer(); socket.once('error', reject);
+        socket.listen(Number(new URL(url).port), '127.0.0.1', () => socket.close(resolve));
+      });
+      evidence.cleanup[`${name}PortReleased`] = true;
+    } catch (error) { evidence.cleanup[`${name}PortReleased`] = String(error); evidence.result = 'Fail'; }
   }
   if (ownedRoot) { await fs.rm(ownedRoot, { recursive: true, force: true }); evidence.cleanup.tempRootRemoved = !existsSync(ownedRoot); }
   evidence.finishedAt = new Date().toISOString(); if (existsSync(outputDir)) await writeEvidence();
