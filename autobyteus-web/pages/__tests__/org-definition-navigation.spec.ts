@@ -46,6 +46,12 @@ const org = {
   members: [{ __typename: 'AgentOrgMember', memberName: 'research', ref: ownedTeamId, refType: 'AGENT_TEAM', refScope: 'AGENT_ORG_OWNED' }],
   handoffs: [],
 }
+// The Org detail reads its member role labels from the server's endpoint catalog (since 0944fe664).
+const coordinator = { __typename: 'AgentOrgEndpoint', kind: 'agent', address: '/research/worker', memberName: 'worker', definitionId: workerId, coordinatorAddress: null, coordinatorMemberName: null }
+const endpointCatalog = {
+  __typename: 'AgentOrgEndpointCatalog', from: [coordinator],
+  to: [coordinator, { __typename: 'AgentOrgEndpoint', kind: 'agent_team', address: '/research', memberName: 'research', definitionId: ownedTeamId, coordinatorAddress: '/research/worker', coordinatorMemberName: 'worker' }],
+}
 // Router transport is the only navigation double; all page handlers and buttons are real.
 const Host = defineComponent({
   setup() {
@@ -74,6 +80,7 @@ describe('definition inspection return through actual pages and stores', () => {
       else if (field === 'agentDefinitions') value = [agent]
       else if (field === 'agentTeamDefinitions') value = [{ ...team, id: sharedTeamId, ownershipScope: 'SHARED', ownerOrgId: null, ownerOrgName: null }]
       else if (field === 'agentTeamDefinition' && operation.variables.id === ownedTeamId) value = team
+      else if (field === 'agentOrgEndpointCatalog' && operation.variables.id === orgId) value = endpointCatalog
       else throw new Error(`Unexpected I/O: ${field}`)
       observer.next({ data: { [field]: structuredClone(value) } }); observer.complete()
     })) })
@@ -107,7 +114,8 @@ describe('definition inspection return through actual pages and stores', () => {
     expectLocation('/agent-orgs', { view: 'org-detail', id: orgId })
     expect(wrapper.text()).toContain('Org description')
     expect(calls.filter(call => call.field === 'agentTeamDefinition').every(call => call.variables.id === ownedTeamId)).toBe(true)
-    expect(calls.every(call => ['getServerSettings', 'agentOrgDefinitions', 'agentDefinitions', 'agentTeamDefinitions', 'agentTeamDefinition'].includes(call.field))).toBe(true)
+    expect(calls.filter(call => call.field === 'agentOrgEndpointCatalog').every(call => call.variables.id === orgId)).toBe(true)
+    expect(calls.every(call => ['getServerSettings', 'agentOrgDefinitions', 'agentDefinitions', 'agentTeamDefinitions', 'agentTeamDefinition', 'agentOrgEndpointCatalog'].includes(call.field))).toBe(true)
   })
 
   it('keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope', async () => {
