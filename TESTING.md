@@ -658,6 +658,17 @@ matters.
    (`--app <dir>/squashfs-root/autobyteus`), a real or virtual display, and
    `ffmpeg` for recordings. See
    [Isolated instances on Linux](docs/isolated-app-instances.md#linux).
+9. **Fix failures that also fail on the base; don't just note them.** "Also
+   fails on the base" shows your change did not cause a failure. It does not
+   close the failure. Find out why it fails.
+   - When the cause is in the test or is a small local fix, fix it in the same
+     branch as its own commit, labelled as a baseline fix. Name the test and
+     the cause in your handoff or report.
+   - When the fix is a product change or too large for the current work, report
+     it to the accountable owner as its own item, with the cause you found.
+
+   Never leave a known baseline failure unexplained, or it comes back in every
+   later change.
 
 ## Evidence and cleanup
 
