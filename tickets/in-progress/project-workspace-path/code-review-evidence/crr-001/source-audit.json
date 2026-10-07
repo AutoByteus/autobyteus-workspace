@@ -1,0 +1,194 @@
+{
+  "base": "5316a0cad19498819a8a50c594b72c0197d8b6a1",
+  "head": "7b69893c32e3507e003a44fb5cc14b21ddbcbef5",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+      "nonempty": 123,
+      "added": 6,
+      "deleted": 9,
+      "delta": 15,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+      "nonempty": 80,
+      "added": 2,
+      "deleted": 2,
+      "delta": 4,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/types/projects.ts",
+      "nonempty": 176,
+      "added": 4,
+      "deleted": 12,
+      "delta": 16,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.ts",
+      "nonempty": 235,
+      "added": 6,
+      "deleted": 5,
+      "delta": 11,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/released-project-folder-v1.ts",
+      "nonempty": 38,
+      "added": 42,
+      "deleted": 0,
+      "delta": 42,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/changes/project-change-messages.ts",
+      "nonempty": 84,
+      "added": 3,
+      "deleted": 3,
+      "delta": 6,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/models.ts",
+      "nonempty": 137,
+      "added": 5,
+      "deleted": 7,
+      "delta": 12,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/domain/project-errors.ts",
+      "nonempty": 31,
+      "added": 1,
+      "deleted": 1,
+      "delta": 2,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/services/project-service.ts",
+      "nonempty": 250,
+      "added": 49,
+      "deleted": 52,
+      "delta": 101,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/projects/stores/project-store.ts",
+      "nonempty": 212,
+      "added": 4,
+      "deleted": 4,
+      "delta": 8,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-server-ts/src/workspaces/workspace-manager.ts",
+      "nonempty": 306,
+      "added": 7,
+      "deleted": 0,
+      "delta": 7,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/components/projects/ProjectEditor.vue",
+      "nonempty": 138,
+      "added": 13,
+      "deleted": 17,
+      "delta": 30,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/components/projects/ProjectWorkspaceEntry.vue",
+      "nonempty": 35,
+      "added": 11,
+      "deleted": 5,
+      "delta": 16,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/components/projects/ProjectWorkspaceRow.vue",
+      "nonempty": 71,
+      "added": 2,
+      "deleted": 1,
+      "delta": 3,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/components/projects/ProjectWorkspacesPanel.vue",
+      "nonempty": 68,
+      "added": 7,
+      "deleted": 7,
+      "delta": 14,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/projectQueries.ts",
+      "nonempty": 34,
+      "added": 0,
+      "deleted": 2,
+      "delta": 2,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/projects.ts",
+      "nonempty": 189,
+      "added": 3,
+      "deleted": 4,
+      "delta": 7,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/projects.ts",
+      "nonempty": 189,
+      "added": 3,
+      "deleted": 4,
+      "delta": 7,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/stores/projectStore.ts",
+      "nonempty": 242,
+      "added": 6,
+      "deleted": 6,
+      "delta": 12,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/types/project.ts",
+      "nonempty": 86,
+      "added": 2,
+      "deleted": 4,
+      "delta": 6,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/types/projectWorkspaceDraft.ts",
+      "nonempty": 2,
+      "added": 1,
+      "deleted": 1,
+      "delta": 2,
+      "status": "Pass"
+    },
+    {
+      "path": "autobyteus-web/utils/projects/linkableWorkspaces.ts",
+      "nonempty": 0,
+      "added": 0,
+      "deleted": 28,
+      "delta": 28,
+      "status": "Deleted"
+    },
+    {
+      "path": "autobyteus-web/utils/projects/projectErrorMessageKey.ts",
+      "nonempty": 15,
+      "added": 1,
+      "deleted": 1,
+      "delta": 2,
+      "status": "Pass"
+    }
+  ],
+  "frozenReaderComparison": {
+    "linkPredicateIdentical": true,
+    "projectReaderIdenticalExceptRename": true
+  }
+}
