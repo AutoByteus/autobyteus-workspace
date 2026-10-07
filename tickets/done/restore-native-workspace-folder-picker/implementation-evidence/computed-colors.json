@@ -1,0 +1,5 @@
+{
+  ".text-blue-700": "rgb(29, 78, 216)",
+  ".text-gray-500": "rgb(128, 128, 128)",
+  "button[type=\"submit\"]": "rgb(29, 78, 216)"
+}

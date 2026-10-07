@@ -110,22 +110,36 @@
 
       <form v-if="adding" class="space-y-2 border-t border-gray-100 px-3 py-2.5" data-test="chat-workspace-folder-form" @submit.prevent="confirmFolder">
         <label for="chat-workspace-path" class="text-xs font-medium text-gray-600">{{ $t('chat.workspace.folderPath') }}</label>
-        <input
-          id="chat-workspace-path"
-          ref="pathRef"
-          v-model="path"
-          type="text"
-          class="w-full rounded-md border px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-          :class="error ? 'border-red-300' : 'border-gray-200'"
-          :aria-invalid="error ? 'true' : undefined"
-          aria-describedby="chat-workspace-path-error"
-          :placeholder="$t('chat.workspace.folderPlaceholder')"
-          @keydown.esc.stop.prevent="adding = false"
-        >
+        <div class="flex items-center gap-2">
+          <input
+            id="chat-workspace-path"
+            ref="pathRef"
+            v-model="path"
+            type="text"
+            class="min-w-0 flex-1 rounded-md border px-3 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            :class="error ? 'border-red-300' : 'border-gray-200'"
+            :aria-invalid="error ? 'true' : undefined"
+            :aria-describedby="error ? 'chat-workspace-path-error' : pickerError ? 'chat-workspace-picker-error' : 'chat-workspace-path-hint'"
+            :placeholder="$t('chat.workspace.folderPlaceholder')"
+            @input="error = ''; pickerError = false"
+          >
+          <button
+            v-if="pickerEligible"
+            ref="browseRef"
+            type="button"
+            data-test="chat-workspace-browse"
+            class="flex-shrink-0 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:cursor-wait disabled:opacity-60"
+            :disabled="picking"
+            :aria-busy="picking ? 'true' : undefined"
+            @click="browseFolder"
+          >{{ picking ? t('chat.workspace.openingPicker') : t('chat.workspace.browse') }}</button>
+        </div>
+        <p v-if="pickerError" id="chat-workspace-picker-error" class="text-xs leading-4 text-red-600" role="alert" data-test="chat-workspace-picker-error">{{ t('chat.workspace.pickerError') }}</p>
+        <p v-else id="chat-workspace-path-hint" class="text-xs leading-4 text-gray-500">{{ pickerEligible ? t('chat.workspace.localPathHint') : t('chat.workspace.serverPathHint') }}</p>
         <p v-if="error" id="chat-workspace-path-error" class="text-xs text-red-600" data-test="chat-workspace-path-error">{{ error }}</p>
         <div class="flex justify-end gap-2">
-          <button type="button" class="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50" @click="adding = false">{{ $t('chat.workspace.cancel') }}</button>
-          <button type="submit" class="rounded-md border border-blue-200 bg-white px-3 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50">{{ $t('chat.workspace.useFolder') }}</button>
+          <button type="button" class="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50" @click="cancelFolder">{{ $t('chat.workspace.cancel') }}</button>
+          <button type="submit" :disabled="picking" class="rounded-md border border-blue-200 bg-white px-3 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50">{{ $t('chat.workspace.useFolder') }}</button>
         </div>
       </form>
       <footer v-else class="border-t border-gray-100 p-1">
@@ -138,10 +152,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates'
 import { useMenuInBoundary } from '~/composables/popover/useMenuInBoundary'
 import type { RunWorkspaceChoice } from '~/types/runSettings/RunWorkspaceChoice'
 import { isAbsoluteFolderPath } from '~/utils/chat/chatDefaults'
@@ -169,6 +185,23 @@ const adding = ref(false)
 const path = ref('')
 const error = ref('')
 const query = ref('')
+const nodeContext = useWindowNodeContextStore()
+const pickerEligible = computed(() => canUseLocalFolderPicker({
+  isEmbeddedWindow: nodeContext.isEmbeddedWindow,
+  hasElectronFolderDialog: typeof window !== 'undefined' && typeof window.electronAPI?.showFolderDialog === 'function',
+}))
+const browseRef = ref<HTMLButtonElement | null>(null)
+const picking = ref(false)
+const pickerError = ref(false)
+let formGeneration = 0
+let disposed = false
+// A dismissed form or changed destination must not receive a late native reply.
+watch([
+  popover.open, adding, () => nodeContext.bindingRevision,
+  () => props.workspace.kind,
+  () => props.workspace.kind === 'existing' ? props.workspace.workspaceId : props.workspace.rootPath,
+], () => { formGeneration += 1 }, { flush: 'sync' })
+onBeforeUnmount(() => { disposed = true })
 
 const tempWorkspace = computed(() => workspaceStore.tempWorkspace)
 const userWorkspaces = computed(() => workspaceStore.allWorkspaces
@@ -227,11 +260,46 @@ const startFolder = async () => {
   adding.value = true
   path.value = ''
   error.value = ''
+  pickerError.value = false
   await nextTick()
   pathRef.value?.focus()
 }
 
+const cancelFolder = () => {
+  adding.value = false
+  triggerRef.value?.focus()
+}
+
+const browseFolder = async () => {
+  if (!pickerEligible.value || picking.value || !adding.value || !popover.open.value) return
+  const generation = formGeneration
+  const isCurrentForm = () => !disposed && generation === formGeneration && pickerEligible.value
+  picking.value = true
+  pickerError.value = false
+  let chosen = false
+  try {
+    const result = await window.electronAPI.showFolderDialog()
+    if (!isCurrentForm()) return
+    // Main also sets canceled:true on failure; error presence takes precedence.
+    if ('error' in result) {
+      pickerError.value = true
+    } else if (!result.canceled && result.path) {
+      path.value = result.path
+      error.value = ''
+      chosen = true
+    }
+  } catch {
+    if (isCurrentForm()) pickerError.value = true
+  } finally {
+    // Keep the single outstanding request pending even across close/reopen.
+    picking.value = false
+  }
+  await nextTick()
+  if (isCurrentForm()) (chosen ? pathRef.value : browseRef.value)?.focus()
+}
+
 const confirmFolder = () => {
+  if (picking.value) return
   const rootPath = path.value.trim()
   if (!isAbsoluteFolderPath(rootPath)) {
     error.value = t('chat.workspace.absolutePathRequired')

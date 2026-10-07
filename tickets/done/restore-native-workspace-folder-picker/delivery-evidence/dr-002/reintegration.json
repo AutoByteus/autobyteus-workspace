@@ -1,0 +1,43 @@
+{
+  "userVerifiedHead": "44b03b9f3b3f73535c1f3ec8e27dc9201ab4c5de",
+  "protectedArchiveCommit": "93a45f69c3575653709180eff0d4fc0cb813452a",
+  "refreshedTarget": "665d8e0cd3bf99e4164809569e4e29c5e16bb3c9",
+  "integratedHead": "92c96ce111c9874f9185cdc13d47fb615357344c",
+  "newBaseCommitCount": 13,
+  "sourceBlobs": [
+    {
+      "path": "autobyteus-web/components/chat/ChatWorkspaceMenu.vue",
+      "verified": "738b9ff62040df4541fe9af9565ca5e4f22e82db",
+      "integrated": "738b9ff62040df4541fe9af9565ca5e4f22e82db"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/chat.ts",
+      "verified": "c007fbbf0fa0d7310d4cb8f87a6e1b4e08e168bd",
+      "integrated": "c007fbbf0fa0d7310d4cb8f87a6e1b4e08e168bd"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/chat.ts",
+      "verified": "af7e8fa59b0f5b23dcd9f574d5ab692d5f37b189",
+      "integrated": "af7e8fa59b0f5b23dcd9f574d5ab692d5f37b189"
+    },
+    {
+      "path": "autobyteus-web/stores/windowNodeContextStore.ts",
+      "verified": "c7b3f5a3b56dd6b438c08c11b3dc124faf83483a",
+      "integrated": "c7b3f5a3b56dd6b438c08c11b3dc124faf83483a"
+    },
+    {
+      "path": "autobyteus-web/utils/mobileFeatureGates.ts",
+      "verified": "2ce8eb899fd40f132addcab05f575300f05863c8",
+      "integrated": "2ce8eb899fd40f132addcab05f575300f05863c8"
+    },
+    {
+      "path": "autobyteus-web/electron/preload.ts",
+      "verified": "e509466561705d1264be347987c344154c49af37",
+      "integrated": "e509466561705d1264be347987c344154c49af37"
+    }
+  ],
+  "firstPostVerificationFetchedTarget": "e87093f09396c1e7b4ac38864fb3e048d7a1564e",
+  "mergeTargetNote": "Shared tracked ref advanced by the other completed delivery receipt before merge; actual merge second parent is 665d8e0cd3bf99e4164809569e4e29c5e16bb3c9 and includes the entire refreshed target.",
+  "materialScopedBehaviorChange": false,
+  "reason": "New base concerns Project path associations and their frozen historical reader; workspace-manager adds a separate read-only registered-path method. Menu, native bridge/gate/catalogs, Chat/Org/saved-run setting owners and selection/launch/save paths have no source diff. Scoped integrated checks are rerun separately."
+}

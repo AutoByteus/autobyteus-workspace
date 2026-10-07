@@ -1,0 +1,5 @@
+Scope: 2 of 13 workspace projects
+autobyteus-team-stream-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-team-stream-contracts build: Done

@@ -43,4 +43,26 @@ describe('electron preload', () => {
     });
     expect(invoke).toHaveBeenCalledWith('open-external-link', 'https://example.com/diagram-docs');
   });
+
+  it.each([
+    { canceled: false, path: '/owned/selected' },
+    { canceled: true, path: null },
+    { canceled: true, path: null, error: '' },
+    { canceled: true, path: null, error: 'native failure' },
+  ])('preserves the complete native folder response %j', async (result) => {
+    const invoke = vi.fn().mockResolvedValue(result);
+    const exposeInMainWorld = vi.fn();
+    vi.doMock('electron', () => ({
+      contextBridge: { exposeInMainWorld },
+      ipcRenderer: { invoke, on: vi.fn(), removeListener: vi.fn(), send: vi.fn() },
+      webUtils: { getPathForFile: vi.fn() },
+    }));
+    await import('../preload');
+    const api = exposeInMainWorld.mock.calls.find(([name]) => name === 'electronAPI')?.[1];
+    await expect(api.showFolderDialog()).resolves.toEqual(result);
+    expect(invoke).toHaveBeenCalledExactlyOnceWith('show-folder-dialog');
+    invoke.mockRejectedValueOnce(new Error('invoke failed'));
+    await expect(api.showFolderDialog()).rejects.toThrow('invoke failed');
+  });
+
 });

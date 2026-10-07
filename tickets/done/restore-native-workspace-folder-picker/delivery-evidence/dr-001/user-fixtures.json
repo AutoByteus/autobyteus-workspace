@@ -1,0 +1,12 @@
+{
+  "createdAt": "2026-10-07T18:43:18.107047+00:00",
+  "instanceId": "iso-64199-6f3f",
+  "fixtureRoot": "/private/tmp/autobyteus-folder-verify-d5xft_ay",
+  "ids": {
+    "agent": "folder-verification-agent",
+    "team": "folder-verification-team",
+    "org": "folder-verification-org"
+  },
+  "cleanup": "Pending user verification; remove only this receipt-owned root after exact-instance stop",
+  "asarSha256": "e4a156a8767e60afc2055c0a6d1527b2fc2c1c549342d3734c28f9f2f56fa008"
+}

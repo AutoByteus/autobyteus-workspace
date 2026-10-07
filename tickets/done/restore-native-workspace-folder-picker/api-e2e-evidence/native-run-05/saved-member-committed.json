@@ -1,0 +1,23 @@
+{
+  "controls": null,
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&orgRunId=folder_proof_org_1ff69cbeec834dac92c6e61c28b66b8d&mode=history&memberAddress=/product",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_5fe58508e416a46798bc879acea9b32b5fd9e792d8148f012243071bddf01353"
+  },
+  "registered": [
+    "agent_ws_07fa25f7662254b32a75672c5ef9657b51053630d6841dc51591aa39e4177bba",
+    "agent_ws_5fe58508e416a46798bc879acea9b32b5fd9e792d8148f012243071bddf01353",
+    "agent_ws_ed2e2812389744bb3b7523764a1efe29ae3124e07affa1313bfee86e6159eabc",
+    "temp_ws_default"
+  ],
+  "focused": "ChatAgentsAgent TeamsAgent OrgsSkillsMemoryNodesWorkspacesknownmemberorgOrgsFolder Proof Org(1)New - Folder Proof Orgnow",
+  "menu": null,
+  "width": 1512,
+  "height": 862,
+  "overflow": false
+}

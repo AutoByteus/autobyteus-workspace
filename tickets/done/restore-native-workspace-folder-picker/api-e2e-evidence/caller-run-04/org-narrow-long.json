@@ -1,0 +1,40 @@
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_214cea99e4b670d2c01e08960e14dd6a6d57bf57aa20e62ef57113fd31def198"
+  },
+  "orgRoot": {
+    "kind": "folder",
+    "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-B4BHCR/org"
+  },
+  "teamWorkspaces": {
+    "/product": {
+      "kind": "folder",
+      "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-B4BHCR/member"
+    }
+  },
+  "registered": [
+    "agent_ws_214cea99e4b670d2c01e08960e14dd6a6d57bf57aa20e62ef57113fd31def198",
+    "temp_ws_default"
+  ],
+  "path": "/owned/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/",
+  "focused": "chat-workspace-path",
+  "menu": {
+    "x": 8,
+    "y": 468,
+    "width": 374,
+    "height": 368,
+    "top": 468,
+    "right": 382,
+    "bottom": 836,
+    "left": 8
+  },
+  "width": 390,
+  "height": 844,
+  "overflow": false
+}

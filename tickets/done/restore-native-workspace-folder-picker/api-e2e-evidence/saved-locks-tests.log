@@ -1,0 +1,25 @@
+
+> autobyteus@1.4.96-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+
+stderr | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 84ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  20:20:30
+   Duration  7.78s (transform 4.14s, setup 6.67s, collect 392ms, tests 84ms, environment 236ms, prepare 153ms)

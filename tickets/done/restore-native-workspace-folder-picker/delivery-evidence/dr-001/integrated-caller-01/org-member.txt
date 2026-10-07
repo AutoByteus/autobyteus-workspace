@@ -1,0 +1,67 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Projects
+Skills
+Memory
+Nodes
+Workspaces
+known
+Temp Workspace
+Settings
+Folder Proof Org
+Workspace
+org
+Model
+claude-fable-5
+AutoByteus
+Thinking
+Off
+Tool approval
+Auto-approve
+
+All 2 members use these settings
+·
+Customize members
+
+Member settings
+
+Folder Proof Org
+
+Folder Proof Team
+org · claude-fable-5 · AutoByteus · Auto-approve
+Workspace
+org
+Temp workspace
+DEFAULT
+Scratch folder for quick chats
+YOUR WORKSPACES
+known
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dD3bMd/known
+org
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dD3bMd/org
+Folder path
+Browse…
+
+Choose a folder on this computer, or enter its full path.
+
+Cancel
+Use folder
+Model
+claude-fable-5
+AutoByteus
+Thinking
+Off
+Tool approval
+Auto-approve
+
+MEMBERS
+
+L
+lead
+Coordinator
+claude-fable-5 · AutoByteus · Auto-approve
+Folder Proof Team
+org · claude-fable-5 · AutoByteus · Auto-approve
+Done

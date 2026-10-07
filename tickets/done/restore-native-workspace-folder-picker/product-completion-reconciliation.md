@@ -1,0 +1,25 @@
+# Product Completion Reconciliation — Ready for Requirements Approval
+
+Package restore-native-workspace-folder-picker; SR-006; canonical requirements R3 Ready for Approval. Original request: restore native folder browsing lost from Chat and Agent/Team/Org setup; user explicitly delegated Product UI work first.
+
+## Completed Product receipt
+Read /Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker/product-handoff.md before acting, then ui-ux-spec.md, user-confirmation.md, final-validation.md, integration-record.md, manifest and runbook. Product confirms Design Completed with UCONF-001 (2026-10-07): “Hey, I think this UI is good. The, yeah, the, I just got that confirmed.” Approval followed native-Electron versus simulated browser clarification. UI approval is accepted for its actual scope, not fabricated as canonical R3 approval.
+
+Canonical design repo /Users/normy/autobyteus_org/autobyteus-web-design; durable ticket /Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker; UI code a677e01558b2b9d48253950bc2b8db821358625a; accepted base 8cd41f886459630909e827d7df1b67910618aaac. Artifact integration 10d10419a1dd804204e52512044d4e0b8909f5dd, final evidence closure 15cb0d9be3b8bfdf3a7ee5f7f7862f7a89baa406. Read-only Git checks confirmed canonical HEAD=origin/personal=ticket branch and clean status; no differences outside tickets since approved UI code. All twelve screenshot SHA-256 hashes match manifest and files exist. Historical Product worktree absence confirmed. Product reports owned processes stopped/ports free; no preview restarted or cleanup redone. Durable source/spec/references consistent, no Product correction needed.
+
+## Reconciled behavior and approval boundary
+R3 preserves REQ-001..004/AC-001..007 and explicitly records actual native Browse, choose-to-field then Use folder, silent non-destructive cancel/empty, distinguishable inline invocation error/retry/manual fallback, pending disabled controls/focus and current eligibility/locks/data/launch/save semantics. Added REQ-005/AC-008 link exact Product UI fidelity without duplicating or imposing its architecture. SCN-001..005/BEH-001..004/UC-001..003 unchanged. UI supplement approved; complete canonical requirements need explicit user approval before architecture. No open Product UI decision.
+
+## Evidence limits
+Browser reference evidence is not real Electron/filesystem/permissions/backend/save/platform proof. Full-root extra vue-tsc stack overflow unresolved; narrower configured checks/build passed. Chinese authored, not independently QA-approved. Native chrome/data/host context illustrative. Dependencies unchanged; remote vulnerability summary uninvestigated. No production software edited and no engineering validation claimed. No broad baseline rewrite or fixture certification. Source helper conflates error/cancel; approved failure feedback is an obligation to investigate after approval, not an architecture prescription.
+
+## Canonical engineering context
+Task workspace /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker; branch codex/restore-native-workspace-folder-picker; base origin/personal@88fad73cbd20201642acdcfe75e69b1897ec135c; finalization target origin/personal, no release requested. Canonical owned requirements /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/requirements-doc.md; investigation-notes.md; solution-revision-record.md; prior request product-design-request.md. R2 historical snapshot history/requirements-r2-before-product-reconciliation.md. External Product inventory in investigation-notes.md uses durable canonical paths; earlier worktree paths are historical only. Design/reviews/implementation artifacts N/A — not started.
+
+## Delegation lifecycle / next step
+Product run product_ui_ux_designer_f1b47b534b5e4da49ef50e43e23fbef3 completed delegated UI work. Assigning task ad_hoc_task_45079b88-f602-4945-a4a3-57627cd9762e is eligible for DONE; tool result to be recorded below. No duplicate message/delegation needed. User next approves or adjusts canonical R3; then architecture gates and configured routing. This is a routine requirements approval hold, not production completion, Delivery Completed or Terminal.
+
+## Confirmed Closure and Route
+create_or_update_task returned task ad_hoc_task_45079b88-f602-4945-a4a3-57627cd9762e, projectId null, status DONE. Delegated Product work is closed; this does not mark engineering work complete.
+
+Fresh get_handoff_rules returned completed-architecture routes to /architecture_reviewer (Large/High) and /implementation_engineer (Small/Medium, Low), plus Delivery Receipt Evidence Gap to /delivery_engineer. None matches a reconciled requirements approval hold. No message/delegation to those recipients; return the R3 approval request to the user. To revise Product work later, the assigning run must reopen the same task and message its returned Product run ID.

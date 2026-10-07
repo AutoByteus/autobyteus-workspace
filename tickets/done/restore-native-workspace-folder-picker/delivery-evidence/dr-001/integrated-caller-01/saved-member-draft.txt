@@ -1,0 +1,90 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Projects
+Skills
+Memory
+Nodes
+Workspaces
+known
+member
+org
+ORGS
+Folder Proof Org
+(1)
+New - Folder Proof Org
+now
+product
+L
+lead
+other
+Temp Workspace
+Settings
+Agent Org
+Folder Proof Org
+Stopped
+Workspace
+org
+Model
+claude-fable-5
+AutoByteus
+Thinking
+Off
+Tool approval
+Auto-approve
+Members
+product
+Customized
+·
+member · claude-fable-5 · AutoByteus · Auto-approve
+Workspace
+member
+Temp workspace
+DEFAULT
+Scratch folder for quick chats
+YOUR WORKSPACES
+known
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dD3bMd/known
+member
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dD3bMd/member
+org
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dD3bMd/org
+Folder path
+Browse…
+
+Choose a folder on this computer, or enter its full path.
+
+Cancel
+Use folder
+Model
+claude-fable-5
+AutoByteus
+Thinking
+Off
+Tool approval
+Auto-approve
+
+MEMBERS
+
+L
+lead
+Coordinator
+claude-fable-5 · AutoByteus · Auto-approve
+other
+org · claude-fable-5 · AutoByteus · Auto-approve
+Projects
+Files
+Org
+Terminal
+Activity
+Token
+Artifacts
+Browser
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.

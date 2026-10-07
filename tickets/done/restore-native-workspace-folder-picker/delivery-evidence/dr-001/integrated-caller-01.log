@@ -1,0 +1,19 @@
+
+> autobyteus@1.4.96 test:e2e:workspace-folder-picker /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> node tests/e2e/workspace-folder-picker-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01
+
+FP-P01: Started isolated source-current launch and API-owned fixtures
+FP-P01: Pass
+FP-P02: Started Agent input only, explicit apply and unchanged registration
+FP-P02: Pass
+FP-P04: Started Team new Chat and known path reuse
+FP-P04: Pass
+FP-P05: Started Org root and specific placed-Team destination
+FP-P05: Pass
+FP-P06: Started full caller narrow form, invalid/manual/Cancel and long path geometry
+FP-P06: Pass
+FP-P07: Started real Org Run, active locks, stopped member draft and explicit Save
+FP-P07: Pass
+FP-P08: Started actual Settings locale -> Chat Chinese input at desktop and narrow widths
+FP-P08: Pass
+{"result":"Pass","evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/evidence.json","cleanup":{"instance":{"instanceId":"iso-64091-c43d","wasRunning":true,"forced":false,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6i8pWp","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null},"fixtureRemoved":true}}

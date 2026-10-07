@@ -1,0 +1,66 @@
+
+> autobyteus@1.4.96-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/chat/__tests__/ChatWorkspaceMenu.spec.ts components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts components/run-settings/__tests__ utils/__tests__/mobileFeatureGates.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+
+stderr | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/mobileFeatureGates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunMembersLine.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/mobileFeatureGates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunMembersLine.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/mobileFeatureGates.spec.ts (4 tests) 3ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (8 tests) 108ms
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 63ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (4 tests) 54ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 57ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts (21 tests) 242ms
+
+ Test Files  6 passed (6)
+      Tests  44 passed (44)
+   Start at  19:35:40
+   Duration  7.37s (transform 4.26s, setup 36.08s, collect 2.25s, tests 525ms, environment 1.49s, prepare 1.25s)
+

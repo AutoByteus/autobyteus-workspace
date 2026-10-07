@@ -939,6 +939,26 @@ creates or reuses its workspace once, and a failure keeps the start page and its
 values. The bound server remains authoritative for interpreting and
 canonicalizing an absolute path.
 
+In **Open another folder**, local embedded-node Electron windows offer
+**Browse…** beside the editable path. Choose a directory in the native dialog,
+then explicitly press **Use folder**: choosing a directory only fills the input,
+not the selected workspace. Manual typing remains available. Browser, remote-node
+and mobile-runtime contexts keep manual server-side path entry without Browse;
+a narrow desktop window alone does not disable it.
+
+While the chooser is open, Browse shows **Opening…** and Browse/Use folder are
+disabled. Native Cancel/Escape or an empty result preserves the path and current
+workspace silently. Failure shows a localized inline error without replacing
+either; retry or type the path instead. Selection focuses the input; cancel or
+failure returns focus to Browse. Typing clears stale feedback.
+
+The same interaction serves editable Org-root and placed-Team rows, including
+allowed stopped saved-Org member edits. Browse never registers a workspace,
+sends a message, starts a run or saves configuration. **Use folder** changes only
+the existing setting/draft owner; saved-Org member changes still require
+**Save**. Saved Agent/Team/Org root locks and active/read-only member restrictions
+are unchanged. See the [native input contract](./agent_execution_architecture.md#native-folder-input-contract).
+
 A Team started from New chat uses one workspace for the whole Team: the chat's
 choice is applied to the root and every member (`buildChatTeamLaunchConfig`),
 and `chatLaunchService.launchTeamChat` creates the Team launch draft in

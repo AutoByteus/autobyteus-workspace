@@ -1,0 +1,71 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+known
+member
+org
+ORGS
+Folder Proof Org
+(1)
+New - Folder Proof Org
+now
+product
+L
+lead
+other
+Temp Workspace
+Settings
+Agent Org
+Folder Proof Org
+Running
+Workspace
+org
+Model
+claude-fable-5
+AutoByteus
+Thinking
+Off
+Tool approval
+Auto-approve
+Members
+product
+Customized
+·
+member · claude-fable-5 · AutoByteus · Auto-approve
+Workspace
+member
+Model
+claude-fable-5
+AutoByteus
+Thinking
+Off
+Tool approval
+Auto-approve
+
+MEMBERS
+
+L
+lead
+Coordinator
+claude-fable-5 · AutoByteus · Auto-approve
+other
+org · claude-fable-5 · AutoByteus · Auto-approve
+Files
+Org
+Terminal
+Activity
+Token
+Artifacts
+Browser
+VNC Viewer
+Messages
+0 Messages
+
+No team messages yet
+
+Accepted inter-agent messages will appear here with their reference files.
