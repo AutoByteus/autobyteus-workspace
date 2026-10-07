@@ -194,6 +194,7 @@ const assertTaskErrorAssociation = async invalid => {
 const inspectTaskPresentation = async (mode, obs) => {
   const target = pathname();
   obs.presentation = [];
+  try {
   for (const locale of ['en', 'zh-CN']) {
     await page.evaluate(value => localStorage.setItem('autobyteus.localization.preference-mode', value), locale);
     await goto(target);
@@ -225,20 +226,26 @@ const inspectTaskPresentation = async (mode, obs) => {
         return { card: c, label: l, composer: editor, padding: parseFloat(cs.paddingTop), border: parseFloat(cs.borderTopWidth), firstChildIsLabel: card.firstElementChild === label,
           labelOffset: l.top - c.top, composerGap: editor.top - l.bottom,
           overflow: root.scrollWidth > root.clientWidth || document.documentElement.scrollWidth > innerWidth,
+          fit: { rootScroll: root.scrollWidth, rootClient: root.clientWidth, docScroll: document.documentElement.scrollWidth, innerWidth,
+            actions: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].map(e => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.right), Math.round(b.width)]; }),
+            widest: [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > innerWidth + 1).slice(0, 4).map(e => `${e.tagName}.${String(e.className?.baseVal ?? e.className).slice(0, 50)}#${e.getAttribute('data-testid') ?? ''}:${Math.round(e.getBoundingClientRect().right)}`) },
           actionsFit: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].every(e => {const b = e.getBoundingClientRect(); return b.width > 0 && b.left >= 0 && b.right <= innerWidth;}) };
       });
       assert(layout.firstChildIsLabel && Math.abs(layout.labelOffset - layout.padding - layout.border) <= 1, 'Label immediately follows card padding: no replacement heading spacer');
       assert(layout.composerGap >= 0 && layout.composerGap <= 16, 'No heading-only gap before composer');
-      assert(!layout.overflow && layout.actionsFit, 'Form/actions fit wide and narrow layout');
+      assert(!layout.overflow && layout.actionsFit, `Form/actions fit wide and narrow layout (${mode} ${locale} ${viewport.width}: ${JSON.stringify(layout.fit)})`);
       const association = await assertTaskErrorAssociation(false);
       await screenshot(`task-${mode}-${locale}-${viewport.width}`);
       obs.presentation.push({ locale, viewport, layout, association });
     }
   }
-  // Restore the normal probe locale and viewport before the preservation journey.
-  await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
-  await page.setViewportSize({ width: 1512, height: 862 });
-  await goto(target); await page.locator('#task-page-description').waitFor();
+  } finally {
+    // Restore the normal probe locale and viewport even when a check above failed, so one failure
+    // cannot leave later cases in zh-CN at 390 px.
+    await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    await page.setViewportSize({ width: 1512, height: 862 });
+    await goto(target); await page.locator('#task-page-description').waitFor();
+  }
 };
 const writeEvidence = () => fs.writeFile(path.join(outputDir, 'result.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 const runCase = async (id, title, fn) => {
