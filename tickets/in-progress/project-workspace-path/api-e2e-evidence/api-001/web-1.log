@@ -1,0 +1,138 @@
+
+> autobyteus@1.4.96-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/projects stores/__tests__/projectStore.spec.ts utils/projects --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-web
+
+stderr | components/projects/panel/__tests__/ProjectsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskBoard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/TempTasks.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskWorkers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/projectStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskDraftEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/projects/__tests__/ProjectTaskWorkers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskDraftEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/TempTasks.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskBoard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/panel/__tests__/ProjectsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/projectStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/projectStore.spec.ts (13 tests) 130ms
+ ✓ components/projects/__tests__/ProjectTaskWorkers.spec.ts (6 tests) 34ms
+ ✓ components/projects/__tests__/ProjectTaskDraftEditor.spec.ts (8 tests) 92ms
+ ✓ components/projects/__tests__/ProjectEditor.spec.ts (14 tests) 212ms
+ ✓ components/projects/__tests__/ProjectsList.spec.ts (6 tests) 163ms
+ ✓ components/projects/__tests__/TempTasks.spec.ts (5 tests) 122ms
+ ✓ components/projects/panel/__tests__/ProjectsPanel.spec.ts (5 tests) 180ms
+ ✓ components/projects/__tests__/ProjectTaskBoard.spec.ts (8 tests) 269ms
+ ✓ components/projects/__tests__/ProjectDetail.spec.ts (13 tests) 214ms
+stderr | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/projects/__tests__/taskSummary.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/projects/__tests__/taskRootPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/projects/__tests__/pathBreakSegments.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/projects/__tests__/ProjectVoiceStatus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/TaskDescriptionComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/projects/__tests__/taskRootPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/projects/__tests__/taskSummary.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/projects/__tests__/taskSummary.spec.ts (12 tests) 6ms
+ ✓ utils/projects/__tests__/taskRootPresentation.spec.ts (13 tests) 5ms
+ ✓ components/projects/__tests__/ProjectVoiceStatus.spec.ts (7 tests) 33ms
+ ✓ components/projects/__tests__/TaskDescriptionComposer.spec.ts (2 tests) 32ms
+stdout | utils/projects/__tests__/pathBreakSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/projects/__tests__/pathBreakSegments.spec.ts (2 tests) 2ms
+ ✓ components/projects/__tests__/ProjectTaskRow.spec.ts (5 tests) 28ms
+
+ Test Files  15 passed (15)
+      Tests  119 passed (119)
+   Start at  19:57:42
+   Duration  14.21s (transform 6.43s, setup 95.80s, collect 7.42s, tests 1.52s, environment 5.44s, prepare 3.92s)
+

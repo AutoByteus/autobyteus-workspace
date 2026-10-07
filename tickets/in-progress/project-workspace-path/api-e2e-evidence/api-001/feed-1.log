@@ -1,0 +1,559 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:98557) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-07T17:57:28.659Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Populating agent definition cache for the first time...
+[2026-10-07T17:57:29.622Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+[2026-10-07T17:57:29.632Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+In-memory cache: Added new agent definition with ID pcf-manager-290124.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: pcf-manager-290124
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+In-memory cache: Added new agent definition with ID pcf-worker-290124.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: pcf-worker-290124
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+In-memory cache: Added new agent definition with ID pcf-helper-290124.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: pcf-helper-290124
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+[2026-10-07T17:57:29.865Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID pcf-squad-290124.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: pcf-squad-290124
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+[2026-10-07T17:57:29.893Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID pcf-team-290124.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: pcf-team-290124
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets
+Remote Access WebSocket rejected /ws/projects?access_token=%5BREDACTED%5D: REMOTE_ACCESS_AUTH_INVALID
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets
+Remote Access WebSocket rejected /ws/file-explorer/bd914f9e-4f30-4a1d-9a19-1b7f5ff8168f?access_token=%5BREDACTED%5D: REMOTE_ACCESS_AUTH_INVALID
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Created and registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+AGY compaction detection off for run pcf_manager_290124_8f4b8d5b9cb043f7b13c3c3b4fa5efec: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Agent websocket attached for run pcf_manager_290124_8f4b8d5b9cb043f7b13c3c3b4fa5efec
+Created agent session 1342ad65-3ef3-4b86-9be7-6fae5e0c2b04 for run pcf_manager_290124_8f4b8d5b9cb043f7b13c3c3b4fa5efec
+Agent WebSocket connected: session=1342ad65-3ef3-4b86-9be7-6fae5e0c2b04, run=pcf_manager_290124_8f4b8d5b9cb043f7b13c3c3b4fa5efec
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agents/pcf_manager_290124_8f4b8d5b9cb043f7b13c3c3b4fa5efec/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+AGY compaction detection off for run pcf_worker_290124_b4a767a118204979b1d98abaaf5b7de2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+AGY compaction detection off for run pcf_helper_290124_b53cdba7773d49e9be52f934f03dc58c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+AGY compaction detection off for run pcf_worker_290124_b4a767a118204979b1d98abaaf5b7de2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot
+Closed agent session 1342ad65-3ef3-4b86-9be7-6fae5e0c2b04
+Agent WebSocket disconnected: 1342ad65-3ef3-4b86-9be7-6fae5e0c2b04
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Agent team websocket attached for team run pcf_team_290124_f8f087fdbae540e6aac20e9efb142359
+Created agent session 1ca4d759-86ca-4db6-bc8a-8790b91a675e for run pcf_team_290124_f8f087fdbae540e6aac20e9efb142359
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Agent Team WebSocket connected: session=1ca4d759-86ca-4db6-bc8a-8790b91a675e, run=pcf_team_290124_f8f087fdbae540e6aac20e9efb142359
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_teams/pcf_team_290124_f8f087fdbae540e6aac20e9efb142359/pcf_manager_290124_38835e5e486b4702a32343bd90f28c8a/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_teams/pcf_team_290124_f8f087fdbae540e6aac20e9efb142359/pcf_manager_290124_38835e5e486b4702a32343bd90f28c8a/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_teams/pcf_team_290124_f8f087fdbae540e6aac20e9efb142359/pcf_manager_290124_38835e5e486b4702a32343bd90f28c8a/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_teams/pcf_team_290124_f8f087fdbae540e6aac20e9efb142359/pcf_manager_290124_38835e5e486b4702a32343bd90f28c8a/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+AGY compaction detection off for run pcf_manager_290124_38835e5e486b4702a32343bd90f28c8a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_teams/pcf_team_290124_f8f087fdbae540e6aac20e9efb142359/pcf_manager_290124_38835e5e486b4702a32343bd90f28c8a/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+AGY compaction detection off for run pcf_helper_290124_8394ebce29ab4326b2533d8298046d0e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+AGY compaction detection off for run pcf_worker_290124_03251f964e344615aed8e6fe946811f9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+AGY compaction detection off for run pcf_worker_290124_542d99e9a84e4c3aa21727642c2720c6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members
+Closed agent session 1ca4d759-86ca-4db6-bc8a-8790b91a675e
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_orgs/pcf_org_290124_3ebdfe227cb842ca8d357691e7a00e48/pcf_manager_290124_60830937eec948a69b8f10fa05589ea5/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_orgs/pcf_org_290124_3ebdfe227cb842ca8d357691e7a00e48/pcf_manager_290124_60830937eec948a69b8f10fa05589ea5/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_orgs/pcf_org_290124_3ebdfe227cb842ca8d357691e7a00e48/pcf_manager_290124_60830937eec948a69b8f10fa05589ea5/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_orgs/pcf_org_290124_3ebdfe227cb842ca8d357691e7a00e48/pcf_manager_290124_60830937eec948a69b8f10fa05589ea5/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+AGY compaction detection off for run pcf_manager_290124_60830937eec948a69b8f10fa05589ea5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agent_orgs/pcf_org_290124_3ebdfe227cb842ca8d357691e7a00e48/pcf_manager_290124_60830937eec948a69b8f10fa05589ea5/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Org root: an Org-hosted root reports its worker's status and goes Offline at DONE
+AGY compaction detection off for run pcf_worker_290124_2a47a92c0bd34b4cb82f41635bdf321c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+AGY compaction detection off for run pcf_manager_290124_c02a529cf57f4b7997c566e3508ec3da: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Agent websocket attached for run pcf_manager_290124_c02a529cf57f4b7997c566e3508ec3da
+Created agent session 7a40751a-255b-43b3-8002-c80b63e191f5 for run pcf_manager_290124_c02a529cf57f4b7997c566e3508ec3da
+Agent WebSocket connected: session=7a40751a-255b-43b3-8002-c80b63e191f5, run=pcf_manager_290124_c02a529cf57f4b7997c566e3508ec3da
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agents/pcf_manager_290124_c02a529cf57f4b7997c566e3508ec3da/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+AGY compaction detection off for run pcf_worker_290124_9491a1abbf4f4aca9ffe2021a6b76aa5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+AGY compaction detection off for run pcf_worker_290124_9491a1abbf4f4aca9ffe2021a6b76aa5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+AGY compaction detection off for run pcf_helper_290124_712c64d1c74d4641af9af92dd2774cdd: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks
+Closed agent session 7a40751a-255b-43b3-8002-c80b63e191f5
+Agent WebSocket disconnected: 7a40751a-255b-43b3-8002-c80b63e191f5
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+AGY compaction detection off for run pcf_manager_290124_361e19ea0cc845fe817749e4427ce3b5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Agent websocket attached for run pcf_manager_290124_361e19ea0cc845fe817749e4427ce3b5
+Created agent session 7e63aad5-114e-42a1-8c1d-1a0d5649d33a for run pcf_manager_290124_361e19ea0cc845fe817749e4427ce3b5
+Agent WebSocket connected: session=7e63aad5-114e-42a1-8c1d-1a0d5649d33a, run=pcf_manager_290124_361e19ea0cc845fe817749e4427ce3b5
+
+stderr | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/memory/agents/pcf_manager_290124_361e19ea0cc845fe817749e4427ce3b5/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-change-feed-e2e-MhVDwJ/workspace.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Reusing registered workspace ID: agent_ws_6033ba897daa1834e1763f7f178a18f09468795d09ee9bb2e8ef1bae517c2f7b
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+AGY compaction detection off for run pcf_worker_290124_b5c9408b7d56435993eecc354e77fda9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/project-change-feed.e2e.test.ts > Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AGY actor) > QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded
+Closed agent session 7e63aad5-114e-42a1-8c1d-1a0d5649d33a
+Agent WebSocket disconnected: 7e63aad5-114e-42a1-8c1d-1a0d5649d33a
+
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 13226ms
+     ✓ feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets  965ms
+     ✓ Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot  2447ms
+     ✓ Team root: a real start failure shows Couldn't start; re-delegation replaces the root; a task Team root folds its members  2449ms
+     ✓ Org root: an Org-hosted root reports its worker's status and goes Offline at DONE  1752ms
+     ✓ Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks  1786ms
+     ✓ QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded  2511ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  19:57:15
+   Duration  26.57s (transform 8.96s, setup 20ms, import 12.60s, tests 13.23s, environment 0ms)
+

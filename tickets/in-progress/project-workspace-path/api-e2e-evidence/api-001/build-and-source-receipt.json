@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-07T18:04:48.660409+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path",
+  "head": "ed8897135d4c802ba7cfb8d035906078fc15c50b",
+  "implementationSource": "9dad89bae",
+  "reviewedThrough": "7b69893c3",
+  "serverBuild": {
+    "prebuild": "exit 0 (prebuild.log)",
+    "build": "exit 0 (build.log)",
+    "sourceUnchangedSinceBuild": true
+  },
+  "runtime": {
+    "node": "v22.23.1",
+    "pnpm": "10.28.2",
+    "os": "Darwin arm64"
+  },
+  "changedPaths": [
+    "TESTING.md",
+    "autobyteus-server-ts/tests/e2e/projects/project-change-feed.e2e.test.ts",
+    "autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts",
+    "autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts",
+    "autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts",
+    "autobyteus-server-ts/tests/e2e/projects/projects-startup-migration.e2e.test.ts",
+    "autobyteus-web/tests/e2e/projects-feature-probe.mjs"
+  ],
+  "sha256": {
+    "TESTING.md": "d9f3b0649299b670d25c735479193220d9207212d19769d7f1b8062e5a827997",
+    "autobyteus-server-ts/tests/e2e/projects/project-change-feed.e2e.test.ts": "d38b52719cbfb98e46a2adc92a7d49b5d08e8accf44c7bb77c75a14fb85c46e5",
+    "autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts": "4fee4856a72dfadbcfd44a15fbc2d3d04ab9afd388dfcc19cff8e3996a43866a",
+    "autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts": "bd6bbd2f81afe8d978525ea60af7562b67c3ac55ed358b1c1cdc9b60001ab1c4",
+    "autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts": "72d744def8107cc51ac561b117c2963afd57599b48a495a739f1f3555a20f153",
+    "autobyteus-server-ts/tests/e2e/projects/projects-startup-migration.e2e.test.ts": "7e533bc717087a3f364b0eeafae983e2453c3ae5d5fce826338698d0794fbd07",
+    "autobyteus-web/tests/e2e/projects-feature-probe.mjs": "9f9baa88c24f242f4b7d11e1808951076bccb239b4d159912ac87b7d3c942d26"
+  }
+}

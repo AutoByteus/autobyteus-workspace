@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-10-07T18:05:23.058478+00:00",
+  "browser": {
+    "browser": "closed",
+    "frontend": "terminated:66100",
+    "nodeA": "terminated:77456",
+    "nodeB": "terminated:65492",
+    "frontendPortReleased": true,
+    "nodeAPortReleased": true,
+    "nodeBPortReleased": true,
+    "tempRootRemoved": true
+  },
+  "generated": {
+    "autobyteus-application-backend-sdk/dist": {
+      "reason": "Absent on entry; created by API prebuild; no further execution needs outputs",
+      "removed": true
+    },
+    "autobyteus-application-sdk-contracts/dist": {
+      "reason": "Absent on entry; created by API prebuild; no further execution needs outputs",
+      "removed": true
+    }
+  },
+  "matchingOwnedRuntimeProcesses": []
+}
