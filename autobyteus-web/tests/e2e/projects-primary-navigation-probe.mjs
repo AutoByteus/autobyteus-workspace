@@ -39,7 +39,7 @@ const record = async (id, fn) => {
 }
 let child, browser, page, log, port
 const installed = []
-const expanded = () => page.locator('[data-test="app-left-panel-primary-nav"] li > button:first-child')
+const expanded = () => page.locator('[data-test="app-left-panel-primary-nav"] li > div > button:first-child')
 const strip = () => page.locator('[data-test="workspace-left-navigation-strip"] button[data-nav-key]:not([data-nav-key="settings"])')
 const labels = ['Chat', 'Agents', 'Agent Teams', 'Agent Orgs', 'Projects', 'Applications', 'Skills', 'Memory', 'Nodes']
 const collapse = async () => { await page.getByRole('button', { name: 'Collapse left panel', exact: true }).click(); await strip().first().waitFor() }
