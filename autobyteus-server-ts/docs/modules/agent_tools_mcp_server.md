@@ -303,8 +303,8 @@ manifests:
 `ProjectTaskToolsMcpAdapterProvider` calls the same manifest/parser and
 ProjectService/ProjectTaskService as the native tools; business behavior is not
 implemented in MCP dispatch. Each canonical name must be explicitly selected;
-these adapters require no MemberTeamContext and are available independently of
-the default-off Projects UI visibility flag. An active run-session and normal
+these adapters require no MemberTeamContext and do not depend on the Projects UI,
+which is always available on desktop (there is no visibility flag). An active run-session and normal
 local admission are still required. One selected name cannot expose the rest.
 All four use protect_static_adapter collision policy; retired task tools and
 category-wide native task exposure are not restored.

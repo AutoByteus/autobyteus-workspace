@@ -436,6 +436,15 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - a long Task keeps its context-file line and worker line visible;
 - a short summary appears in full in the delete confirmation.
 
+**PMU-015–016** cover the right-panel Projects tab:
+- it is the first tab, with a live board beside the chat;
+- a worker opens in the center and the tab stays selected, in Agent, Team and
+  Org conversations;
+- card → detail → back;
+- the picker choice is remembered after reload;
+- at a constrained width, the collapsed strip and the drawer list Projects
+  first, and the drawer board does not overflow.
+
 A raw `/ws/projects` client records message volume. The wire contract itself is
 covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`
 (see `TESTING.md`).
