@@ -55,3 +55,4 @@ None.
 - Documentation discrepancy from CRR-001: TESTING.md now describes path callers/no registration and current browser coverage. Delivery still owns final cumulative docs sync.
 - Recommended recipient: configured successful test-review delivery recipient; canonical test report contains dispatch receipt.
 - Remaining risks: API limits preserved (packaged/full-product, other OSs, actual user profile/provider and explicit user verification unclaimed); rebuild cleaned SDK/server outputs before built-process reruns. No merge/push/release.
+- Routing receipt: `get_handoff_rules` selected post-API/E2E durable-test Pass → `/delivery_engineer`; accepted=true / DELIVERED to run `delivery_engineer_f3539e94c2674962b9e93fe573516bc2`. Complete cumulative package and six tests attached; one recipient, no duplicate forwarding. Review artifacts commit `fca742325`; this receipt added afterward.

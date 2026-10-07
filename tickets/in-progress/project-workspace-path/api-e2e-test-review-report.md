@@ -80,4 +80,4 @@ API-owned logs corroborate 240 owner tests/17 files; HTTP 8, GraphQL 10, nodes 1
 
 ### Routing Record
 
-Report and CRR-002 persisted before route lookup. `get_handoff_rules` selected the successful post-API/E2E durable test-code review → `/delivery_engineer` rule on 2026-10-07. Only this most-specific outcome applies. Dispatch pending; no duplicate source/API assignment or additional recipient.
+Report and CRR-002 persisted before route lookup. `get_handoff_rules` selected the successful post-API/E2E durable test-code review → `/delivery_engineer` rule on 2026-10-07. Only this most-specific outcome applies. Dispatch confirmed: accepted=true / DELIVERED to `/delivery_engineer`, target run `delivery_engineer_f3539e94c2674962b9e93fe573516bc2`. Complete cumulative package, six updated durable tests and relevant evidence attached. Review artifacts commit `fca742325`; no duplicate source/API assignment or additional recipient. Review complete; no polling.
