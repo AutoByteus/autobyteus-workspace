@@ -7,11 +7,11 @@
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux`
 - Repository mode: `Git`
 - Task worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux` / `codex/project-manager-ux`
-- Resolved base remote / branch / revision: `origin` / `personal` / `f48dbfbf39bbf9ed76116943e304248ca387dc7f` (fetched 2026-10-06)
+- Resolved base remote / branch / revision: `origin` / `personal` / `f48dbfbf39bbf9ed76116943e304248ca387dc7f` (fetched 2026-10-06); rebased onto `7d130309e` on 2026-10-07
 - Finalization target remote / branch: `origin` / `personal`
 - Bootstrap result: Worktree and branch created from refreshed `origin/personal`.
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-005`
 - Authorities read (requirements reading gate; file and date): `.claude/skills/solution-designer/references/requirements-engineering.md` (2026-10-06)
 - Investigation status: Current-behavior investigation done for the requirements phase. The product experience is waiting on the Product Team, as the user asked.
 
@@ -75,13 +75,34 @@
 
 ## Product Design Findings
 
-- Pending the Product Team result.
+- Product Design package path: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/project-manager-ux/` (`product-ticket.md`, `ui-ux-spec.md`)
+- Visualizer or UI reference source path: `/Users/normy/autobyteus_org/autobyteus-web-design` (branch `design/project-manager-ux`, design `1fcf8f8`, close `eb60aba` = design-repo `origin/personal`)
+- Approved UI/UX specification path: `.../tickets/done/project-manager-ux/ui-ux-spec.md` (Status Approved)
+- Explicit user-confirmation reference: 2026-10-07, "Perfect, I'm satisfied. I'm satisfied now. It's confirmed."
+- Journeys and scenarios validated: UXJ-001..004 (live arrival, open the root, outcomes, left panel across pages)
+- Final visual-reference paths: `visual-references/VIS-001..VIS-010` (checked present on 2026-10-07; VIS-004 and VIS-005 viewed)
+- Product decisions supported by evidence: no Manager-specific UI; live Projects pages; Task → root only; left panel kept; row clicks open from any page
+- Alternatives rejected: Manager bar, Tasks tab beside the chat, Project grouping/Task labels in the tree, header chips, New chat binding, helper runs on a Task, member count
+- Mocked boundaries and production gaps: root data (not in GraphQL), live push, the F-006 click fix
+- Requirements sections affected: all (SR-002)
+- Consistency verification (Solution Designer, 2026-10-07): The spec, ticket record, handoff message and design repo agree on the repository, ticket, revisions, confirmation and artifact paths. The spec links the runnable reference and the final screenshots. No Result Correction is needed.
+- Gap found during integration: the spec does not define the root status for (a) a shut-down-but-open root (`offline` in the tree) or (b) a still-starting root. Proposed as DEC-006 for user approval.
+
+## Additional Source Log (2026-10-07)
+
+| Date | Source Type | Exact Source | Why Consulted | Relevant Finding |
+| --- | --- | --- | --- | --- |
+| 2026-10-07 | Code | `autobyteus-server-ts/src/agent-collaboration/execution/task/task-agent-resource-port.ts` | DEC-007 helper feasibility | `TaskAgentResourceRole = "assigned" \| "delegated" \| "broughtIn"`; `delegated`/`broughtIn` entries record their `creator` run, so every helper run of a Task is already recorded |
+| 2026-10-07 | Doc | `autobyteus-server-ts/docs/modules/projects.md` "Agent Run Resources" | Role meaning | `assigned` = a non-owned run's `delegate_task(task_id)`; `delegated` = an owned run's `delegate_task` without task_id; `broughtIn` = an owned run's `send_message_to` that started a copy |
+| 2026-10-07 | Code | `autobyteus-web/components/workspace/history/AgentRunTaskRows.vue:85` | F-006 | `if (!props.runSelected) emit('select-run')` confirmed in the task worktree base `f48dbfb` |
 
 ## Supplemental Artifact Inventory
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `product-design-request.md` | Solution Designer | Handoff context for the Product Team | UI/UX exploration | REQ-001..REQ-006 | Sent | Not behavior-defining |
+| `product-design-request.md` | Solution Designer | Round-1 handoff context for the Product Team | UI/UX exploration | REQ-001..REQ-010 | Completed | Not behavior-defining |
+| `product-design-request-r2.md` | Solution Designer | Round-2 handoff context (Temp tasks) | UI/UX exploration | REQ-011..016 | Completed | Not behavior-defining |
+| `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/project-manager-ux/ui-ux-spec.md` + `visual-references/` VIS-001..018 | Product UI/UX Designer (external) | Normative UI/UX, rounds 1–2 (round 1 `1fcf8f8`/`eb60aba`, round 2 `492d37a`/`8cd41f8`) | Projects pages, Temp tasks | REQ-002..016 | User-confirmed 2026-10-07 | Behavior-defining; part of the SR-003 approval (DEC-006 deviation) |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -90,7 +111,29 @@
 | UNK-001 | Unknown | Which agent is a Project's manager (no built-in exists) | Decides how the UI finds or starts the manager | User decision, informed by Product | Open |
 | RSK-001 | Risk | Projects is off by default; the manager comes from a separate agent repository | The experience must handle "no manager available" | Product + requirements | Open |
 
-## Requirement Implications
+## Architecture Investigation Findings (2026-10-07, SR-003 approved)
+
+Base refreshed: the task branch was rebased onto `origin/personal@7d130309e` (2026-10-07; includes `reactivate-done-task-runs`). Authorities read: `references/architecture-design.md`, `design-principles.md`, `/DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` (all 2026-10-07).
+
+| # | Source | Finding | Design implication |
+| --- | --- | --- | --- |
+| A1 | `autobyteus-server-ts/src/api/websocket/index.ts`, `application-backend-notifications.ts`, `file-explorer.ts` | App-level websocket pattern: route → `authorizeRemoteAccessWebSocket` → hub `connect/disconnect/send`. No Projects/Task push exists. GraphQL has no subscriptions. | New `/ws/projects` route plus a Projects change hub, following the notification-hub pattern |
+| A2 | `projects/services/project-service.ts` (create/update/delete, workspace links), `project-task-service.ts` (create/update/delete/updateTaskById/link/markStarted/markFailed/closeAndWrite/reopenAssignment/deleteAdHocTasksHostedBy) | All Project and Task writes, from UI GraphQL and agent tools alike, go through these two services | Publish change events from these owners after commit; this covers every write path |
+| A3 | `projects/services/task-agent-resource-service.ts` `swap()` | The single commit point for every run-resource change (link, start, fail, close, reopen, forget) | Root (worker) changes are published from the committed swap |
+| A4 | `projects/domain/task-agent-resources.ts`; schema reader/writer | Entries hold role, assigner, hostRoot, agentRun (+ coordinator), start/startError, closedAt. They hold **no address or name** ("never stores … addresses"). A failed start has no execution-tree node (the tree is written at activation commit, `root-task-dispatch.ts`). | A worker that couldn't start has no name source. The design must record the recipient address on the assignment. |
+| A5 | `agent-collaboration/execution/services/collaboration-execution-location-service.ts` | Stored-tree lookup by root + agentRunId gives `memberAddress` / `groupPath`. It reads stored trees (I/O per root). | Rejected as a name source: it would add per-read tree I/O, offers nothing for failed starts, and would be a fallback read for older entries |
+| A6 | Roots call `RootTaskExecutionLifecycle.onAgentStatus(agentRunId, status)` (`standalone-agent-run-root.ts:316-318`, `agent-org-run.ts:276-278`, `team-task-execution-service.ts:41`) | One root-neutral status chokepoint for every agent status change, including idle shutdown (`publishAgentOffline` → status overlay) | Worker-status change notifications start here |
+| A7 | `standalone-agent-run-root.ts` `getAgentStatusSnapshots`; `root-team-run.ts` `getLeafAgentStatusSnapshots`; `agent-org-run.ts` `getAgentStatusSnapshots` | Active roots can report live leaf-agent statuses; children without a live execution report `offline` | The worker status is computed on demand from the root that hosts it; no duplicated status state |
+| A8 | `agent-collaboration/execution/services/active-collaboration-root-directory.ts` `ActiveRootMessageBoundary` | Process lookup of active roots by identity; already exposes the optional `releaseTaskAgentResources` for the Task side | Extend it with an optional `taskExecutionStatus(reference)`. Inactive or missing root = offline. |
+| A9 | `autobyteus-web/utils/workspaceTeamAggregateStatus.ts` `foldTeamAggregateStatus` | Team status = the highest rank of member statuses (offline < idle < error < initializing < running) | A team worker's status must use the same fold. Move it into `@autobyteus/collaboration-stream-contracts` so server and web share one rule. |
+| A10 | `autobyteus-web/stores/agentRunCollaborationStore.ts` (`syncHost`: live stream only for the selected running host) | Left-panel task rows are live only for the selected run; other roots show stored (offline) views | A web-derived worker status would be wrong for non-selected roots. The server computes it (the user's rule "reflect what it is"). |
+| A11 | `components/workspace/history/AgentRunTaskRows.vue:85`; `composables/useWorkspaceHistorySelectionActions.ts`; `components/AppLeftPanel.vue` `onRunningRunSelected`; `services/workspace/workspaceNavigationService.ts` `resolveSelectionRoute` | F-006 is confirmed: task-row select skips `select-run` when the host run is selected, so no route push happens. Navigation is owned by `resolveSelectionRoute` + push in AppLeftPanel. Team and member rows always emit `run-selected`. | Fix it at the task-row owner. Task-root opening reuses the same selection actions and route resolution. |
+| A12 | `autobyteus-web/stores/projectTaskStore.ts` (per-project snapshots, read/write/delete epochs, manual Refresh); `projectStore.ts` | Snapshot store with stale-response guards; no event input | Extend the store to apply change events and to hold a no-project (Temp tasks) list |
+| A13 | `projects/stores/ad-hoc-task-store.ts` | read/create/update/delete by ID; **no list** | Add a list (directory enumeration, damaged files skipped and logged) |
+| A15 | `configured-agent-execution-handle.ts:383-384`; `standalone-agent-run-root.ts:313-317` (ARCH-REV-001 P-001, verified by the Solution Designer 2026-10-07) | A wake publishes the first `AGENT_STATUS` before `overlay.clear()`; roots dispatch `onAgentStatus` synchronously | Publication reads after the dispatch (Publication Contract) |
+| A16 | `WorkspaceAgentOrgHistoryCollection.vue` (ARCH-REV-001 residual note) | Org actions `onInspectAgentOrgExecution(run, agentRunId, address)` and `selectTaskTeam` exist | DS-004 reuses them for org-hosted roots |
+| A14 | `api/graphql/types/project-tasks.ts` `ProjectTask` | No root fields; `projectTasks(projectId)` only | Add `root` to the Task view; add a `tasksWithoutProject` query |
+
 
 The core gap is presentational and contractual: the server already knows Tasks and their runs, but the UI shows neither live nor connected. Requirements focus on: a clear place to talk to the manager about a Project, Task changes visible as they happen, and Task ↔ worker links.
 
