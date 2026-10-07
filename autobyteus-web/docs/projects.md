@@ -360,13 +360,29 @@ and transcription IPC are fixtures, with a synthetic microphone and test-granted
 permission. It does not certify physical devices, native Electron IPC/models or
 the packaged desktop shell.
 
-`node tests/e2e/project-manager-ux-probe.mjs --output-dir <fresh dir>` (needs a
-current server build) drives the live pages with scripted AGY agents calling the
-actual tools: **PMU-001–007** cover live Project/Task arrival and counts, the
-root line (live status, move highlight, DONE → Offline), opening Agent-, Team-
-and Org-hosted roots and a task Team's coordinator, AR-002 with a deleted
-hosting run, Temp tasks, F-006, reconnect after a real backend restart, and
-narrow layout. A raw `/ws/projects` client records message volume.
+`pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh dir>`
+(needs a current server build; `--cases PMU-001,…` selects cases) drives the
+live pages with scripted AGY agents calling the actual tools.
+
+**PMU-001–007** cover:
+- live Project/Task arrival and counts;
+- the root line: live status, move highlight, DONE → Offline;
+- opening Agent-, Team- and Org-hosted roots and a task Team's coordinator;
+- AR-002 with a deleted hosting run;
+- Temp tasks and F-006;
+- reconnect after a real backend restart, and narrow layout.
+
+**PMU-008–012** cover:
+- the left panel kept across Chat, Projects, the board and the Task page, with
+  run, Team-member and Org rows opened from Projects;
+- a Temp task through DONE, reopen and reactivation, then its chat deleted;
+- "Couldn't start" from a real start failure, then re-delegation;
+- two windows on one node;
+- an Org-hosted root opened before the Org run is hydrated.
+
+A raw `/ws/projects` client records message volume. The wire contract itself is
+covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`
+(see `TESTING.md`).
 
 Composer mention probes are separate renderer fixtures with doubled candidate/
 upload/admission/scope boundaries, not live Team/Manager/full-product journeys.
