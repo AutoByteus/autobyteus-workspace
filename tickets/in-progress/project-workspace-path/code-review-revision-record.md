@@ -32,3 +32,4 @@ None.
 - Remaining work: API/E2E owner must adapt stale ID/registration fixtures and execute required boundaries; root TESTING.md old-contract prose needs normal coverage/docs sync. Startup/restart, feed/reconnect, cross-OS and packaged/full-product/user acceptance remain unclaimed.
 - Evidence path: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/tickets/in-progress/project-workspace-path/code-review-evidence/crr-001/`.
 - Cleanup: no server/browser launched; focused checks exited; reviewer-generated untracked SDK dist outputs removed. Rebuild normally before real-process validation.
+- Routing receipt: primary cumulative package accepted=true / DELIVERED to `/api_e2e_engineer`, run `api_e2e_engineer_7f3e8cdd37f34b48a51b61db8ddc6118`. One recipient under active route contract; no duplicate forwarding. Reviewer artifacts commit `f4fedcd38`; receipt added afterward.
