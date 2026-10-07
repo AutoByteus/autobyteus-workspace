@@ -43,7 +43,22 @@ export interface TaskAgentResourcePort {
   closedAgentRunsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */
   assertResourceDataReadable(): void;
+  /**
+   * Read-only, advisory reactivation eligibility of one closed assignment: the Task exists and is not
+   * DONE, `requestedBy` is the entry's assigner and the assignment started. Rejects with a coded error
+   * (one of TASK_REACTIVATION_REJECTION_CODES).
+   */
+  assertReopenable(input: TaskAgentResourceReopenInput): Promise<void>;
+  /**
+   * Reopens that one entry under the Task's ordering with DONE, re-validating every condition. Never
+   * writes the Task status. `reopened: false` when the entry was already open.
+   */
+  reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult>;
 }
+
+/** A reactivation request: the assignment's agent run and the run asking for it. */
+export type TaskAgentResourceReopenInput = Readonly<{ agentRun: TaskExecutionReference; requestedBy: string }>;
+export type TaskAgentResourceReopenResult = Readonly<{ taskId: string; reopened: boolean }>;
 
 /** Task → runtime: stop exactly these closed agent runs in one host root. `null`: the root is not active. */
 export type TaskAgentResourceReleaseRequest = (hostRoot: RootExecutionIdentity, agentRuns: readonly TaskExecutionReference[])
@@ -58,4 +73,11 @@ export type TaskAgentResourceRejectionCode = typeof TASK_AGENT_RESOURCE_REJECTIO
 export const taskAgentResourceRejectionCode = (error: unknown): TaskAgentResourceRejectionCode | null => {
   const code = (error as { code?: unknown } | null)?.code;
   return (TASK_AGENT_RESOURCE_REJECTION_CODES as readonly unknown[]).includes(code) ? code as TaskAgentResourceRejectionCode : null;
+};
+/** Coded reactivation rejections: the port rejections plus a deleted Task and an assignment that never started. */
+export const TASK_REACTIVATION_REJECTION_CODES = [...TASK_AGENT_RESOURCE_REJECTION_CODES, "TASK_NOT_FOUND", "TASK_REACTIVATION_UNAVAILABLE"] as const;
+export type TaskReactivationRejectionCode = typeof TASK_REACTIVATION_REJECTION_CODES[number];
+export const taskReactivationRejectionCode = (error: unknown): TaskReactivationRejectionCode | null => {
+  const code = (error as { code?: unknown } | null)?.code;
+  return (TASK_REACTIVATION_REJECTION_CODES as readonly unknown[]).includes(code) ? code as TaskReactivationRejectionCode : null;
 };

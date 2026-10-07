@@ -16,6 +16,7 @@ import {
   teamTaskExecutionReferenceDtoSchema,
   teamTaskExecutionStartedPayloadSchema,
   teamTaskExecutionsClosedPayloadSchema,
+  teamTaskExecutionsReopenedPayloadSchema,
 } from "./team-task-execution-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
 import {
@@ -70,6 +71,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTIONS_CLOSED"), payload: teamTaskExecutionsClosedPayloadSchema }).strict(),
+  z.object({ type: z.literal("TASK_EXECUTIONS_REOPENED"), payload: teamTaskExecutionsReopenedPayloadSchema }).strict(),
   z.object({ type: z.literal("COLLABORATOR_ADDED"), payload: teamCollaboratorAddedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
@@ -91,6 +93,7 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamInterruptCommandAckPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTIONS_CLOSED"; payload: z.infer<typeof teamTaskExecutionsClosedPayloadSchema> }>
+  | Readonly<{ type: "TASK_EXECUTIONS_REOPENED"; payload: z.infer<typeof teamTaskExecutionsReopenedPayloadSchema> }>
   | Readonly<{ type: "COLLABORATOR_ADDED"; payload: z.infer<typeof teamCollaboratorAddedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>

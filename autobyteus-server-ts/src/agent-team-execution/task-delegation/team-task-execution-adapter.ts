@@ -36,7 +36,7 @@ import type { TeamDelegationPlacement } from "../services/resolved-team-recipien
 import type { TeamRunRegistrationReservation } from "../services/team-run-resolver.js";
 import { requirePreparedTaskTeamNode } from "./task-delegation-execution-resolution.js";
 import { TeamTaskSourceResolver } from "./team-task-source-resolver.js";
-import { taskExecutionStartedEvent, taskExecutionsClosedEvent } from "./task-execution-event-factory.js";
+import { taskExecutionStartedEvent, taskExecutionsClosedEvent, taskExecutionsReopenedEvent } from "./task-execution-event-factory.js";
 import type { TeamTaskExecutionServiceOptions } from "./team-task-execution-service-contract.js";
 
 const referenceOf = (execution: IndexedTaskExecution): TaskExecutionReference =>
@@ -147,6 +147,16 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const host = entry && this.options.teamRunResolver.getManaged(entry.ownerTeamRunId);
     return host ? host.releaseDirectTaskExecution(reference) : Promise.resolve({ accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" });
   }
+  discardReleasedExecution(reference: TaskExecutionReference): void {
+    this.registrations.delete(taskExecutionReferenceKey(reference));
+    const entry = this.options.getIndex().getTaskExecution(reference); if (!entry) return;
+    this.options.teamRunResolver.getManaged(entry.ownerTeamRunId)?.discardReleasedDirectTaskExecution(reference);
+    if ("teamRunId" in reference) this.options.teamRunResolver.retireTerminated(reference.teamRunId);
+  }
+  taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null {
+    const innermost = this.options.getIndex().listTaskExecutionChainForAgent(agentRunId)[0];
+    return innermost && this.ingressOf(innermost).agentRunId === agentRunId ? referenceOf(innermost) : null;
+  }
 
   /** REQ-012: the shared copy placement; the root placement is the root TeamRun. */
   private copyHostTeamRunId(delegatorAgentRunId: string, address: TeamDelegationPlacement["address"]): string {
@@ -156,6 +166,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
 
   containsTaskExecution(reference: TaskExecutionReference): boolean { return this.options.getIndex().getTaskExecution(reference) !== null; }
   publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void { this.options.publish(taskExecutionsClosedEvent(references)); }
+  publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void { this.options.publish(taskExecutionsReopenedEvent(references)); }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);

@@ -6,7 +6,7 @@ import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-exec
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
-import { taskExecutionsClosedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
+import { taskExecutionsClosedEvent, taskExecutionsReopenedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
 import { AgentTeamRunManager } from "../../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
@@ -45,6 +45,11 @@ describe("Team execution view strict projection", () => {
     expect(projectSequencedTeamRunEvent(root as never, { event: taskExecutionsClosedEvent(closed), changeSequence: 4 })).toEqual({
       type: "TASK_EXECUTIONS_CLOSED",
       payload: { change_sequence: 4, task_executions: [{ team_run_id: "task-team-run-qa-001" }, { agent_run_id: "nested-task-agent-run-001" }] },
+    });
+    // A reactivation is the symmetric sequenced event with the same reference shape.
+    expect(projectSequencedTeamRunEvent(root as never, { event: taskExecutionsReopenedEvent([closed[0]!]), changeSequence: 5 })).toEqual({
+      type: "TASK_EXECUTIONS_REOPENED",
+      payload: { change_sequence: 5, task_executions: [{ team_run_id: "task-team-run-qa-001" }] },
     });
   });
 

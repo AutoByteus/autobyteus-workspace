@@ -1,0 +1,209 @@
+{
+  "startedAt": "2026-10-07T06:12:41.702Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-001": {
+      "result": "Pass",
+      "description": "Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_bragent_fc41_281aefe07c0d4883bc3193f9aaec7f05",
+          "managerRunId": "manager_bragent_fc41_281aefe07c0d4883bc3193f9aaec7f05"
+        },
+        "latencyMs": 314,
+        "leave": {
+          "firstHiddenAt": 42,
+          "goneAt": 276,
+          "leaveMs": 234,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "workspace-agent-run-row"
+        },
+        "bLeave": {
+          "firstHiddenAt": 44,
+          "goneAt": 276,
+          "leaveMs": 232,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "rgb(238, 242, 255)",
+        "active": "workspace-agent-run-row"
+      },
+      "reactivation": {
+        "agent": {
+          "reactivated": "release_notes_writer_bragent_fc41_7f36065b43904b6f8101c44781a7a2d1",
+          "helpersHidden": 2,
+          "enterFrames": 38,
+          "firstVisibleAt": 27
+        },
+        "team": {
+          "reactivated": "release_notes_writer_brteam_f5ff_47b104cf717540cabffdad66279e18f3",
+          "helpersHidden": 2,
+          "enterFrames": 38,
+          "firstVisibleAt": 27
+        },
+        "org": {
+          "reactivated": "release_notes_writer_brorg_b848_be82122bc3f14184a98611f38391ea7b",
+          "helpersHidden": 2,
+          "enterFrames": 37,
+          "firstVisibleAt": 29
+        }
+      }
+    },
+    "BR-002": {
+      "result": "Pass",
+      "description": "Agent Team root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_brteam_f5ff_db23df9b498f4926924e4f1e651a7d49",
+          "managerRunId": "manager_brteam_f5ff_bfc83f496b8f45338b171c775109c204"
+        },
+        "latencyMs": 315,
+        "leave": {
+          "firstHiddenAt": 43,
+          "goneAt": 264,
+          "leaveMs": 221,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            true,
+            true,
+            true
+          ],
+          "activeAtFirstHidden": "workspace-team-row-delivery_team_brteam_f5ff_db23df9b498f4926924e4f1e651a7d49"
+        },
+        "bLeave": {
+          "firstHiddenAt": 64,
+          "goneAt": 298,
+          "leaveMs": 234,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "workspace-team-row-delivery_team_brteam_f5ff_db23df9b498f4926924e4f1e651a7d49"
+      },
+      "reactivation": {
+        "agent": {
+          "reactivated": "release_notes_writer_bragent_fc41_7f36065b43904b6f8101c44781a7a2d1",
+          "helpersHidden": 2,
+          "enterFrames": 38,
+          "firstVisibleAt": 27
+        },
+        "team": {
+          "reactivated": "release_notes_writer_brteam_f5ff_47b104cf717540cabffdad66279e18f3",
+          "helpersHidden": 2,
+          "enterFrames": 38,
+          "firstVisibleAt": 27
+        },
+        "org": {
+          "reactivated": "release_notes_writer_brorg_b848_be82122bc3f14184a98611f38391ea7b",
+          "helpersHidden": 2,
+          "enterFrames": 37,
+          "firstVisibleAt": 29
+        }
+      }
+    },
+    "BR-003": {
+      "result": "Pass",
+      "description": "Agent Org root live DONE (same journey; fallback to the delegating Manager)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_brorg_b848_13e6f902a898458290b7c906e2c4eb72",
+          "managerRunId": "manager_brorg_b848_9f77c9afecc4450f9d27b96224059a76"
+        },
+        "latencyMs": 310,
+        "leave": {
+          "firstHiddenAt": 52,
+          "goneAt": 285,
+          "leaveMs": 233,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "agent-org-run-open-delivery_org_brorg_b848_13e6f902a898458290b7c906e2c4eb72"
+        },
+        "bLeave": {
+          "firstHiddenAt": 46,
+          "goneAt": 277,
+          "leaveMs": 231,
+          "midOpacityFrames": 9,
+          "hiddenAndInertAtOnce": true,
+          "moveClassAtLeaveStart": [
+            false,
+            false,
+            false
+          ],
+          "activeAtFirstHidden": "TEXTAREA"
+        },
+        "selection": "true",
+        "active": "agent-org-run-open-delivery_org_brorg_b848_13e6f902a898458290b7c906e2c4eb72"
+      },
+      "reactivation": {
+        "agent": {
+          "reactivated": "release_notes_writer_bragent_fc41_7f36065b43904b6f8101c44781a7a2d1",
+          "helpersHidden": 2,
+          "enterFrames": 38,
+          "firstVisibleAt": 27
+        },
+        "team": {
+          "reactivated": "release_notes_writer_brteam_f5ff_47b104cf717540cabffdad66279e18f3",
+          "helpersHidden": 2,
+          "enterFrames": 38,
+          "firstVisibleAt": 27
+        },
+        "org": {
+          "reactivated": "release_notes_writer_brorg_b848_be82122bc3f14184a98611f38391ea7b",
+          "helpersHidden": 2,
+          "enterFrames": 37,
+          "firstVisibleAt": 29
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 35828,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 34896,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:63847",
+    "frontendUrl": "http://127.0.0.1:63848",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-YdKowQ"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-07T06:13:42.883Z"
+}

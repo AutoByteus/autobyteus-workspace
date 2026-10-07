@@ -181,6 +181,18 @@ export class RootAgentExecutionRegistry {
     return operation;
   }
 
+  /**
+   * Reactivation, after an accepted exact release: drops the released (fenced) authority of one
+   * root-hosted task Agent so `restoreTask` builds a fresh `restore`-mode handle. A live handle is kept.
+   */
+  discardReleasedTask(agentRunId: string): void {
+    const task = this.taskAgentRunIds.has(agentRunId) || this.taskPreparations.has(agentRunId);
+    if (!task || this.active.get(agentRunId)?.isActive()) return;
+    this.active.delete(agentRunId);
+    this.taskPreparations.delete(agentRunId);
+    this.taskAgentRunIds.delete(agentRunId);
+  }
+
   cancelTask(agentRunId: string): void {
     this.taskPreparations.get(agentRunId)?.cancel();
     (this.active.get(agentRunId) ?? this.prepared.get(agentRunId))?.cancelActivation();

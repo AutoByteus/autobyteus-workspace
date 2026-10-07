@@ -18,7 +18,8 @@ export type ProjectErrorCode =
   | "TASK_ID_AMBIGUOUS"
   | "TASK_AGENT_RESOURCE_CLOSED"
   | "TASK_AGENT_RESOURCE_CONFLICT"
-  | "TASK_AGENT_RESOURCES_UNAVAILABLE";
+  | "TASK_AGENT_RESOURCES_UNAVAILABLE"
+  | "TASK_REACTIVATION_UNAVAILABLE";
 
 export class ProjectError extends Error {
   constructor(

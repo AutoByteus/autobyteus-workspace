@@ -148,6 +148,17 @@ export class TaskTeamExecutionRegistry {
     return operation;
   }
 
+  /** Reactivation, after an accepted exact release: drops the terminated task TeamRun so `restore` can build a fresh one. */
+  discardReleased(teamRunId: string): void {
+    const run = this.active.get(teamRunId);
+    if (run && !run.isTerminated()) return;
+    this.active.delete(teamRunId);
+    this.operations.delete(teamRunId);
+    this.restorations.delete(teamRunId);
+    this.preparedTeamRuns.delete(teamRunId);
+    this.reserved.delete(teamRunId);
+  }
+
   cancel(teamRunId: string): void { this.restorations.get(teamRunId)?.cancel(); this.operations.get(teamRunId)?.cancel(); this.active.get(teamRunId)?.cancelRuntimeActivation(); }
   async release(teamRunId: string): Promise<AgentOperationResult> {
     this.cancel(teamRunId);

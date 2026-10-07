@@ -212,6 +212,20 @@ export class RootTeamExecutionDirectory {
     return operation;
   }
 
+  /**
+   * Reactivation, after an accepted exact release: retires the terminated TeamRun of one task Team
+   * (root-hosted, or registered from its hosting Team) so its restore can register a fresh run, which
+   * inherits the retired run's release proof. A run that is not terminated is kept.
+   */
+  discardReleasedTask(teamRunId: string): void {
+    if (!this.taskTeamRunIds.has(teamRunId) && !this.taskPreparations.has(teamRunId)) return;
+    const run = this.active.get(teamRunId);
+    if (run && !run.isTerminated()) return;
+    if (run) { this.releasedTeams.set(teamRunId, run); this.active.delete(teamRunId); }
+    this.taskTeamRunIds.delete(teamRunId);
+    this.taskPreparations.delete(teamRunId);
+  }
+
   cancelTask(teamRunId: string): void { this.restorations.get(teamRunId)?.cancel(); this.taskPreparations.get(teamRunId)?.cancel(); this.active.get(teamRunId)?.cancelRuntimeActivation(); }
   async releaseTask(teamRunId: string): Promise<AgentOperationResult> {
     this.cancelTask(teamRunId);

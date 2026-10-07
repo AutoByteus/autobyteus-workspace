@@ -143,6 +143,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       replaceTree: (tree) => this.replaceTree(tree),
       publishTaskExecutionStarted: (host, taskExecution) => options.publisher.publish({ kind: "task_execution_started", host, taskExecution }),
       publishTaskExecutionsClosed: (taskExecutions) => options.publisher.publish({ kind: "task_executions_closed", taskExecutions }),
+      publishTaskExecutionsReopened: (taskExecutions) => options.publisher.publish({ kind: "task_executions_reopened", taskExecutions }),
       publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
         kind: "status_overlay",
         snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
@@ -274,7 +275,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
 
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    return this.operationGate.run(() => this.taskExecutions.withLiveLease(input.sender.identity.agentRunId, () => this.delivery.deliverToRunId(input)));
+    return this.operationGate.run(() => this.taskExecutions.deliverToExactTarget(input.sender.identity.agentRunId, input.targetAgentRunId,
+      () => this.delivery.deliverToRunId(input)));
   }
 
   /** Commands for children only; the host's commands come through its own Agent stream. */

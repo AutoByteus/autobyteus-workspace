@@ -290,10 +290,15 @@ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects --no-watch
 What these suites cover:
 - **Project unit tests.** The per-folder store and Delete, which keeps
   `agent_run_resources.json`. Task agent run resources: roles, link-before-
-  resources, closed-forever, current assignments versus `assignmentsUnavailable`,
-  and the damaged-file policy (Q-3). Also saved-ID payloads, compact business
-  results, DONE close-then-stop, retry by repeated DONE with nothing about the
-  stop persisted, and reopen.
+  resources, closed until the assigner reactivates, current assignments versus
+  `assignmentsUnavailable`, and the damaged-file policy (Q-3). Also saved-ID
+  payloads, compact business results, DONE close-then-stop, retry by repeated
+  DONE with nothing about the stop persisted, and reopen. Reactivation (reopen
+  the Task, then the assigner messages the run ID) is covered on the Task side by
+  `tests/unit/projects/task-agent-resource-reactivation.test.ts` and in the
+  runtime by `tests/unit/agent-collaboration/root-task-reactivation.test.ts`
+  (sequencing and refusals) and `task-reactivation-backends.test.ts` (actual
+  registries for all three root kinds).
 - **RootTeam/catalog helper integration.** Same-address helpers isolated per
   Task, borrowed advisers that are never adopted, exact stop sets, and closed
   ingress.

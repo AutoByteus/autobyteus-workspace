@@ -51,6 +51,10 @@ export const closedTaskExecutionsDtoSchema = z.array(taskExecutionReferenceDtoSc
 export const taskExecutionsClosedEventDtoSchema = z.object({
     kind: z.literal("task_executions_closed"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
 }).strict();
+/** Live: these closed task executions were reactivated by their assigner; the listing shows them again. */
+export const taskExecutionsReopenedEventDtoSchema = z.object({
+    kind: z.literal("task_executions_reopened"), task_executions: z.array(taskExecutionReferenceDtoSchema).min(1),
+}).strict();
 const configuredTeam = z.object({
     address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
@@ -130,5 +134,6 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
     z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
     taskExecutionsClosedEventDtoSchema,
+    taskExecutionsReopenedEventDtoSchema,
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

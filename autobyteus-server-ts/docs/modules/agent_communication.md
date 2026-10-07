@@ -153,7 +153,12 @@ wakes a shut-down delegated child in `restore` mode (rejecting with
 `TASK_EXECUTION_CONTEXT_UNAVAILABLE` or `TASK_EXECUTION_RESTORE_FAILED` when
 that is impossible), and delivers as ordinary root communication. An unknown
 run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never
-use this path.
+use this path. When the target belongs to closed Task work, the root first
+reactivates it if the sender is the run that assigned it, the target is the run
+ID `delegate_task` returned (a Team's coordinator) and the Task is not DONE;
+the accepted `message` then ends with "<run ID> was reactivated." Otherwise it
+refuses with `TASK_AGENT_RESOURCE_CLOSED` and guidance. See
+[Reactivation](projects.md#reactivation).
 
 **Global live-only path.** Every other target must be the canonical
 server-side `AgentRun.runId` of a run that is active at delivery time.
@@ -288,7 +293,8 @@ run ID never creates a copy.
 
 Before any wake or acceptance, both sender and recipient input, and deferred
 publication, consult the Task record. A closed sender or recipient fails with
-`TASK_AGENT_RESOURCE_CLOSED`, including after restart. While any Task's file
+`TASK_AGENT_RESOURCE_CLOSED`, including after restart, unless the exact run-ID
+message is the assigner's [reactivation](projects.md#reactivation). While any Task's file
 is damaged, waking or messaging a copy that is not in the Task view fails up
 front with `TASK_AGENT_RESOURCES_UNAVAILABLE`. See
 [Project Task agent run resources](projects.md#saved-id-delegation-and-agent-run-resources).
@@ -436,7 +442,11 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   publishes the released runs that are closed and in the tree as the sequenced
   `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE
   re-publishes them. The Workspaces tree leaves those executions and their
-  subtrees out; messages and contexts keep them. The same holds for a Task with
+  subtrees out; messages and contexts keep them. A reactivation publishes the
+  reopened execution as `task_executions_reopened` (Team:
+  `TASK_EXECUTIONS_REOPENED`, same reference shape) after its Task-side commit;
+  clients remove it from their closed set, so it is listed again while its
+  still-closed helpers stay hidden. The same holds for a Task with
   no Project: a description-only `delegate_task` by an unowned sender returns
   its `task_id`, and `create_or_update_task({task_id, status: "DONE"})` closes,
   stops and hides that copy and its sub-work (see

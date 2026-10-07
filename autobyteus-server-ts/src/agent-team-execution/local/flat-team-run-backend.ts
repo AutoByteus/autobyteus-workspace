@@ -39,6 +39,7 @@ export class FlatTeamRunBackend implements TeamRunBackend {
   restoreTaskTeam(input: RestoreTaskTeamInput) { return this.manager.restoreTaskTeam(input); }
   cancelDirectTaskExecution(reference: TaskExecutionReference) { this.manager.cancelDirectTaskExecution(reference); }
   releaseDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.releaseDirectTaskExecution(reference); }
+  discardReleasedDirectTaskExecution(reference: TaskExecutionReference) { this.manager.discardReleasedDirectTaskExecution(reference); }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.hasLiveDirectTaskExecution(reference); }
   tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
     return this.manager.tryShutDownDirectTaskExecutionIfQuiet(reference);

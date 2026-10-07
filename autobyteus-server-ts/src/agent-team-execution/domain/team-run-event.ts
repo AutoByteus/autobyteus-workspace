@@ -8,6 +8,7 @@ export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   TASK_EXECUTION = "TASK_EXECUTION",
   TASK_EXECUTIONS_CLOSED = "TASK_EXECUTIONS_CLOSED",
+  TASK_EXECUTIONS_REOPENED = "TASK_EXECUTIONS_REOPENED",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
   COLLABORATOR = "COLLABORATOR",
@@ -46,6 +47,11 @@ export type TeamRunEvent =
   | Readonly<{
       /** These task executions' Task became DONE; published before they are stopped. */
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED;
+      taskExecutions: readonly TaskExecutionReference[];
+    }>
+  | Readonly<{
+      /** These closed task executions were reactivated by their assigner; published after the Task-side reopen. */
+      eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_REOPENED;
       taskExecutions: readonly TaskExecutionReference[];
     }>
   | Readonly<{

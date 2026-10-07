@@ -53,6 +53,10 @@ export class TeamTaskExecutionService {
     return this.lifecycle.withLiveLease(id, operation);
   }
 
+  deliverToExactTarget(sender: string, target: string, deliver: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.lifecycle.deliverToExactTarget(sender, target, deliver);
+  }
+
   acquireLiveLease(agentRunId: string): Promise<TaskExecutionLiveLease> {
     return this.lifecycle.acquireLiveLease(agentRunId);
   }
