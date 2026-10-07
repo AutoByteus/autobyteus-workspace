@@ -99,31 +99,29 @@ describe('projectStore', () => {
   it('surfaces the server error code from returned GraphQL errors', async () => {
     apolloClientMock.mutate.mockResolvedValue({
       data: null,
-      errors: [{ message: 'not registered', extensions: { code: 'WORKSPACE_NOT_REGISTERED' } }],
+      errors: [{ message: 'invalid path', extensions: { code: 'WORKSPACE_PATH_INVALID' } }],
     })
 
     const store = useProjectStore()
-    await expect(store.addWorkspace('p1', 'agent_ws_x', '')).rejects.toMatchObject({ code: 'WORKSPACE_NOT_REGISTERED' })
+    await expect(store.addWorkspace('p1', 'agent_ws_x', '')).rejects.toMatchObject({ code: 'WORKSPACE_PATH_INVALID' })
   })
 
-  it('links a workspace by explicit id and replaces the cached project', async () => {
+  it('links a workspace by explicit path and replaces the cached project', async () => {
     const linked = project('p1', 'autobyteus', {
       workspaces: [{
-        workspaceId: 'agent_ws_a',
         workspaceRootPath: '/work/a',
         displayName: 'a',
         description: 'UI',
-        addedAt: '2026-09-26T00:00:00.000Z',
         availability: 'AVAILABLE',
       }],
     })
     apolloClientMock.mutate.mockResolvedValue({ data: { addProjectWorkspace: linked } })
 
     const store = useProjectStore()
-    await store.addWorkspace('p1', 'agent_ws_a', 'UI')
+    await store.addWorkspace('p1', '/work/a', 'UI')
 
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { input: { projectId: 'p1', workspaceId: 'agent_ws_a', description: 'UI' } },
+      variables: { input: { projectId: 'p1', workspaceRootPath: '/work/a', description: 'UI' } },
     }))
     expect(store.getProjectById('p1')?.workspaces).toHaveLength(1)
   })

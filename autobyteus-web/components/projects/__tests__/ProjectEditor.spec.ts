@@ -4,26 +4,92 @@ import { reactive } from 'vue'
 import ProjectEditor from '../ProjectEditor.vue'
 import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue'
 
-let voice: any, projects: any, node: any, workspaces: any
+let voice: any, projects: any, node: any, workspaces: any, route: {query: Record<string, string>}
 const push = vi.fn()
-vi.mock('vue-router', async (original) => ({...await original<typeof import('vue-router')>(), useRoute: () => ({query: {}}), useRouter: () => ({push})}))
+vi.mock('vue-router', async (original) => ({...await original<typeof import('vue-router')>(), useRoute: () => route, useRouter: () => ({push})}))
 vi.mock('~/stores/voiceInputStore', () => ({useVoiceInputStore: () => voice}))
 vi.mock('~/stores/projectStore', () => ({useProjectStore: () => projects}))
 vi.mock('~/stores/windowNodeContextStore', () => ({useWindowNodeContextStore: () => node}))
 vi.mock('~/stores/workspace', () => ({useWorkspaceStore: () => workspaces}))
 
 async function editor(projectId?: string) {
-  const wrapper = mount(ProjectEditor, {props: {projectId}, global: {stubs: {NuxtLink: RouterLinkStub}}})
+  const wrapper = mount(ProjectEditor, {attachTo: document.body, props: {projectId}, global: {stubs: {NuxtLink: RouterLinkStub}}})
   await flushPromises()
   return wrapper
 }
 describe('ProjectEditor description voice', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    route = {query: {}}
     node = reactive({bindingRevision: 1})
     projects = {getProjectById: () => ({name: 'Existing', description: '', workspaces: []}), fetchProject: vi.fn(), createProject: vi.fn().mockResolvedValue({projectId: 'p1'}), updateProject: vi.fn().mockResolvedValue({projectId: 'p1'})}
-    workspaces = {workspaceMetadataById: {}, fetchAllWorkspaces: vi.fn()}
+    workspaces = {workspaceMetadataById: {}, fetchAllWorkspaces: vi.fn(), createWorkspace: vi.fn()}
     voice = reactive({isAvailable: true, transcriptTarget: null, isStarting: false, isRecording: false, isTranscribing: false, latestResult: null, initialize: vi.fn(), toggleRecording: vi.fn(), cancelOperationForTarget: vi.fn()})
+  })
+  it.each(['existing', 'new'])('submits a path directly from %s without registering it', async mode => {
+    const root = '/work/space #? 文件夹'
+    workspaces.workspaceMetadataById = {opaque: {workspaceId: 'opaque', workspaceRootPath: root, displayName: 'Source', kind: 'filesystem'}}
+    const wrapper = await editor()
+    await wrapper.get('[data-testid="project-name-input"]').setValue('Paths')
+    await wrapper.get('[data-testid="project-add-workspace-inline"]').trigger('click')
+    if (mode === 'new') {
+      await wrapper.get('[data-testid="workspace-mode-new-0"]').trigger('click')
+      expect(wrapper.get('[data-testid="workspace-mode-new-0"]').text()).toBe('Folder path')
+      await wrapper.get('[data-testid="workspace-path-0"]').setValue(` ${root} `)
+    } else {
+      await wrapper.get('[data-testid="workspace-select-0"]').setValue(root)
+    }
+    await wrapper.get('[data-testid="workspace-description-0"]').setValue(' Source code ')
+    await wrapper.get('form').trigger('submit')
+    expect(projects.createProject).toHaveBeenCalledWith({name: 'Paths', description: '', workspaces: [{workspaceRootPath: root, description: 'Source code'}]}, expect.any(Function))
+    expect(workspaces.createWorkspace).not.toHaveBeenCalled()
+    wrapper.unmount()
+  })
+  it('does not silently save a manual path after switching to an empty picker', async () => {
+    const wrapper = await editor()
+    await wrapper.get('[data-testid="project-name-input"]').setValue('Paths')
+    await wrapper.get('[data-testid="project-add-workspace-inline"]').trigger('click')
+    await wrapper.get('[data-testid="workspace-mode-new-0"]').trigger('click')
+    await wrapper.get('[data-testid="workspace-path-0"]').setValue('/work/manual')
+    await wrapper.get('[data-testid="workspace-mode-existing-0"]').trigger('click')
+    await wrapper.get('form').trigger('submit')
+    expect(projects.createProject).not.toHaveBeenCalled()
+    expect(document.activeElement).toBe(wrapper.get('[data-testid="workspace-select-0"]').element)
+    wrapper.unmount()
+  })
+  it('keeps an unregistered original path editable and excludes exact path duplicates from choices', async () => {
+    const original = {workspaceRootPath: '/work/unregistered #? 文件夹', description: 'keep', displayName: 'Original', availability: 'UNREGISTERED'}
+    projects.getProjectById = () => ({name: 'Existing', description: '', workspaces: [original]})
+    workspaces.workspaceMetadataById = {
+      one: {workspaceId: 'one', workspaceRootPath: '/work/pick', displayName: 'Pick'},
+      duplicate: {workspaceId: 'duplicate', workspaceRootPath: '/work/pick', displayName: 'Duplicate'},
+    }
+    const wrapper = await editor('p1')
+    expect((wrapper.get('[data-testid="workspace-select-0"]').element as HTMLSelectElement).value).toBe(original.workspaceRootPath)
+    await wrapper.get('[data-testid="project-add-workspace-inline"]').trigger('click')
+    expect(wrapper.get('[data-testid="workspace-select-1"]').findAll('option').map(o => o.attributes('value'))).toEqual(['', '/work/pick'])
+    await wrapper.get('[data-testid="workspace-select-1"]').setValue('/work/pick')
+    await wrapper.get('form').trigger('submit')
+    expect(projects.updateProject).toHaveBeenCalledWith(expect.objectContaining({workspaces: [
+      {workspaceRootPath: original.workspaceRootPath, description: 'keep'}, {workspaceRootPath: '/work/pick', description: ''},
+    ]}), expect.any(Function))
+    expect(workspaces.createWorkspace).not.toHaveBeenCalled()
+    wrapper.unmount()
+  })
+  it('presents the node absolute-path error without registering or clearing the draft', async () => {
+    projects.createProject.mockRejectedValue({code: 'WORKSPACE_PATH_INVALID'})
+    const wrapper = await editor()
+    await wrapper.get('[data-testid="project-name-input"]').setValue('Paths')
+    await wrapper.get('[data-testid="project-add-workspace-inline"]').trigger('click')
+    await wrapper.get('[data-testid="workspace-mode-new-0"]').trigger('click')
+    await wrapper.get('[data-testid="workspace-path-0"]').setValue('relative')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.text()).toContain('Enter an absolute folder path on the selected node.')
+    expect(document.activeElement).toBe(wrapper.get('[role="alert"]').element)
+    expect((wrapper.get('[data-testid="workspace-path-0"]').element as HTMLInputElement).value).toBe('relative')
+    expect(workspaces.createWorkspace).not.toHaveBeenCalled()
+    wrapper.unmount()
   })
   it.each([undefined, 'p1'])('appends to latest editable text and saves only explicitly (%s)', async (id) => {
     const wrapper = await editor(id)

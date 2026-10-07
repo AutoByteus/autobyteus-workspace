@@ -8,8 +8,8 @@ import { ProjectService } from "../../../src/projects/services/project-service.j
 import type { PatchProjectCommand } from "../../../src/projects/domain/models.js";
 import { ProjectError } from "../../../src/projects/domain/project-errors.js";
 
-const WS_A = "agent_ws_aaa";
-const WS_B = "agent_ws_bbb";
+const WS_A = "/work/autobyteus-web-prototype";
+const WS_B = "/work/autobyteus-marketing";
 
 const createHarness = async () => {
   const appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "projects-service-"));
@@ -20,9 +20,7 @@ const createHarness = async () => {
     [WS_B, "/work/autobyteus-marketing"],
   ]);
   const workspaceLookup = {
-    getRegisteredWorkspaceRootPath: vi.fn(async (workspaceId: string) =>
-      workspaceId.startsWith("agent_ws_") ? registry.get(workspaceId) ?? null : null,
-    ),
+    listRegisteredWorkspaceRootPaths: vi.fn(async () => [...registry.values()]),
   };
   let tick = 0;
   let idCounter = 0;
@@ -68,24 +66,24 @@ describe("ProjectService", () => {
   it("returns committed creation records, without Task or availability enrichment", async () => {
     const tasks = vi.spyOn(harness.store, "listTasks").mockRejectedValue(new Error("unrelated Tasks unavailable"));
     const saved = await harness.service.createProjectRecord({
-      name: "  Record ", description: "  goal ", workspaces: [{workspaceId: WS_A, description: " UI "}],
+      name: "  Record ", description: "  goal ", workspaces: [{workspaceRootPath: WS_A, description: " UI "}],
     });
     expect(saved).toEqual((await harness.readFile())[0]);
     expect(saved).toMatchObject({name: "Record", description: "goal", workspaces: [
-      {workspaceId: WS_A, description: "UI", workspaceRootPath: "/work/autobyteus-web-prototype"},
+      {workspaceRootPath: WS_A, description: "UI"},
     ]});
     expect(saved).not.toHaveProperty("taskCount");
     expect(saved.workspaces[0]).not.toHaveProperty("availability");
     expect(tasks).not.toHaveBeenCalled();
-    expect(harness.workspaceLookup.getRegisteredWorkspaceRootPath).toHaveBeenCalledTimes(1);
+    expect(harness.workspaceLookup.listRegisteredWorkspaceRootPaths).not.toHaveBeenCalled();
     expect((await harness.service.createProjectRecord({name: "Defaults"}))).toMatchObject({description: "", workspaces: []});
   });
 
   it("patches only provided metadata, preserving identity, creation and workspace snapshots", async () => {
     const saved = await harness.service.createProjectRecord({name: "Original", description: "goal",
-      workspaces: [{workspaceId: WS_A, description: "UI"}]});
+      workspaces: [{workspaceRootPath: WS_A, description: "UI"}]});
     const tasks = vi.spyOn(harness.store, "listTasks").mockRejectedValue(new Error("unrelated"));
-    harness.workspaceLookup.getRegisteredWorkspaceRootPath.mockClear();
+    harness.workspaceLookup.listRegisteredWorkspaceRootPaths.mockClear();
     const renamed = await harness.service.patchProjectRecord({projectId: saved.projectId, name: " Renamed "});
     expect(renamed).toEqual({...saved, name: "Renamed", updatedAt: expect.any(String)});
     const described = await harness.service.patchProjectRecord({projectId: saved.projectId, description: " Updated "});
@@ -94,27 +92,27 @@ describe("ProjectService", () => {
     expect(cleared).toEqual({...described, description: "", updatedAt: expect.any(String)});
     expect(cleared.updatedAt > saved.updatedAt).toBe(true);
     expect(tasks).not.toHaveBeenCalled();
-    expect(harness.workspaceLookup.getRegisteredWorkspaceRootPath).not.toHaveBeenCalled();
+    expect(harness.workspaceLookup.listRegisteredWorkspaceRootPaths).not.toHaveBeenCalled();
     expect(cleared).toEqual((await harness.readFile())[0]);
   });
 
-  it("replaces the whole link list preserving retained roots/time/omitted descriptions, even if unregistered", async () => {
+  it("replaces the whole link list preserving retained roots/omitted descriptions, even if unregistered", async () => {
     const saved = await harness.service.createProjectRecord({name: "Links", description: "goal",
-      workspaces: [{workspaceId: WS_A, description: "UI"}, {workspaceId: WS_B, description: "Marketing"}]});
+      workspaces: [{workspaceRootPath: WS_A, description: "UI"}, {workspaceRootPath: WS_B, description: "Marketing"}]});
     harness.registry.set(WS_A, "/changed/root");
-    const replaced = await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [{workspaceId: WS_A}]});
+    const replaced = await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [{workspaceRootPath: WS_A}]});
     expect(replaced).toEqual({...saved, workspaces: [saved.workspaces[0]], updatedAt: expect.any(String)});
     harness.registry.delete(WS_A);
     const retained = await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [
-      {workspaceId: WS_A}, {workspaceId: WS_B},
+      {workspaceRootPath: WS_A}, {workspaceRootPath: WS_B},
     ]});
     expect(retained.workspaces[0]).toEqual(saved.workspaces[0]);
-    expect(retained.workspaces[1]).toMatchObject({workspaceId: WS_B, description: "", workspaceRootPath: "/work/autobyteus-marketing"});
+    expect(retained.workspaces[1]).toMatchObject({workspaceRootPath: WS_B, description: ""});
     const described = await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [
-      {workspaceId: WS_A, description: "  revised  "},
+      {workspaceRootPath: WS_A, description: "  revised  "},
     ]});
     expect(described.workspaces[0]).toEqual({...saved.workspaces[0], description: "revised"});
-    const cleared = await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [{workspaceId: WS_A, description: " "}]});
+    const cleared = await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [{workspaceRootPath: WS_A, description: " "}]});
     expect(cleared.workspaces[0]).toEqual({...saved.workspaces[0], description: ""});
     expect((await harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: []})).workspaces).toEqual([]);
     expect(harness.registry.get(WS_B)).toBe("/work/autobyteus-marketing");
@@ -123,17 +121,17 @@ describe("ProjectService", () => {
 
   it("keeps active full-form omission semantics separate from patch", async () => {
     const saved = await harness.service.createProject({name: "Form", description: "goal",
-      workspaces: [{workspaceId: WS_A, description: "UI"}]});
-    const form = await harness.service.updateProject({projectId: saved.projectId, name: "Form", workspaces: [{workspaceId: WS_A}]});
+      workspaces: [{workspaceRootPath: WS_A, description: "UI"}]});
+    const form = await harness.service.updateProject({projectId: saved.projectId, name: "Form", workspaces: [{workspaceRootPath: WS_A}]});
     expect(form.description).toBe("");
-    expect(form.workspaces[0]).toMatchObject({description: "", workspaceRootPath: saved.workspaces[0]!.workspaceRootPath, addedAt: saved.workspaces[0]!.addedAt});
+    expect(form.workspaces[0]).toMatchObject({description: "", workspaceRootPath: saved.workspaces[0]!.workspaceRootPath});
     expect(form).toHaveProperty("taskCount", 0);
     const omitLinks = await harness.service.updateProject({projectId: saved.projectId, name: "Renamed"});
     expect(omitLinks.workspaces).toEqual(form.workspaces);
   });
 
   it("validates the whole patch before save, and never creates on unknown ID", async () => {
-    const saved = await harness.service.createProjectRecord({name: "One", description: "goal", workspaces: [{workspaceId: WS_A, description: "UI"}]});
+    const saved = await harness.service.createProjectRecord({name: "One", description: "goal", workspaces: [{workspaceRootPath: WS_A, description: "UI"}]});
     await harness.service.createProjectRecord({name: "Two"});
     const before = await fs.readFile(harness.layout.projectFile(saved.projectId), "utf8");
     const rejected: Array<[PatchProjectCommand, string]> = [
@@ -142,30 +140,30 @@ describe("ProjectService", () => {
       [{projectId: saved.projectId, name: " "}, "PROJECT_NAME_REQUIRED"],
       [{projectId: saved.projectId, name: " two "}, "PROJECT_NAME_TAKEN"],
       [{projectId: "missing", name: "New"}, "PROJECT_NOT_FOUND"],
-      [{projectId: saved.projectId, name: "No partial rename", workspaces: [{workspaceId: WS_B}, {workspaceId: "agent_ws_missing"}]}, "WORKSPACE_NOT_REGISTERED"],
-      [{projectId: saved.projectId, description: "No partial goal", workspaces: [{workspaceId: WS_A}, {workspaceId: " " + WS_A + " "}]}, "WORKSPACE_ALREADY_LINKED"],
+      [{projectId: saved.projectId, name: "No partial rename", workspaces: [{workspaceRootPath: WS_B}, {workspaceRootPath: "agent_ws_missing"}]}, "WORKSPACE_PATH_INVALID"],
+      [{projectId: saved.projectId, description: "No partial goal", workspaces: [{workspaceRootPath: WS_A}, {workspaceRootPath: " " + WS_A + "/../autobyteus-web-prototype/ "}]}, "WORKSPACE_ALREADY_LINKED"],
     ];
     for (const [command, code] of rejected) {
       await expectProjectError(harness.service.patchProjectRecord(command), code);
       expect(await fs.readFile(harness.layout.projectFile(saved.projectId), "utf8")).toBe(before);
     }
     expect(await harness.readFile()).toHaveLength(2);
-    await expectProjectError(harness.service.createProjectRecord({name: "Invalid create", workspaces: [{workspaceId: WS_A}, {workspaceId: "missing"}]}), "WORKSPACE_NOT_REGISTERED");
-    await expectProjectError(harness.service.createProjectRecord({name: "Invalid duplicate", workspaces: [{workspaceId: WS_A}, {workspaceId: WS_A}]}), "WORKSPACE_ALREADY_LINKED");
+    await expectProjectError(harness.service.createProjectRecord({name: "Invalid create", workspaces: [{workspaceRootPath: WS_A}, {workspaceRootPath: "missing"}]}), "WORKSPACE_PATH_INVALID");
+    await expectProjectError(harness.service.createProjectRecord({name: "Invalid duplicate", workspaces: [{workspaceRootPath: WS_A}, {workspaceRootPath: WS_A}]}), "WORKSPACE_ALREADY_LINKED");
     expect(await harness.readFile()).toHaveLength(2);
   });
 
   it("merges concurrent partial patches against current records and serializes normalized uniqueness", async () => {
     const saved = await harness.service.createProjectRecord({name: "Concurrent", description: "old",
-      workspaces: [{workspaceId: WS_A, description: "UI"}]});
+      workspaces: [{workspaceRootPath: WS_A, description: "UI"}]});
     await Promise.all([
       harness.service.patchProjectRecord({projectId: saved.projectId, name: "Renamed"}),
       harness.service.patchProjectRecord({projectId: saved.projectId, description: "New goal"}),
-      harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [{workspaceId: WS_A}, {workspaceId: WS_B}]}),
+      harness.service.patchProjectRecord({projectId: saved.projectId, workspaces: [{workspaceRootPath: WS_A}, {workspaceRootPath: WS_B}]}),
     ]);
     expect((await harness.readFile())[0]).toMatchObject({
       projectId: saved.projectId, createdAt: saved.createdAt, name: "Renamed", description: "New goal",
-      workspaces: [saved.workspaces[0], expect.objectContaining({workspaceId: WS_B})],
+      workspaces: [saved.workspaces[0], expect.objectContaining({workspaceRootPath: WS_B})],
     });
     const results = await Promise.allSettled([
       harness.service.createProjectRecord({name: "Unique"}),
@@ -185,7 +183,7 @@ describe("ProjectService", () => {
     await fs.mkdir(wsRoot);
     harness.registry.set(WS_A, wsRoot);
     const registry = [...harness.registry.entries()];
-    const saved = await harness.service.createProjectRecord({name: "Protected", workspaces: [{workspaceId: WS_A}]});
+    const saved = await harness.service.createProjectRecord({name: "Protected", workspaces: [{workspaceRootPath: WS_A}]});
     const unrelated = await harness.service.createProjectRecord({name: "Unrelated"});
     const protectedFiles = [
       harness.layout.taskFile(saved.projectId, "task_owned"),
@@ -241,6 +239,37 @@ describe("ProjectService", () => {
         workspaces: [],
       },
     ]);
+  });
+
+  it("accepts a nonexistent unregistered root without registry or directory writes, then resolves availability separately", async () => {
+    const root = path.join(harness.appDataDir, "not created #? 文件夹");
+    const registeredBefore = [...harness.registry.entries()];
+    const p = await harness.service.createProjectRecord({name: "Direct", workspaces: [{workspaceRootPath: ` ${root}/child/../ `}]});
+    expect(p.workspaces).toEqual([{workspaceRootPath: root, description: ""}]);
+    expect(harness.workspaceLookup.listRegisteredWorkspaceRootPaths).not.toHaveBeenCalled();
+    expect([...harness.registry.entries()]).toEqual(registeredBefore);
+    await expect(fs.access(root)).rejects.toThrow();
+    expect((await harness.service.getProject(p.projectId))!.workspaces[0]).toMatchObject({workspaceRootPath: root, availability: "UNREGISTERED"});
+    harness.registry.set("registry-only-id", root);
+    expect((await harness.service.getProject(p.projectId))!.workspaces[0].availability).toBe("AVAILABLE");
+    expect((await harness.readFile())[0].workspaces).toEqual([{workspaceRootPath: root, description: ""}]);
+  });
+
+  it("uses one pure root snapshot per list, skips it without links, and preserves requested list order", async () => {
+    await harness.service.createProjectRecord({name: "Empty"});
+    await harness.service.listProjects();
+    expect(harness.workspaceLookup.listRegisteredWorkspaceRootPaths).not.toHaveBeenCalled();
+    const p = await harness.service.createProjectRecord({name: "Ordered", workspaces: [{workspaceRootPath: WS_A}, {workspaceRootPath: WS_B}]});
+    await harness.service.createProjectRecord({name: "Other", workspaces: [{workspaceRootPath: WS_A}]});
+    await harness.service.patchProjectRecord({projectId: p.projectId, workspaces: [{workspaceRootPath: WS_B}, {workspaceRootPath: WS_A}]});
+    const views = await harness.service.listProjects();
+    expect(harness.workspaceLookup.listRegisteredWorkspaceRootPaths).toHaveBeenCalledTimes(1);
+    expect(views.find(v => v.projectId === p.projectId)!.workspaces.map(w => w.workspaceRootPath)).toEqual([WS_B, WS_A]);
+    const edited = await harness.service.updateWorkspaceLink({projectId: p.projectId, workspaceRootPath: `${WS_B}/.`, description: "edited"});
+    expect(edited.workspaces.map(w => w.workspaceRootPath)).toEqual([WS_B, WS_A]);
+    await expect(harness.service.addWorkspaceLink({projectId: p.projectId, workspaceRootPath: `${WS_A}/../autobyteus-web-prototype/`})).rejects.toMatchObject({code: "WORKSPACE_ALREADY_LINKED"});
+    const removed = await harness.service.removeWorkspaceLink({projectId: p.projectId, workspaceRootPath: `${WS_B}/.`});
+    expect(removed.workspaces.map(w => w.workspaceRootPath)).toEqual([WS_A]);
   });
 
   it("stores an empty description as an empty string", async () => {
@@ -306,40 +335,36 @@ describe("ProjectService", () => {
     await expect(harness.service.getProject("project_missing")).resolves.toBeNull();
   });
 
-  it("links a registered workspace with a description and snapshots its root path", async () => {
+  it("links a registered workspace with a description and stores its root path", async () => {
     const project = await harness.service.createProject({ name: "autobyteus" });
 
     const linked = await harness.service.addWorkspaceLink({
       projectId: project.projectId,
-      workspaceId: WS_A,
+      workspaceRootPath: WS_A,
       description: " UI prototype workspace ",
     });
 
     expect(linked.workspaces).toEqual([
       {
-        workspaceId: WS_A,
-        workspaceRootPath: "/work/autobyteus-web-prototype",
+        workspaceRootPath: WS_A,
         description: "UI prototype workspace",
-        addedAt: expect.any(String),
         displayName: "autobyteus-web-prototype",
         availability: "AVAILABLE",
       },
     ]);
     const [stored] = await harness.readFile();
     expect(stored.workspaces[0]).toEqual({
-      workspaceId: WS_A,
-      workspaceRootPath: "/work/autobyteus-web-prototype",
+      workspaceRootPath: WS_A,
       description: "UI prototype workspace",
-      addedAt: expect.any(String),
     });
   });
 
   it("rejects linking the same workspace twice to one project", async () => {
     const project = await harness.service.createProject({ name: "autobyteus" });
-    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A });
+    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A });
 
     await expectProjectError(
-      harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A }),
+      harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A }),
       "WORKSPACE_ALREADY_LINKED",
     );
     const [stored] = await harness.readFile();
@@ -350,23 +375,21 @@ describe("ProjectService", () => {
     const a = await harness.service.createProject({ name: "A" });
     const b = await harness.service.createProject({ name: "B" });
 
-    await harness.service.addWorkspaceLink({ projectId: a.projectId, workspaceId: WS_B, description: "A marketing" });
-    await harness.service.addWorkspaceLink({ projectId: b.projectId, workspaceId: WS_B, description: "B marketing" });
+    await harness.service.addWorkspaceLink({ projectId: a.projectId, workspaceRootPath: WS_B, description: "A marketing" });
+    await harness.service.addWorkspaceLink({ projectId: b.projectId, workspaceRootPath: WS_B, description: "B marketing" });
 
     expect((await harness.service.getProject(a.projectId))?.workspaces[0]?.description).toBe("A marketing");
     expect((await harness.service.getProject(b.projectId))?.workspaces[0]?.description).toBe("B marketing");
   });
 
   it.each([
-    ["temp_ws_default"],
-    ["skill_ws_foo"],
-    ["agent_ws_unknown"],
-  ])("rejects linking a workspace that is not a registered filesystem workspace (%s)", async (workspaceId) => {
+    ["relative/folder"], ["~/folder"], ["file:///folder"], [" "], ["/bad\0path"], [null], [42],
+  ])("rejects malformed or non-absolute paths (%s)", async (workspaceRootPath) => {
     const project = await harness.service.createProject({ name: "autobyteus" });
 
     await expectProjectError(
-      harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceId }),
-      "WORKSPACE_NOT_REGISTERED",
+      harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceRootPath: workspaceRootPath as string }),
+      "WORKSPACE_PATH_INVALID",
     );
     const [stored] = await harness.readFile();
     expect(stored.workspaces).toEqual([]);
@@ -374,19 +397,19 @@ describe("ProjectService", () => {
 
   it("rejects linking to an unknown project", async () => {
     await expectProjectError(
-      harness.service.addWorkspaceLink({ projectId: "project_missing", workspaceId: WS_A }),
+      harness.service.addWorkspaceLink({ projectId: "project_missing", workspaceRootPath: WS_A }),
       "PROJECT_NOT_FOUND",
     );
   });
 
   it("resolves availability at read time and restores it on re-registration without duplicating the link", async () => {
     const project = await harness.service.createProject({ name: "autobyteus" });
-    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A, description: "UI" });
-    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceId: WS_B, description: "Marketing" });
+    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A, description: "UI" });
+    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_B, description: "Marketing" });
 
     harness.registry.delete(WS_A);
     const unregistered = await harness.service.getProject(project.projectId);
-    expect(unregistered?.workspaces.map((link) => [link.workspaceId, link.availability, link.workspaceRootPath, link.description])).toEqual([
+    expect(unregistered?.workspaces.map((link) => [link.workspaceRootPath, link.availability, link.workspaceRootPath, link.description])).toEqual([
       [WS_A, "UNREGISTERED", "/work/autobyteus-web-prototype", "UI"],
       [WS_B, "AVAILABLE", "/work/autobyteus-marketing", "Marketing"],
     ]);
@@ -401,17 +424,17 @@ describe("ProjectService", () => {
 
   it("edits a link description and unlinks an unregistered workspace", async () => {
     const project = await harness.service.createProject({ name: "autobyteus" });
-    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A, description: "old" });
+    await harness.service.addWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A, description: "old" });
 
     const edited = await harness.service.updateWorkspaceLink({
       projectId: project.projectId,
-      workspaceId: WS_A,
+      workspaceRootPath: WS_A,
       description: " new ",
     });
     expect(edited.workspaces[0]?.description).toBe("new");
 
     harness.registry.delete(WS_A);
-    const removed = await harness.service.removeWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A });
+    const removed = await harness.service.removeWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A });
     expect(removed.workspaces).toEqual([]);
   });
 
@@ -419,11 +442,11 @@ describe("ProjectService", () => {
     const project = await harness.service.createProject({ name: "autobyteus" });
 
     await expectProjectError(
-      harness.service.updateWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A, description: "x" }),
+      harness.service.updateWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A, description: "x" }),
       "WORKSPACE_LINK_NOT_FOUND",
     );
     await expectProjectError(
-      harness.service.removeWorkspaceLink({ projectId: project.projectId, workspaceId: WS_A }),
+      harness.service.removeWorkspaceLink({ projectId: project.projectId, workspaceRootPath: WS_A }),
       "WORKSPACE_LINK_NOT_FOUND",
     );
   });
@@ -431,14 +454,14 @@ describe("ProjectService", () => {
   it("deletes only the project record and its links", async () => {
     const keep = await harness.service.createProject({ name: "keep" });
     const drop = await harness.service.createProject({ name: "drop" });
-    await harness.service.addWorkspaceLink({ projectId: drop.projectId, workspaceId: WS_A });
-    await harness.service.addWorkspaceLink({ projectId: keep.projectId, workspaceId: WS_A });
+    await harness.service.addWorkspaceLink({ projectId: drop.projectId, workspaceRootPath: WS_A });
+    await harness.service.addWorkspaceLink({ projectId: keep.projectId, workspaceRootPath: WS_A });
 
     await expect(harness.service.deleteProject(drop.projectId)).resolves.toBe(true);
 
     const remaining = await harness.service.listProjects();
     expect(remaining.map((project) => project.projectId)).toEqual([keep.projectId]);
-    expect(remaining[0]?.workspaces.map((link) => link.workspaceId)).toEqual([WS_A]);
+    expect(remaining[0]?.workspaces.map((link) => link.workspaceRootPath)).toEqual([WS_A]);
     await expect(harness.service.deleteProject(drop.projectId)).resolves.toBe(false);
   });
 
@@ -448,12 +471,12 @@ describe("ProjectService", () => {
     await harness.writeProject({
       projectId: "project_ok", name: "ok", description: "",
       createdAt: "2026-09-26T00:00:00.000Z", updatedAt: "2026-09-26T00:00:00.000Z",
-      workspaces: [{ workspaceId: WS_A }, { workspaceId: WS_B, workspaceRootPath: "/work/autobyteus-marketing", description: "", addedAt: "2026-09-26T00:00:00.000Z" }],
+      workspaces: [{ workspaceRootPath: WS_A }, { workspaceId: "old_b", workspaceRootPath: WS_B, description: "", addedAt: "2026-09-26T00:00:00.000Z" }],
     });
     await harness.writeProject({ projectId: "folder-mismatch", name: "x" });
     const projects = await harness.service.listProjects();
     expect(projects.map((project) => project.projectId)).toEqual(["project_ok"]);
-    expect(projects[0]?.workspaces.map((link) => link.workspaceId)).toEqual([WS_B]);
+    expect(projects[0]?.workspaces.map((link) => link.workspaceRootPath)).toEqual([WS_B]);
   });
 
   it("leaves no listed Project when its atomic write fails (QR-001)", async () => {
@@ -473,13 +496,13 @@ describe("ProjectService", () => {
     const project = {
       projectId: "project_x", name: "AutoByteus", description: "Hello",
       createdAt: "2026-09-20T00:00:00.000Z", updatedAt: "2026-09-21T00:00:00.000Z",
-      workspaces: [{ workspaceId: WS_A, workspaceRootPath: "/work/autobyteus-web-prototype", description: "UI", addedAt: "2026-09-20T00:00:00.000Z" }],
+      workspaces: [{ workspaceId: "old_a", workspaceRootPath: WS_A, description: "UI", addedAt: "2026-09-20T00:00:00.000Z" }],
     };
     await harness.writeProject(project);
     const source = await fs.readFile(harness.layout.projectFile("project_x"), "utf8");
     const [view] = await harness.service.listProjects();
     expect(view).toMatchObject({ projectId: "project_x", name: "AutoByteus", description: "Hello", updatedAt: "2026-09-21T00:00:00.000Z", openTaskCount: 0, taskCount: 0 });
-    expect(view?.workspaces.map((link) => [link.workspaceId, link.description, link.availability])).toEqual([[WS_A, "UI", "AVAILABLE"]]);
+    expect(view?.workspaces.map((link) => [link.workspaceRootPath, link.description, link.availability])).toEqual([[WS_A, "UI", "AVAILABLE"]]);
     expect(await fs.readFile(harness.layout.projectFile("project_x"), "utf8")).toBe(source);
   });
 
@@ -503,8 +526,8 @@ describe("ProjectService", () => {
     const taskFile = harness.layout.taskFile(created.projectId, "project_task_1");
     const before = await fs.readFile(taskFile, "utf8");
     await harness.service.updateProject({ projectId: created.projectId, name: "AutoByteus", description: "d" });
-    await harness.service.addWorkspaceLink({ projectId: created.projectId, workspaceId: WS_A });
-    await harness.service.removeWorkspaceLink({ projectId: created.projectId, workspaceId: WS_A });
+    await harness.service.addWorkspaceLink({ projectId: created.projectId, workspaceRootPath: WS_A });
+    await harness.service.removeWorkspaceLink({ projectId: created.projectId, workspaceRootPath: WS_A });
     expect(await fs.readFile(taskFile, "utf8")).toBe(before);
     expect((await harness.service.getProject(created.projectId))?.openTaskCount).toBe(1);
   });
@@ -533,21 +556,21 @@ describe("ProjectService", () => {
   });
 
   it("atomically saves aggregate workspace rows, preserves unregistered snapshots and current Tasks", async () => {
-    const created = await harness.service.createProject({name: "Aggregate", workspaces: [{workspaceId: WS_A, description: "a"}]});
+    const created = await harness.service.createProject({name: "Aggregate", workspaces: [{workspaceRootPath: WS_A, description: "a"}]});
     const original = created.workspaces[0]!;
     harness.registry.delete(WS_A);
     await harness.writeTask(created.projectId, { taskId: "concurrent", description: "current", status: "DONE", createdAt: "1", updatedAt: "2" });
     const saved = await harness.service.updateProject({projectId: created.projectId, name: "Changed", workspaces: [
-      {workspaceId: WS_A, description: "retained"}, {workspaceId: WS_B, description: "b"},
+      {workspaceRootPath: WS_A, description: "retained"}, {workspaceRootPath: WS_B, description: "b"},
     ]});
-    expect(saved.workspaces.find((w) => w.workspaceId === WS_A)).toMatchObject({
-      workspaceRootPath: original.workspaceRootPath, addedAt: original.addedAt, description: "retained", availability: "UNREGISTERED",
+    expect(saved.workspaces.find((w) => w.workspaceRootPath === WS_A)).toMatchObject({
+      workspaceRootPath: original.workspaceRootPath, description: "retained", availability: "UNREGISTERED",
     });
     expect(saved.taskCount).toBe(1);
     expect(saved.openTaskCount).toBe(0);
     const before = await harness.readFile();
     await expect(harness.service.updateProject({projectId: created.projectId, name: "No partial rename", workspaces: [
-      {workspaceId: WS_B}, {workspaceId: WS_B},
+      {workspaceRootPath: WS_B}, {workspaceRootPath: WS_B},
     ]})).rejects.toMatchObject({code: "WORKSPACE_ALREADY_LINKED"});
     expect(await harness.readFile()).toEqual(before);
   });

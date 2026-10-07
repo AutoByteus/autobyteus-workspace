@@ -8,11 +8,9 @@ export const ProjectFields = gql`
     createdAt
     updatedAt
     workspaces {
-      workspaceId
       workspaceRootPath
       displayName
       description
-      addedAt
       availability
     }
     taskCount

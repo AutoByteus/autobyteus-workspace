@@ -10,8 +10,8 @@ const isNonEmptyString = (value: unknown): value is string => typeof value === "
 const STATUSES: ReadonlySet<ProjectTaskStatus> = new Set(["TODO", "IN_PROGRESS", "DONE"]);
 const isValidLink = (link: unknown): link is ProjectWorkspaceLink => {
   const c = link as Partial<ProjectWorkspaceLink> | null;
-  return Boolean(c) && isNonEmptyString(c?.workspaceId) && isNonEmptyString(c?.workspaceRootPath)
-    && typeof c?.description === "string" && isNonEmptyString(c?.addedAt);
+  return Boolean(c) && isNonEmptyString(c?.workspaceRootPath)
+    && typeof c?.description === "string";
 };
 const normalizeContextFiles = (files: unknown): ProjectTaskContextFile[] =>
   Array.isArray(files) ? files.filter((f) => f && isSafeContextFilename(f.storedFilename)
@@ -27,7 +27,7 @@ export const readProjectFile = (raw: unknown, projectId: string): Project | null
     || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt) || !Array.isArray(c.workspaces)) return null;
   return { projectId, name: c.name, description: c.description, createdAt: c.createdAt, updatedAt: c.updatedAt,
     workspaces: c.workspaces.filter(isValidLink).map((l) => ({
-      workspaceId: l.workspaceId, workspaceRootPath: l.workspaceRootPath, description: l.description, addedAt: l.addedAt })) };
+      workspaceRootPath: l.workspaceRootPath, description: l.description })) };
 };
 /** Current tolerant reader of `task.json`; its ids must match its folders. */
 export const readTaskFile = (raw: unknown, projectId: string, taskId: string): ProjectTask | null => {
@@ -40,7 +40,7 @@ export const readTaskFile = (raw: unknown, projectId: string, taskId: string): P
 /** Exact writer shapes. */
 export const projectFileContent = (p: Project) => ({ projectId: p.projectId, name: p.name, description: p.description,
   createdAt: p.createdAt, updatedAt: p.updatedAt, workspaces: p.workspaces.map((l) => ({
-    workspaceId: l.workspaceId, workspaceRootPath: l.workspaceRootPath, description: l.description, addedAt: l.addedAt })) });
+    workspaceRootPath: l.workspaceRootPath, description: l.description })) });
 export const taskFileContent = (projectId: string, t: ProjectTask) => ({ taskId: t.taskId, projectId, description: t.description,
   status: t.status, createdAt: t.createdAt, updatedAt: t.updatedAt, contextFiles: normalizeContextFiles(t.contextFiles ?? []) });
 

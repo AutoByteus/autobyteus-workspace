@@ -49,7 +49,7 @@ describe("Task agent run resource reactivation", () => {
     layout = new ProjectsLayout(path.join(appData, "projects"));
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
-    projectId = (await new ProjectService({ store, workspaceLookup: { getRegisteredWorkspaceRootPath: async () => null } }).createProject({ name: "P" })).projectId;
+    projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     tasks = await boot();
   });
   afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });

@@ -33,6 +33,30 @@ describe("per-Project folder ProjectStore (SR-024)", () => {
     expect((await store.findTask("task_2")).map(m => m.projectId)).toEqual(["project_A"]);
   });
 
+  it.each([false, true])("reads path associations without rewriting and writes exactly two keys, preserving Task bytes (old extras: %s)", async oldExtras => {
+    await seed();
+    const link = {workspaceRootPath: "/work/space #? 文件夹", description: "Source"};
+    const raw = {...project("project_A"), workspaces: [{...link, ...(oldExtras ? {workspaceId: "released_id", addedAt: "2026-09-26"} : {})}]};
+    const file = layout.projectFile("project_A");
+    const original = JSON.stringify(raw, null, 4) + "\n";
+    await fs.writeFile(file, original);
+    const contextFile = path.join(layout.contextDir("project_A", "task_1"), "ctx_a__note.txt");
+    await fs.mkdir(path.dirname(contextFile), {recursive: true});
+    await fs.writeFile(contextFile, "saved context");
+    await fs.writeFile(layout.agentRunResourcesFile("project_A", "task_1"), '{"saved":"assignment"}');
+    const preserved = [layout.taskFile("project_A", "task_1"), layout.taskFile("project_A", "task_2"), contextFile, layout.agentRunResourcesFile("project_A", "task_1")];
+    const bytes = await Promise.all(preserved.map(f => fs.readFile(f, "utf8")));
+    expect((await store.readProject("project_A"))!.workspaces).toEqual([link]);
+    expect((await store.listProjects())[0].workspaces).toEqual([link]);
+    expect(await fs.readFile(file, "utf8")).toBe(original);
+    await store.updateProject("project_A", current => ({...current, description: "description-only save"}));
+    const saved = JSON.parse(await fs.readFile(file, "utf8"));
+    expect(saved).toEqual({...project("project_A"), description: "description-only save", workspaces: [link]});
+    expect(Object.keys(saved.workspaces[0]).sort()).toEqual(["description", "workspaceRootPath"]);
+    expect((await new ProjectStore(layout).readProject("project_A"))!.workspaces).toEqual([link]);
+    expect(await Promise.all(preserved.map(f => fs.readFile(f, "utf8")))).toEqual(bytes);
+  });
+
   it("lists a Task only with a valid task.json under a valid project.json (N7)", async () => {
     await seed();
     await fs.mkdir(path.join(layout.tasksDir("project_A"), "resources_only"), { recursive: true });

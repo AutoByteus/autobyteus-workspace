@@ -316,11 +316,12 @@ category-wide native task exposure are not restored.
 - `create_or_update_project({project_id?, name?, description?, workspaces?})` → `{project}`.
   Omit project_id to create with required nonblank name; supply known project_id
   to patch at least one field. Omitted fields persist; blank description clears.
-  Workspaces are `[{workspace_id, description?}]`: supplied list fully replaces,
-  [] unlinks only, omission preserves. Retained links preserve omitted description,
-  root snapshot and added time; new IDs must be registered on this node. Callers
-  must know real IDs/the full desired list; no discovery/registration is provided.
-  Result is saved projectId/name/description and workspace IDs/descriptions only.
+  Workspaces are `[{workspace_path, description?}]`: absolute node-local paths;
+  supplied list fully replaces, [] unlinks only, omission preserves. Retained links
+  preserve omitted description; blank clears. Canonical duplicates reject the
+  entire change. Registration/existence are not required; Save never registers or
+  creates folders. Old workspace_id rows are rejected, not translated.
+  Result is saved projectId/name/description and workspaceRootPath/description only.
 - `create_or_update_task` → `{task}`, two strict modes. Create
   `{project_id, description}`: required nonempty description, **omit status**
   (new TODO). Update `{task_id, description?, status?}` with **no project_id**:

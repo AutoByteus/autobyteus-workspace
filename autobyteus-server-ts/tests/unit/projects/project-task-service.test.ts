@@ -21,7 +21,7 @@ const createHarness = async () => {
   let taskCounter = 0;
   const projects = new ProjectService({
     store,
-    workspaceLookup: { getRegisteredWorkspaceRootPath: vi.fn(async () => null) },
+    workspaceLookup: { listRegisteredWorkspaceRootPaths: vi.fn(async () => []) },
     now,
     createId: () => `project_${++projectCounter}`,
   });

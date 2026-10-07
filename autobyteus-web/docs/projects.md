@@ -72,27 +72,27 @@ remain transport/presentation definitions. Components do not import Apollo.
 ## Project Authoring / Workspace Links
 
 The Project form has required unique trimmed name, optional description and
-zero or more optional Existing workspace / New folder rows with descriptions.
+zero or more optional Existing workspace / Folder path rows with descriptions.
 Save submits one aggregate membership list; Cancel does not save the Project.
 A new Project with no links lands on Tasks; one with links lands on Workspaces.
 Editing preserves its originating tab. Short created/saved notices clear rather
 than remaining sticky.
 
-Existing candidates are registered non-temp filesystem workspaces, excluding
-duplicates selected by other rows; a retained unavailable link remains editable
-through its snapshot. The server revalidates new membership/duplicates under
-the Project lock and preserves retained roots/addedAt and current Tasks.
+Existing candidates are registered non-temp filesystem workspaces, keyed by
+root path and excluding exact duplicates selected by other rows. A retained
+unregistered path stays editable. The node validates absolute paths and canonical
+duplicates under the Project lock; it preserves current Tasks and array order.
 
-**New folder is registration-only, not physical folder creation.** The form
-registers the normalized root with existing workspaceStore.createWorkspace,
-then saves the Project. Registration failure prevents Project Save; registration
-can remain if the subsequent Project save fails. There is no rollback saga.
-Workspace availability is read-time AVAILABLE/UNREGISTERED; removing registry
-entries never deletes/blocks Project links, and re-registering the same root
-restores availability. Unlinking/deleting does not remove physical workspaces.
-
+**Folder path saves a metadata reference, not a registration or physical folder.**
+Both picker and manual input submit `workspaceRootPath` and `description` directly.
+No `createWorkspace` call, prior registration or existence check is needed.
+Saved entries contain exactly those two fields. Existing saved path/description
+entries with obsolete extra keys remain readable without a rewrite; ordinary
+saves discard extras. Workspace availability remains registration-based
+AVAILABLE/UNREGISTERED, not a filesystem-access guarantee. Unlinking/deleting
+never unregisters or removes physical workspaces.
 The Workspaces tab shows described root rows/unavailable badges. Add or Edit
-navigates to the aggregate Project edit page (with originating tab/row intent);
+navigates to the aggregate Project edit page (with originating tab and router-encoded `workspacePath` row intent);
 Unlink still uses the direct remove-link API. No workspace add/edit overlay.
 
 Project cards show **open** Task/workspace counts. Project delete confirmation
@@ -308,12 +308,12 @@ extension, microphone/permission/device or live transcription capability.
 Exactly `list_projects`, `list_project_tasks`, `create_or_update_project`, `create_or_update_task` are selected
 independently per agent/node; `create_or_update_task` is also added automatically wherever `delegate_task` is. Project authoring uses a required name to create
 or a known project_id to patch: omitted fields persist, blank description clears.
-Optional workspaces [{workspace_id, description?}] reference known registered IDs:
-a supplied list replaces all links, [] unlinks only, omission preserves. Retained
-link descriptions persist if omitted. No workspace discovery/registration is
-provided; the Manager asks for real IDs/the complete desired list when unknown.
-The saved Project acknowledgement contains metadata and link IDs/descriptions,
-not Task counts or filesystem paths. List requires explicit Project ID after discovery;
+Optional workspaces [{workspace_path, description?}] reference absolute folder paths
+on the selected node: a supplied list replaces all links, [] unlinks only, omission
+preserves. Retained descriptions persist if omitted. Registration and folder
+existence are not prerequisites; no folder/registry changes happen on Save.
+The saved acknowledgement contains Project metadata and workspaceRootPath/description,
+not workspace IDs, per-link timestamps, Task counts or availability. List requires explicit Project ID after discovery;
 create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
 the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
 A description-only `delegate_task` creates a Task with no Project for its copy; such

@@ -28,9 +28,9 @@
     <ul v-else class="divide-y divide-slate-100" data-testid="project-workspace-list">
       <ProjectWorkspaceRow
         v-for="link in project.workspaces"
-        :key="link.workspaceId"
+        :key="link.workspaceRootPath"
         :link="link"
-        :busy="unlinkingWorkspaceId === link.workspaceId"
+        :busy="unlinkingWorkspacePath === link.workspaceRootPath"
         @edit="openLinkDialog"
         @unlink="unlink"
       />
@@ -56,23 +56,23 @@ const { t } = useLocalization()
 const projectStore = useProjectStore()
 
 const headingId = `project-workspaces-heading-${Math.random().toString(36).slice(2, 8)}`
-const unlinkingWorkspaceId = ref<string | null>(null)
+const unlinkingWorkspacePath = ref<string | null>(null)
 const rowError = ref<string | null>(null)
 
 const router = useRouter()
 const openLinkDialog = (link: ProjectWorkspace | null): void => {
-  void router.push({path: `/projects/${props.project.projectId}/edit`, query: {tab: 'workspaces', ...(link ? {workspace: link.workspaceId} : {addWorkspace: '1'})}})
+  void router.push({path: `/projects/${props.project.projectId}/edit`, query: {tab: 'workspaces', ...(link ? {workspacePath: link.workspaceRootPath} : {addWorkspace: '1'})}})
 }
 
 const unlink = async (link: ProjectWorkspace): Promise<void> => {
   rowError.value = null
-  unlinkingWorkspaceId.value = link.workspaceId
+  unlinkingWorkspacePath.value = link.workspaceRootPath
   try {
-    await projectStore.removeWorkspace(props.project.projectId, link.workspaceId)
+    await projectStore.removeWorkspace(props.project.projectId, link.workspaceRootPath)
   } catch (error) {
     rowError.value = t(projectErrorMessageKey(error))
   } finally {
-    unlinkingWorkspaceId.value = null
+    unlinkingWorkspacePath.value = null
   }
 }
 </script>

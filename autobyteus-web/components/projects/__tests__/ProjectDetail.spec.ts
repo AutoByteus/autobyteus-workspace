@@ -31,19 +31,15 @@ const project: Project = {
   openTaskCount: 2,
   workspaces: [
     {
-      workspaceId: 'agent_ws_a1',
       workspaceRootPath: '/work/superrepo',
       displayName: 'superrepo',
       description: 'Main monorepo',
-      addedAt: '1',
       availability: 'AVAILABLE',
     },
     {
-      workspaceId: 'agent_ws_b2',
       workspaceRootPath: '/work/autobyteus-web-prototype',
       displayName: 'autobyteus-web-prototype',
       description: 'UI prototype workspace',
-      addedAt: '2',
       availability: 'UNREGISTERED',
     },
   ],
@@ -109,12 +105,12 @@ describe('ProjectDetail', () => {
 
     expect(wrapper.find('[data-testid="project-task-board-stub"]').exists()).toBe(false)
     expect(wrapper.get('[role="tabpanel"]').text()).not.toMatch(/\btasks?\b/i)
-    const unavailableRow = wrapper.get('[data-testid="project-workspace-row-agent_ws_b2"]')
+    const unavailableRow = wrapper.get('[data-testid="project-workspace-row"][data-path="/work/autobyteus-web-prototype"]')
     expect(unavailableRow.attributes('data-availability')).toBe('UNREGISTERED')
     expect(unavailableRow.text()).toContain('/work/autobyteus-web-prototype')
     expect(unavailableRow.text()).toContain('UI prototype workspace')
     expect(unavailableRow.find('[data-testid="project-workspace-unavailable"]').exists()).toBe(true)
-    expect(wrapper.get('[data-testid="project-workspace-row-agent_ws_a1"]').find('[data-testid="project-workspace-unavailable"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="project-workspace-row"][data-path="/work/superrepo"]').find('[data-testid="project-workspace-unavailable"]').exists()).toBe(false)
     wrapper.unmount()
   })
 
@@ -188,9 +184,9 @@ describe('ProjectDetail', () => {
     await wrapper.get('[data-testid="project-add-workspace-button"]').trigger('click')
     expect(routerMock.push).toHaveBeenCalledWith({path: '/projects/p1/edit', query: {tab: 'workspaces', addWorkspace: '1'}})
 
-    await wrapper.get('[data-testid="project-workspace-row-agent_ws_b2"] [data-testid="project-workspace-unlink"]').trigger('click')
+    await wrapper.get('[data-testid="project-workspace-row"][data-path="/work/autobyteus-web-prototype"] [data-testid="project-workspace-unlink"]').trigger('click')
     await flushPromises()
-    expect(store.removeWorkspace).toHaveBeenCalledWith('p1', 'agent_ws_b2')
+    expect(store.removeWorkspace).toHaveBeenCalledWith('p1', '/work/autobyteus-web-prototype')
     wrapper.unmount()
   })
 

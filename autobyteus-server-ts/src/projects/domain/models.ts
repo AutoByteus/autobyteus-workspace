@@ -2,11 +2,9 @@ import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskCon
 
 /** A workspace link as persisted inside a Project record. */
 export interface ProjectWorkspaceLink {
-  workspaceId: string;
-  /** Root path snapshot taken when the link was created. */
+  /** Canonical absolute folder path on this node; registration is not required. */
   workspaceRootPath: string;
   description: string;
-  addedAt: string;
 }
 
 export type ProjectTaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
@@ -96,7 +94,7 @@ export interface TaskWithoutProjectView {
   root: TaskRootView | null;
 }
 
-export interface ProjectWorkspaceInput { workspaceId: string; description?: string | null }
+export interface ProjectWorkspaceInput { workspaceRootPath: string; description?: string | null }
 
 export interface CreateProjectCommand {
   workspaces?: ProjectWorkspaceInput[] | null;
@@ -121,19 +119,19 @@ export interface PatchProjectCommand {
 
 export interface AddProjectWorkspaceCommand {
   projectId: string;
-  workspaceId: string;
+  workspaceRootPath: string;
   description?: string | null;
 }
 
 export interface UpdateProjectWorkspaceCommand {
   projectId: string;
-  workspaceId: string;
+  workspaceRootPath: string;
   description?: string | null;
 }
 
 export interface RemoveProjectWorkspaceCommand {
   projectId: string;
-  workspaceId: string;
+  workspaceRootPath: string;
 }
 
 export interface CreateProjectTaskCommand {

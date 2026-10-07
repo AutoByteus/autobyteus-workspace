@@ -46,6 +46,21 @@ describe("WorkspaceManager", () => {
     fs.rmSync(appDataDir, { recursive: true, force: true });
   });
 
+  it("reads registered roots without activation, temp cleanup, existence checks or registry writes", async () => {
+    const missing = path.join(appDataDir, "missing");
+    const temp = path.join(appDataDir, "configured-temp");
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(temp);
+    const registryFile = path.join(appDataDir, "workspaces.json");
+    const bytes = JSON.stringify({[buildFilesystemWorkspaceId(missing)]: missing,
+      [buildFilesystemWorkspaceId(temp)]: temp, skill_ws_ignored: path.join(appDataDir, "skill")});
+    fs.writeFileSync(registryFile, bytes);
+    expect((await manager.listRegisteredWorkspaceRootPaths()).sort()).toEqual([missing, temp].sort());
+    expect(manager.getAllWorkspaces()).toEqual([]);
+    expect(fs.readFileSync(registryFile, "utf8")).toBe(bytes);
+    expect(fs.existsSync(missing)).toBe(false);
+    expect(fs.existsSync(temp)).toBe(false);
+  });
+
   it("creates and registers a workspace", async () => {
     const rootPath = createTempRoot();
     const config = { rootPath };

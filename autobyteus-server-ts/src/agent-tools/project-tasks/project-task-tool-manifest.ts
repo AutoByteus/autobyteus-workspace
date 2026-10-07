@@ -7,7 +7,7 @@ import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTa
 
 const projectAcknowledgement = ({projectId, name, description, workspaces}: Project) => ({
   projectId, name, description,
-  workspaces: workspaces.map(({workspaceId, description}) => ({workspaceId, description})),
+  workspaces: workspaces.map(({workspaceRootPath, description}) => ({workspaceRootPath, description})),
 });
 
 /** Business read: current (open) assignments, or a marker when this Task's assignments can't be read. */
@@ -43,7 +43,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
       ...(Object.hasOwn(input, "name") ? {name: input.name as string} : {}),
       ...(Object.hasOwn(input, "description") ? {description: input.description as string} : {}),
       ...(Object.hasOwn(input, "workspaces") ? {workspaces: (input.workspaces as Array<Record<string, unknown>>).map(row => ({
-        workspaceId: row.workspace_id as string,
+        workspaceRootPath: row.workspace_path as string,
         ...(Object.hasOwn(row, "description") ? {description: row.description as string} : {}),
       })) as ProjectWorkspaceInput[]} : {}),
     };

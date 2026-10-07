@@ -40,7 +40,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     layout = new ProjectsLayout(path.join(appData, "projects"));
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
-    projectId = (await new ProjectService({ store, workspaceLookup: { getRegisteredWorkspaceRootPath: async () => null } }).createProject({ name: "P" })).projectId;
+    projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
     tasks = await boot();
   });

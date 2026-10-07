@@ -8,7 +8,7 @@ export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName
 export const CREATE_OR_UPDATE_TASK_TOOL_NAME = "create_or_update_task" satisfies ProjectTaskToolName;
 const statuses = ["TODO", "IN_PROGRESS", "DONE"];
 export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string> = {
-  create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference known registered workspace IDs: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Unknown IDs fail. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
+  create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
   list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns descriptions, saved context-file references and each Task's current assignments (the worker run to follow up with, whether it is an Agent or a Team, who assigned it, and whether the work was accepted); accepted work is not necessarily finished. A Task whose assignments can't be read is marked assignments unavailable.",
   create_or_update_task: "Create a Project Task, or patch any Task by its ID. Create: supply project_id and a required description (omit task_id and status); the new Task is TODO. Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE status, and never project_id; task_id may name a Project Task or a Task that delegate_task created (it has no Project). DONE stops the Task's delegated copies and removes them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then (as the run that assigned it) message the run ID delegate_task returned: that reactivates the copy with its conversation. A status change alone starts nothing. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, not a work-completion assessment. Does not delegate work.",
@@ -23,9 +23,9 @@ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): Parameter
     p("description", "Project description; omit to preserve on patch, blank to clear."),
     new ParameterDefinition({
       name: "workspaces", type: ParameterType.ARRAY,
-      description: "Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use known registered node-local IDs.",
+      description: "Complete desired workspace links, not append. Omit to preserve on patch; [] unlinks all without deleting folders. Use absolute folder paths on this node; registration and existence are not required.",
       arrayItemSchema: new ParameterSchema([
-        p("workspace_id", "Known registered workspace identity on this node.", true),
+        p("workspace_path", "Absolute folder path on this node; no shell expansion or registration required.", true),
         p("description", "Link description; omit to preserve a retained link, blank to clear. New links default to blank."),
       ]),
     }),
@@ -69,16 +69,13 @@ function parseProjectMutation(raw: unknown): Record<string, unknown> {
   if (Object.hasOwn(input, "workspaces")) {
     if (!Array.isArray(input.workspaces)) invalid("workspaces must be an array.");
     const rows = input.workspaces as unknown[];
-    const seen = new Set<string>();
     // Array.from visits holes too; sparse rows must not bypass validation.
     result.workspaces = Array.from(rows, row => {
       if (!plainObject(row)) invalid("Each workspace must be a plain object.");
       const item = row as Record<string, unknown>;
-      if (Object.keys(item).some(key => !["workspace_id", "description"].includes(key))) invalid("Unsupported workspace argument.");
-      const workspaceId = id(item, "workspace_id");
-      if (seen.has(workspaceId)) throw new ProjectError("WORKSPACE_ALREADY_LINKED", "Duplicate workspace links are not allowed.");
-      seen.add(workspaceId);
-      const link: Record<string, unknown> = {workspace_id: workspaceId};
+      if (Object.keys(item).some(key => !["workspace_path", "description"].includes(key))) invalid("Unsupported workspace argument.");
+      const workspacePath = id(item, "workspace_path");
+      const link: Record<string, unknown> = {workspace_path: workspacePath};
       if (Object.hasOwn(item, "description")) {
         if (typeof item.description !== "string") invalid("Workspace description must be a string.");
         link.description = (item.description as string).trim();

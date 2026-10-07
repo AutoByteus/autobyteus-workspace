@@ -1,7 +1,8 @@
 <template>
   <li
     class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-start sm:justify-between"
-    :data-testid="`project-workspace-row-${link.workspaceId}`"
+    data-testid="project-workspace-row"
+    :data-path="link.workspaceRootPath"
     :data-availability="link.availability"
   >
     <div class="min-w-0 flex-1">

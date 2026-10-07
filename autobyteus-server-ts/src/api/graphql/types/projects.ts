@@ -26,9 +26,6 @@ registerEnumType(ProjectWorkspaceAvailability, {
 @ObjectType()
 export class ProjectWorkspace {
   @Field(() => String)
-  workspaceId!: string;
-
-  @Field(() => String)
   workspaceRootPath!: string;
 
   @Field(() => String)
@@ -36,9 +33,6 @@ export class ProjectWorkspace {
 
   @Field(() => String)
   description!: string;
-
-  @Field(() => String)
-  addedAt!: string;
 
   @Field(() => ProjectWorkspaceAvailability)
   availability!: ProjectWorkspaceAvailability;
@@ -74,7 +68,7 @@ export class Project {
 
 @InputType()
 export class ProjectWorkspaceFormInput {
-  @Field(() => String) workspaceId!: string;
+  @Field(() => String) workspaceRootPath!: string;
   @Field(() => String, { nullable: true }) description?: string | null;
 }
 
@@ -107,7 +101,7 @@ export class AddProjectWorkspaceInput {
   projectId!: string;
 
   @Field(() => String)
-  workspaceId!: string;
+  workspaceRootPath!: string;
 
   @Field(() => String, { nullable: true })
   description?: string | null;
@@ -119,7 +113,7 @@ export class UpdateProjectWorkspaceInput {
   projectId!: string;
 
   @Field(() => String)
-  workspaceId!: string;
+  workspaceRootPath!: string;
 
   @Field(() => String, { nullable: true })
   description?: string | null;
@@ -131,15 +125,13 @@ export class RemoveProjectWorkspaceInput {
   projectId!: string;
 
   @Field(() => String)
-  workspaceId!: string;
+  workspaceRootPath!: string;
 }
 
 const toGraphqlWorkspace = (link: ProjectWorkspaceView): ProjectWorkspace => ({
-  workspaceId: link.workspaceId,
   workspaceRootPath: link.workspaceRootPath,
   displayName: link.displayName,
   description: link.description,
-  addedAt: link.addedAt,
   availability: link.availability as ProjectWorkspaceAvailability,
 });
 

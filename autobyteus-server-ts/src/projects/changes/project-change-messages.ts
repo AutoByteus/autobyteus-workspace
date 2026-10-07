@@ -39,7 +39,7 @@ const taskWithoutProjectSchema = z.strictObject({
 const projectSchema = z.strictObject({
   projectId: text, name: z.string(), description: z.string(), createdAt: text, updatedAt: text,
   workspaces: z.array(z.strictObject({
-    workspaceId: text, workspaceRootPath: z.string(), displayName: z.string(), description: z.string(), addedAt: text,
+    workspaceRootPath: z.string(), displayName: z.string(), description: z.string(),
     availability: z.enum(["AVAILABLE", "UNREGISTERED"]),
   })),
   openTaskCount: z.number().int(), taskCount: z.number().int(),
@@ -83,7 +83,7 @@ export const taskWithoutProjectWire = (task: TaskWithoutProjectView) => ({
 /** GraphQL `Project` fields only. */
 export const projectWire = (project: ProjectView) => ({
   projectId: project.projectId, name: project.name, description: project.description, createdAt: project.createdAt, updatedAt: project.updatedAt,
-  workspaces: project.workspaces.map(({ workspaceId, workspaceRootPath, displayName, description, addedAt, availability }) =>
-    ({ workspaceId, workspaceRootPath, displayName, description, addedAt, availability })),
+  workspaces: project.workspaces.map(({ workspaceRootPath, displayName, description, availability }) =>
+    ({ workspaceRootPath, displayName, description, availability })),
   openTaskCount: project.openTaskCount, taskCount: project.taskCount,
 });
