@@ -12,7 +12,7 @@
         </header>
         <p v-if="notice" class="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status" data-testid="task-page-save-notice">{{ notice }}</p>
         <section v-if="confirmingDelete" class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4" aria-labelledby="task-delete-heading" data-testid="task-page-delete-confirmation" @keydown.esc.prevent="cancelDelete">
-          <h2 id="task-delete-heading" class="font-semibold text-red-900">{{ t('projects.components.projects.ProjectTaskEditor.deleteTitle') }}</h2><p class="mt-2 break-words text-sm leading-6 text-red-800">{{ t('projects.components.projects.ProjectTaskEditor.deleteMessage', {summary: taskSummary(task.description)}) }}</p>
+          <h2 id="task-delete-heading" class="font-semibold text-red-900">{{ t('projects.components.projects.ProjectTaskEditor.deleteTitle') }}</h2><p class="mt-2 break-words text-sm leading-6 text-red-800">{{ t('projects.components.projects.ProjectTaskEditor.deleteMessage', {summary: taskSummaryLabel(task.description)}) }}</p>
           <p v-if="deleteError" role="alert" class="mt-3 text-sm text-red-700">{{ deleteError }}</p>
           <div class="mt-4 flex flex-wrap justify-end gap-3"><button ref="deleteCancel" type="button" :disabled="busy" :class="secondaryButton" data-testid="task-page-delete-cancel" @click="cancelDelete">{{ t('projects.common.cancel') }}</button><button type="button" :disabled="busy" class="inline-flex min-h-11 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60" data-testid="task-page-delete-confirm" @click="remove">{{ t(busy ? 'projects.components.projects.ProjectTaskEditor.deleting' : 'projects.ui.deleteTask') }}</button></div>
         </section>
@@ -34,7 +34,7 @@ import { useProjectNotice } from '~/composables/projects/useProjectNotice'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'
 import { TASK_STATUS_LABEL_KEYS } from '~/utils/projects/taskStatusLabelKey'
-import { taskSummary } from '~/utils/projects/taskSummary'
+import { taskSummaryLabel } from '~/utils/projects/taskSummary'
 import TaskContextFiles from './TaskContextFiles.vue'
 import TaskRootSection from './TaskRootSection.vue'
 import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFeed'

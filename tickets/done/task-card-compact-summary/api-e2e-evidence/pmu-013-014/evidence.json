@@ -1,0 +1,322 @@
+{
+  "startedAt": "2026-10-07T12:51:10.601Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-013": {
+      "result": "Pass",
+      "description": "Compact cards: ~10,000-word and multi-line descriptions render ≤2+2 lines on the Project board and Temp tasks at 1440 and 1024; short labels; full text on the Task pages; search beyond the visible lines",
+      "durationMs": 7511,
+      "details": {
+        "descriptionChars": {
+          "huge": 98889,
+          "multi": 35939
+        },
+        "measured": {
+          "1024": {
+            "board": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 76,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 120,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              },
+              "short": {
+                "summary": {
+                  "height": 24,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 24,
+                  "text": "Write the release notes."
+                },
+                "preview": {
+                  "height": 20,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 14,
+                  "text": "Keep it short."
+                },
+                "rowHeight": 76,
+                "label": "Write the release notes."
+              }
+            },
+            "temp": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 156,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              }
+            }
+          },
+          "1440": {
+            "board": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 76,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 120,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              },
+              "short": {
+                "summary": {
+                  "height": 24,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 24,
+                  "text": "Write the release notes."
+                },
+                "preview": {
+                  "height": 20,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 14,
+                  "text": "Keep it short."
+                },
+                "rowHeight": 76,
+                "label": "Write the release notes."
+              }
+            },
+            "temp": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 156,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              }
+            }
+          }
+        },
+        "confirmationChars": 194,
+        "fullProject": true,
+        "fullTemp": true,
+        "errors": []
+      }
+    },
+    "PMU-014": {
+      "result": "Fail",
+      "description": "Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation",
+      "durationMs": 38933,
+      "message": "browser errors",
+      "details": [
+        "Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec687:59:28)\n    at http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=46bec687:823:71\n    at both (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:35:31)\n    at http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:24:24)\n    at Object.error (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:37:49)\n    at notifySubscription (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:137:18)\n    at onNotify (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:229:5)",
+        "Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec687:59:28)\n    at http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=46bec687:823:71\n    at both (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:35:31)\n    at http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:24:24)\n    at Object.error (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:37:49)\n    at notifySubscription (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:137:18)\n    at onNotify (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:229:5)",
+        "Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec687:59:28)\n    at http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=46bec687:823:71\n    at both (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:35:31)\n    at http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:24:24)\n    at Object.error (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=46bec687:37:49)\n    at notifySubscription (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:137:18)\n    at onNotify (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=46bec687:229:5)"
+      ],
+      "pages": [
+        {
+          "url": "http://127.0.0.1:51843/projects/project_83c10ccb-2141-483f-8529-da339417c4d5/tasks/project_task_6b8d0f07-089b-4623-be87-aee6033c251a",
+          "center": "",
+          "console": [
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "error: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec687:59:",
+            "error: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec68",
+            "error: Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:51843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec68",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 23299,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 23272,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-014",
+      "message": "browser errors"
+    }
+  ],
+  "feed": {
+    "total": 39,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 11,
+      "task_upserted": 18,
+      "task_worker_status": 9
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:51842",
+    "frontendUrl": "http://127.0.0.1:51843",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-oqcIY6"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-07T12:52:20.549Z"
+}

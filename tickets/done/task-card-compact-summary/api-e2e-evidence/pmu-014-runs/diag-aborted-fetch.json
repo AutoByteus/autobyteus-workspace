@@ -1,0 +1,151 @@
+{
+  "startedAt": "2026-10-07T12:55:54.887Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-014": {
+      "result": "Fail",
+      "description": "Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation",
+      "durationMs": 40043,
+      "message": "DIAG",
+      "details": {
+        "errors": [
+          "2026-10-07T12:56:25.545Z @http://127.0.0.1:52843/projects/temp-tasks :: Failed to fetch agent team definitions: ApolloError: Failed to fetch",
+          "2026-10-07T12:56:25.545Z @http://127.0.0.1:52843/projects/temp-tasks :: Failed to fetch agent definitions: ApolloError: Failed to fetch"
+        ],
+        "nav": [
+          "2026-10-07T12:56:18.462Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:18.754Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:18.920Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:18.940Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:21.024Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:21.025Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:21.120Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:21.231Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:21.243Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:21.922Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:21.922Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:22.012Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:22.117Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:22.136Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:22.852Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:22.853Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:22.954Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:23.034Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:23.044Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:23.723Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:23.724Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:23.819Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:23.903Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:23.915Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:24.596Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:24.597Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:24.686Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:24.769Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:24.784Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:25.544Z nav http://127.0.0.1:52843/projects/temp-tasks",
+          "2026-10-07T12:56:25.545Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_753c5087-512e-4272-a313-95d01ab81be1",
+          "2026-10-07T12:56:25.642Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_753c5087-512e-4272-a313-95d01ab81be1",
+          "2026-10-07T12:56:25.740Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_753c5087-512e-4272-a313-95d01ab81be1",
+          "2026-10-07T12:56:25.750Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_753c5087-512e-4272-a313-95d01ab81be1",
+          "2026-10-07T12:56:26.526Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_753c5087-512e-4272-a313-95d01ab81be1",
+          "2026-10-07T12:56:26.528Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:26.594Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d",
+          "2026-10-07T12:56:26.596Z nav http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_b570c915-e2df-445b-924c-bcb1d798c15b"
+        ],
+        "failed": [
+          "2026-10-07T12:56:25.544Z failed http://127.0.0.1:52842/graphql net::ERR_ABORTED",
+          "2026-10-07T12:56:25.544Z failed http://127.0.0.1:52842/graphql net::ERR_ABORTED",
+          "2026-10-07T12:56:25.544Z failed http://127.0.0.1:52842/graphql net::ERR_ABORTED"
+        ]
+      },
+      "pages": [
+        {
+          "url": "http://127.0.0.1:52843/projects/project_6b1933d1-7e62-4e9c-a6e6-d1c53f5ce71d/tasks/project_task_b570c915-e2df-445b-924c-bcb1d798c15b",
+          "center": "",
+          "console": [
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "error: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:52843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec68",
+            "error: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:52843/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-card-compact-summary/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=46bec687:59:",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 35047,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 34459,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-014",
+      "message": "DIAG"
+    }
+  ],
+  "feed": {
+    "total": 21,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 7,
+      "task_upserted": 9,
+      "task_worker_status": 4
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:52842",
+    "frontendUrl": "http://127.0.0.1:52843",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-Uoblsl"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-07T12:56:57.307Z"
+}
