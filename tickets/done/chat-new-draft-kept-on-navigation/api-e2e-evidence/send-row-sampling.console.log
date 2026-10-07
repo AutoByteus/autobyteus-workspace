@@ -1,0 +1,8 @@
+D00 Pass Seed: a real New chat send leaves no row (REQ-006) and records the run to visit
+D01 Pass AC-001 alternates + VIS-001: attachment, lone /command, skill chip and settings alone make no row; a textless New chat is not kept
+D02 Pass SCN-001 Team (AC-001/002, VIS-002/004): row at the first character; leave to a run; the row restores target, image, text, workspace, model, thinking, Ask first and member customization
+D03 Pass SCN-001 Agent (AC-002): skill chip, @ mention, image, model and thinking restored after another page; editing does not reorder
+D04 Pass SCN-002 (AC-003/004): Chat, pencil, catalog Run, Team Run, run header + and tree + start fresh and keep both drafts
+D05 Pass SCN-005 (AC-007, VIS-005) + retarget keeps the same draft: Empty draft until left, via a row, Chat or another page
+D06 Pass AC-005 alternate + RU-4: a Team launch failure and an agent failure before registration keep the user on New chat with the draft and row
+D07 Pass SCN-003 (AC-005, RU-2): real Team and Agent sends from re-entered drafts; only the sent row goes; attachments, skill and mention reach the runs
