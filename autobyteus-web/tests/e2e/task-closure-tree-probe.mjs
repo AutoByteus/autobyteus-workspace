@@ -7,6 +7,9 @@
 // The Manager and its workers run on the AGY runtime with the repository's scripted CLI
 // (autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs, AGY_FAKE_CASE=linked_skills): a message containing
 // `CALL_TOOL:{...}` makes that agent call the actual scoped MCP tool. No provider inference, no mocked routes.
+// BR-008..BR-011 cover reactivation (reactivate-done-task-runs): after DONE the agent reopens the Task and its
+// run-ID message brings the worker (or a Task Team via its coordinator) back into the tree, live, after reload and
+// across real backend restarts. BR-011 needs BR-008..BR-010 in the same run.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
 // them in finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -35,7 +38,7 @@ const ledger = getArg('ledger');
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['BR-001', 'BR-002', 'BR-003', 'BR-004', 'BR-005', 'BR-006', 'BR-007'];
+const ALL_CASES = ['BR-001', 'BR-002', 'BR-003', 'BR-004', 'BR-005', 'BR-006', 'BR-007', 'BR-008', 'BR-009', 'BR-010', 'BR-011'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 const SELECTED_BG = 'rgb(238, 242, 255)';
 
@@ -498,6 +501,184 @@ const orgHistoryFirstRender = async () => {
   } finally { await context.close(); }
 };
 
+// ---------------------------------------------------------------- reactivation (reactivate-done-task-runs)
+const reactivated = {};
+/** The members of one task Team node of a stored tree, with their addresses. */
+const teamMembersOf = (tree, teamRunId) => {
+  let found = [];
+  const visit = (v) => {
+    if (Array.isArray(v)) return v.forEach(visit);
+    if (!v || typeof v !== 'object') return;
+    if ((v.teamRunId ?? v.team_run_id) === teamRunId && Array.isArray(v.members)) {
+      found = v.members.map((m) => ({ address: m.address, agentRunId: m.agentRunId ?? m.agent_run_id })).filter((m) => m.agentRunId);
+    }
+    Object.values(v).forEach(visit);
+  };
+  visit(tree); return found;
+};
+/** Records any of the given run rows that render at any time, from document start. */
+const watchRows = (ids) => `(() => { const ids = ${JSON.stringify(ids)}; window.__rowsSeen = [];
+  const check = () => { for (const id of ids) if (document.querySelector('[data-agent-run-id="' + id + '"], [data-test$="-row-' + id + '"]')) window.__rowsSeen.push(id); };
+  new MutationObserver(check).observe(document, { subtree: true, childList: true, attributes: true }); })();`;
+/** What the app does before a send to a stopped root (after a restart): the root's restore mutation. */
+const restoreRoot = async (root) => {
+  const r = Object.values(await gql(root.kind === 'agent' ? 'mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}'
+    : root.kind === 'team' ? 'mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}'
+      : 'mutation($id:String!){restoreAgentOrgRun(agentOrgRunId:$id){success message}}', { id: root.rootId }))[0];
+  assert(r.success, `restore ${root.kind} root failed: ${r.message}`);
+};
+const centerText = (page) => page.locator('[data-test="workspace-center-pane"]').innerText();
+const expandTaskTeam = async (page, kind, teamRef) => {
+  const row = page.locator(rowSelector(kind, teamRef));
+  if ((await row.getAttribute('aria-expanded')) === 'false') await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
+};
+/**
+ * AC-004/AC-002/AC-005 (+ AC-015, AC-014 in the tree): after DONE, a message while still DONE and a status change
+ * alone show nothing; the assigner's message brings the worker row back live, then the Task Team copy via its
+ * coordinator. The helpers stay hidden; the worker's conversation continues; a fresh page load keeps both rows.
+ */
+const liveReactivation = async (kind, label) => {
+  const s = await setupRoot(kind, label, { withPlain: false });
+  const { page, errors, context } = await newPage();
+  try {
+    await openRoot(page, s.root, s.names);
+    const worker = { agentRunId: s.aAssigned.agentRunId };
+    const helperRefs = s.aRefs.filter((r) => r.agentRunId !== worker.agentRunId);
+    const workerSel = rowSelector(kind, worker);
+    const helperSel = helperRefs.map((r) => rowSelector(kind, r));
+    const teamSel = rowSelector(kind, s.bRef);
+    for (const sel of [workerSel, ...helperSel, teamSel]) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
+    s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Status of the release notes? PRE-DONE-7731' }));
+    await sleep(2500); // The scripted worker answers at once; its conversation is asserted after the reactivation.
+    // DONE: the Task A rows leave.
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    await until('Task A rows gone', goneAll(page, [workerSel, ...helperSel]), 60000);
+    // Still DONE: the assigner's message is refused and nothing reappears (AC-015).
+    s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Too early?' }));
+    await sleep(2000);
+    assert(await page.locator(workerSel).count() === 0, 'worker row reappeared while the Task was DONE');
+    // The agent reopens the Task: a status change alone shows nothing (AC-014).
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'IN_PROGRESS' }));
+    await until('Task A reopened', async () => (await taskStatus(s.projectId, s.taskA)) === 'IN_PROGRESS', 30000);
+    await sleep(1500);
+    assert(await page.locator(workerSel).count() === 0, 'worker row reappeared on a status change alone');
+    // The assigner's run-ID message: the worker row returns live, without reload; the helpers stay hidden.
+    const sentAt = Date.now();
+    s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Second round for the release notes. POST-REOPEN-9902' }));
+    await page.locator(workerSel).waitFor({ state: 'visible', timeout: 60000 });
+    const reappearMs = Date.now() - sentAt;
+    await sleep(1500);
+    for (const sel of helperSel) assert(await page.locator(sel).count() === 0, `helper row reappeared: ${sel}`);
+    assert((await taskStatus(s.projectId, s.taskA)) === 'IN_PROGRESS', 'Task status changed by the software');
+    await shot(page, `${kind}-reactivated-live`);
+    // The reactivated worker's conversation continues: the earlier exchange and the new message.
+    await page.locator(workerSel).click();
+    await until('reactivated conversation', async () => { const t = await centerText(page); return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902'); }, 30000);
+    const text = await centerText(page);
+    assert(text.indexOf('PRE-DONE-7731') < text.indexOf('POST-REOPEN-9902'), 'earlier conversation not before the new message');
+    await shot(page, `${kind}-reactivated-conversation`);
+    // The Task Team copy (AC-002): DONE, reopen, then the coordinator's run ID brings back the Team and its members.
+    const tree = await storedTree(s.root);
+    const members = teamMembersOf(tree, s.bRef.teamRunId);
+    const coordinator = members.find((m) => /\/reviewer$/.test(m.address));
+    assert(coordinator, 'task Team coordinator not found', { members });
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status: 'DONE' }));
+    await until('Task B Team row gone', goneAll(page, [teamSel]), 60000);
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status: 'IN_PROGRESS' }));
+    await until('Task B reopened', async () => (await taskStatus(s.projectId, s.taskB)) === 'IN_PROGRESS', 30000);
+    s.input.send(callTool('send_message_to', { target_agent_run_id: coordinator.agentRunId, content: 'Docs review, second round. TEAM-REOPEN-5150' }));
+    await page.locator(teamSel).waitFor({ state: 'visible', timeout: 60000 });
+    await expandTaskTeam(page, kind, s.bRef);
+    for (const m of members) await page.locator(rowSelector(kind, { agentRunId: m.agentRunId })).waitFor({ state: 'visible', timeout: 30000 });
+    assert(JSON.stringify(teamMembersOf(await storedTree(s.root), s.bRef.teamRunId).map((m) => m.agentRunId).sort()) === JSON.stringify(members.map((m) => m.agentRunId).sort()),
+      'task Team members changed');
+    await shot(page, `${kind}-team-reactivated-live`);
+    assert(errors.length === 0, 'browser errors', errors);
+    // A fresh page load keeps the reactivated rows; the helpers never render.
+    const fresh = await newPage({ initScript: watchRows(helperRefs.map((r) => r.agentRunId)) });
+    try {
+      await openRoot(fresh.page, s.root, s.names);
+      await fresh.page.locator(workerSel).waitFor({ state: 'visible', timeout: 30000 });
+      await fresh.page.locator(teamSel).waitFor({ state: 'visible', timeout: 30000 });
+      await sleep(1500);
+      const seen = await fresh.page.evaluate(() => window.__rowsSeen);
+      assert(seen.length === 0, 'helper rows rendered after reload', { seen });
+      await shot(fresh.page, `${kind}-reactivated-after-reload`);
+      assert(fresh.errors.length === 0, 'browser errors after reload', fresh.errors);
+    } finally { await fresh.context.close(); }
+    reactivated[kind] = { root: s.root, names: s.names, projectId: s.projectId, taskA: s.taskA, taskB: s.taskB, worker, helperRefs,
+      teamRef: s.bRef, coordinator: coordinator.agentRunId, members: members.map((m) => m.agentRunId) };
+    return { root: s.root, worker, helperRefs, teamRef: s.bRef, coordinator: coordinator.agentRunId, reappearMs };
+  } finally { s.input.close(); await context.close(); }
+};
+/**
+ * AC-004 restart + AC-010 + AC-011: after a real backend restart the reactivated rows are still listed and the
+ * helpers never render; then DONE closes the worker again, the backend restarts once more (no in-memory runtime
+ * authority exists), and the agent's reopen + run-ID message reactivates the worker live with its conversation.
+ */
+const reactivationAcrossRestart = async () => {
+  const kinds = ['agent', 'team', 'org'].filter((k) => reactivated[k]);
+  assert(kinds.length === 3, 'BR-011 needs BR-008..BR-010 in the same run');
+  const visibleAfter = async (label) => {
+    const out = {};
+    for (const kind of kinds) {
+      const r = reactivated[kind];
+      const { page, errors, context } = await newPage({ initScript: watchRows(r.helperRefs.map((x) => x.agentRunId)) });
+      try {
+        await openRoot(page, r.root, r.names);
+        await page.locator(rowSelector(kind, r.worker)).waitFor({ state: 'visible', timeout: 30000 });
+        await page.locator(rowSelector(kind, r.teamRef)).waitFor({ state: 'visible', timeout: 30000 });
+        await sleep(1500);
+        const seen = await page.evaluate(() => window.__rowsSeen);
+        assert(seen.length === 0, `${kind}: helper rows rendered (${label})`, { seen });
+        await shot(page, `${kind}-reactivated-${label}`);
+        assert(errors.length === 0, `${kind}: browser errors (${label})`, errors);
+        out[kind] = { workerVisible: true, teamVisible: true, helpersSeen: seen };
+      } finally { await context.close(); }
+    }
+    return out;
+  };
+  const firstRestart = await restartBackend();
+  assert(firstRestart.before !== firstRestart.after, 'backend did not restart');
+  const afterRestart = await visibleAfter('after-restart');
+  // DONE again through each Manager (its root is restored by the message), then a second real restart.
+  for (const kind of kinds) {
+    const r = reactivated[kind];
+    await restoreRoot(r.root);
+    const input = await managerInput(r.root);
+    try {
+      input.send(callTool('create_or_update_task', { task_id: r.taskA, status: 'DONE' }));
+      await until(`${kind}: Task A DONE again`, async () => (await taskStatus(r.projectId, r.taskA)) === 'DONE', 60000);
+    } finally { input.close(); }
+  }
+  const secondRestart = await restartBackend();
+  assert(secondRestart.before !== secondRestart.after, 'backend did not restart');
+  const afterSecond = {};
+  for (const kind of kinds) {
+    const r = reactivated[kind];
+    const { page, errors, context } = await newPage();
+    await restoreRoot(r.root);
+    const input = await managerInput(r.root);
+    try {
+      await openRoot(page, r.root, r.names);
+      await sleep(1500);
+      assert(await page.locator(rowSelector(kind, r.worker)).count() === 0, `${kind}: closed worker listed after restart`);
+      input.send(callTool('create_or_update_task', { task_id: r.taskA, status: 'IN_PROGRESS' }));
+      await until(`${kind}: Task A reopened after restart`, async () => (await taskStatus(r.projectId, r.taskA)) === 'IN_PROGRESS', 60000);
+      input.send(callTool('send_message_to', { target_agent_run_id: r.worker.agentRunId, content: 'After the restart. POST-RESTART-4242' }));
+      await page.locator(rowSelector(kind, r.worker)).waitFor({ state: 'visible', timeout: 90000 });
+      await page.locator(rowSelector(kind, r.worker)).click();
+      await until(`${kind}: conversation after restart`, async () => { const t = await centerText(page);
+        return t.includes('PRE-DONE-7731') && t.includes('POST-REOPEN-9902') && t.includes('POST-RESTART-4242'); }, 60000);
+      for (const ref of r.helperRefs) assert(await page.locator(rowSelector(kind, ref)).count() === 0, `${kind}: helper row listed after restart`);
+      await shot(page, `${kind}-reactivated-after-second-restart`);
+      assert(errors.length === 0, `${kind}: browser errors after the second restart`, errors);
+      afterSecond[kind] = { reactivated: true, status: await taskStatus(r.projectId, r.taskA) };
+    } finally { input.close(); await context.close(); }
+  }
+  return { firstRestart, afterRestart, secondRestart, afterSecond };
+};
+
 const CASES = {
   'BR-001': ['Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer', () => liveDone('agent', 'BrAgent')],
   'BR-002': ['Agent Team root live DONE (same journey; fallback to the delegating Manager)', () => liveDone('team', 'BrTeam')],
@@ -506,6 +687,10 @@ const CASES = {
   'BR-005': ['Reload, then real backend restart + reload: closed rows never render', reloadAndRestart],
   'BR-006': ['CR-001: the last task rows under an Agent run fade; the empty tree then disappears', lastRows],
   'BR-007': ['SP-3: stopped Org run expanded from history before hydration renders no closed rows', orgHistoryFirstRender],
+  'BR-008': ['Agent root reactivation: refused while DONE, status alone shows nothing, worker and Task Team rows return live, helpers stay hidden, reload', () => liveReactivation('agent', 'RaAgent')],
+  'BR-009': ['Agent Team root reactivation (same journey)', () => liveReactivation('team', 'RaTeam')],
+  'BR-010': ['Agent Org root reactivation (same journey)', () => liveReactivation('org', 'RaOrg')],
+  'BR-011': ['Real backend restart: reactivated rows stay; DONE, restart, reopen and message reactivate the worker again', reactivationAcrossRestart],
 };
 
 let result = 'Pass';

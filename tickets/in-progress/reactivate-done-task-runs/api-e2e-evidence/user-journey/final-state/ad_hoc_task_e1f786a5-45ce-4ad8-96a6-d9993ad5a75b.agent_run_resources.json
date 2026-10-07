@@ -1,0 +1,21 @@
+{
+  "taskId": "ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "assignedBy": "release_manager_0118bacd020341a99bb81a4766200cd8",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "release_manager_0118bacd020341a99bb81a4766200cd8"
+      },
+      "agentRun": {
+        "kind": "team",
+        "teamRunId": "docs_review_team_bf0b400e2c864d728b110616d8f59881",
+        "coordinatorAgentRunId": "docs_reviewer_1f61ca9a289948cbba8054bb604af121"
+      },
+      "linkedAt": "2026-10-07T07:03:09.038Z",
+      "start": "started",
+      "closedAt": "2026-10-07T07:08:28.837Z"
+    }
+  ]
+}

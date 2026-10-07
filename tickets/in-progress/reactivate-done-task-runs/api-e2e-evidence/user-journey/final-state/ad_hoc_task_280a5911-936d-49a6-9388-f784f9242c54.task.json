@@ -1,0 +1,8 @@
+{
+  "taskId": "ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54",
+  "description": "Draft release notes for our new Offline Sync feature.\n\nContext:\n- Feature: Offline Sync\n- Internal code name: BLUE HERON\n- Ships in version 4.2\n\nScope: Write a short release-notes draft for the Offline Sync feature in version 4.2. The code name BLUE HERON is internal; use it only for reference and do not put it in user-facing text unless you are told to.\n\nDone when: You have a complete draft. Send it back to me, the Release Manager (/release_manager), as your reply.",
+  "referenceFiles": [],
+  "status": "IN_PROGRESS",
+  "createdAt": "2026-10-07T07:01:56.874Z",
+  "updatedAt": "2026-10-07T07:10:21.815Z"
+}

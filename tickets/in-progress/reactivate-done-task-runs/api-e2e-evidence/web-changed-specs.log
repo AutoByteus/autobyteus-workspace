@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.95 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts utils/collaboration/__tests__/taskExecutionClosure.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/reactivate-done-task-runs/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaboration/__tests__/taskExecutionClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/collaboration/__tests__/taskExecutionClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/collaboration/__tests__/taskExecutionClosure.spec.ts (3 tests) 3ms
+ ✓ stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts (6 tests) 19ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (5 tests) 18ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts (7 tests) 13ms
+
+ Test Files  4 passed (4)
+      Tests  21 passed (21)
+   Start at  08:29:13
+   Duration  6.99s (transform 3.66s, setup 24.01s, collect 696ms, tests 53ms, environment 1.08s, prepare 659ms)
+
