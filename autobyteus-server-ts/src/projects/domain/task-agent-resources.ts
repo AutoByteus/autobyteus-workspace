@@ -67,9 +67,36 @@ export const settleTaskAgentResourceStart = (file: TaskAgentResourceFile, agentR
       : outcome.start === "started" ? { ...r, start: "started" } : { ...r, start: "failed", startError: boundedError(outcome.error) }) };
 };
 
-/** DONE: every open entry is closed. Closed is forever. */
+/**
+ * DONE: every open entry is closed. A closed entry stays closed until its assigner reactivates it
+ * (`reopenTaskAgentResource`); helper entries never reopen.
+ */
 export const closeTaskAgentResources = (file: TaskAgentResourceFile, now: string): TaskAgentResourceFile =>
   ({ taskId: file.taskId, agentRunResources: file.agentRunResources.map(r => r.closedAt === null ? { ...r, closedAt: now } : r) });
+
+export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This Task work is closed. Only the run that assigned it can reactivate it: "
+  + "move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.";
+/**
+ * Reactivation preconditions on the file content: the entry is an `assigned` entry of this Task,
+ * `requestedBy` is its assigner, and it started. Task status is the caller's concern.
+ */
+export const assertTaskAgentResourceReopenable = (file: TaskAgentResourceFile, agentRun: TaskExecutionReference, requestedBy: string): TaskAgentResource => {
+  const entry = find(file, agentRun);
+  if (!entry) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is not linked to this Task.");
+  if (entry.role !== "assigned" || entry.assignedBy !== requestedBy) {
+    throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
+  }
+  if (entry.start !== "started") {
+    throw new ProjectError("TASK_REACTIVATION_UNAVAILABLE", "This assignment never started, so there is nothing to reactivate. Delegate the work again.");
+  }
+  return entry;
+};
+/** Reactivation: the one assigned entry is open again; every other entry is unchanged. An open entry returns the same file. */
+export const reopenTaskAgentResource = (file: TaskAgentResourceFile, agentRun: TaskExecutionReference, requestedBy: string): TaskAgentResourceFile => {
+  if (assertTaskAgentResourceReopenable(file, agentRun, requestedBy).closedAt === null) return file;
+  return { taskId: file.taskId, agentRunResources: file.agentRunResources.map(r =>
+    agentRunKey(r.agentRun) === agentRunKey(agentRun) ? { ...r, closedAt: null } : r) };
+};
 
 const outcomes: Record<TaskAgentResource["start"], TaskAssignmentOutcome> = { started: "accepted", starting: "not_confirmed", failed: "failed" };
 /** The Manager's read: open `assigned` entries only. */

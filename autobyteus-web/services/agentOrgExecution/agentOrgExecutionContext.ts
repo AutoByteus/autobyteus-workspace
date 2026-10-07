@@ -36,6 +36,7 @@ import {
   collaborationTreeWalk,
   collectClosedSubtrees,
   mergeClosedTaskExecutions,
+  removeReopenedTaskExecutions,
   type CollaborationTreeNode,
 } from '~/utils/collaboration/taskExecutionClosure'
 
@@ -238,6 +239,14 @@ export class AgentOrgExecutionContext {
       this.view = { ...this.view,
         closed_task_executions: mergeClosedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
       this.leaveClosedSelection()
+    } else if (event.kind === 'task_executions_reopened') {
+      // Their assigner reactivated them: they are listed again (helpers under them stay closed).
+      if (event.task_executions.some((reference) => 'agentRunId' in reference
+        ? this.index.agents.get(reference.agentRunId)?.kind !== 'task' : !this.index.teams.get(reference.teamRunId)?.delegation)) {
+        this.correlationFailure('A reopened task execution is not a task execution of this AgentOrg.')
+      }
+      this.view = { ...this.view,
+        closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
     } else if (event.kind === 'collaborator_added') {
       // One hosted instance per entry: its executions get contexts now, Offline. Applied in
       // place (no checkpoint) so the pending send that added it keeps its acknowledgement.

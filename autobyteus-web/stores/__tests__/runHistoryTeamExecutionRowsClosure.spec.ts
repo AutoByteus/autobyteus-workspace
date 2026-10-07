@@ -89,6 +89,22 @@ describe('Team root closed task executions', () => {
     expect(other.view.getFocusedAgentRunId()).toBe('other-task-run');
   });
 
+  it('applies TASK_EXECUTIONS_REOPENED in sequence: the reactivated Team and its members are listed again, others stay hidden (REQ-008, AC-004)', () => {
+    const context = build([{ teamRunId: 'task-team-run-1' }, { agentRunId: 'task-agent-run-1' }, { agentRunId: 'sub-task-run' }]);
+    expect(treeRunIds(context)).not.toContain(TASK_TEAM_MEMBER);
+    const result = applyTestTeamMessage(context, { type: 'TASK_EXECUTIONS_REOPENED', payload: { change_sequence: 4, task_executions: [{ team_run_id: 'task-team-run-1' }] } });
+    expect(result).toMatchObject({ disposition: 'applied' });
+    expect(result.effects.map((effect) => effect.kind)).toEqual(['reconcile_team_navigation']);
+    expect(context.view.getChangeSequence()).toBe(4);
+    const ids = treeRunIds(context);
+    expect(ids).toEqual(expect.arrayContaining(['task-team-run-1', TASK_TEAM_MEMBER]));
+    for (const hidden of ['task-agent-run-1', 'sub-task-run']) expect(ids).not.toContain(hidden);
+    // A reopened reference outside the tree is rejected and keeps the sequence.
+    expect(applyTestTeamMessage(context, { type: 'TASK_EXECUTIONS_REOPENED', payload: { change_sequence: 5, task_executions: [{ agent_run_id: 'ghost-run' }] } }))
+      .toMatchObject({ disposition: 'rejected' });
+    expect(context.view.getChangeSequence()).toBe(4);
+  });
+
   it('rejects a closed reference that is not in the execution tree and keeps the sequence', () => {
     const context = build();
     expect(applyTestTeamMessage(context, closedMessage(4, [{ agent_run_id: 'ghost-run' }]))).toMatchObject({ disposition: 'rejected' });

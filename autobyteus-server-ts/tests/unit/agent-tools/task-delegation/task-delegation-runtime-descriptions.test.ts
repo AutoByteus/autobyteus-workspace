@@ -145,10 +145,11 @@ describe("task delegation runtime descriptions", () => {
     expect(success).toMatchObject({
       type: "object",
       additionalProperties: false,
-      required: ["target_agent_run_id"],
-      properties: { target_agent_run_id: { type: "string", minLength: 1 }, task_id: { type: "string", minLength: 1 } },
+      required: ["target_agent_run_id", "target_kind"],
+      properties: { target_agent_run_id: { type: "string", minLength: 1 }, target_kind: { type: "string", enum: ["agent", "team"] },
+        task_id: { type: "string", minLength: 1 } },
     });
-    expect(Object.keys(success!.properties as object)).toEqual(["target_agent_run_id", "task_id"]);
+    expect(Object.keys(success!.properties as object)).toEqual(["target_agent_run_id", "target_kind", "task_id"]);
     expect(notStarted).toMatchObject({
       type: "object",
       additionalProperties: false,
@@ -156,7 +157,7 @@ describe("task delegation runtime descriptions", () => {
       properties: { target_agent_run_id: { type: "null" }, message: { type: "string", minLength: 1 } },
     });
     // task_id is only an optional success field; no Task status or failed-start Task identity.
-    expect(success!.required).toEqual(["target_agent_run_id"]);
+    expect(success!.required).toEqual(["target_agent_run_id", "target_kind"]);
     expect(JSON.stringify(notStarted)).not.toMatch(/task_id/);
     expect(JSON.stringify(outputSchema)).not.toMatch(/"status"/);
   });
@@ -184,7 +185,7 @@ describe("task delegation runtime descriptions", () => {
 
   it("executes MCP task tools only from the authenticated Team-member capability", async () => {
     const delegateTask = vi.fn(async (): Promise<Record<string, unknown>> => ({
-      target_agent_run_id: "run-worker",
+      target_agent_run_id: "run-worker", target_kind: "agent",
     }));
     const provider = new TaskDelegationToolsMcpAdapterProvider({ delegateTask } as never);
     const adapter = provider.getAdapters().find(
@@ -215,7 +216,7 @@ describe("task delegation runtime descriptions", () => {
       result: {
         content: [{ type: "text" }],
         structuredContent: {
-          target_agent_run_id: "run-worker",
+          target_agent_run_id: "run-worker", target_kind: "agent",
         },
       },
     });

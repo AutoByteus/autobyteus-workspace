@@ -90,6 +90,12 @@ export class TeamRunResolver {
     if (this.managed.get(teamRunId) === expected) this.managed.delete(teamRunId);
   }
 
+  /** Reactivation: retires one terminated (released) TeamRun so its restored run can register and inherit its proof. */
+  retireTerminated(teamRunId: string): void {
+    const run = this.managed.get(teamRunId);
+    if (run?.isTerminated()) { this.releasedTeams.set(teamRunId, run); this.managed.delete(teamRunId); }
+  }
+
   unregisterTerminated(): void {
     for (const [teamRunId, run] of this.managed) {
       if (run.isTerminated()) { this.releasedTeams.set(teamRunId, run); this.managed.delete(teamRunId); }

@@ -66,6 +66,23 @@ describe('Agent Org closed task executions', () => {
     expect(context.selection).toEqual({ kind: 'agent_execution', agentRunId: 'agent-director' })
   })
 
+  it('lists a reactivated task execution again on task_executions_reopened; other closed ones stay hidden (REQ-008, AC-004)', () => {
+    const context = buildContext([{ teamRunId: 'team-task' }, { agentRunId: 'agent-worker-task' }])
+    expect(context.isListed('agent-task-lead')).toBe(false)
+    expect(context.applyEvent(9, { kind: 'task_executions_reopened', task_executions: [{ teamRunId: 'team-task' }] })).toBe('applied')
+    expect(context.view.closed_task_executions).toEqual([{ agentRunId: 'agent-worker-task' }])
+    const keys = rowKeys(runFor([{ teamRunId: 'team-task' }, { agentRunId: 'agent-worker-task' }]), context)
+    expect(keys).toEqual(expect.arrayContaining(['task-team:team-task', 'task-team-agent:agent-task-lead']))
+    expect(keys).not.toContain('task-agent:agent-worker-task')
+    expect(context.isListed('agent-task-lead')).toBe(true)
+  })
+
+  it('requires a fresh view when a reopened reference is a configured member', () => {
+    const context = buildContext()
+    expect(() => context.applyEvent(9, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'agent-director' }] })).toThrow()
+    expect(context.phase).toBe('reopen_required')
+  })
+
   it('requires a fresh view when a closed reference is a configured member', () => {
     const context = buildContext()
     expect(() => context.applyEvent(9, { kind: 'task_executions_closed', task_executions: [{ agentRunId: 'agent-director' }] })).toThrow()

@@ -132,7 +132,7 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
   it("returns the spawned ingress run ID and the task_id of the Task with no Project it created (REQ-003/004)", async () => {
     const { lifecycle, resources } = setup();
     await expect(lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
-      .resolves.toEqual({ target_agent_run_id: "child-run", task_id: "ad_hoc_task_1" });
+      .resolves.toEqual({ target_agent_run_id: "child-run", target_kind: "agent", task_id: "ad_hoc_task_1" });
     expect(resources.links).toEqual([expect.objectContaining({ role: "assigned", assignedBy: "coordinator-run",
       adHocTask: { description: "Do it", referenceFiles: [] }, agentRun: { agentRunId: "child-run" } })]);
     expect(resources.tasks.get("ad_hoc_task_1")).toEqual({ description: "Do it", referenceFiles: [], done: false, adHoc: true });

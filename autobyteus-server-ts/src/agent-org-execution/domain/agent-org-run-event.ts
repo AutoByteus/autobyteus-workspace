@@ -11,6 +11,8 @@ export type AgentOrgRunEvent =
   | Readonly<{ kind: "task_execution_started"; host: TaskExecutionHostIdentity; taskExecution: TaskExecutionReference }>
   /** These task executions' Task became DONE; published before they are stopped. */
   | Readonly<{ kind: "task_executions_closed"; taskExecutions: readonly TaskExecutionReference[] }>
+  /** These closed task executions were reactivated by their assigner; published after the Task-side reopen. */
+  | Readonly<{ kind: "task_executions_reopened"; taskExecutions: readonly TaskExecutionReference[] }>
   | Readonly<{ kind: "communication"; message: CollaborationCommunicationMessageV1 }>
   /** Committed at the root before any task execution references its address. */
   | Readonly<{ kind: "collaborator_added"; collaborator: CollaboratorEntry }>

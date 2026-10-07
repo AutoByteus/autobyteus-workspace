@@ -193,6 +193,19 @@ export class TaskAgentExecutionRegistry {
     return operation;
   }
 
+  /**
+   * Reactivation, after an accepted exact release: drops the released (fenced) handle so `restore`
+   * builds a fresh `restore`-mode handle. A live handle is kept.
+   */
+  discardReleased(agentRunId: string): void {
+    if (this.isLive(agentRunId)) return;
+    this.active.delete(agentRunId);
+    this.operations.delete(agentRunId);
+    this.preparedHandles.delete(agentRunId);
+    this.eventGates.delete(agentRunId);
+    this.reserved.delete(agentRunId);
+  }
+
   cancel(agentRunId: string): void {
     this.operations.get(agentRunId)?.cancel();
     (this.active.get(agentRunId) ?? this.preparedHandles.get(agentRunId))?.cancelActivation();

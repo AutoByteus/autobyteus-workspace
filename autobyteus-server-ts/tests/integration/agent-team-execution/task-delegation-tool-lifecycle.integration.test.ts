@@ -220,6 +220,8 @@ class TestTeamBackend implements TeamRunBackend {
     else { await this.children.get(reference.teamRunId)?.terminate(); this.children.delete(reference.teamRunId); }
     return { accepted: true };
   }
+  /** This double keeps no released authority: release already dropped it. */
+  discardReleasedDirectTaskExecution(_reference: TaskExecutionReference): void {}
   cancelRuntimeActivation(): void {}
   releaseOwnedRuntime(): Promise<AgentOperationResult> { return this.terminate(); }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
@@ -476,7 +478,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       description: "Solve the assigned classroom exercise and return evidence.",
       reference_files: [],
     });
-    expect(created).toEqual({ target_agent_run_id: expect.any(String), task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(created).toEqual({ target_agent_run_id: expect.any(String), target_kind: "agent", task_id: expect.stringMatching(/^ad_hoc_task_/) });
     const taskAgentRunId = (created as { target_agent_run_id: string }).target_agent_run_id;
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/worker",

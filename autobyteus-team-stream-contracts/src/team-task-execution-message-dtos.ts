@@ -31,6 +31,10 @@ export const teamTaskExecutionsClosedPayloadSchema = z.object({
 
 export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskExecutionsClosedPayloadSchema>>;
 
+/** These closed task executions were reactivated by their assigner; the Workspaces listing shows them again. Same shape as closed. */
+export const teamTaskExecutionsReopenedPayloadSchema = teamTaskExecutionsClosedPayloadSchema;
+export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
+
 /** A collaborator entry was committed at the root; it precedes any task execution at its address. */
 export const teamCollaboratorAddedPayloadSchema = z.object({
   change_sequence: z.number().int().positive(),

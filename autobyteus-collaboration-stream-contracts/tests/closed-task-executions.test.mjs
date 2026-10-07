@@ -87,3 +87,14 @@ test("task_executions_closed is a strict, non-empty sequenced event for Agent an
     assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 7, event: { ...event, extra: true } }));
   }
 });
+
+test("task_executions_reopened mirrors the closed event for Agent and Org roots: strict, non-empty, same references", () => {
+  for (const [root_subject_kind, root_run_id] of [["agent", "host-run"], ["agent_org", "org-run"]]) {
+    const event = { kind: "task_executions_reopened", task_executions: [{ agentRunId: "writer-run" }] };
+    assert.deepEqual(RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8, event }).event, event);
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8, event: { ...event, task_executions: [] } }));
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8, event: { ...event, extra: true } }));
+    assert.throws(() => RootExecutionEventDtoSchema.parse({ root_subject_kind, root_run_id, change_sequence: 8,
+      event: { ...event, task_executions: [{ agent_run_id: "writer-run" }] } }));
+  }
+});

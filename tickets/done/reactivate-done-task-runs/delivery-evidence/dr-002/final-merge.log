@@ -1,0 +1,13 @@
+# Final merge receipt (reconstructed from git)
+target before: cfeda548b (origin/personal, unchanged after verification)
+merge: a4f1bb865ae64c7258bb1e5431d7aac07d868250
+parents: cfeda548bfb1838fd21961b09f13733f2a95e139 054c9796fb101fe851502d324aa7dae44a1276aa
+subject: Merge verified reactivate-done-task-runs
+author: normy <normy@macbookpro.speedport.ip> Wed Oct 7 09:47:06 2026 +0200
+merge tree: f4df07702c0e1498d5ce3b5cd25517812b9def1e
+ticket head 054c9796f tree: f4df07702c0e1498d5ce3b5cd25517812b9def1e
+push: cfeda548b..a4f1bb865 personal -> personal
+ticket branch commits:
+054c9796f docs(delivery): sync reactivation docs and archive reactivate-done-task-runs
+dfe83c96d test(tasks): cover reactivation end to end and record review artifacts
+3394e7078 feat(tasks): let the assigning run reactivate a reopened Task's worker by run ID

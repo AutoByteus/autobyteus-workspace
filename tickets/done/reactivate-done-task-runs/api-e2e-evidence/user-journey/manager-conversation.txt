@@ -1,0 +1,302 @@
+RM
+Please have the Release Notes Writer draf…
+Offline
+You
+Please have the Release Notes Writer draft release notes for our new Offline Sync feature. Give the writer this detail: the internal code name is BLUE HERON and it ships in version 4.2. Tell me when the draft is back.
+RM
+Release Manager
+list_available_agents
+delegate_task
+
+I’ve sent the Offline Sync release notes request to the Release Notes Writer. The tool confirmed the delegation:
+
+Writer run ID: release_notes_writer_75ec7ec742a544f2a5fb746345c2cd33
+Task ID: ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54 (no Task was named, so this one was created for the request)
+
+The writer has the internal code name BLUE HERON and the 4.2 ship version. I also told the writer to treat BLUE HERON as internal and leave it out of customer-facing text unless told otherwise. If you want the code name in the notes, let me know and I’ll pass that on.
+
+The draft isn’t back yet. I’ll tell you when it arrives. Once you accept it, I’ll mark the task DONE.
+
+RM
+Release Manager
+
+From Release Notes Writer:
+
+Release notes draft: Offline Sync (version 4.2)
+
+New in 4.2: Offline Sync
+
+Keep working offline: You can keep using the app without a connection. Your changes are saved on your device.
+Automatic sync when you reconnect: When you’re back online, your offline changes sync automatically. You don’t have to do anything.
+Your data stays up to date: The app keeps your work consistent across your devices, so you can pick up where you left off.
+
+Notes for the Release Manager:
+
+I kept the internal code name (BLUE HERON) out of all user-facing text, as you asked.
+The brief didn’t say how sync conflicts are handled, which platforms are supported, or whether any setting needs to be turned on. I kept the wording general so it doesn’t promise anything we haven’t confirmed. Send me those details and I’ll make the bullets more specific.
+
+The Release Notes Writer has sent back the Offline Sync draft for version 4.2:
+
+New in 4.2: Offline Sync
+
+Keep working offline: You can keep using the app without a connection. Your changes are saved on your device.
+Automatic sync when you reconnect: When you’re back online, your offline changes sync automatically. You don’t have to do anything.
+Your data stays up to date: The app keeps your work consistent across your devices, so you can pick up where you left off.
+
+The code name BLUE HERON doesn’t appear anywhere in the draft.
+
+The writer kept the wording general because the brief didn’t cover three things:
+
+how conflicting changes from different devices are handled
+which platforms are supported
+whether a setting has to be turned on
+
+If you can give me those details, I’ll send them to the same writer so it can make the notes more specific.
+
+If the draft is good as it is, tell me and I’ll mark the task (ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54) DONE.
+
+You
+Good. Also have the Docs Review Team review this help-center sentence: 'Offline Sync let you works without internet and it sync later automatic.' Tell me what they find.
+RM
+Release Manager
+create_or_update_task
+delegate_task
+
+I’ve marked the release notes task DONE and sent the help-center sentence to the Docs Review Team.
+
+Release notes: task ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54 is now DONE, so the writer’s copy has stopped. If you want changes later, I can restart that same writer and it will still have its earlier context.
+Docs review: the tool confirmed the delegation.
+Team run ID: docs_reviewer_1f61ca9a289948cbba8054bb604af121
+Task ID: ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b
+
+I asked the team to check grammar, clarity and tone, list each problem, and suggest a corrected sentence that keeps the meaning. I also told them not to add claims about how conflicts are handled, which platforms are supported, or settings, since those aren’t confirmed yet.
+
+The team hasn’t replied yet. I’ll tell you what they find when their review arrives.
+
+RM
+Release Manager
+
+From Docs Reviewer:
+
+Review of the Offline Sync help-center sentence (v4.2):
+Original: “Offline Sync let you works without internet and it sync later automatic.”
+
+Findings:
+
+Grammar: There are four errors. The subject and verb don’t agree (“let” should be “lets”, and “it sync” should be “it syncs”). “you works” should be “you work”. “automatic” is an adjective but needs to be the adverb “automatically”.
+Clarity: “sync later” doesn’t say what gets synced or when. Users need to know that their changes sync when they reconnect. “Without internet” also reads better as “without an internet connection”.
+Tone: The run-on “…and it sync later automatic” sounds informal and choppy for a help-center article. Starting with what the user can do reads more clearly.
+
+Suggested rewrites (same meaning, no new claims):
+
+Option A: “Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect.”
+Option B: “With Offline Sync, you can work without an internet connection, and your changes sync automatically when you’re back online.”
+
+I added nothing about conflict handling, platforms, or settings.
+
+The Docs Review Team found problems with grammar, clarity and tone in the sentence: “Offline Sync let you works without internet and it sync later automatic.”
+
+What they found:
+
+Grammar (four errors):
+“let” should be “lets”.
+“you works” should be “you work”.
+“it sync” should be “it syncs”.
+“automatic” should be “automatically”.
+Clarity: “sync later” doesn’t say what syncs or when. It should say that the user’s changes sync when they reconnect. “Without internet” reads better as “without an internet connection.”
+Tone: The run-on second half sounds casual and choppy for a help-center article. Starting with what the user can do reads more clearly.
+
+Suggested rewrites (same meaning, nothing added):
+
+Option A: “Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect.”
+Option B: “With Offline Sync, you can work without an internet connection, and your changes sync automatically when you’re back online.”
+
+As I asked, they didn’t add anything about how conflicts are handled, which platforms are supported, or settings.
+
+The review task (ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b) is still open. Tell me if you accept the review, or which option you prefer, and I’ll mark it DONE. If you want changes, I’ll send them to the same team so it keeps its context.
+
+You
+I accept the review, we'll use option A. That's all for now.
+RM
+Release Manager
+create_or_update_task
+
+I’ve marked the review task (ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b) DONE, so the Docs Review Team’s copy has stopped.
+
+The help-center sentence will be Option A: “Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect.”
+
+Both tasks are now DONE: the release notes and this review. If you need more changes to either one later, I can restart the same worker and it will still have its earlier context.
+
+You
+We got the missing details for the release notes: conflicting edits keep the newest change, and Offline Sync works on iOS, Android and the web. Please get the same writer to update its draft — it already knows the version and code name, so only send it the new details.
+RM
+Release Manager
+create_or_update_task
+send_message_to
+
+I’ve sent the new details to the same Release Notes Writer that wrote the first draft, so it still has its earlier context.
+
+Task: I moved ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54 from DONE back to IN_PROGRESS.
+Message: The tool confirmed it was delivered to release_notes_writer_75ec7ec742a544f2a5fb746345c2cd33 and that the writer’s copy was reactivated.
+
+As you asked, I only sent the new details: when edits conflict, the newest change is kept, and Offline Sync works on iOS, Android and the web. I also told it not to say anything about a setting, since that still isn’t confirmed.
+
+I’ll tell you when the updated draft comes back.
+
+RM
+Release Manager
+
+From Release Notes Writer:
+
+Updated release notes draft: Offline Sync (version 4.2)
+
+New in 4.2: Offline Sync
+
+Keep working offline on iOS, Android and the web: You can keep using the app without a connection. Your changes are saved on your device.
+Automatic sync when you reconnect: When you’re back online, your offline changes sync automatically. You don’t have to do anything.
+Conflicts resolved for you: If the same item was edited in more than one place, the newest change is kept, so your work stays up to date across your devices.
+
+Notes for the Release Manager:
+
+I added the platforms and the conflict rule. Nothing else changed.
+The internal code name (BLUE HERON) is still out of all user-facing text.
+I didn’t mention any setting, because none has been confirmed.
+
+The writer has sent back the updated Offline Sync release notes for version 4.2:
+
+New in 4.2: Offline Sync
+
+Keep working offline on iOS, Android and the web: You can keep using the app without a connection. Your changes are saved on your device.
+Automatic sync when you reconnect: When you’re back online, your offline changes sync automatically. You don’t have to do anything.
+Conflicts resolved for you: If the same item was edited in more than one place, the newest change is kept, so your work stays up to date across your devices.
+
+The writer added only the platforms and the conflict rule; nothing else changed. BLUE HERON is still not in the user-facing text, and nothing is said about a setting.
+
+The task (ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54) is IN_PROGRESS. Tell me if you accept this version and I’ll mark it DONE, or tell me what to change and I’ll send it to the same writer.
+
+You
+One more thing for the Docs Review Team: please ask the same team to check whether option A, the one we picked, still fits now that the conflict rule (newest change wins) is public. They know the sentence already.
+RM
+Release Manager
+create_or_update_task
+send_message_to
+
+I’ve asked the same Docs Review Team to check whether Option A still fits now that the conflict rule is public. It’s the team that did the first review, so it still knows the sentence.
+
+Task: I moved ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b from DONE back to IN_PROGRESS.
+Message: The tool confirmed it was delivered to docs_reviewer_1f61ca9a289948cbba8054bb604af121 and that the team’s copy was reactivated.
+
+I told them the newest change is kept when edits conflict, and that the release notes now name iOS, Android and the web. I asked whether Option A should mention the conflict rule, and for a revised sentence if it needs one, again with nothing about settings.
+
+The release notes task (ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54) is still IN_PROGRESS and waiting for you to accept the updated draft. I’ll tell you when the team’s answer comes back.
+
+RM
+Release Manager
+
+From Docs Reviewer:
+
+Follow-up on Option A now that the conflict rule is public.
+
+Option A: “Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect.”
+
+Findings:
+
+Accuracy: Option A is still accurate. Nothing in it contradicts the conflict rule.
+Completeness: It should mention the conflict rule. Without it, “your changes sync” suggests every offline edit will always be kept. When edits conflict, only the newest change is kept, so users who edit offline need to know this. One short sentence covers it.
+Platforms (optional): Now that iOS, Android and the web are in the release notes, you can state them. This is your call. Leaving them out doesn’t make the text wrong, but adding them answers a common question.
+
+Revised version (recommended):
+“Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect. If edits conflict, the newest change is kept.”
+
+With platforms (optional):
+“Offline Sync lets you keep working without an internet connection on iOS, Android, and the web. Your changes sync automatically when you reconnect. If edits conflict, the newest change is kept.”
+
+The conflict sentence repeats the published rule exactly and adds nothing about how conflicts are detected or what happens to older edits. I added nothing about settings.
+
+The Docs Review Team says Option A is still accurate but should now mention the conflict rule.
+
+What they found:
+
+Accuracy: Nothing in Option A contradicts the conflict rule.
+Completeness: “Your changes sync” suggests every offline edit is always kept. When edits conflict, only the newest change is kept, and users should know that. One short sentence covers it.
+Platforms (optional): You can now name iOS, Android and the web. Leaving them out isn’t wrong, but adding them answers a common question.
+
+Recommended revision:
+“Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect. If edits conflict, the newest change is kept.”
+
+With platforms (optional):
+“Offline Sync lets you keep working without an internet connection on iOS, Android, and the web. Your changes sync automatically when you reconnect. If edits conflict, the newest change is kept.”
+
+The added sentence states only the published rule. It says nothing about how conflicts are detected or what happens to older edits, and nothing about settings.
+
+Two tasks are IN_PROGRESS and waiting for you:
+
+Docs review (ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b): tell me which version you want.
+Release notes (ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54): the updated draft is still waiting for you to accept it.
+
+When you accept either one, I’ll mark it DONE.
+
+You
+I accept both: the updated release notes, and the recommended revision without platforms. Thanks, we're done for today.
+RM
+Release Manager
+create_or_update_task
+create_or_update_task
+
+I’ve marked both tasks DONE, and the tool confirmed each one, so both workers’ copies have stopped.
+
+Release notes (ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54): the accepted draft is the updated 4.2 version, which names the platforms and the newest-change-wins conflict rule.
+Help-center sentence (ad_hoc_task_e1f786a5-45ce-4ad8-96a6-d9993ad5a75b): the accepted text is “Offline Sync lets you keep working without an internet connection. Your changes sync automatically when you reconnect. If edits conflict, the newest change is kept.”
+
+If you want more changes to either one later, I can restart the same worker and it will still have its earlier context.
+
+You
+Sorry, one last change to the release notes: marketing wants the first bullet to start with 'New:'. Please have the same writer do it.
+RM
+Release Manager
+create_or_update_task
+send_message_to
+
+I’ve sent marketing’s change to the same Release Notes Writer, which still has its earlier context.
+
+Task: I moved ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54 from DONE back to IN_PROGRESS.
+Message: The tool confirmed it was delivered to release_notes_writer_75ec7ec742a544f2a5fb746345c2cd33 and that the writer’s copy was reactivated.
+
+I asked it to start the first bullet with “New:” and change nothing else in the accepted draft. The code name stays out of the text.
+
+I’ll show you the final draft when it comes back. Once you accept it, I’ll mark the task DONE again.
+
+RM
+Release Manager
+
+From Release Notes Writer:
+
+Final release notes draft: Offline Sync (version 4.2)
+
+New in 4.2: Offline Sync
+
+New: Keep working offline on iOS, Android and the web: You can keep using the app without a connection. Your changes are saved on your device.
+Automatic sync when you reconnect: When you’re back online, your offline changes sync automatically. You don’t have to do anything.
+Conflicts resolved for you: If the same item was edited in more than one place, the newest change is kept, so your work stays up to date across your devices.
+
+Note: The only change is “New:” at the start of the first bullet. Nothing else changed, and the internal code name is still out of the text.
+
+The writer has sent back the final release notes with marketing’s change:
+
+New in 4.2: Offline Sync
+
+New: Keep working offline on iOS, Android and the web: You can keep using the app without a connection. Your changes are saved on your device.
+Automatic sync when you reconnect: When you’re back online, your offline changes sync automatically. You don’t have to do anything.
+Conflicts resolved for you: If the same item was edited in more than one place, the newest change is kept, so your work stays up to date across your devices.
+
+The writer says the only change is “New:” at the start of the first bullet, and BLUE HERON is still not in the text.
+
+There are two small formatting points you or marketing might want to settle:
+
+“New:” sits outside the bold label, so it looks different from the other bullets. It could go inside the bold instead: New: Keep working offline…
+The heading already says “New in 4.2,” so the word “New” appears twice in a row.
+
+The task (ad_hoc_task_280a5911-936d-49a6-9388-f784f9242c54) is IN_PROGRESS. Tell me if you accept this version as it is and I’ll mark it DONE. If you want either formatting change, I’ll send it to the same writer.
+
+Context Files (0)
+(drag, paste, or upload)

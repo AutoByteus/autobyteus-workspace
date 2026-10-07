@@ -91,6 +91,15 @@ export declare const taskExecutionsClosedEventDtoSchema: z.ZodObject<{
         teamRunId: z.ZodString;
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
+/** Live: these closed task executions were reactivated by their assigner; the listing shows them again. */
+export declare const taskExecutionsReopenedEventDtoSchema: z.ZodObject<{
+    kind: z.ZodLiteral<"task_executions_reopened">;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
 /**
  * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
  * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
@@ -697,6 +706,13 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
     }, z.core.$strict>], "kind">;
 }, z.core.$strict>, z.ZodObject<{
     kind: z.ZodLiteral<"task_executions_closed">;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"task_executions_reopened">;
     task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         agentRunId: z.ZodString;
     }, z.core.$strict>, z.ZodObject<{

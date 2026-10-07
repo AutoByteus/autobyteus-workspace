@@ -7,11 +7,13 @@ export type DelegateTaskInput =
   | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; task_id?: never }>;
 
 /**
- * A delegation is a spawn: success names the child ingress; failure means nothing was started.
- * `task_id` is present only when the delegation created a Task with no Project for the copy.
+ * A delegation is a spawn: success names the child ingress and whether the copy is an Agent or a
+ * Team (whose ingress is its coordinator); failure means nothing was started. `task_id` is present
+ * only when the delegation created a Task with no Project for the copy.
  */
+export type DelegateTaskTargetKind = "agent" | "team";
 export type DelegateTaskResult =
-  | Readonly<{ target_agent_run_id: string; task_id?: string }>
+  | Readonly<{ target_agent_run_id: string; target_kind: DelegateTaskTargetKind; task_id?: string }>
   | Readonly<{ target_agent_run_id: null; message: string }>;
 
 export type TaskDelegationErrorCode =
@@ -23,7 +25,8 @@ export type TaskDelegationErrorCode =
   | "INVALID_REFERENCE_FILE"
   | "ROOT_RUN_NOT_ACTIVE"
   | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"
-  | "TASK_EXECUTION_RESTORE_FAILED";
+  | "TASK_EXECUTION_RESTORE_FAILED"
+  | "TASK_REACTIVATION_STOP_PENDING";
 
 export class TaskDelegationError extends Error {
   constructor(readonly code: TaskDelegationErrorCode, message: string, options?: { cause?: unknown }) {

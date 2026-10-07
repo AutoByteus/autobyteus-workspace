@@ -23,10 +23,11 @@ execution helpers, not Project work, and are never listed under a Project (see
 
 The Task service owns business status and the agent run resource records. The
 shared root lifecycle and runtime owners perform dispatch, admission and exact
-release. Explicit `DONE` closes every open agent run resource of the Task
-forever, then asks the runtime to stop exactly those runs. DONE is neither
-engineering acceptance nor proof that the stop succeeded. Other status writes
-do not start work.
+release. Explicit `DONE` closes every open agent run resource of the Task, then
+asks the runtime to stop exactly those runs. DONE is neither engineering
+acceptance nor proof that the stop succeeded. Other status writes do not start
+work. Only agents change a Task's status; the run that assigned closed work can
+later reactivate it (see [Reactivation](#reactivation)).
 
 The server ships no Project manager agent. Any Agent whose definition selects
 the Project tools can manage Projects through the existing Chat or `@`, for
@@ -170,7 +171,7 @@ persisted shape, migration, Task/history write or locking owner is introduced.
 - **Project Delete** removes `project.json` first, then `drafts/` and every
   Task's `task.json` and `context/`, and keeps every `agent_run_resources.json`.
 
-Keeping these files preserves closed-forever and history. Delete adds no stop
+Keeping these files preserves closure and history (a deleted Task's work cannot be reactivated). Delete adds no stop
 and no guard: still-open work continues under the normal runtime lifecycle. New
 Tasks get fresh UUIDs, so they never reuse a deleted Task's ID.
 
@@ -239,7 +240,7 @@ with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
 | `agentRun` | `{kind: agent, agentRunId}` or `{kind: team, teamRunId, coordinatorAgentRunId}`. |
 | `linkedAt` | Written **before** any resource is acquired, so DONE always reaches work that is still starting. |
 | `start` | `starting`, then `started` or `failed` (with `startError`). Set once. |
-| `closedAt` | `null` while open. DONE sets it on every open entry. **Closed is forever.** |
+| `closedAt` | `null` while open. DONE sets it on every open entry. Only a [reactivation](#reactivation) sets it back to `null`, on one `assigned` entry. |
 
 Rules for the file:
 - Its `taskId` matches its folder.
@@ -429,9 +430,10 @@ identity remain distinct. Follow-up uses the exact returned
 2. It then asks each host root to stop exactly the Task's closed runs. The root
    invokes the exact release on every authority it still holds for each run,
    whether or not the run looks live. It does not wait for work to become idle.
-3. A closed run can never receive new input, be woken or be restored, whatever
-   happened to its stop. This holds after restart and after the Task is
-   deleted.
+3. A closed run receives no input and is never woken or restored while its
+   entry is closed, whatever happened to its stop. This holds after restart.
+   Only a [reactivation](#reactivation) by the assigning run opens one
+   assignment again; a deleted Task's work stays closed.
 
 Stop failures and retries:
 - **Nothing about the stop is persisted (Q-1).** Failures are kept in memory
@@ -453,6 +455,54 @@ deletes outputs, conversations, workspaces, Git worktrees or uploaded
 originals. It never stops the Manager, the root, another Task's runs or
 borrowed runs.
 
+### Reactivation
+
+Task status is the agent's responsibility; the software never changes it. To
+continue with the same worker after DONE:
+
+1. The agent moves the Task back to TODO or IN_PROGRESS with
+   `create_or_update_task` (this alone reopens and starts nothing).
+2. The run that assigned the work (the entry's `assignedBy`) sends
+   `send_message_to(target_agent_run_id=<the run ID delegate_task returned>)`:
+   the Agent copy's run, or a Team copy's coordinator.
+
+The sender's root reactivates exactly that `assigned` entry
+(`RootTaskExecutionLifecycle.deliverToExactTarget`):
+- **Eligibility** (`ProjectTaskService.assertReopenable`): the target is an
+  assignment's ingress, the sender is its assigner, the assignment `started`,
+  and the Task exists and is not DONE.
+- **Runtime step** (on the root's serialized queue): the previous exact release
+  is settled (re-invoked, idempotent) and the released handle or TeamRun is
+  discarded, so restore builds a fresh one; the saved conversation must exist.
+  If another reactivation already reopened the entry, this step is skipped.
+- **Commit** (`ProjectTaskService.reopenAssignment`): under the Task's
+  serialization with DONE, every condition is re-checked and `closedAt` of that
+  one entry returns to `null`. `task.json` is never written.
+- The root publishes "task executions reopened" (`task_executions_reopened`,
+  `TASK_EXECUTIONS_REOPENED`); clients list the copy again. Snapshots and stored
+  reads leave it out of `closed_task_executions`.
+- The message then follows the normal wake / restore / deliver path. The
+  accepted result's `message` ends with "<run ID> was reactivated."
+
+Helper entries (`delegated`, `broughtIn`) and the Task's other assignments stay
+closed; the reactivated worker may start new helpers. Refusals change nothing:
+
+| Case | Code | Message says |
+| --- | --- | --- |
+| Task still DONE | `TASK_AGENT_RESOURCE_CLOSED` | Move the Task to TODO or IN_PROGRESS first, then message the run ID again |
+| Not the assigner; a helper | `TASK_AGENT_RESOURCE_CLOSED` | Only the assigning run can reactivate, after reopening the Task, by messaging the run ID `delegate_task` returned |
+| A Team member that is not the coordinator | `TASK_AGENT_RESOURCE_CLOSED` | Message the run ID `delegate_task` returned (for a Team, its coordinator) |
+| Task deleted | `TASK_NOT_FOUND` | The Task was deleted; its work cannot be reactivated |
+| Assignment never started | `TASK_REACTIVATION_UNAVAILABLE` | Delegate the work again |
+| Saved conversation missing | `TASK_EXECUTION_CONTEXT_UNAVAILABLE` | It cannot be restored |
+| Previous stop not confirmed | `TASK_REACTIVATION_STOP_PENDING` | Try again shortly |
+
+If restore fails after the commit, the entry stays open (like any open, offline
+copy whose wake failed) and the rejection says the copy was reactivated but did
+not receive the message. A later DONE closes, stops and hides the reactivated
+copy again; the cycle can repeat. Existing closed entries are directly usable:
+the file shape is unchanged (no migration).
+
 See [Team delegation](agent_team_execution.md#server-owned-task-delegation),
 [message resolution](agent_communication.md#task-linked-message-scope) and
 [public history](run_history.md#task-linked-history-and-public-projection).
@@ -469,7 +519,7 @@ A Task with no Project makes a description-only delegation closable. The user's
    before resources), `ProjectTaskService.linkAgentRun` writes
    `ad-hoc-tasks/<taskId>/task.json` and links the copy `starting` in that
    Task's `agent_run_resources.json`. The result is
-   `{target_agent_run_id, task_id}`. A call rejected before the link creates no
+   `{target_agent_run_id, target_kind, task_id}`. A call rejected before the link creates no
    Task; a dispatch failure after the link returns no `task_id` and leaves the
    Task with a `failed` assignment until its run is deleted.
    `create_or_update_task` never creates one.
@@ -480,7 +530,10 @@ A Task with no Project makes a description-only delegation closable. The user's
    DONE as a Project Task: close every open entry, write the status, ask the
    host root to stop exactly those runs; the run tree hides them live and after
    reopen or restart, and conversations are kept. Description and status can
-   also be patched; there is no other mutation.
+   also be patched; there is no other mutation. After the delegator sets the
+   status back to TODO or IN_PROGRESS by `task_id`, its message to the copy's
+   run ID reactivates the copy exactly as for a Project Task
+   ([Reactivation](#reactivation)).
 4. **Not Project work.** They are not on the Projects page, not in
    `list_project_tasks`, and cannot be assigned by `delegate_task({task_id})`.
 5. **Retention.** When a run is permanently deleted from history, its delete

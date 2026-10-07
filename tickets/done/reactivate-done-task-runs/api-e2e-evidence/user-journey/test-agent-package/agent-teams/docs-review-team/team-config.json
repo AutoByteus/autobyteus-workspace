@@ -1,0 +1,8 @@
+{
+  "coordinatorMemberName": "docs_reviewer",
+  "members": [
+    { "memberName": "docs_reviewer", "ref": "docs-reviewer", "refType": "agent", "refScope": "team_local" },
+    { "memberName": "docs_editor", "ref": "docs-editor", "refType": "agent", "refScope": "team_local" }
+  ],
+  "handoffs": []
+}

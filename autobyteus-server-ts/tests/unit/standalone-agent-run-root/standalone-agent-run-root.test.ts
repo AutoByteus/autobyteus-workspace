@@ -279,7 +279,7 @@ describe("Agent root of a standalone run", () => {
     // delegate_task to a collaborator address starts an extra copy (REQ-013).
     const copy = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review it too" });
     // The copy belongs to its own Task with no Project, which the host can mark DONE (REQ-003/004).
-    expect(copy).toEqual({ target_agent_run_id: "code-reviewer-run-4", task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(copy).toEqual({ target_agent_run_id: "code-reviewer-run-4", target_kind: "agent", task_id: expect.stringMatching(/^ad_hoc_task_/) });
     // A collaborator Team member's copy of a teammate stays in that Team's entry (host rule).
     await expect(root.delegateTask({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
       .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
@@ -662,6 +662,40 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(stored.isActive).toBe(false);
     expect(stored.snapshot.closedTaskExecutions).toEqual([closedA]);
     expect(stored.snapshot.tree.taskExecutions).toHaveLength(2);
+  });
+
+  it("reactivation: once the agent reopens the Task, the assigner's run-ID message restores the copy, delivers, and lists it again (AC-001/004/015, REQ-007/008)", async () => {
+    const resources = new InMemoryTaskAgentResources();
+    resources.addTask("A");
+    const f = await buildManager(resources);
+    const root = (await f.manager.resolveRoot(HOST))!;
+    const events: { event: { kind: string }; changeSequence: number }[] = [];
+    root.subscribeToEvents((sequenced) => { events.push(sequenced as never); });
+    const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    expect(assigned).toMatchObject({ target_kind: "agent" });
+    await flushMicrotasks();
+    const copy = { agentRunId: assigned.target_agent_run_id! };
+    const original = f.handles.get(copy.agentRunId)!;
+    await root.releaseTaskAgentResources(resources.close("A"));
+    const send = () => root.deliverExactAgentMessage({ sender: { kind: "agent", identity: f.hostIdentity, displayName: "research_assistant" },
+      targetAgentRunId: copy.agentRunId, content: "Next round", messageType: "agent_message", referenceFiles: [] });
+    // Still DONE: refused with the reopen-first hint; nothing is published.
+    expect(await send()).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED", message: expect.stringContaining("Move it to TODO or IN_PROGRESS") });
+    expect(events.some((entry) => entry.event.kind === "task_executions_reopened")).toBe(false);
+
+    resources.setTaskOpen("A");
+    expect(await send()).toMatchObject({ accepted: true, message: expect.stringMatching(new RegExp(`${copy.agentRunId} was reactivated\\.$`)) });
+    // The released handle was discarded: the copy runs on a freshly restored handle with the same run ID.
+    expect(f.handles.get(copy.agentRunId)).not.toBe(original);
+    const reopened = events.find((entry) => entry.event.kind === "task_executions_reopened")!;
+    expect(reopened.event).toEqual({ kind: "task_executions_reopened", taskExecutions: [copy] });
+    expect(projectAgentCollaborationEvent(HOST, root.getExecutionTreeSnapshot(), reopened as never)?.event)
+      .toEqual({ kind: "task_executions_reopened", task_executions: [copy] });
+    const live = await root.openPackageSnapshotConnection();
+    expect(live.snapshot.closedTaskExecutions).toEqual([]);
+    live.close();
+    await f.manager.stopRoot(HOST);
+    expect((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions).toEqual([]);
   });
 
   it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED (REQ-004)", async () => {

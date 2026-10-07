@@ -4,7 +4,7 @@
 // the focused agent to delegate_task to X's address; the agent delegates, which creates an ad-hoc Task (no Project,
 // text only, `<appData>/ad-hoc-tasks/<id>/`) and returns its task_id; when the work is finished the agent — on its
 // own after a report, or when the user says so — calls create_or_update_task({task_id, status: DONE}), a tool it has
-// without selecting it, and the copy's row leaves the tree for good (live, after reload, Stop and a real backend
+// without selecting it, and the copy's row leaves the tree and stays out (live, after reload, Stop and a real backend
 // restart). Permanent delete removes the run's ad-hoc Tasks. Stored collaborators (now only from an agent's own
 // send_message_to to a catalog address) keep working. Covers standalone Agent, Team and Org runs, the first-send
 // mention, an ineligible mention, old traces and old data, and the Agent-root host-crash lifecycle.

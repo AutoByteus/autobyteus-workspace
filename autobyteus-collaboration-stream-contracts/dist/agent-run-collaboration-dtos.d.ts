@@ -843,6 +843,13 @@ export declare const agentRunCollaborationEventDtoSchema: z.ZodDiscriminatedUnio
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
     }, z.core.$strict>]>>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"task_executions_reopened">;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        teamRunId: z.ZodString;
+    }, z.core.$strict>]>>;
 }, z.core.$strict>], "kind">;
 export type AgentRunCollaborationTreeDto = Readonly<z.infer<typeof agentRunCollaborationTreeDtoSchema>>;
 export type AgentRunCollaborationViewDto = Readonly<z.infer<typeof agentRunCollaborationViewDtoSchema>>;

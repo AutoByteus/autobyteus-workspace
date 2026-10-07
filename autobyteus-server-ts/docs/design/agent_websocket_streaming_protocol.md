@@ -82,7 +82,8 @@ include:
 - Team-only events: `TASK_EXECUTION_STARTED` (a delegated child committed under
   its host TeamRun, with nullable `delegator_agent_run_id`),
   `TASK_EXECUTIONS_CLOSED` (task executions whose Task became DONE; see below),
-  `TEAM_COMMUNICATION_MESSAGE`, and `MEMBER_INPUT_MESSAGE` with their explicit
+  `TASK_EXECUTIONS_REOPENED` (closed task executions their assigner
+  reactivated; see below), `TEAM_COMMUNICATION_MESSAGE`, and `MEMBER_INPUT_MESSAGE` with their explicit
   exact execution/participant addresses;
 - the view: `TEAM_EXECUTION_VIEW_SNAPSHOT` (`root_team_run_id`,
   `base_change_sequence`, `execution_tree`, the required `closed_task_executions`,
@@ -108,6 +109,15 @@ Closure is a separate fact beside the tree:
   to stop a Task's runs, the root publishes the released runs that are closed and
   present in its tree **before** it stops them, whatever the stop outcome. A
   repeated DONE re-publishes the same references; applying them again is a no-op.
+- `TASK_EXECUTIONS_REOPENED {change_sequence, task_executions}` has the same
+  payload shape. After the Task is moved out of DONE, the run that assigned the
+  work can reactivate one assignment by messaging its run ID (a Team copy's
+  coordinator). The root publishes that reference after the Task-side commit and
+  before the message is delivered. Clients remove it from their closed set, so
+  the execution is listed again. Its helpers keep their own closed references and
+  stay hidden. Snapshots and stored reads no longer include it in
+  `closed_task_executions`. See
+  [Reactivation](../modules/projects.md#reactivation).
 - The Workspaces tree leaves out each closed task execution and everything under
   it. Other Team surfaces keep listing them.
 - Stored reads carry the same list: the Team resume config (`closedTaskExecutions`

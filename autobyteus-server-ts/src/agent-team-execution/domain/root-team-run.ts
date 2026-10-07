@@ -326,7 +326,8 @@ export class RootTeamRun {
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.taskExecutions.withLiveLease(input.sender.identity.agentRunId, () => this.delivery.deliverToRunId(input)));
+    return this.materializationGate.run(() => this.taskExecutions.deliverToExactTarget(input.sender.identity.agentRunId, input.targetAgentRunId,
+      () => this.delivery.deliverToRunId(input)));
   }
 
   async executeAgentCommand(

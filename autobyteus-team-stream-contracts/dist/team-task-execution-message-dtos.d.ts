@@ -57,6 +57,16 @@ export declare const teamTaskExecutionsClosedPayloadSchema: z.ZodObject<{
     }, z.core.$strict>]>>;
 }, z.core.$strict>;
 export type TeamTaskExecutionsClosedPayload = Readonly<z.infer<typeof teamTaskExecutionsClosedPayloadSchema>>;
+/** These closed task executions were reactivated by their assigner; the Workspaces listing shows them again. Same shape as closed. */
+export declare const teamTaskExecutionsReopenedPayloadSchema: z.ZodObject<{
+    change_sequence: z.ZodNumber;
+    task_executions: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        agent_run_id: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        team_run_id: z.ZodString;
+    }, z.core.$strict>]>>;
+}, z.core.$strict>;
+export type TeamTaskExecutionsReopenedPayload = TeamTaskExecutionsClosedPayload;
 /** A collaborator entry was committed at the root; it precedes any task execution at its address. */
 export declare const teamCollaboratorAddedPayloadSchema: z.ZodObject<{
     change_sequence: z.ZodNumber;

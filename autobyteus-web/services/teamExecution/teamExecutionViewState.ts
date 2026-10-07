@@ -17,6 +17,7 @@ import {
   collectClosedSubtrees,
   fromTeamTaskExecutionReference,
   mergeClosedTaskExecutions,
+  removeReopenedTaskExecutions,
   taskExecutionReferenceKey,
   teamRunKey,
   type TaskExecutionReference,
@@ -99,7 +100,7 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
@@ -401,6 +402,15 @@ export const createTeamExecutionViewState = (
         publication.value = { ...publication.value, closed: mergeClosedTaskExecutions(publication.value.closed, closed),
           changeSequence: sequence ?? publication.value.changeSequence };
         if (leaveClosedFocus()) effects.push({ kind: 'reconcile_focused_team_member_projection' });
+        effects.push({ kind: 'reconcile_team_navigation' });
+      } else if (message.type === 'TASK_EXECUTIONS_REOPENED') {
+        // Their assigner reactivated them: they are listed again (helpers under them stay closed).
+        const reopened = message.payload.task_executions.map(fromTeamTaskExecutionReference);
+        const treeKeys = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
+        const unknown = reopened.find((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)));
+        if (unknown) throw new Error(`Reopened task execution '${taskExecutionReferenceKey(unknown)}' is not in the execution tree.`);
+        publication.value = { ...publication.value, closed: removeReopenedTaskExecutions(publication.value.closed, reopened),
+          changeSequence: sequence ?? publication.value.changeSequence };
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'COLLABORATOR_ADDED') {
         // One hosted instance per entry: its executions are placed (Offline) with the entry.

@@ -38,3 +38,11 @@ test("TASK_EXECUTIONS_CLOSED is sequenced, strict and non-empty", () => {
   assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { task_executions: [{ team_run_id: "review-team" }] } }));
   assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, task_executions: [{ teamRunId: "review-team" }] } }));
 });
+
+test("TASK_EXECUTIONS_REOPENED mirrors the closed event: sequenced, strict and non-empty", () => {
+  const message = { type: "TASK_EXECUTIONS_REOPENED", payload: { change_sequence: 10, task_executions: [{ agent_run_id: "writer-run" }] } };
+  assert.deepEqual(parseTeamStreamServerMessage(message), message);
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, task_executions: [] } }));
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { task_executions: [{ agent_run_id: "writer-run" }] } }));
+  assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload, extra: true } }));
+});

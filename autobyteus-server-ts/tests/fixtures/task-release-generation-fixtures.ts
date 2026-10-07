@@ -55,6 +55,8 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   return { root, kind, factory, callbacks, manager, active, acquired, stopped, stop, stopFailures, teams, rootAgents };
 }
 const now = '2026-10-03T00:00:00.000Z';
+/** Saved conversations are present (the restore precondition), as the registries' controlled inspector says. */
+const presentConversation = { inspect: () => ({ kind: 'present' }) };
 const agentSource = (n: any) => ({ kind: 'agent', agentDefinitionId: n.agentDefinitionId,
   launchConfiguration: { runtimeKind: n.runtimeKind, llmModelIdentifier: n.llmModelIdentifier, llmConfig: n.llmConfig,
     autoExecuteTools: n.autoExecuteTools, workspaceRootPath: n.workspaceRootPath } });
@@ -121,7 +123,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     resolver.registerManaged(oldTeam); resolver.registerManaged(oldNested);
     adapter = new TeamTaskExecutionAdapter({ rootTeamRunId: 'root', config: testTeamRunConfig({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' }),
       getIndex: () => index, teamRunResolver: resolver, requireTeamRun: async (id: string) => { const run = resolver!.getActive(id); if (!run) throw Error('Missing active host'); return run; },
-      tokenUsageMigrationReadiness: {}, publish: vi.fn() } as never);
+      tokenUsageMigrationReadiness: {}, publish: vi.fn(), activityInspector: presentConversation } as never);
   } else {
     if (kind === 'agent_org') {
       const base = testAgentOrgExecutionTree({ orgRunId: 'root', members: [testOrgAgentNode('/Manager', 'manager')] });
@@ -130,7 +132,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
       tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, collaborators: [], taskExecutions: tasks };
       index = new StandaloneRootExecutionIndex(tree);
     }
-    const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn() };
+    const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation };
     adapter = kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(options as never) : new StandaloneRootTaskExecutionAdapter(options as never);
   }
   // Original exact controls observed at the root registration boundary, not reconstructed by lookup.

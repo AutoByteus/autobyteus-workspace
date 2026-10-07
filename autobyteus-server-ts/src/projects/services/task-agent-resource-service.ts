@@ -3,8 +3,8 @@ import type { TaskAgentResourceLinkInput, TaskAgentResourceOwner, TaskAgentResou
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { ProjectError } from "../domain/project-errors.js";
 import {
-  agentRunKey, closeTaskAgentResources, currentAssignments, linkTaskAgentResource, settleTaskAgentResourceStart,
-  type TaskAgentResourceFile, type TaskAssignment,
+  agentRunKey, assertTaskAgentResourceReopenable, closeTaskAgentResources, currentAssignments, linkTaskAgentResource,
+  reopenTaskAgentResource, settleTaskAgentResourceStart, type TaskAgentResourceFile, type TaskAssignment,
 } from "../domain/task-agent-resources.js";
 import type { TaskLocation } from "../domain/models.js";
 import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
@@ -86,6 +86,33 @@ export class TaskAgentResourceService {
       }
       await afterClose();
     });
+  }
+
+  /** The Task location of an agent run, from the view; `null` when the run belongs to no Task. */
+  locationOf(agentRun: TaskExecutionReference): TaskLocation | null {
+    this.assertLoaded();
+    const taskId = this.owners.get(agentRunKey(agentRun));
+    return taskId ? this.files.get(taskId)!.location : null;
+  }
+  /** Read-only reactivation preconditions against the view (advisory; `reopenAssignment` re-checks under the lock). */
+  assertReopenable(location: TaskLocation, agentRun: TaskExecutionReference, requestedBy: string): void {
+    this.assertTaskReadable(location.taskId);
+    assertTaskAgentResourceReopenable(this.files.get(location.taskId)!.file, agentRun, requestedBy);
+  }
+  /**
+   * Reactivation of one assigned entry (call under the Task's `serialize`): `closedAt` returns to
+   * `null` on that entry only. `false` when it was already open (nothing is written).
+   */
+  async reopenAssignment(location: TaskLocation, agentRun: TaskExecutionReference, requestedBy: string): Promise<boolean> {
+    this.assertReopenable(location, agentRun, requestedBy);
+    if (this.isOpen(agentRun)) return false;
+    let reopened = false;
+    await this.store.update(location, (file) => {
+      const next = reopenTaskAgentResource(file, agentRun, requestedBy);
+      reopened = next !== file;
+      return next;
+    }, next => this.swap(location, next));
+    return reopened;
   }
 
   /** Every closed agent run of the Task, grouped by host root (repeated DONE re-requests all of them). */

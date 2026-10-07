@@ -326,7 +326,9 @@ target mode.
   focused agent to `delegate_task` to that address. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
   delegation's Task DONE with `create_or_update_task` (for example when the user
-  asks it to), live and after reopen. Notes saved by earlier releases still
+  asks it to), live and after reopen. It returns (live, via
+  `task_executions_reopened`) when the agent sets that Task back to TODO or
+  IN_PROGRESS and then messages the copy's run ID, which reactivates it. Notes saved by earlier releases still
   parse; `UserMessage` strips it and shows each `@Name` as an inline
   chip, and run summaries drop it (`utils/collaborators/collaboratorMentionText.ts`).
   **Only a send with mentions is held** (AR-007,

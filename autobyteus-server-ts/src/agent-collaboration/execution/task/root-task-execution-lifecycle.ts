@@ -2,7 +2,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
 import { dispatchTaskCopy, type TaskAgentResourceJoin } from "./root-task-dispatch.js";
 import { RootTaskAgentResourceScope, asTaskDelegationError } from "./root-task-agent-resource-scope.js";
-import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "./task-agent-resource-port.js";
+import { taskReactivationRejectionCode, type TaskAgentResourcePort, type TaskAgentResourceStopResult } from "./task-agent-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
 import type {
@@ -136,7 +136,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
     if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (Task DONE).");
     const existing = this.helperPlacement(owner.taskId, address);
-    if (existing) return { target_agent_run_id: existing.receiver.agentRunId };
+    if (existing) return { target_agent_run_id: existing.receiver.agentRunId, target_kind: existing.kind === "agent" ? "agent" : "team" };
     const key = `${owner.taskId}:${address}`;
     const pending = this.helperAttempts.get(key);
     if (pending) return pending;
@@ -166,6 +166,52 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       lease.assertOpen();
       return await operation();
     } finally { lease.release(); }
+  }
+
+  /**
+   * `send_message_to(run ID)` from a sender in this root. A target in closed Task work is first
+   * reactivated when it is an assignment's ingress, the sender is its assigner and the Task is not
+   * DONE; any other closed target is refused with guidance and nothing changes. The delivery then
+   * follows the normal wake / restore path under the sender's live lease.
+   */
+  async deliverToExactTarget(senderAgentRunId: string, targetAgentRunId: string,
+    deliver: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    let reactivated: boolean;
+    try { reactivated = await this.reactivateClosedTarget(senderAgentRunId, targetAgentRunId); }
+    catch (error) {
+      const code = error instanceof TaskDelegationError ? error.code : taskReactivationRejectionCode(error);
+      if (code) return { accepted: false, code, message: errorMessage(error) };
+      throw error;
+    }
+    const result = await this.withLiveLease(senderAgentRunId, deliver);
+    if (!reactivated) return result;
+    return result.accepted
+      ? { ...result, message: `${result.message ?? `Delivered message to ${targetAgentRunId}.`} ${targetAgentRunId} was reactivated.` }
+      : { ...result, message: `${result.message ?? "The message was not delivered."} ${targetAgentRunId} was reactivated (its Task work is open again) but did not receive this message; message it again.` };
+  }
+
+  /** DS-L1. `true` only when this call committed the reopen. Every refusal before the commit leaves the Task and its entries unchanged. */
+  private async reactivateClosedTarget(senderAgentRunId: string, targetAgentRunId: string): Promise<boolean> {
+    if (this.resourceScope.ownerOf(targetAgentRunId)?.open !== false) return false;
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+    const agentRun = this.adapter.taskExecutionWithIngress(targetAgentRunId);
+    if (!agentRun) {
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "This run is part of closed Task work. Only the run that assigned the work "
+        + "can reactivate it: move the Task to TODO or IN_PROGRESS, then message the run ID delegate_task returned (for a Team, its coordinator).");
+    }
+    const port = this.resourceScope.port();
+    const request = { agentRun, requestedBy: senderAgentRunId };
+    await port.assertReopenable(request);
+    await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+      if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+      // A concurrent reactivation already reopened (and may have restored) it: never release that copy.
+      if (port.isOpen(agentRun)) return;
+      await this.resourceScope.discardReleasedExecution(agentRun);
+      this.adapter.assertRestorableChain(targetAgentRunId);
+    } });
+    const { reopened } = await port.reopenAssignment(request);
+    if (reopened) this.adapter.publishTaskExecutionsReopened(Object.freeze([agentRun]));
+    return reopened;
   }
 
   /**

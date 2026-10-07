@@ -65,9 +65,9 @@ export async function dispatchTaskCopy<T>(input: {
       accepted = true;
     }
     await input.resources.markStarted(exact.target.execution);
-    return createdTaskId
-      ? { target_agent_run_id: exact.target.ingressAgentRunId, task_id: createdTaskId }
-      : { target_agent_run_id: exact.target.ingressAgentRunId };
+    const spawned = { target_agent_run_id: exact.target.ingressAgentRunId,
+      target_kind: "agentRunId" in exact.target.execution ? "agent" as const : "team" as const };
+    return createdTaskId ? { ...spawned, task_id: createdTaskId } : spawned;
   } catch (error) {
     operation?.cancel();
     let released = true;

@@ -238,7 +238,8 @@ copy. Every call spawns another copy, so copies can work in parallel.
 - The work description and reference files become the copy's first message,
   together with your address and AgentRun ID.
 - On success, `target_agent_run_id` is the new copy (for an AgentTeam, its
-  coordinator). If `target_agent_run_id` is null, nothing was started and
+  coordinator) and `target_kind` says whether it is an `agent` or a `team`.
+  If `target_agent_run_id` is null, nothing was started and
   `message` explains why; correct the problem and delegate again, or report
   the failure.
 - A description-only delegation that creates a Task also returns its
@@ -248,7 +249,11 @@ copy. Every call spawns another copy, so copies can work in parallel.
 Follow up on a copy only through `send_message_to` with its
 `target_agent_run_id`, in both directions. A copy that stays quiet is shut
 down after a while; a message to its run ID restores it with its
-conversation, so follow-ups remain possible unless its Task is DONE.
+conversation. A copy whose Task is `DONE` is stopped. To continue with it, the
+run that assigned the work first moves the Task out of `DONE` (for example to
+`IN_PROGRESS`) with `create_or_update_task`, then messages the copy's run ID;
+that reactivates it with its conversation. Setting the status alone starts
+nothing.
 
 ### Rule-Based Handoffs
 

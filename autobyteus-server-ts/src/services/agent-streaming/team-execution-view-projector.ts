@@ -93,6 +93,11 @@ export const projectSequencedTeamRunEvent = (
         change_sequence: changeSequence,
         task_executions: event.taskExecutions.map(projectTaskExecutionReference),
       } });
+    case TeamRunEventSourceType.TASK_EXECUTIONS_REOPENED:
+      return parseTeamStreamServerMessage({ type: "TASK_EXECUTIONS_REOPENED", payload: {
+        change_sequence: changeSequence,
+        task_executions: event.taskExecutions.map(projectTaskExecutionReference),
+      } });
     case TeamRunEventSourceType.COLLABORATOR:
       return parseTeamStreamServerMessage({ type: "COLLABORATOR_ADDED", payload: {
         change_sequence: changeSequence,
