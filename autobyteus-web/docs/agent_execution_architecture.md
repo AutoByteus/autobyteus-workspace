@@ -1048,8 +1048,9 @@ Both drafts store the workspace as one `RunWorkspaceChoice`
 (`types/runSettings/RunWorkspaceChoice.ts`): `{ kind: 'existing', workspaceId }`
 or `{ kind: 'folder', rootPath }`. The `ChatWorkspaceMenu` control picks an
 existing workspace or accepts an absolute folder path; a typed folder that
-matches a known workspace becomes that existing choice. A folder is not loaded
-when typed: it becomes a workspace at launch.
+matches a known workspace becomes that existing choice on **Use folder**. Native
+browsing can fill the same input, but only explicit confirmation selects it. A
+folder is not loaded when typed or browsed: it becomes a workspace at launch.
 
 `services/workspace/runWorkspaceChoice.ts` is the single owner of
 `RunWorkspaceChoice` resolution and of the conversions to and from the older
@@ -1069,6 +1070,38 @@ workspace shapes that survive in owners this design did not replace:
 
 Views, `runMemberTree` and `components/run-settings/*` never import
 `WorkspaceSelectionState` or `TeamWorkspaceSelection`.
+
+#### Native Folder Input Contract
+
+`ChatWorkspaceMenu.vue` owns this input aid across Chat, `RunSettingsCard` and
+editable placed-Team rows. It reuses `canUseLocalFolderPicker`, the actual
+`windowNodeContextStore.isEmbeddedWindow` binding and bridge availability;
+only embedded-node Electron outside mobile runtime may invoke
+`window.electronAPI.showFolderDialog()`. Browser and remote paths are interpreted
+by their connected server, never by the client's native filesystem chooser.
+
+The existing preload/main boundary returns `{ canceled, path, error? }`. The
+menu checks **error-member presence before cancellation**, including an empty
+error string, because main failures can also set `canceled: true`. Rejected
+invocations show the same localized error, not raw native details. Without an
+error, cancel/empty leaves input and selection intact; success changes only
+input text. The path-only `pickFolderPath` convenience used elsewhere is not
+used here because it discards the failure distinction. No bridge, IPC, backend
+or persisted-data contract changes are needed.
+
+Pending state prevents duplicate Browse and Use-folder/Enter submission. Local
+form generation, node-binding and selected-workspace identity checks discard
+late replies after dismissal, unmount or a destination change; they do not
+create a global dialog manager or cancellation IPC. Focus returns only to the
+still-current form (input on success; Browse on cancel/error).
+
+Only **Use folder** emits the existing `RunWorkspaceChoice`. The existing Chat,
+Org-root/addressed-member and saved-config owners retain draft, registration,
+locking and explicit Send/Run/Save policy. Saved roots do not become editable.
+This replaces the shared form's text-only presentation, not its owners or the
+retired configuration-form stack. See [workspace settings](./settings.md#run-workspace-choice-on-start-surfaces)
+and the [native-picker regression runbook](../../TESTING.md#native-workspace-folder-picker-regression)
+for user behavior and the separate native/controlled test boundaries.
 
 The Existing workspace picker used elsewhere is the shared
 `components/common/SearchableSelect.vue`, which is keyboard-operable as a

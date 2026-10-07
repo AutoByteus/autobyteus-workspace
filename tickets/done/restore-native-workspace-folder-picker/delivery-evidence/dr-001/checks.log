@@ -1,0 +1,15 @@
+2026-10-07T18:38:49Z
+$ node --check autobyteus-web/tests/e2e/workspace-folder-picker-probe.mjs
+$ pnpm -C autobyteus-web guard:web-boundary
+
+> autobyteus@1.4.96 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+$ pnpm -C autobyteus-web guard:localization-boundary
+
+> autobyteus@1.4.96 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+$ git diff --check

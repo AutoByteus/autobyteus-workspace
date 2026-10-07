@@ -1,0 +1,50 @@
+{
+  "recordedAt": "2026-10-07T18:38:51.080178+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker",
+  "branch": "codex/restore-native-workspace-folder-picker",
+  "incoming": "bd495bdeb39ddff2357013f288215e8b1b6df540",
+  "bootstrapBase": "88fad73cbd20201642acdcfe75e69b1897ec135c",
+  "fetchedBase": "af50bdd4056b9341e53494ad393b6283136a00ed",
+  "integratedHead": "44b03b9f3b3f73535c1f3ec8e27dc9201ab4c5de",
+  "parents": [
+    "bd495bdeb39ddff2357013f288215e8b1b6df540",
+    "af50bdd4056b9341e53494ad393b6283136a00ed"
+  ],
+  "baseCommitsIntegrated": 36,
+  "method": "git fetch origin personal; git merge --no-edit origin/personal",
+  "checkpoint": "Not needed: tracked candidate already committed and clean; only two generated untracked SDK dist directories preserved",
+  "conflicts": false,
+  "scopedFileBlobs": [
+    {
+      "path": "autobyteus-web/components/chat/ChatWorkspaceMenu.vue",
+      "incomingBlob": "738b9ff62040df4541fe9af9565ca5e4f22e82db",
+      "integratedBlob": "738b9ff62040df4541fe9af9565ca5e4f22e82db"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/chat.ts",
+      "incomingBlob": "c007fbbf0fa0d7310d4cb8f87a6e1b4e08e168bd",
+      "integratedBlob": "c007fbbf0fa0d7310d4cb8f87a6e1b4e08e168bd"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/chat.ts",
+      "incomingBlob": "af7e8fa59b0f5b23dcd9f574d5ab692d5f37b189",
+      "integratedBlob": "af7e8fa59b0f5b23dcd9f574d5ab692d5f37b189"
+    },
+    {
+      "path": "autobyteus-web/stores/windowNodeContextStore.ts",
+      "incomingBlob": "c7b3f5a3b56dd6b438c08c11b3dc124faf83483a",
+      "integratedBlob": "c7b3f5a3b56dd6b438c08c11b3dc124faf83483a"
+    },
+    {
+      "path": "autobyteus-web/utils/mobileFeatureGates.ts",
+      "incomingBlob": "2ce8eb899fd40f132addcab05f575300f05863c8",
+      "integratedBlob": "2ce8eb899fd40f132addcab05f575300f05863c8"
+    },
+    {
+      "path": "autobyteus-web/electron/preload.ts",
+      "incomingBlob": "e509466561705d1264be347987c344154c49af37",
+      "integratedBlob": "e509466561705d1264be347987c344154c49af37"
+    }
+  ],
+  "finalization": "Not performed: explicit user verification pending"
+}

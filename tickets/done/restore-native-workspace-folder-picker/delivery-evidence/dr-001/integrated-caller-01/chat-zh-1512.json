@@ -1,0 +1,61 @@
+{
+  "controls": {
+    "input": {
+      "x": 555.5,
+      "y": 429.8359375,
+      "width": 285.34375,
+      "height": 34,
+      "top": 429.8359375,
+      "right": 840.84375,
+      "bottom": 463.8359375,
+      "left": 555.5
+    },
+    "browse": {
+      "x": 848.84375,
+      "y": 429.8359375,
+      "width": 64.65625,
+      "height": 34,
+      "top": 429.8359375,
+      "right": 913.5,
+      "bottom": 463.8359375,
+      "left": 848.84375
+    },
+    "fontSize": "14px",
+    "lineHeight": "20px",
+    "padding": "6px 12px",
+    "borderRadius": "6px",
+    "color": "rgb(26, 26, 26)",
+    "borderColor": "rgb(204, 204, 204)",
+    "hint": "选择此电脑上的文件夹，或输入完整路径。"
+  },
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_0a42516074d062719b1d075a75a3a4833f4efb98f3ac812a68092b08f9690350"
+  },
+  "registered": [
+    "agent_ws_0a42516074d062719b1d075a75a3a4833f4efb98f3ac812a68092b08f9690350",
+    "agent_ws_74691dab6f73647cc48c2c7f477da48160b5c2fe04503ebadf2519db0c232427",
+    "agent_ws_e2c4666e64ff521e67f0722888455c5c354012548a29914a878ad5abe357c6d7",
+    "temp_ws_default"
+  ],
+  "path": "",
+  "focused": "chat-workspace-path",
+  "menu": {
+    "x": 542.5,
+    "y": 116.8359375,
+    "width": 384,
+    "height": 416,
+    "top": 116.8359375,
+    "right": 926.5,
+    "bottom": 532.8359375,
+    "left": 542.5
+  },
+  "width": 1512,
+  "height": 862,
+  "overflow": false
+}
