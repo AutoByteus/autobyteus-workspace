@@ -49,6 +49,10 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     const select = wrapper.get('[data-testid="projects-panel-picker-select"]')
     expect((select.element as HTMLSelectElement).value).toBe('project:p1')
     expect(select.findAll('option').map((option) => option.text())).toEqual(['Older', 'Launch', 'Temp tasks'])
+    // No visible label; the select keeps an accessible name for screen readers.
+    const label = wrapper.get(`label[for="${select.attributes('id')}"]`)
+    expect(label.classes()).toContain('sr-only')
+    expect(label.text()).toBe('Choose a Project or Temp tasks')
     expect(wrapper.find('[data-testid="project-task-row-t1"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="project-tasks-new-button"]').exists()).toBe(false)
 

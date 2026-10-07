@@ -180,7 +180,7 @@ const projectMessages = {
   'projects.temp.referenceFiles': '参考文件',
   'projects.temp.readOnly': '只有智能体会修改这个任务。',
   // projects-always-on SR-003: the right panel's Projects tab
-  'projects.panel.pickerLabel': '显示',
+  'projects.panel.pickerLabel': '选择项目或临时任务',
   'projects.panel.emptyTitle': '还没有项目或临时任务',
   'projects.panel.emptyHelp': '创建一个项目，或让智能体在聊天中分派工作。',
   'projects.panel.openProjectsPage': '打开项目',

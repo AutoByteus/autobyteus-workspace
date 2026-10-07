@@ -1,7 +1,8 @@
 <template>
   <!-- Picks the board the Projects tab shows: one Project or Temp tasks (remembered per node). -->
   <div class="flex items-center gap-2" data-testid="projects-panel-picker">
-    <label :for="selectId" class="flex-shrink-0 text-xs font-medium text-slate-500">{{ t('projects.panel.pickerLabel') }}</label>
+    <!-- The select shows its value inside the "Projects" tab, so the name is for screen readers only. -->
+    <label :for="selectId" class="sr-only">{{ t('projects.panel.pickerLabel') }}</label>
     <select
       :id="selectId"
       :value="value"
