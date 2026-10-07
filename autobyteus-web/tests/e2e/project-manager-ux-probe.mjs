@@ -34,7 +34,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012'];
+const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -804,6 +804,89 @@ const orgRootUnhydrated = async () => {
   } finally { input.close(); }
 };
 
+// ---------------------------------------------------------------- compact cards (task-card-compact-summary)
+const fixtureWords = (count, prefix) => Array.from({ length: count }, (_, i) => `${prefix}${i}`).join(' ');
+/** Rendered card text: each clamped span's height in lines, the row height, and the accessible name. */
+const measureCard = (page, taskId) => row(page, taskId).evaluate((element) => {
+  const measure = (span) => {
+    if (!span) return null;
+    const style = getComputedStyle(span); const height = span.getBoundingClientRect().height; const lineHeight = parseFloat(style.lineHeight);
+    return { height, lineHeight, withinTwoLines: height <= 2 * lineHeight + 1, display: style.display, clamp: style.webkitLineClamp, chars: span.textContent.length, text: span.textContent };
+  };
+  const link = element.querySelector('[data-testid="project-task-row-link"]');
+  return { summary: measure(element.querySelector('[data-testid="project-task-row-text"]')), preview: measure(element.querySelector('[data-testid="project-task-row-preview"]')),
+    rowHeight: element.getBoundingClientRect().height, label: link.getAttribute('aria-label') };
+});
+/** AC-001..003, AC-005, AC-006: real-length descriptions render as compact cards on both boards at 1440 and 1024. */
+const compactCards = async () => {
+  const huge = fixtureWords(10_000, 'brief');
+  const multi = [fixtureWords(150, 'lead'), ...Array.from({ length: 40 }, (_, i) => fixtureWords(75, `detail${i}x`))].join('\n');
+  const short = 'Write the release notes.\nKeep it short.';
+  const projectId = await createProject(`Compact Cards ${randomUUID().slice(0, 6)}`);
+  const ids = { huge: await createTask(projectId, huge), multi: await createTask(projectId, multi), short: await createTask(projectId, short) };
+  const { ids: defs, names } = await createDefinitions('PmuCards');
+  const root = await createRoot('agent', defs);
+  const input = await managerInput(root);
+  input.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, description: huge }));
+  input.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, description: multi }));
+  const temps = await until('both real-length Temp tasks', async () => {
+    const listed = await tempTasks();
+    const hugeTemp = listed.find((t) => t.description === huge); const multiTemp = listed.find((t) => t.description === multi);
+    return hugeTemp && multiTemp ? { huge: hugeTemp.taskId, multi: multiTemp.taskId } : null;
+  }, 90000);
+  const { page, errors } = await newPage();
+  const measured = {};
+  const check = (where, cards) => {
+    for (const [kind, card] of Object.entries(cards)) {
+      assert(card.summary?.withinTwoLines && card.summary.display !== 'block', `${where} ${kind}: summary within 2 lines`, card);
+      assert(!card.preview || card.preview.withinTwoLines, `${where} ${kind}: preview within 2 lines`, card);
+      // 2+2 lines plus the root line measure 76–156 px; the bound leaves room for font differences, while the bug measured tens of thousands.
+      assert(card.rowHeight <= 200, `${where} ${kind}: card height bounded`, card);
+    }
+    assert(cards.huge.summary.text.endsWith('…') && cards.huge.summary.chars <= 300 && cards.huge.preview === null, `${where}: huge paragraph → bounded summary, no preview`, cards.huge);
+    assert(cards.multi.preview && cards.multi.preview.chars <= 300 && cards.multi.preview.text.startsWith('detail0x0 '), `${where}: multi-line → bounded preview`, cards.multi);
+    for (const kind of ['huge', 'multi']) assert(cards[kind].label.length <= 120 && cards[kind].label.endsWith('…'), `${where} ${kind}: short accessible name`, cards[kind].label);
+    if (cards.short) {
+      assert(cards.short.summary.text === 'Write the release notes.' && cards.short.preview?.text === 'Keep it short.' && cards.short.label === 'Write the release notes.', `${where}: short text unchanged`, cards.short);
+    }
+  };
+  for (const [width, height] of [[1440, 900], [1024, 768]]) {
+    await page.setViewportSize({ width, height });
+    await goto(page, `/projects/${projectId}`);
+    await row(page, ids.short).waitFor({ timeout: 30000 });
+    const board = { huge: await measureCard(page, ids.huge), multi: await measureCard(page, ids.multi), short: await measureCard(page, ids.short) };
+    check(`board@${width}`, board);
+    await shot(page, `pmu-013-board-${width}`);
+    await goto(page, '/projects/temp-tasks');
+    await row(page, temps.huge).waitFor({ timeout: 30000 });
+    const temp = { huge: await measureCard(page, temps.huge), multi: await measureCard(page, temps.multi) };
+    check(`temp@${width}`, temp);
+    await shot(page, `pmu-013-temp-board-${width}`);
+    measured[width] = { board, temp };
+  }
+  // AC-004: search matches text beyond the visible lines; the Task pages show the full description.
+  await goto(page, `/projects/${projectId}`);
+  await page.getByTestId('project-tasks-search-input').fill('brief9999');
+  await until('search finds the last word of the huge description', async () => (await row(page, ids.huge).count()) === 1 && (await row(page, ids.short).count()) === 0, 10000);
+  await page.getByTestId('project-tasks-search-input').fill('');
+  await row(page, ids.huge).getByTestId('project-task-row-link').click();
+  await page.getByTestId('task-page-description').waitFor({ timeout: 30000 });
+  const fullProject = (await page.getByTestId('task-page-description').textContent()).trim() === huge;
+  assert(fullProject, 'Project Task page shows the full description');
+  // AC-003: the delete confirmation names the Task with the shortened summary.
+  await page.getByTestId('task-page-delete').click();
+  const confirmation = await page.getByTestId('task-page-delete-confirmation').innerText();
+  assert(confirmation.includes('…') && confirmation.length < 400, 'delete confirmation uses the shortened summary', { length: confirmation.length });
+  await shot(page, 'pmu-013-delete-confirmation');
+  await page.getByTestId('task-page-delete-cancel').click();
+  await goto(page, `/projects/temp-tasks/tasks/${temps.huge}`);
+  await page.getByTestId('temp-task-description').waitFor({ timeout: 30000 });
+  const fullTemp = (await page.getByTestId('temp-task-description').textContent()).trim() === huge;
+  assert(fullTemp, 'Temp task page shows the full description');
+  assertNoBrowserErrors(errors);
+  return { descriptionChars: { huge: huge.length, multi: multi.length }, measured, confirmationChars: confirmation.length, fullProject, fullTemp, errors };
+};
+
 const CASES = {
   'PMU-001': ['Projects list and board follow writes live (arrival highlight, counts)', listAndBoardLive],
   'PMU-002': ['Agent root: live status, live move highlight, opening the worker, DONE → Offline muted', agentRootOnBoard],
@@ -817,6 +900,7 @@ const CASES = {
   'PMU-010': ["AC-007: Couldn't start from a real start failure (board tooltip, Task page reason), then re-delegation", couldntStartRendered],
   'PMU-011': ['Two windows on the same node follow a write live', twoWindows],
   'PMU-012': ['An Org-hosted root opened from a fresh Task page before the Org run is hydrated', orgRootUnhydrated],
+  'PMU-013': ['Compact cards: ~10,000-word and multi-line descriptions render ≤2+2 lines on the Project board and Temp tasks at 1440 and 1024; short labels; full text on the Task pages; search beyond the visible lines', compactCards],
 };
 
 let result = 'Pass';

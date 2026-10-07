@@ -10,11 +10,11 @@
     <NuxtLink
       :to="taskRoute"
       class="block w-full text-left after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-blue-500"
-      :aria-label="summary"
+      :aria-label="label"
       data-testid="project-task-row-link"
     >
-      <span class="block line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
-      <span v-if="preview" class="mt-1 block line-clamp-2 text-xs leading-5 text-slate-500">{{ preview }}</span>
+      <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
+      <span v-if="preview" class="mt-1 line-clamp-2 break-words text-xs leading-5 text-slate-500" data-testid="project-task-row-preview">{{ preview }}</span>
       <span v-if="fileCount" class="mt-2 inline-flex items-center gap-1 text-xs text-slate-500" data-testid="task-row-file-count"><Icon icon="heroicons:paper-clip" class="h-3.5 w-3.5" aria-hidden="true" />{{ t(fileCount === 1 ? 'projects.ui.fileCountOne' : 'projects.ui.fileCount', {count: fileCount}) }}</span>
     </NuxtLink>
     <ProjectTaskWorkers v-if="task.root" class="relative z-10" density="row" :root="task.root" />
@@ -28,15 +28,17 @@ import type { ProjectTask, TaskWithoutProject } from '~/types/project'
 import ProjectTaskWorkers from './ProjectTaskWorkers.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
-import { taskSummary } from '~/utils/projects/taskSummary'
+import { taskCardPreview, taskCardSummary, taskSummaryLabel } from '~/utils/projects/taskSummary'
 
-// The first line is the summary; remaining lines are a quieter context preview.
+// The first line is the summary; remaining lines are a quieter context preview. Each is bounded
+// before rendering and clamped to 2 lines by CSS; the Task page shows the full description.
 const props = defineProps<{ task: ProjectTask | TaskWithoutProject }>()
 
 const {t} = useLocalization()
 const store = useProjectTaskStore()
-const summary = computed(() => taskSummary(props.task.description))
-const preview = computed(() => props.task.description.trim().split(/\r?\n/).slice(1).filter(line => line.trim()).join(' '))
+const summary = computed(() => taskCardSummary(props.task.description))
+const preview = computed(() => taskCardPreview(props.task.description))
+const label = computed(() => taskSummaryLabel(props.task.description))
 const taskRoute = computed(() => 'projectId' in props.task
   ? `/projects/${props.task.projectId}/tasks/${props.task.taskId}`
   : `/projects/temp-tasks/tasks/${props.task.taskId}`)
