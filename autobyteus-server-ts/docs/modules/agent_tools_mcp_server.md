@@ -249,7 +249,8 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - media tools from `src/agent-tools/media`
 - `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
-- `list_projects`, `list_project_tasks`, `create_or_update_task` from
+- `list_projects`, `list_project_tasks`, `create_or_update_project`,
+  `create_or_update_task` from
   `src/agent-tools/project-tasks`
 
 The catalog filters by the session's resolved effective tool names. That set is

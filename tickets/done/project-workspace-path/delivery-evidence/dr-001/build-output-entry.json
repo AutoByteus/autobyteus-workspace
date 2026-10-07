@@ -1,0 +1,7 @@
+{
+  "autobyteus-agent-sdk/dist": false,
+  "autobyteus-agent-client-sdk/dist": false,
+  "autobyteus-ts/dist": true,
+  "autobyteus-server-ts/dist": true,
+  "autobyteus-web/.nuxt": true
+}

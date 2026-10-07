@@ -493,9 +493,12 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   permanent delete. `--ledger-file <abs path>` appends case results. `L01`/`L02` need
   `--runtime antigravity_cli` and are reported Not Applicable otherwise.
 
-If you change `ProjectsLayout`, `readProjectFile` or `readTaskFile`, first
-repoint `projects-per-folder-v1` to frozen copies (data_migration_guideline §4),
-then rerun the migration tests.
+`projects-per-folder-v1` already uses its frozen `released-project-folder-v1.ts`
+for Project target classification/validation; never reconnect it to the current
+tolerant `readProjectFile`. It still imports current `ProjectsLayout` and
+`readTaskFile`: freeze those dependencies before changing their released
+contracts (data_migration_guideline §4). Rerun migration and actual startup tests
+when changing current Project readers or these historical boundaries.
 
 These controlled model/backend checks do not certify paid inference or
 universal OS teardown. Production `tsc`, the scoped Org/publication checks,

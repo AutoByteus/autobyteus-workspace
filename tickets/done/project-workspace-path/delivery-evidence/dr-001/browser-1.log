@@ -1,0 +1,37 @@
+
+> autobyteus@1.4.96 test:e2e:projects /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-web
+> node tests/e2e/projects-feature-probe.mjs --skip-server-build --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/tickets/in-progress/project-workspace-path/delivery-evidence/dr-001/browser-1
+
+[PT-E2E-001] Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001)
+[PT-E2E-001] Pass
+[PT-E2E-002] Ordinary New Project validation/focus/Cancel and zero-link save to Tasks
+[PT-E2E-002] Pass
+[PT-E2E-003] Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing
+[PT-E2E-003] Pass
+[PT-E2E-004] Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders
+[PT-E2E-004] Pass
+[PT-E2E-005] Task ordinary composer validation, search-preserving Cancel, typed/file save clears search
+[PT-E2E-005] Pass
+[PT-E2E-006] Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape
+[PT-E2E-006] Pass
+[PT-E2E-007] External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status
+[PT-E2E-007] Pass
+[PT-E2E-008] Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct
+[PT-E2E-008] Pass
+[PT-E2E-009] Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping
+[PT-E2E-009] Pass
+[PT-E2E-010] Real backend process restart preserves Tasks, context HTTP bytes and links
+[PT-E2E-010] Pass
+[PT-E2E-011] All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project
+[PT-E2E-011] Pass
+[PT-E2E-012] Ordinary route read/Refresh ordering: late old Project response cannot populate another Project
+[PT-E2E-012] Pass
+[PT-E2E-013] 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation
+[PT-E2E-013] Pass
+[PT-E2E-014] Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery
+[PT-E2E-014] Pass
+[PT-E2E-015] Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003)
+[PT-E2E-015] Pass
+[PT-E2E-016] zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys
+[PT-E2E-016] Pass
+{"result":"Pass","error":null,"cases":{"PT-E2E-001":"Pass","PT-E2E-002":"Pass","PT-E2E-003":"Pass","PT-E2E-004":"Pass","PT-E2E-005":"Pass","PT-E2E-006":"Pass","PT-E2E-007":"Pass","PT-E2E-008":"Pass","PT-E2E-009":"Pass","PT-E2E-010":"Pass","PT-E2E-011":"Pass","PT-E2E-012":"Pass","PT-E2E-013":"Pass","PT-E2E-014":"Pass","PT-E2E-015":"Pass","PT-E2E-016":"Pass"},"cleanup":{"browser":"closed","frontend":"terminated:26940","nodeA":"terminated:39416","nodeB":"terminated:25937","frontendPortReleased":true,"nodeAPortReleased":true,"nodeBPortReleased":true,"tempRootRemoved":true}}

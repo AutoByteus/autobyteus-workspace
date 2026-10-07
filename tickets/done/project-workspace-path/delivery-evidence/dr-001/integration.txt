@@ -1,0 +1,23 @@
+Wed Oct  7 18:21:40 UTC 2026
+?? tickets/in-progress/project-workspace-path/delivery-evidence/
+commit 8448cd18af3fb08b13cb8d47291c9ba89794b9d3
+tree 768a683cd4c19a96c191d007756d1e9ba60ef79e
+parent cd6034617497073b0a84f6612f6cd036d380c5f1
+parent af50bdd4056b9341e53494ad393b6283136a00ed
+author normy <normy@macbookpro.speedport.ip> 1791397276 +0200
+committer normy <normy@macbookpro.speedport.ip> 1791397276 +0200
+
+    Merge remote-tracking branch 'origin/personal' into codex/project-workspace-path
+11	0
+diff --git a/autobyteus-web/package.json b/autobyteus-web/package.json
+index 6a5ee39d6..5033f6168 100644
+--- a/autobyteus-web/package.json
++++ b/autobyteus-web/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "autobyteus",
+-  "version": "1.4.96-beta.5",
++  "version": "1.4.96",
+   "packageManager": "pnpm@10.28.1",
+   "description": "AutoByteus Desktop Application",
+   "license": "Apache-2.0",
