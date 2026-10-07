@@ -2,7 +2,7 @@ const PROJECT_ERROR_MESSAGE_KEYS: Readonly<Record<string, string>> = {
   PROJECT_NAME_REQUIRED: 'projects.errors.nameRequired',
   PROJECT_NAME_TAKEN: 'projects.errors.nameTaken',
   PROJECT_NOT_FOUND: 'projects.errors.projectNotFound',
-  WORKSPACE_NOT_REGISTERED: 'projects.errors.workspaceNotRegistered',
+  WORKSPACE_PATH_INVALID: 'projects.errors.workspacePathInvalid',
   WORKSPACE_ALREADY_LINKED: 'projects.errors.workspaceAlreadyLinked',
   WORKSPACE_LINK_NOT_FOUND: 'projects.errors.workspaceLinkNotFound',
   TASK_DESCRIPTION_REQUIRED: 'projects.errors.taskDescriptionRequired',

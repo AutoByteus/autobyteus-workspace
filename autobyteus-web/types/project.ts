@@ -2,11 +2,9 @@ export type ProjectWorkspaceAvailability = 'AVAILABLE' | 'UNREGISTERED'
 
 /** A workspace linked to a Project, with availability resolved by the server at read time. */
 export interface ProjectWorkspace {
-  workspaceId: string
   workspaceRootPath: string
   displayName: string
   description: string
-  addedAt: string
   availability: ProjectWorkspaceAvailability
 }
 
@@ -30,7 +28,7 @@ export const PROJECT_TASK_STATUSES: readonly ProjectTaskStatus[] = ['TODO', 'IN_
 export interface ProjectTaskContextFile { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator?: string }
 export interface ProjectTaskContextDraft { draftId: string; storedFilenames: string[] }
 export interface ProjectTaskContextChanges { draftId?: string; addStoredFilenames?: string[]; removeStoredFilenames?: string[] }
-export interface ProjectWorkspaceInput { workspaceId: string; description: string }
+export interface ProjectWorkspaceInput { workspaceRootPath: string; description: string }
 /** The live status words of a Task's root: the worker's own status (the left panel's words). */
 export type TaskRootStatus = 'running' | 'initializing' | 'idle' | 'error' | 'offline'
 
@@ -92,7 +90,7 @@ export type ProjectErrorCode =
   | 'PROJECT_NAME_REQUIRED'
   | 'PROJECT_NAME_TAKEN'
   | 'PROJECT_NOT_FOUND'
-  | 'WORKSPACE_NOT_REGISTERED'
+  | 'WORKSPACE_PATH_INVALID'
   | 'WORKSPACE_ALREADY_LINKED'
   | 'WORKSPACE_LINK_NOT_FOUND'
   | 'TASK_DESCRIPTION_REQUIRED'

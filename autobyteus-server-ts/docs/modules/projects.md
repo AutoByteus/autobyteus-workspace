@@ -3,9 +3,8 @@
 ## Scope And Ownership
 
 Projects are durable, node-local work containers. Each has a unique name, an
-optional string description, and described links to registered filesystem
-workspaces. It also holds Project Tasks, each with a description, a business
-status and optional Task-owned context files. Manual authoring and four
+optional string description, and described links to absolute folder paths on the
+node. It also holds Project Tasks, each with a description, a business status and optional Task-owned context files. Manual authoring and four
 selected agent tools use the same services. Status is read-only in the web UI
 and writable by the tools.
 
@@ -144,8 +143,9 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
 ### Services
 
 `ProjectService` validates names (trimmed, required, case-insensitively unique),
-workspace membership and duplicates. Project reads sort by case-insensitive
-name, then ID. Views compute `taskCount` and `openTaskCount` (non-DONE) from the
+absolute workspace paths, link membership and canonical duplicates. It does not
+require workspace registration or folder existence to save an association. Project
+reads sort by case-insensitive name, then ID. Views compute `taskCount` and `openTaskCount` (non-DONE) from the
 Task folders.
 
 Agent mutations use `createProjectRecord` / `patchProjectRecord`, returning the
@@ -155,8 +155,9 @@ record inside the existing catalog write callback; adapters never pre-read and
 merge. Retained links preserve omitted descriptions in this patch path. The
 active UI/GraphQL `createProject` facade calls the same creation write once,
 then enriches its view; full-form `updateProject` retains its existing omitted-
-description clearing policy. Both paths share the workspace resolver. No new
-persisted shape, migration, Task/history write or locking owner is introduced.
+description clearing policy. Both paths share pure path validation and link
+resolution. Saved links now contain only path and description; no new migration, Task/history write or
+locking owner is introduced.
 
 `ProjectTaskService` applies only the supplied fields to the **current** Task.
 - Creation requires trimmed, non-empty text and creates a TODO Task with a fresh
@@ -194,9 +195,11 @@ migration `20261005_projects_per_folder_v1` (`projects-per-folder-v1`,
 | `projects.json` | `projects.pre-folders.json` (the retained original, never read again) |
 
 How the migration behaves:
-- **Frozen reader.** It reads the source only through the frozen
-  `released-projects-array-v1.ts`, and validates its output with the current
-  readers before retiring the source.
+- **Frozen Project readers.** It reads the source only through
+  `released-projects-array-v1.ts`. Project target classification, equality and
+  post-write validation use `released-project-folder-v1.ts`, retaining the
+  released four-field workspace entries. Task output still uses the unchanged
+  current `readTaskFile` before the source is retired.
 - **Skips.** Invalid rows or Tasks, a duplicate `projectId`, and conflicting
   existing targets are `SKIPPED` with a warning and preserved. The unshipped
   dev `{taskLifetimes}` row is skipped silently as known residue.
@@ -213,11 +216,12 @@ to finish. Other features keep working."). Chat, agents and everything else
 keep working. Un-migrated data is never shown as an empty Project list. Current
 code checks only that `projects.json` **exists**; it never reads the old shape.
 
-**Maintenance obligation (CRR-027; data_migration_guideline §4).** The migration
-validates its output with the current `ProjectsLayout`, `readProjectFile` and
-`readTaskFile`. Before any change to those three, repoint
-`projects-per-folder-v1` to frozen copies of them, so the released migration
-keeps its exact behavior.
+**Maintenance obligation (data_migration_guideline §4).** The Project target
+reader is already frozen inside the migration; do not reconnect it to the
+current tolerant `readProjectFile`. The migration still imports current
+`ProjectsLayout` and `readTaskFile`. Before changing either imported contract,
+freeze its released behavior inside `projects-per-folder-v1`. Keep historical
+classifiers/fixtures unchanged and rerun migration/startup coverage.
 
 ## Agent Run Resources
 
@@ -288,22 +292,23 @@ Tools MCP share the parser, manifest, services and error projection.
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS or DONE | `{projectId, tasks: [...]}` |
-| `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceId, description}]}}` |
+| `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
 | `create_or_update_task` | Two strict modes. Create: `{project_id, description}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
 
 `create_or_update_project` preserves omitted fields on patch. A blank Project
 description clears it; unknown IDs never create. Names are trimmed, nonblank
 and unique case-insensitively. Creation defaults to blank description/no links.
-`workspaces?: [{workspace_id, description?}]` is a **complete replacement list**,
+`workspaces?: [{workspace_path, description?}]` is a **complete replacement list**,
 not append; omission preserves all links and `[]` unlinks without deleting
-folders/registrations. Retained links preserve their root snapshot, added time
-and omitted description; blank description clears it. New links must be
-registered on the current node and default to blank description. There is no
-workspace-discovery tool: callers must know actual IDs and the complete desired
-list; the Manager asks when these are unknown. Null/wrong types, duplicate IDs
-and unknown row/top-level keys fail before mutation; an empty patch returns
-`PROJECT_PATCH_REQUIRED`. The acknowledgement contains committed metadata/links,
-not Task counts, filesystem paths, availability or a work assessment.
+folders/registrations. Paths must be absolute on the current node, trimmed and
+canonicalized without shell expansion, realpath or filesystem-existence checks.
+Retained links preserve omitted descriptions; blank description clears it. New
+links default to blank description. Registration is not a prerequisite, and a
+Project save never registers or creates the referenced folders. Null/wrong types,
+old ID rows, unknown row/top-level keys and canonical duplicate paths fail before
+mutation; an empty patch returns `PROJECT_PATCH_REQUIRED`. The acknowledgement
+contains committed metadata and path/description links, not Task counts,
+availability or a work assessment.
 
 `list_project_tasks` stays global: it returns every Task in the Project, with
 an optional `status` filter. Each Task has `projectId`, `taskId`, the full
@@ -608,27 +613,37 @@ running), the one the left panel shows:
 
 ## Workspace Registration Boundary
 
-Projects query only WorkspaceManager's public registration API, never the
-registry file directly. Workspaces do not import Projects, and removing a
-workspace is not blocked by links. Views derive AVAILABLE or UNREGISTERED from
-the current registration, and the display name from the preserved root
-snapshot. Re-registering the same path-derived identity restores availability.
+Projects use WorkspaceManager's pure registered-root snapshot only for read-time
+availability, never for mutation admission. Views derive AVAILABLE/UNREGISTERED
+from path membership and display names from recorded paths. Availability means
+registration, not proof of filesystem existence/access. The snapshot does not
+activate workspaces or clean up the registry; list/detail requests take at most
+one snapshot (none without links). Re-registering a root restores availability.
 
-Create and update Project inputs may contain one aggregate `workspaces` list of
-workspaceId/description:
-- On edit, omitting the list preserves the existing links. A supplied list is
-  the explicit desired membership.
-- Retained links keep their root and `addedAt`, including unregistered
-  snapshots. New links must be currently registered and unique.
+Create/update form inputs contain `workspaces: [{workspaceRootPath, description?}]`:
+- Omission preserves links; a supplied list replaces membership in list order.
+- Canonical duplicate paths or invalid absolute paths reject the entire patch.
+- Full-form omitted descriptions clear; the tool patch preserves retained omitted
+  descriptions. Direct add/update/remove APIs select by `workspaceRootPath`.
+- Manual path entry and the existing-workspace picker both submit a path directly.
+  Project Save does not call `createWorkspace`, register a root, stat or mkdir.
+- Unlinking/deleting a Project never unregisters or removes its workspace folders.
 
-The web form registers each new path through the existing `createWorkspace`
-**before** the aggregate Project save.
-- Registration normalizes metadata; it does **not** mkdir.
-- A registration may survive a later failed Project save. No distributed
-  transaction or rollback saga is promised.
-- The direct add/update/remove workspace-link GraphQL APIs remain supported.
-- Unlinking or deleting a Project never unregisters or removes physical
-  workspace roots.
+Each saved association contains exactly `workspaceRootPath` and `description`.
+The current reader projects those fields from existing files and ignores obsolete
+extra keys, without rewriting on read. Ordinary saves emit only current fields;
+Tasks, context and assignment files are not rewritten. No new migration or bulk
+cleanup is needed. The existing `projects-per-folder-v1` migration retains its
+four-field historical output and frozen target reader; its ID, retry/conflict
+classification and terminal skip behavior are unchanged.
+
+Deploy the matching server and web contracts together: old `workspace_id` tool
+rows and `workspaceId` GraphQL inputs are not aliases for paths. Global workspace
+registration IDs outside Project associations are unchanged. Moving a folder
+requires explicit link replacement; no symlink identity or remote path translation
+is implied. After an ordinary save drops obsolete fields, old ID-required
+binaries are not a supported downgrade path. No mixed-version writer or automatic
+rollback/data reconstruction is provided.
 
 ## Task Context Bytes
 

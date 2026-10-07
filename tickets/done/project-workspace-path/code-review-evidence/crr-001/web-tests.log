@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.96-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/projects/__tests__/ProjectEditor.spec.ts components/projects/__tests__/ProjectDetail.spec.ts stores/__tests__/projectStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path/autobyteus-web
+
+stderr | components/projects/__tests__/ProjectEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/projectStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/projectStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/projectStore.spec.ts (13 tests) 128ms
+ ✓ components/projects/__tests__/ProjectEditor.spec.ts (14 tests) 145ms
+ ✓ components/projects/__tests__/ProjectDetail.spec.ts (13 tests) 124ms
+
+ Test Files  3 passed (3)
+      Tests  40 passed (40)
+   Start at  19:29:32
+   Duration  7.76s (transform 4.30s, setup 18.78s, collect 987ms, tests 397ms, environment 739ms, prepare 566ms)
+

@@ -69,7 +69,13 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     expect(detail(result, "MISSING_CONTEXT_FILE_WARNING")?.message).toContain("ctx_1be36dd7dbe2__missing.txt");
     expect(JSON.stringify(result.summary.details)).not.toContain("dev-lifetime");
 
-    expect(await readJson(layout.projectFile("project_ctx"))).toMatchObject({ name: "With files", workspaces: [expect.objectContaining({ workspaceId: "ws_1" })] });
+    const migrated = await readJson(layout.projectFile("project_ctx"));
+    const releasedLink = JSON.parse(source)[0].workspaces[0];
+    expect(migrated.workspaces).toEqual([releasedLink]); // exact four-field historical output
+    expect((await new ProjectStore(layout).readProject("project_ctx"))!.workspaces).toEqual([
+      {workspaceRootPath: releasedLink.workspaceRootPath, description: releasedLink.description},
+    ]);
+    expect(await readJson(layout.projectFile("project_ctx"))).toEqual(migrated);
     expect(await readJson(layout.taskFile("project_ctx", "project_task_done"))).toMatchObject({ status: "DONE", contextFiles: [] });
     expect(await readJson(layout.projectFile("project_plain"))).toMatchObject({ name: "No tasks key" });
     expect(await fs.readFile(path.join(layout.contextDir("project_ctx", "project_task_ctx"), "ctx_0ad25cc6cad1__requirements.txt"), "utf8")).toBe("requirements");
@@ -82,6 +88,19 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     const [task] = (await new ProjectStore(layout).listTasks("project_ctx")).filter(t => t.taskId === "project_task_ctx");
     expect(await fs.readFile(await context.savedFile("project_ctx", "project_task_ctx", task!.contextFiles![0]!), "utf8")).toBe("requirements");
     expect((await context.describe("project_ctx", DRAFT)).draftId).toBe(DRAFT);
+  });
+
+  it.each(["workspaceId", "addedAt"] as const)("keeps historical %s target conflicts distinct from the tolerant runtime projection", async field => {
+    const [released] = JSON.parse(await fixture("released-with-context-drafts-and-residue.json"));
+    const {tasks, ...target} = released;
+    const conflicting = {...target, workspaces: target.workspaces.map((link: Record<string, unknown>) => ({...link, [field]: "different"}))};
+    await writeSource(JSON.stringify([released]));
+    const bytes = JSON.stringify(conflicting);
+    await writeFile(layout.projectFile(released.projectId), bytes);
+    const result = await migration.execute();
+    expect(detail(result, "SKIPPED_TARGET_CONFLICT_WARNING")).toBeDefined();
+    expect(await fs.readFile(layout.projectFile(released.projectId), "utf8")).toBe(bytes);
+    await expect(fs.access(layout.tasksDir(released.projectId))).rejects.toThrow();
   });
 
   it("an unparsable or non-array source is FAILED with every source untouched and the Projects gate kept", async () => {

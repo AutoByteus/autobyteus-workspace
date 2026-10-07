@@ -161,6 +161,13 @@ export class WorkspaceManager {
     return [...registeredWorkspaces, ...transientActiveWorkspaces];
   }
 
+  /** Pure registration snapshot: no workspace activation, filesystem checks or temp cleanup. */
+  async listRegisteredWorkspaceRootPaths(): Promise<string[]> {
+    return (await this.workspaceRegistryStore.listEntries())
+      .filter((entry) => entry.workspaceId.startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX))
+      .map((entry) => entry.workspaceRootPath);
+  }
+
   async getRegisteredWorkspaceRootPath(workspaceId: string): Promise<string | null> {
     if (!workspaceId.trim().startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX)) {
       return null;

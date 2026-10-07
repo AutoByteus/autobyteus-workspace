@@ -20,7 +20,7 @@ describe("Task-owned context transaction", () => {
     layout = new ProjectsLayout(path.join(root, "projects"));
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
-    projects = new ProjectService({store, workspaceLookup: {getRegisteredWorkspaceRootPath: async () => null}});
+    projects = new ProjectService({store, workspaceLookup: {listRegisteredWorkspaceRootPaths: async () => []}});
     tasks = new ProjectTaskService({store, contextStore: context});
     projectId = (await projects.createProject({name: "Unit fixture"})).projectId;
   });

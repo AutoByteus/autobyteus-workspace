@@ -1,0 +1,112 @@
+[
+  {
+    "file": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts",
+    "nonemptyLines": 123,
+    "changedLines": 15
+  },
+  {
+    "file": "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts",
+    "nonemptyLines": 80,
+    "changedLines": 4
+  },
+  {
+    "file": "autobyteus-server-ts/src/api/graphql/types/projects.ts",
+    "nonemptyLines": 176,
+    "changedLines": 16
+  },
+  {
+    "file": "autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.ts",
+    "nonemptyLines": 235,
+    "changedLines": 11
+  },
+  {
+    "file": "autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/released-project-folder-v1.ts",
+    "nonemptyLines": 38,
+    "changedLines": 42
+  },
+  {
+    "file": "autobyteus-server-ts/src/projects/changes/project-change-messages.ts",
+    "nonemptyLines": 84,
+    "changedLines": 6
+  },
+  {
+    "file": "autobyteus-server-ts/src/projects/domain/models.ts",
+    "nonemptyLines": 137,
+    "changedLines": 12
+  },
+  {
+    "file": "autobyteus-server-ts/src/projects/domain/project-errors.ts",
+    "nonemptyLines": 31,
+    "changedLines": 2
+  },
+  {
+    "file": "autobyteus-server-ts/src/projects/services/project-service.ts",
+    "nonemptyLines": 250,
+    "changedLines": 101
+  },
+  {
+    "file": "autobyteus-server-ts/src/projects/stores/project-store.ts",
+    "nonemptyLines": 212,
+    "changedLines": 8
+  },
+  {
+    "file": "autobyteus-server-ts/src/workspaces/workspace-manager.ts",
+    "nonemptyLines": 306,
+    "changedLines": 7
+  },
+  {
+    "file": "autobyteus-web/components/projects/ProjectEditor.vue",
+    "nonemptyLines": 138,
+    "changedLines": 30
+  },
+  {
+    "file": "autobyteus-web/components/projects/ProjectWorkspaceEntry.vue",
+    "nonemptyLines": 35,
+    "changedLines": 16
+  },
+  {
+    "file": "autobyteus-web/components/projects/ProjectWorkspaceRow.vue",
+    "nonemptyLines": 71,
+    "changedLines": 3
+  },
+  {
+    "file": "autobyteus-web/components/projects/ProjectWorkspacesPanel.vue",
+    "nonemptyLines": 68,
+    "changedLines": 14
+  },
+  {
+    "file": "autobyteus-web/graphql/queries/projectQueries.ts",
+    "nonemptyLines": 34,
+    "changedLines": 2
+  },
+  {
+    "file": "autobyteus-web/localization/messages/en/projects.ts",
+    "nonemptyLines": 189,
+    "changedLines": 7
+  },
+  {
+    "file": "autobyteus-web/localization/messages/zh-CN/projects.ts",
+    "nonemptyLines": 189,
+    "changedLines": 7
+  },
+  {
+    "file": "autobyteus-web/stores/projectStore.ts",
+    "nonemptyLines": 242,
+    "changedLines": 12
+  },
+  {
+    "file": "autobyteus-web/types/project.ts",
+    "nonemptyLines": 86,
+    "changedLines": 6
+  },
+  {
+    "file": "autobyteus-web/types/projectWorkspaceDraft.ts",
+    "nonemptyLines": 2,
+    "changedLines": 2
+  },
+  {
+    "file": "autobyteus-web/utils/projects/projectErrorMessageKey.ts",
+    "nonemptyLines": 15,
+    "changedLines": 2
+  }
+]

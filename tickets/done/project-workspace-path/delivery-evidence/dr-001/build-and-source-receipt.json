@@ -1,0 +1,66 @@
+{
+  "recordedAt": "2026-10-07T18:23:42.195266+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-workspace-path",
+  "head": "8448cd18af3fb08b13cb8d47291c9ba89794b9d3",
+  "checkedBase": "af50bdd4056b9341e53494ad393b6283136a00ed",
+  "incomingHead": "cd6034617497073b0a84f6612f6cd036d380c5f1",
+  "integration": "ort merge; three base commits; version/release docs/history only; no conflicts",
+  "build": {
+    "prebuild": "exit 0",
+    "build": "exit 0, TypeScript/assets and sanitized bootstrap",
+    "outputsRebuiltForThisIntegratedSource": true
+  },
+  "runtime": {
+    "node": "v22.23.1",
+    "pnpm": "10.28.2",
+    "os": "macOS-26.5.2-arm64-arm-64bit"
+  },
+  "productionDeltaAfterIntegration": [],
+  "apiTestHashComparison": {
+    "TESTING.md": "delivery docs sync",
+    "autobyteus-server-ts/tests/e2e/projects/project-change-feed.e2e.test.ts": "unchanged",
+    "autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts": "unchanged",
+    "autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts": "unchanged",
+    "autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts": "unchanged",
+    "autobyteus-server-ts/tests/e2e/projects/projects-startup-migration.e2e.test.ts": "unchanged",
+    "autobyteus-web/tests/e2e/projects-feature-probe.mjs": "unchanged"
+  },
+  "sha256": {
+    "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts": "b706d6bf3640a2265301cabe79cbbd8ff43353935aa3b726b3e73e6ba7244618",
+    "autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts": "e25702674362d00a2a4f2458616c5c8aacc9ca49a6dd56d6d3b071e6ed7096f1",
+    "autobyteus-server-ts/src/api/graphql/types/projects.ts": "46d8186ce0787a50f9421836e2e44b682ac77d8e029441fb3307277d35e1bdc1",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.ts": "cc0ec6ad7a522716f195ba0efde43960199f9d8fa9152d15fcd5001a9ccc6090",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/projects-per-folder-v1/released-project-folder-v1.ts": "364b468479a62ce3ddeb9354f5b192d08fef143bea4b14b2ae754c4994f54342",
+    "autobyteus-server-ts/src/projects/changes/project-change-messages.ts": "10f48de211eea4223df6ec041495afdde221d8fd49dd3fdf728f459af4cea99e",
+    "autobyteus-server-ts/src/projects/domain/models.ts": "12d8de58bc4932bdf557578b3066831c1d436935c98fdd5cd7974954c35015ff",
+    "autobyteus-server-ts/src/projects/domain/project-errors.ts": "aa5261531633ec510b73885c395ae9d7ab95fa22cba87875efb8106a61ea69f1",
+    "autobyteus-server-ts/src/projects/services/project-service.ts": "9b643a7a329deb23f660882ec02519518cefabcf660cc8440d42e42ba9e3770c",
+    "autobyteus-server-ts/src/projects/stores/project-store.ts": "f78e0b3b2a815095e6fcd8d41053308f900edfdeab22bb54aebbde47a8106415",
+    "autobyteus-server-ts/src/workspaces/workspace-manager.ts": "dd733ece0bae6bbba5a4eb24ca53640c53ea29f58fa3084eb4cb390623e0de55",
+    "autobyteus-web/components/projects/ProjectEditor.vue": "d487a64781747abc1bf12474fd555bf6552d89633bed94332f1d7e6ce469acf3",
+    "autobyteus-web/components/projects/ProjectWorkspaceEntry.vue": "0fe58fd55c3e56c877745bdaab0a70d5c7f14b2067cf33dd126c95243f2798a7",
+    "autobyteus-web/components/projects/ProjectWorkspaceRow.vue": "89971c9cd2fc3303b0f18d9a9e26c46c30aa8bb8e3bb43e9485b543b42840b3b",
+    "autobyteus-web/components/projects/ProjectWorkspacesPanel.vue": "4966da3da8b6663ad33655257eca6a42028f217d76a57db895bbae0e849bfb52",
+    "autobyteus-web/components/projects/__tests__/ProjectDetail.spec.ts": "cc42e721627de29d55451268b255ded2a52a8c0e612f2ebfd092f301d391ce43",
+    "autobyteus-web/components/projects/__tests__/ProjectEditor.spec.ts": "152f7f30f138861015c008701c4304a19694a8a20353382d19dfe0f5e514e608",
+    "autobyteus-web/graphql/queries/projectQueries.ts": "06fba2abd6847504fdf6f6d71eb9400cae383aa2974e7d62eb70f44c3064e245",
+    "autobyteus-web/localization/messages/en/projects.ts": "a7f5dbc6196b071dcd2cc3fb36b707b44d14e2b5edc166aaf32d2d415adf9021",
+    "autobyteus-web/localization/messages/zh-CN/projects.ts": "11ca0a219dd4fbe2a699ebc5a414274d871f4d45899813e3ac91bd42f9d0341e",
+    "autobyteus-web/stores/__tests__/projectStore.spec.ts": "35e8b2aceed82c1f5cd14c0f08e27920e450d831fefdb2b69c902a6d1200ba8a",
+    "autobyteus-web/stores/projectStore.ts": "1ad7944dc3709e951834d547b99ddec6361e49ac289bd36a37f5c07dcc312599",
+    "autobyteus-web/types/project.ts": "0e1c8807589b4d01742edac40b5b7a3a32642dc539039503337bf108dccf32b7",
+    "autobyteus-web/types/projectWorkspaceDraft.ts": "627efc7a5d0e7411299308ea58f1a3a3b4ccfea4d5ca161ca2217adcf1727bb8",
+    "autobyteus-web/utils/projects/projectErrorMessageKey.ts": "fbcefcabdec2d56bb167f8f12e6d49bfb53bfa7de557c7135763095b0cc35bca",
+    "TESTING.md": "96577d5b0c2df920f84794eabe76284a8f9724c01e086d644bcf13442a358d8e",
+    "autobyteus-server-ts/tests/e2e/projects/project-change-feed.e2e.test.ts": "d38b52719cbfb98e46a2adc92a7d49b5d08e8accf44c7bb77c75a14fb85c46e5",
+    "autobyteus-server-ts/tests/e2e/projects/project-mutation-node-locality.e2e.test.ts": "4fee4856a72dfadbcfd44a15fbc2d3d04ab9afd388dfcc19cff8e3996a43866a",
+    "autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts": "bd6bbd2f81afe8d978525ea60af7562b67c3ac55ed358b1c1cdc9b60001ab1c4",
+    "autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts": "72d744def8107cc51ac561b117c2963afd57599b48a495a739f1f3555a20f153",
+    "autobyteus-server-ts/tests/e2e/projects/projects-startup-migration.e2e.test.ts": "7e533bc717087a3f364b0eeafae983e2453c3ae5d5fce826338698d0794fbd07",
+    "autobyteus-web/tests/e2e/projects-feature-probe.mjs": "9f9baa88c24f242f4b7d11e1808951076bccb239b4d159912ac87b7d3c942d26"
+  },
+  "notes": [
+    "Delivery docs are uncommitted pending user verification. TESTING.md prose change does not alter commands/test source.",
+    "Initial build-output-entry.json inventories named paths only; two generated application SDK dirs are separately attributed by clean-entry git status + API cleanup receipt, not by that incomplete inventory."
+  ]
+}

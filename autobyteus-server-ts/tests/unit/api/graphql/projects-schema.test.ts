@@ -57,21 +57,30 @@ describe("Projects GraphQL schema", () => {
     expect(mutationFields.setApplicationsEnabled).toBeDefined();
   });
 
+  it("exposes only path association fields and refuses old ID mutation inputs", async () => {
+    const fields = (name: string) => Object.keys((schema.getType(name) as {getFields(): object}).getFields()).sort();
+    expect(fields("ProjectWorkspace")).toEqual(["availability", "description", "displayName", "workspaceRootPath"]);
+    expect(fields("ProjectWorkspaceFormInput")).toEqual(["description", "workspaceRootPath"]);
+    const invalid = await graphql({schema, source: `mutation { addProjectWorkspace(input: {projectId: "p", workspaceId: "old"}) {projectId} }`});
+    expect(invalid.errors?.length).toBeGreaterThan(0);
+    expect(mockProjectService.addWorkspaceLink).not.toHaveBeenCalled();
+  });
+
   it("returns ProjectError codes as GraphQL error extensions", async () => {
     mockProjectService.addWorkspaceLink.mockRejectedValue(
-      new ProjectError("WORKSPACE_NOT_REGISTERED", "Workspace 'agent_ws_x' is not a registered workspace."),
+      new ProjectError("WORKSPACE_PATH_INVALID", "Workspace 'agent_ws_x' must be an absolute folder path."),
     );
 
     const result = await graphql({
       schema,
       source: `mutation {
-        addProjectWorkspace(input: { projectId: "project_1", workspaceId: "agent_ws_x", description: "UI" }) {
+        addProjectWorkspace(input: { projectId: "project_1", workspaceRootPath: "agent_ws_x", description: "UI" }) {
           projectId
         }
       }`,
     });
 
-    expect(result.errors?.[0]?.extensions?.code).toBe("WORKSPACE_NOT_REGISTERED");
+    expect(result.errors?.[0]?.extensions?.code).toBe("WORKSPACE_PATH_INVALID");
   });
 
   it("serializes workspace availability as an enum", async () => {
@@ -82,25 +91,23 @@ describe("Projects GraphQL schema", () => {
       createdAt: "2026-09-26T00:00:00.000Z",
       updatedAt: "2026-09-26T00:00:00.000Z",
       workspaces: [{
-        workspaceId: "agent_ws_a",
         workspaceRootPath: "/work/a",
         displayName: "a",
         description: "UI",
-        addedAt: "2026-09-26T00:00:00.000Z",
         availability: "UNREGISTERED",
       }],
     });
 
     const result = await graphql({
       schema,
-      source: `query { project(projectId: "project_1") { name workspaces { workspaceId displayName availability } } }`,
+      source: `query { project(projectId: "project_1") { name workspaces { workspaceRootPath displayName availability } } }`,
     });
 
     expect(result.errors).toBeUndefined();
     expect(result.data).toEqual({
       project: {
         name: "autobyteus",
-        workspaces: [{ workspaceId: "agent_ws_a", displayName: "a", availability: "UNREGISTERED" }],
+        workspaces: [{ workspaceRootPath: "/work/a", displayName: "a", availability: "UNREGISTERED" }],
       },
     });
   });

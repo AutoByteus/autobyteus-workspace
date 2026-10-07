@@ -1,0 +1,822 @@
+{
+  "startedAt": "2026-10-07T18:22:46.661Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PT-E2E-001": {
+      "title": "Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001)",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:04.654Z",
+      "observations": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams",
+          "Agent Orgs",
+          "Projects",
+          "Skills",
+          "Memory",
+          "Nodes"
+        ],
+        "otherNode": "project_6bce2ede-5cf4-4b45-8909-81872facce37"
+      },
+      "finishedAt": "2026-10-07T18:23:05.174Z"
+    },
+    "PT-E2E-002": {
+      "title": "Ordinary New Project validation/focus/Cancel and zero-link save to Tasks",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:05.174Z",
+      "observations": {
+        "projectId": "project_a37f0817-b705-4891-9e92-d165728b3821"
+      },
+      "finishedAt": "2026-10-07T18:23:09.102Z"
+    },
+    "PT-E2E-003": {
+      "title": "Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:09.102Z",
+      "observations": {
+        "links": [
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/original-workspace",
+            "displayName": "original-workspace",
+            "description": "existing context",
+            "availability": "AVAILABLE"
+          },
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/never-mkdir #?雪\\folder",
+            "displayName": "never-mkdir #?雪\\folder",
+            "description": "manual reference",
+            "availability": "UNREGISTERED"
+          }
+        ],
+        "disk": [
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/original-workspace",
+            "description": "existing context"
+          },
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/never-mkdir #?雪\\folder",
+            "description": "manual reference"
+          }
+        ],
+        "manualPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/never-mkdir #?雪\\folder"
+      },
+      "finishedAt": "2026-10-07T18:23:11.932Z"
+    },
+    "PT-E2E-004": {
+      "title": "Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:11.932Z",
+      "observations": {
+        "rejections": [
+          {
+            "invalid": "relative/folder",
+            "code": "WORKSPACE_PATH_INVALID",
+            "responseStatus": 200
+          },
+          {
+            "invalid": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/original-workspace/../original-workspace/",
+            "code": "WORKSPACE_ALREADY_LINKED",
+            "responseStatus": 200
+          }
+        ],
+        "rejectedSaves": 1,
+        "absentPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB/failed-save-no-registration"
+      },
+      "finishedAt": "2026-10-07T18:23:12.618Z"
+    },
+    "PT-E2E-005": {
+      "title": "Task ordinary composer validation, search-preserving Cancel, typed/file save clears search",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:12.618Z",
+      "observations": {
+        "presentation": [
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 534,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 362
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 509,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1118,
+                    1198,
+                    79
+                  ],
+                  [
+                    1210,
+                    1326,
+                    116
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 550,
+                "left": 66,
+                "right": 374,
+                "height": 386
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 217,
+                "bottom": 529,
+                "left": 87,
+                "right": 353,
+                "height": 312
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 534,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 362
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 509,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1159,
+                    1220,
+                    61
+                  ],
+                  [
+                    1232,
+                    1326,
+                    94
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 550,
+                "left": 66,
+                "right": 374,
+                "height": 386
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 217,
+                "bottom": 529,
+                "left": 87,
+                "right": 353,
+                "height": 312
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          }
+        ],
+        "blankAssociation": {
+          "invalid": "true",
+          "describedBy": "task-page-error",
+          "references": [
+            {
+              "id": "task-page-error",
+              "exists": true,
+              "role": "alert"
+            }
+          ],
+          "focused": true
+        },
+        "uploadFailure": {
+          "textRetained": true,
+          "savedTasks": 0,
+          "retryAvailable": true
+        },
+        "task": {
+          "taskId": "project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5",
+          "projectId": "project_a37f0817-b705-4891-9e92-d165728b3821",
+          "description": "Browser task\nFull second line",
+          "status": "TODO",
+          "createdAt": "2026-10-07T18:23:15.167Z",
+          "updatedAt": "2026-10-07T18:23:15.167Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_fda4f2543b20__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_a37f0817-b705-4891-9e92-d165728b3821/tasks/project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5/context-files/ctx_fda4f2543b20__note.txt"
+            },
+            {
+              "storedFilename": "ctx_e3cc58180856__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_a37f0817-b705-4891-9e92-d165728b3821/tasks/project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5/context-files/ctx_e3cc58180856__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-07T18:23:15.304Z"
+    },
+    "PT-E2E-006": {
+      "title": "Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:15.305Z",
+      "observations": {
+        "presentation": [
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 716,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 544
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 691,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 462
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1103,
+                    1182,
+                    79
+                  ],
+                  [
+                    1194,
+                    1326,
+                    131
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 732,
+                "left": 66,
+                "right": 374,
+                "height": 568
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 217,
+                "bottom": 711,
+                "left": 87,
+                "right": 353,
+                "height": 494
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 716,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 544
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 229,
+                "bottom": 691,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 462
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1159,
+                    1220,
+                    61
+                  ],
+                  [
+                    1232,
+                    1326,
+                    94
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 732,
+                "left": 66,
+                "right": 374,
+                "height": 568
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 217,
+                "bottom": 711,
+                "left": 87,
+                "right": 353,
+                "height": 494
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          }
+        ],
+        "blankAssociation": {
+          "invalid": "true",
+          "describedBy": "task-page-error",
+          "references": [
+            {
+              "id": "task-page-error",
+              "exists": true,
+              "role": "alert"
+            }
+          ],
+          "focused": true
+        },
+        "edited": {
+          "taskId": "project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5",
+          "projectId": "project_a37f0817-b705-4891-9e92-d165728b3821",
+          "description": "Browser task revised\nFull second line",
+          "status": "TODO",
+          "createdAt": "2026-10-07T18:23:15.167Z",
+          "updatedAt": "2026-10-07T18:23:17.450Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_fda4f2543b20__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_a37f0817-b705-4891-9e92-d165728b3821/tasks/project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5/context-files/ctx_fda4f2543b20__note.txt"
+            },
+            {
+              "storedFilename": "ctx_e3cc58180856__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_a37f0817-b705-4891-9e92-d165728b3821/tasks/project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5/context-files/ctx_e3cc58180856__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-07T18:23:17.712Z"
+    },
+    "PT-E2E-007": {
+      "title": "External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:17.712Z",
+      "observations": {
+        "physicalQueries": 1
+      },
+      "finishedAt": "2026-10-07T18:23:20.142Z"
+    },
+    "PT-E2E-008": {
+      "title": "Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:20.142Z",
+      "observations": {
+        "retainedRows": [
+          "project-task-row-project_task_e41bacab-9fc9-4c96-a172-e24fd45b2191",
+          "project-task-row-project_task_f22bfe95-0d02-430e-b736-3d7a0dc268a5"
+        ]
+      },
+      "finishedAt": "2026-10-07T18:23:23.507Z"
+    },
+    "PT-E2E-009": {
+      "title": "Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:23.508Z",
+      "observations": {
+        "styles": [
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "DIV"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "DIV"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "DIV"
+          }
+        ]
+      },
+      "finishedAt": "2026-10-07T18:23:24.502Z"
+    },
+    "PT-E2E-010": {
+      "title": "Real backend process restart preserves Tasks, context HTTP bytes and links",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:24.503Z",
+      "observations": {
+        "restarted": true
+      },
+      "finishedAt": "2026-10-07T18:23:26.703Z"
+    },
+    "PT-E2E-011": {
+      "title": "All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:26.703Z",
+      "observations": {
+        "warning": "Delete project?\n\nDelete the project “API E2E project”, its workspace links and its 3 tasks?\n\nWorkspaces, their files and run history are not changed.\n\nCancel\nDelete project"
+      },
+      "finishedAt": "2026-10-07T18:23:27.085Z"
+    },
+    "PT-E2E-012": {
+      "title": "Ordinary route read/Refresh ordering: late old Project response cannot populate another Project",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:27.086Z",
+      "observations": {
+        "realOldResponseReleased": true
+      },
+      "finishedAt": "2026-10-07T18:23:28.351Z"
+    },
+    "PT-E2E-013": {
+      "title": "120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:28.351Z",
+      "observations": {
+        "total": 120
+      },
+      "finishedAt": "2026-10-07T18:23:30.417Z"
+    },
+    "PT-E2E-014": {
+      "title": "Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:30.417Z",
+      "observations": {
+        "deletedTaskId": "project_task_d2251f2d-7455-4559-9cee-27984660ed8d"
+      },
+      "finishedAt": "2026-10-07T18:23:32.650Z"
+    },
+    "PT-E2E-015": {
+      "title": "Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003)",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:32.650Z",
+      "observations": {
+        "stored": {
+          "key": "ENABLE_PROJECTS",
+          "value": "false",
+          "isDeletable": true
+        },
+        "deleted": true
+      },
+      "finishedAt": "2026-10-07T18:23:35.253Z"
+    },
+    "PT-E2E-016": {
+      "title": "zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys",
+      "result": "Pass",
+      "startedAt": "2026-10-07T18:23:35.253Z",
+      "observations": {
+        "rawKeys": 0
+      },
+      "finishedAt": "2026-10-07T18:23:36.319Z"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:26940",
+    "nodeA": "terminated:39416",
+    "nodeB": "terminated:25937",
+    "frontendPortReleased": true,
+    "nodeAPortReleased": true,
+    "nodeBPortReleased": true,
+    "tempRootRemoved": true
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-OdTQmB",
+    "nodeA": "http://127.0.0.1:62786",
+    "nodeB": "http://127.0.0.1:62789",
+    "frontend": "http://127.0.0.1:62831"
+  },
+  "browserVersion": "154.0.8037.98",
+  "finishedAt": "2026-10-07T18:23:47.039Z"
+}

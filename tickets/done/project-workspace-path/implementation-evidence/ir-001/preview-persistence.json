@@ -1,0 +1,19 @@
+{
+  "kind": "implementation preview persistence observation after UI unlink",
+  "project": {
+    "projectId": "project_ee39fbc3-2e0c-491a-9eba-9bdaf1a25e4e",
+    "name": "Path reference preview",
+    "description": "Direct folder and picker use the same saved representation.",
+    "createdAt": "2026-10-07T17:14:41.635Z",
+    "updatedAt": "2026-10-07T17:18:30.006Z",
+    "workspaces": [
+      {
+        "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-path-preview-QcGLnH/registered-folder",
+        "description": "Picker root"
+      }
+    ]
+  },
+  "registryUnchanged": true,
+  "manualDirectoryAbsent": true,
+  "registeredDirectoryExists": true
+}

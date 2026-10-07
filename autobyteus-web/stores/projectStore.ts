@@ -215,14 +215,14 @@ export const useProjectStore = defineStore('projects', () => {
     return result
   }
 
-  const addWorkspace = (projectId: string, workspaceId: string, description: string): Promise<Project> =>
-    mutateProject(AddProjectWorkspace, { input: { projectId, workspaceId, description } }, 'addProjectWorkspace')
+  const addWorkspace = (projectId: string, workspaceRootPath: string, description: string): Promise<Project> =>
+    mutateProject(AddProjectWorkspace, { input: { projectId, workspaceRootPath, description } }, 'addProjectWorkspace')
 
-  const updateWorkspace = (projectId: string, workspaceId: string, description: string): Promise<Project> =>
-    mutateProject(UpdateProjectWorkspace, { input: { projectId, workspaceId, description } }, 'updateProjectWorkspace')
+  const updateWorkspace = (projectId: string, workspaceRootPath: string, description: string): Promise<Project> =>
+    mutateProject(UpdateProjectWorkspace, { input: { projectId, workspaceRootPath, description } }, 'updateProjectWorkspace')
 
-  const removeWorkspace = (projectId: string, workspaceId: string): Promise<Project> =>
-    mutateProject(RemoveProjectWorkspace, { input: { projectId, workspaceId } }, 'removeProjectWorkspace')
+  const removeWorkspace = (projectId: string, workspaceRootPath: string): Promise<Project> =>
+    mutateProject(RemoveProjectWorkspace, { input: { projectId, workspaceRootPath } }, 'removeProjectWorkspace')
 
   /**
    * One `/ws/projects` Project change: the server view (with its counts) replaces the cached one;

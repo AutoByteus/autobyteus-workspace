@@ -1,3 +1,5 @@
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { Skill } from "../../../src/skills/domain/models.js";
 import fs from "node:fs";
@@ -42,6 +44,21 @@ describe("WorkspaceManager", () => {
     (manager as unknown as { activeWorkspaces: Map<string, FileSystemWorkspace> }).activeWorkspaces.clear();
     vi.restoreAllMocks();
     fs.rmSync(appDataDir, { recursive: true, force: true });
+  });
+
+  it("reads registered roots without activation, temp cleanup, existence checks or registry writes", async () => {
+    const missing = path.join(appDataDir, "missing");
+    const temp = path.join(appDataDir, "configured-temp");
+    vi.spyOn(appConfigProvider.config, "getTempWorkspaceDir").mockReturnValue(temp);
+    const registryFile = path.join(appDataDir, "workspaces.json");
+    const bytes = JSON.stringify({[buildFilesystemWorkspaceId(missing)]: missing,
+      [buildFilesystemWorkspaceId(temp)]: temp, skill_ws_ignored: path.join(appDataDir, "skill")});
+    fs.writeFileSync(registryFile, bytes);
+    expect((await manager.listRegisteredWorkspaceRootPaths()).sort()).toEqual([missing, temp].sort());
+    expect(manager.getAllWorkspaces()).toEqual([]);
+    expect(fs.readFileSync(registryFile, "utf8")).toBe(bytes);
+    expect(fs.existsSync(missing)).toBe(false);
+    expect(fs.existsSync(temp)).toBe(false);
   });
 
   it("creates and registers a workspace", async () => {
@@ -185,6 +202,9 @@ describe("WorkspaceManager", () => {
   });
 
   it("removes a registered workspace entry without deleting workspace files", async () => {
+    // This unit has no process supervisor; provide its empty run catalogs explicitly.
+    vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({ listActiveRuns: () => [] } as unknown as AgentRunManager);
+    vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({ listManagedTeamRunIds: () => [] } as unknown as AgentTeamRunManager);
     const rootPath = createTempRoot();
     const filePath = path.join(rootPath, "keep.txt");
     fs.writeFileSync(filePath, "preserved", "utf-8");

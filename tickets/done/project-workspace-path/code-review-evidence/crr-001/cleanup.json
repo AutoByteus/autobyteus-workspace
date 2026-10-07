@@ -1,0 +1,10 @@
+{
+  "removedReviewerGeneratedUntrackedOutputs": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "serversOrBrowsersStarted": false,
+  "sourceOrTestEdits": false,
+  "testsExited": true,
+  "nextBuiltServerChecks": "Run normal prebuild then build"
+}

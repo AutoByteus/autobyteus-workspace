@@ -11,7 +11,7 @@
       <div v-else-if="isEdit && !existing" class="rounded-xl border border-slate-200 bg-white p-6" role="status"><h2 class="font-semibold text-slate-900">{{ t('projects.components.projects.ProjectDetail.notFoundTitle') }}</h2><p class="mt-2 text-sm text-slate-600">{{ t('projects.components.projects.ProjectDetail.notFoundHelp') }}</p><NuxtLink to="/projects" class="mt-4 inline-block text-sm font-medium text-blue-700">{{ t('projects.ui.backProjects') }}</NuxtLink></div>
 
       <form v-else class="overflow-hidden rounded-xl border border-slate-200 bg-white" novalidate @submit.prevent="submit">
-        <p v-if="saveError" role="alert" class="mx-5 mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ saveError }}</p>
+        <p v-if="saveError" ref="saveErrorElement" tabindex="-1" role="alert" class="outline-none mx-5 mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ saveError }}</p>
         <div class="p-5 sm:p-6">
           <div>
             <label for="project-editor-name" class="block text-sm font-medium text-slate-700">{{ t('projects.ui.name') }} <span class="font-normal text-slate-500">{{ t('projects.ui.required') }}</span></label>
@@ -84,15 +84,17 @@ const voicePending = computed(() => voice.transcriptTarget?.key === voiceTarget.
   && (voice.isStarting || voice.isRecording || voice.isTranscribing))
 onBeforeUnmount(() => {alive = false; void voice.cancelOperationForTarget(voiceTarget.key)})
 const heading = ref<HTMLElement | null>(null)
+const saveErrorElement = ref<HTMLElement | null>(null)
 const rows = ref<ProjectWorkspaceDraft[]>([])
 const backTarget = computed(() => isEdit.value ? `/projects/${props.projectId}${route.query.tab === 'workspaces' ? '?tab=workspaces' : ''}` : '/projects')
-const choices = computed(() => Object.values(workspaces.workspaceMetadataById).filter((w) => w.kind !== 'temp').map((w) => ({workspaceId: w.workspaceId, displayName: w.displayName, workspaceRootPath: w.workspaceRootPath})))
+const choices = computed(() => Object.values(workspaces.workspaceMetadataById).filter((w) => w.kind !== 'temp').map((w) => ({displayName: w.displayName, workspaceRootPath: w.workspaceRootPath})))
 const availableChoices = (row: ProjectWorkspaceDraft) => {
-  const all = row.original && !choices.value.some((w) => w.workspaceId === row.original!.workspaceId) ? [...choices.value, row.original] : choices.value
-  return all.filter((w) => w.workspaceId === row.workspaceId || !rows.value.some((other) => other.key !== row.key && other.mode === 'existing' && other.workspaceId === w.workspaceId))
+  const all = row.original && !choices.value.some((w) => w.workspaceRootPath === row.original!.workspaceRootPath) ? [...choices.value, row.original] : choices.value
+  const distinct = all.filter((choice, index) => all.findIndex((w) => w.workspaceRootPath === choice.workspaceRootPath) === index)
+  return distinct.filter((w) => !rows.value.some((other) => other.key !== row.key && other.workspaceRootPath === w.workspaceRootPath))
 }
 const addWorkspace = async () => {
-  const key = nextKey++; rows.value.push({key, mode: 'existing', workspaceId: '', path: '', description: '', error: ''})
+  const key = nextKey++; rows.value.push({key, mode: 'existing', workspaceRootPath: '', description: '', error: ''})
   await nextTick(); document.getElementById(`workspace-choice-${key}`)?.focus()
 }
 const removeWorkspace = async (row: ProjectWorkspaceDraft) => {
@@ -107,12 +109,12 @@ const load = async () => {
     await workspaces.fetchAllWorkspaces(true)
     if (!current()) return
     name.value = existing.value?.name ?? ''; description.value = existing.value?.description ?? ''
-    rows.value = (existing.value?.workspaces ?? []).map((link) => ({key: nextKey++, mode: 'existing', workspaceId: link.workspaceId, path: '', description: link.description, error: '', original: link}))
+    rows.value = (existing.value?.workspaces ?? []).map((link) => ({key: nextKey++, mode: 'existing', workspaceRootPath: link.workspaceRootPath, description: link.description, error: '', original: link}))
     loading.value = false
     await nextTick(); heading.value?.focus()
     if (route.query.addWorkspace === '1') await addWorkspace()
-    else if (route.query.workspace) {
-      const row = rows.value.find((r) => r.workspaceId === route.query.workspace)
+    else if (route.query.workspacePath) {
+      const row = rows.value.find((r) => r.workspaceRootPath === route.query.workspacePath)
       if (row) document.getElementById(`workspace-description-${row.key}`)?.focus()
     }
   } catch (e) { if (current()) {loading.value = false; loadError.value = e instanceof Error ? e.message : t('projects.errors.requestFailed')} }
@@ -121,18 +123,12 @@ const submit = async () => {
   if (saving.value || voicePending.value || !current()) return
   nameError.value = name.value.trim() ? '' : t('projects.errors.nameRequired')
   if (nameError.value) { await nextTick(); document.getElementById('project-editor-name')?.focus(); return }
-  for (const row of rows.value) row.error = row.mode === 'existing' && !row.workspaceId ? t('projects.ui.chooseWorkspace') : row.mode === 'new' && !row.path.trim() ? t('projects.ui.enterPath') : ''
+  for (const row of rows.value) row.error = row.mode === 'existing' && !row.workspaceRootPath ? t('projects.ui.chooseWorkspace') : row.mode === 'new' && !row.workspaceRootPath.trim() ? t('projects.ui.enterPath') : ''
   const invalid = rows.value.find((r) => r.error)
   if (invalid) { await nextTick(); document.getElementById(`workspace-choice-${invalid.key}`)?.focus(); return }
   saving.value = true; saveError.value = ''
   try {
-    const links = []
-    for (const row of rows.value) {
-      if (!current()) return
-      const workspaceId = row.mode === 'existing' ? row.workspaceId : await workspaces.createWorkspace({root_path: row.path.trim()}, current)
-      if (!current()) return
-      links.push({workspaceId, description: row.description.trim()})
-    }
+    const links = rows.value.map((row) => ({workspaceRootPath: row.workspaceRootPath.trim(), description: row.description.trim()}))
     const input = {name: name.value.trim(), description: description.value.trim(), workspaces: links}
     const saved = props.projectId ? await projects.updateProject({projectId: props.projectId, ...input}, current) : await projects.createProject(input, current)
     if (!current()) return
@@ -140,7 +136,7 @@ const submit = async () => {
   } catch (e) {
     if (!current()) return
     if (projectErrorMessageKey(e) === 'projects.errors.nameTaken') {nameError.value = t('projects.errors.nameTaken'); await nextTick(); document.getElementById('project-editor-name')?.focus()}
-    else saveError.value = t(projectErrorMessageKey(e))
+    else {saveError.value = t(projectErrorMessageKey(e)); await nextTick(); saveErrorElement.value?.focus()}
   } finally { if (current()) saving.value = false }
 }
 onMounted(load)

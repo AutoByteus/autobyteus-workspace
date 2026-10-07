@@ -1,0 +1,7 @@
+{
+  "sourceCommit": "9dad89baebe06064f5e1ff211a315266d6b184e6",
+  "baseCommit": "5316a0cad19498819a8a50c594b72c0197d8b6a1",
+  "serverPrebuild": "exit 0",
+  "serverBuild": "exit 0; TypeScript and sanitized bootstrap smoke",
+  "web": "Nuxt dev/component compilation; no production web bundle/typecheck claim"
+}

@@ -49,7 +49,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
     publisher = new ProjectChangePublisher();
     emitted = [];
     liveStatus = "idle";
-    projects = new ProjectService({ store, workspaceLookup: { getRegisteredWorkspaceRootPath: async () => null }, changes: publisher });
+    projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher });
     tasks = await boot();
   });
   afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });

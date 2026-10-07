@@ -67,7 +67,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(Object.keys(schema.properties)).toEqual(["project_id", "name", "description", "workspaces"]);
     expect(schema.required ?? []).toEqual([]);
     expect(schema.properties.workspaces).toMatchObject({type: "array", items: {
-      type: "object", required: ["workspace_id"], properties: {workspace_id: {type: "string"}, description: {type: "string"}},
+      type: "object", required: ["workspace_path"], properties: {workspace_path: {type: "string"}, description: {type: "string"}},
     }});
     expect(schema.properties.workspaces).not.toHaveProperty("default");
     expect(schema.properties.workspaces.items.properties.description).not.toHaveProperty("default");
@@ -99,28 +99,31 @@ describe("Project data tools — actual native preparation/execute and selected 
 
   it("preserves nested omission through public native preparation/coercion and MCP replacement/clear", async () => {
     const store = getProjectStore();
-    const lookup = vi.fn(async (id: string) => id === "ws_a" ? path.join(root, "workspace-a") : id === "ws_b" ? path.join(root, "workspace-b") : null);
-    const service = new ProjectService({store, workspaceLookup: {getRegisteredWorkspaceRootPath: lookup}});
+    const lookup = vi.fn(async () => { throw new Error("Registry must not gate tool writes"); });
+    const wsA = path.join(root, "workspace-a"), wsB = path.join(root, "workspace-b");
+    const service = new ProjectService({store, workspaceLookup: {listRegisteredWorkspaceRootPaths: lookup}});
     vi.spyOn(projectServices, "getProjectService").mockReturnValue(service);
     const tasks = vi.spyOn(store, "listTasks").mockRejectedValue(new Error("Task reads must not gate tool write acknowledgements"));
     const tool = new CreateOrUpdateProjectTool();
     const created = JSON.parse(await tool.execute(null, {name: "Linked", description: "Goal", workspaces: [
-      {workspace_id: " ws_a ", description: " UI "}, {workspace_id: "ws_b", description: "Backend"},
+      {workspace_path: ` ${wsA} `, description: " UI "}, {workspace_path: wsB, description: "Backend"},
     ]}));
-    expect(created.project.workspaces).toEqual([{workspaceId: "ws_a", description: "UI"}, {workspaceId: "ws_b", description: "Backend"}]);
+    expect(created.project.workspaces).toEqual([{workspaceRootPath: wsA, description: "UI"}, {workspaceRootPath: wsB, description: "Backend"}]);
     const saved = await store.readProject(created.project.projectId);
-    const args = {project_id: created.project.projectId, workspaces: [{workspace_id: "ws_a"}]};
+    const args = {project_id: created.project.projectId, workspaces: [{workspace_path: wsA}]};
     const prepared = await tool.prepareExecution(null, args);
     expect(prepared).toBeDefined();
     expect(parseProjectTaskToolInput("create_or_update_project", args)).toEqual(args);
-    expect(JSON.parse(await tool.execute(null, args))).toEqual({project: {...created.project, workspaces: [{workspaceId: "ws_a", description: "UI"}]}});
-    expect((await mcp("create_or_update_project", args)).structuredContent).toEqual({project: {...created.project, workspaces: [{workspaceId: "ws_a", description: "UI"}]}});
+    expect(JSON.parse(await tool.execute(null, args))).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
+    expect((await mcp("create_or_update_project", args)).structuredContent).toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: "UI"}]}});
     expect((await store.readProject(args.project_id))!.workspaces).toEqual([saved!.workspaces[0]]);
-    expect((await mcp("create_or_update_project", {project_id: args.project_id, workspaces: [{workspace_id: "ws_a", description: " "}]})).structuredContent)
-      .toEqual({project: {...created.project, workspaces: [{workspaceId: "ws_a", description: ""}]}});
+    expect((await mcp("create_or_update_project", {project_id: args.project_id, workspaces: [{workspace_path: wsA, description: " "}]})).structuredContent)
+      .toEqual({project: {...created.project, workspaces: [{workspaceRootPath: wsA, description: ""}]}});
     expect(JSON.parse(await tool.execute(null, {project_id: args.project_id, workspaces: []}))).toEqual({project: {...created.project, workspaces: []}});
     expect(tasks).not.toHaveBeenCalled();
-    expect(lookup).toHaveBeenCalledTimes(2); // new links only, no view enrichment
+    expect(lookup).not.toHaveBeenCalled();
+    await expect(fs.access(wsA)).rejects.toThrow();
+    await expect(fs.access(wsB)).rejects.toThrow();
   });
 
   it.each([
@@ -152,15 +155,16 @@ describe("Project data tools — actual native preparation/execute and selected 
     [{name: "x", workspaces: [new Date()]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     [{name: "x", workspaces: [[]]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     [{name: "x", workspaces: Array(1)}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_id: "old_id"}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     [{name: "x", workspaces: [{}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: null}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: ""}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: 123}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: "ws", description: null}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: "ws", description: false}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: "ws", description: 123}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: "ws", extra: true}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
-    [{name: "x", workspaces: [{workspace_id: "ws"}, {workspace_id: " ws "}]}, "WORKSPACE_ALREADY_LINKED"],
+    [{name: "x", workspaces: [{workspace_path: null}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: ""}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: 123}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: "ws", description: null}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: "ws", description: false}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: "ws", description: 123}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: "ws", extra: true}]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    [{name: "x", workspaces: [{workspace_path: "/work/site"}, {workspace_path: "/work/site/../site/"}]}, "WORKSPACE_ALREADY_LINKED"],
   ])("rejects malformed Project input before native coercion with MCP parity: %j", async (args, code) => {
     const before = await getProjectService().listProjectSummaries();
     const native = await new CreateOrUpdateProjectTool().execute(null, args).then(() => null, e => JSON.parse(e.message));
@@ -186,7 +190,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     for (const [args, code] of [
       [{project_id: "missing", name: "Never create"}, "PROJECT_NOT_FOUND"],
       [{name: " tools fixture "}, "PROJECT_NAME_TAKEN"],
-      [{project_id: projectId, name: "No partial rename", workspaces: [{workspace_id: "agent_ws_missing"}]}, "WORKSPACE_NOT_REGISTERED"],
+      [{project_id: projectId, name: "No partial rename", workspaces: [{workspace_path: "agent_ws_missing"}]}, "WORKSPACE_PATH_INVALID"],
     ] as const) {
       const input = {...args};
       const error = await new CreateOrUpdateProjectTool().execute(null, input).catch(e => JSON.parse(e.message));

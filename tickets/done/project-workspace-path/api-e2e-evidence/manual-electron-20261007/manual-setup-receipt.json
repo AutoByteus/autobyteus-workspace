@@ -1,0 +1,26 @@
+{
+  "observedAt": "2026-10-07T18:38:53.203026+00:00",
+  "purpose": "User-requested manual Electron test setup, not user acceptance",
+  "instanceId": "iso-63742-da32",
+  "backendUrl": "http://127.0.0.1:63743",
+  "health": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "packageSource": "https://github.com/AutoByteus/autobyteus-agents",
+  "importSurface": "Isolated packaged Electron Settings > Agent Packages > Import Package",
+  "observedUi": {
+    "successMessage": "Agent package imported.",
+    "displayName": "AutoByteus/autobyteus-agents",
+    "sourceKind": "GitHub",
+    "sharedAgents": 7,
+    "teamLocalAgents": 47,
+    "teams": 14,
+    "applications": 0,
+    "updateStatus": "Up to date."
+  },
+  "leftRunningForUser": true,
+  "keepDataRoot": true,
+  "noModelRunStarted": true,
+  "normalAppUntouched": true
+}

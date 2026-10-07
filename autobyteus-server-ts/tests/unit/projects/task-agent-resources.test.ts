@@ -35,7 +35,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-resources-"));
     layout = new ProjectsLayout(path.join(root, "projects"));
     store = new ProjectStore(layout);
-    projectId = (await new ProjectService({ store, workspaceLookup: { getRegisteredWorkspaceRootPath: async () => null } }).createProject({ name: "P" })).projectId;
+    projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
     tasks = await boot();
   });
