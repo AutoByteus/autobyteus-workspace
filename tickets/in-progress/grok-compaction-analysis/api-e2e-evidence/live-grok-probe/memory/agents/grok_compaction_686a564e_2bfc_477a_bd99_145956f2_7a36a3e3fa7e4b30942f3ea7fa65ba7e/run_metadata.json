@@ -1,0 +1,17 @@
+{
+  "runId": "grok_compaction_686a564e_2bfc_477a_bd99_145956f2_7a36a3e3fa7e4b30942f3ea7fa65ba7e",
+  "agentDefinitionId": "grok-compaction-686a564e-2bfc-477a-bd99-145956f29d28",
+  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-compaction-live-35JoGO/data/workspace",
+  "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/grok-compaction-live-35JoGO/data/memory/agents/grok_compaction_686a564e_2bfc_477a_bd99_145956f2_7a36a3e3fa7e4b30942f3ea7fa65ba7e",
+  "llmModelIdentifier": "grok-4.7",
+  "llmConfig": {
+    "reasoning_effort": "low"
+  },
+  "autoExecuteTools": true,
+  "runtimeKind": "grok_build",
+  "platformAgentRunId": "01a11596-8871-7222-af60-37631229e4be",
+  "preparedAt": "2026-10-07T08:59:07.990Z",
+  "preparedExpiresAt": "2026-10-08T08:59:07.990Z",
+  "startedAt": "2026-10-07T08:59:09.515Z",
+  "applicationExecutionContext": null
+}

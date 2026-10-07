@@ -7,9 +7,9 @@ import { spawnSync } from "node:child_process";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
-import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { appConfigProvider } from "../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../e2e/helpers/studio-runtime-test-server.js";
+import { sendE2eSendMessageCommand } from "../e2e/helpers/websocket-command-helpers.js";
 
 // Live Grok Build compaction through the real Studio server and the host's `grok` CLI (REQ-G1–G3).
 // Grok runs with a temporary GROK_HOME: a symlink to the user's auth.json and a config with
@@ -39,7 +39,7 @@ type MemoryView = { rawTraces: Array<{ traceType: string; toolResult: Record<str
   rawTraceFiles: Array<{ kind: string }> | null };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-describeLive("Grok Build compaction (live E2E, temporary GROK_HOME)", () => {
+describeLive("TEMPORARY API/E2E probe: Grok /compact rotation, history and restore (minimal credits)", () => {
   const previousGrokHome = process.env.GROK_HOME;
   let root = "";
   let app: FastifyInstance | null = null;
@@ -69,7 +69,7 @@ describeLive("Grok Build compaction (live E2E, temporary GROK_HOME)", () => {
     await fs.mkdir(grokHome);
     await fs.symlink(userGrokAuth, path.join(grokHome, "auth.json"));
     await fs.writeFile(path.join(grokHome, "config.toml"),
-      "[cli]\nauto_update = false\n\n[session]\nauto_compact_threshold_percent = 10\n");
+      "[cli]\nauto_update = false\n");
     process.env.GROK_HOME = grokHome; // inherited by every grok process the server starts
     const dataDir = path.join(root, "data");
     await fs.mkdir(path.join(dataDir, "workspace"), { recursive: true });
@@ -103,13 +103,12 @@ describeLive("Grok Build compaction (live E2E, temporary GROK_HOME)", () => {
     if (root) await fs.rm(root, { recursive: true, force: true }); // removes the symlink, never its target
   }, 60_000);
 
-  it("closes an interrupted automatic compaction as failed, then archives automatic and manual compactions", async () => {
+  it("rotates on /compact, reopens at the boundary and records nothing again on restore", async () => {
     const model = process.env.GROK_E2E_MODEL?.trim() || "grok-4.7";
     const created = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId: definitionId, workspaceRootPath: path.join(root, "data", "workspace"),
-        llmModelIdentifier: model, llmConfig: { reasoning_effort: process.env.GROK_E2E_REASONING_EFFORT?.trim() || "low" },
-        autoExecuteTools: true, runtimeKind: "grok_build" } });
+        llmModelIdentifier: model, llmConfig: { reasoning_effort: "low" }, autoExecuteTools: true, runtimeKind: "grok_build" } });
     expect(created.createAgentRun.success, created.createAgentRun.message).toBe(true);
     runId = created.createAgentRun.runId!;
     const messages: WsMessage[] = [];
@@ -120,104 +119,66 @@ describeLive("Grok Build compaction (live E2E, temporary GROK_HOME)", () => {
           const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
           if (typeof parsed.type === "string") messages.push({ type: parsed.type, payload: parsed.payload && typeof parsed.payload === "object"
             && !Array.isArray(parsed.payload) ? parsed.payload as Record<string, unknown> : {} });
-        } catch { /* Ignore malformed diagnostic rows only. */ }
+        } catch { /* ignore */ }
       });
       await new Promise<void>((resolve, reject) => { socket!.once("open", () => resolve()); socket!.once("error", reject); });
     };
     await connect();
     const waitFor = async (from: number, predicate: (m: WsMessage) => boolean, label: string): Promise<WsMessage> => {
       const deadline = Date.now() + STEP_TIMEOUT_MS;
-      while (Date.now() < deadline) {
-        const found = messages.slice(from).find(predicate);
-        if (found) return found;
-        await wait(100);
-      }
-      const compactions = messages.filter((m) => m.type === "COMPACTION_STATUS").map((m) => m.payload);
-      throw new Error(`Timed out waiting for ${label}: ${messages.slice(from).slice(-20).map((m) => m.type).join(",")}; ` +
-        `all compaction events: ${JSON.stringify(compactions)}`);
+      while (Date.now() < deadline) { const found = messages.slice(from).find(predicate); if (found) return found; await wait(100); }
+      throw new Error(`Timed out waiting for ${label}: ${JSON.stringify(messages.filter((m) => m.type === "COMPACTION_STATUS").map((m) => m.payload))}`);
     };
     const turnEnded = (m: WsMessage) => m.type === "TURN_COMPLETED" || m.type === "TURN_INTERRUPTED";
-    const compaction = (status: string) => (m: WsMessage) => m.type === "COMPACTION_STATUS" && m.payload.status === status;
     const send = (content: string) => { sendE2eSendMessageCommand(socket!, { agent_run_id: runId, content }); };
-
-    // 1. Data dump A.
-    let from = messages.length;
-    send(`Data dump A. Do not analyze. Reply with exactly: OK A\n${filler(350)}`);
-    await waitFor(from, turnEnded, "dump turn end");
-    expect(messages.slice(from).some((m) => m.type === "COMPACTION_STATUS")).toBe(false);
-
-    // 2. Data dump B: automatic compaction starts; interrupt it.
-    from = messages.length;
-    send(`Data dump B. Do not analyze. Reply with exactly: OK B\n${filler(350)}`);
-    const started = await waitFor(from, compaction("compacting"), "automatic compaction start");
-    expect(started.payload).toMatchObject({ provider: "grok", runtime_kind: "GROK_BUILD", trigger: "auto", rotation_eligible: false });
-    await wait(3_000);
-    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: `interrupt-${randomUUID()}` } }));
-    const failed = await waitFor(from, compaction("failed"), "failed close");
-    const interrupted = await waitFor(from, turnEnded, "interrupted turn end");
-    expect(messages.slice(from).some(compaction("compacted")), "compaction finished before the interrupt; rerun").toBe(false);
-    expect(failed.payload).toMatchObject({ source_surface: "grok.compaction_abandoned",
-      provider_event_id: started.payload.provider_event_id, rotation_eligible: false });
-    expect(messages.indexOf(failed)).toBeLessThan(messages.indexOf(interrupted));
-
-    // 3. Automatic compaction runs again and completes.
-    from = messages.length;
-    send("Reply with exactly: OK C");
-    const autoStart = await waitFor(from, compaction("compacting"), "second automatic compaction start");
-    const autoDone = await waitFor(from, compaction("compacted"), "automatic compaction completion");
-    await waitFor(from, turnEnded, "third turn end");
-    expect(autoDone.payload).toMatchObject({ provider_event_id: autoStart.payload.provider_event_id, trigger: "auto",
-      rotation_eligible: true, pre_tokens: expect.any(Number), post_tokens: expect.any(Number), duration_ms: expect.any(Number) });
-
-    // 4. Manual /compact (native in Grok; completion only).
-    from = messages.length;
-    send("/compact");
-    const manual = await waitFor(from, compaction("compacted"), "manual compaction completion");
-    await waitFor(from, turnEnded, "manual compaction turn end");
-    expect(messages.slice(from).some(compaction("compacting"))).toBe(false);
-    expect(manual.payload).toMatchObject({ trigger: "manual", rotation_eligible: true, pre_tokens: expect.any(Number) });
-
-    // Memory: two archive segments; the abandoned compaction never rotated.
-    const deadline = Date.now() + 15_000;
-    let view = await memoryView("files");
-    while (Date.now() < deadline && (view.rawTraceFiles ?? []).filter((file) => file.kind === "segment").length < 2) {
-      await wait(250);
-      view = await memoryView("files");
+    const log: Record<string, unknown> = {};
+    try {
+      let from = messages.length;
+      send("Reply with exactly: OK ONE");
+      await waitFor(from, turnEnded, "turn 1");
+      from = messages.length;
+      send("/compact");
+      const manual = await waitFor(from, (m) => m.type === "COMPACTION_STATUS" && m.payload.status === "compacted", "manual completion");
+      await waitFor(from, turnEnded, "compact turn");
+      log.manual = manual.payload;
+      expect(manual.payload).toMatchObject({ provider: "grok", runtime_kind: "GROK_BUILD", trigger: "manual", rotation_eligible: true,
+        source_surface: "grok.auto_compact_completed", pre_tokens: expect.any(Number), post_tokens: expect.any(Number) });
+      expect(messages.slice(from).some((m) => m.type === "COMPACTION_STATUS" && m.payload.status === "compacting")).toBe(false);
+      await wait(1_000);
+      const files = (await memoryView("files")).rawTraceFiles ?? [];
+      const corpus = ((await memoryView("corpus")).rawTraces ?? []).filter((t) => t.traceType === "provider_compaction_boundary").map((t) => t.toolResult ?? {});
+      log.segments = files.filter((f) => f.kind === "segment").length; log.markers = corpus.map((m) => m.status);
+      expect(files.filter((f) => f.kind === "segment")).toHaveLength(1);
+      expect(corpus.map((m) => m.status)).toEqual(["compacted"]);
+      const history = (await graphql<{ getRunProjection: { conversation: unknown[]; activities: Array<Record<string, unknown>> } }>(
+        "query($runId: String!) { getRunProjection(runId: $runId) { conversation activities } }", { runId })).getRunProjection;
+      const rows = history.activities.filter((a) => a.kind === "compaction");
+      log.historyRows = rows.map((a) => a.phase); log.historyHasOne = JSON.stringify(history.conversation).includes("OK ONE");
+      expect(rows.map((a) => a.phase)).toEqual(["completed"]);
+      expect(JSON.stringify(history.conversation)).not.toContain("OK ONE");
+      // Restore: the session/load replay (which contains the completion notification) must record nothing.
+      const seen = new Set(messages.filter((m) => m.type === "COMPACTION_STATUS").map((m) => m.payload.provider_event_id));
+      socket!.close();
+      expect((await graphql<{ terminateAgentRun: { success: boolean } }>(
+        "mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }", { agentRunId: runId })).terminateAgentRun.success).toBe(true);
+      const restored = (await graphql<{ restoreAgentRun: { success: boolean; message: string } }>(
+        "mutation($agentRunId: String!) { restoreAgentRun(agentRunId: $agentRunId) { success message } }", { agentRunId: runId })).restoreAgentRun;
+      expect(restored.success, restored.message).toBe(true);
+      await connect();
+      from = messages.length;
+      send("Reply with exactly: OK TWO");
+      await waitFor(from, turnEnded, "restored turn");
+      const after = messages.slice(from).filter((m) => m.type === "COMPACTION_STATUS");
+      log.afterRestore = after.map((m) => m.payload.status);
+      for (const event of after) expect(seen.has(event.payload.provider_event_id)).toBe(false);
+      await wait(1_000);
+      const segmentsAfter = ((await memoryView("files")).rawTraceFiles ?? []).filter((f) => f.kind === "segment").length;
+      log.segmentsAfterRestore = segmentsAfter;
+      expect(segmentsAfter).toBe(1 + after.filter((m) => m.payload.status === "compacted").length);
+      passed = true;
+    } finally {
+      log.events = messages.filter((m) => m.type === "COMPACTION_STATUS" || turnEnded(m)).map((m) => m.type === "COMPACTION_STATUS" ? m.payload : m.type);
+      if (EVIDENCE_DIR) { await fs.mkdir(EVIDENCE_DIR, { recursive: true }); await fs.writeFile(path.join(EVIDENCE_DIR, "probe-log.json"), JSON.stringify(log, null, 1)); }
     }
-    expect((view.rawTraceFiles ?? []).filter((file) => file.kind === "segment")).toHaveLength(2);
-    const markers = ((await memoryView("corpus")).rawTraces ?? []).filter((trace) => trace.traceType === "provider_compaction_boundary")
-      .map((trace) => trace.toolResult ?? {});
-    expect(markers.map((marker) => marker.status)).toEqual(["compacting", "failed", "compacting", "compacted", "compacted"]);
-
-    // Reopened history (production service via GraphQL): work since the latest (manual) compaction,
-    // one completed compaction row, nothing left "started".
-    const history = (await graphql<{ getRunProjection: { conversation: unknown[]; activities: Array<Record<string, unknown>> } }>(
-      "query($runId: String!) { getRunProjection(runId: $runId) { conversation activities } }", { runId })).getRunProjection;
-    expect(JSON.stringify(history.conversation)).not.toContain("OK A");
-    const historyCompactions = history.activities.filter((activity) => activity.kind === "compaction");
-    expect(historyCompactions.map((activity) => activity.phase)).toEqual(["completed"]);
-    expect(historyCompactions[0]).toMatchObject({ providerEventId: manual.payload.provider_event_id });
-
-    // Terminate and restore: the session/load replay must not record any earlier compaction again.
-    const seenOperationIds = new Set(messages.filter((m) => m.type === "COMPACTION_STATUS").map((m) => m.payload.provider_event_id));
-    socket.close();
-    expect((await graphql<{ terminateAgentRun: { success: boolean } }>(
-      "mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }", { agentRunId: runId }))
-      .terminateAgentRun.success).toBe(true);
-    const restored = (await graphql<{ restoreAgentRun: { success: boolean; message: string } }>(
-      "mutation($agentRunId: String!) { restoreAgentRun(agentRunId: $agentRunId) { success message } }", { agentRunId: runId }))
-      .restoreAgentRun;
-    expect(restored.success, restored.message).toBe(true);
-    await connect();
-    from = messages.length;
-    send("Reply with exactly: OK D");
-    await waitFor(from, turnEnded, "restored turn end");
-    const afterRestore = messages.slice(from).filter((m) => m.type === "COMPACTION_STATUS");
-    for (const event of afterRestore) expect(seenOperationIds.has(event.payload.provider_event_id)).toBe(false);
-    const newCompleted = afterRestore.filter(compaction("compacted")).length;
-    await wait(1_000);
-    expect(((await memoryView("files")).rawTraceFiles ?? []).filter((file) => file.kind === "segment")).toHaveLength(2 + newCompleted);
-    console.info(`Grok restored turn compaction events: ${JSON.stringify(afterRestore.map((m) => m.payload.status))}`);
-    passed = true;
-  }, STEP_TIMEOUT_MS * 6);
+  }, STEP_TIMEOUT_MS * 4);
 });
