@@ -1,0 +1,14 @@
+# Final merge receipt (reconstructed from git)
+target before: c1e4e3df1 (origin/personal, unchanged after verification)
+merge: d873a3b536e5efe78637aafe261a42e61a1e7f61
+parents: c1e4e3df19d796f05633d648a65e4156f0bda1c6 eacdb218d26d1b51226c2c43fbed535a20ef7999
+subject: Merge verified task-card-compact-summary
+author: normy <normy@macbookpro.speedport.ip> Wed Oct 7 15:16:11 2026 +0200
+merge tree: d55991b12e0c519a9134ca34bf10dbf8dd6a888d
+ticket head eacdb218d tree: d55991b12e0c519a9134ca34bf10dbf8dd6a888d
+push: c1e4e3df1..d873a3b53 personal -> personal
+ticket branch commits:
+eacdb218d docs(delivery): sync compact Task card docs and archive task-card-compact-summary
+ad5f30219 test(projects): add PMU-014 card edge cases and record API/E2E artifacts
+7f08c33a8 fix(projects): keep Task cards compact for long descriptions
+05b40f234 docs(ticket): record approved task-card-compact-summary package (SR-002)
