@@ -1,0 +1,69 @@
+{
+  "controls": {
+    "input": {
+      "x": 21,
+      "y": 733,
+      "width": 253.5625,
+      "height": 34,
+      "top": 733,
+      "right": 274.5625,
+      "bottom": 767,
+      "left": 21
+    },
+    "browse": {
+      "x": 282.5625,
+      "y": 733,
+      "width": 86.4375,
+      "height": 34,
+      "top": 733,
+      "right": 369,
+      "bottom": 767,
+      "left": 282.5625
+    },
+    "fontSize": "14px",
+    "lineHeight": "20px",
+    "padding": "6px 12px",
+    "borderRadius": "6px",
+    "color": "rgb(26, 26, 26)",
+    "borderColor": "rgb(204, 204, 204)",
+    "hint": "Choose a folder on this computer, or enter its full path."
+  },
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_5fe58508e416a46798bc879acea9b32b5fd9e792d8148f012243071bddf01353"
+  },
+  "orgRoot": {
+    "kind": "folder",
+    "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dyzCAP/org"
+  },
+  "teamWorkspaces": {
+    "/product": {
+      "kind": "folder",
+      "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dyzCAP/member"
+    }
+  },
+  "registered": [
+    "agent_ws_5fe58508e416a46798bc879acea9b32b5fd9e792d8148f012243071bddf01353",
+    "temp_ws_default"
+  ],
+  "path": "/owned/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/",
+  "focused": "chat-workspace-path",
+  "menu": {
+    "x": 8,
+    "y": 468,
+    "width": 374,
+    "height": 368,
+    "top": 468,
+    "right": 382,
+    "bottom": 836,
+    "left": 8
+  },
+  "width": 390,
+  "height": 844,
+  "overflow": false
+}

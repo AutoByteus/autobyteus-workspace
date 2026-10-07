@@ -1,0 +1,89 @@
+
+> autobyteus@1.4.96-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/chat/__tests__/ChatWorkspaceMenu.spec.ts components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts components/run-settings/__tests__ utils/__tests__/mobileFeatureGates.spec.ts services/chat/__tests__/chatLaunchService.spec.ts services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts stores/__tests__/existingRunConfigStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+
+stderr | utils/__tests__/mobileFeatureGates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunMembersLine.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/existingRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/run-settings/__tests__/OrgLaunchPage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/existingRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunMembersLine.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/mobileFeatureGates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/mobileFeatureGates.spec.ts (4 tests) 3ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts (3 tests) 8ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (9 tests) 21ms
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (24 tests) 190ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (8 tests) 180ms
+ ✓ components/run-settings/__tests__/OrgLaunchPage.spec.ts (3 tests) 58ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts (21 tests) 369ms
+ ✓ components/run-settings/__tests__/RunMembersLine.spec.ts (4 tests) 72ms
+ ✓ components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts (8 tests) 148ms
+
+ Test Files  9 passed (9)
+      Tests  84 passed (84)
+   Start at  20:21:40
+   Duration  10.83s (transform 6.21s, setup 74.52s, collect 8.11s, tests 1.05s, environment 3.89s, prepare 2.37s)

@@ -639,3 +639,31 @@ matters.
 - [Server tests](autobyteus-server-ts/README.md#tests)
 - [Isolated AutoByteus Instances](docs/isolated-app-instances.md)
 - [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md)
+
+### Native workspace folder picker regression
+
+`pnpm -C autobyteus-web test:e2e:workspace-folder-picker --output-dir <fresh-dir>`
+builds and owns an isolated desktop, private backend/data and API-created Agent,
+Team, Org and directory fixtures. Requires installed dependencies and a graphical
+macOS/Linux session. `--skip-build` is only for this worktree's verified current
+packaged artifact. `--ledger-file <initialized absolute path>` records each case.
+
+Add `--native-assisted` to exercise the real OS directory picker. The probe prints
+the owned path to select and pauses (up to five minutes); answer on screen with
+an OS-level computer-use tool or as a human. Bind an auto-launching OS tool only
+while the reported owned PID is alive and the probe is awaiting native input;
+do not reopen the bundle after probe cleanup. It also requests native Cancel and
+Escape. Never substitute a mocked bridge response. Without this option, manual
+caller coverage runs and the native cancellation case is **Not Tested**; the
+probe's pass is not native certification. Keep native-operation observations
+beside `evidence.json` and screenshots.
+
+The probe checks real Agent/Team/Org/member input and explicit apply, known reuse,
+no browse-triggered registration, pending/focus, narrow layout, active/saved
+Org locks, stopped member draft then explicit Save with real API readback,
+and Settings-owned Chinese layout. Org Run creates a no-message run only;
+no model turn, provider secrets or paid inference is requested. It stops its
+exact instance and removes only its own data/fixtures. Device metrics emulate
+renderer widths, not OS window resizing or physical mobile. Error/empty response
+and browser/remote/mobile gating use the colocated native-folder and gate tests;
+this probe does not induce OS permission failures or certify other platforms.

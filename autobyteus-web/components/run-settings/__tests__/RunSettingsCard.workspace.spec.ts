@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import RunSettingsCard from '../RunSettingsCard.vue'
 import RunMemberRow from '../RunMemberRow.vue'
+import ExistingRunSettings from '../ExistingRunSettings.vue'
 import type { RunMemberNode } from '~/utils/runSettings/runMemberTree'
 import type { RunSettingsValues } from '~/types/runSettings/RunSettings'
 
@@ -69,5 +70,37 @@ describe('shared folder choice in settings (AC-002/006)', () => {
     expect(wrapper.find('[data-test="run-setting-locked"]').exists()).toBe(true)
     expect(wrapper.find('[data-test="chat-workspace-trigger"]').exists()).toBe(false)
     expect(showFolderDialog).not.toHaveBeenCalled()
+  })
+})
+
+
+describe('existing-run workspace policy (AC-002/007)', () => {
+  const savedProps = (kind: 'agent' | 'team' | 'org', active = false) => ({
+    kind, name: 'Owned saved run', isActive: active, canEdit: !active,
+    state: 'editable' as const, stop: { label: 'Stop', pending: false, error: null },
+    root: values, members: kind === 'org' ? [node] : [],
+    dirty: false, canSave: false, saving: false, saved: false,
+  })
+
+  it.each(['agent', 'team', 'org'] as const)('never unlocks a saved %s root even when editable', (kind) => {
+    wrapper = mount(ExistingRunSettings, { props: savedProps(kind) })
+    const root = wrapper.get('[data-test="existing-run-root-card"]')
+    expect(root.get('[data-test="run-setting-workspace"]').find('[data-test="run-setting-locked"]').exists()).toBe(true)
+    expect(root.find('[data-test="chat-workspace-trigger"]').exists()).toBe(false)
+    expect(showFolderDialog).not.toHaveBeenCalled()
+  })
+
+  it('keeps active Org members locked; stopped editable members emit only draft intent, never Save', async () => {
+    wrapper = mount(ExistingRunSettings, { props: savedProps('org', true), attachTo: document.body })
+    await wrapper.get('[data-test="run-member-toggle"]').trigger('click')
+    expect(wrapper.find('[data-test="chat-workspace-trigger"]').exists()).toBe(false)
+    expect(showFolderDialog).not.toHaveBeenCalled()
+    await wrapper.setProps({ isActive: false, canEdit: true })
+    await browsePath()
+    expect(wrapper.emitted('change-member')).toBeUndefined()
+    expect(wrapper.emitted('save')).toBeUndefined()
+    await wrapper.get('form').trigger('submit')
+    expect(wrapper.emitted('change-member')).toEqual([['/product', { field: 'workspace', choice: { kind: 'folder', rootPath: '/owned/chosen' } }]])
+    expect(wrapper.emitted('save')).toBeUndefined()
   })
 })

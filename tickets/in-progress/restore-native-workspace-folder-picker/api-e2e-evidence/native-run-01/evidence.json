@@ -1,0 +1,964 @@
+{
+  "startedAt": "2026-10-07T18:02:16.643Z",
+  "nativeAssisted": true,
+  "platform": "darwin-arm64",
+  "cases": {
+    "FP-P01": {
+      "title": "isolated source-current launch and API-owned fixtures",
+      "result": "Pass",
+      "details": {
+        "instance": {
+          "instanceId": "iso-61285-8808",
+          "pid": 22366,
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:61286",
+          "graphqlUrl": "http://127.0.0.1:61286/graphql",
+          "controlEndpoint": "http://127.0.0.1:61285",
+          "controlPort": 61285,
+          "serverPort": 61286,
+          "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WId0Pk",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WId0Pk/server-data/db/production.db",
+          "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61285-8808.log"
+        },
+        "ids": {
+          "agent": "folder-proof-agent",
+          "team": "folder-proof-team",
+          "org": "folder-proof-org",
+          "known": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+        }
+      }
+    },
+    "FP-P02": {
+      "title": "Agent input only, explicit apply and unchanged registration",
+      "result": "Pass",
+      "details": {
+        "before": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "agent",
+            "agentDefinitionId": "folder-proof-agent"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "temp_ws_default"
+          },
+          "registered": [
+            "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+            "temp_ws_default"
+          ],
+          "path": "",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 225.8359375,
+            "width": 384,
+            "height": 320,
+            "top": 225.8359375,
+            "right": 926.5,
+            "bottom": 545.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "filled": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "agent",
+            "agentDefinitionId": "folder-proof-agent"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "temp_ws_default"
+          },
+          "registered": [
+            "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+            "temp_ws_default"
+          ],
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/agent",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 225.8359375,
+            "width": 384,
+            "height": 320,
+            "top": 225.8359375,
+            "right": 926.5,
+            "bottom": 545.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "applied": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "agent",
+            "agentDefinitionId": "folder-proof-agent"
+          },
+          "chatWorkspace": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/agent"
+          },
+          "registered": [
+            "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+            "temp_ws_default"
+          ],
+          "focused": "chat-workspace-trigger",
+          "menu": null,
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        }
+      }
+    },
+    "FP-P03": {
+      "title": "native Cancel and Escape retain typed text/selection/focus",
+      "result": "Pass",
+      "details": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+        "target": {
+          "kind": "agent",
+          "agentDefinitionId": "folder-proof-agent"
+        },
+        "chatWorkspace": {
+          "kind": "folder",
+          "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/agent"
+        },
+        "registered": [
+          "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+          "temp_ws_default"
+        ],
+        "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/typed-unapplied",
+        "focused": "chat-workspace-path",
+        "menu": {
+          "x": 542.5,
+          "y": 177.8359375,
+          "width": 384,
+          "height": 368,
+          "top": 177.8359375,
+          "right": 926.5,
+          "bottom": 545.8359375,
+          "left": 542.5
+        },
+        "width": 1512,
+        "height": 862,
+        "overflow": false
+      }
+    },
+    "FP-P04": {
+      "title": "Team new Chat and known path reuse",
+      "result": "Pass",
+      "details": {
+        "before": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/agent"
+          },
+          "registered": [
+            "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+            "temp_ws_default"
+          ],
+          "path": "",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 164.8359375,
+            "width": 384,
+            "height": 368,
+            "top": 164.8359375,
+            "right": 926.5,
+            "bottom": 532.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "filled": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/agent"
+          },
+          "registered": [
+            "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+            "temp_ws_default"
+          ],
+          "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/known",
+          "focused": "chat-workspace-path",
+          "menu": {
+            "x": 542.5,
+            "y": 164.8359375,
+            "width": 384,
+            "height": 368,
+            "top": 164.8359375,
+            "right": 926.5,
+            "bottom": 532.8359375,
+            "left": 542.5
+          },
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        },
+        "applied": {
+          "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+          "target": {
+            "kind": "team",
+            "teamDefinitionId": "folder-proof-team"
+          },
+          "chatWorkspace": {
+            "kind": "existing",
+            "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+          },
+          "registered": [
+            "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+            "temp_ws_default"
+          ],
+          "focused": "chat-workspace-trigger",
+          "menu": null,
+          "width": 1512,
+          "height": 862,
+          "overflow": false
+        }
+      }
+    },
+    "FP-P05": {
+      "title": "Org root and specific placed-Team destination",
+      "result": "Pass",
+      "details": {
+        "root": {
+          "before": {
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "orgRoot": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+              "temp_ws_default"
+            ],
+            "path": "",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 654.5,
+              "y": 98.8359375,
+              "width": 384,
+              "height": 320,
+              "top": 98.8359375,
+              "right": 1038.5,
+              "bottom": 418.8359375,
+              "left": 654.5
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "filled": {
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "orgRoot": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+              "temp_ws_default"
+            ],
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/org",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 654.5,
+              "y": 98.8359375,
+              "width": 384,
+              "height": 320,
+              "top": 98.8359375,
+              "right": 1038.5,
+              "bottom": 418.8359375,
+              "left": 654.5
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "applied": {
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/org"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+              "temp_ws_default"
+            ],
+            "focused": "chat-workspace-trigger",
+            "menu": null,
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          }
+        },
+        "member": {
+          "before": {
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/org"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+              "temp_ws_default"
+            ],
+            "path": "",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 1120,
+              "y": 179,
+              "width": 384,
+              "height": 368,
+              "top": 179,
+              "right": 1504,
+              "bottom": 547,
+              "left": 1120
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "filled": {
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/org"
+            },
+            "teamWorkspaces": {},
+            "registered": [
+              "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+              "temp_ws_default"
+            ],
+            "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/member",
+            "focused": "chat-workspace-path",
+            "menu": {
+              "x": 1120,
+              "y": 179,
+              "width": 384,
+              "height": 368,
+              "top": 179,
+              "right": 1504,
+              "bottom": 547,
+              "left": 1120
+            },
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          },
+          "applied": {
+            "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+            "target": {
+              "kind": "team",
+              "teamDefinitionId": "folder-proof-team"
+            },
+            "chatWorkspace": {
+              "kind": "existing",
+              "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+            },
+            "orgRoot": {
+              "kind": "folder",
+              "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/org"
+            },
+            "teamWorkspaces": {
+              "/product": {
+                "kind": "folder",
+                "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/member"
+              }
+            },
+            "registered": [
+              "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+              "temp_ws_default"
+            ],
+            "focused": "chat-workspace-trigger",
+            "menu": null,
+            "width": 1512,
+            "height": 862,
+            "overflow": false
+          }
+        }
+      }
+    },
+    "FP-P06": {
+      "title": "full caller narrow form, invalid/manual/Cancel and long path geometry",
+      "result": "Pass",
+      "details": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+        "target": {
+          "kind": "team",
+          "teamDefinitionId": "folder-proof-team"
+        },
+        "chatWorkspace": {
+          "kind": "existing",
+          "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+        },
+        "orgRoot": {
+          "kind": "folder",
+          "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/org"
+        },
+        "teamWorkspaces": {
+          "/product": {
+            "kind": "folder",
+            "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/member"
+          }
+        },
+        "registered": [
+          "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+          "temp_ws_default"
+        ],
+        "path": "/owned/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/long-folder-name/",
+        "focused": "chat-workspace-path",
+        "menu": {
+          "x": 8,
+          "y": 468,
+          "width": 374,
+          "height": 368,
+          "top": 468,
+          "right": 382,
+          "bottom": 836,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "overflow": false
+      }
+    }
+  },
+  "requests": [
+    {
+      "operationName": "GetSkills",
+      "variables": {},
+      "query": "query GetSkills {\n  skills {\n    name\n    description\n    content\n    rootPath\n    fileCount\n    isReadonly\n    isDisabled\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {},
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {},
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {},
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {},
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {},
+      "query": "query GetApplicationsCapability {\n  applicationsCapability {\n    ...ApplicationsCapabilityFields\n    __typename\n  }\n}\n\nfragment ApplicationsCapabilityFields on ApplicationsCapability {\n  enabled\n  scope\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetProjectsCapability",
+      "variables": {},
+      "query": "query GetProjectsCapability {\n  projectsCapability {\n    ...ProjectsCapabilityFields\n    __typename\n  }\n}\n\nfragment ProjectsCapabilityFields on ProjectsCapability {\n  enabled\n  settingKey\n  source\n  __typename\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailabilityKinds",
+      "variables": {},
+      "query": "query GetRuntimeAvailabilityKinds {\n  runtimeAvailabilityKinds\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "antigravity_cli"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetRuntimeAvailability",
+      "variables": {
+        "runtimeKind": "grok_build"
+      },
+      "query": "query GetRuntimeAvailability($runtimeKind: String!) {\n  runtimeAvailability(runtimeKind: $runtimeKind) {\n    runtimeKind\n    enabled\n    reason\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      },
+      "query": "query GetProviderModelCatalogSnapshots($runtimeKind: String) {\n  providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {\n    ...ProviderModelCatalogSnapshotFields\n    __typename\n  }\n}\n\nfragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {\n  runtimeKind\n  ownerProvider {\n    id\n    name\n    providerType\n    isCustom\n    baseUrl\n    catalogMode\n    __typename\n  }\n  sources {\n    modelKind\n    state\n    modelCount\n    successfulUnitCount\n    failedUnitCount\n    safeMessage\n    __typename\n  }\n  llmModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    configSchema\n    maxContextTokens\n    activeContextTokens\n    maxInputTokens\n    maxOutputTokens\n    metadataProvenance\n    selectionPresentation {\n      recommended\n      __typename\n    }\n    __typename\n  }\n  audioModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  imageModels {\n    modelIdentifier\n    name\n    description\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  videoModels {\n    modelIdentifier\n    name\n    value\n    canonicalName\n    providerId\n    providerName\n    providerType\n    runtime\n    hostUrl\n    __typename\n  }\n  __typename\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {},
+      "query": "query GetServerSettings {\n  getServerSettings {\n    __typename\n    key\n    value\n    description\n    isEditable\n    isDeletable\n  }\n  getEffectiveStreamingContentFlushIntervalMs\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      },
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {},
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "instance": {
+      "instanceId": "iso-61285-8808",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WId0Pk",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    },
+    "fixtureRemoved": true
+  },
+  "fixture": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS",
+  "instance": {
+    "instanceId": "iso-61285-8808",
+    "pid": 22366,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:61286",
+    "graphqlUrl": "http://127.0.0.1:61286/graphql",
+    "controlEndpoint": "http://127.0.0.1:61285",
+    "controlPort": 61285,
+    "serverPort": 61286,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WId0Pk",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WId0Pk/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61285-8808.log"
+  },
+  "asarSha256": "89988272f75a937f841cf6d4e1b6a388493ceb87cdb8fdb7af3b7bde647f234d",
+  "ids": {
+    "agent": "folder-proof-agent",
+    "team": "folder-proof-team",
+    "org": "folder-proof-org",
+    "known": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb"
+  },
+  "baseline": [
+    {
+      "workspaceId": "agent_ws_2acfbb8138f384697dc9984d540e3e5a67472adf99687494d854f5cbf53807fb",
+      "absolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-zrjQJS/known"
+    },
+    {
+      "workspaceId": "temp_ws_default",
+      "absolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WId0Pk/server-data/temp_workspace"
+    }
+  ],
+  "engine": "148.0.7778.265",
+  "result": "Pass",
+  "finishedAt": "2026-10-07T18:04:39.210Z"
+}

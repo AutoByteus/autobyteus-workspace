@@ -1,0 +1,54 @@
+Wed Oct  7 18:21:14 UTC 2026
+
+> autobyteus@1.4.96-beta.2 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.96-beta.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": [
+      {
+        "instanceId": "iso-52489-3b32",
+        "pid": 4604,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/chat-drafts-manual-test/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:52490",
+        "graphqlUrl": "http://127.0.0.1:52490/graphql",
+        "controlEndpoint": "http://127.0.0.1:52489",
+        "controlPort": 52489,
+        "serverPort": 52490,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-yBbIuP",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-yBbIuP/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52489-3b32.log",
+        "startedAt": "2026-10-07T10:46:36.490Z",
+        "running": false
+      },
+      {
+        "instanceId": "iso-51484-9c5a",
+        "pid": 75482,
+        "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/projects-always-on/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:51485",
+        "graphqlUrl": "http://127.0.0.1:51485/graphql",
+        "controlEndpoint": "http://127.0.0.1:51484",
+        "controlPort": 51484,
+        "serverPort": 51485,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-O1sraA",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-O1sraA/server-data/db/production.db",
+        "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-51484-9c5a.log",
+        "startedAt": "2026-10-07T15:10:38.401Z",
+        "running": false
+      }
+    ]
+  }
+}

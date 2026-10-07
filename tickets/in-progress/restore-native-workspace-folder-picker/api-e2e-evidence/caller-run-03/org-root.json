@@ -1,0 +1,35 @@
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&mode=configuration",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_8c59ef62b84ef97b72adfbad48ccdb9ccf45b862556db044567733d09aad46c6"
+  },
+  "orgRoot": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_8c59ef62b84ef97b72adfbad48ccdb9ccf45b862556db044567733d09aad46c6"
+  },
+  "teamWorkspaces": {},
+  "registered": [
+    "agent_ws_8c59ef62b84ef97b72adfbad48ccdb9ccf45b862556db044567733d09aad46c6",
+    "temp_ws_default"
+  ],
+  "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-QZtxHb/org",
+  "focused": "chat-workspace-path",
+  "menu": {
+    "x": 654.5,
+    "y": 98.8359375,
+    "width": 384,
+    "height": 320,
+    "top": 98.8359375,
+    "right": 1038.5,
+    "bottom": 418.8359375,
+    "left": 654.5
+  },
+  "width": 1512,
+  "height": 862,
+  "overflow": false
+}

@@ -1,0 +1,28 @@
+Folder Proof Team
+Context Files (0)
+（拖动、粘贴或上传）
+known
+临时工作区
+默认
+用于快速对话的临时文件夹
+你的工作区
+known
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-B4BHCR/known
+member
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-B4BHCR/member
+org
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-B4BHCR/org
+文件夹路径
+浏览…
+
+选择此电脑上的文件夹，或输入完整路径。
+
+取消
+使用文件夹
+自动批准
+claude-fable-5
+关
+
+全部 1 名成员使用这些设置
+·
+自定义成员

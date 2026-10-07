@@ -1,0 +1,30 @@
+Folder Proof Org
+Workspace
+org
+Temp workspace
+DEFAULT
+Scratch folder for quick chats
+YOUR WORKSPACES
+known
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dyzCAP/known
+org
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dyzCAP/org
+Folder path
+Browse…
+
+Choose a folder on this computer, or enter its full path.
+
+Cancel
+Use folder
+Model
+claude-fable-5
+Thinking
+Off
+Tool approval
+Auto-approve
+
+1 of 2 customized
+·
+Edit
+·
+Reset

@@ -1,0 +1,30 @@
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "target": {
+    "kind": "agent",
+    "agentDefinitionId": "folder-proof-agent"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "temp_ws_default"
+  },
+  "registered": [
+    "agent_ws_587640bb9fca65f5541dcfb1f994dac7455245d0c33f58a146d906ed9b0ad176",
+    "temp_ws_default"
+  ],
+  "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-6o9Q3b/agent",
+  "focused": "chat-workspace-path",
+  "menu": {
+    "x": 542.5,
+    "y": 225.8359375,
+    "width": 384,
+    "height": 320,
+    "top": 225.8359375,
+    "right": 926.5,
+    "bottom": 545.8359375,
+    "left": 542.5
+  },
+  "width": 1512,
+  "height": 862,
+  "overflow": false
+}

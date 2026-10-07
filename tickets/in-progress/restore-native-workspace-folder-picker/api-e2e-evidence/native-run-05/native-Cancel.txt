@@ -1,0 +1,34 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+known
+Temp Workspace
+Settings
+Folder Proof Agent
+Context Files (0)
+(drag, paste, or upload)
+agent
+Temp workspace
+DEFAULT
+Scratch folder for quick chats
+YOUR WORKSPACES
+known
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dyzCAP/known
+agent
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-dyzCAP/agent
+Folder path
+Browse…
+
+Choose a folder on this computer, or enter its full path.
+
+Cancel
+Use folder
+Auto-approve
+claude-fable-5
+AutoByteus
+Off
