@@ -2,7 +2,7 @@
 
 Package restore-native-workspace-folder-picker. R3 Approved UREQ-001; Product UCONF-001; SR-007; IR-001; API-REV-001; DR-001 → DR-002; UV-001. **Small / Low, direct validated route**. Independent architecture/source/test-code review reports and revisions **N/A — not applicable**. Prior delivery result **N/A**; DR-001 is the first baseline, not an inferred prior completion.
 
-Paths below are final target archive locations, materialized when this ticket is merged into personal; verify them before cleanup/terminal handoff. Historical upstream absolute paths remain provenance, not a second current authority. Product stays in its own canonical repository.
+All paths below are verified durable final target archive locations; the ticket is merged/pushed into personal and its worktree is removed. Historical upstream absolute paths remain provenance, not a second current authority. Product stays in its own canonical repository.
 
 ## Current Cumulative Requirements / Design / Implementation / Validation / Supplements
 All following paths were checked to exist during DR-001:
@@ -84,3 +84,5 @@ All following paths were checked to exist during DR-001:
 ## Current Finalization / Relocation
 All historical software paths rooted in the removed task worktree or tickets/in-progress map to this same repository-relative file under the durable main checkout/tickets/done archive. Upstream artifacts/evidence retain their historical execution paths; this manifest is the current path authority. External Product ownership/paths are unchanged.
 - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002`
+
+Final repository/cleanup receipts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/repository-finalization.json` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/cleanup.json`.

@@ -1,0 +1,610 @@
+Merge made by the 'ort' strategy.
+ TESTING.md                                         |   28 +
+ .../components/chat/ChatWorkspaceMenu.vue          |   98 +-
+ .../ChatWorkspaceMenu.nativeFolder.spec.ts         |  248 +++
+ .../__tests__/RunSettingsCard.workspace.spec.ts    |  106 +
+ .../docs/agent_execution_architecture.md           |   37 +-
+ autobyteus-web/docs/settings.md                    |   20 +
+ autobyteus-web/electron/__tests__/preload.spec.ts  |   22 +
+ autobyteus-web/localization/messages/en/chat.ts    |    5 +
+ autobyteus-web/localization/messages/zh-CN/chat.ts |    5 +
+ autobyteus-web/package.json                        |    3 +-
+ .../tests/e2e/workspace-folder-picker-probe.mjs    |  234 +++
+ .../api-e2e-coverage-investigation.md              |  107 +
+ .../api-e2e-evidence/build-instance-stop.json      |   15 +
+ .../api-e2e-evidence/build.log                     |  648 ++++++
+ .../api-e2e-evidence/caller-run-02.log             |   18 +
+ .../caller-run-02/agent-selected.json              |   30 +
+ .../caller-run-02/agent-selected.png               |  Bin 0 -> 153870 bytes
+ .../api-e2e-evidence/caller-run-02/evidence.json   | 1026 +++++++++
+ .../caller-run-02/failed-FP-P07.json               |   22 +
+ .../caller-run-02/failed-FP-P07.png                |  Bin 0 -> 158202 bytes
+ .../api-e2e-evidence/caller-run-02/org-member.json |   35 +
+ .../api-e2e-evidence/caller-run-02/org-member.png  |  Bin 0 -> 225880 bytes
+ .../caller-run-02/org-narrow-long.json             |   40 +
+ .../caller-run-02/org-narrow-long.png              |  Bin 0 -> 93790 bytes
+ .../api-e2e-evidence/caller-run-02/org-root.json   |   35 +
+ .../api-e2e-evidence/caller-run-02/org-root.png    |  Bin 0 -> 165662 bytes
+ .../api-e2e-evidence/caller-run-02/start.json      |   20 +
+ .../api-e2e-evidence/caller-run-02/start.log       |    1 +
+ .../api-e2e-evidence/caller-run-02/stop.json       |   15 +
+ .../api-e2e-evidence/caller-run-02/stop.log        |    1 +
+ .../api-e2e-evidence/caller-run-02/team-known.json |   30 +
+ .../api-e2e-evidence/caller-run-02/team-known.png  |  Bin 0 -> 171290 bytes
+ .../api-e2e-evidence/caller-run-03.log             |   18 +
+ .../caller-run-03/agent-selected.json              |   30 +
+ .../caller-run-03/agent-selected.png               |  Bin 0 -> 152968 bytes
+ .../api-e2e-evidence/caller-run-03/evidence.json   | 1023 +++++++++
+ .../caller-run-03/failed-FP-P07.json               |   22 +
+ .../caller-run-03/failed-FP-P07.png                |  Bin 0 -> 182923 bytes
+ .../api-e2e-evidence/caller-run-03/org-member.json |   35 +
+ .../api-e2e-evidence/caller-run-03/org-member.png  |  Bin 0 -> 224655 bytes
+ .../caller-run-03/org-narrow-long.json             |   40 +
+ .../caller-run-03/org-narrow-long.png              |  Bin 0 -> 93752 bytes
+ .../api-e2e-evidence/caller-run-03/org-root.json   |   35 +
+ .../api-e2e-evidence/caller-run-03/org-root.png    |  Bin 0 -> 164992 bytes
+ .../caller-run-03/saved-active-locked.json         |   22 +
+ .../caller-run-03/saved-active-locked.png          |  Bin 0 -> 224766 bytes
+ .../api-e2e-evidence/caller-run-03/start.json      |   20 +
+ .../api-e2e-evidence/caller-run-03/start.log       |    1 +
+ .../api-e2e-evidence/caller-run-03/stop.json       |   15 +
+ .../api-e2e-evidence/caller-run-03/stop.log        |    1 +
+ .../api-e2e-evidence/caller-run-03/team-known.json |   30 +
+ .../api-e2e-evidence/caller-run-03/team-known.png  |  Bin 0 -> 170444 bytes
+ .../api-e2e-evidence/caller-run-04.log             |   19 +
+ .../caller-run-04/agent-selected.json              |   30 +
+ .../caller-run-04/agent-selected.png               |  Bin 0 -> 153338 bytes
+ .../caller-run-04/agent-selected.txt               |   31 +
+ .../caller-run-04/chat-zh-1512.json                |   32 +
+ .../caller-run-04/chat-zh-1512.png                 |  Bin 0 -> 179795 bytes
+ .../caller-run-04/chat-zh-1512.txt                 |   42 +
+ .../caller-run-04/chat-zh-390.json                 |   32 +
+ .../api-e2e-evidence/caller-run-04/chat-zh-390.png |  Bin 0 -> 101166 bytes
+ .../api-e2e-evidence/caller-run-04/chat-zh-390.txt |   28 +
+ .../api-e2e-evidence/caller-run-04/evidence.json   | 1322 ++++++++++++
+ .../caller-run-04/isolated-app.log                 |  309 +++
+ .../api-e2e-evidence/caller-run-04/org-member.json |   35 +
+ .../api-e2e-evidence/caller-run-04/org-member.png  |  Bin 0 -> 224666 bytes
+ .../api-e2e-evidence/caller-run-04/org-member.txt  |   66 +
+ .../caller-run-04/org-narrow-long.json             |   40 +
+ .../caller-run-04/org-narrow-long.png              |  Bin 0 -> 93752 bytes
+ .../caller-run-04/org-narrow-long.txt              |   30 +
+ .../api-e2e-evidence/caller-run-04/org-root.json   |   35 +
+ .../api-e2e-evidence/caller-run-04/org-root.png    |  Bin 0 -> 165245 bytes
+ .../api-e2e-evidence/caller-run-04/org-root.txt    |   38 +
+ .../caller-run-04/saved-active-locked.json         |   22 +
+ .../caller-run-04/saved-active-locked.png          |  Bin 0 -> 224867 bytes
+ .../caller-run-04/saved-active-locked.txt          |   71 +
+ .../caller-run-04/saved-member-committed.json      |   22 +
+ .../caller-run-04/saved-member-committed.png       |  Bin 0 -> 235060 bytes
+ .../caller-run-04/saved-member-committed.txt       |   74 +
+ .../caller-run-04/saved-member-draft.json          |   32 +
+ .../caller-run-04/saved-member-draft.png           |  Bin 0 -> 290882 bytes
+ .../caller-run-04/saved-member-draft.txt           |   88 +
+ .../api-e2e-evidence/caller-run-04/start.json      |   20 +
+ .../api-e2e-evidence/caller-run-04/start.log       |    1 +
+ .../api-e2e-evidence/caller-run-04/stop.json       |   15 +
+ .../api-e2e-evidence/caller-run-04/stop.log        |    1 +
+ .../api-e2e-evidence/caller-run-04/team-known.json |   30 +
+ .../api-e2e-evidence/caller-run-04/team-known.png  |  Bin 0 -> 170260 bytes
+ .../api-e2e-evidence/caller-run-04/team-known.txt  |   37 +
+ .../api-e2e-evidence/caller-tests.log              |   73 +
+ .../api-e2e-evidence/final-checks.log              |   54 +
+ .../api-e2e-evidence/menu-tests.log                |   33 +
+ .../api-e2e-evidence/native-observations.md        |   11 +
+ .../api-e2e-evidence/native-run-01.log             |   23 +
+ .../native-run-01/agent-selected.json              |   30 +
+ .../native-run-01/agent-selected.png               |  Bin 0 -> 152635 bytes
+ .../api-e2e-evidence/native-run-01/evidence.json   |  964 +++++++++
+ .../native-run-01/native-Cancel.json               |   30 +
+ .../native-run-01/native-Cancel.png                |  Bin 0 -> 162782 bytes
+ .../native-run-01/native-Escape.json               |   30 +
+ .../native-run-01/native-Escape.png                |  Bin 0 -> 162782 bytes
+ .../api-e2e-evidence/native-run-01/org-member.json |   35 +
+ .../api-e2e-evidence/native-run-01/org-member.png  |  Bin 0 -> 225073 bytes
+ .../native-run-01/org-narrow-long.json             |   40 +
+ .../native-run-01/org-narrow-long.png              |  Bin 0 -> 93753 bytes
+ .../api-e2e-evidence/native-run-01/org-root.json   |   35 +
+ .../api-e2e-evidence/native-run-01/org-root.png    |  Bin 0 -> 165407 bytes
+ .../api-e2e-evidence/native-run-01/start.json      |   20 +
+ .../api-e2e-evidence/native-run-01/start.log       |    1 +
+ .../api-e2e-evidence/native-run-01/stop.json       |   15 +
+ .../api-e2e-evidence/native-run-01/stop.log        |    1 +
+ .../api-e2e-evidence/native-run-01/team-known.json |   30 +
+ .../api-e2e-evidence/native-run-01/team-known.png  |  Bin 0 -> 170483 bytes
+ .../api-e2e-evidence/native-run-05.log             |   28 +
+ .../native-run-05/agent-selected.json              |   59 +
+ .../native-run-05/agent-selected.png               |  Bin 0 -> 152791 bytes
+ .../native-run-05/agent-selected.txt               |   32 +
+ .../native-run-05/chat-zh-1512.json                |   61 +
+ .../native-run-05/chat-zh-1512.png                 |  Bin 0 -> 179790 bytes
+ .../native-run-05/chat-zh-1512.txt                 |   42 +
+ .../native-run-05/chat-zh-390.json                 |   61 +
+ .../api-e2e-evidence/native-run-05/chat-zh-390.png |  Bin 0 -> 101174 bytes
+ .../api-e2e-evidence/native-run-05/chat-zh-390.txt |   28 +
+ .../api-e2e-evidence/native-run-05/evidence.json   | 2211 ++++++++++++++++++++
+ .../native-run-05/isolated-app.log                 |  374 ++++
+ .../native-run-05/native-Cancel.json               |   59 +
+ .../native-run-05/native-Cancel.png                |  Bin 0 -> 162782 bytes
+ .../native-run-05/native-Cancel.txt                |   34 +
+ .../native-run-05/native-Escape.json               |   59 +
+ .../native-run-05/native-Escape.png                |  Bin 0 -> 162782 bytes
+ .../native-run-05/native-Escape.txt                |   34 +
+ .../api-e2e-evidence/native-run-05/org-member.json |   64 +
+ .../api-e2e-evidence/native-run-05/org-member.png  |  Bin 0 -> 225314 bytes
+ .../api-e2e-evidence/native-run-05/org-member.txt  |   66 +
+ .../native-run-05/org-narrow-long.json             |   69 +
+ .../native-run-05/org-narrow-long.png              |  Bin 0 -> 93769 bytes
+ .../native-run-05/org-narrow-long.txt              |   30 +
+ .../api-e2e-evidence/native-run-05/org-root.json   |   64 +
+ .../api-e2e-evidence/native-run-05/org-root.png    |  Bin 0 -> 165517 bytes
+ .../api-e2e-evidence/native-run-05/org-root.txt    |   38 +
+ .../native-run-05/saved-active-locked.json         |   23 +
+ .../native-run-05/saved-active-locked.png          |  Bin 0 -> 224663 bytes
+ .../native-run-05/saved-active-locked.txt          |   71 +
+ .../native-run-05/saved-member-committed.json      |   23 +
+ .../native-run-05/saved-member-committed.png       |  Bin 0 -> 235061 bytes
+ .../native-run-05/saved-member-committed.txt       |   74 +
+ .../native-run-05/saved-member-draft.json          |   61 +
+ .../native-run-05/saved-member-draft.png           |  Bin 0 -> 291069 bytes
+ .../native-run-05/saved-member-draft.txt           |   88 +
+ .../api-e2e-evidence/native-run-05/start.json      |   20 +
+ .../api-e2e-evidence/native-run-05/start.log       |    1 +
+ .../api-e2e-evidence/native-run-05/stop.json       |   15 +
+ .../api-e2e-evidence/native-run-05/stop.log        |    1 +
+ .../api-e2e-evidence/native-run-05/team-known.json |   59 +
+ .../api-e2e-evidence/native-run-05/team-known.png  |  Bin 0 -> 170552 bytes
+ .../api-e2e-evidence/native-run-05/team-known.txt  |   38 +
+ .../api-e2e-evidence/preload-final.log             |   13 +
+ .../api-e2e-evidence/preload-tests.log             |   13 +
+ .../api-e2e-evidence/repository-final.log          |   89 +
+ .../api-e2e-evidence/saved-locks-tests.log         |   25 +
+ .../api-e2e-evidence/start.json                    |   20 +
+ .../api-e2e-execution-coverage-report.md           |  142 ++
+ .../api-e2e-revision-record.md                     |   25 +
+ .../api-e2e-test-case-ledger.md                    |  212 ++
+ .../cumulative-package-manifest.md                 |   86 +
+ .../delivery-evidence/dr-001/checks.log            |   15 +
+ .../dr-001/integrated-caller-01.log                |   19 +
+ .../integrated-caller-01/agent-selected.json       |   59 +
+ .../dr-001/integrated-caller-01/agent-selected.png |  Bin 0 -> 155738 bytes
+ .../dr-001/integrated-caller-01/agent-selected.txt |   32 +
+ .../dr-001/integrated-caller-01/chat-zh-1512.json  |   61 +
+ .../dr-001/integrated-caller-01/chat-zh-1512.png   |  Bin 0 -> 181475 bytes
+ .../dr-001/integrated-caller-01/chat-zh-1512.txt   |   43 +
+ .../dr-001/integrated-caller-01/chat-zh-390.json   |   61 +
+ .../dr-001/integrated-caller-01/chat-zh-390.png    |  Bin 0 -> 101454 bytes
+ .../dr-001/integrated-caller-01/chat-zh-390.txt    |   28 +
+ .../dr-001/integrated-caller-01/evidence.json      | 1709 +++++++++++++++
+ .../dr-001/integrated-caller-01/isolated-app.log   |  308 +++
+ .../dr-001/integrated-caller-01/org-member.json    |   64 +
+ .../dr-001/integrated-caller-01/org-member.png     |  Bin 0 -> 227857 bytes
+ .../dr-001/integrated-caller-01/org-member.txt     |   67 +
+ .../integrated-caller-01/org-narrow-long.json      |   69 +
+ .../integrated-caller-01/org-narrow-long.png       |  Bin 0 -> 94051 bytes
+ .../integrated-caller-01/org-narrow-long.txt       |   30 +
+ .../dr-001/integrated-caller-01/org-root.json      |   64 +
+ .../dr-001/integrated-caller-01/org-root.png       |  Bin 0 -> 167877 bytes
+ .../dr-001/integrated-caller-01/org-root.txt       |   39 +
+ .../integrated-caller-01/saved-active-locked.json  |   23 +
+ .../integrated-caller-01/saved-active-locked.png   |  Bin 0 -> 227573 bytes
+ .../integrated-caller-01/saved-active-locked.txt   |   73 +
+ .../saved-member-committed.json                    |   23 +
+ .../saved-member-committed.png                     |  Bin 0 -> 237854 bytes
+ .../saved-member-committed.txt                     |   76 +
+ .../integrated-caller-01/saved-member-draft.json   |   61 +
+ .../integrated-caller-01/saved-member-draft.png    |  Bin 0 -> 294013 bytes
+ .../integrated-caller-01/saved-member-draft.txt    |   90 +
+ .../dr-001/integrated-caller-01/start.json         |   20 +
+ .../dr-001/integrated-caller-01/start.log          |  784 +++++++
+ .../dr-001/integrated-caller-01/stop.json          |   15 +
+ .../dr-001/integrated-caller-01/stop.log           |    1 +
+ .../dr-001/integrated-caller-01/team-known.json    |   59 +
+ .../dr-001/integrated-caller-01/team-known.png     |  Bin 0 -> 173897 bytes
+ .../dr-001/integrated-caller-01/team-known.txt     |   38 +
+ .../delivery-evidence/dr-001/integration.json      |   50 +
+ .../dr-001/post-probe-instances.json               |   60 +
+ .../delivery-evidence/dr-001/preload.log           |   13 +
+ .../delivery-evidence/dr-001/repository.log        |   89 +
+ .../delivery-evidence/dr-001/user-fixtures.json    |   12 +
+ .../dr-001/user-instance-start.json                |   20 +
+ .../dr-001/user-instance-start.log                 |    1 +
+ .../dr-001/verification-hold-instances.json        |   77 +
+ .../delivery-evidence/dr-002/checks.log            |   10 +
+ .../delivery-evidence/dr-002/final-instances.json  |   43 +
+ .../delivery-evidence/dr-002/fixture-cleanup.json  |    5 +
+ .../dr-002/integrated-caller-02.log                |   19 +
+ .../integrated-caller-02/agent-selected.json       |   59 +
+ .../dr-002/integrated-caller-02/agent-selected.png |  Bin 0 -> 156079 bytes
+ .../dr-002/integrated-caller-02/agent-selected.txt |   32 +
+ .../dr-002/integrated-caller-02/chat-zh-1512.json  |   61 +
+ .../dr-002/integrated-caller-02/chat-zh-1512.png   |  Bin 0 -> 181473 bytes
+ .../dr-002/integrated-caller-02/chat-zh-1512.txt   |   43 +
+ .../dr-002/integrated-caller-02/chat-zh-390.json   |   61 +
+ .../dr-002/integrated-caller-02/chat-zh-390.png    |  Bin 0 -> 101461 bytes
+ .../dr-002/integrated-caller-02/chat-zh-390.txt    |   28 +
+ .../dr-002/integrated-caller-02/evidence.json      | 1709 +++++++++++++++
+ .../dr-002/integrated-caller-02/isolated-app.log   |  308 +++
+ .../dr-002/integrated-caller-02/org-member.json    |   64 +
+ .../dr-002/integrated-caller-02/org-member.png     |  Bin 0 -> 228568 bytes
+ .../dr-002/integrated-caller-02/org-member.txt     |   67 +
+ .../integrated-caller-02/org-narrow-long.json      |   69 +
+ .../integrated-caller-02/org-narrow-long.png       |  Bin 0 -> 94024 bytes
+ .../integrated-caller-02/org-narrow-long.txt       |   30 +
+ .../dr-002/integrated-caller-02/org-root.json      |   64 +
+ .../dr-002/integrated-caller-02/org-root.png       |  Bin 0 -> 168290 bytes
+ .../dr-002/integrated-caller-02/org-root.txt       |   39 +
+ .../integrated-caller-02/saved-active-locked.json  |   23 +
+ .../integrated-caller-02/saved-active-locked.png   |  Bin 0 -> 227780 bytes
+ .../integrated-caller-02/saved-active-locked.txt   |   73 +
+ .../saved-member-committed.json                    |   23 +
+ .../saved-member-committed.png                     |  Bin 0 -> 237854 bytes
+ .../saved-member-committed.txt                     |   76 +
+ .../integrated-caller-02/saved-member-draft.json   |   61 +
+ .../integrated-caller-02/saved-member-draft.png    |  Bin 0 -> 294458 bytes
+ .../integrated-caller-02/saved-member-draft.txt    |   90 +
+ .../dr-002/integrated-caller-02/start.json         |   20 +
+ .../dr-002/integrated-caller-02/start.log          |  773 +++++++
+ .../dr-002/integrated-caller-02/stop.json          |   15 +
+ .../dr-002/integrated-caller-02/stop.log           |    1 +
+ .../dr-002/integrated-caller-02/team-known.json    |   59 +
+ .../dr-002/integrated-caller-02/team-known.png     |  Bin 0 -> 174574 bytes
+ .../dr-002/integrated-caller-02/team-known.txt     |   38 +
+ .../delivery-evidence/dr-002/pre-final-fetch.log   |    2 +
+ .../delivery-evidence/dr-002/preload.log           |   13 +
+ .../delivery-evidence/dr-002/reintegration.json    |   43 +
+ .../delivery-evidence/dr-002/reintegration.log     |  506 +++++
+ .../delivery-evidence/dr-002/repository.log        |   89 +
+ .../dr-002/target-preservation-before.json         |   15 +
+ .../dr-002/user-instance-stop.json                 |   15 +
+ .../dr-002/user-instance-stop.log                  |    1 +
+ .../delivery-revision-record.md                    |   25 +
+ .../design-spec.md                                 |  214 ++
+ .../docs-sync-report.md                            |   50 +
+ .../handoff-summary.md                             |   37 +
+ ...equirements-r2-before-product-reconciliation.md |  125 ++
+ .../history/requirements-r3-as-presented.md        |  128 ++
+ .../implementation-evidence/computed-colors.json   |    5 +
+ .../implementation-evidence/contracts-build.log    |    5 +
+ .../implementation-evidence/frontend-build-02.log  |  255 +++
+ .../implementation-evidence/frontend-build.log     |   26 +
+ .../implementation-evidence/install.log            |   28 +
+ .../localization-guard-02.log                      |    5 +
+ .../implementation-evidence/localization-guard.log |    7 +
+ .../implementation-evidence/menu-tests-01.log      |   42 +
+ .../implementation-evidence/nuxt-prepare.log       |    4 +
+ .../implementation-evidence/preload-tests.log      |   14 +
+ .../implementation-evidence/preview-cleanup.json   |   14 +
+ .../implementation-evidence/preview-port.txt       |    1 +
+ .../implementation-evidence/preview-server.log     |   19 +
+ .../render-01-pending-desktop.png                  |  Bin 0 -> 39864 bytes
+ .../render-02-selected-desktop.png                 |  Bin 0 -> 40221 bytes
+ .../render-03-error-desktop.png                    |  Bin 0 -> 41854 bytes
+ .../render-04-invalid-desktop.png                  |  Bin 0 -> 41982 bytes
+ .../render-05-remote-desktop.png                   |  Bin 0 -> 38523 bytes
+ .../render-06-local-narrow.png                     |  Bin 0 -> 35113 bytes
+ .../render-07-browser-narrow.png                   |  Bin 0 -> 32638 bytes
+ .../render-08-zh-error-narrow.png                  |  Bin 0 -> 35694 bytes
+ .../render-09-zh-desktop.png                       |  Bin 0 -> 40126 bytes
+ .../implementation-evidence/render-check.json      |  293 +++
+ .../implementation-evidence/render-check.log       |    1 +
+ .../implementation-evidence/render-check.mjs       |  106 +
+ .../implementation-evidence/render-preview.vue     |   39 +
+ .../renderer-tests-final.log                       |   66 +
+ .../implementation-evidence/renderer-tests.log     |   66 +
+ .../implementation-evidence/vue-tsc.log            |    2 +
+ .../implementation-evidence/web-guard.log          |    5 +
+ .../implementation-handoff.md                      |  110 +
+ .../implementation-revision-record.md              |   19 +
+ .../investigation-notes.md                         |  211 ++
+ .../product-completion-reconciliation.md           |   25 +
+ .../product-design-request.md                      |  100 +
+ .../product-review-receipt.md                      |   24 +
+ .../release-deployment-report.md                   |   91 +
+ .../release-notes.md                               |    8 +
+ .../requirements-approval.md                       |   11 +
+ .../requirements-doc.md                            |  128 ++
+ .../solution-handoff.md                            |   72 +
+ .../solution-revision-record.md                    |  121 ++
+ .../user-verification-record.md                    |   19 +
+ 308 files changed, 23983 insertions(+), 18 deletions(-)
+ create mode 100644 autobyteus-web/components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts
+ create mode 100644 autobyteus-web/components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts
+ create mode 100644 autobyteus-web/tests/e2e/workspace-folder-picker-probe.mjs
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/build-instance-stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/build.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/failed-FP-P07.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/failed-FP-P07.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-02/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/failed-FP-P07.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/failed-FP-P07.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/saved-active-locked.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/saved-active-locked.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-03/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/agent-selected.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/chat-zh-1512.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/chat-zh-1512.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/chat-zh-1512.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/chat-zh-390.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/chat-zh-390.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/chat-zh-390.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/isolated-app.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-member.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-narrow-long.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/org-root.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-active-locked.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-active-locked.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-active-locked.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-member-committed.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-member-committed.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-member-committed.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-member-draft.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-member-draft.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/saved-member-draft.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-run-04/team-known.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/caller-tests.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/final-checks.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/menu-tests.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-observations.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/native-Cancel.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/native-Cancel.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/native-Escape.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/native-Escape.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-01/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/agent-selected.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/chat-zh-1512.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/chat-zh-1512.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/chat-zh-1512.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/chat-zh-390.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/chat-zh-390.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/chat-zh-390.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/isolated-app.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/native-Cancel.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/native-Cancel.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/native-Cancel.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/native-Escape.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/native-Escape.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/native-Escape.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-member.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-narrow-long.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/org-root.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-active-locked.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-active-locked.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-active-locked.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-member-committed.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-member-committed.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-member-committed.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-member-draft.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-member-draft.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/saved-member-draft.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/native-run-05/team-known.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/preload-final.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/preload-tests.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/repository-final.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/saved-locks-tests.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-revision-record.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/cumulative-package-manifest.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/checks.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/agent-selected.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/chat-zh-1512.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/chat-zh-1512.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/chat-zh-1512.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/chat-zh-390.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/chat-zh-390.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/chat-zh-390.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/isolated-app.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-member.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-narrow-long.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/org-root.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-active-locked.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-active-locked.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-active-locked.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-member-committed.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-member-committed.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-member-committed.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-member-draft.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-member-draft.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/saved-member-draft.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integrated-caller-01/team-known.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/integration.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/post-probe-instances.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/preload.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/repository.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/user-fixtures.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/user-instance-start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/user-instance-start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001/verification-hold-instances.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/checks.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/final-instances.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/fixture-cleanup.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/agent-selected.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-1512.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-1512.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-1512.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-390.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-390.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-390.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/isolated-app.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-member.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-narrow-long.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-root.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-active-locked.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-active-locked.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-active-locked.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-committed.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-committed.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-committed.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-draft.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-draft.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-draft.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/team-known.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/pre-final-fetch.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/preload.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/reintegration.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/reintegration.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/repository.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/target-preservation-before.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/user-instance-stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/user-instance-stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-revision-record.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/design-spec.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/docs-sync-report.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/handoff-summary.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/history/requirements-r2-before-product-reconciliation.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/history/requirements-r3-as-presented.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/computed-colors.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/contracts-build.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/frontend-build-02.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/frontend-build.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/install.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/localization-guard-02.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/localization-guard.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/menu-tests-01.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/nuxt-prepare.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/preload-tests.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/preview-cleanup.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/preview-port.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/preview-server.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-01-pending-desktop.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-02-selected-desktop.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-03-error-desktop.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-04-invalid-desktop.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-05-remote-desktop.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-06-local-narrow.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-07-browser-narrow.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-08-zh-error-narrow.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-09-zh-desktop.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-check.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-check.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-check.mjs
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/render-preview.vue
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/renderer-tests-final.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/renderer-tests.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/vue-tsc.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-evidence/web-guard.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-handoff.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/implementation-revision-record.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/investigation-notes.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/product-completion-reconciliation.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/product-design-request.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/product-review-receipt.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/release-deployment-report.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/release-notes.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/requirements-approval.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/requirements-doc.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/solution-handoff.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/solution-revision-record.md
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/user-verification-record.md

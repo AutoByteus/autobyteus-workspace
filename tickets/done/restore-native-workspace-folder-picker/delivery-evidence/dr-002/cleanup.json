@@ -1,0 +1,12 @@
+{
+  "completedAt": "2026-10-07T19:03:33.392279+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker",
+  "worktreeRemoved": true,
+  "worktreeRegistryEntryAbsent": true,
+  "localTicketBranchDeleted": true,
+  "worktreePrune": "Not required: normal worktree remove removed its registration; no unrelated registrations pruned",
+  "remoteTicketBranchCleanup": "Not required: retain pushed ticket branch for audit; no remote deletion requested",
+  "userInstance": "iso-64199-6f3f stopped; exact owned data and ports removed",
+  "freshProbe": "iso-65137-e5c3 stopped; owned data, ports and fixture removed",
+  "unrelatedWorktreesProcessesData": "Not modified"
+}

@@ -1,37 +1,33 @@
-# Handoff Summary — Native Workspace Folder Picker
+# Final Handoff — Restore Native Workspace Folder Picker
 
-> Current continuation: **DR-002 in progress — UV-001 received** (“its working. finalize, no need to release.”). Final target advanced; protected archive93a45f69c, merge92c96ce111 of base665d8e0cd completed. Fresh89 repository tests and7 packaged manual/API cases passed. No material scoped handoff change; renewed verification not required. Repository push/merge and task cleanup are now the remaining steps. The DR-001 hold below is retained temporarily as the prior baseline, not current user status. No release will be made.
+**Delivery Completed — DR-002, 2026-10-07.** task_size **Small**; architectural_risk **Low**; **direct validated route**. R3/UREQ-001, Product UCONF-001, SR-007, IR-001, API-REV-001, UV-001; DR-001 initial hold retained. Independent architecture/source/test-code review artifacts/revisions **N/A — not applicable**.
 
-## Current Authoritative Delivery Result
-**DR-001 — integrated validation/docs complete; BLOCKED at the required user-verification hold. Not Delivery Completed.**
-Package restore-native-workspace-folder-picker; task_size **Small**, architectural_risk **Low**, **direct validated route**. Architecture/source/test-code independent reviews and revision records **N/A — not applicable**. Requirements R3/UREQ-001, Product UCONF-001, SR-007, IR-001 and API-REV-001 remain current. Full authority/supplement/evidence inventory: `cumulative-package-manifest.md`.
+## User-Verified Result
+Native **Browse…** restored beside typed workspace input in editable local embedded Electron Agent/Team Chat, Org-root and placed-Team settings. Native selection fills text only; explicit **Use folder** selects; existing Send/Run/Save owners and locks remain unchanged. Cancel/empty non-destructive, errors retry/manual entry, duplicate pending submission prevented. Browser/remote/mobile stay manual-only.
 
-## Delivered Behavior Awaiting Verification
-Local embedded Electron workspace forms restore **Browse…** next to manual path entry for Agent/Team Chat, Org root and editable placed-Team rows. Native choice only fills input; **Use folder** selects it. Cancellation is silent/non-destructive, errors allow retry/manual entry, pending disables duplicate/implicit submission. Browser/remote/mobile remain manual-only. Existing workspace reuse, root locks, addressed-member draft ownership and explicit Send/Run/Save remain unchanged. No schema/migration/dependency or native bridge change.
+User response: **“its working. finalize, no need to release.”** (UV-001). Verified44b03b9f3 candidate, then protected docs/archived and merged newer Project-only base665d8e0cd (13 commits including receipt) as92c96ce111. Picker/gate/bridge/catalogs and all relevant setting/launch/save owners unchanged; full integrated checks repeated, no material scoped change; renewed verification Not required. User is not claimed to have tested the rebuilt package.
 
-## Integration And Validation
-- Task branch `codex/restore-native-workspace-folder-picker`; target **origin/personal** from solution bootstrap (no release requested).
-- `git fetch origin personal` then `git merge --no-edit origin/personal` integrated 36 newer base commits without conflicts. Base **af50bdd4056b9341e53494ad393b6283136a00ed**; candidate **bd495bdeb39ddff2357013f288215e8b1b6df540**; current integrated HEAD **44b03b9f3b3f73535c1f3ec8e27dc9201ab4c5de**. Clean tracked candidate already committed; additional checkpoint not needed. This base-into-ticket merge is the allowed safety refresh, not finalization into personal.
-- Fresh integrated repository tests: **84 renderer/caller/store/service/gate + 5 preload**, all pass; guards/syntax/diff pass. Docs edited only after integrated tests passed.
-- Fresh full packaged build and actual isolated caller/API probe: **7 Pass; native-only FP-P03 Not Tested** (manual mode). Real Agent/Team known reuse, Org/root/member binding, Run→Stop→draft→explicit Save/API readback, desktop/narrow and en/zh-CN; no model inference. No renderer page errors. Exact commands/limits: `release-deployment-report.md`.
-- Integrated package **1.4.96** (inherited base version), macOS arm64, Chromium 148.0.7778.265; asar **e4a156a8767e60afc2055c0a6d1527b2fc2c1c549342d3734c28f9f2f56fa008**. Evidence `delivery-evidence/dr-001/integrated-caller-01/`. Probe instance iso-64091-c43d stopped, own data/fixtures removed, both ports released.
-- Upstream API-REV-001: **89 repository tests + all8 native-assisted cases** on its earlier beta.2 bundle, reported confidence **95%**. Real native selection/Cancel/Escape proof remains attributed to that build, not misrepresented as a fresh native rerun. Changed feature/localization/host/gate source blobs are identical across integration (integration.json); downstream touched-base behavior was rechecked on rebuilt desktop. No new risk classification or product finding.
+## Finalization
+- Ticket commit **59f94959106c76d184e8c3e881c4792d44860b8f**, pushed to origin/codex/restore-native-workspace-folder-picker.
+- Personal behavior merge **f34dec632e60451c85c8ffe62d37d43034afbcef**, pushed/read back. Merge tree exactly equals the validated ticket candidate. Later commit contains final docs-only receipts; terminal message identifies final receipt HEAD.
+- **No release/version bump/tag/publication/deployment**; inherited package1.4.96 only.
+- Task archived here in durable main checkout. Task worktree/local branch removed safely; all owned verification/probe runtimes/data/fixtures cleaned. Remote ticket branch retained for audit; unrelated shared-checkout modifications preserved byte-for-byte.
 
-## Important Upstream Execution Incident
-During API testing, an auto-launching app selector reopened the already-closed worktree app **without isolated arguments** (PID4683). It was immediately stopped, and no tests/UI actions ran in that process. Startup **may have accessed the default profile; we cannot certify user data was untouched**. No default data was inspected/reset/deleted and no existing user process was stopped/reused. Functional evidence used isolated instances. This uncertainty is explicitly disclosed to the user; passing checks do not erase it. Delivery did not reopen the app through an OS tool or inspect user data.
+## Validation
+Fresh latest-base84 renderer/caller/service/store/gate +5 preload tests pass. Full rebuilt desktop plus7 actual manual/API cases pass, including real Org Run→Stop→member draft→explicit Save/readback, correct owners, en/zh-CN and desktop/narrow. No renderer errors or agent-run inference. Final mac-arm64 asar **a4f4a83519002fa560bb4799af4116f0b437ce4c5c597d82ab8f877c64e51741**. Evidence `delivery-evidence/dr-002/integrated-caller-02/evidence.json`, repository.log, preload.log, checks.log.
+Native-only FP-P03 not repeated on this rebuilt package. API's earlier all8 native-assisted cases/89 tests/reported95% confidence remain separately attributed to its beta.2 bundle; no fresh native or independent-review certification invented. Full Vue checking unavailable (vue-tsc), other OS/physical-mobile/live-remote/OS-error/exhaustive a11y/linguistic/paid-Send limits remain.
 
-## Docs / Remaining Limits
-Updated canonical `autobyteus-web/docs/settings.md` and `autobyteus-web/docs/agent_execution_architecture.md`; API testing runbook retained in TESTING.md. `docs-sync-report.md` explains promoted ownership, error/lifetime and preserved lock/save contracts. `release-notes.md` is unreleased scoped change notes, not publication.
-Full Vue static check remains **not run: vue-tsc unavailable**; build is not an equivalent pass. Native evidence macOS-only. No physical-mobile, screen-reader, linguistic or all-OS certification; errors/empty/gating/lifetime are controlled tests, not OS-error/live-remote induction. No paid Agent/Team Send, migration/upgrade or broad-product certification.
+## Disclosed Incident Still Uncertain
+API automation briefly reopened the closed worktree app unisolated (PID4683), immediately stopped without tests/UI actions. Startup may have accessed default profile; **cannot certify user data untouched**. No default data was inspected/reset/deleted. Disclosed before user acceptance; acceptance does not erase the uncertainty. All functional test evidence used isolated instances. No deployment/migration/data reset undertaken.
 
-## User Verification Surface / Required Next Signal
-New isolated verification instance **iso-64199-6f3f**, PID919, control64199/backend64200; same integrated asar hash. Start receipt `delivery-evidence/dr-001/user-instance-start.json`. It is intentionally retained for the user, **not** a completed cleanup. Private data root and exact stop ownership are recorded there; do not use installed app/default data or auto-launch a closed bundle.
-- Disposable public-API fixtures: Folder Verification Agent, Folder Verification Team, Folder Verification Org (/product and /other); `delivery-evidence/dr-001/user-fixtures.json`.
-- Disposable folder root: `/private/tmp/autobyteus-folder-verify-d5xft_ay` (agent/team/org/member children).
-- Reload the isolated window once to refresh catalog. New chat → choose Folder Verification Agent/Team → Workspace → Open another folder → Browse. Choosing a fixture directory must fill only the path; Use folder applies. Try native Cancel/Escape with typed text; neither should clear/apply it. Org fixture Run/setup permits root and /product workspace checking without sending a message. No model Send is needed.
-- Await explicit user verification (or concrete findings) **after the incident disclosure**. UREQ-001/UCONF-001 and agent-run tests are not final user verification. `user-verification-record.md` is authoritative for the eventual signal.
+## Durable Authorities / Complete Package
+Canonical root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker`.
+- `cumulative-package-manifest.md`: full approved requirements/design/history/Product supplement/implementation/API evidence and current absolute paths. Historical former-worktree/in-progress software references resolve to the same repository-relative files in this archive. Product remains external/canonical.
+- `docs-sync-report.md`: canonical settings and agent-execution architecture synchronized; TESTING runbook retained.
+- `release-deployment-report.md`: exact refresh/commands/results, verification, commit/push/merge, cleanup, release-not-required and rollback evidence.
+- `user-verification-record.md`: UV-001 exact signal, incident disclosure and non-material refresh rationale.
+- `delivery-revision-record.md`: DR-001 baseline → DR-002 completed result.
+- `delivery-evidence/dr-002/repository-finalization.json` and `cleanup.json`: actual operations, remote readbacks and owned cleanup receipts.
+- `release-notes.md`: scoped unreleased notes, not published.
 
-## Finalization / Release / Cleanup Hold
-No ticket archive, delivery-doc commit, ticket push, merge into personal, target push, tag, release or deployment by Delivery. The inherited latest base includes other tickets' releases, not this ticket's publication. After verification: refresh target again; protect docs; reintegrate/rerun and renew verification if materially changed; archive ticket before final commit; commit/push ticket → update target → merge/push target; stop owned verification instance/remove its fixtures and safely clean this task's worktree/branch only after finalization. Preserve untracked generated SDK dist from source staging. Release/deployment **Not required** unless separately requested.
-
-No successful terminal return is eligible. Normal verification hold requires no code/design reroute; see `release-deployment-report.md` and DR-001. Final durable paths will be recorded after archive/finalization, before safe worktree removal.
+All required completion gates passed or are truthfully Not required. This is the authoritative terminal package for Solution Designer to verify. Dispatch success is recorded only by its actual accepted tool receipt; see final report. No duplicate handoff or release requested.

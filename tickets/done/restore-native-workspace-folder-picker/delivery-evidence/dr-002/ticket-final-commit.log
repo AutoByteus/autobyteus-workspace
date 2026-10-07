@@ -1,0 +1,60 @@
+[codex/restore-native-workspace-folder-picker 59f949591] docs(delivery): record accepted refreshed folder picker validation
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 51 files changed, 4686 insertions(+), 73 deletions(-)
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/checks.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/final-instances.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/agent-selected.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/agent-selected.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/agent-selected.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-1512.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-1512.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-1512.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-390.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-390.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/chat-zh-390.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/evidence.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/isolated-app.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-member.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-member.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-member.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-narrow-long.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-narrow-long.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-narrow-long.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-root.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-root.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/org-root.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-active-locked.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-active-locked.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-active-locked.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-committed.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-committed.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-committed.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-draft.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-draft.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/saved-member-draft.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/start.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/start.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/stop.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/stop.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/team-known.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/team-known.png
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/integrated-caller-02/team-known.txt
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/pre-final-fetch.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/preload.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/reintegration.json
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/reintegration.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/repository.log
+ create mode 100644 tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/target-preservation-before.json

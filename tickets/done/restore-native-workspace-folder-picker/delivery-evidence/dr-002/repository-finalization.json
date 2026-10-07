@@ -1,0 +1,25 @@
+{
+  "recordedAt": "2026-10-07T19:02:43.996849+00:00",
+  "userVerification": "UV-001: its working. finalize, no need to release.",
+  "sourceIntegratedHead": "92c96ce111c9874f9185cdc13d47fb615357344c",
+  "ticketBranch": "codex/restore-native-workspace-folder-picker",
+  "ticketCommit": "59f94959106c76d184e8c3e881c4792d44860b8f",
+  "remoteTicketCommit": "59f94959106c76d184e8c3e881c4792d44860b8f",
+  "targetBranch": "personal",
+  "targetMergeCommit": "f34dec632e60451c85c8ffe62d37d43034afbcef",
+  "targetMergeParents": [
+    "665d8e0cd3bf99e4164809569e4e29c5e16bb3c9",
+    "59f94959106c76d184e8c3e881c4792d44860b8f"
+  ],
+  "remoteTargetCommitAfterPush": "f34dec632e60451c85c8ffe62d37d43034afbcef",
+  "unrelatedTrackedEditsUnchanged": true,
+  "unrelatedModifiedFileHashes": {
+    "tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/cumulative-package.json": "c29bc19a01d7f6a17cc3820409532722fe46d36080fa05f56710739c0718a98b",
+    "tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/final-repository-state.json": "4637f836f243fae90d1b89cb3643a67a102eb0c1296994451f5142503f5aba70",
+    "tickets/done/antigravity-tool-argument-visibility/delivery-revision-record.md": "d302f8d4bcda1370e485945b52294a1a65ad45a8cffea4708f9379fa6f72fc1f",
+    "tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md": "9c76e8385462af2a575046189664077c2b17aae2b4947d1db4e375bc4ae15c5b",
+    "tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md": "fa3a499601d07a9ae1b40f93e88a19d0b83eb79929b233241fccd0afca41102d",
+    "tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md": "a5c56a4cd3eea6823afec1a504793365a9bff8d549bf42c0ff69036d83b46452"
+  },
+  "release": "Not required; no version bump, tag, publication, deployment or rollout"
+}

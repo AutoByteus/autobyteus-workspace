@@ -1,0 +1,17 @@
+{
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker",
+  "cleanBeforeRemove": true,
+  "generatedOutputOnlyRemoved": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "unstagedLogsCopiedAndHashVerified": [
+    "ticket-final-commit.log",
+    "ticket-push.log",
+    "target-fetch.log",
+    "target-update.log",
+    "target-merge.log",
+    "target-push.log"
+  ],
+  "allSourceAndEvidenceInPushedTarget": true
+}
