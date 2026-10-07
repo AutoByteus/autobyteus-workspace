@@ -68,7 +68,7 @@ describe("PublishedArtifactProjectionService", () => {
     });
 
     const service = new PublishedArtifactProjectionService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
       metadataService: {

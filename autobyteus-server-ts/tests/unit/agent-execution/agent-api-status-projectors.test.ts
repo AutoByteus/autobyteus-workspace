@@ -37,7 +37,7 @@ describe("agent API status and runtime lifecycle projectors", () => {
       agentId: "run-1",
     });
 
-    expect(payload).toEqual({ status: "running", agent_id: "run-1" });
+    expect(payload).toEqual({ status: "running", agent_id: "run-1", recoverableBlock: null });
     expect(payload).not.toHaveProperty("can_interrupt");
   });
 
@@ -50,6 +50,7 @@ describe("agent API status and runtime lifecycle projectors", () => {
       availability: "active",
       phase: "running",
       currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
+      recoverableBlock: null,
     });
 
     expect(projectAutoByteusAgentLifecycleSnapshot({
@@ -60,6 +61,7 @@ describe("agent API status and runtime lifecycle projectors", () => {
       availability: "active",
       phase: "running",
       currentTurn: { kind: "ANONYMOUS" },
+      recoverableBlock: null,
     });
   });
 

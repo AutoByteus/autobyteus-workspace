@@ -151,39 +151,8 @@ describe("AgentRunProvisioningService", () => {
     expect(recorded).not.toHaveProperty("activationState");
   });
 
-  it("does not persist activation failure state and permits retry from prepared facts", async () => {
-    const runId = "run-activation-retry";
-    metadataByRunId.set(runId, buildMetadata(memoryDir, runId));
-    const createdRun = {
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      getPlatformAgentRunId: () => "platform-run-1",
-    };
-    agentRunManager.createAgentRun
-      .mockRejectedValueOnce(new Error("runtime boot failed"))
-      .mockResolvedValueOnce(createdRun);
-    const service = buildService();
-
-    await expect(service.activatePreparedRun(runId)).rejects.toThrow("runtime boot failed");
-    expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalled();
-    expect(metadataByRunId.get(runId)).toMatchObject({
-      startedAt: null,
-      platformAgentRunId: null,
-    });
-
-    const retried = await service.activatePreparedRun(runId);
-
-    expect(retried).toBe(createdRun);
-    expect(agentRunManager.createAgentRun).toHaveBeenCalledTimes(2);
-    expect(historyCatalogService.recordRunStarted).toHaveBeenCalledWith(expect.objectContaining({
-      runId,
-      platformAgentRunId: "platform-run-1",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    }));
-    expect(metadataByRunId.get(runId)).toMatchObject({
-      platformAgentRunId: "platform-run-1",
-      startedAt: expect.any(String),
-    });
-  });
+  // Activating a prepared run (and retrying after a failed activation) moved to the standalone run
+  // lifecycle in 9c3080a20; see standalone-agent-run-lifecycle-service.test.ts ("aborts a prepared candidate").
 
   it("delegates prepared cancellation to the catalog boundary", async () => {
     const runId = "run-cancel-prepared";
