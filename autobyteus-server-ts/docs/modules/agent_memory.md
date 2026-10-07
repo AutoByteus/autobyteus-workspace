@@ -449,7 +449,7 @@ Current archive/rotation behavior:
   record, they rotate with that completed segment so active-file Activity and
   raw inspection remain truthful. Normal Activity does not read the rotated
   copy; the Memory Inspector can still select its completed segment explicitly.
-- Codex/Claude/Antigravity provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
+- Codex/Claude/Antigravity/Grok Build provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
 - Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
@@ -470,7 +470,7 @@ Current non-goals:
 
 ## Provider Compaction Boundaries
 
-Codex, Claude and Antigravity (AGY) provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
+Codex, Claude, Antigravity (AGY) and Grok Build provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
 
 Normalized provider-boundary handling is storage-only:
 

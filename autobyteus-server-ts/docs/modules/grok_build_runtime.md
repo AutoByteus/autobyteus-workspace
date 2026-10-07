@@ -342,9 +342,16 @@ migrated.
   relay with restore.
 - **Compaction.** Unit suites replay real Grok 1.0.46 compaction traffic
   (`tests/fixtures/grok-acp/compaction-*.jsonl`) through the ACP session and the
-  memory recorder. The opt-in live test
+  memory recorder. `tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts`
+  runs in default CI at zero cost. It drives the real server (GraphQL,
+  WebSocket, AgentRunManager, ACP backend, recorder, run history) with the fake
+  Grok CLI replaying those recordings: automatic compaction pairs, a user Stop
+  during an automatic compaction (failed close, no archive), and manual
+  `/compact`, each followed by a reopened-history check. The opt-in live test
   `tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts` (`RUN_GROK_E2E=1`)
   runs Grok with a temporary `GROK_HOME` (a symlink to the user's `auth.json` and
   `auto_compact_threshold_percent = 10`; `~/.grok` is never written). In one
   four-turn run it interrupts an automatic compaction, completes another, and
-  runs `/compact`.
+  runs `/compact`. It then checks reopened history and terminate → restore →
+  turn. Set `GROK_E2E_EVIDENCE_DIR` to keep the run's evidence on failure;
+  `auth.json` is never copied.
