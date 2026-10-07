@@ -23,7 +23,7 @@ vi.mock('~/stores/chatDraftStore', () => ({
   useChatDraftStore: () => ({
     markStarting: (draft: ChatDraft) => { draft.starting = true; mocks.events.push('starting') },
     clearStarting: (draft: ChatDraft) => { draft.starting = false; mocks.events.push('clear-starting') },
-    startNewChat: () => { mocks.events.push('reset-draft') },
+    finishSentDraft: (draft: ChatDraft) => { mocks.events.push(`finish-draft:${draft.id}`) },
   }),
 }))
 vi.mock('~/stores/agentSelectionStore', () => ({
@@ -118,6 +118,8 @@ const buildDraft = (overrides: Partial<ChatDraft> = {}): ChatDraft => {
   }))
   context.requirement = 'hello'
   return reactive({
+    id: 'chat-draft-1',
+    listed: true,
     context,
     target: { kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' },
     workspace: { kind: 'folder', rootPath: '/Users/me/project' },
@@ -148,7 +150,7 @@ describe('chatLaunchService', () => {
     window.localStorage.clear()
   })
 
-  it('launches in order: starting → register → send → route to the promoted id → reset the draft', async () => {
+  it('launches in order: starting → register → send → route to the promoted id → finish the sent draft', async () => {
     const draft = buildDraft()
     const navigate = vi.fn(async (route: unknown) => { mocks.events.push(`navigate:${JSON.stringify(route)}`) })
 
@@ -160,7 +162,7 @@ describe('chatLaunchService', () => {
       'register:temp-chat-1',
       'send',
       'navigate:{"path":"/chat","query":{"id":"run-9"}}',
-      'reset-draft',
+      'finish-draft:chat-draft-1',
     ])
     expect(draft.context.config).toMatchObject({
       workspaceId: 'ws-folder',
@@ -192,6 +194,8 @@ describe('chatLaunchService', () => {
     expect(result).toEqual({ runId: 'temp-chat-1' })
     expect(navigate).toHaveBeenCalledWith({ path: '/chat', query: { id: 'temp-chat-1' } })
     expect(readChatLastModel()).toBeNull()
+    // The message belongs to the registered run, which shows the error: the draft is finished.
+    expect(mocks.events.at(-1)).toBe('finish-draft:chat-draft-1')
   })
 
   it('keeps the New chat intact when the workspace cannot be resolved', async () => {
@@ -264,7 +268,7 @@ describe('chatLaunchService', () => {
       attachmentDraftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
       mentions: [],
     })
-    expect(mocks.events).toEqual(['starting', 'select-team-draft:team-draft-1', 'team-send', 'navigate:/workspace', 'reset-draft'])
+    expect(mocks.events).toEqual(['starting', 'select-team-draft:team-draft-1', 'team-send', 'navigate:/workspace', 'finish-draft:chat-draft-1'])
     // The Team view opens on the conversation, not on settings left open for another run (CR-005).
     expect(mocks.showChat).toHaveBeenCalled()
   })
@@ -305,5 +309,7 @@ describe('chatLaunchService', () => {
     expect(mocks.events).toContain('clear-starting')
     expect(mocks.removeDraft).toHaveBeenCalledWith('team-draft-1')
     expect(mocks.events).toContain('clear-selection')
+    // REQ-006: a failed send keeps the draft and its row.
+    expect(mocks.events.some((event) => event.startsWith('finish-draft'))).toBe(false)
   })
 })

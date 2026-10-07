@@ -28,6 +28,7 @@
       <div class="mt-8 w-full max-w-3xl">
         <ChatComposer
           v-if="draft && target"
+          :key="draft.id"
           ref="composerRef"
           :target="target"
           :placeholder="placeholder"

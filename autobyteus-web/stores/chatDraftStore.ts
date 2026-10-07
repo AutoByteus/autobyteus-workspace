@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig'
@@ -29,6 +29,10 @@ export type ChatTarget =
   | Readonly<{ kind: 'team'; teamDefinitionId: string }>
 
 export interface ChatDraft {
+  /** Stable identity of this New chat (its Draft row); never the context's run id, which changes on send. */
+  id: string
+  /** Set at the draft's first typed text; it stays set, so a cleared open draft still shows its row (REQ-008). */
+  listed: boolean
   /** The unregistered `temp-*` context: text, tags, mentions, attachments, runtime, model and model config. */
   context: AgentContext
   target: ChatTarget
@@ -45,8 +49,19 @@ export interface ChatModelSelection {
   llmModelIdentifier: string
 }
 
+/**
+ * A New chat is a Draft once it has typed text (REQ-001). Attachments, `/` skills, mentions, target
+ * and settings alone are not; a lone `/command` being typed (the skill menu is open) is not text yet.
+ */
+export const chatDraftHasText = (draft: ChatDraft): boolean => {
+  const text = draft.context.requirement.trim()
+  return text.length > 0 && !/^\/\S*$/.test(text)
+}
+
 let chatDraftSequence = 0
 const nextDraftRunId = (): string => `temp-chat-${Date.now()}-${++chatDraftSequence}`
+let chatDraftIdSequence = 0
+const nextDraftId = (): string => `chat-draft-${++chatDraftIdSequence}`
 
 const buildDraftContext = (agent: { id: string; name: string; avatarUrl?: string | null }): AgentContext => {
   const runId = nextDraftRunId()
@@ -75,16 +90,31 @@ const buildDraftContext = (agent: { id: string; name: string; avatarUrl?: string
 
 /**
  * @store chatDraft
- * @description Owns the New chat draft: an unregistered agent context plus target, workspace,
+ * @description Owns the New chat drafts: each an unregistered agent context plus target, workspace,
  * approval and Team member overrides, and the rules for its initial settings (REQ-021), retargeting
- * (REQ-019) and member customization. It never sends or routes; `chatLaunchService` launches and
- * `useRunStart` routes.
+ * (REQ-019) and member customization. One draft is open (shown by New chat); every draft with typed
+ * text is kept, for this app session only, until it is sent or discarded. It never sends or routes;
+ * `chatLaunchService` launches and `useRunStart` routes.
  */
 export const useChatDraftStore = defineStore('chatDraft', () => {
-  // Deeply reactive: the composer edits the draft context's text, tags and attachments in place.
-  const draft = ref<ChatDraft | null>(null)
-  // Bumped whenever the model is chosen explicitly, so a late default resolution never overrides it.
-  let modelChoiceGeneration = 0
+  // Deeply reactive: the composer edits the open draft's text, tags and attachments in place.
+  // Array order is start order.
+  const drafts = ref<ChatDraft[]>([])
+  const openDraftId = ref<string | null>(null)
+  const draft = computed<ChatDraft | null>(() => drafts.value.find((entry) => entry.id === openDraftId.value) ?? null)
+  // Per draft, bumped whenever its model is chosen explicitly, so a late default resolution never
+  // overrides it. A draft that is no longer kept has none.
+  const modelChoiceGenerations = new Map<string, number>()
+  const bumpModelChoice = (draftId: string): number => {
+    const next = (modelChoiceGenerations.get(draftId) ?? 0) + 1
+    modelChoiceGenerations.set(draftId, next)
+    return next
+  }
+
+  // A draft is listed from its first typed text on (REQ-001); only the open draft is edited.
+  watch(() => draft.value !== null && chatDraftHasText(draft.value), (hasText) => {
+    if (hasText && draft.value) draft.value.listed = true
+  }, { flush: 'sync' })
 
   const agentDefinitions = () => useAgentDefinitionStore()
   const catalogs = () => useLLMProviderConfigStore()
@@ -111,18 +141,38 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   const contextAgentFor = (target: ChatTarget): string =>
     target.kind === 'agent' ? target.agentDefinitionId : DEFAULT_CHAT_AGENT_DEFINITION_ID
 
+  const removeDraft = (draftId: string) => {
+    drafts.value = drafts.value.filter((entry) => entry.id !== draftId)
+    modelChoiceGenerations.delete(draftId)
+  }
+
+  /** Leaving the open draft: one without typed text is not kept (REQ-004, REQ-008) unless it is being sent. */
+  const leaveOpenDraft = () => {
+    const current = draft.value
+    if (current && !current.starting && !chatDraftHasText(current)) removeDraft(current.id)
+    openDraftId.value = null
+  }
+
+  /** Every start leaves the open draft and opens a fresh one; earlier drafts with text stay kept. */
   const install = (target: ChatTarget, workspace: RunWorkspaceChoice, autoExecuteTools: boolean): ChatDraft => {
-    draft.value = {
+    leaveOpenDraft()
+    const id = nextDraftId()
+    drafts.value.push({
+      id,
+      listed: false,
       context: buildDraftContext(agentIdentity(contextAgentFor(target))),
       target,
       workspace,
       autoExecuteTools,
       teamAgentOverrides: {},
       starting: false,
-    }
-    modelChoiceGeneration += 1
+    })
+    openDraftId.value = id
+    bumpModelChoice(id)
     return draft.value!
   }
+
+  const modelChoiceOf = (target: ChatDraft): number => modelChoiceGenerations.get(target.id) ?? 0
 
   const applyCarriedModel = (target: ChatDraft, settings: RunStartSettings) => {
     if (!settings.llmModelIdentifier) return false
@@ -148,7 +198,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       next.context.config.runtimeKind = lastModel.runtimeKind
       next.context.config.llmModelIdentifier = lastModel.llmModelIdentifier
     }
-    void resolveChatNavDefaultModel(next, modelChoiceGeneration)
+    void resolveChatNavDefaultModel(next, modelChoiceOf(next))
     return next
   }
 
@@ -169,7 +219,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
         .map(([address, override]) => [address, { ...override }]))
     }
     if (settings && applyCarriedModel(next, settings)) {
-      void loadCarriedStart(next, modelChoiceGeneration)
+      void loadCarriedStart(next, modelChoiceOf(next))
       return next
     }
     // Show the likely model at once; the checked choice (availability, catalog) follows.
@@ -178,7 +228,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       applyModel(next, { runtimeKind: provisional.runtimeKind, llmModelIdentifier: provisional.llmModelIdentifier },
         'llmConfig' in provisional ? provisional.llmConfig ?? null : null)
     }
-    void resolveDefinitionDefaultModel(next, modelChoiceGeneration)
+    void resolveDefinitionDefaultModel(next, modelChoiceOf(next))
     return next
   }
 
@@ -188,7 +238,39 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
 
   const ensureDraft = (): ChatDraft => draft.value ?? startNewChat()
 
-  const isCurrent = (target: ChatDraft, generation: number) => draft.value === target && generation === modelChoiceGeneration
+  /** Re-enter a kept draft as it was left (REQ-003). */
+  const openDraft = (draftId: string) => {
+    if (openDraftId.value === draftId || !drafts.value.some((entry) => entry.id === draftId)) return
+    leaveOpenDraft()
+    openDraftId.value = draftId
+  }
+
+  /** Removes a draft; when it was the open one, a plain fresh New chat opens in its place. */
+  const removeAndReplaceIfOpen = (draftId: string) => {
+    const wasOpen = openDraftId.value === draftId
+    removeDraft(draftId)
+    if (!wasOpen) return
+    openDraftId.value = null
+    startNewChat()
+  }
+
+  /** The row's × (REQ-007): no confirmation; a draft being sent is not discarded. */
+  const discardDraft = (draftId: string) => {
+    const target = drafts.value.find((entry) => entry.id === draftId)
+    if (!target || target.starting) return
+    removeAndReplaceIfOpen(draftId)
+  }
+
+  /**
+   * A launched draft belongs to its run now (REQ-006): it and its row go. A draft the user opened
+   * while it was being sent stays open.
+   */
+  const finishSentDraft = (sent: ChatDraft) => {
+    removeAndReplaceIfOpen(sent.id)
+  }
+
+  const isCurrent = (target: ChatDraft, generation: number) =>
+    modelChoiceGenerations.get(target.id) === generation
 
   /** REQ-021 for Run: definition default → last chat model → default runtime's first model. */
   const resolveDefinitionDefaultModel = async (target: ChatDraft, generation: number): Promise<void> => {
@@ -282,7 +364,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   /** An explicit model choice from the model menu. */
   const setModel = (selection: ChatModelSelection) => {
     if (!draft.value) return
-    modelChoiceGeneration += 1
+    bumpModelChoice(draft.value.id)
     applyModel(draft.value, selection)
   }
 
@@ -377,10 +459,17 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   }
 
   return {
-    draft: computed(() => draft.value),
+    /** Every kept draft, in start order; the open draft is included even without text until it is left. */
+    drafts: computed<readonly ChatDraft[]>(() => drafts.value),
+    openDraftId: computed(() => openDraftId.value),
+    /** The open draft, which New chat shows. */
+    draft,
     startNewChat,
     startForDefinition,
     ensureDraft,
+    openDraft,
+    discardDraft,
+    finishSentDraft,
     retarget,
     changeTeamMember,
     resetTeamMember,
