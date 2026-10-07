@@ -112,8 +112,10 @@ Cards stay compact however long the description is (task-card-compact-summary).
 The bold summary is the first non-empty line, and the grey preview is the remaining
 lines joined. Each is clamped to 2 lines (`line-clamp-2`, with no `display`
 utility beside it that would override the clamp). Each is also bounded to 300
-characters at a word boundary before rendering (`utils/projects/taskSummary.ts`),
-so a 10,000-word brief is never laid out in a card. One-line labels (the card's
+characters before rendering (`utils/projects/taskSummary.ts`), so a 10,000-word
+brief is never laid out in a card. The cut falls at the last word boundary. Text
+without spaces, such as CJK or one long token, is cut at the limit, and a long
+unbroken token wraps inside the card. One-line labels (the card's
 accessible name and the Task delete confirmation) use the summary shortened to 120
 characters with "…". Search still matches the full description, and the Task page
 (and Temp task page) shows the full text. The Temp tasks board uses the same row.
@@ -399,6 +401,13 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - short text is unchanged;
 - search finds words beyond the visible lines;
 - both Task pages show the full description.
+
+**PMU-014** covers compact-card edges at 1440, 1024 and 390 px:
+- long text renders exactly 2 lines;
+- CJK text is hard-cut at 300 characters;
+- a 5,000-character unbroken token wraps without horizontal overflow;
+- a long Task keeps its context-file line and worker line visible;
+- a short summary appears in full in the delete confirmation.
 
 A raw `/ws/projects` client records message volume. The wire contract itself is
 covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`
