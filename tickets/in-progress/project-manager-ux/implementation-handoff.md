@@ -12,7 +12,7 @@
   - `product-design-request.md` and `product-design-request-r2.md` (ticket folder)
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/tickets/in-progress/project-manager-ux/design-review-report.md` (ARCH-REV-002, Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/tickets/in-progress/project-manager-ux/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial implementation)
+- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/tickets/in-progress/project-manager-ux/code-review-report.md` (CRR-002, Local Fix: CR-002 blocking, CR-001 non-blocking), from API/E2E F-001 (API-REV-001)
 - Upstream package commit: the approved package, previously uncommitted in the worktree, is committed unchanged as its own docs commit before the implementation commit.
 
 ## Current Implementation Summary
@@ -66,15 +66,28 @@ The Projects pages are now live, and every Task shows its **root**: the one agen
 - en/zh-CN copy: `projects.root.*` and `projects.temp.*`.
 
 **Implementation metadata**
-- Implementation cycle: `Initial`
+- Implementation cycle: `Local Fix` (IR-002 on top of IR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/tickets/in-progress/project-manager-ux/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003` (requirements), `SR-005` (design)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (Local Fix)
+- Related API/E2E revision IDs: `API-REV-001` (F-001)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (AR-001 and AR-002 were applied as mandatory guidance)
+- Triggering finding IDs: `CR-002` (blocking), `CR-001` (non-blocking); API/E2E `F-001`
+
+## IR-002 Local Fix (CR-002, CR-001)
+
+- **CR-002 (blocking; API/E2E F-001).** `audit:localization-literals` could not resolve keys built at runtime, which blocked every `build:electron*` script. The fix replaces them with literal keys and leaves the catalog entries and rendered copy unchanged:
+  - Root states and kinds: typed maps `TASK_ROOT_STATE_LABEL_KEYS` (running, initializing, idle, error, offline, failed) and `TASK_ROOT_KIND_LABEL_KEYS` (agent, team) in `utils/projects/taskRootPresentation.ts`. `ProjectTaskWorkers.vue` uses them for the status label and for the kind fallback name. The kind fallback was a script-side runtime key the audit did not flag; it is fixed too.
+  - Lanes: `LANE_LABEL_KEYS` in `TempTaskBoard.vue` (open, done).
+  - New test: every map key exists in both the en and zh-CN catalogs (`taskRootPresentation.spec.ts`).
+- **CR-001 (non-blocking).** The `forget()` doc comment in `task-agent-resource-service.ts` is moved back above `forget()`.
+- No other changes. The API/E2E engineer's uncommitted durable test changes in the worktree are left untouched and not committed:
+  - `project-change-feed.e2e.test.ts`
+  - `project-manager-ux-probe.mjs`
+  - `package.json` script
+  - `TESTING.md`
 
 ## Routing Classification (Mandatory)
 
@@ -213,6 +226,14 @@ The Projects pages are now live, and every Task shows its **root**: the one agen
 - **Required AR-002 tests**
   - `starting` and deleted host are not openable (presentation and component).
   - Browser: terminated-but-listed host stays openable, deleted host does not (PMU-004).
+
+- **IR-002 checks** (evidence: `implementation-evidence/ir-002/localization-checks.log`):
+  - `pnpm guard:localization-boundary`: Passed.
+  - `pnpm audit:localization-literals`: "Passed with zero unresolved findings" (it failed before the fix with the two M-015 findings).
+  - `pnpm test:nuxt utils/projects components/projects --run`: 13 files / 85 tests pass, including `ProjectTaskWorkers` and `TempTasks` (the rendered labels are unchanged) and the new catalog-key test.
+  - `npx vue-tsc --noEmit`: 386 errors, unchanged; none in changed files.
+  - Server `tsc`: clean.
+  - `build:electron:mac` itself was not rerun here; API/E2E reruns it, as planned in CRR-002.
 
 ## Frontend Rendered-Result Check (When Applicable)
 

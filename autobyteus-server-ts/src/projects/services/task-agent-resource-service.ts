@@ -148,7 +148,6 @@ export class TaskAgentResourceService {
         && file.agentRunResources.some(entry => rootExecutionIdentityKey(entry.hostRoot) === rootKey))
       .map(({ location }) => location.taskId);
   }
-  /** Drops a Task whose files were removed from the view (owners and closed runs included). Call under `serialize`. */
   /** The Task's root: its latest `assigned` entry, from the view; null when never assigned or unreadable. */
   latestAssignment(taskId: string): TaskAgentResource | null {
     if (!this.loaded || this.damaged.has(taskId)) return null;
@@ -161,6 +160,7 @@ export class TaskAgentResourceService {
     const root = latestAssignedEntry(loaded?.file ?? null);
     return loaded && root && agentRunKey(root.agentRun) === agentRunKey(agentRun) ? loaded.location : null;
   }
+  /** Drops a Task whose files were removed from the view (owners and closed runs included). Call under `serialize`. */
   forget(location: TaskLocation): void {
     this.unindex(location.taskId);
     this.files.delete(location.taskId);

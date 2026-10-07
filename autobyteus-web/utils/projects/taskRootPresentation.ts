@@ -5,6 +5,20 @@ import type { TaskRootStatus, TaskRootView } from '~/types/project'
 /** What a root line shows: the worker's own status (DEC-006), or the one Task-specific state. */
 export type TaskRootState = TaskRootStatus | 'failed'
 
+/** Literal translation keys, so the localization audit resolves every label (no runtime-built keys). */
+export const TASK_ROOT_STATE_LABEL_KEYS: Readonly<Record<TaskRootState, string>> = {
+  running: 'projects.root.status.running',
+  initializing: 'projects.root.status.initializing',
+  idle: 'projects.root.status.idle',
+  error: 'projects.root.status.error',
+  offline: 'projects.root.status.offline',
+  failed: 'projects.root.status.failed',
+}
+export const TASK_ROOT_KIND_LABEL_KEYS: Readonly<Record<TaskRootView['kind'], string>> = {
+  agent: 'projects.root.kind.agent',
+  team: 'projects.root.kind.team',
+}
+
 export interface TaskRootPresentation {
   /** The display name from the delegated address; null for assignments recorded before it was kept (show the kind). */
   name: string | null

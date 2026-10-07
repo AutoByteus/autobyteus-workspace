@@ -34,7 +34,7 @@
 
       <div v-if="list?.hasLoaded && !isNoMatch" class="temp-board__lanes mt-6" data-testid="temp-task-lanes">
         <section v-for="lane in LANES" :key="lane" class="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" :aria-labelledby="`${uid}-${lane}`" :data-testid="`temp-task-lane-${lane}`">
-          <h2 :id="`${uid}-${lane}`" class="flex min-h-12 items-center gap-2 border-b border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-700">{{ t(`projects.temp.lane.${lane}`) }}<span class="text-xs font-normal text-slate-500" data-testid="temp-task-lane-count">{{ lanes[lane].length }}</span></h2>
+          <h2 :id="`${uid}-${lane}`" class="flex min-h-12 items-center gap-2 border-b border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-700">{{ t(LANE_LABEL_KEYS[lane]) }}<span class="text-xs font-normal text-slate-500" data-testid="temp-task-lane-count">{{ lanes[lane].length }}</span></h2>
           <p v-if="lanes[lane].length === 0" class="px-4 py-7 text-center text-xs text-slate-500">{{ t('projects.components.projects.ProjectTaskBoard.noTasks') }}</p>
           <ul v-else class="divide-y divide-slate-100"><li v-for="task in shown(lane)" :key="task.taskId"><ProjectTaskRow :task="task" /></li></ul>
           <button
@@ -66,6 +66,8 @@ import type { TaskWithoutProject } from '~/types/project'
 
 type Lane = 'open' | 'done'
 const LANES: readonly Lane[] = ['open', 'done']
+/** Literal translation keys, so the localization audit resolves every label. */
+const LANE_LABEL_KEYS: Readonly<Record<Lane, string>> = { open: 'projects.temp.lane.open', done: 'projects.temp.lane.done' }
 /** The Done lane shows its 10 most recent Tasks until "Show all"; search shows every match. */
 const DONE_LIMIT = 10
 

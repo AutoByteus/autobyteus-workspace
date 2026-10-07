@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { isTaskRootHostListed, presentTaskRoot } from '../taskRootPresentation'
+import { TASK_ROOT_KIND_LABEL_KEYS, TASK_ROOT_STATE_LABEL_KEYS, isTaskRootHostListed, presentTaskRoot } from '../taskRootPresentation'
+import en from '~/localization/messages/en/projects'
+import zhCN from '~/localization/messages/zh-CN/projects'
 import type { TaskRootView } from '~/types/project'
 
 const root = (overrides: Partial<TaskRootView> = {}): TaskRootView => ({
@@ -48,5 +50,16 @@ describe('isTaskRootHostListed', () => {
     ['agent_org', 'org-root', true], ['agent_org', 'deleted-org', false],
   ] as const)('%s host %s → %s', (kind, runId, listed) => {
     expect(isTaskRootHostListed(history, { kind, runId })).toBe(listed)
+  })
+})
+
+describe('root label keys (CR-002: literal keys the localization audit resolves)', () => {
+  it('every root state and kind has a literal key present in the en and zh-CN catalogs', () => {
+    const keys = [...Object.values(TASK_ROOT_STATE_LABEL_KEYS), ...Object.values(TASK_ROOT_KIND_LABEL_KEYS)]
+    expect(Object.keys(TASK_ROOT_STATE_LABEL_KEYS).sort()).toEqual(['error', 'failed', 'idle', 'initializing', 'offline', 'running'])
+    for (const key of keys) {
+      expect((en as Record<string, string>)[key], key).toBeTruthy()
+      expect((zhCN as Record<string, string>)[key], key).toBeTruthy()
+    }
   })
 })

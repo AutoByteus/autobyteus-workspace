@@ -34,7 +34,7 @@
         <span class="ml-auto inline-flex flex-shrink-0 items-center gap-1.5 pl-2" :class="presentation.state === 'failed' ? 'font-medium text-red-600' : 'text-slate-500'" data-testid="project-task-root-status">
           <Icon v-if="presentation.state === 'failed'" icon="heroicons:exclamation-circle-20-solid" class="h-3.5 w-3.5" aria-hidden="true" />
           <StatusDot v-else :status="presentation.state as AgentStatus" />
-          {{ t(`projects.root.status.${presentation.state}`) }}
+          {{ t(TASK_ROOT_STATE_LABEL_KEYS[presentation.state]) }}
         </span>
         <Icon v-if="presentation.openable" icon="heroicons:chevron-right-20-solid" class="h-3.5 w-3.5 flex-shrink-0 text-slate-300 group-hover/root:text-slate-500" aria-hidden="true" />
         <!-- A root that cannot be opened keeps the chevron's space, so every status lines up. -->
@@ -54,7 +54,7 @@ import { useTaskRootNavigation } from '~/composables/projects/useTaskRootNavigat
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import type { AgentStatus } from '~/types/agent/AgentStatus'
 import type { TaskRootView } from '~/types/project'
-import { isTaskRootHostListed, presentTaskRoot } from '~/utils/projects/taskRootPresentation'
+import { TASK_ROOT_KIND_LABEL_KEYS, TASK_ROOT_STATE_LABEL_KEYS, isTaskRootHostListed, presentTaskRoot } from '~/utils/projects/taskRootPresentation'
 
 const props = withDefaults(defineProps<{
   root: TaskRootView
@@ -66,6 +66,6 @@ const { t } = useLocalization()
 const history = useRunHistoryStore()
 const navigation = useTaskRootNavigation()
 const presentation = computed(() => presentTaskRoot(props.root, isTaskRootHostListed(history, props.root.hostRoot)))
-const displayName = computed(() => presentation.value.name ?? t(`projects.root.kind.${props.root.kind}`))
+const displayName = computed(() => presentation.value.name ?? t(TASK_ROOT_KIND_LABEL_KEYS[props.root.kind]))
 const initials = computed(() => displayName.value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI')
 </script>

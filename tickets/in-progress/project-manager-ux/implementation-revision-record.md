@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / ARCH-REV-002 (Pass) | N/A (AR-001, AR-002 applied as mandatory guidance) | `Initial Baseline` | SR-003, SR-005, ARCH-REV-002 | Implementation complete; routed to Code Review |
+| IR-002 | `code_reviewer` / `code-review-report.md` / CRR-002 (Local Fix) | CR-002 (blocking), CR-001; API/E2E F-001 | `Local Fix` | IR-001, CRR-001, CRR-002, API-REV-001 | Literal localization keys; audit passes; routed to Code Review |
 
 ## Revision Entries
 
@@ -87,3 +88,38 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Org-hosted root opening was verified once.
 - Reduced motion and zh-CN were not rendered in the browser.
 - Codegen incident (one read-only introspection request to an unidentified local server on port 80, from the main checkout). The file was restored; details are in the handoff.
+
+### IR-002 — Literal localization keys (CR-002) and comment placement (CR-001)
+
+**Trigger and classification**
+- Triggering role, report path, and round: `/code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/tickets/in-progress/project-manager-ux/code-review-report.md`, round 2 (CRR-002, failure-origin review of API/E2E F-001).
+- Triggering finding IDs: CR-002 (blocking), CR-001 (non-blocking); F-001 (API-REV-001).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-001. `audit:localization-literals` failed with two M-015 findings, which blocked `build:electron*`.
+- Current authoritative result: the audit and the boundary guard pass; rendered copy is unchanged.
+
+**Related revisions**
+- Solution: `SR-003`, `SR-005`.
+- Architecture review: `ARCH-REV-002`.
+- Code review: `CRR-001`, `CRR-002`.
+- API/E2E: `API-REV-001`.
+- Delivery: `N/A`.
+
+**Implementation delta**
+- `utils/projects/taskRootPresentation.ts`: `TASK_ROOT_STATE_LABEL_KEYS` and `TASK_ROOT_KIND_LABEL_KEYS`.
+- `components/projects/ProjectTaskWorkers.vue`: uses those maps for the status label and the kind fallback. The kind fallback was a runtime key the audit did not flag.
+- `components/projects/TempTaskBoard.vue`: `LANE_LABEL_KEYS`.
+- `utils/projects/__tests__/taskRootPresentation.spec.ts`: a catalog presence test (en and zh-CN).
+- `autobyteus-server-ts/src/projects/services/task-agent-resource-service.ts`: the `forget()` doc comment is back above `forget()`.
+
+**Local validation and result**
+- `guard:localization-boundary` passes.
+- `audit:localization-literals` passes with zero unresolved findings.
+- Projects web specs: 85/85.
+- `vue-tsc`: unchanged; no errors in changed files.
+- Server `tsc`: clean.
+- Evidence: `implementation-evidence/ir-002/localization-checks.log`.
+
+**Next recipient or routing:** `get_handoff_rules` → Code Review (Large/High). Then API/E2E reruns F-001, the desktop journey, the PMU probe and the feed suite.
+
+**Remaining limitations or risks:** `build:electron:mac` was not rerun by implementation. O-1 (an intermittent PMU-002 click) is held by the reviewer and is not attributed.
