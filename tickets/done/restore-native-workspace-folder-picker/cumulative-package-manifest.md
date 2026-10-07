@@ -1,28 +1,28 @@
 # Cumulative Delivery Package Manifest
 
-Package restore-native-workspace-folder-picker. R3 Approved UREQ-001; Product UCONF-001; SR-007; IR-001; API-REV-001; DR-001. **Small / Low, direct validated route**. Independent architecture/source/test-code review reports and revisions **N/A — not applicable**. Prior delivery result **N/A**; DR-001 is the first baseline, not an inferred prior completion.
+Package restore-native-workspace-folder-picker. R3 Approved UREQ-001; Product UCONF-001; SR-007; IR-001; API-REV-001; DR-001 → DR-002; UV-001. **Small / Low, direct validated route**. Independent architecture/source/test-code review reports and revisions **N/A — not applicable**. Prior delivery result **N/A**; DR-001 is the first baseline, not an inferred prior completion.
 
-Paths are current pre-verification locations; do not remove the worktree until finalization archives them and a final manifest identifies durable locations. Historical upstream absolute paths remain provenance, not a second current authority. Product stays in its own canonical repository.
+Paths below are final target archive locations, materialized when this ticket is merged into personal; verify them before cleanup/terminal handoff. Historical upstream absolute paths remain provenance, not a second current authority. Product stays in its own canonical repository.
 
 ## Current Cumulative Requirements / Design / Implementation / Validation / Supplements
 All following paths were checked to exist during DR-001:
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/requirements-approval.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/solution-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/product-design-request.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/product-review-receipt.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/product-completion-reconciliation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/history/requirements-r2-before-product-reconciliation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/history/requirements-r3-as-presented.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/implementation-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/api-e2e-coverage-investigation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/api-e2e-test-case-ledger.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/requirements-doc.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/requirements-approval.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/solution-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/solution-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/product-design-request.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/product-review-receipt.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/product-completion-reconciliation.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/history/requirements-r2-before-product-reconciliation.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/history/requirements-r3-as-presented.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/implementation-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/implementation-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/api-e2e-test-case-ledger.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/api-e2e-revision-record.md`
 - `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker/baseline-conclusion-correction.md`
 - `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker/baseline-reevaluation.md`
 - `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker/baseline-request.md`
@@ -55,28 +55,32 @@ All following paths were checked to exist during DR-001:
 - `/Users/normy/autobyteus_org/autobyteus-web-design/ui-baseline-report.md`
 
 ## Supporting Evidence Directories (retained in full)
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/implementation-evidence`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/api-e2e-evidence`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/implementation-evidence`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/api-e2e-evidence`
 - `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker/review-evidence`
 - `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/restore-native-workspace-folder-picker/final-evidence`
 
 ## Durable Regression And Runbook Files
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/TESTING.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron/__tests__/preload.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/tests/e2e/workspace-folder-picker-probe.mjs`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/package.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/TESTING.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/chat/__tests__/ChatWorkspaceMenu.nativeFolder.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/run-settings/__tests__/RunSettingsCard.workspace.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron/__tests__/preload.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/workspace-folder-picker-probe.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/package.json`
 
 ## Delivery-Owned Authorities
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/handoff-summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/release-deployment-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/delivery-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/user-verification-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/release-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/tickets/in-progress/restore-native-workspace-folder-picker/delivery-evidence/dr-001`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/handoff-summary.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/user-verification-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/release-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-001`
 
 ## Canonical Docs Updated
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/docs/settings.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/docs/agent_execution_architecture.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
+
+## Current Finalization / Relocation
+All historical software paths rooted in the removed task worktree or tickets/in-progress map to this same repository-relative file under the durable main checkout/tickets/done archive. Upstream artifacts/evidence retain their historical execution paths; this manifest is the current path authority. External Product ownership/paths are unchanged.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002`

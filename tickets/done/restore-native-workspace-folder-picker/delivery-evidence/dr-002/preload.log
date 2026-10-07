@@ -1,0 +1,13 @@
+
+> autobyteus@1.4.96 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web
+> vitest --config ./electron/vitest.config.ts __tests__/preload.spec.ts --run
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron
+
+ ✓ __tests__/preload.spec.ts (5 tests) 56ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  20:57:50
+   Duration  651ms (transform 45ms, setup 0ms, collect 27ms, tests 56ms, environment 0ms, prepare 68ms)

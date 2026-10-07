@@ -1,0 +1,61 @@
+{
+  "controls": {
+    "input": {
+      "x": 525.5,
+      "y": 749,
+      "width": 263.5625,
+      "height": 34,
+      "top": 749,
+      "right": 789.0625,
+      "bottom": 783,
+      "left": 525.5
+    },
+    "browse": {
+      "x": 797.0625,
+      "y": 749,
+      "width": 86.4375,
+      "height": 34,
+      "top": 749,
+      "right": 883.5,
+      "bottom": 783,
+      "left": 797.0625
+    },
+    "fontSize": "14px",
+    "lineHeight": "20px",
+    "padding": "6px 12px",
+    "borderRadius": "6px",
+    "color": "rgb(26, 26, 26)",
+    "borderColor": "rgb(204, 204, 204)",
+    "hint": "Choose a folder on this computer, or enter its full path."
+  },
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&orgRunId=folder_proof_org_80e8f583cc4c4d958eaeda4f676d943c&mode=history&memberAddress=/product",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_9e82707e2940000968cb8e136003fefb1fe15f7606440568c470acdb9ecff2b7"
+  },
+  "registered": [
+    "agent_ws_2c7d9890f028b351b277ee1b5c22455fab7739004c7f6e0a39b35c7596580a5f",
+    "agent_ws_95de13a62db1b60172000e20b9473eef212b7b41cccdd5fd154d077b34928314",
+    "agent_ws_9e82707e2940000968cb8e136003fefb1fe15f7606440568c470acdb9ecff2b7",
+    "temp_ws_default"
+  ],
+  "path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-folder-picker-4WK3yM/saved-member",
+  "focused": "chat-workspace-path",
+  "menu": {
+    "x": 512.5,
+    "y": 441,
+    "width": 384,
+    "height": 411,
+    "top": 441,
+    "right": 896.5,
+    "bottom": 852,
+    "left": 512.5
+  },
+  "width": 1512,
+  "height": 862,
+  "overflow": false
+}

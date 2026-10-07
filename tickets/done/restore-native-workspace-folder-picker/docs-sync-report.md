@@ -45,3 +45,6 @@ The text-only shared form description is replaced with native-assisted **and** t
 
 ## Result / Continuation
 **Docs sync Pass — Updated**, not a no-impact decision. No intended-behavior ambiguity or design reroute identified. Delivery completion is separately held for explicit user verification and repository finalization; these edits are not committed/pushed before that signal. `handoff-summary.md` and `release-deployment-report.md` are authoritative for current gates and evidence limitations, including the upstream possible default-profile-access incident.
+
+## DR-002 Final Integrated-State Recheck
+After UV-001, delivery archived/protected docs in93a45f69c and merged actual base665d8e0cd3bf99e4164809569e4e29c5e16bb3c9 (initial fetch e87093f09; intervening documentation-only receipt) as92c96ce111c9874f9185cdc13d47fb615357344c. No conflict or folder-picker owner/behavior change. Fresh84+5 tests and rebuilt packaged seven manual/API cases pass; native-only case not repeated. The two long-lived doc updates remain correct without further content changes. DR-001 hold is superseded by explicit user UV-001; no release requested. Finalization receipts/current gates are in the current release-deployment-report.md.

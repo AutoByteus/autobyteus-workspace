@@ -1,0 +1,23 @@
+{
+  "controls": null,
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace?rootSubjectKind=agent_org&definitionId=folder-proof-org&orgRunId=folder_proof_org_80e8f583cc4c4d958eaeda4f676d943c&mode=active&memberAddress=/product",
+  "target": {
+    "kind": "team",
+    "teamDefinitionId": "folder-proof-team"
+  },
+  "chatWorkspace": {
+    "kind": "existing",
+    "workspaceId": "agent_ws_9e82707e2940000968cb8e136003fefb1fe15f7606440568c470acdb9ecff2b7"
+  },
+  "registered": [
+    "agent_ws_2c7d9890f028b351b277ee1b5c22455fab7739004c7f6e0a39b35c7596580a5f",
+    "agent_ws_95de13a62db1b60172000e20b9473eef212b7b41cccdd5fd154d077b34928314",
+    "agent_ws_9e82707e2940000968cb8e136003fefb1fe15f7606440568c470acdb9ecff2b7",
+    "temp_ws_default"
+  ],
+  "focused": "run-member-toggle",
+  "menu": null,
+  "width": 1512,
+  "height": 862,
+  "overflow": false
+}
