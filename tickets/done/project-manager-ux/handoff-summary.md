@@ -2,7 +2,12 @@
 
 ## Status
 
-- Delivery state: **DR-001: waiting for your verification.** Nothing has been pushed, merged or released yet.
+- Delivery state: **Delivery Completed (DR-002).** The user verified on 2026-10-07 ("release a new beta i meant"); see `user-verification-record.md`.
+  - Merged into `personal` as `8bdf184bd` and pushed.
+  - Beta `v1.4.96-beta.4` (release commit `0ade50f5a`) is published. All 4 workflows succeeded, and the GitHub prerelease, updater metadata and Docker `:1.4.96-beta.4`/`:beta` are verified.
+  - The first tag `v1.4.96-beta.3` failed Desktop Release on over-long archived evidence paths, which were fixed in `f1d569db4`. Its iOS and Docker runs were cancelled, and only its Android APK was published.
+  - The worktree and the local and remote branches are cleaned up.
+  - The sections below record the pre-verification state and are kept for history.
 - Classification (unchanged): `task_size=Large`, `architectural_risk=High`, reviewed route.
 
 | Stage | Revision | Result |

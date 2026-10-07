@@ -1,0 +1,17 @@
+# Final merge receipt (reconstructed from git)
+target before: 88fad73cb (origin/personal, unchanged after verification)
+merge: 8bdf184bd7d256760ecf3c315298033b4db3922e
+parents: 88fad73cbd20201642acdcfe75e69b1897ec135c 9d3fbac92a5dbace21c4cf082a1a705b50589a11
+subject: Merge verified project-manager-ux
+author: normy <normy@macbookpro.speedport.ip> Wed Oct 7 13:27:52 2026 +0200
+merge tree: 2c2de8bea746cf740eab90186b06b9632bf16fe5
+ticket head 9d3fbac92 tree: 2c2de8bea746cf740eab90186b06b9632bf16fe5
+push: 88fad73cb..8bdf184bd personal -> personal
+ticket branch commits (first-parent):
+9d3fbac92 docs(delivery): sync Project Manager UX probe docs and archive project-manager-ux
+adc8912cb Merge remote-tracking branch 'origin/personal' into codex/project-manager-ux
+671b65fe6 test(projects): add change-feed E2E, extend the Project Manager UX probe and record review artifacts
+8ef467696 fix(projects): use literal localization keys for root states and Temp lanes
+4d469b0c5 feat(projects): live Projects pages, Task roots with worker status, Temp tasks
+da2f961be docs(ticket): record approved project-manager-ux package (SR-003, SR-005, ARCH-REV-002)
+3cc7e05c4 docs(ticket): draft project-manager-ux requirements and product design request (SR-001)
