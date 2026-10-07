@@ -92,4 +92,18 @@ describe('useRightSideTabs contextual default (D-17)', () => {
     expect(api().contextualScopeKey.value).toBe('agent_org:shared-run-id')
     expect(api().activeTab.value).toBe('teamMembers')
   })
+
+  // projects-always-on SR-003 (REQ-009): opening a worker from the Projects tab changes the scope; the tab stays.
+  it('keeps Projects selected when the conversation scope changes', async () => {
+    const { Host, api } = await loadSubject()
+    target.value = chatTarget('chat-1')
+    mount(Host)
+    api().selectTabExplicitly('projects')
+    target.value = teamTarget('team-9')
+    await nextTick()
+    expect(api().activeTab.value).toBe('projects')
+    target.value = chatTarget('chat-2')
+    await nextTick()
+    expect(api().activeTab.value).toBe('projects')
+  })
 })

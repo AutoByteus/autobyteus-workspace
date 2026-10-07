@@ -242,7 +242,6 @@ const operationResponse = (name, variables) => {
     case 'GetAgentOrgDefinitions': return { agentOrgDefinitions: [] }
     case 'GetSkills': return { skills: [] }
     case 'GetServerSettings': return { serverSettings: [] }
-    case 'GetProjectsCapability': return { projectsCapability: { enabled: false, settingKey: 'ENABLE_PROJECTS', source: 'INITIALIZED_EMPTY_CATALOG' } }
     case 'GetSkillImprovementCapability': return { skillImprovementCapability: { enabled: false, settingKey: 'ENABLE_SKILL_IMPROVEMENT', source: 'INITIALIZED_EMPTY_CATALOG' } }
     default: throw new Error(`Unexpected GraphQL operation ${name}`)
   }

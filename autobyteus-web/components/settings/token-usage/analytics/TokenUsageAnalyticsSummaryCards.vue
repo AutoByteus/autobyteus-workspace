@@ -19,7 +19,7 @@
         class="flex min-h-32 min-w-0 flex-col bg-white px-4 py-4 sm:px-5"
         :data-summary-id="card.id"
       >
-        <p class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">{{ card.label }}</p>
+        <p class="text-[0.6875rem] font-bold uppercase tracking-[0.08em] text-slate-500">{{ card.label }}</p>
         <p
           class="mt-3 truncate font-bold tracking-tight tabular-nums"
           :class="card.primary ? 'text-4xl text-blue-700' : 'text-2xl text-slate-950'"

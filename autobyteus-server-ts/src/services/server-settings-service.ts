@@ -4,7 +4,6 @@ import {
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
 } from "../skill-improvement/domain/settings.js";
-import { PROJECTS_CAPABILITY_SETTING_KEY } from "../projects/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
@@ -152,11 +151,6 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
       "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
-    );
-
-    this.registerPredefinedSetting(
-      PROJECTS_CAPABILITY_SETTING_KEY,
-      "Controls whether the Projects module is available for this node at runtime. Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(

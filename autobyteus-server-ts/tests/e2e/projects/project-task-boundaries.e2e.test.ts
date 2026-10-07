@@ -141,8 +141,7 @@ describe("Project Task production HTTP boundaries", () => {
     console.info("Owned HTTP fixture cleanup: Studio/MCP listeners closed, data directory removed.");
   }, 30000);
 
-  it("API-MCP: selected default host executes equivalent compact mutations and detailed native reads while UI remains off", async () => {
-    expect((await gql<{ projectsCapability: { enabled: boolean } }>("{projectsCapability{enabled}}" )).projectsCapability.enabled).toBe(false);
+  it("API-MCP: selected default host executes equivalent compact mutations and detailed native reads", async () => {
     expect((await call("list_projects", {})).structuredContent).toEqual({ projects: [] });
     const projectId = await createProject("HTTP parity");
     const catalog = await call("list_projects", {});
@@ -192,7 +191,6 @@ describe("Project Task production HTTP boundaries", () => {
       request.on("error", reject); request.end(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }));
     });
     expect(invalidHostStatus).toBe(403);
-    expect((await gql<{ projectsCapability: { enabled: boolean } }>("{projectsCapability{enabled}}" )).projectsCapability.enabled).toBe(false);
   });
 
   it("API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction", async () => {

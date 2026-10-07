@@ -34,7 +34,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014'];
+const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -999,6 +999,144 @@ const compactCardEdges = async () => {
   } finally { input.close(); }
 };
 
+// ---------------------------------------------------------------- Projects tab in the right panel (projects-always-on SR-003, PMU-015)
+/** AC-006..010: the tab is first; its board follows an agent live beside the chat; a worker opens in the center and the tab stays; card → detail → back; the choice survives a reload. */
+const projectsTab = async () => {
+  const { ids, names } = await createDefinitions('PmuTab');
+  const projectId = await createProject(`Tab Board ${randomUUID().slice(0, 6)}`);
+  const existing = await createTask(projectId, 'Prepare the launch checklist');
+  const root = await createRoot('agent', ids);
+  const input = await managerInput(root);
+  const { page, errors } = await newPage();
+  const panel = page.locator('[data-test="right-side-projects-panel"]');
+  const tabButton = () => page.locator('[data-test="right-side-tab-list"] [data-tab-name="projects"]');
+  const panelRow = (taskId) => panel.locator(`[data-testid="project-task-row-${taskId}"]`);
+  await goto(page, `/chat?id=${encodeURIComponent(root.rootId)}`);
+  await page.locator('[data-test="right-side-tab-list"] [data-tab-name]').first().waitFor({ timeout: 60000 });
+  const tabOrder = await page.locator('[data-test="right-side-tab-list"] [data-tab-name]').evaluateAll((es) => es.map((e) => e.getAttribute('data-tab-name')));
+  assert(tabOrder[0] === 'projects' && tabOrder[1] === 'files', 'Projects is the first tab, before Files', tabOrder);
+  await tabButton().click();
+  await panelRow(existing).waitFor({ timeout: 30000 });
+  const picked = await panel.getByTestId('projects-panel-picker-select').inputValue();
+  assert(picked === `project:${projectId}`, 'defaults to the most recently updated Project', { picked });
+  assert(await panel.getByTestId('project-tasks-new-button').count() === 0, 'no New task in the tab');
+  const lanes = await panel.locator('[data-testid^="project-task-column-"]').filter({ has: page.locator('h2') }).evaluateAll((es) => es.map((e) => e.getBoundingClientRect().left));
+  assert(lanes.length === 3 && lanes.every((left) => Math.abs(left - lanes[0]) < 2), 'lanes stack in the panel', lanes);
+  await shot(page, 'pmu-015-tab-board');
+  // The manager adds a Task while its chat stays in the center.
+  const chatUrl = page.url();
+  input.send(callTool('create_or_update_task', { project_id: projectId, description: 'Agent-added from the chat' }));
+  const added = await until('Task arrives in the tab live', async () => (await projectTasks(projectId)).find((t) => t.taskId !== existing)?.taskId, 30000);
+  await panelRow(added).waitFor({ timeout: 15000 });
+  assert(page.url() === chatUrl, 'the chat stays in the center');
+  // A worker opens in the center; the Projects tab stays selected.
+  input.send(callTool('delegate_task', { recipient_address: `/${segment(names.worker)}`, task_id: existing }));
+  const workerLine = panelRow(existing).locator('[data-testid^="project-task-root-"][data-openable="true"]');
+  await workerLine.waitFor({ timeout: 60000 });
+  await workerLine.click();
+  await until('worker conversation in the center', async () => /Task delegator address/.test(await centerText(page)), 30000);
+  assert(await tabButton().getAttribute('aria-selected') === 'true' && await panel.isVisible(), 'the Projects tab stays selected');
+  await shot(page, 'pmu-015-worker-open-tab-kept');
+  // Card → detail in the tab → back, with search kept.
+  await panel.getByTestId('project-tasks-search-input').fill('checklist');
+  await panelRow(existing).getByTestId('project-task-row-link').click();
+  await panel.getByTestId('projects-panel-task').waitFor();
+  const detail = await panel.getByTestId('projects-panel-task-description').innerText();
+  assert(detail === 'Prepare the launch checklist', 'full description in the tab', { detail });
+  assert(await panel.getByTestId('projects-panel-task-open-page').getAttribute('href') === `/projects/${projectId}/tasks/${existing}`, 'Open in Projects links the Task page');
+  // Icons load on first use; both header icons must render.
+  const iconDrawn = (testId) => panel.getByTestId(testId).locator('svg path').first().waitFor({ timeout: 15000 });
+  await iconDrawn('projects-panel-task-back'); await iconDrawn('projects-panel-task-open-page');
+  const iconBoxes = await panel.locator('[data-testid="projects-panel-task-back"] svg, [data-testid="projects-panel-task-open-page"] svg')
+    .evaluateAll((es) => es.map((e) => { const b = e.getBoundingClientRect(); return { w: b.width, h: b.height, color: getComputedStyle(e).color }; }));
+  await shot(page, 'pmu-015-task-detail');
+  await panel.getByTestId('projects-panel-task-back').click();
+  assert(await panel.getByTestId('project-tasks-search-input').inputValue() === 'checklist', 'search kept after back');
+  // The choice survives a reload.
+  await panel.getByTestId('projects-panel-picker-select').selectOption('temp');
+  await panel.getByTestId('temp-task-board').waitFor();
+  await page.reload({ waitUntil: 'networkidle' });
+  await tabButton().waitFor({ timeout: 60000 });
+  if (await tabButton().getAttribute('aria-selected') !== 'true') await tabButton().click();
+  await until('Temp tasks remembered after reload', async () => (await panel.getByTestId('projects-panel-picker-select').inputValue().catch(() => '')) === 'temp', 30000);
+  await shot(page, 'pmu-015-temp-remembered');
+  assertNoBrowserErrors(errors);
+  return { tabOrder, picked, lanes, iconBoxes, errors };
+};
+
+/**
+ * AC-006/AC-009 beyond an Agent chat: in Team and Org conversations the Projects tab is first and a worker opened
+ * from it keeps the tab; at a constrained width the collapsed strip lists Projects first and its drawer shows the board.
+ */
+const projectsTabOtherRootsAndNarrow = async () => {
+  const { ids, names } = await createDefinitions('PmuTabRoots');
+  const projectId = await createProject(`Tab Roots ${randomUUID().slice(0, 6)}`);
+  const { page, errors } = await newPage();
+  const panel = page.locator('[data-test="right-side-projects-panel"]');
+  const tabList = page.locator('[data-test="right-side-tab-list"] [data-tab-name]');
+  const details = {};
+  const inputs = [];
+  try {
+    for (const kind of ['team', 'org']) {
+      const taskId = await createTask(projectId, `Work hosted by the ${kind} run`);
+      const root = await createRoot(kind, ids);
+      const input = await managerInput(root); inputs.push(input);
+      input.send(callTool('delegate_task', { recipient_address: '/worker', task_id: taskId }));
+      await until(`${kind}: worker started`, async () => (await rootOf(projectId, taskId))?.start === 'started', 60000);
+      // Open the root's conversation the way a user does: from the left panel.
+      await goto(page, '/workspace');
+      await expandWorkspace(page);
+      if (kind === 'team') {
+        await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).click();
+        await page.locator(`[data-test="workspace-team-row-${root.rootId}"]`).click();
+      } else {
+        await page.locator(`[data-test="agent-org-definition-${slug(names.org)}"]`).click();
+        await page.locator(`[data-test="agent-org-run-open-${root.rootId}"]`).click();
+      }
+      await tabList.first().waitFor({ timeout: 60000 });
+      const order = await tabList.evaluateAll((es) => es.map((e) => e.getAttribute('data-tab-name')));
+      assert(order[0] === 'projects' && order[1] === 'files', `${kind}: Projects is the first tab`, order);
+      await tabList.first().click();
+      await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+      const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
+      await line.waitFor({ timeout: 60000 });
+      await line.click();
+      await until(`${kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      const kept = await tabList.first().getAttribute('aria-selected') === 'true' && await panel.isVisible();
+      assert(kept, `${kind}: the Projects tab stays selected after opening the worker`);
+      await shot(page, `pmu-016-${kind}-worker-open-tab-kept`);
+      details[kind] = { order, url: page.url() };
+    }
+    // Constrained width: the right panel collapses to a strip that opens a drawer.
+    let narrow = null;
+    const tried = [];
+    for (const width of [1100, 1000, 900, 820, 760]) {
+      await page.setViewportSize({ width, height: 900 });
+      await sleep(600);
+      const strips = await page.locator('[data-test="workspace-right-tool-strip"], [data-test="workspace-right-tool-strip-surface"]').evaluateAll((es) => es.map((e) => ({
+        activation: e.getAttribute('data-strip-activation'), behavior: e.getAttribute('data-strip-behavior'), visible: e.getBoundingClientRect().width > 0 })));
+      tried.push({ width, strips });
+      const index = strips.findIndex((x) => x.visible && x.activation === 'open-drawer');
+      if (index >= 0) { narrow = { width, strip: page.locator('[data-test="workspace-right-tool-strip"], [data-test="workspace-right-tool-strip-surface"]').nth(index) }; break; }
+    }
+    assert(narrow, 'a constrained width collapses the right panel to a drawer strip', { tried });
+    const stripOrder = await narrow.strip.locator('[data-tab-name]').evaluateAll((es) => es.map((e) => e.getAttribute('data-tab-name')));
+    assert(stripOrder[0] === 'projects' && stripOrder[1] === 'files', 'the strip lists Projects first', stripOrder);
+    await narrow.strip.locator('[data-tab-name="projects"]').click();
+    const drawer = page.locator('[data-test="workspace-right-tool-drawer"]');
+    await drawer.waitFor({ state: 'visible', timeout: 15000 });
+    const drawerOrder = await drawer.locator('[data-tab-name]').evaluateAll((es) => es.map((e) => e.getAttribute('data-tab-name')));
+    assert(drawerOrder[0] === 'projects', 'the drawer lists Projects first', drawerOrder);
+    await drawer.locator('[data-test="right-side-projects-panel"] [data-testid^="project-task-row-"]').first().waitFor({ timeout: 30000 });
+    const overflow = await drawer.evaluate((e) => e.scrollWidth > e.clientWidth + 1);
+    assert(!overflow, 'the drawer board has no horizontal overflow');
+    await shot(page, 'pmu-016-drawer-projects');
+    details.narrow = { width: narrow.width, stripOrder, drawerOrder };
+    assertNoBrowserErrors(errors);
+    return details;
+  } finally { for (const input of inputs) input.close(); }
+};
+
 const CASES = {
   'PMU-001': ['Projects list and board follow writes live (arrival highlight, counts)', listAndBoardLive],
   'PMU-002': ['Agent root: live status, live move highlight, opening the worker, DONE → Offline muted', agentRootOnBoard],
@@ -1014,6 +1152,8 @@ const CASES = {
   'PMU-012': ['An Org-hosted root opened from a fresh Task page before the Org run is hydrated', orgRootUnhydrated],
   'PMU-013': ['Compact cards: ~10,000-word and multi-line descriptions render ≤2+2 lines on the Project board and Temp tasks at 1440 and 1024; short labels; full text on the Task pages; search beyond the visible lines', compactCards],
   'PMU-014': ['Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation', compactCardEdges],
+  'PMU-015': ['Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)', projectsTab],
+  'PMU-016': ['Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first', projectsTabOtherRootsAndNarrow],
 };
 
 let result = 'Pass';
@@ -1023,7 +1163,6 @@ try {
   assert(executablePath, 'No Chrome found; pass --browser-executable');
   await startStack();
   await ensureWorkspace();
-  await gql('mutation{setProjectsEnabled(enabled:true){enabled}}');
   openFeed();
   browser = await chromium.launch({ headless: true, executablePath });
   evidence.browserVersion = browser.version();

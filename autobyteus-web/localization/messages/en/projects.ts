@@ -179,6 +179,14 @@ const projectMessages = {
   'projects.temp.showFewer': 'Show fewer',
   'projects.temp.referenceFiles': 'Reference files',
   'projects.temp.readOnly': 'Only agents change this Task.',
+  // projects-always-on SR-003: the right panel's Projects tab
+  'projects.panel.pickerLabel': 'Choose a Project or Temp tasks',
+  'projects.panel.emptyTitle': 'No Projects or Temp tasks yet',
+  'projects.panel.emptyHelp': 'Create a Project, or let an agent hand out work in a chat.',
+  'projects.panel.openProjectsPage': 'Open Projects',
+  'projects.panel.back': 'Back to board',
+  'projects.panel.openInProjects': 'Open in Projects',
+  'projects.panel.taskMissing': 'This Task is no longer here.',
 } satisfies TranslationCatalog;
 
 export default projectMessages;

@@ -1,11 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { applicationsCapabilityStoreMock, projectsCapabilityStoreMock, runtime } = vi.hoisted(() => ({
+const { applicationsCapabilityStoreMock, runtime } = vi.hoisted(() => ({
   applicationsCapabilityStoreMock: {
-    isEnabled: false,
-    ensureResolved: vi.fn().mockResolvedValue(null),
-  },
-  projectsCapabilityStoreMock: {
     isEnabled: false,
     ensureResolved: vi.fn().mockResolvedValue(null),
   },
@@ -18,10 +14,6 @@ vi.mock('vue-router', () => ({
 
 vi.mock('~/stores/applicationsCapabilityStore', () => ({
   useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
-}));
-
-vi.mock('~/stores/projectsCapabilityStore', () => ({
-  useProjectsCapabilityStore: () => projectsCapabilityStoreMock,
 }));
 
 vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({
@@ -40,44 +32,31 @@ const navKeys = () => useShellPrimaryNavigation().primaryNavItems.value.map((ite
 describe('useShellPrimaryNavigation capability gating', () => {
   beforeEach(() => {
     applicationsCapabilityStoreMock.isEnabled = false;
-    projectsCapabilityStoreMock.isEnabled = false;
     runtime.mobile = false;
     vi.clearAllMocks();
   });
 
-  it('hides Projects while the capability is disabled', () => {
-    expect(navKeys()).toEqual(['chat', 'agents', 'agentTeams', 'agentOrgs', 'skills', 'memory', 'nodes']);
-  });
-
+  // projects-always-on (AC-001): Projects needs no capability; it is always shown on desktop.
   it.each<{ applicationsEnabled: boolean; expectedKeys: string[] }>([
     { applicationsEnabled: false, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'skills', 'memory', 'nodes'] },
     { applicationsEnabled: true, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'applications', 'skills', 'memory', 'nodes'] },
-  ])('places Projects immediately after Agent Orgs (Applications enabled: $applicationsEnabled)', ({ applicationsEnabled, expectedKeys }) => {
-    projectsCapabilityStoreMock.isEnabled = true;
+  ])('always shows Projects immediately after Agent Orgs on desktop (Applications enabled: $applicationsEnabled)', ({ applicationsEnabled, expectedKeys }) => {
     applicationsCapabilityStoreMock.isEnabled = applicationsEnabled;
 
     expect(navKeys()).toEqual(expectedKeys);
   });
 
-  it('keeps Projects hidden in the mobile remote-access runtime', () => {
-    projectsCapabilityStoreMock.isEnabled = true;
+  it('keeps Projects hidden in the mobile remote-access runtime (AC-004)', () => {
     runtime.mobile = true;
 
     expect(navKeys()).toEqual(['chat', 'agents', 'agentTeams', 'agentOrgs', 'skills', 'memory']);
   });
 
-  it('gates Projects independently of Applications', () => {
-    applicationsCapabilityStoreMock.isEnabled = true;
-
-    expect(navKeys()).toEqual(['chat', 'agents', 'agentTeams', 'agentOrgs', 'applications', 'skills', 'memory', 'nodes']);
-  });
-
-  it('resolves both capabilities when navigation readiness is requested, tolerating failures', async () => {
-    projectsCapabilityStoreMock.ensureResolved.mockRejectedValueOnce(new Error('boom'));
+  it('resolves only the Applications capability when navigation readiness is requested, tolerating failures', async () => {
+    applicationsCapabilityStoreMock.ensureResolved.mockRejectedValueOnce(new Error('boom'));
 
     await expect(useShellPrimaryNavigation().ensurePrimaryNavigationReady()).resolves.toBeDefined();
     expect(applicationsCapabilityStoreMock.ensureResolved).toHaveBeenCalledOnce();
-    expect(projectsCapabilityStoreMock.ensureResolved).toHaveBeenCalledOnce();
   });
 
   it('routes and matches the Projects destination', () => {

@@ -10,12 +10,10 @@ import {
 const orgSnapshot = (orgRunId = "org-run-1") => ({
   root_subject_kind: "agent_org",
   root_run_id: "org-run-1",
-  schema_version: 1,
   root_org: {
     base_change_sequence: 0,
     is_active: true,
     execution_tree: {
-      schemaVersion: 1,
       subjectKind: "agent_org",
       createdAt: "2026-09-01T00:00:00.000Z",
       archivedAt: null,
@@ -39,7 +37,6 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
       },
     },
     closed_task_executions: [],
-    task_records: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", records: [] },
     communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] },
     agent_statuses: [],
     agent_input_states: [],
@@ -87,22 +84,10 @@ const status = (member_address, agent_run_id) => ({
   recoverableBlock: null,
 });
 
-const taskRecord = (taskId, delegatorAgentRunId, recipientAddress, taskExecution) => ({
-  taskId,
-  delegatorAgentRunId,
-  recipientAddress,
-  taskExecution,
-  description: `Task ${taskId}`,
-  referenceFiles: [],
-  status: "active",
-  updates: [],
-  createdAt: "2026-09-01T00:00:01.000Z",
-});
-
 test("requires explicit family and exact matching branch", () => {
-  assert.equal(RootExecutionViewDtoSchema.parse({ root_subject_kind: "agent_team", root_run_id: "t", schema_version: 2, root_team: {} }).root_subject_kind, "agent_team");
+  assert.equal(RootExecutionViewDtoSchema.parse({ root_subject_kind: "agent_team", root_run_id: "t", root_team: {} }).root_subject_kind, "agent_team");
   assert.equal(RootExecutionViewDtoSchema.parse(orgSnapshot()).root_subject_kind, "agent_org");
-  assert.throws(() => RootExecutionViewDtoSchema.parse({ root_subject_kind: "agent_org", root_run_id: "o", schema_version: 2, root_team: {} }));
+  assert.throws(() => RootExecutionViewDtoSchema.parse({ root_subject_kind: "agent_org", root_run_id: "o", root_team: {} }));
   assert.throws(() => RootExecutionViewDtoSchema.parse(orgSnapshot("another-org-run")), /root correlation mismatch/);
 });
 
@@ -191,19 +176,20 @@ test("requires one correlated status for every live Agent execution", () => {
     agentRunId: "agent-run-task-active",
     platformAgentRunId: null,
     startedAt: "2026-09-01T00:00:00.000Z",
-    settledAt: null,
   }, {
-    address: "/task-settled",
-    agentRunId: "agent-run-task-settled",
+    address: "/task-closed",
+    agentRunId: "agent-run-task-closed",
     platformAgentRunId: null,
     startedAt: "2026-09-01T00:00:00.000Z",
-    settledAt: "2026-09-01T00:01:00.000Z",
   });
+  // A closed (DONE) task execution stays in the tree, so it still has its status.
+  snapshot.root_org.closed_task_executions.push({ agentRunId: "agent-run-task-closed" });
   snapshot.root_org.agent_statuses.push(
     status("/lead", "agent-run-lead"),
     status("/task-active", "agent-run-task-active"),
+    status("/task-closed", "agent-run-task-closed"),
   );
-  assert.equal(RootExecutionViewDtoSchema.parse(snapshot).root_org.agent_statuses.length, 2);
+  assert.equal(RootExecutionViewDtoSchema.parse(snapshot).root_org.agent_statuses.length, 3);
 
   const missing = structuredClone(snapshot);
   missing.root_org.agent_statuses.pop();
@@ -213,9 +199,13 @@ test("requires one correlated status for every live Agent execution", () => {
   duplicate.root_org.agent_statuses.push(status("/lead", "agent-run-lead"));
   assert.throws(() => RootExecutionViewDtoSchema.parse(duplicate), /is duplicated/);
 
-  const settledStatus = structuredClone(snapshot);
-  settledStatus.root_org.agent_statuses.push(status("/task-settled", "agent-run-task-settled"));
-  assert.throws(() => RootExecutionViewDtoSchema.parse(settledStatus), /status identity mismatch/);
+  const unknownStatus = structuredClone(snapshot);
+  unknownStatus.root_org.agent_statuses.push(status("/task-unknown", "agent-run-task-unknown"));
+  assert.throws(() => RootExecutionViewDtoSchema.parse(unknownStatus), /status identity mismatch/);
+
+  const closedConfigured = structuredClone(snapshot);
+  closedConfigured.root_org.closed_task_executions.push({ agentRunId: "agent-run-lead" });
+  assert.throws(() => RootExecutionViewDtoSchema.parse(closedConfigured), /is not a task execution of the execution tree/);
 });
 
 test("rejects duplicate and sidecar AgentOrg member identities", () => {
@@ -272,7 +262,7 @@ test("requires each configured Team coordinator to be one of that Team's direct 
   );
 });
 
-test("correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses", () => {
+test("correlates restored task executions by fresh run identity while reusing configured addresses", () => {
   const snapshot = orgSnapshot();
   snapshot.root_org.execution_tree.rootOrg.members.push(
     configuredAgent("/director", "agent-run-director"),
@@ -287,7 +277,6 @@ test("correlates task-bearing restored or migrated state by fresh run identity w
     agentRunId: "agent-run-worker-task",
     platformAgentRunId: null,
     startedAt: "2026-09-01T00:00:01.000Z",
-    settledAt: null,
   }, {
     address: "/team",
     teamRunId: "team-run-task",
@@ -297,12 +286,7 @@ test("correlates task-bearing restored or migrated state by fresh run identity w
     ],
     taskExecutions: [],
     startedAt: "2026-09-01T00:00:02.000Z",
-    settledAt: null,
   });
-  snapshot.root_org.task_records.records.push(
-    taskRecord("task-agent", "agent-run-director", "/worker", { agentRunId: "agent-run-worker-task" }),
-    taskRecord("task-team", "agent-run-director", "/team", { teamRunId: "team-run-task" }),
-  );
   snapshot.root_org.agent_statuses.push(
     status("/director", "agent-run-director"),
     status("/worker", "agent-run-worker-configured"),
@@ -314,16 +298,12 @@ test("correlates task-bearing restored or migrated state by fresh run identity w
   );
 
   const parsed = RootExecutionViewDtoSchema.parse(snapshot);
-  assert.equal(parsed.root_org.task_records.records.length, 2);
   assert.equal(parsed.root_org.agent_statuses.filter((entry) => entry.member_address === "/worker").length, 2);
 
+  // A task execution reuses a configured address, never a configured run identity.
   const configuredRunAsTask = structuredClone(snapshot);
-  configuredRunAsTask.root_org.task_records.records[0].taskExecution = { agentRunId: "agent-run-worker-configured" };
-  assert.throws(() => RootExecutionViewDtoSchema.parse(configuredRunAsTask), /task 'task-agent'.*execution identity mismatch/);
-
-  const wrongExecutionAddress = structuredClone(snapshot);
-  wrongExecutionAddress.root_org.execution_tree.rootOrg.taskExecutions[0].address = "/director";
-  assert.throws(() => RootExecutionViewDtoSchema.parse(wrongExecutionAddress), /task 'task-agent'.*execution identity mismatch/);
+  configuredRunAsTask.root_org.execution_tree.rootOrg.taskExecutions[0].agentRunId = "agent-run-worker-configured";
+  assert.throws(() => RootExecutionViewDtoSchema.parse(configuredRunAsTask), /AgentRun identity 'agent-run-worker-configured' is duplicated/);
 
   const duplicateConfiguredAddress = structuredClone(snapshot);
   duplicateConfiguredAddress.root_org.execution_tree.rootOrg.members.push(

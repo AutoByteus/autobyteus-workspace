@@ -39,7 +39,7 @@ const record = async (id, fn) => {
 }
 let child, browser, page, log, port
 const installed = []
-const expanded = () => page.locator('[data-test="app-left-panel-primary-nav"] li > button:first-child')
+const expanded = () => page.locator('[data-test="app-left-panel-primary-nav"] li > div > button:first-child')
 const strip = () => page.locator('[data-test="workspace-left-navigation-strip"] button[data-nav-key]:not([data-nav-key="settings"])')
 const labels = ['Chat', 'Agents', 'Agent Teams', 'Agent Orgs', 'Projects', 'Applications', 'Skills', 'Memory', 'Nodes']
 const collapse = async () => { await page.getByRole('button', { name: 'Collapse left panel', exact: true }).click(); await strip().first().waitFor() }
@@ -70,7 +70,7 @@ try {
     if (url.pathname === '/graphql') {
       const body = req.postDataJSON() || {}; evidence.graphql.push({ operation: body.operationName, query: body.query })
       assert(!/^\s*mutation/.test(body.query || ''), 'Navigation must not mutate project/backend data')
-      const data = { projects: [], agentDefinitions: [], agentTeamDefinitions: [], agentOrgDefinitions: [], workspaces: [], listWorkspaceRunHistory: [], listCollaborationRootHistory: [], projectsCapability: { __typename: 'ProjectsCapability', enabled: true, settingKey: 'ENABLE_PROJECTS', source: 'SERVER_SETTING' }, applicationsCapability: { __typename: 'ApplicationsCapability', enabled: true, settingKey: 'ENABLE_APPLICATIONS', source: 'SERVER_SETTING', scope: 'BOUND_NODE' } }
+      const data = { projects: [], agentDefinitions: [], agentTeamDefinitions: [], agentOrgDefinitions: [], workspaces: [], listWorkspaceRunHistory: [], listCollaborationRootHistory: [], applicationsCapability: { __typename: 'ApplicationsCapability', enabled: true, settingKey: 'ENABLE_APPLICATIONS', source: 'SERVER_SETTING', scope: 'BOUND_NODE' } }
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data }) })
     }
     if (url.pathname.startsWith('/rest/') || url.pathname === '/health') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok' }) })
@@ -80,7 +80,9 @@ try {
   })
   page = await context.newPage(); page.setDefaultTimeout(30000)
   page.on('pageerror', error => evidence.pageErrors.push(error.stack || String(error)))
-  const gotoFixture = async (mobile = false) => { await page.goto(`http://127.0.0.1:${port}${routes[mobile ? 1 : 0]}`); await page.getByTestId('navigation-probe-ready').waitFor(); await expanded().first().waitFor() }
+  const gotoFixture = async (mobile = false) => { await page.goto(`http://127.0.0.1:${port}${routes[mobile ? 1 : 0]}`); await page.getByTestId('navigation-probe-ready').waitFor(); await expanded().first().waitFor()
+    // Projects is in the nav from the first paint now (no capability wait); click only after Nuxt finished its initial mount.
+    await page.waitForFunction(() => window.useNuxtApp && !window.useNuxtApp().isHydrating) }
   await gotoFixture()
   await record('B-001', async () => {
     const observations = {}; observations.expandedOn = await checkOrder('expanded', labels); await screenshot('expanded-applications-on')
@@ -89,10 +91,10 @@ try {
     await redock(); observations.expandedOff = await checkOrder('expanded', labels.filter(x => x !== 'Applications')); return observations
   })
   await record('B-002', async () => {
-    await page.getByTestId('toggle-projects').click(); const off = labels.filter(x => !['Projects', 'Applications'].includes(x))
-    const result = { expandedOff: await checkOrder('expanded', off) }; await collapse(); result.compactOff = await checkOrder('compact', off)
-    await page.getByTestId('toggle-applications').click(); result.compactOn = await checkOrder('compact', labels.filter(x => x !== 'Projects'))
-    await redock(); result.expandedOn = await checkOrder('expanded', labels.filter(x => x !== 'Projects')); await page.getByTestId('toggle-projects').click(); return result
+    // projects-always-on: Projects has no capability; it stays directly after Agent Orgs whatever Applications is.
+    const result = { expandedAppsOff: await checkOrder('expanded', labels.filter(x => x !== 'Applications')) }
+    await page.getByTestId('toggle-applications').click(); result.expandedAppsOn = await checkOrder('expanded', labels)
+    await collapse(); result.compactAppsOn = await checkOrder('compact', labels); await redock(); return result
   })
   await record('B-003', async () => {
     const projects = () => expanded().filter({ hasText: /^Projects$/ })

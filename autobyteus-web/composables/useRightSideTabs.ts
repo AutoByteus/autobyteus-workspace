@@ -1,6 +1,7 @@
 import { ref, computed, onBeforeUnmount, watch } from 'vue';
 import { useBrowserShellStore } from '~/stores/browserShellStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 import {
   getWorkspaceToolOrder,
   type WorkspaceToolName,
@@ -41,6 +42,7 @@ export function useRightSideTabs() {
     resolvedLocale.value;
 
     return {
+      projects: t('shell.rightTabs.projects'),
       files: t('shell.rightTabs.files'),
       teamMembers: messages.value?.rootKind === 'agent_org'
         ? t('shell.rightTabs.org')
@@ -55,7 +57,8 @@ export function useRightSideTabs() {
   });
 
   const allTabs = computed<RightSideTabDefinition[]>(() => {
-    return getWorkspaceToolOrder().map((name) => ({
+    // Projects is on desktop only; the mobile runtime has no Projects (mobileFeatureGates).
+    return getWorkspaceToolOrder({ includeProjects: isFeatureAvailableInRuntime('projects') }).map((name) => ({
       name,
       label: tabLabels.value[name],
       ariaLabel: name === 'teamMembers' && messages.value?.rootKind === 'agent_org'
@@ -104,6 +107,8 @@ export function useRightSideTabs() {
     }
     if (scopeKey === lastAppliedScopeKey.value) return;
     lastAppliedScopeKey.value = scopeKey;
+    // Projects is not tied to a conversation scope: opening a worker from it keeps it (REQ-009).
+    if (activeTab.value === 'projects') return;
     if (!scopeKey) return;
     activeTab.value = messages.value ? 'teamMembers' : 'progress';
   };

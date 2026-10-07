@@ -31,6 +31,7 @@ describe("projectAutoByteusAgentLifecycleSnapshot", () => {
       availability: "active",
       phase: "running",
       currentTurn: { kind: "ANONYMOUS" },
+      recoverableBlock: null,
     });
   });
 

@@ -207,9 +207,9 @@ per-team, runtime, provider, or frontend-renderer preference.
 ## Server Settings: Feature Capability Toggles
 
 Settings -> Server Settings -> Basics shows one toggle card per node-bound
-feature capability: **Applications** (`ENABLE_APPLICATIONS`), **Skill
-Improvement** (`ENABLE_SKILL_IMPROVEMENT`), and **Projects**
-(`ENABLE_PROJECTS`, default disabled). All three share one mechanism:
+feature capability: **Applications** (`ENABLE_APPLICATIONS`) and **Skill
+Improvement** (`ENABLE_SKILL_IMPROVEMENT`). Projects has no capability: it is
+always available on desktop (see `projects.md`). Both share one mechanism:
 
 - `stores/capabilities/createBoundNodeCapabilityStore.ts` builds each
   capability Pinia store from a store id, the capability query/mutation
@@ -217,8 +217,8 @@ Improvement** (`ENABLE_SKILL_IMPROVEMENT`), and **Projects**
   `waitForBoundBackendReady()`, caching per `windowNodeContextStore.bindingRevision`
   (invalidated on rebinding; stale responses discarded), and `setEnabled`,
   which applies the server-returned capability and restores the previous
-  state on failure. `applicationsCapabilityStore`,
-  `skillImprovementCapabilityStore`, and `projectsCapabilityStore` are thin
+  state on failure. `applicationsCapabilityStore` and
+  `skillImprovementCapabilityStore` are thin
   typed calls to this factory; their store ids and public API
   (`capability`, `status`, `error`, `isEnabled`, `ensureResolved`, `refresh`,
   `invalidate`, `setEnabled`) are stable. Feature policy does not belong in the
@@ -230,16 +230,15 @@ Improvement** (`ENABLE_SKILL_IMPROVEMENT`), and **Projects**
   `${prefix}-feature-toggle-card`, `${prefix}-feature-status`, and
   `${prefix}-feature-toggle` test ids. After a toggle it best-effort reloads the
   server-settings list so the Advanced table stays in sync.
-  `ApplicationsFeatureToggleCard`, `SkillImprovementFeatureToggleCard`, and
-  `ProjectsFeatureToggleCard` are wrappers that supply only labels, test-id
-  prefix, and source message.
-- When `ENABLE_APPLICATIONS` or `ENABLE_PROJECTS` is edited in the Advanced
+  `ApplicationsFeatureToggleCard` and `SkillImprovementFeatureToggleCard` are
+  wrappers that supply only labels, test-id prefix, and source message.
+- When `ENABLE_APPLICATIONS` is edited in the Advanced
   table, `serverSettingsStore.updateServerSetting` refreshes the matching
   capability store through `CAPABILITY_STORE_BY_SETTING_KEY` (key matched by
   `trim().toUpperCase()`), so navigation and route gating update without a
   reload. `ENABLE_SKILL_IMPROVEMENT` is intentionally not in that table.
 - Route gating (`middleware/feature-flags.global.ts`) is a prefix → capability
-  store table (`/applications`, `/projects`); navigation gating lives in
+  store table (`/applications`); navigation gating lives in
   `useShellPrimaryNavigation`.
 
 Add a new per-node feature capability as another factory instance plus a card

@@ -3,7 +3,11 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRightSideTabs } from '../useRightSideTabs'
 import { useBrowserShellStore } from '~/stores/browserShellStore'
 
-const state = vi.hoisted(() => ({ activeWorkspaceTarget: null as any }))
+const state = vi.hoisted(() => ({ activeWorkspaceTarget: null as any, mobile: false }))
+vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({
+  isMobileRemoteAccessRuntime: () => state.mobile,
+  stripMobileRuntimePrefix: (path: string) => path.replace(/^\/mobile/, '') || '/',
+}))
 vi.mock('~/stores/activeContextStore', () => ({
   useActiveContextStore: () => ({
     get activeWorkspaceTarget() { return state.activeWorkspaceTarget },
@@ -14,6 +18,19 @@ describe('useRightSideTabs', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     state.activeWorkspaceTarget = null
+    state.mobile = false
+  })
+
+  // projects-always-on SR-003 (REQ-006/AC-006): Projects is the first tab, before Files, on desktop only.
+  it('shows Projects first, before Files, on desktop', () => {
+    const { visibleTabs } = useRightSideTabs()
+    expect(visibleTabs.value.slice(0, 2).map((tab) => [tab.name, tab.label])).toEqual([['projects', 'Projects'], ['files', 'Files']])
+  })
+
+  it('has no Projects tab in the mobile runtime', () => {
+    state.mobile = true
+    const { visibleTabs } = useRightSideTabs()
+    expect(visibleTabs.value.some((tab) => tab.name === 'projects')).toBe(false)
   })
 
   it('keeps Browser visible when the desktop Browser shell is available but no tabs exist', () => {

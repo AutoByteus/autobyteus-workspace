@@ -2,8 +2,9 @@
   <!-- project-manager-ux round 2: Tasks with no Project, in the Project board's style. Two lanes
        (Open, Done) because agents rarely set IN_PROGRESS on them; the root line says what is
        happening. Read only: agents create and change them. -->
-  <div class="w-full px-4 py-5 sm:px-6 lg:px-8" data-testid="temp-task-board-page">
+  <div :class="compact ? 'w-full' : 'w-full px-4 py-5 sm:px-6 lg:px-8'" data-testid="temp-task-board-page">
     <NuxtLink
+      v-if="!compact"
       to="/projects"
       class="inline-flex items-center gap-1 rounded text-sm font-medium text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       :aria-label="t('projects.components.projects.ProjectDetail.backToProjectsLabel')"
@@ -13,12 +14,12 @@
       {{ t('projects.components.projects.ProjectDetail.backToProjects') }}
     </NuxtLink>
 
-    <header class="mt-3">
+    <header v-if="!compact" class="mt-3">
       <h1 class="text-2xl font-semibold text-slate-900">{{ t('projects.temp.title') }}</h1>
       <p class="mt-1 text-sm text-slate-600">{{ t('projects.temp.boardHelp') }}</p>
     </header>
 
-    <div class="temp-board mt-6" data-testid="temp-task-board">
+    <div class="temp-board" :class="compact ? '' : 'mt-6'" data-testid="temp-task-board">
       <div class="temp-board__toolbar">
         <div class="temp-board__search relative">
           <label :for="searchId" class="sr-only">{{ t('projects.components.projects.ProjectTaskBoard.searchLabel') }}</label>
@@ -36,7 +37,7 @@
         <section v-for="lane in LANES" :key="lane" class="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" :aria-labelledby="`${uid}-${lane}`" :data-testid="`temp-task-lane-${lane}`">
           <h2 :id="`${uid}-${lane}`" class="flex min-h-12 items-center gap-2 border-b border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-700">{{ t(LANE_LABEL_KEYS[lane]) }}<span class="text-xs font-normal text-slate-500" data-testid="temp-task-lane-count">{{ lanes[lane].length }}</span></h2>
           <p v-if="lanes[lane].length === 0" class="px-4 py-7 text-center text-xs text-slate-500">{{ t('projects.components.projects.ProjectTaskBoard.noTasks') }}</p>
-          <ul v-else class="divide-y divide-slate-100"><li v-for="task in shown(lane)" :key="task.taskId"><ProjectTaskRow :task="task" /></li></ul>
+          <ul v-else class="divide-y divide-slate-100"><li v-for="task in shown(lane)" :key="task.taskId"><ProjectTaskRow :task="task" :activation="compact ? 'select' : 'route'" @select="emit('select-task', $event)" /></li></ul>
           <button
             v-if="lane === 'done' && !searching && lanes.done.length > DONE_LIMIT"
             type="button"
@@ -63,6 +64,10 @@ import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFee
 import { TEMP_TASKS_LIST_ID, useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { TaskWithoutProject } from '~/types/project'
+
+/** `compact` (the right panel's Projects tab): no page header or back link; a card emits `select-task`. */
+const props = withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
+const emit = defineEmits<{ (event: 'select-task', taskId: string): void }>()
 
 type Lane = 'open' | 'done'
 const LANES: readonly Lane[] = ['open', 'done']

@@ -142,8 +142,9 @@ const gql = async (node, query, variables = {}) => {
 const PROJECT_FIELDS = 'projectId name description taskCount openTaskCount workspaces { workspaceId workspaceRootPath displayName description availability }';
 const TASK_FIELDS = 'taskId projectId description status createdAt updatedAt contextFiles { storedFilename displayName mimeType sizeBytes locator }';
 const api = {
-  capability: async node => (await gql(node, '{ projectsCapability { enabled settingKey source } }')).projectsCapability,
-  setProjectsEnabled: async (node, enabled) => (await gql(node, 'mutation($e: Boolean!) { setProjectsEnabled(enabled: $e) { enabled } }', { e: enabled })).setProjectsEnabled,
+  // projects-always-on: settings are written through the ordinary server-settings API (Advanced).
+  setSetting: async (node, key, value) => (await gql(node, 'mutation($k: String!, $v: String!) { updateServerSetting(key: $k, value: $v) }', { k: key, v: value })).updateServerSetting,
+  settings: async node => (await gql(node, '{ getServerSettings { key value isDeletable } }')).getServerSettings,
   others: async node => gql(node, '{ applicationsCapability { enabled source } skillImprovementCapability { enabled source } }'),
   projects: async node => (await gql(node, `{ projects { ${PROJECT_FIELDS} } }`)).projects,
   project: async (node, projectId) => (await gql(node, `query($id: String!) { project(projectId: $id) { ${PROJECT_FIELDS} } }`, { id: projectId })).project,
@@ -193,6 +194,7 @@ const assertTaskErrorAssociation = async invalid => {
 const inspectTaskPresentation = async (mode, obs) => {
   const target = pathname();
   obs.presentation = [];
+  try {
   for (const locale of ['en', 'zh-CN']) {
     await page.evaluate(value => localStorage.setItem('autobyteus.localization.preference-mode', value), locale);
     await goto(target);
@@ -224,20 +226,26 @@ const inspectTaskPresentation = async (mode, obs) => {
         return { card: c, label: l, composer: editor, padding: parseFloat(cs.paddingTop), border: parseFloat(cs.borderTopWidth), firstChildIsLabel: card.firstElementChild === label,
           labelOffset: l.top - c.top, composerGap: editor.top - l.bottom,
           overflow: root.scrollWidth > root.clientWidth || document.documentElement.scrollWidth > innerWidth,
+          fit: { rootScroll: root.scrollWidth, rootClient: root.clientWidth, docScroll: document.documentElement.scrollWidth, innerWidth,
+            actions: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].map(e => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.right), Math.round(b.width)]; }),
+            widest: [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > innerWidth + 1).slice(0, 4).map(e => `${e.tagName}.${String(e.className?.baseVal ?? e.className).slice(0, 50)}#${e.getAttribute('data-testid') ?? ''}:${Math.round(e.getBoundingClientRect().right)}`) },
           actionsFit: [...root.querySelectorAll('[data-testid="task-page-save"], [data-testid="task-page-cancel"]')].every(e => {const b = e.getBoundingClientRect(); return b.width > 0 && b.left >= 0 && b.right <= innerWidth;}) };
       });
       assert(layout.firstChildIsLabel && Math.abs(layout.labelOffset - layout.padding - layout.border) <= 1, 'Label immediately follows card padding: no replacement heading spacer');
       assert(layout.composerGap >= 0 && layout.composerGap <= 16, 'No heading-only gap before composer');
-      assert(!layout.overflow && layout.actionsFit, 'Form/actions fit wide and narrow layout');
+      assert(!layout.overflow && layout.actionsFit, `Form/actions fit wide and narrow layout (${mode} ${locale} ${viewport.width}: ${JSON.stringify(layout.fit)})`);
       const association = await assertTaskErrorAssociation(false);
       await screenshot(`task-${mode}-${locale}-${viewport.width}`);
       obs.presentation.push({ locale, viewport, layout, association });
     }
   }
-  // Restore the normal probe locale and viewport before the preservation journey.
-  await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
-  await page.setViewportSize({ width: 1512, height: 862 });
-  await goto(target); await page.locator('#task-page-description').waitFor();
+  } finally {
+    // Restore the normal probe locale and viewport even when a check above failed, so one failure
+    // cannot leave later cases in zh-CN at 390 px.
+    await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    await page.setViewportSize({ width: 1512, height: 862 });
+    await goto(target); await page.locator('#task-page-description').waitFor();
+  }
 };
 const writeEvidence = () => fs.writeFile(path.join(outputDir, 'result.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 const runCase = async (id, title, fn) => {
@@ -275,13 +283,13 @@ try {
   await goto('/'); await page.locator('nav[aria-label="Primary navigation"]').waitFor(); homePath = pathname();
   let project, task, ws;
 
-  await runCase('PT-E2E-001', 'Fresh node default off, guarded routes and separate-node API isolation', async obs => {
-    assert(!(await api.capability(nodeA)).enabled, 'Default must be off');
-    assert(await page.locator('nav').getByRole('button', { name: 'Projects', exact: true }).count() === 0, 'Projects nav hidden');
-    await goto('/projects'); await waitFor('flag redirect', () => pathname() === homePath);
+  await runCase('PT-E2E-001', 'Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001)', async obs => {
+    const labels = await page.locator('nav[aria-label="Primary navigation"]').getByRole('button').allInnerTexts();
+    const names = labels.map(label => label.trim()).filter(Boolean); obs.nav = names;
+    assert(names.indexOf('Projects') === names.indexOf('Agent Orgs') + 1, 'Projects directly after Agent Orgs on a fresh node', names);
+    await goto('/projects'); await page.getByTestId('projects-new-button').waitFor(); assert(pathname() === '/projects', 'No redirect');
     const other = await api.createProject(nodeB, 'Node B only'); obs.otherNode = other.projectId;
     assert((await api.projects(nodeA)).length === 0, 'Node A must not read B Projects');
-    await api.setProjectsEnabled(nodeA, true); await goto('/projects'); await page.getByTestId('projects-new-button').waitFor();
   });
   await runCase('PT-E2E-002', 'Ordinary New Project validation/focus/Cancel and zero-link save to Tasks', async obs => {
     await page.getByTestId('projects-new-button').click(); await page.getByTestId('project-editor-page').waitFor(); await expectNoOverlay();
@@ -435,11 +443,11 @@ try {
     await page.getByTestId('project-tasks-new-button').click(); await page.getByTestId('task-page-heading').waitFor(); await expectNoOverlay(); assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Composer wraps narrow');
     await screenshot('ordinary-task-390'); await page.getByTestId('task-page-cancel').click(); await page.setViewportSize({ width: 1512, height: 862 }); obs.styles = styles;
   });
-  await runCase('PT-E2E-010', 'Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting', async obs => {
+  await runCase('PT-E2E-010', 'Real backend process restart preserves Tasks, context HTTP bytes and links', async obs => {
     const before = await api.tasks(nodeA, project.projectId); const links = (await api.project(nodeA, project.projectId)).workspaces;
     await stop(nodeA.process); await startNode(nodeA);
     assert(JSON.stringify(await api.tasks(nodeA, project.projectId)) === JSON.stringify(before), 'Tasks unchanged after process restart');
-    assert(JSON.stringify((await api.project(nodeA, project.projectId)).workspaces) === JSON.stringify(links), 'Workspace snapshots unchanged'); assert((await api.capability(nodeA)).enabled, 'Setting persisted');
+    assert(JSON.stringify((await api.project(nodeA, project.projectId)).workspaces) === JSON.stringify(links), 'Workspace snapshots unchanged'); assert((await api.projects(nodeA)).some(p => p.projectId === project.projectId), 'Projects listed after restart');
     const file = before.find(t => t.taskId === task.taskId).contextFiles.find(f => f.displayName === 'note.txt'); assert(await (await fetch(`${nodeA.url}${file.locator}`)).text() === 'HTTP browser context', 'Saved HTTP bytes after process restart');
     await board(project.projectId); obs.restarted = true;
   });
@@ -500,17 +508,21 @@ try {
     await page.keyboard.press('Home'); await waitFor('Roving Home selects Tasks', async () => await page.getByTestId('project-tab-tasks').getAttribute('aria-selected') === 'true');
     await api.deleteProject(nodeA, p.projectId); obs.deletedTaskId = t.taskId;
   });
-  await runCase('PT-E2E-015', 'Normal Settings toggle invalidates nav/route without reload, retains Tasks and other settings', async obs => {
+  await runCase('PT-E2E-015', 'Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003)', async obs => {
     const id = (await api.createProject(nodeA, 'Flag retention')).projectId; const t = await api.createTask(nodeA, id, 'retained');
-    const othersBefore = await api.others(nodeA); await board(id); const marker = await page.evaluate(() => window.__projectsMarker = Math.random().toString(36));
-    await page.getByRole('button', { name: 'Settings', exact: true }).click(); await page.getByTestId('settings-nav-server-settings').click(); const toggle = page.getByTestId('projects-feature-toggle'); await toggle.waitFor(); await waitFor('Toggle ready', async () => !(await toggle.isDisabled()));
-    await toggle.click(); await waitFor('Disabled', async () => await toggle.getAttribute('aria-checked') === 'false');
-    await page.goBack(); await waitFor('Disabled route guard', () => pathname() === homePath);
-    assert(await page.evaluate(() => window.__projectsMarker) === marker, 'No page reload when disabling');
-    assert((await api.tasks(nodeA, id))[0].taskId === t.taskId, 'Disabled feature retains Task');
-    await page.getByRole('button', { name: 'Settings', exact: true }).click(); await page.getByTestId('settings-nav-server-settings').click(); await toggle.waitFor(); await waitFor('Toggle ready again', async () => !(await toggle.isDisabled()));
-    await toggle.click(); await waitFor('Enabled', async () => await toggle.getAttribute('aria-checked') === 'true'); await page.getByTestId('settings-nav-back').click(); await page.locator('nav').getByRole('button', { name: 'Projects', exact: true }).click(); await page.getByTestId(`project-card-${id}`).click(); await row(t.taskId).waitFor();
-    assert(await page.evaluate(() => window.__projectsMarker) === marker, 'No page reload when enabling'); assert(Object.entries(await api.others(nodeA)).every(([key, value]) => value.enabled === othersBefore[key].enabled), 'Other capabilities unchanged'); obs.noReload = true;
+    const othersBefore = await api.others(nodeA);
+    await api.setSetting(nodeA, 'ENABLE_PROJECTS', 'false');
+    const stored = (await api.settings(nodeA)).find(s => s.key === 'ENABLE_PROJECTS'); obs.stored = stored;
+    assert(stored?.value === 'false' && stored.isDeletable, 'Stored retired key is an ordinary, deletable setting', stored);
+    await goto('/'); await page.locator('nav').getByRole('button', { name: 'Projects', exact: true }).click(); await page.getByTestId(`project-card-${id}`).click(); await row(t.taskId).waitFor();
+    await page.getByRole('button', { name: 'Settings', exact: true }).click(); await page.getByTestId('settings-nav-server-settings').click(); await page.getByTestId('settings-nav-server-settings-quick').click();
+    await page.getByTestId('applications-feature-toggle').waitFor(); // Basics rendered (the shared toggle card uses `<prefix>-feature-toggle`)
+    assert(await page.locator('[data-testid^="projects-feature-toggle"]').count() === 0, 'No Projects switch in Basics');
+    await page.getByTestId('settings-nav-server-settings-advanced').click(); const value = page.getByTestId('server-setting-value-ENABLE_PROJECTS'); await value.waitFor();
+    await page.getByTestId('server-setting-remove-ENABLE_PROJECTS').click(); await waitFor('Retired key deleted', async () => await value.count() === 0);
+    assert(!(await api.settings(nodeA)).some(s => s.key === 'ENABLE_PROJECTS'), 'Key gone from the node');
+    await page.getByTestId('settings-nav-back').click(); await page.locator('nav').getByRole('button', { name: 'Projects', exact: true }).click(); await page.getByTestId(`project-card-${id}`).waitFor();
+    assert(Object.entries(await api.others(nodeA)).every(([key, v]) => v.enabled === othersBefore[key].enabled), 'Other capabilities unchanged'); obs.deleted = true;
     await api.deleteProject(nodeA, id);
   });
   await runCase('PT-E2E-016', 'zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys', async obs => {

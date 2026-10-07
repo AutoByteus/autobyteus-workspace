@@ -12,34 +12,35 @@ resources. Explicit DONE closes those runs and asks the platform to stop only
 them. Other status writes do not start work. DONE is neither
 engineering acceptance nor proof that the stop has finished.
 
-The per-node ENABLE_PROJECTS visibility capability remains **default-off**.
-Settings › Server Settings › Basics or Advanced can change it on that node;
-Advanced edits refresh the capability without a reload. The shell navigation
-and `/projects*` middleware use it; unresolved/disabled routes redirect to `/`.
-Disabling never deletes metadata or files. Backend CRUD and opt-in tools are
-independent of this UI flag. No installation/default change is implied.
+Projects is **always available on desktop** (projects-always-on). It has no
+feature flag, capability query or Settings switch, and `/projects*` routes are
+not gated. A value of the retired per-node flag stored by an earlier release is
+not read: Settings › Server Settings › Advanced may list it as an ordinary custom
+setting with no effect, which the user can delete. Backend CRUD and opt-in agent
+tools were always independent of the UI.
 
 Projects are unsupported in the separate mobile runtime. A 390px browser
 viewport is narrow-layout evidence, not shipped phone functionality. Different
-node-bound desktop windows can have different lists/flags. Node Manager opens
+node-bound desktop windows can have different lists. Node Manager opens
 or focuses separate windows; no supported interactive same-window Projects
 rebinding/switch recovery/subscription journey is introduced. Existing binding
 watchers and captured request guards preserve current-node invariants only.
 
 ## Primary Navigation
 
-When available, Projects appears immediately after Agent Orgs in both the
+Projects appears immediately after Agent Orgs in both the
 expanded left panel and compact navigation strip. The shared order is Chat →
 Agents → Agent Teams → Agent Orgs → Projects → Applications (when enabled) →
-Skills → Memory → Nodes. Existing capability/runtime filtering still applies;
-when Projects is unavailable it is omitted without reordering other entries.
+Skills → Memory → Nodes. Projects is filtered only by the runtime gate
+(`isFeatureAvailableInRuntime('projects')`, which hides it in the mobile
+runtime); other entries keep their own capability/runtime filtering, and an
+omitted entry never reorders the rest.
 
 `composables/useShellPrimaryNavigation.ts` is the sole order/route/active-state
 owner, consumed by `AppLeftPanel.vue` and `layout/LeftSidebarStrip.vue`. Projects
 retains its localized label, folder icon, `/projects` destination and active
 matching on `/projects/*`. Compact navigation retains its existing fitting-strip
-redock and narrow transient-drawer interactions. This placement change does not
-enable Projects by default or add mobile support.
+redock and narrow transient-drawer interactions. Mobile support is not added.
 
 ## Ordinary Routes / Main Owners
 
@@ -61,7 +62,7 @@ is not an overlay; floating Task cards and ProjectFormDialog/ProjectTaskDialog/
 ProjectWorkspaceLinkDialog are replaced by these pages, continuous rows and
 aggregate editor. ProjectDialogFrame remains for destructive Project confirmation.
 
-State owners are `stores/{projectStore,projectTaskStore,projectsCapabilityStore}.ts`,
+State owners are `stores/{projectStore,projectTaskStore}.ts`,
 `composables/projects/{useProjectTaskDraft,useProjectTaskPage,useProjectNotice,useProjectChangeFeed,useTaskRootNavigation}.ts`,
 `services/projects/{projectTaskContextClient,projectChangeFeed}.ts`,
 `utils/projects/taskRootPresentation.ts` and shared voiceInputStore.
@@ -187,6 +188,29 @@ hidden at 0), a board with **Open** and **Done** lanes (Done shows its 10 latest
 until Show all; search shows every match), and a read-only Task page with the
 description, reference file paths and Assigned to. Only agents create or change
 them; there is no edit, delete or status control.
+
+### Projects tab in the right panel
+
+The conversation screens (`/workspace`, `/chat?id=…`) have a **Projects** tab,
+first in the right panel's tab row (before Files) and in the collapsed strip and
+drawer, on desktop only (projects-always-on SR-003). It shows the same live data
+as the Projects pages, through the same stores and change feed, beside the
+conversation:
+- **Picker** (`ProjectsPanelPicker`): one Project or Temp tasks.
+  `stores/projectsPanelStore.ts` remembers the choice per node in `localStorage`
+  (`autobyteus.projectsPanel.choice.<nodeId>`). Without one, or when the
+  remembered Project was deleted, it shows the most recently updated Project,
+  else Temp tasks. With no Projects and no Temp tasks it shows an empty state
+  linking to the Projects page.
+- **Board**: `ProjectTaskBoard` / `TempTaskBoard` in `compact` mode (no page
+  header or New task; lanes stack in the narrow panel). Cards use
+  `ProjectTaskRow` `activation="select"`.
+- **Worker line**: unchanged; it opens the worker's conversation in the center,
+  and the Projects tab stays selected.
+- **Card**: opens `ProjectsPanelTaskDetail` inside the tab: the full description,
+  context or reference files, and Assigned to, live. A back arrow returns to the
+  board with its search kept, and **Open in Projects** opens the full Task page,
+  where editing stays.
 
 ### Left panel task rows (F-006)
 
@@ -353,7 +377,10 @@ and Nuxt, drives **PT-E2E-001–016**, records each result and cleans owned proc
 data. Coverage includes current ordinary forms/detail/rows, native external write
 → physical Refresh/error/retry, ordinary navigation with late response, real
 context bytes/process restart/deletion, all counts, mixed statuses and modest
-120-row correctness. The TODO-only 120-row fixture is not mixed-status or capacity/
+120-row correctness. PT-E2E-001 checks a fresh node shows Projects (after Agent
+Orgs) and opens `/projects`; PT-E2E-015 stores the retired flag as `false` on a
+node and checks Projects still opens, Basics has no Projects switch, and Advanced
+lists the key as an ordinary setting the user deletes (projects-always-on). The TODO-only 120-row fixture is not mixed-status or capacity/
 performance certification. No obsolete overlay/focus-trap or injected same-window
 switching journey. `--skip-server-build` requires a current built server;
 `--output-dir=<path>` retains evidence. Clear inherited ENABLE_* flags when
@@ -408,6 +435,15 @@ paragraph and a long multi-line brief) on a Project board and on Temp tasks at
 - a 5,000-character unbroken token wraps without horizontal overflow;
 - a long Task keeps its context-file line and worker line visible;
 - a short summary appears in full in the delete confirmation.
+
+**PMU-015–016** cover the right-panel Projects tab:
+- it is the first tab, with a live board beside the chat;
+- a worker opens in the center and the tab stays selected, in Agent, Team and
+  Org conversations;
+- card → detail → back;
+- the picker choice is remembered after reload;
+- at a constrained width, the collapsed strip and the drawer list Projects
+  first, and the drawer board does not overflow.
 
 A raw `/ws/projects` client records message volume. The wire contract itself is
 covered by the server's `tests/e2e/projects/project-change-feed.e2e.test.ts`

@@ -410,7 +410,7 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence 
   - **Load:** a UI write on a 60-Task Project with a busy worker arrives within 2 s.
 
   `PROJECT_CHANGE_FEED_E2E_EVIDENCE_DIR` keeps a JSON receipt with frame counts.
-- **`test:e2e:project-manager-ux`** (PMU-001..PMU-014) in a real browser:
+- **`test:e2e:project-manager-ux`** (PMU-001..PMU-016) in a real browser:
   - live list, board and highlights;
   - root lines and opening them for Agent, Team and Org hosts;
   - DONE → Offline;
@@ -425,6 +425,12 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence 
   - an Org-hosted root opened before its Org run is loaded.
   - compact cards for real-length descriptions (~10,000 words; multi-line) on the Project board and Temp tasks at 1440 and 1024 px: ≤2+2 rendered lines, short labels, full text on the Task pages (PMU-013).
   - compact-card edges at 1440, 1024 and 390 px: exactly 2 lines, a CJK hard cut, a 5,000-character unbroken token without horizontal overflow, a long card keeping its context-file and worker lines, and a short delete-confirmation summary (PMU-014).
+  - the right-panel Projects tab (PMU-015):
+    - first tab, with a live board beside the chat;
+    - a worker opens in the center and the tab stays selected;
+    - card → detail → back;
+    - the choice is remembered after reload.
+  - the Projects tab in Team and Org conversations, with the tab kept when a worker opens, and at a constrained width the strip and drawer list Projects first (PMU-016).
 
   Every case fails on any browser error. PMU-007 allows errors only while the backend restarts. On failure, `evidence.json` keeps each page's URL, center text and its last console lines. PMU-004 and PMU-007 depend on earlier cases in the same run.
 
@@ -658,6 +664,17 @@ matters.
    (`--app <dir>/squashfs-root/autobyteus`), a real or virtual display, and
    `ffmpeg` for recordings. See
    [Isolated instances on Linux](docs/isolated-app-instances.md#linux).
+9. **Fix failures that also fail on the base; don't just note them.** "Also
+   fails on the base" shows your change did not cause a failure. It does not
+   close the failure. Find out why it fails.
+   - When the cause is in the test or is a small local fix, fix it in the same
+     branch as its own commit, labelled as a baseline fix. Name the test and
+     the cause in your handoff or report.
+   - When the fix is a product change or too large for the current work, report
+     it to the accountable owner as its own item, with the cause you found.
+
+   Never leave a known baseline failure unexplained, or it comes back in every
+   later change.
 
 ## Evidence and cleanup
 

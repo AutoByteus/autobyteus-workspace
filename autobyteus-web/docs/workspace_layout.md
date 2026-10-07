@@ -68,14 +68,20 @@ Do not reintroduce a positive `Work -> Runs -> Files -> Tools` row. The old gene
 
 Right-tool order is also centralized there and should remain:
 
-1. Files
-2. Team members, when applicable
-3. Terminal
-4. Activity
-5. Token, when applicable
-6. Artifacts
-7. Browser, when applicable
-8. VNC, when applicable
+1. Projects, on desktop (not in the mobile runtime)
+2. Files
+3. Team members, when applicable
+4. Terminal
+5. Activity
+6. Token, when applicable
+7. Artifacts
+8. Browser, when applicable
+9. VNC, when applicable
+
+Projects is never a contextual default (Team members / Activity stay the
+defaults), and a scope change keeps it selected: opening a worker from the
+Projects tab changes the conversation in the center while the tab stays. See
+[Projects › Projects tab in the right panel](projects.md#projects-tab-in-the-right-panel).
 
 `RightSideTabs` uses the approved single-row native horizontal-scroll
 presentation for the right-tool catalog in the docked panel and transient

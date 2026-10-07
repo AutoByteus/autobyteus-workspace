@@ -6,11 +6,8 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { getApolloClient } from '~/utils/apolloClient'
 
-const { applicationsCapabilityStoreMock, projectsCapabilityStoreMock } = vi.hoisted(() => ({
+const { applicationsCapabilityStoreMock } = vi.hoisted(() => ({
   applicationsCapabilityStoreMock: {
-    refresh: vi.fn().mockResolvedValue(null),
-  },
-  projectsCapabilityStoreMock: {
     refresh: vi.fn().mockResolvedValue(null),
   },
 }))
@@ -33,16 +30,11 @@ vi.mock('~/stores/applicationsCapabilityStore', () => ({
   useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
 }))
 
-vi.mock('~/stores/projectsCapabilityStore', () => ({
-  useProjectsCapabilityStore: () => projectsCapabilityStoreMock,
-}))
-
 describe('serverSettings store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.mocked(getApolloClient).mockReset()
     applicationsCapabilityStoreMock.refresh.mockResolvedValue(null)
-    projectsCapabilityStoreMock.refresh.mockResolvedValue(null)
     const windowNodeContextStore = useWindowNodeContextStore()
     windowNodeContextStore.lastReadyError = null
     vi.spyOn(windowNodeContextStore, 'waitForBoundBackendReady').mockResolvedValue(true)
@@ -437,22 +429,20 @@ describe('serverSettings store', () => {
     vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock, query: queryMock } as any)
   }
 
-  it('refreshes the typed projects capability after updating ENABLE_PROJECTS', async () => {
+  // projects-always-on (AC-002): the retired Projects flag is an ordinary custom setting with no capability behind it.
+  it('treats a stored retired ENABLE_PROJECTS key as an ordinary setting that refreshes no capability', async () => {
     applicationsCapabilityStoreMock.refresh.mockClear()
-    projectsCapabilityStoreMock.refresh.mockClear()
-    mockSettingUpdate('ENABLE_PROJECTS', 'true')
+    mockSettingUpdate('ENABLE_PROJECTS', 'false')
 
     const store = useServerSettingsStore()
-    const success = await store.updateServerSetting(' enable_projects ', 'true')
+    const success = await store.updateServerSetting('ENABLE_PROJECTS', 'false')
 
     expect(success).toBe(true)
-    expect(projectsCapabilityStoreMock.refresh).toHaveBeenCalledOnce()
     expect(applicationsCapabilityStoreMock.refresh).not.toHaveBeenCalled()
   })
 
   it('does not refresh a capability store after updating ENABLE_SKILL_IMPROVEMENT', async () => {
     applicationsCapabilityStoreMock.refresh.mockClear()
-    projectsCapabilityStoreMock.refresh.mockClear()
     mockSettingUpdate('ENABLE_SKILL_IMPROVEMENT', 'true')
 
     const store = useServerSettingsStore()
@@ -460,7 +450,6 @@ describe('serverSettings store', () => {
 
     expect(success).toBe(true)
     expect(applicationsCapabilityStoreMock.refresh).not.toHaveBeenCalled()
-    expect(projectsCapabilityStoreMock.refresh).not.toHaveBeenCalled()
   })
 
   it('updates one compaction setting and reloads its authoritative server value', async () => {

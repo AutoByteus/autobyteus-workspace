@@ -17,6 +17,7 @@ const shellMessages = {
   'shell.navigation.nodes': 'Nodes',
   'shell.navigation.projects': 'Projects',
   'shell.navigation.settings': 'Settings',
+  'shell.rightTabs.projects': 'Projects',
   'shell.rightTabs.files': 'Files',
   'shell.rightTabs.team': 'Team',
   'shell.rightTabs.org': 'Org',

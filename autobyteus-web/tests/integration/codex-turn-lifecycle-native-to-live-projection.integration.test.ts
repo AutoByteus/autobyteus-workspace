@@ -90,8 +90,9 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
     client: client as never,
     startup: createCodexThreadStartupGate(),
   });
+  // The backend is active while the manager still holds exactly this run's thread (028cca231).
   const threadManager = {
-    hasThread: vi.fn().mockReturnValue(true),
+    getThread: vi.fn(() => thread),
     terminateThread: vi.fn().mockResolvedValue(undefined),
   };
   const backend = new CodexAgentRunBackend(runContext, thread, threadManager as never);
