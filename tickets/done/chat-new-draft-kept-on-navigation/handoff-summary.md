@@ -2,7 +2,13 @@
 
 ## Status
 
-- Delivery state: **Awaiting your verification (DR-001).** Nothing has been pushed, merged or released.
+- Delivery state: **Delivery Completed (DR-002).** The user verified on 2026-10-07 ("finalize and release a new beta."); see `user-verification-record.md`.
+  - Merged into `personal` as `55d6db0c1` and pushed.
+  - Beta `v1.4.96-beta.2` (release commit `154bedc84`) is published:
+    - all 4 workflows succeeded;
+    - the GitHub prerelease, the updater metadata and the Docker `:1.4.96-beta.2`/`:beta` tags are verified.
+  - The worktree and the local and remote branches are cleaned up.
+  - The sections below record the pre-verification state and are kept for history. The worktree paths in them no longer exist; the archive is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-new-draft-kept-on-navigation/`.
 - Classification (unchanged): `task_size=Medium`, `architectural_risk=Low`, direct low-risk route. Architecture, source and test-code review: `Not Applicable — direct low-risk route`.
 
 | Stage | Revision | Result |
