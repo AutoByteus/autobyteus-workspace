@@ -2,7 +2,13 @@
 
 ## Status
 
-- Delivery state: **DR-001: waiting for your verification**, plus one decision (see "Decision Needed"). Nothing has been pushed, merged or released yet.
+- Delivery state: **DR-002: finalized and released as beta `v1.4.96-beta.5`.**
+  - Merged into `personal` as `395d0840c`.
+  - All 4 workflows succeeded, and the prerelease, updater metadata and Docker tags are verified.
+  - The worktree and branches are cleaned up.
+  - `82960e903` was kept.
+  - A stable `v1.4.96` was requested next (DR-003).
+  - The sections below are kept for history.
 - Classification (unchanged): `task_size=Medium`, `architectural_risk=Low`, **direct route**. Architecture review, source code review and test-code review are `Not Applicable — direct low-risk route`.
 
 | Stage | Revision | Result |

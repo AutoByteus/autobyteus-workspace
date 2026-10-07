@@ -11,8 +11,8 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-always-on/tickets/in-progress/projects-always-on/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-always-on/tickets/in-progress/projects-always-on/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: Pre-verification state. A user decision on product baseline fix `82960e903` is requested (delivery recommends keeping it).
+- Current delivery revision ID: `DR-003`
+- Notes: DR-001 was the pre-verification state. DR-002 covers verification, finalization, beta `v1.4.96-beta.5` and cleanup. A stable `v1.4.96` was requested afterwards and is recorded as DR-003.
 
 ## Initial Delivery Integration Refresh
 
@@ -49,27 +49,39 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/projects-always-on`: `No` (after verification)
+- Ticket moved to `tickets/done/projects-always-on`: `Yes`
+- Archived ticket path: `tickets/done/projects-always-on/`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision.
+- `python3 scripts/check_repository_artifact_hygiene.py` passed before tagging.
+- `bash scripts/desktop-release.sh beta` exited 0 from the clean finalized `personal`.
+- Version `1.4.96-beta.5`. Release commit `5316a0cad`, pushed `395d0840c..5316a0cad`. The annotated tag `v1.4.96-beta.5` is pushed.
+- Receipt: `delivery-evidence/dr-002/beta-release.log`.
 
 ## Repository Finalization
 
-- Ticket branch: `codex/projects-always-on`
-- Finalization target: `origin/personal`
-- Repository finalization status: Pending user verification
+- Ticket branch: `codex/projects-always-on`. Archive and docs-sync commit `6e27961bd` (on top of follow-up `0446c378c`). Pushed.
+- Finalization target: `origin/personal`, unchanged at `93d1b18b4` after verification.
+- Merge: an isolated clean clone was used. The `--no-ff` merge `395d0840c` has tree `400713940`, identical to the ticket head. Pushed `93d1b18b4..395d0840c`.
+- Repository finalization status: `Completed`. Receipt: `delivery-evidence/dr-002/final-merge.log`.
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user at verification
-- Release/publication/deployment result: Pending
+- Applicable: `Yes`. The user requested a beta.
+- Method: `Release Script` (`scripts/desktop-release.sh beta`)
+- Release/publication/deployment result: `Completed`
+- Workflows for `v1.4.96-beta.5`, all Success: Desktop 37643640675, Android 37643640958, iOS 37643640756, Server Docker 37643640813 (`workflows-final.json`).
+- GitHub prerelease: non-draft, published 2026-10-07T15:28:23Z, 17 assets, none empty (`github-release.json`).
+- Updater metadata: all four `latest*.yml` files report `1.4.96-beta.5`.
+- Docker `:1.4.96-beta.5` and `:beta` share digest `sha256:09b3919b8772547046818d75da2b5a068cfe9e4099be64da52706dfe4002f9f0` (linux/amd64 and linux/arm64).
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-always-on`
-- Cleanup result: Pending
+- Worktree cleanup result: `Completed`. Head `6e27961bd` was verified in `origin/personal` first. Only the untracked SDK `dist/` was discarded.
+- Worktree prune result: `Completed`
+- Local and remote ticket branch cleanup result: `Completed`
 
 ## Release Notes Summary
 
@@ -88,10 +100,9 @@
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None (waiting for user verification and the `82960e903` decision)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta.5). Stable `v1.4.96` was also published and verified (DR-003): release commit `446379c90`, all 4 workflows succeeded, it is `releases/latest`, updater metadata is at `1.4.96`, and Docker `:1.4.96`/`:latest` share `sha256:3fe40835…`. Evidence: `delivery-evidence/dr-003/`.
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
