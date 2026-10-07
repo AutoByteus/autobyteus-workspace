@@ -1,3 +1,4 @@
+import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -30,6 +31,7 @@ export class TeamTaskExecutionService {
   releaseTaskAgentResources(refs: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
     return this.lifecycle.releaseTaskAgentResources(refs);
   }
+  taskExecutionStatus(ref: TaskExecutionReference): AgentExecutionStatus { return this.lifecycle.taskExecutionStatus(ref); }
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.lifecycle.closedTaskExecutions(); }
 
   closeExternalAdmission(): void { this.lifecycle.closeExternalAdmission(); }

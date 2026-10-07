@@ -1,5 +1,6 @@
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
 import type { TaskAgentResourceStopResult } from "../task/task-agent-resource-port.js";
+import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
   cloneCollaborationMemberExecutionIdentity,
@@ -27,6 +28,8 @@ export type ExactAgentMessageInput = Readonly<{
 export interface ActiveRootMessageBoundary {
   /** Same-root membership, including shut-down delegated children that delivery can wake. */
   hasAgentExecution(agentRunId: string): boolean;
+  /** A task execution's own live status (Agent status, or folded Team status); wakes nothing. */
+  taskExecutionStatus?(reference: TaskExecutionReference): AgentExecutionStatus;
   /** Stops exactly these closed Task agent runs hosted in this root. */
   releaseTaskAgentResources?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;

@@ -416,18 +416,18 @@ try {
     assert((await api.project(nodeA, project.projectId)).taskCount === 2, 'Unfiltered full count'); obs.physicalQueries = physical;
   });
   await runCase('PT-E2E-008', 'Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct', async obs => {
-    const idsBefore = await page.locator('a[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => e.dataset.testid));
+    const idsBefore = await page.locator('div[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => e.dataset.testid));
     const handler = async route => { if (route.request().postDataJSON().query?.includes('projectTasks(')) await route.fulfill({ status: 503, body: 'backend temporarily unavailable' }); else await route.continue(); };
     await page.route('**/graphql', handler); try { await refresh().click(); await page.getByTestId('project-tasks-error').waitFor(); } finally { await page.unroute('**/graphql', handler); }
-    assert(JSON.stringify(await page.locator('a[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => e.dataset.testid))) === JSON.stringify(idsBefore), 'Last successful rows retained');
+    assert(JSON.stringify(await page.locator('div[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => e.dataset.testid))) === JSON.stringify(idsBefore), 'Last successful rows retained');
     await sleep(3200); assert(await page.getByTestId('project-tasks-error').isVisible(), 'Error does not auto-dismiss');
     await page.getByTestId('project-tasks-error').getByRole('button', { name: 'Try again' }).click(); await waitFor('Error clears after actual success', async () => await page.getByTestId('project-tasks-error').count() === 0);
     await search().fill('no such match'); await page.getByTestId('project-tasks-no-match').waitFor(); await page.getByTestId('project-tasks-clear-search').click(); await row(task.taskId).waitFor(); obs.retainedRows = idsBefore;
   });
   await runCase('PT-E2E-009', 'Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping', async obs => {
     const one = await toolWrite({ project_id: project.projectId, description: 'Second contiguous To Do\nQuieter preview' }); await refresh().click(); await row(one.taskId).waitFor();
-    const styles = await page.locator('a[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => { const s = getComputedStyle(e); return { radius: s.borderRadius, shadow: s.boxShadow, margin: s.marginBottom, tag: e.tagName }; }));
-    assert(styles.every(s => s.radius === '0px' && s.shadow === 'none' && s.margin === '0px' && s.tag === 'A'), 'Contiguous normal links, no cards');
+    const styles = await page.locator('div[data-testid^=project-task-row-]').evaluateAll(es => es.map(e => { const s = getComputedStyle(e); return { radius: s.borderRadius, shadow: s.boxShadow, margin: s.marginBottom, tag: e.tagName }; }));
+    assert(styles.every(s => s.radius === '0px' && s.shadow === 'none' && s.margin === '0px' && s.tag === 'DIV'), 'Contiguous rows (each a stretched link), no cards');
     const lanes = async () => page.locator('[data-testid^=project-task-column-]').filter({ has: page.locator('h2') }).evaluateAll(es => es.map(e => { const b = e.getBoundingClientRect(); return { top: b.top, left: b.left, width: b.width }; }));
     const desktop = await lanes(); assert(desktop.length === 3 && desktop.every(b => Math.abs(b.top - desktop[0].top) < 2), 'Three equal columns desktop');
     await page.setViewportSize({ width: 390, height: 844 }); const narrow = await lanes(); assert(narrow.every((b, i) => i === 0 || b.top > narrow[i - 1].top), 'Same groups stack narrow');
@@ -478,9 +478,9 @@ try {
   await runCase('PT-E2E-013', '120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation', async obs => {
     const id = (await api.createProject(nodeA, 'Modest complete list')).projectId;
     for (let i = 0; i < 120; i++) await api.createTask(nodeA, id, `volume-${String(i).padStart(3, '0')} ${i % 2 ? 'needle' : 'other'}`);
-    await board(id); assert(await page.locator('a[data-testid^=project-task-row-]').count() === 120, 'Complete 120 rows');
+    await board(id); assert(await page.locator('div[data-testid^=project-task-row-]').count() === 120, 'Complete 120 rows');
     const before = await api.tasks(nodeA, id); await search().fill('needle');
-    await waitFor('60 filtered rows', async () => await page.locator('a[data-testid^=project-task-row-]').count() === 60);
+    await waitFor('60 filtered rows', async () => await page.locator('div[data-testid^=project-task-row-]').count() === 60);
     assert(await page.getByTestId('project-task-column-TODO').getByTestId('project-task-column-count').innerText() === '60', 'Filtered count');
     assert((await api.project(nodeA, id)).taskCount === 120, 'Deletion/full count not search-filtered');
     await search().fill('unmatched'); await page.getByTestId('project-tasks-no-match').waitFor(); await page.getByTestId('project-tasks-clear-search').click();
@@ -491,7 +491,7 @@ try {
     const p = await blankProject('Keyboard authoring'); await page.getByTestId('project-tasks-new-button').focus(); await page.keyboard.press('Enter');
     await page.getByTestId('task-page-heading').waitFor(); await page.locator('#task-page-description').focus(); await page.keyboard.type('Keyboard task'); await page.keyboard.press('Meta+Enter');
     await page.getByTestId('project-task-columns').waitFor(); const t = (await api.tasks(nodeA, p.projectId))[0];
-    await row(t.taskId).focus(); await page.keyboard.press('Enter'); await page.getByTestId('task-page-delete').focus(); await page.keyboard.press('Enter');
+    await row(t.taskId).getByTestId('project-task-row-link').focus(); await page.keyboard.press('Enter'); await page.getByTestId('task-page-delete').focus(); await page.keyboard.press('Enter');
     await page.getByTestId('task-page-delete-cancel').waitFor(); await page.keyboard.press('Escape'); await page.keyboard.press('Enter');
     await page.getByTestId('task-page-delete-confirm').focus(); await page.keyboard.press('Enter'); await page.getByTestId('project-task-columns').waitFor(); assert((await api.tasks(nodeA, p.projectId)).length === 0, 'Explicit Task delete');
     await goto(`/projects/${p.projectId}/tasks/missing`); await page.getByTestId('task-page-not-found').waitFor(); assert((await page.getByTestId('task-page-not-found').innerText()).includes('Task not found'), 'Unknown Task recovery');

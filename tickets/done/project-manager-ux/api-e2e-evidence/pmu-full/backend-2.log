@@ -1,0 +1,502 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:49228
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:49228
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/db/development.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:93675) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-07T10:33:30.662Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 11 items.
+Populating agent definition cache for the first time...
+[2026-10-07T10:33:30.839Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-07T10:33:30.842Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 6 items.
+Agent definition cache populated with 11 items.
+{"level":30,"time":1791369210848,"pid":93675,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49596"}
+{"level":30,"time":1791369210881,"pid":93675,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49228"}
+[2026-10-07T10:33:30.881Z] [INFO] [server.runtime] Server listening on 127.0.0.1:49228
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent websocket attached for run manager_pmuf006_13c6_c850aa2c9db54a8eb8eeee2650c7bcd9
+Created agent session 200a0fc9-845e-4997-b741-9dc60a3471ea for run manager_pmuf006_13c6_c850aa2c9db54a8eb8eeee2650c7bcd9
+Agent WebSocket connected: session=200a0fc9-845e-4997-b741-9dc60a3471ea, run=manager_pmuf006_13c6_c850aa2c9db54a8eb8eeee2650c7bcd9
+Agent websocket attached for run manager_pmutemp_84d0_fde5ba4957f64bdf80afa5e92be11408
+Created agent session cf6e1d20-b00e-47e3-9ea7-aaa76d5a7aef for run manager_pmutemp_84d0_fde5ba4957f64bdf80afa5e92be11408
+Agent WebSocket connected: session=cf6e1d20-b00e-47e3-9ea7-aaa76d5a7aef, run=manager_pmutemp_84d0_fde5ba4957f64bdf80afa5e92be11408
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 2a407af5-6b8a-42ea-a0c7-215047721299 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=2a407af5-6b8a-42ea-a0c7-215047721299, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Closed agent session 200a0fc9-845e-4997-b741-9dc60a3471ea
+Agent WebSocket disconnected: 200a0fc9-845e-4997-b741-9dc60a3471ea
+Closed agent session cf6e1d20-b00e-47e3-9ea7-aaa76d5a7aef
+Agent WebSocket disconnected: cf6e1d20-b00e-47e3-9ea7-aaa76d5a7aef
+Closed agent session 2a407af5-6b8a-42ea-a0c7-215047721299
+In-memory cache: Added new agent definition with ID manager-pmuleft-4373.
+Agent Definition created successfully with ID: manager-pmuleft-4373
+In-memory cache: Added new agent definition with ID release-notes-writer-pmuleft-4373.
+Agent Definition created successfully with ID: release-notes-writer-pmuleft-4373
+In-memory cache: Added new agent definition with ID fact-checker-pmuleft-4373.
+Agent Definition created successfully with ID: fact-checker-pmuleft-4373
+[2026-10-07T10:33:33.919Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID docs-review-team-pmuleft-4373.
+Agent Team Definition created successfully with ID: docs-review-team-pmuleft-4373
+[2026-10-07T10:33:33.939Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID delivery-team-pmuleft-4373.
+Agent Team Definition created successfully with ID: delivery-team-pmuleft-4373
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Created and registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session 89ee4d02-bec9-414e-b5ad-e082432a3abb for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=89ee4d02-bec9-414e-b5ad-e082432a3abb, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+{"level":40,"time":1791369214332,"pid":93675,"hostname":"MacBookPro","reqId":"req-4","method":"GET","url":"/mcp/agent-tools/agtrun_qZTltWEkDwEZqF6jEP8L-_VM1hXIQM5eWG3pdqFepXo","statusCode":405,"elapsedMs":0.20887500047683716,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run release_notes_writer_pmuleft_4373_7fe83967973e4a75a1214ea95944987b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+Created terminal session 25ad86d5-2609-43e1-a55e-c25da336898f using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 25ad86d5-2609-43e1-a55e-c25da336898f
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session c302424f-0f82-4ada-b988-2c43b73062c9 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=c302424f-0f82-4ada-b988-2c43b73062c9, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session af7b3836-84a2-43f0-80f1-10d91cc29e66 for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=af7b3836-84a2-43f0-80f1-10d91cc29e66, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 99104252-5c69-4339-a367-841227bde9a4 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=99104252-5c69-4339-a367-841227bde9a4, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Closed PTY session 25ad86d5-2609-43e1-a55e-c25da336898f
+Terminal WebSocket disconnected: 25ad86d5-2609-43e1-a55e-c25da336898f
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/manager_pmuleft_4373_08ca659747c343868db84a7376456d49/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/release_notes_writer_pmuleft_4373_2cc5dcc9155d473187a0df897c02ddeb/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/fact_checker_pmuleft_4373_ce6ce861a0864f7983ea7b7caf2c4fda/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/manager_pmuleft_4373_08ca659747c343868db84a7376456d49/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/release_notes_writer_pmuleft_4373_2cc5dcc9155d473187a0df897c02ddeb/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/fact_checker_pmuleft_4373_ce6ce861a0864f7983ea7b7caf2c4fda/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/manager_pmuleft_4373_08ca659747c343868db84a7376456d49/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/release_notes_writer_pmuleft_4373_2cc5dcc9155d473187a0df897c02ddeb/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/fact_checker_pmuleft_4373_ce6ce861a0864f7983ea7b7caf2c4fda/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/manager_pmuleft_4373_08ca659747c343868db84a7376456d49/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/release_notes_writer_pmuleft_4373_2cc5dcc9155d473187a0df897c02ddeb/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuleft_4373_969d0091d4d54479a74d0afb7c9d1d5c/fact_checker_pmuleft_4373_ce6ce861a0864f7983ea7b7caf2c4fda/raw_traces_active.jsonl
+Closed agent session 89ee4d02-bec9-414e-b5ad-e082432a3abb
+Agent WebSocket disconnected: 89ee4d02-bec9-414e-b5ad-e082432a3abb
+Closed agent session 99104252-5c69-4339-a367-841227bde9a4
+Closed agent session c302424f-0f82-4ada-b988-2c43b73062c9
+Agent WebSocket disconnected: c302424f-0f82-4ada-b988-2c43b73062c9
+Closed agent session af7b3836-84a2-43f0-80f1-10d91cc29e66
+In-memory cache: Added new agent definition with ID manager-pmutempre-8280.
+Agent Definition created successfully with ID: manager-pmutempre-8280
+In-memory cache: Added new agent definition with ID release-notes-writer-pmutempre-8280.
+Agent Definition created successfully with ID: release-notes-writer-pmutempre-8280
+In-memory cache: Added new agent definition with ID fact-checker-pmutempre-8280.
+Agent Definition created successfully with ID: fact-checker-pmutempre-8280
+[2026-10-07T10:33:39.076Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID docs-review-team-pmutempre-8280.
+Agent Team Definition created successfully with ID: docs-review-team-pmutempre-8280
+[2026-10-07T10:33:39.102Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID delivery-team-pmutempre-8280.
+Agent Team Definition created successfully with ID: delivery-team-pmutempre-8280
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Created agent session c1454a42-405b-4158-bf38-9a4214675652 for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Agent WebSocket connected: session=c1454a42-405b-4158-bf38-9a4214675652, run=manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session ef4d9342-2ebb-4eae-8d91-06c3cba5c391 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=ef4d9342-2ebb-4eae-8d91-06c3cba5c391, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agents/manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa/raw_traces_active.jsonl
+Agent websocket attached for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Created agent session 1b23ddff-39b3-458e-888a-c043befaf23c for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Agent WebSocket connected: session=1b23ddff-39b3-458e-888a-c043befaf23c, run=manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session c4171410-9a41-46ea-990c-11dbf748d930 for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=c4171410-9a41-46ea-990c-11dbf748d930, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 0da9170e-7fbe-4d6f-89e7-550850590cf2 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=0da9170e-7fbe-4d6f-89e7-550850590cf2, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+{"level":40,"time":1791369221041,"pid":93675,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_HBWDkRdmU6s7P-wKMtHPNwM2KxeUrd6_Bygu8gv_sXM","statusCode":405,"elapsedMs":0.18108300864696503,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run release_notes_writer_pmutempre_8280_ec429fdf750f4f7588a592598554e367: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791369221480,"pid":93675,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_HBWDkRdmU6s7P-wKMtHPNwM2KxeUrd6_Bygu8gv_sXM","statusCode":405,"elapsedMs":0.2637920081615448,"msg":"http request completed"}
+{"level":40,"time":1791369221601,"pid":93675,"hostname":"MacBookPro","reqId":"req-f","method":"GET","url":"/mcp/agent-tools/agtrun_HBWDkRdmU6s7P-wKMtHPNwM2KxeUrd6_Bygu8gv_sXM","statusCode":405,"elapsedMs":0.14295800030231476,"msg":"http request completed"}
+{"level":40,"time":1791369223221,"pid":93675,"hostname":"MacBookPro","reqId":"req-j","method":"GET","url":"/mcp/agent-tools/agtrun_HBWDkRdmU6s7P-wKMtHPNwM2KxeUrd6_Bygu8gv_sXM","statusCode":405,"elapsedMs":0.16483399271965027,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run release_notes_writer_pmutempre_8280_ec429fdf750f4f7588a592598554e367: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791369224014,"pid":93675,"hostname":"MacBookPro","reqId":"req-n","method":"GET","url":"/mcp/agent-tools/agtrun_HBWDkRdmU6s7P-wKMtHPNwM2KxeUrd6_Bygu8gv_sXM","statusCode":405,"elapsedMs":0.2081660032272339,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run fact_checker_pmutempre_8280_b52786e114be4c77aaebd83fa3b18bf9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session 0da9170e-7fbe-4d6f-89e7-550850590cf2
+Closed agent session c4171410-9a41-46ea-990c-11dbf748d930
+Closed agent session 1b23ddff-39b3-458e-888a-c043befaf23c
+Agent WebSocket disconnected: 1b23ddff-39b3-458e-888a-c043befaf23c
+Closed agent session ef4d9342-2ebb-4eae-8d91-06c3cba5c391
+Agent WebSocket disconnected: ef4d9342-2ebb-4eae-8d91-06c3cba5c391
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session f2bfdb0a-48a2-4fe8-9d6b-ddeadef5e892 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=f2bfdb0a-48a2-4fe8-9d6b-ddeadef5e892, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent websocket attached for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Created agent session ded983c3-b926-4515-8f95-d47010443783 for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Agent WebSocket connected: session=ded983c3-b926-4515-8f95-d47010443783, run=manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session eef2d301-e4f2-4535-b5e1-8887d30f1b3f for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=eef2d301-e4f2-4535-b5e1-8887d30f1b3f, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 4537eb31-ae86-4c85-80cd-6498ef4ba6ac for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=4537eb31-ae86-4c85-80cd-6498ef4ba6ac, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Closed agent session 4537eb31-ae86-4c85-80cd-6498ef4ba6ac
+Closed agent session eef2d301-e4f2-4535-b5e1-8887d30f1b3f
+Closed agent session ded983c3-b926-4515-8f95-d47010443783
+Agent WebSocket disconnected: ded983c3-b926-4515-8f95-d47010443783
+Closed agent session f2bfdb0a-48a2-4fe8-9d6b-ddeadef5e892
+Agent WebSocket disconnected: f2bfdb0a-48a2-4fe8-9d6b-ddeadef5e892
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session e09f425a-2b08-4f08-ab84-b3c2a4a16921 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=e09f425a-2b08-4f08-ab84-b3c2a4a16921, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent websocket attached for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Created agent session 81cb5350-535f-4c91-a775-0a227576a7ee for run manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Agent WebSocket connected: session=81cb5350-535f-4c91-a775-0a227576a7ee, run=manager_pmutempre_8280_6f5d194fe1c74591bacb2a039f5dadfa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session 3b056725-0450-4842-88fa-45aa5831a142 for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=3b056725-0450-4842-88fa-45aa5831a142, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 5123420c-f080-47ab-b0e8-fb049032ebf4 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=5123420c-f080-47ab-b0e8-fb049032ebf4, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Closed agent session 81cb5350-535f-4c91-a775-0a227576a7ee
+Agent WebSocket disconnected: 81cb5350-535f-4c91-a775-0a227576a7ee
+Closed agent session 5123420c-f080-47ab-b0e8-fb049032ebf4
+Closed agent session 3b056725-0450-4842-88fa-45aa5831a142
+Closed agent session e09f425a-2b08-4f08-ab84-b3c2a4a16921
+Agent WebSocket disconnected: e09f425a-2b08-4f08-ab84-b3c2a4a16921
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session 2c59c01f-65a7-4350-89b4-e36b147ecaba for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=2c59c01f-65a7-4350-89b4-e36b147ecaba, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session 24f6e916-366c-41b6-bb00-517e399ec435 for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=24f6e916-366c-41b6-bb00-517e399ec435, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 2115d310-9e35-4dbe-ad08-ad6ef7288686 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=2115d310-9e35-4dbe-ad08-ad6ef7288686, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Closed agent session c1454a42-405b-4158-bf38-9a4214675652
+Agent WebSocket disconnected: c1454a42-405b-4158-bf38-9a4214675652
+Closed agent session 24f6e916-366c-41b6-bb00-517e399ec435
+Closed agent session 2115d310-9e35-4dbe-ad08-ad6ef7288686
+Closed agent session 2c59c01f-65a7-4350-89b4-e36b147ecaba
+Agent WebSocket disconnected: 2c59c01f-65a7-4350-89b4-e36b147ecaba
+In-memory cache: Added new agent definition with ID manager-pmufail-6886.
+Agent Definition created successfully with ID: manager-pmufail-6886
+In-memory cache: Added new agent definition with ID release-notes-writer-pmufail-6886.
+Agent Definition created successfully with ID: release-notes-writer-pmufail-6886
+In-memory cache: Added new agent definition with ID fact-checker-pmufail-6886.
+Agent Definition created successfully with ID: fact-checker-pmufail-6886
+[2026-10-07T10:33:48.582Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID docs-review-team-pmufail-6886.
+Agent Team Definition created successfully with ID: docs-review-team-pmufail-6886
+[2026-10-07T10:33:48.601Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID delivery-team-pmufail-6886.
+Agent Team Definition created successfully with ID: delivery-team-pmufail-6886
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+Agent team websocket attached for team run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Created agent session b16cd178-c248-4d50-89be-3e3e3ad5bf44 for run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Agent Team WebSocket connected: session=b16cd178-c248-4d50-89be-3e3e3ad5bf44, run=delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session 0daf9611-a74a-4f88-8a4c-4066bc6bdbe2 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=0daf9611-a74a-4f88-8a4c-4066bc6bdbe2, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/manager_pmufail_6886_966a680620d04963b5a6a54e045fc719/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/release_notes_writer_pmufail_6886_ef06d8dfd2a44078a4e1bd2c0c9c0159/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/fact_checker_pmufail_6886_392f2f7454974200900c9c3ff3015b1a/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Created agent session 6c5a3ac5-8e16-4b66-8dc1-f52b5a5d7cd4 for run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Agent Team WebSocket connected: session=6c5a3ac5-8e16-4b66-8dc1-f52b5a5d7cd4, run=delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/manager_pmufail_6886_966a680620d04963b5a6a54e045fc719/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/manager_pmufail_6886_966a680620d04963b5a6a54e045fc719/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session 0eb5073f-875e-4b54-b13c-136453084991 for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=0eb5073f-875e-4b54-b13c-136453084991, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 1523d8d0-a183-492a-a8ba-9ff889e135b8 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=1523d8d0-a183-492a-a8ba-9ff889e135b8, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run manager_pmufail_6886_966a680620d04963b5a6a54e045fc719: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791369230975,"pid":93675,"hostname":"MacBookPro","reqId":"req-r","method":"GET","url":"/mcp/agent-tools/agtrun_NdkYYRonL2b0BDOSF73myI75jFzSUqY5u0iRMnD25eo","statusCode":405,"elapsedMs":0.14116699993610382,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+{"level":40,"time":1791369231496,"pid":93675,"hostname":"MacBookPro","reqId":"req-v","method":"GET","url":"/mcp/agent-tools/agtrun_NdkYYRonL2b0BDOSF73myI75jFzSUqY5u0iRMnD25eo","statusCode":405,"elapsedMs":0.2685000002384186,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run fact_checker_pmufail_6886_ccfdfe0a021f4ecbaf70fd8802f984a5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session b16cd178-c248-4d50-89be-3e3e3ad5bf44
+Closed agent session 0eb5073f-875e-4b54-b13c-136453084991
+Closed agent session 6c5a3ac5-8e16-4b66-8dc1-f52b5a5d7cd4
+Closed agent session 0daf9611-a74a-4f88-8a4c-4066bc6bdbe2
+Agent WebSocket disconnected: 0daf9611-a74a-4f88-8a4c-4066bc6bdbe2
+Closed agent session 1523d8d0-a183-492a-a8ba-9ff889e135b8
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session d0e3393d-a39d-4d86-9fea-ee92491aa69a for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=d0e3393d-a39d-4d86-9fea-ee92491aa69a, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/release_notes_writer_pmufail_6886_ef06d8dfd2a44078a4e1bd2c0c9c0159/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/fact_checker_pmufail_6886_392f2f7454974200900c9c3ff3015b1a/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Created agent session b6e0b5df-41eb-49e5-9a50-637ef9c4c3a7 for run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Agent Team WebSocket connected: session=b6e0b5df-41eb-49e5-9a50-637ef9c4c3a7, run=delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session 6271c9d3-728f-497a-98ee-b102333706df for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=6271c9d3-728f-497a-98ee-b102333706df, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 08dc1db5-c199-488d-8bdf-e275d727a14d for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=08dc1db5-c199-488d-8bdf-e275d727a14d, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session bc7500c6-4421-45a0-aee5-44225ad92768 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=bc7500c6-4421-45a0-aee5-44225ad92768, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/release_notes_writer_pmufail_6886_ef06d8dfd2a44078a4e1bd2c0c9c0159/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/fact_checker_pmufail_6886_392f2f7454974200900c9c3ff3015b1a/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Created agent session 23aaccb8-379b-41fd-83ae-afab58874291 for run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Agent Team WebSocket connected: session=23aaccb8-379b-41fd-83ae-afab58874291, run=delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session d9b3c8ed-aa32-4ebe-9bdb-a6baf5bdccba for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=d9b3c8ed-aa32-4ebe-9bdb-a6baf5bdccba, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session a06bd19a-8931-4f03-b39b-6768a2316b34 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=a06bd19a-8931-4f03-b39b-6768a2316b34, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Closed agent session 6271c9d3-728f-497a-98ee-b102333706df
+Closed agent session b6e0b5df-41eb-49e5-9a50-637ef9c4c3a7
+Closed agent session d0e3393d-a39d-4d86-9fea-ee92491aa69a
+Agent WebSocket disconnected: d0e3393d-a39d-4d86-9fea-ee92491aa69a
+Closed agent session 08dc1db5-c199-488d-8bdf-e275d727a14d
+Closed agent session d9b3c8ed-aa32-4ebe-9bdb-a6baf5bdccba
+Closed agent session a06bd19a-8931-4f03-b39b-6768a2316b34
+Closed agent session bc7500c6-4421-45a0-aee5-44225ad92768
+Agent WebSocket disconnected: bc7500c6-4421-45a0-aee5-44225ad92768
+Closed agent session 23aaccb8-379b-41fd-83ae-afab58874291
+In-memory cache: Added new agent definition with ID manager-pmuorgcold-399e.
+Agent Definition created successfully with ID: manager-pmuorgcold-399e
+In-memory cache: Added new agent definition with ID release-notes-writer-pmuorgcold-399e.
+Agent Definition created successfully with ID: release-notes-writer-pmuorgcold-399e
+In-memory cache: Added new agent definition with ID fact-checker-pmuorgcold-399e.
+Agent Definition created successfully with ID: fact-checker-pmuorgcold-399e
+[2026-10-07T10:33:56.516Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID docs-review-team-pmuorgcold-399e.
+Agent Team Definition created successfully with ID: docs-review-team-pmuorgcold-399e
+[2026-10-07T10:33:56.536Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID delivery-team-pmuorgcold-399e.
+Agent Team Definition created successfully with ID: delivery-team-pmuorgcold-399e
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run manager_pmuorgcold_399e_e3c5ce5e7b5b435dbeeee067b961e281: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791369237328,"pid":93675,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/mcp/agent-tools/agtrun_d8tmzUQhLeH4E8K7QMy8hurCFBC0cjlaIieA7xKzhJo","statusCode":405,"elapsedMs":0.15266700088977814,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/workspace.
+Reusing registered workspace ID: agent_ws_60516bb5d43c3de55f5fab0e137d349c1b2585dbb1f3edda5fdacbad9d3fcb6d
+AGY compaction detection off for run release_notes_writer_pmuorgcold_399e_318ae24bcaa644bf8c0ad7e43a21bd30: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Created agent session e82a6c0c-82f7-4cb6-bb82-8fc05024a815 for run manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Agent WebSocket connected: session=e82a6c0c-82f7-4cb6-bb82-8fc05024a815, run=manager_pmuleft_4373_924a34e6ad2640499c9d2e066125f1e7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/release_notes_writer_pmufail_6886_ef06d8dfd2a44078a4e1bd2c0c9c0159/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e/fact_checker_pmufail_6886_392f2f7454974200900c9c3ff3015b1a/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Created agent session 046ea509-a46a-4922-9a67-037980574dc6 for run delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Agent Team WebSocket connected: session=046ea509-a46a-4922-9a67-037980574dc6, run=delivery_team_pmufail_6886_a207bb9c788948098c513f829987646e
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/release_notes_writer_pmuleft_4373_ede9f4e5e2e4472d80f02a10ceb5d9cf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/fact_checker_pmuleft_4373_b8452aa1fc8745138a7d94d13f3efa8f/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Created agent session 6ff3e3ca-ffb9-4b8a-aa69-2374fb73629e for run delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Agent Team WebSocket connected: session=6ff3e3ca-ffb9-4b8a-aa69-2374fb73629e, run=delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/release_notes_writer_pmuagent_abf7_ac1673e6c6b1459bb0e0743d85b17d0c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1/fact_checker_pmuagent_abf7_d82cfe6d32ac40a88061e991850121b9/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_teams/delivery_team_pmuleft_4373_d6bac860c0dc40b0938e8a79895c0f62/manager_pmuleft_4373_c514b46570b9423fab47526b37738b88/raw_traces_active.jsonl
+Agent team websocket attached for team run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Created agent session 8d7e137f-4ec0-4b2a-821f-30d8084b53b2 for run delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Agent Team WebSocket connected: session=8d7e137f-4ec0-4b2a-821f-30d8084b53b2, run=delivery_team_pmuagent_abf7_64ee01901a4f42c6bea511ab06dc02f1
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuorgcold_399e_508097a29c274b449f9f0d3f2ca38c5b/release_notes_writer_pmuorgcold_399e_91ab7bdbf5ab4ac787d651d5a605cdd0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuorgcold_399e_508097a29c274b449f9f0d3f2ca38c5b/fact_checker_pmuorgcold_399e_5b5f27d9c2e74827bb4e89794f7ee4f4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuorgcold_399e_508097a29c274b449f9f0d3f2ca38c5b/release_notes_writer_pmuorgcold_399e_91ab7bdbf5ab4ac787d651d5a605cdd0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-7BclM7/memory/agent_orgs/delivery_org_pmuorgcold_399e_508097a29c274b449f9f0d3f2ca38c5b/fact_checker_pmuorgcold_399e_5b5f27d9c2e74827bb4e89794f7ee4f4/raw_traces_active.jsonl
+Closed agent session 6ff3e3ca-ffb9-4b8a-aa69-2374fb73629e
+Closed agent session 046ea509-a46a-4922-9a67-037980574dc6
+Closed agent session e82a6c0c-82f7-4cb6-bb82-8fc05024a815
+Agent WebSocket disconnected: e82a6c0c-82f7-4cb6-bb82-8fc05024a815
+Closed agent session 8d7e137f-4ec0-4b2a-821f-30d8084b53b2
+[2026-10-07T10:34:10.940Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-07T10:34:11.012Z] [INFO] [server.runtime] Server closed cleanly.

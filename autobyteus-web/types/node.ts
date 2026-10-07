@@ -31,6 +31,8 @@ export interface NodeEndpoints {
   orgWs: string;
   /** Collaboration root of a standalone Agent run (its task children). */
   agentCollaborationWs: string;
+  /** The node's Project and Task change feed. */
+  projectsWs: string;
   terminalWs: string;
   fileExplorerWs: string;
   health: string;

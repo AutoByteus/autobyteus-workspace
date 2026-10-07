@@ -56,10 +56,44 @@ export interface ProjectView extends Omit<Project, "workspaces"> {
   taskCount: number;
 }
 
+/** The live status words of a Task's root (the worker's own status). */
+export type TaskRootStatus = "running" | "initializing" | "idle" | "error" | "offline";
+
+/**
+ * A Task's root: its latest `assigned` entry, i.e. the one agent or team the Task was handed to.
+ * `status` is the worker's own live status; it is `offline` when the assignment is closed (DONE),
+ * failed to start, or its hosting run is not active.
+ */
+export interface TaskRootView {
+  kind: "agent" | "team";
+  /** The address it was delegated to (its display name); null when recorded before it was kept. */
+  recipientAddress: string | null;
+  /** The agent run, or the team's coordinator: the run that opens it. */
+  ingressAgentRunId: string;
+  teamRunId: string | null;
+  hostRoot: { kind: "agent" | "agent_team" | "agent_org"; runId: string };
+  start: "starting" | "started" | "failed";
+  startError: { code: string; message: string } | null;
+  closed: boolean;
+  status: TaskRootStatus;
+}
+
 /** A Task as returned to clients; `projectId` is added for client keying and is not stored in the Task. */
 export interface ProjectTaskView extends Omit<ProjectTask, "contextFiles"> {
   contextFiles: ProjectTaskContextFileView[];
   projectId: string;
+  root: TaskRootView | null;
+}
+
+/** A Task with no Project ("Temp task") as returned to clients; read only. */
+export interface TaskWithoutProjectView {
+  taskId: string;
+  description: string;
+  status: ProjectTaskStatus;
+  referenceFiles: string[];
+  createdAt: string;
+  updatedAt: string;
+  root: TaskRootView | null;
 }
 
 export interface ProjectWorkspaceInput { workspaceId: string; description?: string | null }

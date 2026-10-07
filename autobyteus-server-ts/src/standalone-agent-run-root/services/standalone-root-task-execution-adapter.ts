@@ -14,6 +14,7 @@ import {
   TaskExecutionTeardownIndeterminateError,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
 import {
@@ -127,7 +128,7 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
         callbacks: this.options.callbacks,
       }) : this.options.teams.require(host.hostRunId).beginTaskTeam(command);
     }
-    const plan = Object.freeze({ ...input, ownedAgentRunIds, target: Object.freeze({ root: this.root, execution, ingressAgentRunId }) });
+    const plan = Object.freeze({ ...input, ownedAgentRunIds, recipientAddress: input.placement.address, target: Object.freeze({ root: this.root, execution, ingressAgentRunId }) });
     this.plans.set(plan, { host, beginLocal });
     return plan;
   }
@@ -212,6 +213,22 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);
+  }
+
+  listTaskExecutions(): readonly TaskExecutionReference[] { return this.options.getIndex().listTaskExecutions().map(referenceOf); }
+  taskExecutionStatus(reference: TaskExecutionReference): AgentExecutionStatus {
+    const indexed = this.options.getIndex().getTaskExecution(reference);
+    if (!indexed || !this.isLive(reference)) return "offline";
+    // A task TeamRun is registered in the directory wherever it is hosted; its status folds its leaves.
+    if (indexed.kind === "team") {
+      return foldTeamAggregateStatus((this.options.teams.get(indexed.teamRunId)?.getLeafAgentStatusSnapshots() ?? [])
+        .map((snapshot) => snapshot.details.status), "live");
+    }
+    if (indexed.host.hostKind === "team") {
+      return this.options.teams.get(indexed.host.hostRunId)?.getLeafAgentStatusSnapshots()
+        .find((snapshot) => snapshot.execution.agentRunId === indexed.agentRunId)?.details.status ?? "offline";
+    }
+    return this.options.rootAgents.get(indexed.agentRunId)?.getStatusSnapshot().details.status ?? "offline";
   }
 
   isLive(reference: TaskExecutionReference): boolean {

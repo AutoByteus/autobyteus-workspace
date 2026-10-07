@@ -391,6 +391,43 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,B
   the worker live with its whole conversation. Before sending to a stopped
   root, the probe calls the root's restore mutation, as the app does.
 
+Live Projects pages, Task roots and Temp tasks (the per-node `/ws/projects`
+feed) have a gated server E2E and a browser probe. Rebuild the server first.
+
+```bash
+RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-change-feed.e2e.test.ts --no-watch
+pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence dir>
+```
+
+- **`project-change-feed.e2e.test.ts`.** At the real server/wire boundary:
+  - **Feed contract:** `connected` first on every connection; no replay; broadcast to every client. A rejected `access_token` closes the socket exactly like the sibling sockets (4401). Every frame of the run must match the strict server schema.
+  - **Write paths:** an agent's own tool writes (Project, Task, status, DONE) and UI writes arrive live. The feed's view of each Task must equal the GraphQL snapshot (roots included).
+  - **Agent root:** named, hosted and started, with worker status `running` → `idle` (never a final Initializing after a wake). The worker's helper is never the root. DONE views arrive in commit order and end Offline. A reopen stays Offline until the assigner's message reactivates the worker.
+  - **Start failure:** a real one (a Team member configured with a model its runtime does not offer) yields a failed root with its reason. Re-delegation replaces it.
+  - **Other roots:** a task Team root, and an Org-hosted root.
+  - **Temp tasks:** the no-Project scope through DONE, reopen and reactivation. Deleting the chat removes its Temp tasks.
+  - **Load:** a UI write on a 60-Task Project with a busy worker arrives within 2 s.
+
+  `PROJECT_CHANGE_FEED_E2E_EVIDENCE_DIR` keeps a JSON receipt with frame counts.
+- **`test:e2e:project-manager-ux`** (PMU-001..PMU-012) in a real browser:
+  - live list, board and highlights;
+  - root lines and opening them for Agent, Team and Org hosts;
+  - DONE → Offline;
+  - a deleted host;
+  - Temp tasks;
+  - F-006;
+  - restart and reconnect, and narrow layouts;
+  - left-panel state across pages, and every row kind opening from Projects;
+  - Temp reopen → Offline → reactivation, then deleting the chat from the left panel;
+  - a rendered "Couldn't start" from a real start failure;
+  - two windows on one node;
+  - an Org-hosted root opened before its Org run is loaded.
+
+  Every case fails on any browser error. PMU-007 allows errors only while the backend restarts. On failure, `evidence.json` keeps each page's URL, center text and its last console lines. PMU-004 and PMU-007 depend on earlier cases in the same run.
+
+  Before the first case, the probe warms the Nuxt dev server. It visits its routes and waits until the server has stopped re-optimizing dependencies (`evidence.warmup`). On a cold cache, that "optimized dependencies changed. reloading" can wipe a page's first reads, such as the left panel's run history. The packaged app has no such reload.
+
 `@` delegation and ad-hoc Tasks (Tasks with no Project, created by a described
 `delegate_task` and closed by `create_or_update_task({task_id, status: "DONE"})`)
 have a gated server E2E beside the closure suite and a live browser probe:

@@ -42,7 +42,9 @@ export async function dispatchTaskCopy<T>(input: {
     input.assertAdmitting();
     const exact = plan;
     const target = exact.target;
-    const link = await input.resources.linkAgentRun({ ...input.join, hostRoot: target.root, agentRun: target.execution,
+    // An assignment records the address it was delegated to (the root's display name).
+    const join = input.join.role === "assigned" ? { ...input.join, recipientAddress: exact.recipientAddress } : input.join;
+    const link = await input.resources.linkAgentRun({ ...join, hostRoot: target.root, agentRun: target.execution,
       ...("teamRunId" in target.execution ? { coordinatorAgentRunId: target.ingressAgentRunId } : {}) })
       .catch(error => { throw asTaskDelegationError(error); });
     linked = true;

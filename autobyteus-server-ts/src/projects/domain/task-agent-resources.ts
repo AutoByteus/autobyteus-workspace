@@ -3,11 +3,16 @@ import type { RootExecutionIdentity } from "../../agent-collaboration/execution/
 import type { TaskAgentResourceLinkInput, TaskAgentResourceRole } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import { ProjectError } from "./project-errors.js";
 
-/** One agent run started for a Task. Never stores liveness, shutdown state, lineage, addresses or descriptions. */
+/** One agent run started for a Task. Never stores liveness, shutdown state, lineage or descriptions. */
 export type TaskAgentResource = Readonly<{
   role: TaskAgentResourceRole;
   /** Only on `assigned`: the run that made the assignment. */
   assignedBy?: string;
+  /**
+   * Only on `assigned`: the address the assigner delegated to (e.g. `/product_team`), the root's
+   * display name. Absent on assignments recorded before it was kept.
+   */
+  recipientAddress?: string;
   hostRoot: RootExecutionIdentity;
   agentRun: TaskExecutionReference;
   /** Only for a Team run: its coordinator, the ingress `delegate_task` returned. */
@@ -49,7 +54,7 @@ export const linkTaskAgentResource = (file: TaskAgentResourceFile, link: TaskAge
   if (team && !link.coordinatorAgentRunId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "A Team agent run needs its coordinator.");
   const entry: TaskAgentResource = {
     role: link.role,
-    ...(link.role === "assigned" ? { assignedBy: link.assignedBy } : {}),
+    ...(link.role === "assigned" ? { assignedBy: link.assignedBy, ...(link.recipientAddress ? { recipientAddress: link.recipientAddress } : {}) } : {}),
     hostRoot: { rootSubjectKind: link.hostRoot.rootSubjectKind, rootRunId: link.hostRoot.rootRunId },
     agentRun: "agentRunId" in link.agentRun ? { agentRunId: link.agentRun.agentRunId } : { teamRunId: link.agentRun.teamRunId },
     ...(team ? { coordinatorAgentRunId: link.coordinatorAgentRunId } : {}),

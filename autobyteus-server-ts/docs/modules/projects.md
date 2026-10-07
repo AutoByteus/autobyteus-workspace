@@ -55,7 +55,9 @@ automatically.
 
 - `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,settings,task-agent-resources}.ts`
 - `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-agent-resource-store,task-agent-resource-schema}.ts`
-- `src/projects/services/{project-service,project-task-service,task-agent-resource-service,projects-capability-service}.ts`
+- `src/projects/services/{project-service,project-task-service,task-agent-resource-service,projects-capability-service,task-root-view-builder}.ts`
+- `src/projects/changes/{project-change-messages,project-change-publisher,project-change-hub}.ts`
+  (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))
 - `src/projects/runtime/task-agent-resource-release.ts` (DONE's stop request)
 - `src/projects/context/project-task-context-store.ts`
 - `src/compositions/project-task-agent-resource-composition.ts`: the **single**
@@ -67,6 +69,7 @@ automatically.
 - `src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts`
 - `src/api/graphql/types/{projects,project-tasks,projects-capability}.ts`
 - `src/api/rest/project-task-context-files.ts`
+- `src/api/websocket/projects.ts` (`/ws/projects`)
 
 ## Persistence Layout
 
@@ -134,8 +137,10 @@ additive: a missing directory means no ad-hoc Tasks, and nothing is migrated.
 
 - Counts, summaries, availability or display names.
 - Context locators, absolute context paths, or client tokens.
-- Run shutdown state, liveness, lineage, addresses or descriptions, in either
-  the Task files or `agent_run_resources.json`.
+- Run shutdown state, liveness, lineage or descriptions, in either the Task
+  files or `agent_run_resources.json`. The one address kept is the
+  `recipientAddress` of an `assigned` entry (the address it was delegated to,
+  shown as the Task root's name); no other entry stores an address.
 
 ### Services
 
@@ -224,7 +229,7 @@ with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
 ```jsonc
 { "taskId": "project_task_…",
   "agentRunResources": [
-    { "role": "assigned", "assignedBy": "<manager agentRunId>",
+    { "role": "assigned", "assignedBy": "<manager agentRunId>", "recipientAddress": "/product_team",
       "hostRoot": { "kind": "agent", "runId": "…" },
       "agentRun": { "kind": "team", "teamRunId": "…", "coordinatorAgentRunId": "…" },
       "linkedAt": "…", "start": "started", "closedAt": null },
@@ -236,6 +241,7 @@ with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
 | --- | --- |
 | `role` | `assigned`: a non-owned run's (e.g. the Manager's) `delegate_task(task_id)`, or, for a Task with no Project, the described `delegate_task` that created it. `delegated`: an open owned run's `delegate_task` without a task_id. `broughtIn`: an open owned run's `send_message_to` that started a new copy. |
 | `assignedBy` | Present only on `assigned`: the run that made the assignment. |
+| `recipientAddress` | Optional, only on `assigned`: the exact `recipient_address` the work was delegated to. Written for assignments made since project-manager-ux; older entries have none (their root shows its kind). Readers accept both, so existing files are used as they are, with no migration. |
 | `hostRoot` | The top-level run the user started, which hosts this agent run. |
 | `agentRun` | `{kind: agent, agentRunId}` or `{kind: team, teamRunId, coordinatorAgentRunId}`. |
 | `linkedAt` | Written **before** any resource is acquired, so DONE always reaches work that is still starting. |
@@ -534,8 +540,11 @@ A Task with no Project makes a description-only delegation closable. The user's
    status back to TODO or IN_PROGRESS by `task_id`, its message to the copy's
    run ID reactivates the copy exactly as for a Project Task
    ([Reactivation](#reactivation)).
-4. **Not Project work.** They are not on the Projects page, not in
+4. **Not Project work.** They are on no Project board, not in
    `list_project_tasks`, and cannot be assigned by `delegate_task({task_id})`.
+   The Projects page lists them, read only, as **Temp tasks**
+   (`tasksWithoutProject`, from `AdHocTaskStore.list()`; an unreadable folder is
+   skipped and logged as `AD_HOC_TASK_UNREADABLE`).
 5. **Retention.** When a run is permanently deleted from history, its delete
    owner (`AgentRunHistoryCatalogService.deleteRun`,
    `TeamRunHistoryService.deleteStoredTeamRun`, `AgentOrgRunService.deleteStoredRun`)
@@ -545,6 +554,59 @@ A Task with no Project makes a description-only delegation closable. The user's
    delete. This is the only dependency from run history to Projects.
 6. **No Projects lockout.** Creation, lookup and DONE never touch the Projects
    store, so they keep working while the Projects migration is pending.
+
+## Live Change Feed And Task Roots
+
+The Projects pages follow changes live through one per-node WebSocket,
+`/ws/projects` (same remote-access policy as the other sockets). It sends
+`{type: "connected"}` on every connection, then:
+
+| Message | When |
+| --- | --- |
+| `project_upserted {project}` | A Project was created or updated, or one of its Tasks changed (fresh counts). Same fields as GraphQL `Project`. |
+| `project_removed {projectId}` | A Project was deleted. |
+| `task_upserted {scope, task}` | A Task was created or changed, or its assignments changed. `scope` is `{kind: "project", projectId}` or `{kind: "no_project"}`; `task` is the GraphQL view of that scope. |
+| `task_removed {scope, taskId}` | A Task was deleted (a Temp task with its run's deletion). |
+| `task_worker_status {scope, taskId, status}` | The root's worker status changed. |
+
+There is no replay: a client re-reads what it shows on every `connected`.
+
+**Publication contract (AR-001).** Only `ProjectService`, `ProjectTaskService`
+and committed `TaskAgentResourceService` writes publish; `load()` never does.
+- A write's trigger only *marks* its subject (a Project, a Task, or a Task's
+  worker status) on `ProjectChangePublisher`. Marking is synchronous, never
+  throws and never reads. A Task mark also marks its Project (counts).
+- Reads happen in a flush scheduled with `setImmediate`, after the writer and
+  any synchronous runtime dispatch finished. So the first status after a wake
+  is read after the overlay cleared (Running, not a transient Initializing).
+- Builds are serialized and coalesced per subject: marks during a build cause
+  one more build. Each emission reads state at least as new as the previous
+  one, so a DONE ends with the DONE view.
+- Removal wins over an upsert; a view that reads as missing is published as
+  removed. Read or send failures are logged and never fail the write.
+
+### Task roots
+
+A Task's **root** is its latest `assigned` entry: the one agent or team the
+Task was handed to. Each Task view has `root` (null when never assigned):
+`kind` (agent|team), `recipientAddress` (null for older entries),
+`ingressAgentRunId` (the agent, or the team's coordinator), `teamRunId`,
+`hostRoot {kind, runId}`, `start`, `startError`, `closed`, and `status`.
+
+`status` is the worker's own status (offline, idle, error, initializing,
+running), the one the left panel shows:
+- A closed (DONE) or `failed` root is `offline` without asking anything.
+- Otherwise the hosting root answers through
+  `ActiveRootMessageBoundary.taskExecutionStatus`: the agent's status snapshot,
+  or for a team the shared fold of its members
+  (`foldTeamAggregateStatus` in `@autobyteus/collaboration-stream-contracts`,
+  the same rule as the web). A root that is not active, not admitting, or does
+  not know the run answers `offline`. Reading never wakes or starts anything.
+- `RootTaskExecutionLifecycle` forwards every agent status change inside a task
+  execution to `TaskAgentResourcePort.taskExecutionsStatusChanged` (also after
+  the root stopped admitting), and announces all its task executions when it
+  closes admission or fails. `ProjectTaskService` marks a worker-status change
+  only for a Task whose root is that run.
 
 ## Workspace Registration Boundary
 
@@ -619,7 +681,11 @@ Project queries, mutations and capability operations keep their names.
 `workspaces`.
 
 - `projectTasks(projectId)` returns full ProjectTask records with
-  `contextFiles`. GraphQL Task reads do not include assignments.
+  `contextFiles` and `root` (see [Task roots](#task-roots)). GraphQL Task reads
+  do not list the other assignments.
+- `tasksWithoutProject` returns the Tasks with no Project (Temp tasks), latest
+  change first: `taskId, description, status, referenceFiles, createdAt,
+  updatedAt, root`. There is no mutation for them.
 - `createProjectTask({projectId, description, contextDraft?})` creates a TODO
   Task.
 - `updateProjectTask({projectId, taskId, description, contextChanges?})` edits
@@ -657,7 +723,11 @@ directory listing and no arbitrary-path route.
 Read [workspace TESTING.md](../../../TESTING.md) first.
 
 Coverage:
-- `tests/unit/projects`: per-folder store, services, Task agent run resources.
+- `tests/unit/projects`: per-folder store, services, Task agent run resources,
+  change publication (`project-change-{publisher,publication,hub}.test.ts`) and
+  Task roots (`task-root-view.test.ts`).
+- `tests/unit/agent-collaboration/task-execution-status.test.ts`: the live
+  status of task executions in actual Agent, Team and Org roots.
 - `tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts`
 - `tests/unit/agent-tools/project-tasks`
 - `tests/unit/context-files` (preserved)

@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.96-beta.2 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /tmp/pmu-delivery/probe
+
+Project manager UX probe: Pass. Evidence: /tmp/pmu-delivery/probe/evidence.json

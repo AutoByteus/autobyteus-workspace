@@ -35,6 +35,22 @@ export class AdHocTaskStore {
     if (!isSafeSegment(taskId)) return null;
     return readAdHocTaskFile(await readJsonFile<unknown>(this.layout.taskFile(taskId), null).catch(() => null), taskId);
   }
+  /**
+   * Every readable ad-hoc Task (one folder read each). A folder whose `task.json` is missing or
+   * invalid is skipped and logged; it never fails the list.
+   */
+  async list(): Promise<AdHocTask[]> {
+    let names: string[];
+    try { names = (await fs.readdir(this.layout.root, { withFileTypes: true })).filter(e => e.isDirectory()).map(e => e.name); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
+    const tasks = await Promise.all(names.map(async (name) => {
+      const taskId = this.layout.idOfFolder(name);
+      const task = taskId ? await this.read(taskId) : null;
+      if (!task) console.warn("AD_HOC_TASK_UNREADABLE", { folder: name });
+      return task;
+    }));
+    return tasks.filter((task): task is AdHocTask => task !== null);
+  }
   /** Writes a new `task.json`; an existing one is never replaced. */
   async create(task: AdHocTask): Promise<void> {
     const file = this.layout.taskFile(task.taskId);

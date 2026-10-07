@@ -1,0 +1,48 @@
+import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskRootStatus, TaskRootView } from "../domain/models.js";
+import type { TaskAgentResource, TaskAgentResourceFile } from "../domain/task-agent-resources.js";
+
+/**
+ * The hosting root's answer for a task execution's own live status (composition-bound: the active
+ * root directory): `null` when that root is not active; an active root that does not know the run
+ * (or no longer admits) answers `offline`. It never wakes anything.
+ */
+export type TaskWorkerStatusResolver = (hostRoot: RootExecutionIdentity, agentRun: TaskExecutionReference) => TaskRootStatus | null;
+
+/** The Task's root: its latest `assigned` entry (file order is link order); null when never assigned. */
+export const latestAssignedEntry = (file: TaskAgentResourceFile | null): TaskAgentResource | null => {
+  const entries = file?.agentRunResources ?? [];
+  for (let index = entries.length - 1; index >= 0; index -= 1) if (entries[index]!.role === "assigned") return entries[index]!;
+  return null;
+};
+
+/**
+ * The worker's live status (DEC-006): `offline` when closed (DONE), failed to start, or its hosting
+ * root is not active; else the hosting root's answer. A root still `starting` in an active host has
+ * no live run yet and reads `initializing` (design: "Initializing while starting"); a start left
+ * behind by a stopped host reads `offline`, never a permanent Initializing.
+ */
+export const rootWorkerStatus = (entry: TaskAgentResource, resolve: TaskWorkerStatusResolver): TaskRootStatus => {
+  if (entry.closedAt !== null || entry.start === "failed") return "offline";
+  let status: TaskRootStatus | null;
+  try { status = resolve(entry.hostRoot, entry.agentRun); }
+  catch (error) { console.warn("TASK_ROOT_STATUS_UNAVAILABLE", error); return "offline"; }
+  if (status === null) return "offline";
+  return entry.start === "starting" && status === "offline" ? "initializing" : status;
+};
+
+export const buildTaskRootView = (entry: TaskAgentResource, resolve: TaskWorkerStatusResolver): TaskRootView => {
+  const team = "teamRunId" in entry.agentRun;
+  return {
+    kind: team ? "team" : "agent",
+    recipientAddress: entry.recipientAddress ?? null,
+    ingressAgentRunId: "agentRunId" in entry.agentRun ? entry.agentRun.agentRunId : entry.coordinatorAgentRunId!,
+    teamRunId: "teamRunId" in entry.agentRun ? entry.agentRun.teamRunId : null,
+    hostRoot: { kind: entry.hostRoot.rootSubjectKind, runId: entry.hostRoot.rootRunId },
+    start: entry.start,
+    startError: entry.startError ? { code: entry.startError.code, message: entry.startError.message } : null,
+    closed: entry.closedAt !== null,
+    status: rootWorkerStatus(entry, resolve),
+  };
+};

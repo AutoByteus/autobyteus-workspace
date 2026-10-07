@@ -12,7 +12,7 @@ import {
   UpdateProject,
   UpdateProjectWorkspace,
 } from '~/graphql/mutations/projectMutations'
-import type { Project, ProjectWorkspaceInput } from '~/types/project'
+import type { Project, ProjectChangeMessage, ProjectWorkspaceInput } from '~/types/project'
 import {
   ProjectRequestError,
   throwProjectGraphqlErrors as throwGraphqlErrors,
@@ -224,6 +224,26 @@ export const useProjectStore = defineStore('projects', () => {
   const removeWorkspace = (projectId: string, workspaceId: string): Promise<Project> =>
     mutateProject(RemoveProjectWorkspace, { input: { projectId, workspaceId } }, 'removeProjectWorkspace')
 
+  /**
+   * One `/ws/projects` Project change: the server view (with its counts) replaces the cached one;
+   * a removed Project leaves. `connected` (first connection or reconnect) re-reads a fetched list.
+   */
+  const applyChange = (message: ProjectChangeMessage): void => {
+    if (message.type === 'connected') {
+      if (hasFetched.value) void fetchProjects(true).catch(() => undefined)
+      return
+    }
+    if (message.type === 'project_upserted') {
+      const { project } = message
+      if (!hasFetched.value && !getProjectById(project.projectId)) return
+      counts.set(project.projectId, { generation: ++countGeneration, taskCount: project.taskCount, openTaskCount: project.openTaskCount })
+      projects.value = upsertProject(projects.value, project)
+    } else if (message.type === 'project_removed') {
+      counts.delete(message.projectId)
+      projects.value = projects.value.filter((project) => project.projectId !== message.projectId)
+    }
+  }
+
   watch(
     () => windowNodeContextStore.bindingRevision,
     () => invalidate(),
@@ -240,6 +260,7 @@ export const useProjectStore = defineStore('projects', () => {
     fetchProjects,
     fetchProject,
     setTaskCounts,
+    applyChange,
     createProject,
     updateProject,
     deleteProject,

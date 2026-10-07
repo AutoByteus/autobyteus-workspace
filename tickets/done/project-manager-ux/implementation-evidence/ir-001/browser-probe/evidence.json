@@ -1,0 +1,230 @@
+{
+  "startedAt": "2026-10-07T09:48:23.714Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-001": {
+      "result": "Pass",
+      "description": "Projects list and board follow writes live (arrival highlight, counts)",
+      "durationMs": 6050,
+      "details": {
+        "projectArrivalMs": 25,
+        "arrivedRows": [
+          "project-task-row-project_task_f615ad38-3b29-4d59-92a0-a080a70b37f9"
+        ],
+        "feed": {
+          "total": 10,
+          "byType": {
+            "project_upserted": 6,
+            "task_upserted": 4
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-002": {
+      "result": "Pass",
+      "description": "Agent root: live status, live move highlight, opening the worker, DONE → Offline muted",
+      "durationMs": 4446,
+      "details": {
+        "live": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmuagent a0fd"
+        },
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmuagent a0fd"
+        },
+        "feed": {
+          "total": 13,
+          "byType": {
+            "task_upserted": 5,
+            "project_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-003": {
+      "result": "Pass",
+      "description": "Task Team root opens the coordinator expanded; Team- and Org-hosted roots open in their views",
+      "durationMs": 6149,
+      "details": {
+        "teamRoot": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent a0fd"
+        },
+        "teamHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "worker"
+          },
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "delivery_team_pmuagent_a0fd_2532cc802af8449da695965c770d97d5"
+          },
+          "url": "http://127.0.0.1:58614/workspace"
+        },
+        "orgHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "worker"
+          },
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "delivery_org_pmuagent_a0fd_c7de8651af03467cb3f6df767e1d11c5"
+          },
+          "url": "http://127.0.0.1:58614/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuagent-a0fd&orgRunId=delivery_org_pmuagent_a0fd_c7de8651af03467cb3f6df767e1d11c5&mode=active&agentRunId=release_notes_writer_pmuagent_a0fd_e28f8e34b5154eaa8802451f208025de"
+        },
+        "feed": {
+          "total": 22,
+          "byType": {
+            "task_upserted": 8,
+            "project_upserted": 8,
+            "task_worker_status": 6
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-004": {
+      "result": "Pass",
+      "description": "AR-002: a deleted hosting run makes the root not openable (terminated but listed stays openable)",
+      "durationMs": 2760,
+      "details": {
+        "listed": {
+          "state": "offline",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent a0fd"
+        },
+        "gone": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "docs review team pmuagent a0fd"
+        },
+        "errors": []
+      }
+    },
+    "PMU-005": {
+      "result": "Pass",
+      "description": "Temp tasks: header count, Open/Done board, read-only page, live move to Done",
+      "durationMs": 3092,
+      "details": {
+        "line": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutemp 352b"
+        },
+        "moved": "moved",
+        "feed": {
+          "total": 8,
+          "byType": {
+            "task_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-006": {
+      "result": "Pass",
+      "description": "F-006: a left-panel task row opens its conversation from another page",
+      "durationMs": 3641,
+      "details": {
+        "taskId": "ad_hoc_task_1723c44e-a42c-4a15-ad29-52fd0e5ff96b",
+        "url": "http://127.0.0.1:58614/chat?id=manager_pmuf006_0198_f43ad031c4f244bc903c6209aad4ace4",
+        "errors": []
+      }
+    },
+    "PMU-007": {
+      "result": "Pass",
+      "description": "Backend restart: reconnect + re-read (Offline), new writes; narrow layout",
+      "durationMs": 6625,
+      "details": {
+        "before": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "worker"
+        },
+        "restart": {
+          "before": 65112,
+          "after": 78932,
+          "starts": 2
+        },
+        "narrow": {
+          "board": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "taskPage": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "tempBoard": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          }
+        },
+        "errors": [
+          "WebSocket connection to 'ws://127.0.0.1:58613/ws/projects' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+          "WebSocket connection to 'ws://127.0.0.1:58613/ws/agent/manager_pmuf006_0198_f43ad031c4f244bc903c6209aad4ace4' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+          "Agent WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:58614/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+          "WebSocket connection to 'ws://127.0.0.1:58613/ws/agent/manager_pmutemp_352b_80c8484dcd354708941102f6665c7223' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+          "Agent WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:58614/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+          "WebSocket connection to 'ws://127.0.0.1:58613/ws/agent-team/delivery_team_pmuagent_a0fd_2532cc802af8449da695965c770d97d5' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+          "Team WebSocket error: Error: WebSocket error\n    at socket.onerror (http://127.0.0.1:58614/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:90:24)",
+          "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 65199,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 78932,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 64,
+    "byType": {
+      "connected": 2,
+      "project_upserted": 20,
+      "task_upserted": 26,
+      "task_worker_status": 16
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:58613",
+    "frontendUrl": "http://127.0.0.1:58614",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-68bC2C"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-07T09:49:16.918Z"
+}
