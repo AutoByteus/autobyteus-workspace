@@ -1,28 +1,32 @@
-# AutoByteus 1.4.95
+# AutoByteus 1.4.96
 
 ## What's new
 
-- Unified run settings: start Agents and Teams in New chat, customize member settings in one panel, and reuse a run's settings with “+”. Agent Orgs use a shorter launch page with the same controls.
-- `@` now asks your agent to delegate to an Agent or Team. Agents and Teams already in the run are available in the menu too, so your agent can reach an existing instance rather than create an unnecessary copy.
-- Delegated copies can be closed by marking their Task done. Finished Task runs leave the Workspaces tree and remain closed after restart, while conversation history and workspace files remain available.
-- The separately selectable `create_or_update_project` tool supports Project creation and partial updates. Omitted fields are preserved; explicit workspace lists replace links without deleting workspace folders or Tasks.
+- **Projects is always on.** Projects is now part of every desktop node: there is no Projects switch in Settings any more. The mobile app does not show Projects.
+- **Live Projects pages.**
+  - The Projects list, Task boards and Task pages update as agents or you work. No Refresh is needed.
+  - Each delegated Task shows the agent or team it was handed to, with its live status. Click it to open that worker's conversation.
+- **Projects tab beside the chat.**
+  - In any Agent, Team or Org conversation, the first right-panel tab shows a live Task board for the Project you pick, or for Temp tasks.
+  - Open a Task there and come back, or jump to the full Projects page.
+- **Temp tasks.** Work an agent delegated without a Project gets its own read-only board, with an "N open" count on the Projects page.
+- **Continue with the same worker after DONE.**
+  - After an agent moves a finished Task back to TODO or IN_PROGRESS, messaging the worker's run ID brings that agent or team back with its earlier conversation.
+  - Its row returns to the Workspaces tree. The app never changes a Task's status by itself.
+- **New chats are kept as Drafts.** A New chat you started typing stays under Chat as a Draft row until you send or discard it. Drafts are kept for the current session.
+- **Grok Build compaction is visible.**
+  - Automatic and manual (`/compact`) compactions show as one activity each.
+  - Reopened history starts after the latest compaction.
 
 ## Fixes and improvements
 
-- Clicking a supported local file in the Electron Event Monitor now uses the selected Agent/member workspace even when metadata is incomplete. The same click shows the read-only preview or ordinary file error in the responsive Files drawer or dock; reopening reuses its tab.
-- Team, Org member and standalone collaborator file artifacts hydrate with their run state. Active-run file changes use their bound process authority.
-- Cleaner delegated rows and smoother removal of finished Task runs in the Workspaces tree.
-- AutoByteus-launched Codex clients now effectively disable Codex's competing native-agent collaboration features. AutoByteus collaboration and ordinary Codex tools remain available; running clients are not force-restarted.
-- The default built-in agent is named Daily Assistant. Task-authoring text is simpler while existing editor controls remain available.
+- Task cards stay compact: long Task descriptions show two lines plus up to two lines of context, and the full text is on the Task page.
+- Clicking a delegated worker's row in the left panel always opens its conversation, from any page.
+- `delegate_task` results now say whether the new copy is an `agent` or a `team`.
+- Token statistics labels follow the app font-size setting.
 
 ## Upgrade notes
 
-- Existing Projects storage moves once to per-Project folders on first start. The original file is retained as `projects.pre-folders.json`; while migration is pending, Projects asks you to restart the app to finish.
-
-- **Task-tool callers:** updating an existing Task with `create_or_update_task` now takes `task_id` without `project_id`; sending both is rejected. Update external agent packages that use the old call shape.
-- The built-in Project Task Manager has been removed. Use the Project Task Manager from the agent repository by configuring that repository as an agent package root. On startup, the old built-in `agents/autobyteus-project-task-manager/` app-data folder is deleted without a backup. Other agents, Projects, Tasks and histories are retained; past conversations with the removed agent stay readable but cannot be continued.
-- The Electron preview fix adds no edit/save access and does not broaden remote/browser/mobile file access.
-
-## Known limitation
-
-Closed Team members may still appear in the members panel, running list and token-usage display even though their finished Task runs are hidden from the Workspaces tree.
+- No data migration is needed.
+- A previously saved `ENABLE_PROJECTS` setting is ignored. It now appears as an ordinary custom setting that you can delete.
+- Agent packages whose instructions say a DONE Task is final should be updated to describe reopening the Task and then messaging the worker. One example is the agent repository's `project-task-management` skill.
