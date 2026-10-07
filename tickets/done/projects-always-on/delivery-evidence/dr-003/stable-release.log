@@ -1,0 +1,26 @@
+Updating autobyteus-web/package.json: 1.4.96-beta.5 -> 1.4.96
+Synced curated release notes to .github/release-notes/release-notes.md
+[personal 446379c90] chore(release): bump workspace release version to 1.4.96
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 24 insertions(+), 20 deletions(-)
+remote: 
+remote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   a12eed0cc..446379c90  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.96 -> v1.4.96
+Release complete and pushed: branch 'personal', tag 'v1.4.96'.

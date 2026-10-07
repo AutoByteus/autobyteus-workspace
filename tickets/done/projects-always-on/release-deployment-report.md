@@ -11,7 +11,7 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-always-on/tickets/in-progress/projects-always-on/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-always-on/tickets/in-progress/projects-always-on/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Current delivery revision ID: `DR-003`
 - Notes: DR-001 was the pre-verification state. DR-002 covers verification, finalization, beta `v1.4.96-beta.5` and cleanup. A stable `v1.4.96` was requested afterwards and is recorded as DR-003.
 
 ## Initial Delivery Integration Refresh
@@ -102,6 +102,7 @@
 
 - Explicit user testing/verification complete: `Yes`
 - Repository finalization complete: `Yes`
-- Applicable release/deployment/rollout complete or not required: `Yes` (beta.5). The stable `v1.4.96` is tracked in DR-003.
+- Applicable release/deployment/rollout complete or not required: `Yes` (beta.5). Stable `v1.4.96` was also published and verified (DR-003): release commit `446379c90`, all 4 workflows succeeded, it is `releases/latest`, updater metadata is at `1.4.96`, and Docker `:1.4.96`/`:latest` share `sha256:3fe40835…`. Evidence: `delivery-evidence/dr-003/`.
 - Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
