@@ -1,0 +1,21 @@
+{
+  "taskId": "project_task_6a044ddb-753e-4079-ad99-7082a3c3a6e0",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "assignedBy": "launch_manager_dc4455acc2a540828356a5afb025d2c3",
+      "recipientAddress": "/copy_writer",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "launch_manager_dc4455acc2a540828356a5afb025d2c3"
+      },
+      "agentRun": {
+        "kind": "agent",
+        "agentRunId": "copy_writer_4c5d3ce15b394851be10f09dd3876d35"
+      },
+      "linkedAt": "2026-10-07T10:56:57.536Z",
+      "start": "started",
+      "closedAt": null
+    }
+  ]
+}

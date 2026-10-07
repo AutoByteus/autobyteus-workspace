@@ -1,0 +1,333 @@
+{
+  "startedAt": "2026-10-07T11:02:48.911Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-001": {
+      "result": "Fail",
+      "description": "Projects list and board follow writes live (arrival highlight, counts)",
+      "durationMs": 38328,
+      "message": "browser errors",
+      "details": [
+        "Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=b766e271:59:28)\n    at http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=b766e271:823:71\n    at both (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=b766e271:35:31)\n    at http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=b766e271:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=b766e271:24:24)\n    at Object.error (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=b766e271:37:49)\n    at notifySubscription (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=b766e271:137:18)\n    at onNotify (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=b766e271:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=b766e271:229:5)"
+      ],
+      "pages": [
+        {
+          "url": "http://127.0.0.1:54595/projects/project_ab579e61-f272-4a40-8c6e-d79e0c88ef93",
+          "center": "",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "error: Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:54595/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=b766e271:59:28",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-002": {
+      "result": "Fail",
+      "description": "Agent root: live status, live move highlight, opening the worker, DONE → Offline muted",
+      "durationMs": 32143,
+      "message": "live started root is an openable button",
+      "details": {
+        "state": "idle",
+        "openable": "false",
+        "tag": "DIV",
+        "name": "release notes writer pmuagent 9ef0"
+      },
+      "pages": [
+        {
+          "url": "http://127.0.0.1:54595/projects/project_ab579e61-f272-4a40-8c6e-d79e0c88ef93",
+          "center": "",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-003": {
+      "result": "Fail",
+      "description": "Task Team root opens the coordinator expanded; Team- and Org-hosted roots open in their views",
+      "durationMs": 62167,
+      "message": "Timed out: coordinator conversation opened",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:54595/projects/project_ab579e61-f272-4a40-8c6e-d79e0c88ef93",
+          "center": "",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    },
+    "PMU-004": {
+      "result": "Pass",
+      "description": "AR-002: a deleted hosting run makes the root not openable (terminated but listed stays openable)",
+      "durationMs": 3011,
+      "details": {
+        "listed": {
+          "state": "offline",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent 9ef0"
+        },
+        "gone": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "docs review team pmuagent 9ef0"
+        },
+        "errors": []
+      }
+    },
+    "PMU-005": {
+      "result": "Pass",
+      "description": "Temp tasks: header count, Open/Done board, read-only page, live move to Done",
+      "durationMs": 2848,
+      "details": {
+        "line": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutemp a676"
+        },
+        "moved": "moved",
+        "feed": {
+          "total": 8,
+          "byType": {
+            "task_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-006": {
+      "result": "Pass",
+      "description": "F-006: a left-panel task row opens its conversation from another page",
+      "durationMs": 4180,
+      "details": {
+        "taskId": "ad_hoc_task_2a0bae57-a177-4315-aa15-0a2d630c0f41",
+        "url": "http://127.0.0.1:54595/chat?id=manager_pmuf006_7978_58f107340d9140579858e86c74a324f0",
+        "errors": []
+      }
+    },
+    "PMU-007": {
+      "result": "Fail",
+      "description": "Backend restart: reconnect + re-read (Offline), new writes; narrow layout",
+      "durationMs": 0,
+      "message": "needs PMU-003 (team-hosted root)",
+      "pages": []
+    },
+    "PMU-008": {
+      "result": "Pass",
+      "description": "AC-012/013: left panel kept across Chat, Projects, board and Task page; run, Team member and Org rows open from Projects",
+      "durationMs": 5230,
+      "details": {
+        "steps": [
+          {
+            "label": "chat",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "projects list",
+            "path": "/projects",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "board",
+            "path": "/projects/project_e690295f-4ada-4310-a1cb-d357783318e4",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "task page",
+            "path": "/projects/project_e690295f-4ada-4310-a1cb-d357783318e4/tasks/project_task_1439021c-7973-49d4-b12b-8fa91975e534",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "back in chat via the run row",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          }
+        ],
+        "opened": {
+          "run": "http://127.0.0.1:54595/chat?id=manager_pmuleft_81e3_020088cee5e447b98848bd8143dfb258",
+          "team": "http://127.0.0.1:54595/workspace",
+          "org": "http://127.0.0.1:54595/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuleft-81e3&orgRunId=delivery_org_pmuleft_81e3_d704b569e4b24248abee61c80c5c2305&mode=active&memberAddress=/manager"
+        }
+      }
+    },
+    "PMU-009": {
+      "result": "Pass",
+      "description": "AC-020/021/023: Temp task DONE, reopen (Offline), reactivation (openable), then the chat deleted from the left panel",
+      "durationMs": 8695,
+      "details": {
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmutempre 74fd"
+        },
+        "reopened": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmutempre 74fd"
+        },
+        "reactivated": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutempre 74fd"
+        },
+        "counts": {
+          "countBefore": "4 open",
+          "countAfter": "2 open"
+        }
+      }
+    },
+    "PMU-010": {
+      "result": "Pass",
+      "description": "AC-007: Couldn't start from a real start failure (board tooltip, Task page reason), then re-delegation",
+      "durationMs": 3275,
+      "details": {
+        "failed": {
+          "state": "failed",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "worker"
+        },
+        "statusText": "Couldn't start",
+        "tooltip": "AGY_MODEL_UNAVAILABLE: pmu-no-such-model",
+        "color": "rgb(220, 38, 38)",
+        "reason": "AGY_MODEL_UNAVAILABLE: pmu-no-such-model",
+        "replaced": "idle"
+      }
+    },
+    "PMU-011": {
+      "result": "Pass",
+      "description": "Two windows on the same node follow a write live",
+      "durationMs": 5536,
+      "details": {
+        "arrivalMs": {
+          "first": 19,
+          "second": 33
+        }
+      }
+    },
+    "PMU-012": {
+      "result": "Pass",
+      "description": "An Org-hosted root opened from a fresh Task page before the Org run is hydrated",
+      "durationMs": 3506,
+      "details": {
+        "url": "http://127.0.0.1:54595/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuorgcold-2502&orgRunId=delivery_org_pmuorgcold_2502_85060372188e46e79899a68df5a3956a&mode=active&agentRunId=release_notes_writer_pmuorgcold_2502_bd2afdb58d7643f0888dd37e8ef52084",
+        "workerRowSelected": true,
+        "hostRoot": {
+          "kind": "agent_org",
+          "runId": "delivery_org_pmuorgcold_2502_85060372188e46e79899a68df5a3956a"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 8749,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 7222,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-001",
+      "message": "browser errors"
+    },
+    {
+      "id": "PMU-002",
+      "message": "live started root is an openable button"
+    },
+    {
+      "id": "PMU-003",
+      "message": "Timed out: coordinator conversation opened"
+    },
+    {
+      "id": "PMU-007",
+      "message": "needs PMU-003 (team-hosted root)"
+    }
+  ],
+  "feed": {
+    "total": 94,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 24,
+      "task_upserted": 39,
+      "task_worker_status": 28,
+      "task_removed": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54594",
+    "frontendUrl": "http://127.0.0.1:54595",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-z64F4t"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Fail",
+  "finishedAt": "2026-10-07T11:05:59.970Z"
+}

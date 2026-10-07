@@ -1,0 +1,22 @@
+{
+  "taskId": "project_task_3325bd31-62e4-450d-bddf-0582f3c56c41",
+  "agentRunResources": [
+    {
+      "role": "assigned",
+      "assignedBy": "launch_manager_dc4455acc2a540828356a5afb025d2c3",
+      "recipientAddress": "/help_review_team",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "launch_manager_dc4455acc2a540828356a5afb025d2c3"
+      },
+      "agentRun": {
+        "kind": "team",
+        "teamRunId": "help_review_team_1e97ca150b0a4455b32af0791c0a87f9",
+        "coordinatorAgentRunId": "help_reviewer_da0a04e225244f5287d1411e272a8de8"
+      },
+      "linkedAt": "2026-10-07T10:56:58.972Z",
+      "start": "started",
+      "closedAt": "2026-10-07T10:58:49.936Z"
+    }
+  ]
+}
