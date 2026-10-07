@@ -86,9 +86,11 @@ export const resolveChatLaunchReadiness = (draft: ChatDraft): ChatLaunchReadines
  * Launch a New chat addressed to an agent through the existing first-send path.
  *
  * Order (D-04): mark starting → register + select the draft context → await the first send
- * (which presents its own failures) → route to `/chat?id=<selected id>` → reset the draft.
+ * (which presents its own failures) → route to `/chat?id=<selected id>` → finish the sent draft.
  * On success the selected id is the promoted run id; a first send that failed before
- * promotion lands on the still-registered `temp-*` context, where its error is shown.
+ * promotion lands on the still-registered `temp-*` context, where its error is shown. Either way
+ * the message now belongs to that run, so the draft and its row go (REQ-006). A failure before
+ * registration throws and keeps the draft.
  */
 export const launchAgentChat = async (
   draft: ChatDraft,
@@ -130,8 +132,8 @@ export const launchAgentChat = async (
     })
   }
   await deps.navigate(buildAgentRunChatRoute(runId))
-  // The context now belongs to agentContextsStore; the New chat page gets a fresh draft.
-  chatDraftStore.startNewChat()
+  // The context now belongs to agentContextsStore.
+  chatDraftStore.finishSentDraft(draft)
   return { runId }
 }
 
@@ -140,7 +142,8 @@ export const launchAgentChat = async (
  * model config, workspace and approval for every member, the customized members' own settings
  * (REQ-009), focused on the coordinator. The first message, with its `@` mentions (REQ-012), goes to
  * the coordinator through the existing Team send, finalizing the attachments uploaded under the
- * chat draft. The user lands in the existing Team view.
+ * chat draft. The user lands in the existing Team view and the sent draft goes (REQ-006); any
+ * failure throws and keeps the draft.
  */
 export const launchTeamChat = async (
   draft: ChatDraft,
@@ -219,6 +222,6 @@ export const launchTeamChat = async (
     })
   }
   await deps.navigate('/workspace')
-  chatDraftStore.startNewChat()
+  chatDraftStore.finishSentDraft(draft)
   return { teamRunId }
 }

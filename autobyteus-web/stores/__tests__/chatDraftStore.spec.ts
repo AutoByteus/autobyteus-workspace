@@ -46,7 +46,7 @@ vi.mock('~/stores/llmProviderConfig', () => ({
   }),
 }))
 
-import { useChatDraftStore } from '../chatDraftStore'
+import { chatDraftHasText, chatDraftText, useChatDraftStore, type ChatDraft } from '../chatDraftStore'
 import { useAgentContextsStore } from '../agentContextsStore'
 import { writeChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { applyModelConfigSchemaDefaults } from '~/utils/llmConfigSchema'
@@ -369,5 +369,178 @@ describe('chatDraftStore', () => {
       expect(draft.context.config.llmConfig).toBeNull()
     })
   })
-})
 
+  describe('Draft collection (chat-new-draft-kept-on-navigation)', () => {
+    const type = (draft: ChatDraft, text: string) => { draft.context.requirement = text }
+    const ids = () => useChatDraftStore().drafts.map((draft) => draft.id)
+    const image = () => [{ path: '/tmp/a.png', type: 'Image' } as any]
+
+    it('counts typed text only: a lone /command, blanks, attachments and skills are not text (REQ-001)', () => {
+      const draft = useChatDraftStore().startNewChat()
+      for (const [text, expected] of [['/rev', false], ['  ', false], ['', false], ['/review this', true], ['hi', true]] as const) {
+        type(draft, text)
+        expect(chatDraftHasText(draft)).toBe(expected)
+      }
+      type(draft, '')
+      draft.context.contextFilePaths = image()
+      draft.context.requestedSkillNames = ['writer']
+      expect(chatDraftHasText(draft)).toBe(false)
+    })
+
+    it('lists a draft at its first text and keeps it when any start opens a fresh one (REQ-004/005)', () => {
+      const store = useChatDraftStore()
+      const first = store.startNewChat()
+      expect(first.listed).toBe(false)
+      type(first, 'copy the details from the other run')
+      expect(store.draft!.listed).toBe(true)
+
+      const second = store.startForDefinition({ kind: 'team', teamDefinitionId: 'team-1' })
+      expect(store.openDraftId).toBe(second.id)
+      expect(ids()).toEqual([first.id, second.id])
+
+      // A New chat without text (only an attachment) is not kept when another chat starts.
+      store.draft!.context.contextFilePaths = image()
+      const third = store.startNewChat({ agentDefinitionId: 'codex' })
+      expect(ids()).toEqual([first.id, third.id])
+      // The draft id is its own, not the context's temp run id (which changes on send).
+      expect(first.id).not.toBe(first.context.state.runId)
+    })
+
+    it('re-enters a kept draft exactly as left and drops the textless New chat it leaves (REQ-003)', async () => {
+      const store = useChatDraftStore()
+      const kept = store.startForDefinition({ kind: 'team', teamDefinitionId: 'team-1' }, {
+        carried: { workspace: { kind: 'folder', rootPath: '/ws/x' }, runtimeKind: 'codex_app_server',
+          llmModelIdentifier: 'gpt-5.5-codex', llmConfig: { reasoning_effort: 'high' }, autoExecuteTools: false },
+      })
+      type(kept, 'review this')
+      kept.context.contextFilePaths = image()
+      store.changeTeamMember('/writer', { field: 'approval', value: true })
+      const blank = store.startNewChat()
+      await flushPromises()
+
+      store.openDraft(kept.id)
+
+      expect(store.draft).toStrictEqual(kept)
+      expect(ids()).toEqual([kept.id])
+      expect(blank.id).not.toBe(kept.id)
+      expect(store.draft).toMatchObject({
+        target: { kind: 'team', teamDefinitionId: 'team-1' },
+        workspace: { kind: 'folder', rootPath: '/ws/x' },
+        autoExecuteTools: false,
+        teamAgentOverrides: { '/writer': { autoExecuteTools: true } },
+      })
+      expect(store.draft!.context.requirement).toBe('review this')
+      expect(store.draft!.context.contextFilePaths).toHaveLength(1)
+      expect(store.draft!.context.config).toMatchObject({ llmModelIdentifier: 'gpt-5.5-codex', llmConfig: { reasoning_effort: 'high' } })
+
+      // Unknown or already open: nothing changes.
+      store.openDraft('chat-draft-unknown')
+      store.openDraft(kept.id)
+      expect(store.openDraftId).toBe(kept.id)
+      expect(ids()).toEqual([kept.id])
+    })
+
+    it('keeps a cleared open draft listed until it is left, then drops it (REQ-008)', () => {
+      const store = useChatDraftStore()
+      const draft = store.startNewChat()
+      type(draft, 'hello')
+      type(draft, '')
+      expect(store.drafts).toHaveLength(1)
+      expect(store.draft!.listed).toBe(true)
+
+      store.startNewChat()
+      expect(ids()).not.toContain(draft.id)
+    })
+
+    it('discards a draft without confirmation; the open one leaves a blank New chat (REQ-007)', () => {
+      const store = useChatDraftStore()
+      const listed = store.startNewChat()
+      type(listed, 'listed')
+      const open = store.startNewChat()
+      type(open, 'open')
+
+      store.discardDraft(listed.id)
+      expect(ids()).toEqual([open.id])
+      expect(store.openDraftId).toBe(open.id)
+
+      store.discardDraft(open.id)
+      expect(store.drafts).toHaveLength(1)
+      expect(store.draft!.id).not.toBe(open.id)
+      expect(store.draft!.context.requirement).toBe('')
+      expect(store.draft!.target).toEqual({ kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' })
+    })
+
+    it('never discards or drops a draft while it is being sent', () => {
+      const store = useChatDraftStore()
+      const sending = store.startNewChat()
+      sending.context.contextFilePaths = image()
+      store.markStarting(sending)
+
+      store.discardDraft(sending.id)
+      expect(ids()).toEqual([sending.id])
+      store.startNewChat()
+      expect(ids()).toContain(sending.id)
+    })
+
+    it('finishes a sent draft: its row goes; a fresh New chat opens only if it was still open (REQ-006)', () => {
+      const store = useChatDraftStore()
+      const other = store.startNewChat()
+      type(other, 'other')
+      const sent = store.startNewChat()
+      type(sent, 'send me')
+      store.markStarting(sent)
+
+      // The user opens another draft while the send is in flight; it stays open.
+      store.openDraft(other.id)
+      store.finishSentDraft(sent)
+      expect(ids()).toEqual([other.id])
+      expect(store.openDraftId).toBe(other.id)
+
+      store.finishSentDraft(other)
+      expect(store.drafts).toHaveLength(1)
+      expect(store.draft!.id).not.toBe(other.id)
+    })
+
+    it('keeps the sent text while a send clears the composer; a failed send returns to the typed text (REQ-006)', () => {
+      const store = useChatDraftStore()
+      const sent = store.startNewChat()
+      type(sent, 'send me')
+      store.markStarting(sent)
+      // The agent first send clears the composer while the draft is still open.
+      type(sent, '')
+      expect(chatDraftText(sent)).toBe('send me')
+      expect(chatDraftHasText(sent)).toBe(true)
+
+      // The user opens another draft during the send: the sent draft stays listed with its text.
+      const other = store.startNewChat()
+      type(other, 'other')
+      store.openDraft(sent.id)
+      store.openDraft(other.id)
+      expect(ids()).toContain(sent.id)
+
+      store.clearStarting(sent)
+      expect(sent.sentText).toBeNull()
+      expect(chatDraftText(sent)).toBe('')
+    })
+
+    it('keeps resolving a kept draft’s default model after another chat starts', async () => {
+      mocks.definitions[0]!.defaultLaunchConfig = { runtimeKind: 'autobyteus', llmModelIdentifier: 'claude-sonnet-5', llmConfig: null }
+      const store = useChatDraftStore()
+      const kept = store.startNewChat()
+      type(kept, 'keep me')
+      store.startForDefinition({ kind: 'agent', agentDefinitionId: 'codex' })
+      await flushPromises()
+
+      expect(kept.context.config.llmModelIdentifier).toBe('claude-sonnet-5')
+    })
+
+    it('stores nothing outside the session (REQ-011)', () => {
+      const store = useChatDraftStore()
+      type(store.startNewChat(), 'session only')
+      store.startNewChat()
+      expect(window.localStorage.length).toBe(0)
+      setActivePinia(createPinia())
+      expect(useChatDraftStore().drafts).toEqual([])
+    })
+  })
+})

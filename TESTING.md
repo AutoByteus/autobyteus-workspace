@@ -503,6 +503,38 @@ user data. Controlled upstream fixtures do not replace a separately attributed
 public GitHub transport smoke. These are web/backend feature checks, not
 Windows or Electron-shell certification, nor exhaustive process-crash proof.
 
+### Chat Draft Rows Regression
+
+Run from the repository root with installed workspace dependencies, Chrome and a
+logged-in CLI for the selected runtime (default Codex):
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-web exec nuxt prepare
+pnpm -C autobyteus-web test:e2e:chat-draft-rows-live --output-dir <fresh-dir> [--ledger-file <initialized absolute path>] [--cases D00,D04] [--runtime codex_app_server] [--model <id>]
+```
+
+The probe owns a built backend (`dist/app.js`), Nuxt dev, a disposable
+SQLite/data root on free ports and a fresh headless Chrome. It never touches a
+running desktop app or the user's data. `--output-dir` resolves from
+`autobyteus-web/`. `--serve-only` starts the owned stack, prints its URLs and
+waits for Ctrl+C. Cases D00–D14 cover the New chat Draft rows under the Chat
+row:
+
+- drafts kept across Chat, the pencil, Run, `+` and workspace-tree `+`;
+- re-entry with an uploaded attachment, `×` discard and "Empty draft";
+- row geometry, tokens, motion and reduced motion;
+- the narrow drawer with touch, the collapsed strip, keyboard order and focus;
+- reload with nothing stored, and zh-CN;
+- real Agent and Team first sends. Only these call the model, with tiny prompts.
+  The sent row keeps its text until the run opens.
+
+Failed sends are injected as GraphQL error responses, so the real client
+failure paths run but the server-side causes are not reproduced. Inspect
+`chat-draft-rows-live-evidence.json`, the screenshots and the cleanup receipts.
+This is a web-equivalent check, not packaged Electron proof.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the
