@@ -17,7 +17,8 @@ export type TaskAgentResourceAssignmentTarget =
 export type TaskAgentResourceLinkInput = Readonly<{
   hostRoot: RootExecutionIdentity; agentRun: TaskExecutionReference; coordinatorAgentRunId?: string;
 }> & (
-  | (Readonly<{ role: "assigned"; assignedBy: string }> & TaskAgentResourceAssignmentTarget)
+  | (Readonly<{ role: "assigned"; assignedBy: string; /** The address delegated to (the root's display name). */ recipientAddress: string }>
+    & TaskAgentResourceAssignmentTarget)
   | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>
 );
 
@@ -54,6 +55,11 @@ export interface TaskAgentResourcePort {
    * writes the Task status. `reopened: false` when the entry was already open.
    */
   reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult>;
+  /**
+   * The live status of these task executions of a root may have changed (an agent in them changed
+   * status, or the root stopped admitting). Synchronous; never throws and never reads files.
+   */
+  taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void;
 }
 
 /** A reactivation request: the assignment's agent run and the run asking for it. */

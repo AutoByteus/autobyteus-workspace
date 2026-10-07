@@ -16,7 +16,11 @@ const { get, spawn, portCheck, log } = vi.hoisted(() => {
 })
 vi.mock('../../launch-profile/e2eLaunchPreflight', () => ({ assertEmbeddedServerListenerPortAvailable: portCheck }))
 vi.mock('axios', () => ({ default: { get } }))
-vi.mock('child_process', () => ({ spawn }))
+vi.mock('child_process', async (importOriginal) => {
+  // Partial mock: modules on the import path use other child_process exports (and the default export).
+  const actual = await importOriginal<typeof import('child_process')>()
+  return { ...actual, default: { ...actual, spawn }, spawn }
+})
 vi.mock('electron-is-dev', () => ({ default: true }))
 vi.mock('../../logger', () => ({ logger: log }))
 vi.mock('../services/AppDataService', () => ({

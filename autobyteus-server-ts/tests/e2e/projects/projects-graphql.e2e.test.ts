@@ -12,9 +12,7 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
-import { resetProjectsCapabilityServiceForTests } from "../../../src/projects/services/projects-capability-service.js";
 import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
-import { getServerSettingsService } from "../../../src/services/server-settings-service.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
 // Un-mocked Projects GraphQL boundary: resolver -> ProjectService -> ProjectStore (per-Project folders)
@@ -46,10 +44,9 @@ const resetProjectsSingletons = () => {
   resetProjectStoreForTests();
   resetProjectServiceForTests();
   resetProjectTaskServiceForTests();
-  resetProjectsCapabilityServiceForTests();
 };
 
-// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_PROJECTS=true):
+// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_SKILL_IMPROVEMENT=true):
 // process.env overrides settings, which would make capability assertions depend on the machine.
 const stashFeatureFlagEnv = (): Record<string, string> => {
   const stashed: Record<string, string> = {};
@@ -96,8 +93,6 @@ type ProjectResult = {
   workspaces: ProjectWorkspaceResult[];
   openTaskCount: number;
 };
-
-type Capability = { enabled: boolean; settingKey: string; source: string };
 
 describe("Projects GraphQL e2e (un-mocked)", () => {
   let schema: GraphQLSchema;
@@ -255,40 +250,26 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     return files;
   };
 
-  it("API-001: projects capability defaults to disabled, persists, toggles, and leaves Applications/SI settings untouched", async () => {
-    const CAPABILITY = `query { projectsCapability { enabled settingKey source } }`;
-    const SET = `mutation($enabled: Boolean!) { setProjectsEnabled(enabled: $enabled) { enabled settingKey source } }`;
-
-    expect(appConfigProvider.config.get("ENABLE_PROJECTS")).toBeFalsy();
-    const initial = await execOk<{ projectsCapability: Capability }>(CAPABILITY);
-    expect(initial.projectsCapability).toEqual({ enabled: false, settingKey: "ENABLE_PROJECTS", source: "INITIALIZED_DISABLED" });
-    expect(appConfigProvider.config.get("ENABLE_PROJECTS")).toBe("false");
-
-    const reread = await execOk<{ projectsCapability: Capability }>(CAPABILITY);
-    expect(reread.projectsCapability).toEqual({ enabled: false, settingKey: "ENABLE_PROJECTS", source: "SERVER_SETTING" });
-
-    appConfigProvider.config.set("ENABLE_APPLICATIONS", "true");
+  it("API-001: Projects is always on: no capability API, and a stored retired flag (false) is not read (projects-always-on AC-002/003)", async () => {
+    // A node upgraded from a release that stored the retired flag as false.
+    appConfigProvider.config.set("ENABLE_PROJECTS", "false");
     appConfigProvider.config.set("ENABLE_SKILL_IMPROVEMENT", "false");
 
-    const enabled = await execOk<{ setProjectsEnabled: Capability }>(SET, { enabled: true });
-    expect(enabled.setProjectsEnabled).toEqual({ enabled: true, settingKey: "ENABLE_PROJECTS", source: "SERVER_SETTING" });
-    expect(appConfigProvider.config.get("ENABLE_PROJECTS")).toBe("true");
-    expect(fs.readFileSync(path.join(appDataDir, ".env"), "utf-8")).toMatch(/^ENABLE_PROJECTS=true$/m);
+    const removed = await exec(`query { projectsCapability { enabled } }`);
+    expect(removed.errors?.[0]?.message).toMatch(/Cannot query field "projectsCapability"/);
+    const removedMutation = await exec(`mutation { setProjectsEnabled(enabled: true) { enabled } }`);
+    expect(removedMutation.errors?.[0]?.message).toMatch(/Cannot query field "setProjectsEnabled"/);
 
-    const disabled = await execOk<{ setProjectsEnabled: Capability }>(SET, { enabled: false });
-    expect(disabled.setProjectsEnabled.enabled).toBe(false);
+    // Projects work regardless of the stored value, and nothing rewrites or deletes it.
+    const created = await createProject("Always on", "");
+    expect((await listProjects()).map((project) => project.projectId)).toEqual([created.projectId]);
     expect(appConfigProvider.config.get("ENABLE_PROJECTS")).toBe("false");
 
-    // AC-010: toggling Projects leaves the other capability settings alone, and the refactored generic
-    // accessor still serves Skill Improvement through its GraphQL capability. (The Applications resolver
-    // needs studio services that exist only in a full server; the browser probe covers it end to end.)
+    // Other capabilities keep their own settings.
     const others = await execOk<{
       skillImprovementCapability: { enabled: boolean; settingKey: string; source: string };
     }>(`query { skillImprovementCapability { enabled settingKey source } }`);
     expect(others.skillImprovementCapability).toMatchObject({ enabled: false, settingKey: "ENABLE_SKILL_IMPROVEMENT", source: "SERVER_SETTING" });
-    expect(getServerSettingsService().getBooleanSetting("ENABLE_APPLICATIONS")).toBe(true);
-    expect(appConfigProvider.config.get("ENABLE_APPLICATIONS")).toBe("true");
-    expect(appConfigProvider.config.get("ENABLE_SKILL_IMPROVEMENT")).toBe("false");
   });
 
   it("API-002: creates, lists, edits and rejects invalid or duplicate Project names", async () => {
@@ -428,12 +409,11 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     );
   });
 
-  it("API-006: a restarted Projects subsystem reads the same persisted Projects and capability", async () => {
+  it("API-006: a restarted Projects subsystem reads the same persisted Projects", async () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const project = await createProject("autobyteus", "AutoByteus product");
     await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
     const task = await createTask(project.projectId, "Write release notes for 1.4.87\nInclude Projects and Tasks");
-    await execOk(`mutation { setProjectsEnabled(enabled: true) { enabled } }`);
     const persistedBefore = snapshotProjectsDir();
 
     // Simulate a process restart: fresh config provider, registry and Projects singletons over the same data dir.
@@ -442,8 +422,6 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     resetWorkspaceRegistryForTest();
     resetProjectsSingletons();
 
-    const capability = await execOk<{ projectsCapability: Capability }>(`query { projectsCapability { enabled settingKey source } }`);
-    expect(capability.projectsCapability).toEqual({ enabled: true, settingKey: "ENABLE_PROJECTS", source: "SERVER_SETTING" });
     const reloaded = await listProjects();
     expect(reloaded).toEqual([
       expect.objectContaining({

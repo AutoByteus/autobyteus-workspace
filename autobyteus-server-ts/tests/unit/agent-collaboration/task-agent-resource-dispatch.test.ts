@@ -25,7 +25,7 @@ function fixture(kind: RootKind) {
     planActivation: vi.fn(async input => {
       if (wait.plan) await planned.promise;
       const id = `copy-${++ordinal}`;
-      return { ...input, ownedAgentRunIds: [id], target: { root, execution: { agentRunId: id }, ingressAgentRunId: id } };
+      return { ...input, ownedAgentRunIds: [id], recipientAddress: `/${input.placement}`, target: { root, execution: { agentRunId: id }, ingressAgentRunId: id } };
     }),
     beginActivation: vi.fn((plan: TaskExecutionActivationPlan<string>) => {
       let cancelled = false, settled = false;
@@ -54,6 +54,7 @@ function fixture(kind: RootKind) {
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async ref => committed.has('agentRunId' in ref ? ref.agentRunId : '')
       ? { accepted: true } : { accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' }),
     taskExecutionChainFor: agentRunId => committed.has(agentRunId) ? [{ agentRunId }] : [],
+    listTaskExecutions: () => [...committed.keys()].map(agentRunId => ({ agentRunId })), taskExecutionStatus: () => 'offline',
     containsTaskExecution: ref => committed.has('agentRunId' in ref ? ref.agentRunId : ''), publishTaskExecutionsClosed: vi.fn(),
     discardReleasedExecution: vi.fn(), taskExecutionWithIngress: agentRunId => committed.has(agentRunId) ? { agentRunId } : null,
     publishTaskExecutionsReopened: vi.fn(),
@@ -72,7 +73,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const h = fixture(kind);
     const result = await h.assign();
     expect(result).toEqual({ target_agent_run_id: 'copy-1', target_kind: 'agent' });
-    expect(h.resources.links[0]).toMatchObject({ role: 'assigned', taskId: 'task-A', assignedBy: 'manager',
+    // The assignment records the address it was delegated to (the Task root's name).
+    expect(h.resources.links[0]).toMatchObject({ role: 'assigned', taskId: 'task-A', assignedBy: 'manager', recipientAddress: '/placement',
       hostRoot: { rootSubjectKind: kind, rootRunId: 'exact-root' }, agentRun: { agentRunId: 'copy-1' } });
     expect(h.linkAtRegistration).toEqual(['starting']);
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ start: 'started', open: true });

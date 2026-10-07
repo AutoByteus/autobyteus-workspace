@@ -24,8 +24,9 @@ describe('Projects catalogs', () => {
 
   it('provide the same keys in en and zh-CN', () => {
     expect(Object.keys(zhCnProjectMessages).sort()).toEqual(Object.keys(enProjectMessages).sort());
-    expect(projectsSettingsKeys(zhCnSettingsMessages)).toEqual(projectsSettingsKeys(enSettingsMessages));
-    expect(projectsSettingsKeys(enSettingsMessages).length).toBeGreaterThan(0);
+    // projects-always-on: the Projects switch in Settings is gone with its copy.
+    expect(projectsSettingsKeys(enSettingsMessages)).toEqual([]);
+    expect(projectsSettingsKeys(zhCnSettingsMessages)).toEqual([]);
   });
 
   it('label the navigation destination', () => {

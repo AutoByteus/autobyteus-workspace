@@ -1,0 +1,350 @@
+{
+  "startedAt": "2026-10-07T11:20:02.620Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-001": {
+      "result": "Pass",
+      "description": "Projects list and board follow writes live (arrival highlight, counts)",
+      "durationMs": 5669,
+      "details": {
+        "projectArrivalMs": 33,
+        "arrivedRows": [
+          "project-task-row-project_task_556a0f76-7c94-4b81-a9ab-9d4e7e610199"
+        ],
+        "feed": {
+          "total": 10,
+          "byType": {
+            "project_upserted": 6,
+            "task_upserted": 4
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-002": {
+      "result": "Pass",
+      "description": "Agent root: live status, live move highlight, opening the worker, DONE → Offline muted",
+      "durationMs": 2878,
+      "details": {
+        "live": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmuagent ac2b"
+        },
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmuagent ac2b"
+        },
+        "feed": {
+          "total": 13,
+          "byType": {
+            "task_upserted": 5,
+            "project_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-003": {
+      "result": "Pass",
+      "description": "Task Team root opens the coordinator expanded; Team- and Org-hosted roots open in their views",
+      "durationMs": 6325,
+      "details": {
+        "teamRoot": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent ac2b"
+        },
+        "teamHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "worker"
+          },
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "delivery_team_pmuagent_ac2b_b8b011f5b8f04cd3b955c6ca50b3e95c"
+          },
+          "url": "http://127.0.0.1:59249/workspace"
+        },
+        "orgHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "worker"
+          },
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "delivery_org_pmuagent_ac2b_ec326fe30dc9491693f398cdbb7b8772"
+          },
+          "url": "http://127.0.0.1:59249/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuagent-ac2b&orgRunId=delivery_org_pmuagent_ac2b_ec326fe30dc9491693f398cdbb7b8772&mode=active&agentRunId=release_notes_writer_pmuagent_ac2b_b5f9ba65ea8747baa932a28e30e543fb"
+        },
+        "feed": {
+          "total": 22,
+          "byType": {
+            "task_upserted": 8,
+            "project_upserted": 8,
+            "task_worker_status": 6
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-004": {
+      "result": "Pass",
+      "description": "AR-002: a deleted hosting run makes the root not openable (terminated but listed stays openable)",
+      "durationMs": 2614,
+      "details": {
+        "listed": {
+          "state": "offline",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent ac2b"
+        },
+        "gone": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "docs review team pmuagent ac2b"
+        },
+        "errors": []
+      }
+    },
+    "PMU-005": {
+      "result": "Pass",
+      "description": "Temp tasks: header count, Open/Done board, read-only page, live move to Done",
+      "durationMs": 2803,
+      "details": {
+        "line": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutemp 4708"
+        },
+        "moved": "moved",
+        "feed": {
+          "total": 8,
+          "byType": {
+            "task_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-006": {
+      "result": "Pass",
+      "description": "F-006: a left-panel task row opens its conversation from another page",
+      "durationMs": 3064,
+      "details": {
+        "taskId": "ad_hoc_task_0a39a129-e007-4858-9c44-74228e631231",
+        "url": "http://127.0.0.1:59249/chat?id=manager_pmuf006_0599_acba608ec7ac4ed0ba52955efda8b99d",
+        "errors": []
+      }
+    },
+    "PMU-007": {
+      "result": "Pass",
+      "description": "Backend restart: reconnect + re-read (Offline), new writes; narrow layout",
+      "durationMs": 10389,
+      "details": {
+        "before": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "worker"
+        },
+        "restart": {
+          "before": 38058,
+          "after": 60732,
+          "starts": 2
+        },
+        "narrow": {
+          "board": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "taskPage": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "tempBoard": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          }
+        },
+        "restartWindowErrors": 11
+      }
+    },
+    "PMU-008": {
+      "result": "Pass",
+      "description": "AC-012/013: left panel kept across Chat, Projects, board and Task page; run, Team member and Org rows open from Projects",
+      "durationMs": 5222,
+      "details": {
+        "steps": [
+          {
+            "label": "chat",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "projects list",
+            "path": "/projects",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "board",
+            "path": "/projects/project_781542b9-86aa-4485-9f0e-4f992f0fbcef",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "task page",
+            "path": "/projects/project_781542b9-86aa-4485-9f0e-4f992f0fbcef/tasks/project_task_596b3cd5-dcc7-40f3-a0af-69981ac6cb46",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "back in chat via the run row",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          }
+        ],
+        "opened": {
+          "run": "http://127.0.0.1:59249/chat?id=manager_pmuleft_b546_2ca7ec5265aa4e7ea560549f6e5e8d28",
+          "team": "http://127.0.0.1:59249/workspace",
+          "org": "http://127.0.0.1:59249/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuleft-b546&orgRunId=delivery_org_pmuleft_b546_2712c1368d3d4899b519338e366b262f&mode=active&memberAddress=/manager"
+        }
+      }
+    },
+    "PMU-009": {
+      "result": "Pass",
+      "description": "AC-020/021/023: Temp task DONE, reopen (Offline), reactivation (openable), then the chat deleted from the left panel",
+      "durationMs": 9779,
+      "details": {
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmutempre 7833"
+        },
+        "reopened": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmutempre 7833"
+        },
+        "reactivated": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutempre 7833"
+        },
+        "counts": {
+          "countBefore": "4 open",
+          "countAfter": "2 open"
+        }
+      }
+    },
+    "PMU-010": {
+      "result": "Pass",
+      "description": "AC-007: Couldn't start from a real start failure (board tooltip, Task page reason), then re-delegation",
+      "durationMs": 3151,
+      "details": {
+        "failed": {
+          "state": "failed",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "worker"
+        },
+        "statusText": "Couldn't start",
+        "tooltip": "AGY_MODEL_UNAVAILABLE: pmu-no-such-model",
+        "color": "rgb(220, 38, 38)",
+        "reason": "AGY_MODEL_UNAVAILABLE: pmu-no-such-model",
+        "replaced": "idle"
+      }
+    },
+    "PMU-011": {
+      "result": "Pass",
+      "description": "Two windows on the same node follow a write live",
+      "durationMs": 4458,
+      "details": {
+        "arrivalMs": {
+          "first": 42,
+          "second": 56
+        }
+      }
+    },
+    "PMU-012": {
+      "result": "Pass",
+      "description": "An Org-hosted root opened from a fresh Task page before the Org run is hydrated",
+      "durationMs": 3126,
+      "details": {
+        "url": "http://127.0.0.1:59249/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuorgcold-94c2&orgRunId=delivery_org_pmuorgcold_94c2_b658b8888eaa4cddb9008108b84d6040&mode=active&agentRunId=release_notes_writer_pmuorgcold_94c2_335ee8914c684f5c9e068d5ac32af900",
+        "workerRowSelected": true,
+        "hostRoot": {
+          "kind": "agent_org",
+          "runId": "delivery_org_pmuorgcold_94c2_b658b8888eaa4cddb9008108b84d6040"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 39946,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 60732,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 120,
+    "byType": {
+      "connected": 2,
+      "project_upserted": 34,
+      "task_upserted": 49,
+      "task_worker_status": 33,
+      "task_removed": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:59248",
+    "frontendUrl": "http://127.0.0.1:59249",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-yJEM9U"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 1
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-07T11:21:28.826Z"
+}

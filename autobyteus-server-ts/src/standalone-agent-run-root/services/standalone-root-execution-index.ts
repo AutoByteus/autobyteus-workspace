@@ -99,6 +99,7 @@ export class StandaloneRootExecutionIndex implements MessageRecipientIndexPort {
     return this.tasksByRunId.get("agentRunId" in reference ? reference.agentRunId : reference.teamRunId) ?? null;
   }
   listAgents(): readonly StandaloneRootIndexedAgent[] { return Object.freeze([...this.agentsByRunId.values()]); }
+  listTaskExecutions(): readonly StandaloneRootIndexedTaskExecution[] { return Object.freeze([...this.tasksByRunId.values()]); }
   /** Every child AgentRun (task Agents and task-Team members); the host is excluded. */
   listChildAgents(): readonly StandaloneRootIndexedAgent[] {
     return Object.freeze(this.listAgents().filter((agent) => agent.executionKind !== "host"));

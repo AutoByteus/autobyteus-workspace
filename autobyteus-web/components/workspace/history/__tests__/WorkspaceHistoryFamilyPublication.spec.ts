@@ -54,6 +54,8 @@ beforeEach(() => {
       summary: 'History member', lastActivityAt: '2026-09-03T00:00:00.000Z',
       conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
     } } };
+    // Member hydration also reads the run's recorded file changes; this history has none.
+    if(name==='GetRunFileChanges') return { data: { getRunFileChanges: [] } };
     throw Error('Unexpected query '+name);
   });
 });

@@ -166,6 +166,7 @@ export class AgentOrgExecutionIndex implements MessageRecipientIndexPort {
     return this.tasksByRunId.get("agentRunId" in reference ? reference.agentRunId : reference.teamRunId) ?? null;
   }
   listAgents(): readonly AgentOrgIndexedAgentExecution[] { return Object.freeze([...this.agentsByRunId.values()]); }
+  listTaskExecutions(): readonly AgentOrgIndexedTaskExecution[] { return Object.freeze([...this.tasksByRunId.values()]); }
   listTeams(): readonly AgentOrgIndexedTeamExecution[] { return Object.freeze([...this.teamsByRunId.values()]); }
   listDirectAgents(host: TaskExecutionHostIdentity): readonly AgentOrgIndexedAgentExecution[] {
     return Object.freeze((this.directAgentsByHost.get(this.hostKey(host)) ?? []).map((id) => this.requireAgent(id)));

@@ -88,6 +88,8 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     ownershipChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
+    listTaskExecutions: () => [...new Map([...state.chains.values()].flat().map((reference) => [taskExecutionReferenceKey(reference), reference])).values()],
+    taskExecutionStatus: (reference) => state.live.has(taskExecutionReferenceKey(reference)) ? "idle" : "offline",
     containsTaskExecution: () => false, publishTaskExecutionsClosed: vi.fn(),
     isLive: (reference) => state.live.has(taskExecutionReferenceKey(reference)),
     assertRestorableChain: (agentRunId) => {

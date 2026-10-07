@@ -1,3 +1,4 @@
+import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -194,6 +195,10 @@ export class RootTeamRun {
   }
   releaseTaskAgentResources(executions: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
     return this.taskExecutions.releaseTaskAgentResources(executions);
+  }
+  /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
+  taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
+    return this.taskExecutions.taskExecutionStatus(execution);
   }
 
   get teamRunId(): string { return this.tree.rootTeam.teamRunId; }

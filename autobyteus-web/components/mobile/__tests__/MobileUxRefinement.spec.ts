@@ -501,23 +501,24 @@ describe("mobile Round 4 UX refinements", () => {
       "Auto approve tools",
     );
     expect(switchButton.attributes("role")).toBe("switch");
-    expect(switchButton.attributes("aria-checked")).toBe("false");
-    expect(useAgentRunConfigStore().config?.autoExecuteTools).toBe(false);
+    // Fresh runs start with Auto approve on (auto-approval default, 2026-10-03); the user turns it off.
+    expect(switchButton.attributes("aria-checked")).toBe("true");
+    expect(useAgentRunConfigStore().config?.autoExecuteTools).toBe(true);
 
     await switchButton.trigger("click");
     await nextTick();
 
-    expect(useAgentRunConfigStore().config?.autoExecuteTools).toBe(true);
+    expect(useAgentRunConfigStore().config?.autoExecuteTools).toBe(false);
     expect(
       wrapper
         .get('[data-testid="mobile-run-auto-approve-tools-switch"]')
         .attributes("aria-checked"),
-    ).toBe("true");
+    ).toBe("false");
 
     await wrapper.get("form").trigger("submit");
     await flushPromises();
 
-    expect(useAgentContextsStore().activeRun?.config.autoExecuteTools).toBe(true);
+    expect(useAgentContextsStore().activeRun?.config.autoExecuteTools).toBe(false);
   });
 
   it("binds team Auto approve tools to the selected immutable launch draft", async () => {
@@ -544,16 +545,17 @@ describe("mobile Round 4 UX refinements", () => {
     const switchButton = wrapper.get(
       '[data-testid="mobile-run-auto-approve-tools-switch"]',
     );
-    expect(switchButton.attributes("aria-checked")).toBe("false");
-    expect(useTeamRunConfigStore().config?.rootConfig.autoExecuteTools).toBe(false);
+    // Fresh runs start with Auto approve on (auto-approval default, 2026-10-03); the user turns it off.
+    expect(switchButton.attributes("aria-checked")).toBe("true");
+    expect(useTeamRunConfigStore().config?.rootConfig.autoExecuteTools).toBe(true);
 
     await switchButton.trigger("click");
     await nextTick();
 
-    expect(useTeamRunConfigStore().config?.rootConfig.autoExecuteTools).toBe(true);
+    expect(useTeamRunConfigStore().config?.rootConfig.autoExecuteTools).toBe(false);
     const selectedDraft = useTeamRunConfigStore().selectedDraft;
     expect(selectedDraft).toBeTruthy();
-    expect(selectedDraft?.config.rootConfig.autoExecuteTools).toBe(true);
+    expect(selectedDraft?.config.rootConfig.autoExecuteTools).toBe(false);
     expect(Object.isFrozen(selectedDraft)).toBe(true);
     expect(Object.isFrozen(selectedDraft?.config)).toBe(true);
   });

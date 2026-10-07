@@ -8,6 +8,7 @@ import type { ProjectTask } from '~/types/project'
 let store: ReturnType<typeof useProjectTaskStore>
 
 const task = (taskId: string, description: string, updatedAt: string, status: ProjectTask['status'] = 'TODO'): ProjectTask => ({
+  root: null,
   taskId,
   projectId: 'p1',
   description,
@@ -36,7 +37,7 @@ const mountBoard = () => mount(ProjectTaskBoard, {
 
 const column = (wrapper: ReturnType<typeof mountBoard>, status: string) => wrapper.get(`[data-testid="project-task-column-${status}"]`)
 const cardIds = (wrapper: ReturnType<typeof mountBoard>, status: string) =>
-  column(wrapper, status).findAll('a[data-testid^="project-task-row-"]').map((card) => card.attributes('data-testid')!.replace('project-task-row-', ''))
+  column(wrapper, status).findAll('div[data-testid^="project-task-row-"]').map((card) => card.attributes('data-testid')!.replace('project-task-row-', ''))
 const heading = (wrapper: ReturnType<typeof mountBoard>, status: string) =>
   column(wrapper, status).get('h2').text().replace(/(\D)(\d+)$/, '$1 $2')
 
@@ -106,7 +107,7 @@ describe('ProjectTaskBoard', () => {
     const wrapper = mountBoard()
     await flushPromises()
 
-    expect(wrapper.findAllComponents(RouterLinkStub).find((link) => link.attributes('data-testid') === 'project-task-row-t1')?.props('to')).toBe('/projects/p1/tasks/t1')
+    expect(wrapper.get('[data-testid="project-task-row-t1"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/p1/tasks/t1')
   })
 
   it('offers no drag, move or status controls (REQ-003)', async () => {

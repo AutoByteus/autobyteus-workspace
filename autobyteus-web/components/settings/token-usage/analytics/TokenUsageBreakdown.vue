@@ -22,7 +22,7 @@
 
     <div class="overflow-x-auto border-t border-slate-200">
       <table class="w-full min-w-[720px] text-sm">
-        <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+        <thead class="bg-slate-50 text-left text-[0.6875rem] font-bold uppercase tracking-wider text-slate-500">
           <tr>
             <th class="px-4 py-3 sm:px-5">{{ groupingLabel }}</th>
             <th class="px-4 py-3 text-right">{{ t('settings.components.settings.TokenUsageAnalytics.tokens') }}</th>
@@ -64,7 +64,7 @@
               <td colspan="5" class="px-4 py-4 sm:px-5">
                 <dl class="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
                   <div v-for="detail in exactDetails(row)" :key="detail.label">
-                    <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-500">{{ detail.label }}</dt>
+                    <dt class="text-[0.625rem] font-bold uppercase tracking-wider text-slate-500">{{ detail.label }}</dt>
                     <dd class="mt-1 font-semibold tabular-nums text-slate-900">{{ detail.value }}</dd>
                   </div>
                 </dl>

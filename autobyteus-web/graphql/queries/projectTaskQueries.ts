@@ -1,5 +1,19 @@
 import gql from 'graphql-tag'
 
+export const TaskRootFields = gql`
+  fragment TaskRootFields on TaskRoot {
+    kind
+    recipientAddress
+    ingressAgentRunId
+    teamRunId
+    hostRoot { kind runId }
+    start
+    startError { code message }
+    closed
+    status
+  }
+`
+
 export const ProjectTaskFields = gql`
   fragment ProjectTaskFields on ProjectTask {
     taskId
@@ -9,7 +23,9 @@ export const ProjectTaskFields = gql`
     createdAt
     contextFiles { storedFilename displayName mimeType sizeBytes locator }
     updatedAt
+    root { ...TaskRootFields }
   }
+  ${TaskRootFields}
 `
 
 export const GetProjectTasks = gql`
@@ -19,4 +35,19 @@ export const GetProjectTasks = gql`
     }
   }
   ${ProjectTaskFields}
+`
+
+export const GetTasksWithoutProject = gql`
+  query GetTasksWithoutProject {
+    tasksWithoutProject {
+      taskId
+      description
+      status
+      referenceFiles
+      createdAt
+      updatedAt
+      root { ...TaskRootFields }
+    }
+  }
+  ${TaskRootFields}
 `

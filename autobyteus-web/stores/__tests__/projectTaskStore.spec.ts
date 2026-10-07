@@ -20,6 +20,7 @@ import { ProjectRequestError } from '~/utils/projects/projectRequestError'
 import type { ProjectTask } from '~/types/project'
 
 const task = (taskId: string, updatedAt: string, status: ProjectTask['status'] = 'TODO'): ProjectTask => ({
+  root: null,
   taskId,
   projectId: 'p1',
   description: `Task ${taskId}`,

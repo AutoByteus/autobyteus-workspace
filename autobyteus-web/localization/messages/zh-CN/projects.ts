@@ -156,6 +156,37 @@ const projectMessages = {
   'projects.components.projects.ProjectTaskBoard.noTasks': '暂无任务',
   'projects.components.projects.ProjectTaskBoard.noMatch': '没有与搜索匹配的任务。',
   'projects.components.projects.ProjectTaskBoard.clearSearch': '清除搜索',
+  // project-manager-ux: a Task's root (the agent or team it was handed to) and its worker status
+  'projects.root.listLabel': '分配给',
+  'projects.root.notAssigned': '还没有分配给智能体或团队。',
+  'projects.root.help': '任务完成后，这个智能体或团队会停止。',
+  'projects.root.open': '打开 {{name}}',
+  'projects.root.kind.agent': '智能体',
+  'projects.root.kind.team': '团队',
+  'projects.root.status.running': '运行中',
+  'projects.root.status.initializing': '正在初始化',
+  'projects.root.status.idle': '空闲',
+  'projects.root.status.error': '错误',
+  'projects.root.status.offline': '离线',
+  'projects.root.status.failed': '无法启动',
+  // project-manager-ux round 2: Temp tasks (Tasks with no Project)
+  'projects.temp.title': '临时任务',
+  'projects.temp.openCount': '{{count}} 个进行中',
+  'projects.temp.boardHelp': '智能体在聊天中把工作交给其他智能体或团队时会创建这些任务。每个任务属于那个聊天，并随它一起删除。只有智能体会修改它们。',
+  'projects.temp.lane.open': '进行中',
+  'projects.temp.lane.done': '已完成',
+  'projects.temp.showAll': '显示全部（{{count}}）',
+  'projects.temp.showFewer': '收起',
+  'projects.temp.referenceFiles': '参考文件',
+  'projects.temp.readOnly': '只有智能体会修改这个任务。',
+  // projects-always-on SR-003: the right panel's Projects tab
+  'projects.panel.pickerLabel': '选择项目或临时任务',
+  'projects.panel.emptyTitle': '还没有项目或临时任务',
+  'projects.panel.emptyHelp': '创建一个项目，或让智能体在聊天中分派工作。',
+  'projects.panel.openProjectsPage': '打开项目',
+  'projects.panel.back': '返回看板',
+  'projects.panel.openInProjects': '在项目中打开',
+  'projects.panel.taskMissing': '此任务已不在这里。',
 } satisfies TranslationCatalog;
 
 export default projectMessages;

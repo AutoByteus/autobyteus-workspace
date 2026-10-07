@@ -1,7 +1,6 @@
 import { computed, type ComputedRef } from 'vue';
 import { useRoute, type RouteLocationRaw } from 'vue-router';
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
-import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 export type ShellPrimaryNavKey =
@@ -89,7 +88,6 @@ export function useShellPrimaryNavigation(): {
 } {
   const route = useRoute();
   const applicationsCapabilityStore = useApplicationsCapabilityStore();
-  const projectsCapabilityStore = useProjectsCapabilityStore();
 
   const primaryNavItems = computed(() => {
     return allShellPrimaryNavItems.filter((item) => {
@@ -100,7 +98,7 @@ export function useShellPrimaryNavigation(): {
         return isFeatureAvailableInRuntime('desktopSettings');
       }
       if (item.key === 'projects') {
-        return projectsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('projects');
+        return isFeatureAvailableInRuntime('projects');
       }
       return true;
     });
@@ -112,7 +110,6 @@ export function useShellPrimaryNavigation(): {
     isPrimaryNavActive: (key: ShellPrimaryNavKey) => isShellPrimaryRouteActive(key, route.path),
     ensurePrimaryNavigationReady: () => Promise.allSettled([
       applicationsCapabilityStore.ensureResolved(),
-      projectsCapabilityStore.ensureResolved(),
     ]),
   };
 }

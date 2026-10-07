@@ -1,0 +1,712 @@
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: collaborator entries carry their single instance's run identities
+ok 1 - collaborator entries carry their single instance's run identities
+  ---
+  duration_ms: 2.510333
+  type: 'test'
+  ...
+# Subtest: an Agent root view correlates host, children, messages and statuses
+ok 2 - an Agent root view correlates host, children, messages and statuses
+  ---
+  duration_ms: 2.535209
+  type: 'test'
+  ...
+# Subtest: Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions
+ok 3 - Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions
+  ---
+  duration_ms: 1.013708
+  type: 'test'
+  ...
+# Subtest: Org trees require the collaborators list
+ok 4 - Org trees require the collaborators list
+  ---
+  duration_ms: 0.439917
+  type: 'test'
+  ...
+# Subtest: Agent-root live input projection is required and carries held/queued recovery facts
+ok 5 - Agent-root live input projection is required and carries held/queued recovery facts
+  ---
+  duration_ms: 2.380083
+  type: 'test'
+  ...
+# Subtest: Agent root views require closed task executions and keep closed nodes and their messages in the tree
+ok 6 - Agent root views require closed task executions and keep closed nodes and their messages in the tree
+  ---
+  duration_ms: 5.971042
+  type: 'test'
+  ...
+# Subtest: a closed reference must identify a task execution node of the tree
+ok 7 - a closed reference must identify a task execution node of the tree
+  ---
+  duration_ms: 1.109792
+  type: 'test'
+  ...
+# Subtest: AgentOrg views correlate closed references with root and configured-Team task executions
+ok 8 - AgentOrg views correlate closed references with root and configured-Team task executions
+  ---
+  duration_ms: 3.075666
+  type: 'test'
+  ...
+# Subtest: task_executions_closed is a strict, non-empty sequenced event for Agent and Org roots
+ok 9 - task_executions_closed is a strict, non-empty sequenced event for Agent and Org roots
+  ---
+  duration_ms: 3.073333
+  type: 'test'
+  ...
+# Subtest: task_executions_reopened mirrors the closed event for Agent and Org roots: strict, non-empty, same references
+ok 10 - task_executions_reopened mirrors the closed event for Agent and Org roots: strict, non-empty, same references
+  ---
+  duration_ms: 0.586
+  type: 'test'
+  ...
+# Subtest: current versionless Org snapshot carries exact live held/queued state
+ok 11 - current versionless Org snapshot carries exact live held/queued state
+  ---
+  duration_ms: 6.028417
+  type: 'test'
+  ...
+# Subtest: rejects duplicate/unowned input projections and missing live input field
+ok 12 - rejects duplicate/unowned input projections and missing live input field
+  ---
+  duration_ms: 1.228666
+  type: 'test'
+  ...
+# Subtest: live projection is strict and has no durable outbox or retired child fields
+ok 13 - live projection is strict and has no durable outbox or retired child fields
+  ---
+  duration_ms: 0.916083
+  type: 'test'
+  ...
+# Subtest: requires explicit family and exact matching branch
+not ok 14 - requires explicit family and exact matching branch
+  ---
+  duration_ms: 1.509416
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:102:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:103:43)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+not ok 15 - parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+  ---
+  duration_ms: 2.262292
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:109:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schemaVersion"
+        ],
+        "path": [
+          "payload",
+          "root_org",
+          "execution_tree"
+        ],
+        "message": "Unrecognized key: \"schemaVersion\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "task_records"
+        ],
+        "path": [
+          "payload",
+          "root_org"
+        ],
+        "message": "Unrecognized key: \"task_records\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [
+          "payload"
+        ],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:126:57)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: keeps all pre-existing Org snapshot runtime kinds valid
+not ok 16 - keeps all pre-existing Org snapshot runtime kinds valid
+  ---
+  duration_ms: 0.143292
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:147:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schemaVersion"
+        ],
+        "path": [
+          "root_org",
+          "execution_tree"
+        ],
+        "message": "Unrecognized key: \"schemaVersion\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "task_records"
+        ],
+        "path": [
+          "root_org"
+        ],
+        "message": "Unrecognized key: \"task_records\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:151:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: requires sequenced events and an exact Org-root client command
+ok 17 - requires sequenced events and an exact Org-root client command
+  ---
+  duration_ms: 0.871209
+  type: 'test'
+  ...
+# Subtest: requires one correlated status for every live Agent execution
+not ok 18 - requires one correlated status for every live Agent execution
+  ---
+  duration_ms: 1.04925
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:186:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "code": "invalid_union",
+        "errors": [
+          [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized key: \"settledAt\""
+            }
+          ],
+          [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "teamRunId"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "members"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "taskExecutions"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "agentRunId",
+                "platformAgentRunId",
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"settledAt\""
+            }
+          ]
+        ],
+        "path": [
+          "root_org",
+          "execution_tree",
+          "rootOrg",
+          "taskExecutions",
+          0
+        ],
+        "message": "Invalid input"
+      },
+      {
+        "code": "invalid_union",
+        "errors": [
+          [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized key: \"settledAt\""
+            }
+          ],
+          [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "teamRunId"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "members"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "taskExecutions"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "agentRunId",
+                "platformAgentRunId",
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"settledAt\""
+            }
+          ]
+        ],
+        "path": [
+          "root_org",
+          "execution_tree",
+          "rootOrg",
+          "taskExecutions",
+          1
+        ],
+        "message": "Invalid input"
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schemaVersion"
+        ],
+        "path": [
+          "root_org",
+          "execution_tree"
+        ],
+        "message": "Unrecognized key: \"schemaVersion\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "task_records"
+        ],
+        "path": [
+          "root_org"
+        ],
+        "message": "Unrecognized key: \"task_records\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:206:43)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rejects duplicate and sidecar AgentOrg member identities
+not ok 19 - rejects duplicate and sidecar AgentOrg member identities
+  ---
+  duration_ms: 1.178292
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:221:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /AgentRun identity.*duplicated/. Input:
+    
+    '[\n' +
+      '  {\n' +
+      '    "code": "unrecognized_keys",\n' +
+      '    "keys": [\n' +
+      '      "schemaVersion"\n' +
+      '    ],\n' +
+      '    "path": [\n' +
+      '      "root_org",\n' +
+      '      "execution_tree"\n' +
+      '    ],\n' +
+      '    "message": "Unrecognized key: \\"schemaVersion\\""\n' +
+      '  },\n' +
+      '  {\n' +
+      '    "code": "unrecognized_keys",\n' +
+      '    "keys": [\n' +
+      '      "task_records"\n' +
+      '    ],\n' +
+      '    "path": [\n' +
+      '      "root_org"\n' +
+      '    ],\n' +
+      '    "message": "Unrecognized key: \\"task_records\\""\n' +
+      '  },\n' +
+      '  {\n' +
+      '    "code": "unrecognized_keys",\n' +
+      '    "keys": [\n' +
+      '      "schema_version"\n' +
+      '    ],\n' +
+      '    "path": [],\n' +
+      '    "message": "Unrecognized key: \\"schema_version\\""\n' +
+      '  }\n' +
+      ']'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: |-
+    [
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schemaVersion"
+        ],
+        "path": [
+          "root_org",
+          "execution_tree"
+        ],
+        "message": "Unrecognized key: \"schemaVersion\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "task_records"
+        ],
+        "path": [
+          "root_org"
+        ],
+        "message": "Unrecognized key: \"task_records\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  stack: |-
+    file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:228:50
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:228:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:228:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: requires each configured Team coordinator to be one of that Team's direct Agents
+not ok 20 - requires each configured Team coordinator to be one of that Team's direct Agents
+  ---
+  duration_ms: 1.201333
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:251:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schemaVersion"
+        ],
+        "path": [
+          "root_org",
+          "execution_tree"
+        ],
+        "message": "Unrecognized key: \"schemaVersion\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "task_records"
+        ],
+        "path": [
+          "root_org"
+        ],
+        "message": "Unrecognized key: \"task_records\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:265:43)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses
+not ok 21 - correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses
+  ---
+  duration_ms: 3.50625
+  type: 'test'
+  location: '/Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:275:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    [
+      {
+        "code": "invalid_union",
+        "errors": [
+          [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized key: \"settledAt\""
+            }
+          ],
+          [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "teamRunId"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "members"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "expected": "array",
+              "code": "invalid_type",
+              "path": [
+                "taskExecutions"
+              ],
+              "message": "Invalid input: expected array, received undefined"
+            },
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "agentRunId",
+                "platformAgentRunId",
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized keys: \"agentRunId\", \"platformAgentRunId\", \"settledAt\""
+            }
+          ]
+        ],
+        "path": [
+          "root_org",
+          "execution_tree",
+          "rootOrg",
+          "taskExecutions",
+          0
+        ],
+        "message": "Invalid input"
+      },
+      {
+        "code": "invalid_union",
+        "errors": [
+          [
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "agentRunId"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            },
+            {
+              "expected": "string",
+              "code": "invalid_type",
+              "path": [
+                "platformAgentRunId"
+              ],
+              "message": "Invalid input: expected string, received undefined"
+            },
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "teamRunId",
+                "members",
+                "taskExecutions",
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized keys: \"teamRunId\", \"members\", \"taskExecutions\", \"settledAt\""
+            }
+          ],
+          [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "settledAt"
+              ],
+              "path": [],
+              "message": "Unrecognized key: \"settledAt\""
+            }
+          ]
+        ],
+        "path": [
+          "root_org",
+          "execution_tree",
+          "rootOrg",
+          "taskExecutions",
+          1
+        ],
+        "message": "Invalid input"
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schemaVersion"
+        ],
+        "path": [
+          "root_org",
+          "execution_tree"
+        ],
+        "message": "Unrecognized key: \"schemaVersion\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "task_records"
+        ],
+        "path": [
+          "root_org"
+        ],
+        "message": "Unrecognized key: \"task_records\""
+      },
+      {
+        "code": "unrecognized_keys",
+        "keys": [
+          "schema_version"
+        ],
+        "path": [],
+        "message": "Unrecognized key: \"schema_version\""
+      }
+    ]
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs:316:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the shared team status fold ranks offline < idle < error < initializing < running
+ok 22 - the shared team status fold ranks offline < idle < error < initializing < running
+  ---
+  duration_ms: 0.406792
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 15
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 133.905333
+ ELIFECYCLE  Test failed. See above for more details.

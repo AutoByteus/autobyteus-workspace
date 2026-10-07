@@ -186,7 +186,7 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
       root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: ++sequence,
       event: { kind: 'agent_presentation', member_address: '/team/worker', agent_run_id: 'agent-task-worker', message },
     } });
-    emit({ type: 'AGENT_STATUS', payload: { status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null } });
+    emit({ type: 'AGENT_STATUS', payload: { status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } });
     emit({ type: 'MEMBER_INPUT_MESSAGE', payload: { message_id: 'published-input', dedupe_key: 'published-input', content: 'published task input',
       input_origin: 'user_message', received_at: '2026-09-13T00:00:00.000Z', context_file_paths: [], sender_agent_run_id: null, parent_communication_message_id: null } });
     await vi.waitFor(() => expect(s.orgs.contextFor('org-run')!.getAgentContext('agent-task-worker')!.conversation.messages.some(m => m.type === 'user' && m.text === 'published task input')).toBe(true));

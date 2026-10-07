@@ -8,7 +8,6 @@ import {
   UPDATE_SERVER_SETTING,
 } from '~/graphql/mutations/server_settings_mutations'
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
-import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore'
 import {
   PROVIDER_SETTINGS_RUNTIME_KIND,
   useLLMProviderConfigStore,
@@ -60,7 +59,6 @@ const defaultSearchConfig = (): SearchConfigState => ({
  */
 const CAPABILITY_STORE_BY_SETTING_KEY: Readonly<Record<string, () => { refresh(): Promise<unknown> }>> = {
   ENABLE_APPLICATIONS: useApplicationsCapabilityStore,
-  ENABLE_PROJECTS: useProjectsCapabilityStore,
 }
 const DISCOVERY_SETTING_CATALOG_TARGETS: Readonly<Record<string, DiscoverySettingCatalogTarget>> = {
   AUTOBYTEUS_LLM_SERVER_HOSTS: {

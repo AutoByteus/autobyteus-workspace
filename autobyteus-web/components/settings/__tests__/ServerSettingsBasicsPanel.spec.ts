@@ -18,7 +18,6 @@ const mountComponent = () => mount(ServerSettingsBasicsPanel, {
       ServerSettingsEndpointCards: endpointStub,
       ApplicationsFeatureToggleCard: { template: '<div data-testid="applications-feature-toggle-card-stub">Applications</div>' },
       SkillImprovementFeatureToggleCard: { template: '<div data-testid="skill-improvement-feature-toggle-card-stub">Skill Improvement</div>' },
-      ProjectsFeatureToggleCard: { template: '<div data-testid="projects-feature-toggle-card-stub">Projects</div>' },
       MediaDefaultModelsCard: { template: '<div data-testid="media-default-models-card-stub">Media Models</div>' },
       CodexFullAccessCard: { template: '<div data-testid="codex-full-access-card-stub">Codex Full Access</div>' },
       LiveResponseStreamingCard: { template: '<div data-testid="live-response-streaming-card-stub">Live response</div>' },
@@ -40,7 +39,8 @@ describe('ServerSettingsBasicsPanel', () => {
     expect(wrapper.find('[data-testid="server-settings-endpoint-cards-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="applications-feature-toggle-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="skill-improvement-feature-toggle-card-stub"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="projects-feature-toggle-card-stub"]').exists()).toBe(true)
+    // projects-always-on (AC-003): Projects is always available; Basics has no Projects switch.
+    expect(wrapper.text()).not.toMatch(/Projects/)
     expect(wrapper.find('[data-testid="media-default-models-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="codex-full-access-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="live-response-streaming-card-stub"]').exists()).toBe(true)

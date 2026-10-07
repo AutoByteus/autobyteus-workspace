@@ -1,0 +1,459 @@
+{
+  "startedAt": "2026-10-07T12:59:04.300Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-014": {
+      "result": "Pass",
+      "description": "Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation",
+      "durationMs": 13970,
+      "details": {
+        "measured": {
+          "390": {
+            "cards": {
+              "withFile": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 294,
+                    "text": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15 filed16 filed17 filed18 filed19 filed20 filed21 filed22 filed23 filed24 filed25 filed26 filed27 filed28 filed29 filed30 filed31 filed32 filed33 filed34 filed35 filed36 filed37…"
+                  },
+                  "preview": {
+                    "height": 40,
+                    "lineHeight": 20,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 298,
+                    "text": "more0 more1 more2 more3 more4 more5 more6 more7 more8 more9 more10 more11 more12 more13 more14 more15 more16 more17 more18 more19 more20 more21 more22 more23 more24 more25 more26 more27 more28 more29 more30 more31 more32 more33 more34 more35 more36 more37 more38 more39 more40 more41 more42 more43…"
+                  },
+                  "rowHeight": 185,
+                  "label": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15…"
+                },
+                "layout": {
+                  "rowHeight": 185,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": {
+                    "visible": true,
+                    "inside": true
+                  },
+                  "root": {
+                    "visible": true,
+                    "inside": true
+                  }
+                }
+              },
+              "cjk": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "token": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "shortOne": {
+                "text": {
+                  "summary": {
+                    "height": 24,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 13,
+                    "text": "Ship the FAQ."
+                  },
+                  "preview": null,
+                  "rowHeight": 52,
+                  "label": "Ship the FAQ."
+                },
+                "layout": {
+                  "rowHeight": 52,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              }
+            },
+            "temp": {
+              "text": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 300,
+                  "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+              },
+              "layout": {
+                "rowHeight": 112,
+                "rowWidth": 306,
+                "overflowX": false,
+                "fileCount": null,
+                "root": {
+                  "visible": true,
+                  "inside": true
+                }
+              }
+            }
+          },
+          "1024": {
+            "cards": {
+              "withFile": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 294,
+                    "text": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15 filed16 filed17 filed18 filed19 filed20 filed21 filed22 filed23 filed24 filed25 filed26 filed27 filed28 filed29 filed30 filed31 filed32 filed33 filed34 filed35 filed36 filed37…"
+                  },
+                  "preview": {
+                    "height": 40,
+                    "lineHeight": 20,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 298,
+                    "text": "more0 more1 more2 more3 more4 more5 more6 more7 more8 more9 more10 more11 more12 more13 more14 more15 more16 more17 more18 more19 more20 more21 more22 more23 more24 more25 more26 more27 more28 more29 more30 more31 more32 more33 more34 more35 more36 more37 more38 more39 more40 more41 more42 more43…"
+                  },
+                  "rowHeight": 185,
+                  "label": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15…"
+                },
+                "layout": {
+                  "rowHeight": 185,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": {
+                    "visible": true,
+                    "inside": true
+                  },
+                  "root": {
+                    "visible": true,
+                    "inside": true
+                  }
+                }
+              },
+              "cjk": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "token": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "shortOne": {
+                "text": {
+                  "summary": {
+                    "height": 24,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 13,
+                    "text": "Ship the FAQ."
+                  },
+                  "preview": null,
+                  "rowHeight": 52,
+                  "label": "Ship the FAQ."
+                },
+                "layout": {
+                  "rowHeight": 52,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              }
+            },
+            "temp": {
+              "text": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 300,
+                  "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+              },
+              "layout": {
+                "rowHeight": 112,
+                "rowWidth": 635,
+                "overflowX": false,
+                "fileCount": null,
+                "root": {
+                  "visible": true,
+                  "inside": true
+                }
+              }
+            }
+          },
+          "1440": {
+            "cards": {
+              "withFile": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 294,
+                    "text": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15 filed16 filed17 filed18 filed19 filed20 filed21 filed22 filed23 filed24 filed25 filed26 filed27 filed28 filed29 filed30 filed31 filed32 filed33 filed34 filed35 filed36 filed37…"
+                  },
+                  "preview": {
+                    "height": 40,
+                    "lineHeight": 20,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 298,
+                    "text": "more0 more1 more2 more3 more4 more5 more6 more7 more8 more9 more10 more11 more12 more13 more14 more15 more16 more17 more18 more19 more20 more21 more22 more23 more24 more25 more26 more27 more28 more29 more30 more31 more32 more33 more34 more35 more36 more37 more38 more39 more40 more41 more42 more43…"
+                  },
+                  "rowHeight": 185,
+                  "label": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15…"
+                },
+                "layout": {
+                  "rowHeight": 185,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": {
+                    "visible": true,
+                    "inside": true
+                  },
+                  "root": {
+                    "visible": true,
+                    "inside": true
+                  }
+                }
+              },
+              "cjk": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "token": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "shortOne": {
+                "text": {
+                  "summary": {
+                    "height": 24,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 13,
+                    "text": "Ship the FAQ."
+                  },
+                  "preview": null,
+                  "rowHeight": 52,
+                  "label": "Ship the FAQ."
+                },
+                "layout": {
+                  "rowHeight": 52,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              }
+            },
+            "temp": {
+              "text": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 300,
+                  "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+              },
+              "layout": {
+                "rowHeight": 112,
+                "rowWidth": 516.5,
+                "overflowX": false,
+                "fileCount": null,
+                "root": {
+                  "visible": true,
+                  "inside": true
+                }
+              }
+            }
+          }
+        },
+        "confirmation": "Delete task?\n\nDelete the task “Ship the FAQ.”? This cannot be undone.\n\nCancel\nDelete task"
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 5701,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 5676,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 21,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 7,
+      "task_upserted": 9,
+      "task_worker_status": 4
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:53632",
+    "frontendUrl": "http://127.0.0.1:53633",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-z2XFNQ"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-07T13:00:05.395Z"
+}

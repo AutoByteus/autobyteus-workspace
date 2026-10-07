@@ -1,0 +1,157 @@
+{
+  "contract": {
+    "remoteRejection": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    "siblingRejection": {
+      "code": 4401,
+      "reason": "REMOTE_ACCESS_AUTH_INVALID"
+    }
+  },
+  "agent": {
+    "statusesAfterDelegation": [
+      "running",
+      "running",
+      "idle"
+    ],
+    "doneViews": [
+      {
+        "status": "IN_PROGRESS",
+        "closed": true,
+        "rootStatus": "offline"
+      },
+      {
+        "status": "DONE",
+        "closed": true,
+        "rootStatus": "offline"
+      }
+    ],
+    "statusesAfterReactivation": [
+      "running",
+      "idle"
+    ],
+    "rootId": "pcf_manager_dd0394_99174330391f4b3e8a13d3712ca7822f",
+    "projectId": "project_2e84fd96-4d04-4a5e-b729-e36b3ea8c3c3",
+    "taskId": "project_task_16c3d041-e72f-4565-bb9c-c19a5ea6b2fc",
+    "worker": "pcf_worker_dd0394_f1e811af5cc94a5a9557ff69d6528577",
+    "helper": "pcf_helper_dd0394_4b5b155987fe4dbf81f01ac277404f30",
+    "root": {
+      "kind": "agent",
+      "recipientAddress": "/pcf_worker_dd0394",
+      "ingressAgentRunId": "pcf_worker_dd0394_f1e811af5cc94a5a9557ff69d6528577",
+      "teamRunId": null,
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "pcf_manager_dd0394_99174330391f4b3e8a13d3712ca7822f"
+      },
+      "start": "started",
+      "startError": null,
+      "closed": false,
+      "status": "idle"
+    }
+  },
+  "team": {
+    "rootId": "pcf_team_dd0394_64d06b886ffc43e19cb2b029d4d32fe1",
+    "projectId": "project_2595fa62-a4c7-4df2-be90-98dca01e28b2",
+    "failedRoot": {
+      "kind": "agent",
+      "recipientAddress": "/worker",
+      "ingressAgentRunId": "pcf_worker_dd0394_f349f22e5290492589abceac58b101c7",
+      "teamRunId": null,
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "pcf_team_dd0394_64d06b886ffc43e19cb2b029d4d32fe1"
+      },
+      "start": "failed",
+      "startError": {
+        "code": "TASK_DISPATCH_FAILED",
+        "message": "AGY_MODEL_UNAVAILABLE: pcf-no-such-model"
+      },
+      "closed": false,
+      "status": "offline"
+    },
+    "redelegatedRoot": {
+      "kind": "agent",
+      "recipientAddress": "/helper",
+      "ingressAgentRunId": "pcf_helper_dd0394_2db6f10c59504846a7147c7c10302e4c",
+      "teamRunId": null,
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "pcf_team_dd0394_64d06b886ffc43e19cb2b029d4d32fe1"
+      },
+      "start": "started",
+      "startError": null,
+      "closed": false,
+      "status": "idle"
+    },
+    "failed": {
+      "target_agent_run_id": null,
+      "message": "AGY_MODEL_UNAVAILABLE: pcf-no-such-model"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "recipientAddress": "/pcf_squad_dd0394",
+      "ingressAgentRunId": "pcf_worker_dd0394_e5fc60b8f6984bf581eaa1f498469b6f",
+      "teamRunId": "pcf_squad_dd0394_74fdf9752a8e4f10b808b5fa0412f2af",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "pcf_team_dd0394_64d06b886ffc43e19cb2b029d4d32fe1"
+      },
+      "start": "started",
+      "startError": null,
+      "closed": false,
+      "status": "idle"
+    }
+  },
+  "org": {
+    "rootId": "pcf_org_dd0394_929ec74eceb44533b3226e8319c85fc6",
+    "projectId": "project_36341837-254f-4a11-9eb3-1fc24b2a1818",
+    "root": {
+      "kind": "agent",
+      "recipientAddress": "/worker",
+      "ingressAgentRunId": "pcf_worker_dd0394_eab1b630e7eb49e5ad00c38acbb139a4",
+      "teamRunId": null,
+      "hostRoot": {
+        "kind": "agent_org",
+        "runId": "pcf_org_dd0394_929ec74eceb44533b3226e8319c85fc6"
+      },
+      "start": "started",
+      "startError": null,
+      "closed": false,
+      "status": "idle"
+    }
+  },
+  "temp": {
+    "rootId": "pcf_manager_dd0394_66f244dbd10f4a69a1a885ebbebb8525",
+    "taskIds": [
+      "ad_hoc_task_672aa17f-2987-4afd-966f-eabad8247173",
+      "ad_hoc_task_7b8e47f9-dfc5-4d98-a0cd-a4d608530e87"
+    ]
+  },
+  "volume": {
+    "tasks": 60,
+    "journeyFrames": 20,
+    "counts": {
+      "task_upserted": 9,
+      "project_upserted": 9,
+      "task_worker_status": 2
+    },
+    "uiWriteLatencyMs": 62
+  },
+  "frameCounts": {
+    "connected": 3,
+    "project_upserted": 105,
+    "task_upserted": 109,
+    "task_worker_status": 33,
+    "task_removed": 3,
+    "project_removed": 1
+  },
+  "frames": 254,
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

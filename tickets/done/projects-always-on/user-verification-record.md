@@ -1,0 +1,21 @@
+# Explicit User Verification — projects-always-on
+
+- Date: 2026-10-07.
+- Delivery presented the DR-001 state for verification:
+  - base `origin/personal@93d1b18b4`, already current;
+  - checkpoint `8a1ed4647`;
+  - docs synced;
+  - smoke 149 files / 1294 tests;
+  - hygiene check passes;
+  - API/E2E 95%.
+- Delivery also asked for a decision on product baseline fix `82960e903`, recommending to keep it.
+- The user answered: **"finalze and release a new beta."**
+- This is explicit acceptance, and an instruction to finalize into `personal` and release **one new beta**. A stable release is not authorized.
+- Baseline fix `82960e903`: the user did not ask to remove it after delivery's keep recommendation, so it **stays** and is listed in the release notes.
+- Follow-up after verification: the user then directly requested a small UI change through API/E2E: drop the visible "Show" label from the Projects tab picker. They said no further testing was needed.
+  - `/implementation_engineer` committed it as `0446c378c`.
+  - The select keeps the screen-reader-only label "Choose a Project or Temp tasks" (zh-CN "选择项目或临时任务").
+  - Delivery smoke on it: `components/projects` + `localization` 26 files / 112 tests pass; the localization guard and audit pass; the hygiene check passes.
+  - Because the user requested this change, the verification covers it, and no renewed verification is needed.
+- Target recheck: `origin/personal` was still at `93d1b18b4`, so no re-integration was needed.
+- Expected beta version: `1.4.96-beta.5`.

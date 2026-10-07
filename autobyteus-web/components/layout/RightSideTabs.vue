@@ -26,6 +26,9 @@
 
     <!-- Tab Content -->
     <div data-test="right-side-tab-content-shell" class="flex-1 min-h-0 overflow-hidden relative">
+      <div v-if="effectiveActiveTab === 'projects'" class="h-full min-h-0" data-test="right-side-projects-panel">
+        <ProjectsPanel />
+      </div>
       <div
         v-if="shouldMountFilesPanel"
         v-show="isFilesTabActive"
@@ -90,6 +93,7 @@ import ArtifactsTab from '~/components/workspace/agent/ArtifactsTab.vue';
 import ProgressPanel from '~/components/progress/ProgressPanel.vue';
 import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
 import TokenUsageMeterPanel from '~/components/workspace/usage/TokenUsageMeterPanel.vue';
+import ProjectsPanel from '~/components/projects/panel/ProjectsPanel.vue';
 
 const props = withDefaults(defineProps<{
   mode?: 'desktop' | 'drawer' | 'mobile-tools'

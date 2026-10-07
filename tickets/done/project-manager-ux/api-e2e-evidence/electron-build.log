@@ -1,0 +1,24 @@
+
+> autobyteus@1.4.96-beta.1 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+
+> autobyteus@1.4.96-beta.1 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.96-beta.1 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.96-beta.1 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/project-manager-ux/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Unresolved product literals found.
+M-015	components/projects/ProjectTaskWorkers.vue	projects.root.status.{{expr}}	unresolved
+M-015	components/projects/TempTaskBoard.vue	projects.temp.lane.{{expr}}	unresolved
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

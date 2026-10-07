@@ -17,6 +17,7 @@ const shellMessages = {
   'shell.navigation.nodes': '节点',
   'shell.navigation.projects': '项目',
   'shell.navigation.settings': '设置',
+  'shell.rightTabs.projects': '项目',
   'shell.rightTabs.files': '文件',
   'shell.rightTabs.team': '团队',
   'shell.rightTabs.org': '组织',

@@ -19,6 +19,13 @@ const buildTree = (teamRunId = "team-1") => testExecutionTree({
   children: [testAgentNode("/planner", { agentRunId: "planner-run", workspaceRootPath: "/tmp/workspace" })],
 });
 
+// A current Team package (execution tree + communication messages) is required before it can be
+// admitted (startup admission, 6beda63e6); admission is asynchronous.
+const writeCurrentPackage = (rootDir: string, tree: ReturnType<typeof buildTree>) => Promise.all([
+  new TeamRunExecutionTreeStore().write(rootDir, tree),
+  new TeamCommunicationV1Store().write(rootDir, { schemaVersion: 1, rootTeamRunId: tree.rootTeam.teamRunId, messages: [] }),
+]);
+
 describe("TeamRunHistoryCatalogService current V2 tree", () => {
   let memoryDir: string;
   let layout: AgentMemoryLayout;
@@ -64,8 +71,10 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
 
   it("records the first summary only and serializes current lifecycle updates", async () => {
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
-    await service.recordTeamRunCreated({ tree: buildTree() });
-    new TeamRunPackageCatalog(memoryDir).admit("team-1");
+    const tree = buildTree();
+    await writeCurrentPackage(layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] }), tree);
+    await service.recordTeamRunCreated({ tree });
+    await new TeamRunPackageCatalog(memoryDir).admit("team-1");
     await Promise.all([
       service.recordTeamRunSummary({ teamRunId: "team-1", summary: "first" }),
       service.recordTeamRunSummary({ teamRunId: "team-1", summary: "second" }),
@@ -80,10 +89,10 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   it("archives the exact V2 execution tree and derived catalog row together", async () => {
     const tree = buildTree();
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
-    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    await writeCurrentPackage(rootDir, tree);
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
     await service.recordTeamRunCreated({ tree });
-    new TeamRunPackageCatalog(memoryDir).admit("team-1");
+    await new TeamRunPackageCatalog(memoryDir).admit("team-1");
 
     await expect(service.archiveTeamRun("team-1")).resolves.toMatchObject({ success: true });
     await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1"))
@@ -94,11 +103,11 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   it("restores the exact tree and index snapshot after an archive index failure", async () => {
     const tree = buildTree();
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
-    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    await writeCurrentPackage(rootDir, tree);
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager, indexStore });
     await service.recordTeamRunCreated({ tree });
-    new TeamRunPackageCatalog(memoryDir).admit("team-1");
+    await new TeamRunPackageCatalog(memoryDir).admit("team-1");
     const beforeIndex = (await indexStore.readIndexStrict()).rows;
     vi.spyOn(indexStore, "writeIndex").mockRejectedValueOnce(new Error("archive index failed"));
 
@@ -111,7 +120,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   it("blocks active deletion and rejects unsafe identities before filesystem effects", async () => {
     const tree = buildTree();
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
-    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    await writeCurrentPackage(rootDir, tree);
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager });
     await service.recordTeamRunCreated({ tree });
 
@@ -127,12 +136,12 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   it("keeps the current row and package when the candidate index write fails", async () => {
     const tree = buildTree();
     const rootDir = layout.getTeamDirPath({ rootTeamRunId: "team-1", ancestorTeamRunIds: [] });
-    await new TeamRunExecutionTreeStore().write(rootDir, tree);
+    await writeCurrentPackage(rootDir, tree);
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
     const service = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: manager, indexStore });
     await service.recordTeamRunCreated({ tree });
     const packageCatalog = new TeamRunPackageCatalog(memoryDir);
-    packageCatalog.admit("team-1");
+    await packageCatalog.admit("team-1");
     vi.spyOn(indexStore, "writeIndex").mockRejectedValueOnce(new Error("candidate write failed"));
 
     await expect(service.deleteTeamRun("team-1")).resolves.toMatchObject({ success: false, message: expect.stringContaining("index") });
@@ -150,7 +159,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
     ]);
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
     const packageCatalog = new TeamRunPackageCatalog(memoryDir);
-    packageCatalog.admit("team-1");
+    await packageCatalog.admit("team-1");
     const service = new TeamRunHistoryCatalogService(memoryDir, {
       teamRunManager: manager,
       indexStore,

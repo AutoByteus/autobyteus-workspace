@@ -12,7 +12,7 @@
           @keydown.esc="closeRange"
         >
           <span class="grid gap-0.5">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">{{ t('settings.components.settings.TokenUsageAnalytics.utcRange') }}</span>
+            <span class="text-[0.625rem] font-bold uppercase tracking-wider text-slate-500">{{ t('settings.components.settings.TokenUsageAnalytics.utcRange') }}</span>
             <span>{{ activePresetLabel }}</span>
           </span>
           <svg aria-hidden="true" class="h-4 w-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.51a.75.75 0 0 1-1.08 0l-4.25-4.51a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" /></svg>
@@ -52,7 +52,7 @@
       >
         <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M4 6h16M7 12h10m-7 6h4" /></svg>
         {{ t('settings.components.settings.TokenUsageAnalytics.filters') }}
-        <span v-if="activeFilterCount" class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white">{{ activeFilterCount }}</span>
+        <span v-if="activeFilterCount" class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[0.625rem] font-bold text-white">{{ activeFilterCount }}</span>
       </button>
 
       <div class="flex rounded-lg bg-slate-200/70 p-1" role="radiogroup" :aria-label="t('settings.components.settings.TokenUsageAnalytics.metric')">

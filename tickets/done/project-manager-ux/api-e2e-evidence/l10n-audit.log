@@ -1,0 +1,3 @@
+[audit:localization-literals] Unresolved product literals found.
+M-015	components/projects/ProjectTaskWorkers.vue	projects.root.status.{{expr}}	unresolved
+M-015	components/projects/TempTaskBoard.vue	projects.temp.lane.{{expr}}	unresolved

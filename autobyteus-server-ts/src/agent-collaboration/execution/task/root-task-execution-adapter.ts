@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { TaskExecutionPreparationOperation } from "../../../agent-team-execution/domain/prepared-task-execution.js";
 import type { CollaborationMemberExecutionIdentity, RootExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
+import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 
 export type TaskExecutionActivationCommitResult = Readonly<{ committed: true }> | Readonly<{ committed: false; message: string }>;
 export type PreparedTaskExecutionActivation = Readonly<{
@@ -22,6 +23,8 @@ export type TaskExecutionTarget = Readonly<{
 export type TaskExecutionActivationPlan<TPlacement> = TaskExecutionActivationPreparation<TPlacement> & Readonly<{
   target: TaskExecutionTarget;
   ownedAgentRunIds: readonly string[];
+  /** The canonical address the copy was delegated to (recorded on an assignment as its display name). */
+  recipientAddress: string;
 }>;
 export interface TaskExecutionActivationOperation {
   prepare(): Promise<PreparedTaskExecutionActivation>;
@@ -113,7 +116,14 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void;
   /** Index-only containment chain for idle shutdown and restore. */
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[];
+  /** Every task execution node of the root's current tree (any depth). */
+  listTaskExecutions(): readonly TaskExecutionReference[];
   isLive(reference: TaskExecutionReference): boolean;
+  /**
+   * The copy's own live status, read without waking anything: an Agent's status, or a Team's folded
+   * member status; `offline` when it is not live.
+   */
+  taskExecutionStatus(reference: TaskExecutionReference): AgentExecutionStatus;
   assertRestorableChain(agentRunId: string): void;
   restoreChain(agentRunId: string, assertOpen: () => void): Promise<void>;
   tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean>;

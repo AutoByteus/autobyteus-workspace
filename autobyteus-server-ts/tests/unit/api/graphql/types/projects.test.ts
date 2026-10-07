@@ -14,21 +14,11 @@ const mockProjectService = vi.hoisted(() => ({
   removeWorkspaceLink: vi.fn(),
 }));
 
-const mockCapabilityService = vi.hoisted(() => ({
-  getCapability: vi.fn(),
-  setEnabled: vi.fn(),
-}));
-
 vi.mock("../../../../../src/projects/services/project-service.js", () => ({
   getProjectService: () => mockProjectService,
 }));
 
-vi.mock("../../../../../src/projects/services/projects-capability-service.js", () => ({
-  getProjectsCapabilityService: () => mockCapabilityService,
-}));
-
 import { ProjectResolver } from "../../../../../src/api/graphql/types/projects.js";
-import { ProjectsCapabilityResolver } from "../../../../../src/api/graphql/types/projects-capability.js";
 
 const projectView = {
   projectId: "project_1",
@@ -99,33 +89,5 @@ describe("ProjectResolver", () => {
     mockProjectService.deleteProject.mockResolvedValue(false);
 
     await expect(new ProjectResolver().deleteProject("project_missing")).resolves.toBe(false);
-  });
-});
-
-describe("ProjectsCapabilityResolver", () => {
-  it("returns and sets the projects capability", async () => {
-    mockCapabilityService.getCapability.mockResolvedValue({
-      enabled: false,
-      settingKey: "ENABLE_PROJECTS",
-      source: "INITIALIZED_DISABLED",
-    });
-    mockCapabilityService.setEnabled.mockResolvedValue({
-      enabled: true,
-      settingKey: "ENABLE_PROJECTS",
-      source: "SERVER_SETTING",
-    });
-
-    const resolver = new ProjectsCapabilityResolver();
-    await expect(resolver.projectsCapability()).resolves.toEqual({
-      enabled: false,
-      settingKey: "ENABLE_PROJECTS",
-      source: "INITIALIZED_DISABLED",
-    });
-    await expect(resolver.setProjectsEnabled(true)).resolves.toEqual({
-      enabled: true,
-      settingKey: "ENABLE_PROJECTS",
-      source: "SERVER_SETTING",
-    });
-    expect(mockCapabilityService.setEnabled).toHaveBeenCalledWith(true);
   });
 });

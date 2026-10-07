@@ -16,12 +16,15 @@ import type {
 } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
+import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 
 type WorkspaceRegistrationLookup = Pick<WorkspaceManager, "getRegisteredWorkspaceRootPath">;
 type ProjectPersistence = Pick<ProjectStore, "listProjects" | "readProject" | "listTasks" | "createProject" | "updateProject" | "deleteProject">;
 
 type ProjectServiceDependencies = {
   store?: ProjectPersistence;
+  /** Told after each committed Project write (the `/ws/projects` feed); defaults to the process publisher. */
+  changes?: Pick<ProjectChangeMarks, "projectChanged" | "projectRemoved">;
   workspaceLookup?: WorkspaceRegistrationLookup;
   now?: () => Date;
   createId?: () => string;
@@ -79,6 +82,10 @@ export class ProjectService {
     return this.deps.store ?? getProjectStore();
   }
 
+  private get changes(): Pick<ProjectChangeMarks, "projectChanged" | "projectRemoved"> {
+    return this.deps.changes ?? getProjectChangePublisher();
+  }
+
   private get workspaceLookup(): WorkspaceRegistrationLookup {
     return this.deps.workspaceLookup ?? getWorkspaceManager();
   }
@@ -124,11 +131,13 @@ export class ProjectService {
       workspaces: [],
     };
 
-    return this.store.createProject(async (records) => {
+    const committed = await this.store.createProject(async (records) => {
       assertNameAvailable(records, name);
       created.workspaces = await this.resolveWorkspaceLinks(created, command.workspaces ?? [], "clear");
       return created;
     });
+    this.changes.projectChanged(committed.projectId);
+    return committed;
   }
 
   async updateProject(command: UpdateProjectCommand): Promise<ProjectView> {
@@ -164,7 +173,9 @@ export class ProjectService {
    * Agent run resources stay, so closed work stays closed. Returns `false` when it does not exist.
    */
   async deleteProject(projectId: string): Promise<boolean> {
-    return this.store.deleteProject(projectId);
+    const deleted = await this.store.deleteProject(projectId);
+    if (deleted) this.changes.projectRemoved(projectId);
+    return deleted;
   }
 
   async addWorkspaceLink(command: AddProjectWorkspaceCommand): Promise<ProjectView> {
@@ -238,7 +249,9 @@ export class ProjectService {
     projectId: string,
     change: (project: Project, records: Project[]) => Project | Promise<Project>,
   ): Promise<Project> {
-    return this.store.updateProject(projectId, async (project, all) => ({ ...(await change(project, all)), updatedAt: this.nowIso() }));
+    const updated = await this.store.updateProject(projectId, async (project, all) => ({ ...(await change(project, all)), updatedAt: this.nowIso() }));
+    this.changes.projectChanged(updated.projectId);
+    return updated;
   }
 
   private async toView(project: Project): Promise<ProjectView> {
