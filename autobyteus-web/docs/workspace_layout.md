@@ -12,7 +12,7 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 
 ## App Shell Left Navigation
 
-The first left-panel item is **Chat** (`/chat`), with a pencil action that starts a New chat. `/` redirects to `/chat`.
+The first left-panel item is **Chat** (`/chat`), with a pencil action that starts a New chat. `/` redirects to `/chat`. Kept New chats with typed text are listed as Draft rows directly under the Chat row; while a Draft row is selected the Chat row is not active (see [Chat — Draft rows](./chat.md#draft-rows)).
 
 `layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 
