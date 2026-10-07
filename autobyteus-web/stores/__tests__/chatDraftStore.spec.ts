@@ -46,7 +46,7 @@ vi.mock('~/stores/llmProviderConfig', () => ({
   }),
 }))
 
-import { chatDraftHasText, useChatDraftStore, type ChatDraft } from '../chatDraftStore'
+import { chatDraftHasText, chatDraftText, useChatDraftStore, type ChatDraft } from '../chatDraftStore'
 import { useAgentContextsStore } from '../agentContextsStore'
 import { writeChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { applyModelConfigSchemaDefaults } from '~/utils/llmConfigSchema'
@@ -499,6 +499,28 @@ describe('chatDraftStore', () => {
       store.finishSentDraft(other)
       expect(store.drafts).toHaveLength(1)
       expect(store.draft!.id).not.toBe(other.id)
+    })
+
+    it('keeps the sent text while a send clears the composer; a failed send returns to the typed text (REQ-006)', () => {
+      const store = useChatDraftStore()
+      const sent = store.startNewChat()
+      type(sent, 'send me')
+      store.markStarting(sent)
+      // The agent first send clears the composer while the draft is still open.
+      type(sent, '')
+      expect(chatDraftText(sent)).toBe('send me')
+      expect(chatDraftHasText(sent)).toBe(true)
+
+      // The user opens another draft during the send: the sent draft stays listed with its text.
+      const other = store.startNewChat()
+      type(other, 'other')
+      store.openDraft(sent.id)
+      store.openDraft(other.id)
+      expect(ids()).toContain(sent.id)
+
+      store.clearStarting(sent)
+      expect(sent.sentText).toBeNull()
+      expect(chatDraftText(sent)).toBe('')
     })
 
     it('keeps resolving a kept draft’s default model after another chat starts', async () => {

@@ -42,6 +42,8 @@ export interface ChatDraft {
   teamAgentOverrides: Record<AgentTeamAddress, AgentConfigOverride>
   /** Set while the first send is in flight; the New chat page renders the starting state from it. */
   starting: boolean
+  /** While starting only: the text being sent, which the send clears from the composer (REQ-006). */
+  sentText: string | null
 }
 
 export interface ChatModelSelection {
@@ -49,12 +51,15 @@ export interface ChatModelSelection {
   llmModelIdentifier: string
 }
 
+/** The draft's text: the typed text, or while it is being sent, the sent text. */
+export const chatDraftText = (draft: ChatDraft): string => draft.sentText ?? draft.context.requirement
+
 /**
  * A New chat is a Draft once it has typed text (REQ-001). Attachments, `/` skills, mentions, target
  * and settings alone are not; a lone `/command` being typed (the skill menu is open) is not text yet.
  */
 export const chatDraftHasText = (draft: ChatDraft): boolean => {
-  const text = draft.context.requirement.trim()
+  const text = chatDraftText(draft).trim()
   return text.length > 0 && !/^\/\S*$/.test(text)
 }
 
@@ -166,6 +171,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       autoExecuteTools,
       teamAgentOverrides: {},
       starting: false,
+      sentText: null,
     })
     openDraftId.value = id
     bumpModelChoice(id)
@@ -450,12 +456,16 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     draft.value.autoExecuteTools = autoExecuteTools
   }
 
+  // The row keeps the sent text until the launch finishes the draft, even after the send clears the
+  // composer; a failed send returns the draft to its typed text.
   const markStarting = (target: ChatDraft) => {
     target.starting = true
+    target.sentText = target.context.requirement
   }
 
   const clearStarting = (target: ChatDraft) => {
     target.starting = false
+    target.sentText = null
   }
 
   return {

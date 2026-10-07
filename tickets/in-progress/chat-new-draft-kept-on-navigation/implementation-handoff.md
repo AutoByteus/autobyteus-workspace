@@ -16,19 +16,19 @@ All paths are absolute. The worktree root is `/Users/normy/autobyteus_org/autoby
   - Architecture-complete handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-draft-persistence/tickets/in-progress/chat-new-draft-kept-on-navigation/handoff-architecture-design-complete.md`
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report: `N/A` (initial implementation)
+- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-draft-persistence/tickets/in-progress/chat-new-draft-kept-on-navigation/code-review-report.md` (CRR-001, F-001), from the API/E2E failure in `api-e2e-execution-coverage-report.md` (API-REV-001)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (Local Fix F-001; see IR-002)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-draft-persistence/tickets/in-progress/chat-new-draft-kept-on-navigation/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-005`
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `F-001` (a sent agent draft's row read "Empty draft" during the first send)
 
 The implementation follows the design spec with no deviations.
 
@@ -42,7 +42,8 @@ The implementation follows the design spec with no deviations.
     - `discardDraft(id)`, which ignores a `starting` draft and opens a fresh New chat when the discarded draft was open;
     - `finishSentDraft(draft)`, which removes the draft and starts a fresh New chat only if the sent draft is still open.
   - Model-choice generations are now per draft (a `Map`), so starting another chat no longer cancels a kept draft's default-model resolution.
-  - The exported pure function `chatDraftHasText` counts trimmed text that is not a lone `/\S*` token.
+  - The exported pure function `chatDraftHasText` counts trimmed text that is not a lone `/\S*` token. It reads the text through `chatDraftText(draft)` (`sentText ?? context.requirement`).
+  - `ChatDraft.sentText` is set by `markStarting` and cleared by `clearStarting` (IR-002). While a send is in flight, the row keeps the sent text even after the agent send clears the composer, until `finishSentDraft`.
 - **`useRunStart.openChatDraft(id)`** calls `openDraft`, then routes to `/chat`. `newChat` is unchanged apart from its doc comment.
 - **`useChatDraftRows`** (new) builds the row projection:
   - rows are listed drafts with text, plus the open listed draft while the New chat surface shows it (so it can read "Empty draft"), newest first;
@@ -95,7 +96,7 @@ The implementation follows the design spec with no deviations.
 | BEH-007 (REQ-007) | × discards without confirmation; discarding the open draft shows a blank New chat; focus moves | `ChatDraftRows.discardRow` → `useChatDraftRows.discard` → `chatDraftStore.discardDraft` | Implemented; store + rows tests (focus next/prev/Chat) |
 | BEH-007 (REQ-008) | A cleared open draft reads "Empty draft" until it is left, then is dropped | `listed` stays true; rows filter shows the open listed draft only on the New chat surface; `leaveOpenDraft` drops it at the next start/open | Implemented; store + rows tests |
 | BEH-007 (REQ-009/010) | Many drafts; section scrolls; visuals/a11y/motion per spec | Rows sit inside the existing scrolling, resizable primary section; spec classes and aria in `ChatDraftRows.vue` | Code-level only; visuals not rendered |
-| BEH-004 (REQ-006) | Successful send removes that draft; failure keeps it; agent post-registration send failure finishes the draft (design interpretation) | `chatLaunchService` → `finishSentDraft(draft)` after navigation at both success sites | Implemented; launch + store tests |
+| BEH-004 (REQ-006) | Successful send removes that draft; failure keeps it; agent post-registration send failure finishes the draft (design interpretation); the row keeps its sent text until it leaves | `chatLaunchService` → `markStarting` (records `sentText`) → … → `finishSentDraft(draft)` after navigation at both success sites; rows read `chatDraftText` | Implemented; launch + store + rows tests (IR-002 fixes F-001) |
 | BEH-005 (REQ-011) | Session only; nothing persisted | Pinia state only; no storage writes added | Store test (localStorage empty; a fresh pinia has no drafts) |
 | BEH-003 | Run composer text kept per run (preserved) | Untouched | Unchanged |
 
@@ -165,6 +166,10 @@ The implementation follows the design spec with no deviations.
 - `pnpm dev` was started briefly for a browser check and stopped at the user's request before it was ready. All its processes are stopped, and ports 3000/8000 are free. The build output and dev state it created (`autobyteus-application-*-sdk*/dist`, `.autobyteus/`) were removed.
 
 ## Local Implementation Checks Run
+
+- IR-002 (F-001): the focused web suite passes (26 files, 193 tests). The font-size audit still fails with its pre-existing 14 violations, none in changed files. The live probe was not rerun here; API/E2E should re-check D00, D07, D09 and D06.
+
+IR-001:
 
 - Focused web tests:
   ```

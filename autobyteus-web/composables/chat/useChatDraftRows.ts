@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { chatDraftHasText, useChatDraftStore, type ChatDraft } from '~/stores/chatDraftStore'
+import { chatDraftHasText, chatDraftText, useChatDraftStore, type ChatDraft } from '~/stores/chatDraftStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useLocalization } from '~/composables/useLocalization'
@@ -40,7 +40,7 @@ export function useChatDraftRows() {
   }
 
   const toRow = (draft: ChatDraft, selected: boolean): ChatDraftRow => {
-    const preview = draft.context.requirement.replace(/\s+/g, ' ').trim()
+    const preview = chatDraftText(draft).replace(/\s+/g, ' ').trim()
     const label = preview || t('shell.components.AppLeftPanel.draft_empty')
     const target = targetName(draft)
     return {

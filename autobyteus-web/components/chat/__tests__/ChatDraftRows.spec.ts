@@ -119,6 +119,42 @@ describe('ChatDraftRows', () => {
     expect(kept.listed).toBe(true)
   })
 
+  it('a draft being sent keeps its sent text, never "Empty draft", until it is finished (REQ-006, F-001)', async () => {
+    const store = useChatDraftStore()
+    const sent = draftWith('ship   the fix')
+    const wrapper = mountRows()
+    store.markStarting(sent)
+    // The agent first send clears the composer while the draft is still open on /chat.
+    sent.context.requirement = ''
+    await nextTick()
+
+    expect(rowTexts(wrapper)).toEqual(['ship the fix'])
+    expect(wrapper.find('[data-test="chat-draft-preview"]').classes()).not.toContain('italic')
+    expect(wrapper.get('[data-test="chat-draft-row"]').attributes('aria-label')).toBe('Draft: ship the fix — Daily Assistant')
+
+    // Opening another draft during the send keeps the sent row until the launch finishes it.
+    const other = draftWith('other')
+    store.openDraft(sent.id)
+    store.openDraft(other.id)
+    await nextTick()
+    expect(rowTexts(wrapper)).toEqual(['other', 'ship the fix'])
+
+    store.finishSentDraft(sent)
+    await nextTick()
+    expect(rowTexts(wrapper)).toEqual(['other'])
+  })
+
+  it('a failed send returns the row to its normal state (D06)', async () => {
+    const store = useChatDraftStore()
+    const draft = draftWith('keep me')
+    const wrapper = mountRows()
+    store.markStarting(draft)
+    store.clearStarting(draft)
+    await nextTick()
+    expect(rowTexts(wrapper)).toEqual(['keep me'])
+    expect(draft.context.requirement).toBe('keep me')
+  })
+
   it('emits open with the draft id', async () => {
     const draft = draftWith('open me')
     useChatDraftStore().startNewChat()

@@ -126,6 +126,7 @@ const buildDraft = (overrides: Partial<ChatDraft> = {}): ChatDraft => {
     autoExecuteTools: false,
     teamAgentOverrides: {},
     starting: false,
+    sentText: null,
     ...overrides,
   }) as ChatDraft
 }
