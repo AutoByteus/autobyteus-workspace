@@ -1,9 +1,10 @@
+import { readReleasedProjectFolderV1 } from "./released-project-folder-v1.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { writeJsonFile } from "../../../persistence/file/store-utils.js";
 import { ProjectsLayout } from "../../../projects/stores/projects-layout.js";
-import { readProjectFile, readTaskFile } from "../../../projects/stores/project-store.js";
+import { readTaskFile } from "../../../projects/stores/project-store.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -53,7 +54,7 @@ type EntryState = "MISSING" | "DIRECTORY" | "UNSUPPORTED";
 /**
  * One-time relayout of released Projects data (`projects.json` + `task_context_files/` +
  * `task_context_drafts/`) into per-Project folders. Old-shape reading lives only in the frozen
- * `released-projects-array-v1.ts`; the output is validated with the current readers before the
+ * `released-projects-array-v1.ts`; the Project target classifier is frozen alongside it before the
  * source is retired as `projects.pre-folders.json`. Retry recognizes completed targets.
  */
 export class ProjectsPerFolderV1AppDataMigration implements AppDataMigrationDefinition {
@@ -117,7 +118,7 @@ export class ProjectsPerFolderV1AppDataMigration implements AppDataMigrationDefi
       createdAt: t.createdAt, updatedAt: t.updatedAt, contextFiles: t.contextFiles });
 
     // Conflicts are detected before anything is written for this Project.
-    const projectState = await this.targetState(projectFile, raw => readProjectFile(raw, projectId), readProjectFile(projectContent, projectId));
+    const projectState = await this.targetState(projectFile, raw => readReleasedProjectFolderV1(raw, projectId), readReleasedProjectFolderV1(projectContent, projectId));
     const taskStates = await Promise.all(tasks.map(t => this.targetState(this.layout.taskFile(projectId, t.taskId),
       raw => readTaskFile(raw, projectId, t.taskId), readTaskFile(taskContent(t), projectId, t.taskId))));
     if (projectState === "CONFLICT" || taskStates.includes("CONFLICT")) return "SKIPPED_TARGET_CONFLICT_WARNING";
@@ -150,8 +151,8 @@ export class ProjectsPerFolderV1AppDataMigration implements AppDataMigrationDefi
         if (await this.moveDirectory([...draftsParent, draftId], this.layout.draftDir(projectId, draftId), this.layout.draftsDir(projectId))) wrote = true;
       }
     }
-    // Validate the whole Project with the current readers before the source can be retired.
-    if (!isDeepStrictEqual(readProjectFile(await readJson(projectFile), projectId), readProjectFile(projectContent, projectId))) {
+    // Validate the whole Project with the fixed target readers before the source can be retired.
+    if (!isDeepStrictEqual(readReleasedProjectFolderV1(await readJson(projectFile), projectId), readReleasedProjectFolderV1(projectContent, projectId))) {
       throw new Error("project.json does not validate after writing.");
     }
     for (const task of tasks) {
