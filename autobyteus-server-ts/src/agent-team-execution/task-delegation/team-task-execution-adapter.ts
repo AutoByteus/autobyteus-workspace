@@ -12,6 +12,7 @@ import {
   TaskExecutionTeardownIndeterminateError,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
 import {
@@ -83,7 +84,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       command = { address: input.placement.address, teamRunId: materialized.teamNode.teamRunId,
         handoffs: source.handoffs, teamNode: materialized.teamNode, message: input.workPacket };
     }
-    const plan = Object.freeze({ ...input, ownedAgentRunIds, target: Object.freeze({ root: this.root, execution, ingressAgentRunId }) });
+    const plan = Object.freeze({ ...input, ownedAgentRunIds, recipientAddress: input.placement.address, target: Object.freeze({ root: this.root, execution, ingressAgentRunId }) });
     this.plans.set(plan, { hostTeamRunId, beginLocal: async () => {
       const host = await this.options.requireTeamRun(hostTeamRunId);
       return "agentRunId" in command ? host.beginTaskAgent(command) : host.beginTaskTeam(command);
@@ -170,6 +171,18 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
     return this.options.getIndex().listTaskExecutionChainForAgent(agentRunId).map(referenceOf);
+  }
+
+  listTaskExecutions(): readonly TaskExecutionReference[] { return this.options.getIndex().listTaskExecutions().map(referenceOf); }
+  taskExecutionStatus(reference: TaskExecutionReference): AgentExecutionStatus {
+    const indexed = this.options.getIndex().getTaskExecution(reference);
+    if (!indexed || !this.isLive(reference)) return "offline";
+    if (indexed.kind === "team") {
+      return foldTeamAggregateStatus((this.options.teamRunResolver.getActive(indexed.teamRunId)?.getLeafAgentStatusSnapshots() ?? [])
+        .map((snapshot) => snapshot.details.status), "live");
+    }
+    return this.options.teamRunResolver.getActive(indexed.ownerTeamRunId)?.getLeafAgentStatusSnapshots()
+      .find((snapshot) => snapshot.execution.agentRunId === indexed.agentRunId)?.details.status ?? "offline";
   }
 
   isLive(reference: TaskExecutionReference): boolean {

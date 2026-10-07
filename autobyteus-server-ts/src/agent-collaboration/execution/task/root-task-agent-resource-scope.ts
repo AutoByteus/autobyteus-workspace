@@ -43,6 +43,13 @@ export class RootTaskAgentResourceScope<T> {
     return ask(() => resources.ownerOf(chain));
   }
 
+  /** Tells the Task side that these task executions' live status may have changed. Never throws. */
+  taskExecutionsStatusChanged(references: readonly TaskExecutionReference[]): void {
+    if (!references.length || !this.resources) return;
+    try { this.resources.taskExecutionsStatusChanged(this.adapter.root, references); }
+    catch (error) { console.warn("TASK_EXECUTION_STATUS_NOTIFY_FAILED", error); }
+  }
+
   /** Description-only work by a non-owned sender needs every Task's data readable (it could not be told apart). */
   assertResourceDataReadable(): void {
     const resources = this.resources;

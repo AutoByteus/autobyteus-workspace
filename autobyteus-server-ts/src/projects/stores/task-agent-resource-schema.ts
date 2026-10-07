@@ -19,6 +19,10 @@ const parseEntry = (value: unknown, index: number): TaskAgentResource => {
   if (typeof role !== "string" || !ROLES.has(role)) invalid(`${at}.role is invalid`);
   const assigned = role === "assigned";
   if (assigned !== text(v!.assignedBy) || (!assigned && v!.assignedBy !== undefined)) invalid(`${at}.assignedBy must exist only for assigned`);
+  // Optional (absent before it was recorded); nonblank and only on assigned when present.
+  if (v!.recipientAddress !== undefined && (!assigned || !text(v!.recipientAddress) || !v!.recipientAddress.trim())) {
+    invalid(`${at}.recipientAddress must be a nonblank address on assigned only`);
+  }
   const host = v!.hostRoot as Partial<StoredHostRoot> | null;
   if (!host || !ROOT_KINDS.has(host.kind as string) || !text(host.runId)) invalid(`${at}.hostRoot is invalid`);
   const run = v!.agentRun as Record<string, unknown> | null;
@@ -37,6 +41,7 @@ const parseEntry = (value: unknown, index: number): TaskAgentResource => {
   return {
     role: role as TaskAgentResource["role"],
     ...(assigned ? { assignedBy: v!.assignedBy as string } : {}),
+    ...(v!.recipientAddress !== undefined ? { recipientAddress: v!.recipientAddress as string } : {}),
     hostRoot: createRootExecutionIdentity({ rootSubjectKind: host!.kind as RootSubjectKind, rootRunId: host!.runId as string }),
     agentRun,
     ...(coordinatorAgentRunId ? { coordinatorAgentRunId } : {}),
@@ -65,6 +70,7 @@ export const serializeTaskAgentResourceFile = (file: TaskAgentResourceFile) => (
   agentRunResources: file.agentRunResources.map(r => ({
     role: r.role,
     ...(r.role === "assigned" ? { assignedBy: r.assignedBy } : {}),
+    ...(r.role === "assigned" && r.recipientAddress ? { recipientAddress: r.recipientAddress } : {}),
     hostRoot: { kind: r.hostRoot.rootSubjectKind, runId: r.hostRoot.rootRunId } satisfies StoredHostRoot,
     agentRun: ("agentRunId" in r.agentRun ? { kind: "agent", agentRunId: r.agentRun.agentRunId }
       : { kind: "team", teamRunId: r.agentRun.teamRunId, coordinatorAgentRunId: r.coordinatorAgentRunId! }) satisfies StoredAgentRun,

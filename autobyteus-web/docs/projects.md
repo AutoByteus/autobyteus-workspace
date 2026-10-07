@@ -52,6 +52,8 @@ enable Projects by default or add mobile support.
 | `/projects/:id/tasks/new` | ProjectTaskEditor/ProjectTaskDraftEditor |
 | `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail |
 | `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page |
+| `/projects/temp-tasks` | TempTaskBoard: Tasks with no Project (Temp tasks), read only |
+| `/projects/temp-tasks/tasks/:taskId` | TempTaskDetail: one Temp task, read only |
 
 Source pages use `pages/projects/[id]/index.vue`, edit.vue and nested tasks
 routes; the obsolete flat `[id].vue` is removed. Primary Project/Task authoring
@@ -60,8 +62,9 @@ ProjectWorkspaceLinkDialog are replaced by these pages, continuous rows and
 aggregate editor. ProjectDialogFrame remains for destructive Project confirmation.
 
 State owners are `stores/{projectStore,projectTaskStore,projectsCapabilityStore}.ts`,
-`composables/projects/{useProjectTaskDraft,useProjectTaskPage,useProjectNotice}.ts`,
-`services/projects/projectTaskContextClient.ts` and shared voiceInputStore.
+`composables/projects/{useProjectTaskDraft,useProjectTaskPage,useProjectNotice,useProjectChangeFeed,useTaskRootNavigation}.ts`,
+`services/projects/{projectTaskContextClient,projectChangeFeed}.ts`,
+`utils/projects/taskRootPresentation.ts` and shared voiceInputStore.
 GraphQL documents, types/project.ts and localized en/zh-CN Projects catalogs
 remain transport/presentation definitions. Components do not import Apollo.
 
@@ -115,14 +118,69 @@ client (`network-only`, queryDeduplication:false), not a cache read or reuse of 
 earlier fetch. The control disables during initial/refresh pending and shows busy
 feedback. Failure retains the last successful rows/counts, including a successful
 empty list, alongside a persistent actionable error/Retry. A successful retry
-replaces the full snapshot. No polling, status push or live subscription.
+replaces the full snapshot. Refresh stays available, but is no longer needed to
+see other writers' changes: the pages follow them live (below).
 
 Read/write/deletion generations and page lifetime eligibility reject older
 responses after ordinary Project navigation, local mutation or deletion, so
 stale data cannot overwrite writes or resurrect deleted state. Project count
 publication is guarded too. These are local async publication guards, not
-durable revisions/CAS or a node-switch coordinator. Manual data can be stale
-between clicks; external tools' writes require the user to Refresh.
+durable revisions/CAS or a node-switch coordinator.
+
+## Live Pages / Change Feed
+
+Every Projects page (list, board, Task page, Temp tasks) retains the node's
+`/ws/projects` feed while mounted (`useProjectChangeFeed`); `ProjectChangeFeed`
+keeps one socket while any page retains it, reconnects with backoff (1 s, 2 s, …
+capped at 10 s) and reopens on the newly bound node. Messages (see the server's
+[Live Change Feed](../../autobyteus-server-ts/docs/modules/projects.md#live-change-feed-and-task-roots))
+go to both stores in arrival order:
+- `projectStore`: Project upserts (with the server's counts) and removals, once
+  the list was fetched.
+- `projectTaskStore`: Task upserts/removals/worker status for each **loaded**
+  list, keyed by scope (`projectId`, or `no_project` for Temp tasks). A list that
+  was never loaded reads fresh when opened.
+- **Queue and replay (DS-006).** While a list's read is in flight, its changes
+  are queued and replayed onto the arriving snapshot, so a snapshot read before a
+  change cannot hide it. Every `connected` (first connection or reconnect)
+  re-reads each loaded list and the Project list, because changes may have been
+  missed.
+- A Task that arrives, or moves to another lane, is highlighted for 2.4 s
+  (`liveChanges`; reduced motion keeps only the tint).
+
+### Task root line
+
+A Task row and the Task page ("Assigned to") show the Task's **root**: the agent
+or team it was handed to, named from the delegated address (`release writer` for
+`/release_writer`; older assignments show "Agent" or "Team"), with the worker's
+own status, the left panel's dot and word: Running, Initializing, Idle, Error,
+Offline. A root that could not start shows **Couldn't start** with its error. A
+DONE (closed) root is Offline with a muted name. There is no "Stopped".
+
+The one rule (`presentTaskRoot`, AR-002): a root is **openable** only when it
+started, is not closed, and its hosting run is listed in the left panel's run
+history. Otherwise it has no chevron and is not focusable (starting, failed,
+closed, or a deleted hosting run). Opening it (`useTaskRootNavigation`) does what
+its left-panel row does:
+- Agent run host: the run opens in chat with the worker selected; a task Team
+  opens its coordinator with the team expanded.
+- Agent Team run host: the member opens in the Team view.
+- Agent Org run host: the existing Org inspect action for that execution.
+
+### Temp tasks
+
+Tasks with no Project (made by a description-only `delegate_task`) appear under
+**Temp tasks**: a header button beside New project (with the number not Done,
+hidden at 0), a board with **Open** and **Done** lanes (Done shows its 10 latest
+until Show all; search shows every match), and a read-only Task page with the
+description, reference file paths and Assigned to. Only agents create or change
+them; there is no edit, delete or status control.
+
+### Left panel task rows (F-006)
+
+Clicking a task agent or task Team row under an Agent run always (re)opens that
+run as well, so the conversation opens from any page (for example Projects),
+also when the run is already the selected run.
 
 Board layout responds to its CSS container, not viewport: one stacked lane
 below 752px and three minimum-240px lanes at/above it (16px gaps). Below 480px
@@ -223,8 +281,9 @@ not Task counts or filesystem paths. List requires explicit Project ID after dis
 create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
 the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
 A description-only `delegate_task` creates a Task with no Project for its copy; such
-Tasks are never shown on the Projects page or in `list_project_tasks`, and marking
-one DONE by its ID removes the copy from the run tree. Full text and saved context references
+Tasks are on no Project board and not in `list_project_tasks` (the Projects page
+lists them read only as Temp tasks), and marking one DONE by its ID removes the
+copy from the run tree. Full text and saved context references
 are available from listing. Each Task also carries its current (open)
 assignments `{targetAgentRunId, kind, assignedBy, outcome}` for follow-up, or
 `assignmentsUnavailable: true` if that Task's run file is damaged. Omitted
@@ -245,10 +304,9 @@ caller description/reference overrides are rejected, and later edits do not
 rewrite delivered work. See the server's
 [saved-ID / agent run resources contract](../../autobyteus-server-ts/docs/modules/projects.md#saved-id-delegation-and-agent-run-resources).
 
-Manual Refresh and the existing concrete worker/history surfaces remain the
-visibility paths. This change adds no automatic board synchronization,
-scheduler, auto-DONE, new status UI, mobile delivery, client/script/skill, or
-feature-default change.
+The Projects pages follow agents' writes live and show each Task's root and its
+worker status. There is no scheduler, auto-DONE, mobile delivery,
+client/script/skill, or feature-default change.
 
 Reopening a Task to TODO or IN_PROGRESS starts nothing. A later deliberate
 delegation adds new runs, and old ones stay closed, unless the agent that
@@ -301,6 +359,14 @@ browser capture/AudioWorklet, voice store and HTTP/SQLite; extension discovery
 and transcription IPC are fixtures, with a synthetic microphone and test-granted
 permission. It does not certify physical devices, native Electron IPC/models or
 the packaged desktop shell.
+
+`node tests/e2e/project-manager-ux-probe.mjs --output-dir <fresh dir>` (needs a
+current server build) drives the live pages with scripted AGY agents calling the
+actual tools: **PMU-001–007** cover live Project/Task arrival and counts, the
+root line (live status, move highlight, DONE → Offline), opening Agent-, Team-
+and Org-hosted roots and a task Team's coordinator, AR-002 with a deleted
+hosting run, Temp tasks, F-006, reconnect after a real backend restart, and
+narrow layout. A raw `/ws/projects` client records message volume.
 
 Composer mention probes are separate renderer fixtures with doubled candidate/
 upload/admission/scope boundaries, not live Team/Manager/full-product journeys.

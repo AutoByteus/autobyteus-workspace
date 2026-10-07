@@ -1111,6 +1111,17 @@ export type GeminiVertexProjectObject = {
   project: Scalars['String']['output'];
 };
 
+export type GitHubSkillSource = {
+  __typename?: 'GitHubSkillSource';
+  defaultBranch: Scalars['String']['output'];
+  installedRevision: Scalars['String']['output'];
+  lastError?: Maybe<Scalars['String']['output']>;
+  latestCheckedAt?: Maybe<Scalars['String']['output']>;
+  latestRevision?: Maybe<Scalars['String']['output']>;
+  repositoryUrl: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+};
+
 export type GraphqlSkillImprovementConfigSourceTraceEntry = {
   __typename?: 'GraphqlSkillImprovementConfigSourceTraceEntry';
   fields: Array<Scalars['String']['output']>;
@@ -1471,6 +1482,7 @@ export type Mutation = {
   archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   cancelPreparedAgentRun: CancelPreparedAgentRunResult;
   checkAgentPackageUpdates: Array<AgentPackage>;
+  checkGitHubSkillSourceUpdates: SkillSourceOperationResult;
   configureMcpServer: ConfigureMcpServerResult;
   createAgentDefinition: AgentDefinition;
   createAgentOrgDefinition: AgentOrgDefinition;
@@ -1505,6 +1517,7 @@ export type Mutation = {
   ensureProviderModelCatalog: ProviderModelCatalogSnapshotObject;
   importAgentPackage: Array<AgentPackage>;
   importApplicationPackage: Array<ApplicationPackage>;
+  importGitHubSkillSource: SkillSourceOperationResult;
   importMcpServerConfigs: ImportMcpServerConfigsResult;
   moveFileOrFolder: Scalars['String']['output'];
   prepareAgentRun: PrepareAgentRunResult;
@@ -1519,6 +1532,7 @@ export type Mutation = {
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
+  removeGitHubSkillSource: SkillSourceOperationResult;
   removeProjectWorkspace: Project;
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
@@ -1548,6 +1562,7 @@ export type Mutation = {
   updateAgentOrgDefinition: AgentOrgDefinition;
   updateAgentPackage: Array<AgentPackage>;
   updateAgentTeamDefinition: AgentTeamDefinition;
+  updateGitHubSkillSource: SkillSourceOperationResult;
   updateMemoryHubConfig: MemorySyncStatusGql;
   updateMemorySyncSourceConfig: MemorySyncStatusGql;
   updateProject: Project;
@@ -1601,6 +1616,11 @@ export type MutationCancelPreparedAgentRunArgs = {
 
 export type MutationCheckAgentPackageUpdatesArgs = {
   packageIds?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+export type MutationCheckGitHubSkillSourceUpdatesArgs = {
+  sourceIds?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 
@@ -1779,6 +1799,11 @@ export type MutationImportApplicationPackageArgs = {
 };
 
 
+export type MutationImportGitHubSkillSourceArgs = {
+  repositoryUrl: Scalars['String']['input'];
+};
+
+
 export type MutationImportMcpServerConfigsArgs = {
   jsonString: Scalars['String']['input'];
 };
@@ -1834,6 +1859,11 @@ export type MutationRemoveAgentPackageArgs = {
 
 export type MutationRemoveApplicationPackageArgs = {
   packageId: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveGitHubSkillSourceArgs = {
+  sourceId: Scalars['String']['input'];
 };
 
 
@@ -1988,6 +2018,11 @@ export type MutationUpdateAgentTeamDefinitionArgs = {
 };
 
 
+export type MutationUpdateGitHubSkillSourceArgs = {
+  sourceId: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateMemoryHubConfigArgs = {
   input: UpdateMemoryHubConfigInput;
 };
@@ -2084,6 +2119,7 @@ export type ProjectTask = {
   createdAt: Scalars['String']['output'];
   description: Scalars['String']['output'];
   projectId: Scalars['String']['output'];
+  root?: Maybe<TaskRoot>;
   status: ProjectTaskStatus;
   taskId: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
@@ -2262,8 +2298,10 @@ export type Query = {
   skillImprovementCapability: SkillImprovementCapability;
   skillImprovementStrategyCatalog: GraphqlSkillImprovementStrategyCatalog;
   skillNameIssues: Array<SkillNameIssue>;
+  skillSourceRegistryError?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
   skills: Array<Skill>;
+  tasksWithoutProject: Array<TaskWithoutProject>;
   teamRunModelOptions: Array<TeamScopeModelOptionsObject>;
   tokenUsageAnalytics: TokenUsageAnalyticsResultGraphql;
   tokenUsageTaskStatisticsInPeriod: TokenUsageTaskStatisticsResultGraphql;
@@ -2945,6 +2983,7 @@ export type Skill = {
 
 export type SkillCatalogReloadResult = {
   __typename?: 'SkillCatalogReloadResult';
+  skillSourceRegistryError?: Maybe<Scalars['String']['output']>;
   skillSources: Array<SkillSource>;
   skills: Array<Skill>;
 };
@@ -2966,9 +3005,18 @@ export type SkillNameIssue = {
 
 export type SkillSource = {
   __typename?: 'SkillSource';
+  github?: Maybe<GitHubSkillSource>;
   isDefault: Scalars['Boolean']['output'];
   path: Scalars['String']['output'];
   skillCount: Scalars['Int']['output'];
+  sourceId: Scalars['String']['output'];
+  sourceKind: Scalars['String']['output'];
+};
+
+export type SkillSourceOperationResult = {
+  __typename?: 'SkillSourceOperationResult';
+  sources: Array<SkillSource>;
+  warnings: Array<Scalars['String']['output']>;
 };
 
 export type StartAgentRunSkillImprovementInput = {
@@ -3014,6 +3062,42 @@ export type StreamableHttpMcpServerConfigInput = {
   headers?: InputMaybe<Scalars['JSON']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   url: Scalars['String']['input'];
+};
+
+export type TaskRoot = {
+  __typename?: 'TaskRoot';
+  closed: Scalars['Boolean']['output'];
+  hostRoot: TaskRootHost;
+  ingressAgentRunId: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  recipientAddress?: Maybe<Scalars['String']['output']>;
+  start: Scalars['String']['output'];
+  startError?: Maybe<TaskRootStartError>;
+  status: Scalars['String']['output'];
+  teamRunId?: Maybe<Scalars['String']['output']>;
+};
+
+export type TaskRootHost = {
+  __typename?: 'TaskRootHost';
+  kind: Scalars['String']['output'];
+  runId: Scalars['String']['output'];
+};
+
+export type TaskRootStartError = {
+  __typename?: 'TaskRootStartError';
+  code: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+};
+
+export type TaskWithoutProject = {
+  __typename?: 'TaskWithoutProject';
+  createdAt: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  referenceFiles: Array<Scalars['String']['output']>;
+  root?: Maybe<TaskRoot>;
+  status: ProjectTaskStatus;
+  taskId: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
 };
 
 export type TeamCommunicationMessageObject = {
@@ -3085,7 +3169,6 @@ export type TeamRunModelConfigPatchInput = {
 
 export type TeamRunResumeConfigPayload = {
   __typename?: 'TeamRunResumeConfigPayload';
-  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE. */
   closedTaskExecutions: Scalars['JSON']['output'];
   executionTree: Scalars['JSON']['output'];
   isActive: Scalars['Boolean']['output'];
@@ -4156,14 +4239,14 @@ export type CreateProjectTaskMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }> } };
+export type CreateProjectTaskMutation = { __typename?: 'Mutation', createProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
 
 export type UpdateProjectTaskMutationVariables = Exact<{
   input: UpdateProjectTaskInput;
 }>;
 
 
-export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }> } };
+export type UpdateProjectTaskMutation = { __typename?: 'Mutation', updateProjectTask: { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null } };
 
 export type DeleteProjectTaskMutationVariables = Exact<{
   input: DeleteProjectTaskInput;
@@ -4601,14 +4684,21 @@ export type GetProjectQueryVariables = Exact<{
 
 export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } | null };
 
-export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }> };
+export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
+
+export type ProjectTaskFieldsFragment = { __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null };
 
 export type GetProjectTasksQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
 
 
-export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }> }> };
+export type GetProjectTasksQuery = { __typename?: 'Query', projectTasks: Array<{ __typename?: 'ProjectTask', taskId: string, projectId: string, description: string, status: ProjectTaskStatus, createdAt: string, updatedAt: string, contextFiles: Array<{ __typename?: 'ProjectTaskContextFile', storedFilename: string, displayName: string, mimeType: string, sizeBytes: number, locator: string }>, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
+
+export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
 
 export type ProjectsCapabilityFieldsFragment = { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource };
 
@@ -4936,29 +5026,59 @@ export type GetWorkspaceMetadataQueryVariables = Exact<{
 
 export type GetWorkspaceMetadataQuery = { __typename?: 'Query', workspaceMetadata: { __typename: 'WorkspaceMetadata', workspaceId: string, workspaceRootPath: string, displayName: string, kind: string } };
 
+export type SkillSourceFieldsFragment = { __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null };
+
 export type GetSkillSourcesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillSourcesQuery = { __typename?: 'Query', skillSources: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> };
+export type GetSkillSourcesQuery = { __typename?: 'Query', skillSourceRegistryError?: string | null, skillSources: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> };
 
 export type AddSkillSourceMutationVariables = Exact<{
   path: Scalars['String']['input'];
 }>;
 
 
-export type AddSkillSourceMutation = { __typename?: 'Mutation', addSkillSource: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> };
+export type AddSkillSourceMutation = { __typename?: 'Mutation', addSkillSource: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> };
 
 export type RemoveSkillSourceMutationVariables = Exact<{
   path: Scalars['String']['input'];
 }>;
 
 
-export type RemoveSkillSourceMutation = { __typename?: 'Mutation', removeSkillSource: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> };
+export type RemoveSkillSourceMutation = { __typename?: 'Mutation', removeSkillSource: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> };
 
 export type ReloadSkillCatalogMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ReloadSkillCatalogMutation = { __typename?: 'Mutation', reloadSkillCatalog: { __typename?: 'SkillCatalogReloadResult', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean }>, skillSources: Array<{ __typename?: 'SkillSource', path: string, skillCount: number, isDefault: boolean }> } };
+export type ReloadSkillCatalogMutation = { __typename?: 'Mutation', reloadSkillCatalog: { __typename?: 'SkillCatalogReloadResult', skillSourceRegistryError?: string | null, skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean }>, skillSources: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> } };
+
+export type ImportGitHubSkillSourceMutationVariables = Exact<{
+  repositoryUrl: Scalars['String']['input'];
+}>;
+
+
+export type ImportGitHubSkillSourceMutation = { __typename?: 'Mutation', importGitHubSkillSource: { __typename?: 'SkillSourceOperationResult', warnings: Array<string>, sources: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> } };
+
+export type CheckGitHubSkillSourceUpdatesMutationVariables = Exact<{
+  sourceIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type CheckGitHubSkillSourceUpdatesMutation = { __typename?: 'Mutation', checkGitHubSkillSourceUpdates: { __typename?: 'SkillSourceOperationResult', warnings: Array<string>, sources: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> } };
+
+export type UpdateGitHubSkillSourceMutationVariables = Exact<{
+  sourceId: Scalars['String']['input'];
+}>;
+
+
+export type UpdateGitHubSkillSourceMutation = { __typename?: 'Mutation', updateGitHubSkillSource: { __typename?: 'SkillSourceOperationResult', warnings: Array<string>, sources: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> } };
+
+export type RemoveGitHubSkillSourceMutationVariables = Exact<{
+  sourceId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveGitHubSkillSourceMutation = { __typename?: 'Mutation', removeGitHubSkillSource: { __typename?: 'SkillSourceOperationResult', warnings: Array<string>, sources: Array<{ __typename?: 'SkillSource', sourceId: string, sourceKind: string, path: string, skillCount: number, isDefault: boolean, github?: { __typename?: 'GitHubSkillSource', repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null, latestCheckedAt?: string | null, status: string, lastError?: string | null } | null }> } };
 
 export type GetSkillsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5412,6 +5532,25 @@ export const ProjectFieldsFragmentDoc = gql`
   openTaskCount
 }
     `;
+export const TaskRootFieldsFragmentDoc = gql`
+    fragment TaskRootFields on TaskRoot {
+  kind
+  recipientAddress
+  ingressAgentRunId
+  teamRunId
+  hostRoot {
+    kind
+    runId
+  }
+  start
+  startError {
+    code
+    message
+  }
+  closed
+  status
+}
+    `;
 export const ProjectTaskFieldsFragmentDoc = gql`
     fragment ProjectTaskFields on ProjectTask {
   taskId
@@ -5427,8 +5566,11 @@ export const ProjectTaskFieldsFragmentDoc = gql`
     locator
   }
   updatedAt
+  root {
+    ...TaskRootFields
+  }
 }
-    `;
+    ${TaskRootFieldsFragmentDoc}`;
 export const ProjectsCapabilityFieldsFragmentDoc = gql`
     fragment ProjectsCapabilityFields on ProjectsCapability {
   enabled
@@ -5756,6 +5898,24 @@ export const TokenUsageTaskStatisticsRowFieldsFragmentDoc = gql`
   }
 }
     ${TokenUsageCostSummaryAggregateFieldsFragmentDoc}`;
+export const SkillSourceFieldsFragmentDoc = gql`
+    fragment SkillSourceFields on SkillSource {
+  sourceId
+  sourceKind
+  path
+  skillCount
+  isDefault
+  github {
+    repositoryUrl
+    defaultBranch
+    installedRevision
+    latestRevision
+    latestCheckedAt
+    status
+    lastError
+  }
+}
+    `;
 export const GetAgentPackagesDocument = gql`
     query GetAgentPackages {
   agentPackages {
@@ -10482,6 +10642,41 @@ export function useGetProjectTasksLazyQuery(variables?: GetProjectTasksQueryVari
   return VueApolloComposable.useLazyQuery<GetProjectTasksQuery, GetProjectTasksQueryVariables>(GetProjectTasksDocument, variables, options);
 }
 export type GetProjectTasksQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectTasksQuery, GetProjectTasksQueryVariables>;
+export const GetTasksWithoutProjectDocument = gql`
+    query GetTasksWithoutProject {
+  tasksWithoutProject {
+    taskId
+    description
+    status
+    referenceFiles
+    createdAt
+    updatedAt
+    root {
+      ...TaskRootFields
+    }
+  }
+}
+    ${TaskRootFieldsFragmentDoc}`;
+
+/**
+ * __useGetTasksWithoutProjectQuery__
+ *
+ * To run a query within a Vue component, call `useGetTasksWithoutProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTasksWithoutProjectQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTasksWithoutProjectQuery();
+ */
+export function useGetTasksWithoutProjectQuery(options: VueApolloComposable.UseQueryOptions<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>(GetTasksWithoutProjectDocument, {}, options);
+}
+export function useGetTasksWithoutProjectLazyQuery(options: VueApolloComposable.UseQueryOptions<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>(GetTasksWithoutProjectDocument, {}, options);
+}
+export type GetTasksWithoutProjectQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>;
 export const GetProjectsCapabilityDocument = gql`
     query GetProjectsCapability {
   projectsCapability {
@@ -12182,12 +12377,11 @@ export type GetWorkspaceMetadataQueryCompositionFunctionResult = VueApolloCompos
 export const GetSkillSourcesDocument = gql`
     query GetSkillSources {
   skillSources {
-    path
-    skillCount
-    isDefault
+    ...SkillSourceFields
   }
+  skillSourceRegistryError
 }
-    `;
+    ${SkillSourceFieldsFragmentDoc}`;
 
 /**
  * __useGetSkillSourcesQuery__
@@ -12211,12 +12405,10 @@ export type GetSkillSourcesQueryCompositionFunctionResult = VueApolloComposable.
 export const AddSkillSourceDocument = gql`
     mutation AddSkillSource($path: String!) {
   addSkillSource(path: $path) {
-    path
-    skillCount
-    isDefault
+    ...SkillSourceFields
   }
 }
-    `;
+    ${SkillSourceFieldsFragmentDoc}`;
 
 /**
  * __useAddSkillSourceMutation__
@@ -12242,12 +12434,10 @@ export type AddSkillSourceMutationCompositionFunctionResult = VueApolloComposabl
 export const RemoveSkillSourceDocument = gql`
     mutation RemoveSkillSource($path: String!) {
   removeSkillSource(path: $path) {
-    path
-    skillCount
-    isDefault
+    ...SkillSourceFields
   }
 }
-    `;
+    ${SkillSourceFieldsFragmentDoc}`;
 
 /**
  * __useRemoveSkillSourceMutation__
@@ -12283,13 +12473,12 @@ export const ReloadSkillCatalogDocument = gql`
       isDisabled
     }
     skillSources {
-      path
-      skillCount
-      isDefault
+      ...SkillSourceFields
     }
+    skillSourceRegistryError
   }
 }
-    `;
+    ${SkillSourceFieldsFragmentDoc}`;
 
 /**
  * __useReloadSkillCatalogMutation__
@@ -12308,6 +12497,134 @@ export function useReloadSkillCatalogMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<ReloadSkillCatalogMutation, ReloadSkillCatalogMutationVariables>(ReloadSkillCatalogDocument, options);
 }
 export type ReloadSkillCatalogMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadSkillCatalogMutation, ReloadSkillCatalogMutationVariables>;
+export const ImportGitHubSkillSourceDocument = gql`
+    mutation ImportGitHubSkillSource($repositoryUrl: String!) {
+  importGitHubSkillSource(repositoryUrl: $repositoryUrl) {
+    sources {
+      ...SkillSourceFields
+    }
+    warnings
+  }
+}
+    ${SkillSourceFieldsFragmentDoc}`;
+
+/**
+ * __useImportGitHubSkillSourceMutation__
+ *
+ * To run a mutation, you first call `useImportGitHubSkillSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useImportGitHubSkillSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useImportGitHubSkillSourceMutation({
+ *   variables: {
+ *     repositoryUrl: // value for 'repositoryUrl'
+ *   },
+ * });
+ */
+export function useImportGitHubSkillSourceMutation(options: VueApolloComposable.UseMutationOptions<ImportGitHubSkillSourceMutation, ImportGitHubSkillSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ImportGitHubSkillSourceMutation, ImportGitHubSkillSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ImportGitHubSkillSourceMutation, ImportGitHubSkillSourceMutationVariables>(ImportGitHubSkillSourceDocument, options);
+}
+export type ImportGitHubSkillSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ImportGitHubSkillSourceMutation, ImportGitHubSkillSourceMutationVariables>;
+export const CheckGitHubSkillSourceUpdatesDocument = gql`
+    mutation CheckGitHubSkillSourceUpdates($sourceIds: [String!]) {
+  checkGitHubSkillSourceUpdates(sourceIds: $sourceIds) {
+    sources {
+      ...SkillSourceFields
+    }
+    warnings
+  }
+}
+    ${SkillSourceFieldsFragmentDoc}`;
+
+/**
+ * __useCheckGitHubSkillSourceUpdatesMutation__
+ *
+ * To run a mutation, you first call `useCheckGitHubSkillSourceUpdatesMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCheckGitHubSkillSourceUpdatesMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCheckGitHubSkillSourceUpdatesMutation({
+ *   variables: {
+ *     sourceIds: // value for 'sourceIds'
+ *   },
+ * });
+ */
+export function useCheckGitHubSkillSourceUpdatesMutation(options: VueApolloComposable.UseMutationOptions<CheckGitHubSkillSourceUpdatesMutation, CheckGitHubSkillSourceUpdatesMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CheckGitHubSkillSourceUpdatesMutation, CheckGitHubSkillSourceUpdatesMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CheckGitHubSkillSourceUpdatesMutation, CheckGitHubSkillSourceUpdatesMutationVariables>(CheckGitHubSkillSourceUpdatesDocument, options);
+}
+export type CheckGitHubSkillSourceUpdatesMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CheckGitHubSkillSourceUpdatesMutation, CheckGitHubSkillSourceUpdatesMutationVariables>;
+export const UpdateGitHubSkillSourceDocument = gql`
+    mutation UpdateGitHubSkillSource($sourceId: String!) {
+  updateGitHubSkillSource(sourceId: $sourceId) {
+    sources {
+      ...SkillSourceFields
+    }
+    warnings
+  }
+}
+    ${SkillSourceFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateGitHubSkillSourceMutation__
+ *
+ * To run a mutation, you first call `useUpdateGitHubSkillSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGitHubSkillSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateGitHubSkillSourceMutation({
+ *   variables: {
+ *     sourceId: // value for 'sourceId'
+ *   },
+ * });
+ */
+export function useUpdateGitHubSkillSourceMutation(options: VueApolloComposable.UseMutationOptions<UpdateGitHubSkillSourceMutation, UpdateGitHubSkillSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateGitHubSkillSourceMutation, UpdateGitHubSkillSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateGitHubSkillSourceMutation, UpdateGitHubSkillSourceMutationVariables>(UpdateGitHubSkillSourceDocument, options);
+}
+export type UpdateGitHubSkillSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateGitHubSkillSourceMutation, UpdateGitHubSkillSourceMutationVariables>;
+export const RemoveGitHubSkillSourceDocument = gql`
+    mutation RemoveGitHubSkillSource($sourceId: String!) {
+  removeGitHubSkillSource(sourceId: $sourceId) {
+    sources {
+      ...SkillSourceFields
+    }
+    warnings
+  }
+}
+    ${SkillSourceFieldsFragmentDoc}`;
+
+/**
+ * __useRemoveGitHubSkillSourceMutation__
+ *
+ * To run a mutation, you first call `useRemoveGitHubSkillSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveGitHubSkillSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveGitHubSkillSourceMutation({
+ *   variables: {
+ *     sourceId: // value for 'sourceId'
+ *   },
+ * });
+ */
+export function useRemoveGitHubSkillSourceMutation(options: VueApolloComposable.UseMutationOptions<RemoveGitHubSkillSourceMutation, RemoveGitHubSkillSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveGitHubSkillSourceMutation, RemoveGitHubSkillSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveGitHubSkillSourceMutation, RemoveGitHubSkillSourceMutationVariables>(RemoveGitHubSkillSourceDocument, options);
+}
+export type RemoveGitHubSkillSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveGitHubSkillSourceMutation, RemoveGitHubSkillSourceMutationVariables>;
 export const GetSkillsDocument = gql`
     query GetSkills {
   skills {

@@ -8,7 +8,7 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
   CreateProjectTaskCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView,
-  TaskAcknowledgementView, TaskLocation, UpdateProjectTaskCommand, UpdateTaskByIdCommand,
+  TaskAcknowledgementView, TaskLocation, TaskRootStatus, TaskRootView, TaskWithoutProjectView, UpdateProjectTaskCommand, UpdateTaskByIdCommand,
 } from "../domain/models.js";
 import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js";
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
@@ -20,6 +20,9 @@ import { getProjectTaskContextStore, type ProjectTaskContextStore, type Prepared
 import { TaskAgentResourceRelease } from "../runtime/task-agent-resource-release.js";
 import { TaskAgentResourceService } from "./task-agent-resource-service.js";
 import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
+import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
+import type { TaskChangeView } from "../changes/project-change-messages.js";
+import { buildTaskRootView, rootWorkerStatus, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
 
 type TaskPersistence = Pick<ProjectStore, "layout" | "readProject" | "listTasks" | "readTask" | "findTask" | "createTask" | "updateTask" | "deleteTask">;
 type AssignedLink = Extract<TaskAgentResourceLinkInput, { role: "assigned" }>;
@@ -34,6 +37,10 @@ type Dependencies = {
   taskAgentResources?: TaskAgentResourceService;
   /** Exact-root stop request; absent means no runtime is asked to stop anything. */
   requestRelease?: TaskAgentResourceReleaseRequest;
+  /** Told after each committed Task write (the `/ws/projects` feed); defaults to the process publisher. */
+  changes?: ProjectChangeMarks;
+  /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
+  workerStatus?: TaskWorkerStatusResolver;
 };
 const normalizeDescription = (description: unknown): string => {
   if (typeof description !== "string" || !description.trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
@@ -64,7 +71,11 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     this.resources = deps.taskAgentResources
       ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout, this.adHocTasks.layout));
     this.release = new TaskAgentResourceRelease(deps.requestRelease);
+    // Every committed run-resource write may change a Task's root (link, start, fail, DONE, reopen).
+    this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
+  private get changes(): ProjectChangeMarks { return this.deps.changes ?? getProjectChangePublisher(); }
+  private get workerStatus(): TaskWorkerStatusResolver { return this.deps.workerStatus ?? (() => null); }
   private get store() { return this.deps.store ?? getProjectStore(); }
   private get context() { return this.deps.contextStore ?? getProjectTaskContextStore(); }
   private nowIso(): string { return (this.deps.now?.() ?? new Date()).toISOString(); }
@@ -94,6 +105,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
       return { taskId, description, status: "TODO", createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
     });
     await this.consume(command.projectId, prepared);
+    this.changes.taskChanged({ projectId: command.projectId, taskId });
     return this.toView(command.projectId, task);
   }
   async updateTask(command: UpdateProjectTaskCommand): Promise<ProjectTaskView> {
@@ -124,6 +136,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     const updated = status === "DONE"
       ? await this.closeAndWrite({ projectId: command.projectId, taskId: command.taskId }, writeMetadata)
       : await writeMetadata();
+    this.changes.taskChanged({ projectId: command.projectId, taskId: command.taskId });
     await this.consume(command.projectId, prepared);
     if (removed.length) await cleanup(() => this.context.cleanupRemoved(command.projectId, command.taskId, removed));
     return this.toView(command.projectId, updated);
@@ -146,6 +159,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
         return meaningful ? { ...current, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}), updatedAt: this.nowIso() } : current;
       });
       const updated = status === "DONE" ? await this.closeAndWrite({ projectId: null, taskId }, write) : await write();
+      this.changes.taskChanged({ projectId: null, taskId });
       return { projectId: null, taskId, status: updated.status };
     }
     const { projectId } = await this.uniqueTask(taskId);
@@ -164,6 +178,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
           await this.resources.serialize(taskId, async () => {
             await this.adHocTasks.delete(taskId);
             this.resources.forget({ projectId: null, taskId });
+            this.changes.taskRemoved({ projectId: null, taskId });
           });
         } catch (error) {
           console.warn("AD_HOC_TASK_DELETE_FAILED", { taskId, hostRoot, error: error instanceof Error ? error.message : String(error) });
@@ -175,7 +190,30 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   }
   /** Removes metadata and context; the Task's agent run resources stay, so closed work stays closed. */
   async deleteTask(command: DeleteProjectTaskCommand): Promise<boolean> {
-    return Boolean(await this.store.deleteTask(command.projectId, command.taskId));
+    const deleted = Boolean(await this.store.deleteTask(command.projectId, command.taskId));
+    if (deleted) this.changes.taskRemoved({ projectId: command.projectId, taskId: command.taskId });
+    return deleted;
+  }
+  /** Every Task with no Project ("Temp tasks"), latest change first, each with its root. */
+  async listTasksWithoutProject(): Promise<TaskWithoutProjectView[]> {
+    await this.resources.load();
+    return (await this.adHocTasks.list()).sort(compareTasks).map((task) => this.toTaskWithoutProjectView(task));
+  }
+  /** The current view of one Task for the change feed; null when it no longer exists. */
+  async readTaskChangeView(location: TaskLocation): Promise<TaskChangeView | null> {
+    if (location.projectId === null) {
+      const task = await this.adHocTasks.read(location.taskId);
+      return task ? { kind: "no_project", task: this.toTaskWithoutProjectView(task) } : null;
+    }
+    const projectId = location.projectId;
+    const task = await this.store.readTask(projectId, location.taskId)
+      .catch((error: unknown) => { if ((error as { code?: unknown }).code === "PROJECT_NOT_FOUND") return null; throw error; });
+    return task ? { kind: "project", projectId, task: await this.toView(projectId, task) } : null;
+  }
+  /** The Task root's live status (no file read); null when the Task has no root. */
+  workerStatusOf(location: TaskLocation): TaskRootStatus | null {
+    const root = this.resources.latestAssignment(location.taskId);
+    return root ? rootWorkerStatus(root, this.workerStatus) : null;
   }
   async beginContextDraft(projectId: string, taskId?: string) {
     await this.assertOwner(projectId, taskId);
@@ -237,6 +275,15 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   openAgentRuns(taskId: string, role: TaskAgentResourceRole) { return this.resources.openAgentRuns(taskId, role); }
   closedAgentRunsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedAgentRunsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
+  /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */
+  taskExecutionsStatusChanged(_hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
+    try {
+      for (const reference of references) {
+        const location = this.resources.rootTaskLocationOf(reference);
+        if (location) this.changes.workerStatusChanged(location);
+      }
+    } catch (error) { console.warn("TASK_ROOT_STATUS_MARK_FAILED", error); }
+  }
   /** Advisory: lets the runtime refuse an ineligible sender before it touches any runtime state. */
   async assertReopenable(input: TaskAgentResourceReopenInput): Promise<void> {
     const location = await this.reopenLocation(input.agentRun);
@@ -259,6 +306,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     const timestamp = this.nowIso();
     await this.adHocTasks.create({ taskId, description: normalizeDescription(content.description),
       referenceFiles: [...content.referenceFiles], status: "TODO", createdAt: timestamp, updatedAt: timestamp });
+    this.changes.taskChanged({ projectId: null, taskId });
     await this.resources.serialize(taskId, () => this.resources.linkAssigned({ projectId: null, taskId }, link));
     return taskId;
   }
@@ -336,7 +384,15 @@ export class ProjectTaskService implements TaskAgentResourcePort {
       const localPath = await this.context.savedFile(projectId, task.taskId, f).catch(() => undefined);
       return { ...f, locator: projectTaskFileLocator(projectId, task.taskId, f.storedFilename), ...(localPath ? { localPath } : {}) };
     }));
-    return { ...task, projectId, contextFiles };
+    return { ...task, projectId, contextFiles, root: this.taskRoot(task.taskId) };
+  }
+  private toTaskWithoutProjectView(task: AdHocTask): TaskWithoutProjectView {
+    return { taskId: task.taskId, description: task.description, status: task.status, referenceFiles: [...task.referenceFiles],
+      createdAt: task.createdAt, updatedAt: task.updatedAt, root: this.taskRoot(task.taskId) };
+  }
+  private taskRoot(taskId: string): TaskRootView | null {
+    const root = this.resources.latestAssignment(taskId);
+    return root ? buildTaskRootView(root, this.workerStatus) : null;
   }
 }
 
@@ -344,7 +400,7 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskAgentResources" | "adHocTasks" | "requestRelease">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskAgentResources" | "adHocTasks" | "requestRelease" | "workerStatus">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };

@@ -156,6 +156,29 @@ const projectMessages = {
   'projects.components.projects.ProjectTaskBoard.noTasks': 'No tasks',
   'projects.components.projects.ProjectTaskBoard.noMatch': 'No tasks match your search.',
   'projects.components.projects.ProjectTaskBoard.clearSearch': 'Clear search',
+  // project-manager-ux: a Task's root (the agent or team it was handed to) and its worker status
+  'projects.root.listLabel': 'Assigned to',
+  'projects.root.notAssigned': 'Not assigned to an agent or team yet.',
+  'projects.root.help': 'When the Task is Done, this agent or team stops.',
+  'projects.root.open': 'Open {{name}}',
+  'projects.root.kind.agent': 'Agent',
+  'projects.root.kind.team': 'Team',
+  'projects.root.status.running': 'Running',
+  'projects.root.status.initializing': 'Initializing',
+  'projects.root.status.idle': 'Idle',
+  'projects.root.status.error': 'Error',
+  'projects.root.status.offline': 'Offline',
+  'projects.root.status.failed': "Couldn't start",
+  // project-manager-ux round 2: Temp tasks (Tasks with no Project)
+  'projects.temp.title': 'Temp tasks',
+  'projects.temp.openCount': '{{count}} open',
+  'projects.temp.boardHelp': 'Agents create these when they hand work to another agent or team in a chat. Each one belongs to that chat and goes away with it. Only agents change them.',
+  'projects.temp.lane.open': 'Open',
+  'projects.temp.lane.done': 'Done',
+  'projects.temp.showAll': 'Show all ({{count}})',
+  'projects.temp.showFewer': 'Show fewer',
+  'projects.temp.referenceFiles': 'Reference files',
+  'projects.temp.readOnly': 'Only agents change this Task.',
 } satisfies TranslationCatalog;
 
 export default projectMessages;

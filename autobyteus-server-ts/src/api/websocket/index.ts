@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { registerFileExplorerWebsocket } from "./file-explorer.js";
 import { registerTerminalWebsocket } from "./terminal.js";
+import { registerProjectChangesWebsocket } from "./projects.js";
 import { registerAgentWebsocket } from "./agent.js";
 import { registerApplicationBackendNotificationWebsocket } from "./application-backend-notifications.js";
 import { registerApplicationBackendWebsocket } from "./application-backends.js";
@@ -21,6 +22,7 @@ export async function registerWebsocketRoutes(
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
+  await registerProjectChangesWebsocket(app);
   await registerAgentWebsocket(
     app,
     undefined,

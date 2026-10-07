@@ -44,7 +44,32 @@ export class ProjectTaskContextChangesInput {
 }
 
 @ObjectType()
+export class TaskRootHost {
+  @Field(() => String) kind!: string;
+  @Field(() => String) runId!: string;
+}
+@ObjectType()
+export class TaskRootStartError {
+  @Field(() => String) code!: string;
+  @Field(() => String) message!: string;
+}
+/** The one agent or team a Task was handed to (its latest assignment), with the worker's own live status. */
+@ObjectType()
+export class TaskRoot {
+  @Field(() => String) kind!: string;
+  @Field(() => String, { nullable: true }) recipientAddress!: string | null;
+  @Field(() => String) ingressAgentRunId!: string;
+  @Field(() => String, { nullable: true }) teamRunId!: string | null;
+  @Field(() => TaskRootHost) hostRoot!: TaskRootHost;
+  @Field(() => String) start!: string;
+  @Field(() => TaskRootStartError, { nullable: true }) startError!: TaskRootStartError | null;
+  @Field(() => Boolean) closed!: boolean;
+  @Field(() => String) status!: string;
+}
+
+@ObjectType()
 export class ProjectTask {
+  @Field(() => TaskRoot, { nullable: true }) root!: TaskRoot | null;
   @Field(() => [ProjectTaskContextFile]) contextFiles!: ProjectTaskContextFile[];
   @Field(() => String)
   taskId!: string;
@@ -97,7 +122,20 @@ export class DeleteProjectTaskInput {
   taskId!: string;
 }
 
+/** A Task with no Project ("Temp task"); read only. */
+@ObjectType()
+export class TaskWithoutProject {
+  @Field(() => String) taskId!: string;
+  @Field(() => String) description!: string;
+  @Field(() => ProjectTaskStatus) status!: ProjectTaskStatus;
+  @Field(() => [String]) referenceFiles!: string[];
+  @Field(() => String) createdAt!: string;
+  @Field(() => String) updatedAt!: string;
+  @Field(() => TaskRoot, { nullable: true }) root!: TaskRoot | null;
+}
+
 const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
+  root: task.root,
   contextFiles: task.contextFiles,
   taskId: task.taskId,
   projectId: task.projectId,
@@ -120,6 +158,13 @@ export class ProjectTaskResolver {
   @Query(() => [ProjectTask])
   async projectTasks(@Arg("projectId", () => String) projectId: string): Promise<ProjectTask[]> {
     return withProjectErrors(async () => (await this.service.listTasks(projectId)).map(toGraphqlTask));
+  }
+
+  @Query(() => [TaskWithoutProject])
+  async tasksWithoutProject(): Promise<TaskWithoutProject[]> {
+    return withProjectErrors(async () => (await this.service.listTasksWithoutProject()).map((task) => ({
+      ...task, status: task.status as ProjectTaskStatus,
+    })));
   }
 
   @Mutation(() => ProjectTask)

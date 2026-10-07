@@ -198,6 +198,7 @@ export class TeamExecutionIndex implements MessageRecipientIndexPort {
     return this.taskExecutionsByRunId.get(runId) ?? null;
   }
 
+  listTaskExecutions(): readonly IndexedTaskExecution[] { return Object.freeze([...this.taskExecutionsByRunId.values()]); }
   listAgentExecutions(): readonly IndexedAgentExecution[] {
     return Object.freeze([...this.agentsByRunId.values()]);
   }

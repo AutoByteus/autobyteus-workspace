@@ -76,13 +76,17 @@ const toggle = (row: RunHistoryTransientExecutionRow): void => {
   if (row.teamRunIdForNode) collaboration.toggleTaskTeam(props.runId, row.teamRunIdForNode)
 }
 
-/** Opens the task Agent's conversation; a task Team row opens its coordinator. */
+/**
+ * Opens the task Agent's conversation; a task Team row opens its coordinator. The run is always
+ * (re)opened as well, so a click opens the conversation from any page, also when this run is
+ * already the selected run (F-006); re-selecting the current run only navigates.
+ */
 const select = (row: RunHistoryTransientExecutionRow): void => {
   const context = collaboration.contextFor(props.runId)
   if (!context) return
   const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorOf(row.teamRunIdForNode).agentRunId : null)
   collaboration.selectChild(props.runId, agentRunId)
-  if (!props.runSelected) emit('select-run')
+  emit('select-run')
 }
 </script>
 

@@ -155,6 +155,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import ProjectDialogFrame from '~/components/projects/ProjectDialogFrame.vue'
 import ProjectTaskBoard from '~/components/projects/ProjectTaskBoard.vue'
+import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFeed'
 import ProjectWorkspacesPanel from '~/components/projects/ProjectWorkspacesPanel.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectStore } from '~/stores/projectStore'
@@ -286,6 +287,7 @@ const confirmDelete = async (): Promise<void> => {
   }
 }
 
+useProjectChangeFeed()
 onMounted(load)
 // Only the selected Project and the bound node drive loading; a `?tab=` change does not.
 watch(() => props.projectId, load)

@@ -4,10 +4,11 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 import { ProjectError } from "../domain/project-errors.js";
 import {
   agentRunKey, assertTaskAgentResourceReopenable, closeTaskAgentResources, currentAssignments, linkTaskAgentResource,
-  reopenTaskAgentResource, settleTaskAgentResourceStart, type TaskAgentResourceFile, type TaskAssignment,
+  reopenTaskAgentResource, settleTaskAgentResourceStart, type TaskAgentResource, type TaskAgentResourceFile, type TaskAssignment,
 } from "../domain/task-agent-resources.js";
 import type { TaskLocation } from "../domain/models.js";
 import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
+import { latestAssignedEntry } from "./task-root-view-builder.js";
 
 type Loaded = { location: TaskLocation; file: TaskAgentResourceFile };
 export type TaskAgentResourceGroup = Readonly<{ hostRoot: RootExecutionIdentity; agentRuns: readonly TaskExecutionReference[] }>;
@@ -27,7 +28,12 @@ export class TaskAgentResourceService {
   private loading: Promise<void> | null = null;
   private loaded = false;
 
+  /** Told after each committed write's view swap (never during `load()`): the Task's root may have changed. Must not throw. */
+  private onCommitted: (location: TaskLocation) => void = () => undefined;
   constructor(private readonly store = new TaskAgentResourceStore(), private readonly now: () => Date = () => new Date()) {}
+
+  /** Bound once by the composition (the change publisher's mark). */
+  setCommitListener(listener: (location: TaskLocation) => void): void { this.onCommitted = listener; }
 
   /** Reads every file once; an unreadable or invalid file only marks its Task damaged (non-fatal). */
   load(): Promise<void> {
@@ -82,7 +88,7 @@ export class TaskAgentResourceService {
       this.assertTaskReadable(location.taskId);
       // No file and no view entry: no agent run was ever linked, and none can be in flight (assignments are serialized).
       if (this.files.has(location.taskId) || await this.store.exists(location)) {
-        await this.store.update(location, file => closeTaskAgentResources(file, this.now().toISOString()), next => this.swap(location, next));
+        await this.store.update(location, file => closeTaskAgentResources(file, this.now().toISOString()), next => this.commit(location, next));
       }
       await afterClose();
     });
@@ -111,7 +117,7 @@ export class TaskAgentResourceService {
       const next = reopenTaskAgentResource(file, agentRun, requestedBy);
       reopened = next !== file;
       return next;
-    }, next => this.swap(location, next));
+    }, next => this.commit(location, next));
     return reopened;
   }
 
@@ -143,6 +149,18 @@ export class TaskAgentResourceService {
       .map(({ location }) => location.taskId);
   }
   /** Drops a Task whose files were removed from the view (owners and closed runs included). Call under `serialize`. */
+  /** The Task's root: its latest `assigned` entry, from the view; null when never assigned or unreadable. */
+  latestAssignment(taskId: string): TaskAgentResource | null {
+    if (!this.loaded || this.damaged.has(taskId)) return null;
+    return latestAssignedEntry(this.files.get(taskId)?.file ?? null);
+  }
+  /** The Task whose root is exactly this agent run (its latest `assigned` entry); null otherwise. Never throws. */
+  rootTaskLocationOf(agentRun: TaskExecutionReference): TaskLocation | null {
+    const taskId = this.owners.get(agentRunKey(agentRun));
+    const loaded = taskId ? this.files.get(taskId) : undefined;
+    const root = latestAssignedEntry(loaded?.file ?? null);
+    return loaded && root && agentRunKey(root.agentRun) === agentRunKey(agentRun) ? loaded.location : null;
+  }
   forget(location: TaskLocation): void {
     this.unindex(location.taskId);
     this.files.delete(location.taskId);
@@ -189,18 +207,23 @@ export class TaskAgentResourceService {
   private async link(location: TaskLocation, link: TaskAgentResourceLinkInput): Promise<void> {
     const owner = this.owners.get(agentRunKey(link.agentRun));
     if (owner) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run already belongs to a Task.");
-    await this.store.update(location, file => linkTaskAgentResource(file, link, this.now().toISOString()), next => this.swap(location, next));
+    await this.store.update(location, file => linkTaskAgentResource(file, link, this.now().toISOString()), next => this.commit(location, next));
   }
   private async settle(agentRun: TaskExecutionReference, outcome: Parameters<typeof settleTaskAgentResourceStart>[2]): Promise<void> {
     await this.load();
     const taskId = this.owners.get(agentRunKey(agentRun));
     if (!taskId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is not linked to a Task.");
     const { location } = this.files.get(taskId)!;
-    await this.store.update(location, file => settleTaskAgentResourceStart(file, agentRun, outcome), next => this.swap(location, next));
+    await this.store.update(location, file => settleTaskAgentResourceStart(file, agentRun, outcome), next => this.commit(location, next));
   }
   private entryOf(agentRun: TaskExecutionReference) {
     const taskId = this.owners.get(agentRunKey(agentRun));
     return taskId ? this.files.get(taskId)?.file.agentRunResources.find(e => agentRunKey(e.agentRun) === agentRunKey(agentRun)) : undefined;
+  }
+  /** A committed write: swap the view, then tell the listener (marks only; it never fails the write). */
+  private commit(location: TaskLocation, file: TaskAgentResourceFile): void {
+    this.swap(location, file);
+    try { this.onCommitted(location); } catch (error) { console.warn("TASK_AGENT_RESOURCE_COMMIT_LISTENER_FAILED", error); }
   }
   /** View swap for one committed Task file: synchronous, never before commit. */
   private swap(location: TaskLocation, file: TaskAgentResourceFile): void {

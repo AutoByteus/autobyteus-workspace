@@ -4,6 +4,7 @@ import { dispatchTaskCopy, type TaskAgentResourceJoin } from "./root-task-dispat
 import { RootTaskAgentResourceScope, asTaskDelegationError } from "./root-task-agent-resource-scope.js";
 import { taskReactivationRejectionCode, type TaskAgentResourcePort, type TaskAgentResourceStopResult } from "./task-agent-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
+import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
 import type {
   RootTaskExecutionAdapter,
@@ -69,12 +70,22 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     this.accepting = false;
     this.schedule.dispose();
     this.queue.closeExternalAdmission();
+    // Every task execution of a root that no longer admits work reports offline.
+    this.resourceScope.taskExecutionsStatusChanged(this.adapter.listTaskExecutions());
   }
 
   enterRootFailStop(): void {
     this.accepting = false;
     this.schedule.dispose();
     this.queue.enterRootFailStop();
+    this.resourceScope.taskExecutionsStatusChanged(this.adapter.listTaskExecutions());
+  }
+
+  /** A copy's own live status (Agent status, or folded Team status); `offline` once the root stops admitting. Wakes nothing. */
+  taskExecutionStatus(reference: TaskExecutionReference): AgentExecutionStatus {
+    if (!this.accepting) return "offline";
+    try { return this.adapter.taskExecutionStatus(reference); }
+    catch (error) { console.warn("TASK_EXECUTION_STATUS_UNAVAILABLE", error); return "offline"; }
   }
 
   drain(): Promise<void> { return this.queue.drain(); }
@@ -220,9 +231,11 @@ export class RootTaskExecutionLifecycle<TPlacement> {
    * (re)arms them. The fire-time quiescence check is the only safety guard.
    */
   onAgentStatus(agentRunId: string, status: TaskExecutionAgentStatus): void {
-    if (!this.accepting) return;
     const chain = this.adapter.taskExecutionChainFor(agentRunId);
     if (!chain.length) return;
+    // The copies containing the agent may show a new status; the Task side reads it later.
+    this.resourceScope.taskExecutionsStatusChanged(chain);
+    if (!this.accepting) return;
     if (status === "running" || status === "initializing") {
       chain.forEach((reference) => this.schedule.cancel(reference));
       return;

@@ -32,6 +32,8 @@ function fixture() {
     planActivation: vi.fn(), beginActivation: vi.fn(), registrationFor: () => null, taskExecutionAt: () => null,
     ownershipChainFor: agentRunId => chains[agentRunId] ?? [],
     taskExecutionChainFor: agentRunId => chains[agentRunId] ?? [],
+    listTaskExecutions: () => [worker, team, helper],
+    taskExecutionStatus: reference => authority.get(key(reference)) === "live" ? "idle" : "offline",
     cancelOwnedExecution: vi.fn(),
     releaseOwnedExecution: vi.fn(async (reference: TaskExecutionReference): Promise<AgentOperationResult> => {
       log.push(`release:${key(reference)}:${authority.get(key(reference)) ?? "none"}`);

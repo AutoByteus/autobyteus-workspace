@@ -12,7 +12,7 @@ vi.mock('~/services/projects/projectTaskContextClient', () => ({createProjectTas
 vi.mock('~/stores/projectTaskStore', () => ({useProjectTaskStore: () => tasks}))
 vi.mock('~/stores/voiceInputStore', () => ({useVoiceInputStore: () => voice}))
 const file: ProjectTaskContextFile = {storedFilename: 'ctx_file__note.txt', displayName: 'note.txt', mimeType: 'text/plain', sizeBytes: 4, locator: 'owned'}
-const saved: ProjectTask = {projectId: 'p', taskId: 't', description: 'Saved', status: 'IN_PROGRESS', contextFiles: [file], createdAt: '1', updatedAt: '2'}
+const saved: ProjectTask = {projectId: 'p', taskId: 't', description: 'Saved', status: 'IN_PROGRESS', contextFiles: [file], createdAt: '1', updatedAt: '2', root: null}
 const setup = (task?: ProjectTask) => {
   let draft!: ReturnType<typeof useProjectTaskDraft>
   const wrapper = mount(defineComponent({setup() {draft = useProjectTaskDraft('p', task); return () => null}}))

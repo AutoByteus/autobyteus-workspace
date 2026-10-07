@@ -67,6 +67,7 @@ describe("ProjectTaskService", () => {
     });
 
     expect(task).toEqual({
+      root: null,
       taskId: "project_task_1",
       projectId,
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",

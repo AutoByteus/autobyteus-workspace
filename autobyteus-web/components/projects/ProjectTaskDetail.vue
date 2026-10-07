@@ -19,6 +19,7 @@
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white" aria-labelledby="task-description-heading" data-testid="task-page-reading-surface">
           <div class="p-5 sm:p-6"><h2 id="task-description-heading" class="text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h2><p class="mt-3 max-w-[80ch] whitespace-pre-wrap break-words text-base leading-7 text-slate-800" data-testid="task-page-description">{{ task.description }}</p><section v-if="task.contextFiles?.length" class="mt-6 border-t border-slate-100 pt-5" aria-labelledby="task-context-files-heading" data-testid="task-page-context-files"><h2 id="task-context-files-heading" class="mb-3 text-sm font-medium text-slate-600">{{ t('projects.ui.contextFiles') }} ({{ task.contextFiles.length }})</h2><TaskContextFiles :files="task.contextFiles" :client="client" :saved-filenames="task.contextFiles.map((f) => f.storedFilename)" /></section></div>
         </section>
+        <TaskRootSection :root="task.root ?? null" />
       </template>
     </div>
   </div>
@@ -35,8 +36,11 @@ import { createProjectTaskContextClient } from '~/services/projects/projectTaskC
 import { TASK_STATUS_LABEL_KEYS } from '~/utils/projects/taskStatusLabelKey'
 import { taskSummary } from '~/utils/projects/taskSummary'
 import TaskContextFiles from './TaskContextFiles.vue'
+import TaskRootSection from './TaskRootSection.vue'
+import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFeed'
 const props = defineProps<{projectId: string; taskId: string}>()
 const {t} = useLocalization(), router = useRouter(), store = useProjectTaskStore()
+useProjectChangeFeed()
 const {project, task, loading, error: loadError, heading, current, load} = useProjectTaskPage(props.projectId, props.taskId)
 const client = createProjectTaskContextClient(props.projectId, props.taskId, current)
 const boardTarget = `/projects/${props.projectId}`, detailTarget = `${boardTarget}/tasks/${props.taskId}`

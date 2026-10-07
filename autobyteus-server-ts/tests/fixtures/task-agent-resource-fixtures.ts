@@ -114,6 +114,11 @@ export class InMemoryTaskAgentResources implements TaskAgentResourcePort {
     entry.open = true;
     return { taskId: entry.taskId, reopened };
   }
+  /** Every status-change notification, in order. */
+  readonly statusChanges: Array<{ hostRoot: RootExecutionIdentity; references: TaskExecutionReference[] }> = [];
+  taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
+    this.statusChanges.push({ hostRoot, references: [...references] });
+  }
   assertResourceDataReadable(): void {
     if (this.damaged.size) throw rejection("TASK_AGENT_RESOURCES_UNAVAILABLE", "Task run data could not be read. Fix or restore the file and restart the app; other features keep working.");
   }
