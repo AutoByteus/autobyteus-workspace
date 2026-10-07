@@ -43,19 +43,18 @@ Earlier builds shipped a built-in Project Task Manager. It is retired, and
 startup migration `20261006_remove_built_in_project_task_manager` removes its
 installed copy (see the server README).
 
-`ENABLE_PROJECTS` is a default-off, per-node **web visibility** flag. It does
-not gate backend CRUD or tool authorization. Unset values initialize to false,
-and persisted values are authoritative. Disabling it keeps all metadata and
-files. The existing shared boolean setting accessor is unchanged. Tools must be
-selected explicitly in the agent definition, independently of the UI flag,
-except `create_or_update_task`, which every agent with `delegate_task` gets
-automatically.
+Projects is always on (projects-always-on): there is no Projects capability
+query, mutation or predefined setting. A value of the retired per-node web
+visibility flag stored by an earlier release is not read; it lists as an
+ordinary, deletable custom setting. Nothing migrates or deletes it. Tools must
+be selected explicitly in the agent definition, except `create_or_update_task`,
+which every agent with `delegate_task` gets automatically.
 
 ## Main Owners
 
-- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,settings,task-agent-resources}.ts`
+- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,task-agent-resources}.ts`
 - `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-agent-resource-store,task-agent-resource-schema}.ts`
-- `src/projects/services/{project-service,project-task-service,task-agent-resource-service,projects-capability-service,task-root-view-builder}.ts`
+- `src/projects/services/{project-service,project-task-service,task-agent-resource-service,task-root-view-builder}.ts`
 - `src/projects/changes/{project-change-messages,project-change-publisher,project-change-hub}.ts`
   (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))
 - `src/projects/runtime/task-agent-resource-release.ts` (DONE's stop request)
@@ -67,7 +66,7 @@ automatically.
 - `src/app-data-migrations/migrations/projects-per-folder-v1/`
 - `src/agent-tools/project-tasks/` (shared contract, manifest, native tools)
 - `src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts`
-- `src/api/graphql/types/{projects,project-tasks,projects-capability}.ts`
+- `src/api/graphql/types/{projects,project-tasks}.ts`
 - `src/api/rest/project-task-context-files.ts`
 - `src/api/websocket/projects.ts` (`/ws/projects`)
 
@@ -353,8 +352,7 @@ Exposure:
 - The tool names are opt-in in both native and session MCP exposure, except
   `create_or_update_task`: `automaticCollaborationToolNames` adds it wherever
   `delegate_task` is (every member context, on every runtime).
-- They need no collaboration-member context and are independent of the
-  Projects UI flag.
+- They need no collaboration-member context.
 - Their first-party names are protected against configured MCP collisions.
 - Selecting one does not expose the others. Unselected tools stay absent or
   rejected. No retired task tools and no category-wide exposure are restored.
@@ -675,7 +673,7 @@ Retention:
 
 ## GraphQL And REST
 
-Project queries, mutations and capability operations keep their names.
+Project queries and mutations keep their names; there is no Projects capability operation.
 `Project` exposes `taskCount` and `openTaskCount`, not its Task list.
 `createProject` and `updateProject` additionally accept the optional aggregate
 `workspaces`.

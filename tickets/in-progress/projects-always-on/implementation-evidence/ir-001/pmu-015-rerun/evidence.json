@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-10-07T14:27:19.011Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-015": {
+      "result": "Pass",
+      "description": "Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)",
+      "durationMs": 5365,
+      "details": {
+        "tabOrder": [
+          "projects",
+          "files",
+          "terminal",
+          "progress",
+          "usage",
+          "artifacts",
+          "vnc"
+        ],
+        "picked": "project:project_a09cb8cf-9c85-4bfb-9f64-4d31614dde3e",
+        "lanes": [
+          1002,
+          1002,
+          1002
+        ],
+        "iconBoxes": [
+          {
+            "w": 16,
+            "h": 16,
+            "color": "rgb(71, 85, 105)"
+          },
+          {
+            "w": 16,
+            "h": 16,
+            "color": "rgb(29, 78, 216)"
+          }
+        ],
+        "errors": []
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 28144,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 28111,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 12,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 5,
+      "task_upserted": 4,
+      "task_worker_status": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:61017",
+    "frontendUrl": "http://127.0.0.1:61018",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-sUNRZD"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 1
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-07T14:27:53.286Z"
+}

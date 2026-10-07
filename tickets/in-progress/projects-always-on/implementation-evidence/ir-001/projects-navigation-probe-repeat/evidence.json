@@ -1,0 +1,479 @@
+{
+  "startedAt": "2026-10-07T14:03:19.781Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "B-001": {
+      "result": "Pass",
+      "startedAt": "2026-10-07T14:03:28.151Z",
+      "observed": {
+        "expandedOn": [
+          {
+            "label": "Chat",
+            "top": 12
+          },
+          {
+            "label": "Agents",
+            "top": 52
+          },
+          {
+            "label": "Agent Teams",
+            "top": 92
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 132
+          },
+          {
+            "label": "Projects",
+            "top": 172
+          },
+          {
+            "label": "Applications",
+            "top": 212
+          },
+          {
+            "label": "Skills",
+            "top": 252
+          },
+          {
+            "label": "Memory",
+            "top": 292
+          },
+          {
+            "label": "Nodes",
+            "top": 332
+          }
+        ],
+        "compactOn": [
+          {
+            "label": "Chat",
+            "top": 16
+          },
+          {
+            "label": "Agents",
+            "top": 60
+          },
+          {
+            "label": "Agent Teams",
+            "top": 104
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 148
+          },
+          {
+            "label": "Projects",
+            "top": 192
+          },
+          {
+            "label": "Applications",
+            "top": 236
+          },
+          {
+            "label": "Skills",
+            "top": 280
+          },
+          {
+            "label": "Memory",
+            "top": 324
+          },
+          {
+            "label": "Nodes",
+            "top": 368
+          }
+        ],
+        "compactOff": [
+          {
+            "label": "Chat",
+            "top": 16
+          },
+          {
+            "label": "Agents",
+            "top": 60
+          },
+          {
+            "label": "Agent Teams",
+            "top": 104
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 148
+          },
+          {
+            "label": "Projects",
+            "top": 192
+          },
+          {
+            "label": "Skills",
+            "top": 236
+          },
+          {
+            "label": "Memory",
+            "top": 280
+          },
+          {
+            "label": "Nodes",
+            "top": 324
+          }
+        ],
+        "expandedOff": [
+          {
+            "label": "Chat",
+            "top": 12
+          },
+          {
+            "label": "Agents",
+            "top": 52
+          },
+          {
+            "label": "Agent Teams",
+            "top": 92
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 132
+          },
+          {
+            "label": "Projects",
+            "top": 172
+          },
+          {
+            "label": "Skills",
+            "top": 212
+          },
+          {
+            "label": "Memory",
+            "top": 252
+          },
+          {
+            "label": "Nodes",
+            "top": 292
+          }
+        ]
+      },
+      "finishedAt": "2026-10-07T14:03:28.444Z"
+    },
+    "B-002": {
+      "result": "Pass",
+      "startedAt": "2026-10-07T14:03:28.446Z",
+      "observed": {
+        "expandedAppsOff": [
+          {
+            "label": "Chat",
+            "top": 12
+          },
+          {
+            "label": "Agents",
+            "top": 52
+          },
+          {
+            "label": "Agent Teams",
+            "top": 92
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 132
+          },
+          {
+            "label": "Projects",
+            "top": 172
+          },
+          {
+            "label": "Skills",
+            "top": 212
+          },
+          {
+            "label": "Memory",
+            "top": 252
+          },
+          {
+            "label": "Nodes",
+            "top": 292
+          }
+        ],
+        "expandedAppsOn": [
+          {
+            "label": "Chat",
+            "top": 12
+          },
+          {
+            "label": "Agents",
+            "top": 52
+          },
+          {
+            "label": "Agent Teams",
+            "top": 92
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 132
+          },
+          {
+            "label": "Projects",
+            "top": 172
+          },
+          {
+            "label": "Applications",
+            "top": 212
+          },
+          {
+            "label": "Skills",
+            "top": 252
+          },
+          {
+            "label": "Memory",
+            "top": 292
+          },
+          {
+            "label": "Nodes",
+            "top": 332
+          }
+        ],
+        "compactAppsOn": [
+          {
+            "label": "Chat",
+            "top": 16
+          },
+          {
+            "label": "Agents",
+            "top": 60
+          },
+          {
+            "label": "Agent Teams",
+            "top": 104
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 148
+          },
+          {
+            "label": "Projects",
+            "top": 192
+          },
+          {
+            "label": "Applications",
+            "top": 236
+          },
+          {
+            "label": "Skills",
+            "top": 280
+          },
+          {
+            "label": "Memory",
+            "top": 324
+          },
+          {
+            "label": "Nodes",
+            "top": 368
+          }
+        ]
+      },
+      "finishedAt": "2026-10-07T14:03:28.609Z"
+    },
+    "B-003": {
+      "result": "Pass",
+      "startedAt": "2026-10-07T14:03:28.610Z",
+      "observed": {
+        "route": "/projects",
+        "subroute": "/projects/new",
+        "folderPath": "M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44"
+      },
+      "finishedAt": "2026-10-07T14:03:30.546Z"
+    },
+    "B-004": {
+      "result": "Pass",
+      "startedAt": "2026-10-07T14:03:30.547Z",
+      "observed": {
+        "activation": "open-drawer",
+        "destination": "/projects"
+      },
+      "finishedAt": "2026-10-07T14:03:30.860Z"
+    },
+    "B-005": {
+      "result": "Pass",
+      "startedAt": "2026-10-07T14:03:30.861Z",
+      "observed": {
+        "expanded": [
+          {
+            "label": "Chat",
+            "top": 12
+          },
+          {
+            "label": "Agents",
+            "top": 52
+          },
+          {
+            "label": "Agent Teams",
+            "top": 92
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 132
+          },
+          {
+            "label": "Skills",
+            "top": 172
+          },
+          {
+            "label": "Memory",
+            "top": 212
+          }
+        ],
+        "compact": [
+          {
+            "label": "Chat",
+            "top": 16
+          },
+          {
+            "label": "Agents",
+            "top": 60
+          },
+          {
+            "label": "Agent Teams",
+            "top": 104
+          },
+          {
+            "label": "Agent Orgs",
+            "top": 148
+          },
+          {
+            "label": "Skills",
+            "top": 192
+          },
+          {
+            "label": "Memory",
+            "top": 236
+          }
+        ]
+      },
+      "finishedAt": "2026-10-07T14:03:31.747Z"
+    }
+  },
+  "graphql": [
+    {
+      "operation": "GetAllWorkspaces",
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetAgentDefinitions",
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetAgentTeamDefinitions",
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetAgentOrgDefinitions",
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetTasksWithoutProject",
+      "query": "query GetTasksWithoutProject {\n  tasksWithoutProject {\n    taskId\n    description\n    status\n    referenceFiles\n    createdAt\n    updatedAt\n    root {\n      ...TaskRootFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment TaskRootFields on TaskRoot {\n  kind\n  recipientAddress\n  ingressAgentRunId\n  teamRunId\n  hostRoot {\n    kind\n    runId\n    __typename\n  }\n  start\n  startError {\n    code\n    message\n    __typename\n  }\n  closed\n  status\n  __typename\n}"
+    },
+    {
+      "operation": "GetProjects",
+      "query": "query GetProjects {\n  projects {\n    ...ProjectFields\n    __typename\n  }\n}\n\nfragment ProjectFields on Project {\n  projectId\n  name\n  description\n  createdAt\n  updatedAt\n  workspaces {\n    workspaceId\n    workspaceRootPath\n    displayName\n    description\n    addedAt\n    availability\n    __typename\n  }\n  taskCount\n  openTaskCount\n  __typename\n}"
+    },
+    {
+      "operation": "GetAllWorkspaces",
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetTasksWithoutProject",
+      "query": "query GetTasksWithoutProject {\n  tasksWithoutProject {\n    taskId\n    description\n    status\n    referenceFiles\n    createdAt\n    updatedAt\n    root {\n      ...TaskRootFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment TaskRootFields on TaskRoot {\n  kind\n  recipientAddress\n  ingressAgentRunId\n  teamRunId\n  hostRoot {\n    kind\n    runId\n    __typename\n  }\n  start\n  startError {\n    code\n    message\n    __typename\n  }\n  closed\n  status\n  __typename\n}"
+    },
+    {
+      "operation": "GetProjects",
+      "query": "query GetProjects {\n  projects {\n    ...ProjectFields\n    __typename\n  }\n}\n\nfragment ProjectFields on Project {\n  projectId\n  name\n  description\n  createdAt\n  updatedAt\n  workspaces {\n    workspaceId\n    workspaceRootPath\n    displayName\n    description\n    addedAt\n    availability\n    __typename\n  }\n  taskCount\n  openTaskCount\n  __typename\n}"
+    },
+    {
+      "operation": "GetAllWorkspaces",
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetTasksWithoutProject",
+      "query": "query GetTasksWithoutProject {\n  tasksWithoutProject {\n    taskId\n    description\n    status\n    referenceFiles\n    createdAt\n    updatedAt\n    root {\n      ...TaskRootFields\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment TaskRootFields on TaskRoot {\n  kind\n  recipientAddress\n  ingressAgentRunId\n  teamRunId\n  hostRoot {\n    kind\n    runId\n    __typename\n  }\n  start\n  startError {\n    code\n    message\n    __typename\n  }\n  closed\n  status\n  __typename\n}"
+    },
+    {
+      "operation": "GetProjects",
+      "query": "query GetProjects {\n  projects {\n    ...ProjectFields\n    __typename\n  }\n}\n\nfragment ProjectFields on Project {\n  projectId\n  name\n  description\n  createdAt\n  updatedAt\n  workspaces {\n    workspaceId\n    workspaceRootPath\n    displayName\n    description\n    addedAt\n    availability\n    __typename\n  }\n  taskCount\n  openTaskCount\n  __typename\n}"
+    },
+    {
+      "operation": "GetAllWorkspaces",
+      "query": "query GetAllWorkspaces {\n  workspaces {\n    __typename\n    workspaceId\n    name\n    displayName\n    config\n    workspaceRootPath\n    absolutePath\n    kind\n    isTemp\n  }\n}"
+    },
+    {
+      "operation": "ListWorkspaceRunHistory",
+      "query": "query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {\n  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {\n    workspaceRootPath\n    workspaceName\n    agentDefinitions {\n      agentDefinitionId\n      agentName\n      runs {\n        runId\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        status\n        isActive\n        shouldConnectStream\n        statusSource\n        hasCollaboration\n        __typename\n      }\n      __typename\n    }\n    teamDefinitions {\n      teamDefinitionId\n      teamDefinitionName\n      runs {\n        teamRunId\n        teamDefinitionId\n        teamDefinitionName\n        coordinatorAddress\n        workspaceRootPath\n        summary\n        createdAt\n        archivedAt\n        terminatedAt\n        isActive\n        rootTeam\n        members {\n          memberAddress\n          displayName\n          agentRunId\n          status\n          runtimeKind\n          workspaceRootPath\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+    },
+    {
+      "operation": "ListCollaborationRootHistory",
+      "query": "query ListCollaborationRootHistory {\n  listCollaborationRootHistory {\n    __typename\n    ... on AgentOrgRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      created_at\n      archived_at\n      is_active\n      summary\n      org\n      closed_task_executions\n      __typename\n    }\n    ... on AgentTeamRootHistoryObject {\n      root_subject_kind\n      root_run_id\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetAgentDefinitions",
+      "query": "query GetAgentDefinitions {\n  agentDefinitions {\n    __typename\n    id\n    name\n    role\n    description\n    instructions\n    category\n    avatarUrl\n    toolNames\n    inputProcessorNames\n    llmResponseProcessorNames\n    toolExecutionResultProcessorNames\n    toolInvocationPreprocessorNames\n    lifecycleProcessorNames\n    skillNames\n    skillScope\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetAgentTeamDefinitions",
+      "query": "query GetAgentTeamDefinitions {\n  agentTeamDefinitions {\n    __typename\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    coordinatorMemberName\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    ownershipScope\n    ownerTeamId\n    ownerTeamName\n    ownerApplicationId\n    ownerApplicationName\n    ownerPackageId\n    ownerLocalApplicationId\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    nodes {\n      __typename\n      memberName\n      ref\n      refScope\n    }\n  }\n}"
+    },
+    {
+      "operation": "GetAgentOrgDefinitions",
+      "query": "query GetAgentOrgDefinitions {\n  agentOrgDefinitions {\n    id\n    name\n    description\n    instructions\n    category\n    avatarUrl\n    revision\n    handoffs {\n      from\n      to\n      rules\n      __typename\n    }\n    members {\n      memberName\n      ref\n      refType\n      refScope\n      __typename\n    }\n    defaultLaunchConfig {\n      llmModelIdentifier\n      runtimeKind\n      llmConfig\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "fixturePagesRemoved": true
+  },
+  "frontendPort": 58306,
+  "backendFixturePort": 58307,
+  "pid": 20297,
+  "browser": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-07T14:03:32.234Z"
+}

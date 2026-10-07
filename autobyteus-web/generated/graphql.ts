@@ -1548,7 +1548,6 @@ export type Mutation = {
   saveProviderApiKey: ProviderCredentialSettingObject;
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
-  setProjectsEnabled: ProjectsCapability;
   setSearchConfig: Scalars['String']['output'];
   setSkillImprovementEnabled: SkillImprovementCapability;
   startAgentRunSkillImprovement: GraphqlSkillImprovementStartResult;
@@ -1949,11 +1948,6 @@ export type MutationSetApplicationsEnabledArgs = {
 };
 
 
-export type MutationSetProjectsEnabledArgs = {
-  enabled: Scalars['Boolean']['input'];
-};
-
-
 export type MutationSetSearchConfigArgs = {
   provider: Scalars['String']['input'];
   serpapiApiKey?: InputMaybe<Scalars['String']['input']>;
@@ -2171,18 +2165,6 @@ export type ProjectWorkspaceFormInput = {
   workspaceId: Scalars['String']['input'];
 };
 
-export type ProjectsCapability = {
-  __typename?: 'ProjectsCapability';
-  enabled: Scalars['Boolean']['output'];
-  settingKey: Scalars['String']['output'];
-  source: ProjectsCapabilitySource;
-};
-
-export enum ProjectsCapabilitySource {
-  InitializedDisabled = 'INITIALIZED_DISABLED',
-  ServerSetting = 'SERVER_SETTING'
-}
-
 export type ProviderCredentialSettingObject = {
   __typename?: 'ProviderCredentialSettingObject';
   apiKeyConfigured: Scalars['Boolean']['output'];
@@ -2284,7 +2266,6 @@ export type Query = {
   project?: Maybe<Project>;
   projectTasks: Array<ProjectTask>;
   projects: Array<Project>;
-  projectsCapability: ProjectsCapability;
   providerCredentialSettings: Array<ProviderCredentialSettingObject>;
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
@@ -4255,13 +4236,6 @@ export type DeleteProjectTaskMutationVariables = Exact<{
 
 export type DeleteProjectTaskMutation = { __typename?: 'Mutation', deleteProjectTask: boolean };
 
-export type SetProjectsEnabledMutationVariables = Exact<{
-  enabled: Scalars['Boolean']['input'];
-}>;
-
-
-export type SetProjectsEnabledMutation = { __typename?: 'Mutation', setProjectsEnabled: { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource } };
-
 export type DeleteStoredRunMutationVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
@@ -4699,13 +4673,6 @@ export type GetTasksWithoutProjectQueryVariables = Exact<{ [key: string]: never;
 
 
 export type GetTasksWithoutProjectQuery = { __typename?: 'Query', tasksWithoutProject: Array<{ __typename?: 'TaskWithoutProject', taskId: string, description: string, status: ProjectTaskStatus, referenceFiles: Array<string>, createdAt: string, updatedAt: string, root?: { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null } | null }> };
-
-export type ProjectsCapabilityFieldsFragment = { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource };
-
-export type GetProjectsCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetProjectsCapabilityQuery = { __typename?: 'Query', projectsCapability: { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource } };
 
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -5571,13 +5538,6 @@ export const ProjectTaskFieldsFragmentDoc = gql`
   }
 }
     ${TaskRootFieldsFragmentDoc}`;
-export const ProjectsCapabilityFieldsFragmentDoc = gql`
-    fragment ProjectsCapabilityFields on ProjectsCapability {
-  enabled
-  settingKey
-  source
-}
-    `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
     fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
   beforeCursor
@@ -8258,35 +8218,6 @@ export function useDeleteProjectTaskMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<DeleteProjectTaskMutation, DeleteProjectTaskMutationVariables>(DeleteProjectTaskDocument, options);
 }
 export type DeleteProjectTaskMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteProjectTaskMutation, DeleteProjectTaskMutationVariables>;
-export const SetProjectsEnabledDocument = gql`
-    mutation SetProjectsEnabled($enabled: Boolean!) {
-  setProjectsEnabled(enabled: $enabled) {
-    ...ProjectsCapabilityFields
-  }
-}
-    ${ProjectsCapabilityFieldsFragmentDoc}`;
-
-/**
- * __useSetProjectsEnabledMutation__
- *
- * To run a mutation, you first call `useSetProjectsEnabledMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSetProjectsEnabledMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useSetProjectsEnabledMutation({
- *   variables: {
- *     enabled: // value for 'enabled'
- *   },
- * });
- */
-export function useSetProjectsEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables>(SetProjectsEnabledDocument, options);
-}
-export type SetProjectsEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables>;
 export const DeleteStoredRunDocument = gql`
     mutation DeleteStoredRun($runId: String!) {
   deleteStoredRun(runId: $runId) {
@@ -10677,33 +10608,6 @@ export function useGetTasksWithoutProjectLazyQuery(options: VueApolloComposable.
   return VueApolloComposable.useLazyQuery<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>(GetTasksWithoutProjectDocument, {}, options);
 }
 export type GetTasksWithoutProjectQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTasksWithoutProjectQuery, GetTasksWithoutProjectQueryVariables>;
-export const GetProjectsCapabilityDocument = gql`
-    query GetProjectsCapability {
-  projectsCapability {
-    ...ProjectsCapabilityFields
-  }
-}
-    ${ProjectsCapabilityFieldsFragmentDoc}`;
-
-/**
- * __useGetProjectsCapabilityQuery__
- *
- * To run a query within a Vue component, call `useGetProjectsCapabilityQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProjectsCapabilityQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetProjectsCapabilityQuery();
- */
-export function useGetProjectsCapabilityQuery(options: VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>(GetProjectsCapabilityDocument, {}, options);
-}
-export function useGetProjectsCapabilityLazyQuery(options: VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>(GetProjectsCapabilityDocument, {}, options);
-}
-export type GetProjectsCapabilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>;
 export const ListWorkspaceRunHistoryDocument = gql`
     query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {

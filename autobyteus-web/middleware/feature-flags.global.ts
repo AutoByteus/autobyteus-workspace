@@ -1,5 +1,4 @@
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
-import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore'
 
 interface GatedCapabilityStore {
   readonly isEnabled: boolean
@@ -12,7 +11,6 @@ interface GatedCapabilityStore {
  */
 const CAPABILITY_GATED_ROUTES: ReadonlyArray<{ prefix: string; useStore: () => GatedCapabilityStore }> = [
   { prefix: '/applications', useStore: useApplicationsCapabilityStore },
-  { prefix: '/projects', useStore: useProjectsCapabilityStore },
 ]
 
 export default defineNuxtRouteMiddleware(async (to) => {

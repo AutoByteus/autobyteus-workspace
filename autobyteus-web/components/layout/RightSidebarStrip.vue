@@ -73,6 +73,7 @@ const selectTab = (tabName: TabName, event: MouseEvent) => {
 
 const getIcon = (name: TabName): string => {
   switch (name) {
+    case 'projects': return 'heroicons:folder';
     case 'files': return 'heroicons:document-text';
     case 'teamMembers': return 'heroicons:user-group';
     case 'terminal': return 'heroicons:command-line';

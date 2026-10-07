@@ -38,11 +38,11 @@ describe("Projects GraphQL schema", () => {
     vi.clearAllMocks();
   });
 
-  it("exposes the projects and projects-capability operations", () => {
+  it("exposes the projects operations and no Projects capability (projects-always-on)", () => {
     const queryFields = schema.getQueryType()?.getFields() ?? {};
     const mutationFields = schema.getMutationType()?.getFields() ?? {};
 
-    expect(Object.keys(queryFields)).toEqual(expect.arrayContaining(["projects", "project", "projectsCapability"]));
+    expect(Object.keys(queryFields)).toEqual(expect.arrayContaining(["projects", "project"]));
     expect(Object.keys(mutationFields)).toEqual(expect.arrayContaining([
       "createProject",
       "updateProject",
@@ -50,8 +50,9 @@ describe("Projects GraphQL schema", () => {
       "addProjectWorkspace",
       "updateProjectWorkspace",
       "removeProjectWorkspace",
-      "setProjectsEnabled",
     ]));
+    expect(queryFields.projectsCapability).toBeUndefined();
+    expect(mutationFields.setProjectsEnabled).toBeUndefined();
     expect(queryFields.applicationsCapability).toBeDefined();
     expect(mutationFields.setApplicationsEnabled).toBeDefined();
   });

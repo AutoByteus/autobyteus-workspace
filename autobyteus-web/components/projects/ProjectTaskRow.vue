@@ -7,22 +7,24 @@
     :data-testid="`project-task-row-${task.taskId}`"
     :data-live="live || undefined"
   >
-    <NuxtLink
-      :to="taskRoute"
+    <component
+      :is="activation === 'route' ? NuxtLink : 'button'"
+      v-bind="activation === 'route' ? { to: taskRoute } : { type: 'button' }"
       class="block w-full text-left after:absolute after:inset-0 after:content-[''] focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-blue-500"
       :aria-label="label"
       data-testid="project-task-row-link"
+      @click="activation === 'select' && emit('select', task.taskId)"
     >
       <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
       <span v-if="preview" class="mt-1 line-clamp-2 break-words text-xs leading-5 text-slate-500" data-testid="project-task-row-preview">{{ preview }}</span>
       <span v-if="fileCount" class="mt-2 inline-flex items-center gap-1 text-xs text-slate-500" data-testid="task-row-file-count"><Icon icon="heroicons:paper-clip" class="h-3.5 w-3.5" aria-hidden="true" />{{ t(fileCount === 1 ? 'projects.ui.fileCountOne' : 'projects.ui.fileCount', {count: fileCount}) }}</span>
-    </NuxtLink>
+    </component>
     <ProjectTaskWorkers v-if="task.root" class="relative z-10" density="row" :root="task.root" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, resolveComponent } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { ProjectTask, TaskWithoutProject } from '~/types/project'
 import ProjectTaskWorkers from './ProjectTaskWorkers.vue'
@@ -32,7 +34,13 @@ import { taskCardPreview, taskCardSummary, taskSummaryLabel } from '~/utils/proj
 
 // The first line is the summary; remaining lines are a quieter context preview. Each is bounded
 // before rendering and clamped to 2 lines by CSS; the Task page shows the full description.
-const props = defineProps<{ task: ProjectTask | TaskWithoutProject }>()
+/**
+ * `route` (the Projects pages): the row links to the Task page. `select` (the right panel's Projects
+ * tab): it emits `select` so the Task opens inside the tab; same visuals.
+ */
+const props = withDefaults(defineProps<{ task: ProjectTask | TaskWithoutProject; activation?: 'route' | 'select' }>(), { activation: 'route' })
+const NuxtLink = resolveComponent('NuxtLink')
+const emit = defineEmits<{ (event: 'select', taskId: string): void }>()
 
 const {t} = useLocalization()
 const store = useProjectTaskStore()

@@ -534,37 +534,38 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_APPLICATIONS');
 
     mockConfig.get.mockReturnValueOnce('false');
-    expect(service.getBooleanSetting('ENABLE_PROJECTS')).toBe(false);
-    expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_PROJECTS');
+    expect(service.getBooleanSetting('ENABLE_SKILL_IMPROVEMENT')).toBe(false);
+    expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_SKILL_IMPROVEMENT');
 
     mockConfig.get.mockReturnValueOnce('   ');
     expect(service.getBooleanSetting('ENABLE_SKILL_IMPROVEMENT')).toBeNull();
 
     mockConfig.get.mockReturnValueOnce(undefined);
-    expect(service.getBooleanSetting('ENABLE_PROJECTS')).toBeNull();
+    expect(service.getBooleanSetting('ENABLE_APPLICATIONS')).toBeNull();
   });
 
   it("persists a boolean setting as normalized strings for the requested key", () => {
     const service = new ServerSettingsService();
 
     service.setBooleanSetting('ENABLE_APPLICATIONS', true);
-    service.setBooleanSetting('ENABLE_PROJECTS', false);
+    service.setBooleanSetting('ENABLE_SKILL_IMPROVEMENT', false);
 
     expect(mockConfig.set).toHaveBeenNthCalledWith(1, 'ENABLE_APPLICATIONS', 'true');
-    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_PROJECTS', 'false');
+    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_SKILL_IMPROVEMENT', 'false');
   });
 
-  it("registers ENABLE_PROJECTS as an editable predefined setting", () => {
-    mockConfig.getConfigData.mockReturnValue({ ENABLE_PROJECTS: 'true' });
+  // projects-always-on (AC-002, DEC-001): the retired Projects flag is no longer a predefined setting.
+  // A value stored by an earlier release is not read; it lists as an ordinary custom setting the user can delete.
+  it("lists a stored retired ENABLE_PROJECTS value as an ordinary, deletable custom setting", () => {
+    mockConfig.getConfigData.mockReturnValue({ ENABLE_PROJECTS: 'false' });
+    mockConfig.delete.mockImplementation(() => undefined);
 
     const service = new ServerSettingsService();
-    const setting = service.getAvailableSettings().find((entry) => entry.key === 'ENABLE_PROJECTS');
-
-    expect(setting).toMatchObject({
-      key: 'ENABLE_PROJECTS',
-      value: 'true',
-      description: 'Controls whether the Projects module is available for this node at runtime. Defaults to disabled.',
+    expect(service.getAvailableSettings().find((entry) => entry.key === 'ENABLE_PROJECTS')).toMatchObject({
+      value: 'false', description: 'Custom user-defined setting', isEditable: true, isDeletable: true,
     });
+    expect(service.deleteSetting('ENABLE_PROJECTS')[0]).toBe(true);
+    expect(mockConfig.delete).toHaveBeenCalledWith('ENABLE_PROJECTS');
   });
 
 
