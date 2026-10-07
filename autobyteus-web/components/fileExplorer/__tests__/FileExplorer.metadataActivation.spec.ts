@@ -7,6 +7,10 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { TreeNode } from '~/utils/fileExplorer/TreeNode';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+
+// Workspace registration waits for the bound backend (560a51129); these tests own no backend.
+const bindReadyNode = () => vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockResolvedValue(true);
 
 const transport = vi.hoisted(() => ({ mutate: vi.fn(), query: vi.fn() }));
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => transport }));
@@ -18,7 +22,7 @@ afterEach(() => { wrapper?.unmount(); wrapper = undefined; vi.restoreAllMocks();
 
 describe('FileExplorer metadata-only target activation (AC-004/005)', () => {
   it('registers the recovered target once and leaves Loading without recursive updates', async () => {
-    const pinia = createPinia(); setActivePinia(pinia);
+    const pinia = createPinia(); setActivePinia(pinia); bindReadyNode();
     const store = useWorkspaceStore();
     const metadata = createWorkspaceMetadata({ workspaceId: 'ws-recovered-b', workspaceRootPath: '/owned/B', displayName: 'B', kind: 'filesystem' });
     store.cacheWorkspaceMetadata(metadata);
@@ -57,7 +61,7 @@ const responseFor = (id: string) => ({ data: { createWorkspace: { ...registeredI
 const flush = async () => { await flushPromises(); await nextTick(); };
 
 const setupActivation = () => {
-  const pinia = createPinia(); setActivePinia(pinia);
+  const pinia = createPinia(); setActivePinia(pinia); bindReadyNode();
   const store = useWorkspaceStore(), files = useFileExplorerStore();
   const release = vi.fn();
   const acquire = vi.spyOn(store, 'acquireFileExplorerLiveSession').mockReturnValue(release);

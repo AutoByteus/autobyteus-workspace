@@ -193,7 +193,9 @@ describe('AgentEventMonitor live compaction flow', () => {
     expect(rows[0].text()).toContain('Turn: turn-3');
   });
 
-  it('closes only the current visual AI block on execution-phase compaction so continuation starts a new block', () => {
+  // Since 6908ccff4 only provider-native compaction closes the block; direct memory compaction keeps it open
+  // (covered in agentStatusHandler.spec.ts).
+  it('closes only the current visual AI block on execution-phase provider compaction so continuation starts a new block', () => {
     const conversation = createConversation('run-split-ai-block');
     const context = createContext('run-split-ai-block', conversation);
 
@@ -212,6 +214,7 @@ describe('AgentEventMonitor live compaction flow', () => {
 
     handleCompactionStatus({
       phase: 'requested',
+      provider: 'codex',
       compaction_operation_id: 'operation-split-ai-block',
       requested_turn_id: 'turn-1',
     }, context as any);
@@ -219,6 +222,7 @@ describe('AgentEventMonitor live compaction flow', () => {
 
     handleCompactionStatus({
       phase: 'started',
+      provider: 'codex',
       compaction_operation_id: 'operation-split-ai-block',
       requested_turn_id: 'turn-1',
       execution_turn_id: 'turn-2',

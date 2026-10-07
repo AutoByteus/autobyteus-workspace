@@ -27,7 +27,10 @@ describe('ToastContainer (CR-010)', () => {
       .flatMap((file) => zIndexesIn(fs.readFileSync(file, 'utf8')).map((z) => ({ file: path.relative(webRoot, file), z })))
 
     expect(others.filter(({ z }) => z >= toastLayer)).toEqual([])
-    expect(others.some(({ file, z }) => file.endsWith('SkillSourcesModal.vue') && z === 1000)).toBe(true)
+    // The Skill sources dialog (which raises such notices) is found by the scan and sits below the toasts.
+    const dialogLayers = others.filter(({ file }) => file.endsWith('SkillSourcesModal.vue'))
+    expect(dialogLayers.length).toBeGreaterThan(0)
+    expect(dialogLayers.every(({ z }) => z < toastLayer)).toBe(true)
   })
 
   it('shows a toast message in that layer', async () => {
