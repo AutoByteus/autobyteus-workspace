@@ -11,7 +11,7 @@
     "build": "pnpm run build:full",
     "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
     "pretypecheck": "pnpm prepare:shared",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "pretest": "pnpm prepare:shared",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
