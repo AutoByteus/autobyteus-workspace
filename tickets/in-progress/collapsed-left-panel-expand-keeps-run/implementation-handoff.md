@@ -15,9 +15,20 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
   - `handoff-architecture-design-complete.md`, `product-design-request.md`, `approval-request.md`, `evidence/user-collapsed-strip-run-open.png`
 - Design review report: `N/A — not applicable` (direct route)
 - Architecture review revision record: `N/A — not applicable` (direct route)
-- Triggering rework report, revision record or evidence: `N/A` (initial implementation)
+- Triggering rework report, revision record or evidence (IR-002):
+  - `code-review-report.md` + `code-review-revision-record.md` (CRR-001, CR-001, Local Fix)
+  - `api-e2e-execution-coverage-report.md` + `api-e2e-revision-record.md` (API-REV-001, FAIL-001)
+  - `api-e2e-evidence/pmu-018-r6/`, `api-e2e-evidence/isolated-desktop/run-4/`
 
 ## Current Implementation Summary
+
+**IR-002 (CR-001 Local Fix):** the reveal (D-4) now acts only while a run is shown in the center.
+- `useRevealSelectedTreeRow(container, runShown)` returns early from `reveal()` when `runShown` is false: no scroll and no focus, so focus stays on the Workspaces section (D-3). A `watch(runShown)` reschedules the reveal inside the window if a run becomes shown, for example when its context registers.
+- The signal is the existing D-2 owner's `useShellPrimaryNavigation().isWorkspacesActive`. `AppLeftPanel` already consumes it and passes it to `WorkspaceAgentRunsTreePanel` as the new `runShown` prop (default `false`).
+- No predicate is duplicated. The tree's selection and highlight semantics and `selectionStore` are unchanged, as CR-001 requires.
+- Bounded deviation from D-4 as designed:
+  - The composable gains a second parameter, and the tree panel gains one prop.
+  - The prop was chosen over calling `useShellPrimaryNavigation` inside the tree panel. The tree panel is deliberately router-tolerant (`useRoute()` may be undefined), and its specs mock the route that way. It also stays a non-consumer of shell highlight; `AppLeftPanel` is already the highlight consumer.
 
 - The collapsed left strip has a **Workspaces** button (`ph:tree-view`) after the page icons and a light divider.
   - It reuses the strip's existing `activateStrip`: it redocks the panel, or opens the drawer when there is no room. It never calls the router.
@@ -33,15 +44,15 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
 - The docked collapse button moves focus to the strip's Workspaces button (D-6).
 - Strings: en `Workspaces`, zh-CN `工作区`. Docs updated. Probes updated: chat-draft-rows D11 and its on-run Chat assertion, plus a new PMU-017.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on top of the IR-001 baseline)
 - Implementation revision record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-004` (requirements basis SR-003)
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (failure-origin review on the direct route)
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001` (from `FAIL-001`)
 
 ## Routing Classification (Mandatory)
 
@@ -57,7 +68,7 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
     - "Run shown" is derivable from the route plus the existing context and selection stores.
     - The reveal needed no store-level coordinator.
     - Team- and Org-hosted Task-card entries select the expected tree row (U-001; see PMU-017).
-- Selected route: `Direct API/E2E` (pending `get_handoff_rules`)
+- Selected route: `Direct API/E2E`. Classification rechecked after IR-002: still Medium/Low (renderer-only, 4 production lines of gating plus 1 prop).
 - Lightweight implementation self-review completed for the direct route: `Yes`
 - New design impact or escalation trigger: `None`
 
@@ -68,7 +79,7 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
 | BEH-001 | Workspaces only shows the panel; page icons unchanged | `LeftSidebarStrip.vue` `handleWorkspacesClick` → `activateStrip` → `request-redock` → `layouts/default.vue redockLeftPanel`; then focus `[data-test="app-left-panel-run-history"]` on `nextTick` | Done. No router call. Page icons are untouched (unit test + PMU-017). |
 | BEH-002 | Same control opens the drawer on narrow/short windows; focus returns to it on close | Same handler, `open-drawer` branch → `appLayoutStore.openMobileMenu` + `rememberDrawerTrigger`; `data-nav-key="workspaces"` lets `default.vue getLeftStripFocusTarget` return focus | Done. `default-drawer.spec.ts` case + PMU-017 at 760×900 with Escape. |
 | BEH-003 | Collapse unchanged; focus moves to Workspaces | `AppLeftPanel.vue` `collapseLeftPanel` → `toggleLeftPanel()` + `nextTick` focus `[data-test="workspace-left-strip-workspaces"]`; `data-test="app-left-panel-collapse"` | Done. `AppLeftPanel_v2.spec.ts` + PMU-017 for all 3 hosts. |
-| BEH-004 | Full ancestry incl. nested sub-team rows; bounded scroll and focus reveal | `useWorkspaceHistoryTreeState.revealTeamRunAncestry` (D-5); `components/workspace/history/useRevealSelectedTreeRow.ts` wired in `WorkspaceAgentRunsTreePanel.vue` (scroll ref `data-test="workspace-history-tree-scroll"`); `aria-current` on the Agent run row in `WorkspaceHistoryWorkspaceSection.vue` | Done. Unit specs + PMU-017: Agent host not scrolled (visible); Team host nested task-Team coordinator scrolled 187 px; Org host scrolled into view; all focused. |
+| BEH-004 | Full ancestry incl. nested sub-team rows; bounded scroll and focus reveal | `useWorkspaceHistoryTreeState.revealTeamRunAncestry` (D-5); `components/workspace/history/useRevealSelectedTreeRow.ts` wired in `WorkspaceAgentRunsTreePanel.vue` (scroll ref `data-test="workspace-history-tree-scroll"`); `aria-current` on the Agent run row in `WorkspaceHistoryWorkspaceSection.vue` | Done. Unit specs + PMU-017: Agent host not scrolled (visible); Team host nested task-Team coordinator scrolled 187 px; Org host scrolled into view; all focused. IR-002: gated on `runShown` (`AppLeftPanel` → `:run-shown="isWorkspacesActive"`). On a no-run page with a stale selection: no scroll, no focus (unit + PMU-018 G). |
 | BEH-005 | Run-open entry points unchanged | No change to Task-card, Team-tab or send open paths | Preserved. |
 | BEH-007 | Chat row and pencil click unchanged; Chat row highlight per D-1 | `AppLeftPanel.vue` keeps `navigateToPrimary` / `startNewChat`; `isNavRowActive` reads `isPrimaryNavActive('chat')` | Done. Existing DI-001 test passes; new Chat-row highlight test. |
 | BEH-008 | Chat lit only on New chat; Workspaces lit when a run is shown | `useShellPrimaryNavigation.isShellPrimaryRouteActive(key, {path, query})` + `isWorkspacesActive`; consumed by `LeftSidebarStrip.vue` (`bg-gray-100 text-gray-900`, `aria-current="location"`) and `AppLeftPanel.vue` | Done. `useShellPrimaryNavigation.highlight.spec.ts` covers AC-011 routes incl. Org launch, empty `/workspace`, Team draft and an opening run. |
@@ -169,6 +180,13 @@ Probes:
 
 ## Local Implementation Checks Run
 
+IR-002:
+- Affected specs (reveal composable incl. 2 new run-shown cases, tree panel and every spec that mounts it, AppLeftPanel incl. a new `runShown` wiring case, nav highlight, tree state, layout, route service, layouts): 36 files, 366 tests passed (`implementation-evidence/ir-002/unit-runs.txt`).
+- `AppLeftPanel_v2.spec.ts`'s module mock of the tree panel now declares the `runShown` prop.
+- Browser: PMU-017 + PMU-018 on an owned stack both pass (`implementation-evidence/ir-002/pmu-017-018-evidence.json`). That includes PMU-018 G: after Workspaces on New chat following a Team run, focus is on `app-left-panel-run-history`, the tree is at `scrollTop 0` and the route is `/chat` with the draft kept. The late-load steps (nested member, first send, far-down Org, slow start with and without a user scroll) also pass.
+
+IR-001:
+
 - Web unit/component suite, full (`pnpm -C autobyteus-web test:nuxt --run`): 4005 passed, 5 skipped.
   - 3 tests in 4 files failed only because the run overlapped the server prebuild (SDK `dist` resolution). Rerun after the build: 4/4 files, 11/11 tests passed.
   - Summary: `implementation-evidence/web-unit-full-run.txt`.
@@ -214,6 +232,9 @@ Probes:
   - The final isolated-desktop journey and user verification were not run here.
 
 ## Downstream Coverage Hints / Suggested Scenarios
+
+- IR-002: rerun the full PMU-018 (incl. G) and DSK-001 on a rebuilt desktop instance.
+- Ideally also add Workspaces activation on `/agents` and `/projects` after an Agent or Team run (same gate; unit-covered via `runShown=false`).
 
 - Run `node autobyteus-web/tests/e2e/project-manager-ux-probe.mjs --output-dir <fresh> --cases PMU-017` (about 20 s after warm-up), and preferably the full PMU suite for regressions (PMU-008/015/016 touch the same panel).
 - Run `test:e2e:chat-draft-rows-live` (D11 and the on-run Chat assertion changed) with a runtime available.

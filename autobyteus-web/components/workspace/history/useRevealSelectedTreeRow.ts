@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, type Ref } from 'vue';
+import { onBeforeUnmount, onMounted, watch, type Ref } from 'vue';
 
 /** How long after the panel appears its open run's row may still be brought into view. */
 export const REVEAL_WINDOW_MS = 3000;
@@ -14,8 +14,15 @@ const USER_TAKEOVER_EVENTS = ['wheel', 'pointerdown', 'keydown'] as const;
  * instantly. If focus is on the Workspaces section, it moves onto the row. The window closes at the
  * first wheel, press or key in the tree, after REVEAL_WINDOW_MS, or when the panel unmounts.
  * It only scrolls and focuses; expansion and selection belong to the tree state.
+ *
+ * `runShown` is the shell's "a run is shown in the center" signal (`isWorkspacesActive`). Off a run
+ * (New chat, other pages) a row can still carry an earlier selection; it is then neither scrolled to
+ * nor focused, and focus stays on the Workspaces section (REQ-006, REQ-009).
  */
-export const useRevealSelectedTreeRow = (container: Ref<HTMLElement | null>): void => {
+export const useRevealSelectedTreeRow = (
+  container: Ref<HTMLElement | null>,
+  runShown: Readonly<Ref<boolean>>,
+): void => {
   let observer: MutationObserver | null = null;
   let deadline: ReturnType<typeof setTimeout> | null = null;
   let frame = 0;
@@ -34,6 +41,7 @@ export const useRevealSelectedTreeRow = (container: Ref<HTMLElement | null>): vo
 
   const reveal = (): void => {
     frame = 0;
+    if (!runShown.value) return;
     const scroller = container.value;
     const rows = scroller?.querySelectorAll<HTMLElement>(SELECTED_ROW_SELECTOR);
     const row = rows?.length ? rows[rows.length - 1] : null;
@@ -52,6 +60,9 @@ export const useRevealSelectedTreeRow = (container: Ref<HTMLElement | null>): vo
   const schedule = (): void => {
     if (!frame) frame = requestAnimationFrame(reveal);
   };
+
+  // A run that becomes shown during the window (e.g. its context registers) is revealed then.
+  watch(runShown, (shown) => { if (shown && observer) schedule(); });
 
   onMounted(() => {
     const scroller = container.value;

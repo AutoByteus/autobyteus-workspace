@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer / `handoff-architecture-design-complete.md` / initial | N/A | `Initial Baseline` | SR-004 (requirements SR-003); ARCH-REV N/A; CRR N/A; API-REV N/A; DR N/A | Implemented; local checks and PMU-017 pass |
+| IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 (failure-origin review of API-REV-001 FAIL-001) | CR-001 | `Local Fix` | SR-004; ARCH-REV N/A; CRR-001; API-REV-001; DR N/A | Reveal gated on run shown; affected specs, PMU-017 and PMU-018 incl. G pass |
 
 ## Revision Entries
 
@@ -43,3 +44,38 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - D11 was syntax-checked only.
   - Team-tab and first-send entry points are not in PMU-017.
   - The isolated-desktop journey and user verification are still pending.
+
+### IR-002 — Reveal acts only while a run is shown (CR-001)
+
+- Triggering role, report path and round: Code Reviewer, `tickets/in-progress/collapsed-left-panel-expand-keeps-run/code-review-report.md`, CRR-001 (failure-origin review of API-REV-001 FAIL-001: PMU-018 step G, DSK-001 run-4).
+- Triggering finding IDs: CR-001 (C-001)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001. `useRevealSelectedTreeRow` scrolled to and focused any `aria-current`/`aria-selected` row. On a no-run page such as New chat after a Team run, the stale selection's row was scrolled to and focused, which breaks REQ-006 and REQ-009.
+- Current authoritative result: the reveal acts only while `runShown` is true. Otherwise there is no scroll and no focus, and focus stays on the Workspaces section.
+- Related solution revision IDs: `SR-004`
+- Related architecture-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: an implementation defect found by API/E2E and classified Local Fix.
+- Approved behavior or requirement IDs affected: REQ-006, REQ-009, AC-009, SCN-006 (fixed); REQ-003, AC-001..AC-005 (preserved).
+- Implementation delta:
+  - `useRevealSelectedTreeRow(container, runShown)`: early return when no run is shown; `watch(runShown)` reschedules inside the window.
+  - `WorkspaceAgentRunsTreePanel.vue`: new `runShown` prop (default `false`), passed to the composable.
+  - `AppLeftPanel.vue`: `:run-shown="isWorkspacesActive"` from `useShellPrimaryNavigation`.
+  - `docs/workspace_layout.md`: reveal paragraph notes the gate.
+  - Bounded deviation from D-4: a signature change plus one prop. No predicate duplicated; selection and highlight semantics and `selectionStore` untouched.
+- Changed files or areas:
+  - `autobyteus-web/components/workspace/history/useRevealSelectedTreeRow.ts`
+  - `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
+  - `autobyteus-web/components/AppLeftPanel.vue`
+  - `autobyteus-web/docs/workspace_layout.md`
+  - tests: `useRevealSelectedTreeRow.spec.ts` (+2 cases), `AppLeftPanel_v2.spec.ts` (+1 case; mock declares the prop)
+- Local validation and result:
+  - Affected specs: 36 files / 366 tests passed.
+  - PMU-017 + PMU-018 (incl. G and the late-load steps B/C/E) pass. Evidence in `implementation-evidence/ir-002/`.
+- Next recipient or routing: direct API/E2E (Medium/Low unchanged), for the full PMU-018 and DSK-001.
+- Remaining limitations or risks:
+  - DSK-001 (packaged desktop) was not rerun by implementation.
+  - `/agents` and `/projects` activation after a run is covered by the same gate in unit tests only.
+

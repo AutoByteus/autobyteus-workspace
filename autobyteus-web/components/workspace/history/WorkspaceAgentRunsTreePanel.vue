@@ -161,6 +161,11 @@ import { useRunStart } from '~/composables/runSettings/useRunStart';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 import { escapeHtml } from '~/utils/escapeHtml';
 
+const props = withDefaults(defineProps<{
+  /** Whether the center shows a run (`useShellPrimaryNavigation().isWorkspacesActive`); gates the reveal. */
+  runShown?: boolean;
+}>(), { runShown: false });
+
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
   (e: 'run-selected', payload: { type: 'team'; runId: string }): void;
@@ -205,9 +210,10 @@ const treeState = useWorkspaceHistoryTreeState({
   selectionStore,
   selectedAgentOrg,
 });
-// When the panel appears, the open run's row is brought into view (REQ-003).
+// When the panel appears, the open run's row is brought into view (REQ-003), only while a run is
+// shown in the center (`runShown`: the shell's Workspaces highlight, passed by the host panel).
 const treeScrollRef = ref<HTMLElement | null>(null);
-useRevealSelectedTreeRow(treeScrollRef);
+useRevealSelectedTreeRow(treeScrollRef, computed(() => props.runShown));
 const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
 const { execute: executeSubjectAction } = useWorkspaceHistorySubjectActions();
 const {

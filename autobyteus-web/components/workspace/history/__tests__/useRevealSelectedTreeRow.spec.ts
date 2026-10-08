@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, h, ref } from 'vue';
+import { defineComponent, h, nextTick, ref } from 'vue';
 import { REVEAL_WINDOW_MS, useRevealSelectedTreeRow } from '../useRevealSelectedTreeRow';
 
 /** collapsed-left-panel-expand-keeps-run (REQ-003, REQ-009, AC-004, D-4). */
@@ -21,11 +21,11 @@ describe('useRevealSelectedTreeRow', () => {
   };
 
   /** The tree scroll container shows 0–200 px; rows report their own viewport position. */
-  const mountTree = () => {
+  const mountTree = (runShown = ref(true)) => {
     const Host = defineComponent({
       setup() {
         const scroller = ref<HTMLElement | null>(null);
-        useRevealSelectedTreeRow(scroller);
+        useRevealSelectedTreeRow(scroller, runShown);
         return () => h('section', { 'data-test': 'app-left-panel-run-history', tabindex: '-1' }, [
           h('div', { ref: scroller, 'data-test': 'scroller' }),
         ]);
@@ -151,6 +151,39 @@ describe('useRevealSelectedTreeRow', () => {
 
     expect(scroller.scrollTop).toBe(0);
     setTimeoutSpy.mockRestore();
+    wrapper.unmount();
+  });
+
+  // CR-001: off a run (New chat, other pages) a row can still carry an earlier selection.
+  it('neither scrolls nor moves focus when no run is shown, even with a selected row', async () => {
+    const runShown = ref(false);
+    const { wrapper, scroller, section } = mountTree(runShown);
+    const stale = addRow(scroller, 500);
+    section.focus();
+    await flushMutations();
+    flushFrames();
+
+    expect(scroller.scrollTop).toBe(0);
+    expect(document.activeElement).toBe(section);
+    expect(stale.getAttribute('aria-current')).toBe('true');
+    wrapper.unmount();
+  });
+
+  it('reveals the row when a run becomes shown within the window', async () => {
+    const runShown = ref(false);
+    const { wrapper, scroller, section } = mountTree(runShown);
+    const row = addRow(scroller, 500);
+    section.focus();
+    await flushMutations();
+    flushFrames();
+    expect(scroller.scrollTop).toBe(0);
+
+    runShown.value = true;
+    await nextTick();
+    flushFrames();
+
+    expect(scroller.scrollTop).toBe(410);
+    expect(document.activeElement).toBe(row);
     wrapper.unmount();
   });
 

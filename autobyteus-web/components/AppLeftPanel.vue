@@ -102,7 +102,7 @@
         class="min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
       >
         <div class="h-full">
-          <WorkspaceAgentRunsTreePanel @run-selected="onRunningRunSelected" />
+          <WorkspaceAgentRunsTreePanel :run-shown="isWorkspacesActive" @run-selected="onRunningRunSelected" />
         </div>
       </section>
     </div>
@@ -149,6 +149,7 @@ const {
   primaryNavItems,
   resolvePrimaryRoute,
   isPrimaryNavActive,
+  isWorkspacesActive,
   ensurePrimaryNavigationReady,
 } = useShellPrimaryNavigation();
 

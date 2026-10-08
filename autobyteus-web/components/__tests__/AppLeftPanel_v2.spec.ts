@@ -57,6 +57,7 @@ vi.mock('~/stores/applicationsCapabilityStore', () => ({
 vi.mock('~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue', () => ({
   default: {
     name: 'WorkspaceAgentRunsTreePanel',
+    props: { runShown: { type: Boolean, default: false } },
     emits: ['run-selected', 'run-created'],
     template: '<div></div>',
   },
@@ -283,6 +284,23 @@ describe('AppLeftPanel Component', () => {
       routeMock.query = {}
       const onNewChat = mountPanel()
       expect(onNewChat.get('[data-test="app-left-panel-chat"]').classes()).toContain('bg-gray-100')
+      onNewChat.unmount()
+    })
+
+    // CR-001: the tree reveals only while a run is shown; the panel passes the shell's signal down.
+    it('tells the tree whether a run is shown, so a stale selection is not revealed off a run', () => {
+      const runShown = (wrapper: ReturnType<typeof mountPanel>) =>
+        wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).props('runShown')
+      routeMock.path = '/chat'
+      routeMock.query = { id: 'run-1' }
+      useAgentContextsStore().runs.set('run-1', {} as never)
+      const onRun = mountPanel()
+      expect(runShown(onRun)).toBe(true)
+      onRun.unmount()
+
+      routeMock.query = {}
+      const onNewChat = mountPanel()
+      expect(runShown(onNewChat)).toBe(false)
       onNewChat.unmount()
     })
 
