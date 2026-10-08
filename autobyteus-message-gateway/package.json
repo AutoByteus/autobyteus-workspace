@@ -21,5 +21,5 @@
     "@whiskeysockets/baileys": "6.7.21",
     "fastify": "^4.29.1"
   },
-  "license": "Apache-2.0"
+  "license": "AGPL-3.0-only"
 }

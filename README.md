@@ -676,7 +676,18 @@ Script file:
 
 ## License
 
-This repository is licensed under [Apache License 2.0](./LICENSE).
+AutoByteus is dual-licensed:
 
-Commercial use and modification are allowed. If you redistribute this software
-or derivatives, keep the license and attribution notices (see [`NOTICE`](./NOTICE)).
+- **Open source** under the [GNU Affero General Public License v3.0 only](./LICENSE)
+  (AGPL-3.0-only). If you distribute AutoByteus or a modified version, or let
+  others use a modified version over a network, you must publish your complete
+  source code under AGPL-3.0.
+- **Commercial license** for closed-source products or services without the
+  AGPL-3.0 obligations. Contact **ryan.zheng.work@gmail.com**.
+
+The application SDK, devkit and contract packages are licensed under the Apache
+License 2.0, so applications built on them may use any license. Releases up to
+and including v1.4.97 remain available under the Apache License 2.0.
+
+See [`LICENSING.md`](./LICENSING.md) for the component map and details, and
+[`NOTICE`](./NOTICE) for attribution.
