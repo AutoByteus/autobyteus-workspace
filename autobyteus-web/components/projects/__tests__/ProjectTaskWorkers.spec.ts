@@ -6,6 +6,8 @@ const { open, history } = vi.hoisted(() => ({ open: vi.fn(), history: { workspac
 vi.mock('~/composables/projects/useTaskRootNavigation', () => ({ useTaskRootNavigation: () => ({ open }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => history }))
 
+vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
+
 import ProjectTaskWorkers from '../ProjectTaskWorkers.vue'
 import TaskRootSection from '../TaskRootSection.vue'
 import type { TaskRootView } from '~/types/project'
@@ -18,6 +20,23 @@ const listHost = () => { history.workspaceGroups = [{ agentDefinitions: [{ runs:
 
 describe('ProjectTaskWorkers (the Task root line)', () => {
   beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); history.workspaceGroups = []; history.agentOrgHistory = [] })
+
+  // restore-team-group-icon AC-002/003: both densities and openability retain Team identity.
+  it.each(['row', 'detail'] as const)('renders the group at the existing %s density in every worker state', (density) => {
+    listHost()
+    for (const overrides of [{}, { start: 'starting' }, { closed: true }, { start: 'failed', startError: { code: 'NO_MODEL', message: 'No model.' } }] as Partial<TaskRootView>[]) {
+      const wrapper = mount(ProjectTaskWorkers, { props: { density, root: root({ kind: 'team', ...overrides }) } })
+      const icon = wrapper.get('[data-icon="heroicons:user-group-20-solid"]')
+      expect(icon.classes()).toEqual(density === 'detail' ? ['h-4', 'w-4'] : ['h-3.5', 'w-3.5'])
+      expect(icon.element.parentElement?.classList.contains(density === 'detail' ? 'h-5' : 'h-4')).toBe(true)
+      expect(wrapper.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false)
+      expect(wrapper.find('[data-icon="heroicons:chevron-right-20-solid"]').exists()).toBe(Object.keys(overrides).length === 0)
+      expect(wrapper.find('[data-icon="heroicons:exclamation-circle-20-solid"]').exists()).toBe(overrides.start === 'failed')
+    }
+    const agent = mount(ProjectTaskWorkers, { props: { density, root: root() } })
+    expect(agent.find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(false)
+    expect(agent.get('[aria-hidden="true"]').text()).toBe('RW')
+  })
 
   it('an openable root is a labelled button with a chevron that opens the worker', async () => {
     listHost()

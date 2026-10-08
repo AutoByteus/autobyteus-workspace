@@ -68,13 +68,13 @@
         />
       </span>
       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
-        <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
+        <!-- Teams share the people-group identity, in the tree's slate. -->
         <span
           v-if="row.memberKind === 'agent_team'"
           class="inline-flex h-4 w-4 items-center justify-center text-slate-500"
           data-team-icon="temporary-task-team"
         >
-          <Icon icon="heroicons:bolt-20-solid" class="h-4 w-4" />
+          <Icon icon="heroicons:user-group-20-solid" class="h-4 w-4" />
         </span>
         <!-- A task Agent shows the same solid status dot and initials as a member. -->
         <span
