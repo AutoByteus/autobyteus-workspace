@@ -13,6 +13,10 @@ import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
+import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
+import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 
 const conversationId = "3d5ce362-1127-4d6b-8259-4a2c04d7d876";
 class FakeProcess {
@@ -141,6 +145,24 @@ describe("AGY ordinary turn lifecycle", () => {
     closed.process.close();
     await waitFor(() => closed.events.some((item) => item.eventType === AgentRunEventType.TURN_INTERRUPTED));
     expect(closed.events.some((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toBe(false);
+  });
+
+  it("sends attached images and files to AGY as path text, including an attachment-only message (AC-003, AC-005)", async () => {
+    const run = setup();
+    const imagePath = "/tmp/attachments/ctx_13d2e97292bc__10.png";
+    const withImage = await run.backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("her",
+      SenderType.USER, [new ContextFile(imagePath, ContextFileType.IMAGE), new ContextFile("/tmp/attachments/notes.txt", ContextFileType.TEXT)]),
+    } as never);
+    expect(withImage.forwarded).toBe(true);
+    run.process.emit(result("SUCCESS", "A screenshot."));
+    await waitFor(() => run.events.some((item) => item.eventType === AgentRunEventType.TURN_COMPLETED));
+    const imageOnly = await run.backend.dispatchUserInput({ kind: "start_turn",
+      message: new AgentInputUserMessage("", SenderType.USER, [new ContextFile(imagePath, ContextFileType.IMAGE)]) } as never);
+    expect(imageOnly.forwarded).toBe(true);
+    expect(run.process.sent).toEqual([
+      `her\n\nAttached images (open each with view_file to see it):\n- ${imagePath}\n\nReference files:\n- /tmp/attachments/notes.txt`,
+      `Attached images (open each with view_file to see it):\n- ${imagePath}`,
+    ]);
   });
 
   it("redacts failed input dispatch and interrupts without a late tool success", async () => {
