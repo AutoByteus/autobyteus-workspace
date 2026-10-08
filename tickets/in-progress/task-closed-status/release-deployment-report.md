@@ -43,7 +43,14 @@ Ticket `task-closed-status` (SR-004, IR-001, API-REV-001). Direct route: `task_s
 - Post-integration verification result: `Passed`
 - No-rerun rationale: N/A
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (as of the 2026-10-08 fetch)
+- Re-integration during delivery: after the delivery commit `c387ce7b5`, a re-fetch showed `origin/personal` had advanced to `b5e0da5081273d116d7edd2422c91a4402375913`. There were 8 commits: archived-open-run-disappears (web chat/stores, server run-history tests) and `v1.4.99-beta.2`.
+  - They were merged as `151a67f19` with no conflicts. The only overlaps were `autobyteus-web/docs/chat.md` (an independent paragraph) and the `package.json` version line from the base.
+  - Reruns:
+    - `pnpm -C autobyteus-web test:nuxt --run` → 588 files / 3996 tests pass, 2 files / 3 tests skipped, 0 failed (`r2-web-full-test-nuxt.log`)
+    - localization guards → pass (`r2-web-localization-guards.log`)
+    - `vitest run tests/unit/run-history tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts` → 47 files / 233 tests pass (`r2-server-run-history-and-contract.log`)
+  - Server source was unchanged by this merge, so the earlier server build, integration and E2E results still apply.
+- Handoff state current with latest tracked remote base: `Yes` (`origin/personal` @ `b5e0da508`, re-fetched after the reruns; ahead 0 behind)
 - Blocker: none
 
 ## User Verification

@@ -15,6 +15,7 @@
 - Prior authoritative result: N/A.
 - Current authoritative result:
   - Checkpoint `ee78e1e19`, then merge of `origin/personal` (13 commits) as `19a85ba3c`.
+  - A re-fetch then showed 8 more base commits. They were merged cleanly as `151a67f19` (base `b5e0da508`), and the full web suite and the server run-history/contract tests pass.
   - The single-paragraph prompt conflict was resolved as a union of both tickets, and the hash was re-pinned.
   - Post-integration checks passed. The 15 failing full-unit files are an identical pre-existing set, and the idle-lifetime E2E passed when isolated.
   - Docs sync: verified the implementation docs and corrected three DONE-only statements.

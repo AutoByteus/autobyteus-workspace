@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Package identifier: `task-closed-status`
 - Request / ticket: Project Task "Add a Closed (not needed / won't do) Task status, separate from DONE" (user request 2026-10-08, via `/project_task_manager`)
 - Requirements owner: Solution Designer (`/software_engineering_team/solution_designer`)

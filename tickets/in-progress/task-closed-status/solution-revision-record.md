@@ -8,6 +8,7 @@
 | SR-002 | Requirements | User feedback 2026-10-08: no status control in the app | DEC-003 | Ready for Approval | Ready for Approval | BEH-002; UC-001 (removed), UC-003; REQ-006 (withdrawn → display-only), REQ-007, REQ-012, REQ-014; AC-001..003, AC-011, AC-013; SCN-001 (removed), SCN-003 | App stays display-only; status changes only through agent tools |
 | SR-003 | Requirements | User approval 2026-10-08 | DEC-001, DEC-002, DEC-004, DEC-005 | Ready for Approval | Approved | REQ-008, REQ-010, AC-008, AC-009; DEC-001/002/004/005 | Approved baseline; architecture design starts |
 | SR-004 | Design | Architecture design complete | N/A | Approved; design none | Approved; design Ready | All REQ/AC (design mapping) | design-spec.md Ready; Medium / Low → direct implementation route |
+| SR-005 | Design | User feedback 2026-10-08 on the implemented Closed row (screenshot) | N/A | Design Ready (SR-004) | Design Ready (revised) | REQ-008, REQ-010; AC-008, AC-009 (design only) | Closed lane becomes the last column after Done instead of a full-width row |
 
 ## Revision Entries
 
@@ -95,3 +96,18 @@
 - Downstream impact: Direct implementation; implementation self-checks, code review per rules, and API/E2E validation still apply
 - Remaining gaps: R-002 (external Project Task Manager skill) follow-up candidate
 - Next action: Implementation
+
+### SR-005 — Closed lane as the last column
+
+- Phase and classification: Design — `Refinement` (user feedback on the design's layout choice)
+- Triggering input: User, 2026-10-08, with a screenshot of the implemented full-width Closed row: "Why don't we just use a vertical column … the closed column is the last column? … why are we putting closed on the separate row under the other one? … Does Jira have that column?" Research: Jira keeps terminal states (Done with resolution Won't Do, or a Canceled status) in the single far-right column; Linear board columns are ordered by status with Canceled last.
+- Triggering finding IDs: N/A
+- Prior status: Requirements Approved; design Ready (SR-004)
+- Current status: Requirements Approved (unchanged); design Ready (revised)
+- IDs affected: REQ-008, REQ-010, AC-008, AC-009. The design mapping changed only; the approved text "a separate Closed lane after Done" is satisfied more literally
+- Canonical sections changed: design-spec Solution Basis, Intended Change, Final File Responsibility Mapping (ProjectTaskBoard, TempTaskBoard), Concrete Examples, Key Tradeoffs
+- Intended behavior changed: `No` (layout realization only, at the user's direction)
+- Approval impact: None; SR-003 approval stands
+- Post-design classification: unchanged (Medium / Low)
+- Applied handoff-rule outcome: design revision sent to `/software_engineering_team/implementation_engineer` (Small/Medium + Low rule)
+- Next action: Implementation adjusts the board layout

@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal`
 - Bootstrap result: Worktree created with `git worktree add -b codex/task-closed-status … origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md` (2026-10-08); templates `requirements-doc-template.md`, `investigation-notes-template.md`, `solution-revision-record-template.md` (2026-10-08); `TESTING.md` header/test-layer map (2026-10-08)
 - Investigation status: Requirements and architecture investigation complete (2026-10-08)
 - Authorities read (design reading gate, 2026-10-08): `references/architecture-design.md`, `design-principles.md`, `DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md`, package `AGENTS.md` files

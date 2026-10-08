@@ -21,8 +21,13 @@ A fourth Task status, **CLOSED** ("Closed" / "已关闭"), meaning the Task was 
   - `17e4299a6` feat (implementation)
   - `ee78e1e19` API/E2E checkpoint (delivery-safety commit)
   - `19a85ba3c` merge of `origin/personal` @ `ace86bf1f`
-  - a delivery commit with docs sync and artifacts
-- Integration method: merge of the latest `origin/personal` (13 new commits: idle-shutdown-background-tasks and `v1.4.99-beta.1`).
+  - `c387ce7b5` delivery docs sync and artifacts
+  - `151a67f19` re-integration merge of `origin/personal` @ `b5e0da508`
+  - a commit that records this re-integration in the delivery artifacts
+- Integration method: two merges of the latest `origin/personal`:
+  1. 13 commits (idle-shutdown-background-tasks and `v1.4.99-beta.1`).
+  2. During delivery, 8 more commits (archived-open-run-disappears and `v1.4.99-beta.2`). This merge was clean.
+- The branch is current with `origin/personal` @ `b5e0da508`, checked by a fetch after the re-integration checks.
 - One conflict, in the collaboration prompt paragraph (source, `prompt_engineering.md` and the hash pin). It was resolved as a union of the base's background-task clause and the ticket's CLOSED wording. Every assertion from both tickets passes unchanged, and only the pinned hash changed.
 - Nothing has been pushed or merged into `personal`.
 
@@ -35,6 +40,10 @@ A fourth Task status, **CLOSED** ("Closed" / "已关闭"), meaning the Task was 
   - It passed 1/1 when rerun in isolation with the base ticket's recipe.
 - Web Projects specs: 102 files / 981 tests pass. The localization literal audit and boundary guard pass.
 - `check_licensing.py` and `check_repository_artifact_hygiene.py` pass.
+- After the second merge (web chat/stores and server run-history tests only):
+  - full web `test:nuxt`: 588 files / 3996 tests pass, 0 failed;
+  - localization guards pass;
+  - server `tests/unit/run-history` plus the collaboration contract test: 47 files / 233 tests pass.
 
 ## Docs Sync
 - See `docs-sync-report.md`. Implementation docs were verified.

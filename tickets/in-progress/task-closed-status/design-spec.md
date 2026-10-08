@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` at SR-003. The user approved on 2026-10-08 ("Just have your design create a clean UI. I like your suggestion … a small closed control next to the refresh button shows a closed [lane] on demand"), on top of SR-002 ("the UI is just for displaying").
 - Behavior-defining supplements and their approval references: None
 - Design status: `Ready`
@@ -71,7 +71,7 @@
 1. Introduce one owned Task-status vocabulary on the server (`projects/domain/task-status.ts`): the four values, validation, and `isTerminalTaskStatus` (DONE or CLOSED). Every server consumer uses it.
 2. CLOSED triggers exactly DONE's closure and is refused for new assignment or reactivation exactly like DONE.
 3. Additive `CLOSED` in the GraphQL enum, the agent tool enum and descriptions, the LLM collaboration texts, and the change-feed schema. The open count becomes "not terminal".
-4. Web: one status-presentation owner (labels, pill style, temp lanes, open predicate). Closed Tasks are hidden from the boards by default. A small "Closed (N)" toggle beside Refresh reveals a full-width Closed lane under the existing lanes. Pills and labels show "Closed".
+4. Web: one status-presentation owner (labels, pill style, temp lanes, open predicate). Closed Tasks are hidden from the boards by default. A small "Closed (N)" toggle beside Refresh reveals a Closed column as the last column, after Done (SR-005). Pills and labels show "Closed".
 5. Repoint the released projects-per-folder migration to a frozen task-file reader. Docs are updated.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -321,8 +321,8 @@ The drafts held after extraction; the final mapping is below.
 | `autobyteus-web/types/project.ts` | Modify | `ProjectTaskStatus` adds `'CLOSED'`; `PROJECT_TASK_STATUSES` has 4 values; comments updated. |
 | `autobyteus-web/utils/projects/taskStatusLabelKey.ts` → `taskStatusPresentation.ts` | Rename/Modify | `TASK_STATUS_LABEL_KEYS` (+CLOSED); `taskStatusPillClass(status)` (DONE emerald, IN_PROGRESS blue, TODO slate, CLOSED muted: e.g. `bg-white text-slate-500 ring-slate-300`, plus optional `heroicons:no-symbol` icon); `isOpenTaskStatus`; `BOARD_OPEN_LANES`; `TempLane = 'open'\|'done'\|'closed'`, `TEMP_LANES_OPEN = ['open','done']`, `tempTaskLaneOf(status)`, `TEMP_LANE_LABEL_KEYS` (literal keys, for the localization audit). |
 | `autobyteus-web/components/projects/ClosedTasksToggle.vue` | **Add** | Button `Closed (N)`: props `count`, `pressed`; emits `toggle`; `aria-pressed`; same size and style as Refresh (`min-h-11`, slate border), pressed state `bg-slate-100`; icon `heroicons:archive-box` (permitted variation); `data-testid` set by the parent via attrs. Renders nothing itself when count is 0 (or the parent uses `v-if`). |
-| `autobyteus-web/components/projects/ProjectTaskBoard.vue` | Modify | Toolbar: `[search] [ClosedTasksToggle v-if closedCount>0] [Refresh] [New task]`, with `ml-auto` moved to the toggle when present (toggle+Refresh grouped on the right). Local `showClosed = ref(false)`, reset to false when `closedCount` becomes 0. `closedCount` = all CLOSED Tasks in the list (search-independent). Lanes iterate `BOARD_OPEN_LANES`. When `showClosed`, a Closed `<section>` (same markup, heading "Closed" + filtered count, `data-testid="project-task-column-CLOSED"`) follows inside the grid with `grid-column: 1 / -1` (full width beneath the three lanes). `isNoMatch` is computed over the **visible** tasks (closed excluded unless shown). |
-| `autobyteus-web/components/projects/TempTaskBoard.vue` | Modify | Same toggle and pattern: lanes `open`/`done` via `tempTaskLaneOf`, plus a full-width `closed` lane when toggled; the Done 10-item limit is unchanged; the Closed lane shows all. |
+| `autobyteus-web/components/projects/ProjectTaskBoard.vue` | Modify | Toolbar: `[search] [ClosedTasksToggle v-if closedCount>0] [Refresh] [New task]`, with `ml-auto` moved to the toggle when present (toggle+Refresh grouped on the right). Local `showClosed = ref(false)`, reset to false when `closedCount` becomes 0. `closedCount` = all CLOSED Tasks in the list (search-independent). Lanes iterate `BOARD_OPEN_LANES`. When `showClosed`, a Closed `<section>` (same markup, heading "Closed" + filtered count, `data-testid="project-task-column-CLOSED"`) is the **fourth column, after Done**, in the same grid (SR-005). Grid: below 752px one column (stacked, as today); at 752px and above `repeat(N, minmax(0, 1fr))`, where N = 3 (Closed hidden) or 4 (Closed shown). A modifier class such as `project-task-board__columns--with-closed` switches 3→4. No full-width row. `isNoMatch` is computed over the **visible** tasks (closed excluded unless shown). |
+| `autobyteus-web/components/projects/TempTaskBoard.vue` | Modify | Same toggle and pattern: lanes `open`/`done` via `tempTaskLaneOf`, plus a `closed` column after Done when toggled (2→3 columns at ≥752px; stacked below, as today); the Done 10-item limit is unchanged; the Closed lane shows all. |
 | `autobyteus-web/components/projects/{ProjectTaskDetail,TempTaskDetail}.vue`, `panel/ProjectsPanelTaskDetail.vue` | Modify | Pill class and label from the presentation owner; the Temp label uses `TEMP_LANE_LABEL_KEYS[tempTaskLaneOf(status)]`. |
 | `autobyteus-web/components/projects/TempTasksLink.vue` | Modify | Count with `isOpenTaskStatus`. |
 | `autobyteus-web/stores/projectTaskStore.ts` | Modify | `laneOf` uses `tempTaskLaneOf` for Temp; the open count uses `isOpenTaskStatus`. |
@@ -357,7 +357,7 @@ New files: `autobyteus-server-ts/src/projects/domain/task-status.ts` (domain voc
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
 | Closure trigger | `const updated = status !== undefined && isTerminalTaskStatus(status) ? await this.closeAndWrite(loc, write) : await write();` | `status === "DONE" \|\| status === "CLOSED"` written at each site | One rule |
-| Board layout (≥752px) | `[To Do][In Progress][Done]` row, then a full-width `[Closed n]` row only while toggled | A 4th squeezed column, or Closed mixed into Done | Clean; the open-work lanes are unchanged |
+| Board layout (≥752px) | Toggle off: `[To Do][In Progress][Done]`. Toggle on: `[To Do][In Progress][Done][Closed n]` (four equal columns) | A full-width Closed row under the lanes (SR-004, rejected by the user in SR-005), or Closed mixed into Done | Matches common boards: Linear shows Canceled as the last status column; Jira keeps terminal states in the far-right column |
 | Toolbar | `[ Search… ] [Closed (3)] [⟳ Refresh] [+ New task]`; Closed absent when 0 | A filter dropdown or status picker | Small, on demand |
 
 **Tool description text** (contract; exact wording may be polished, but the meaning is fixed):
@@ -392,7 +392,7 @@ N/A.
 ## Key Tradeoffs
 
 - A hidden-by-default lane with a toggle (approved) versus an always-visible column. It adds one local boolean per board; the state is not persisted, so every visit starts clean.
-- A full-width Closed row instead of a fourth column keeps the three open-work lanes identical at every width, at the cost of placing Closed below rather than beside Done.
+- Closed is a fourth column after Done (SR-005, user direction). While it is shown at 752–1007px, the columns are narrower than 240px. This is accepted because rows are compact 2-line summaries and the toggle is off by default. The earlier full-width row (SR-004) was rejected: it looked detached from the board.
 - The search no-match state ignores hidden Closed Tasks. A search for a closed Task shows "no match" until the toggle is on, and the toggle stays visible (with its count) beside the search.
 
 ## Risks

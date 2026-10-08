@@ -71,3 +71,12 @@ Implementation per the design, implementation-scoped checks, and `implementation
 ## Applied Handoff Route
 
 - Rules consulted 2026-10-08 via `get_handoff_rules`. Matching rule: "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer`.
+
+## Revision SR-005 (2026-10-08) — Closed lane becomes the last column
+
+The user reviewed the implemented full-width Closed row and asked for a column instead. Change the board layout as follows:
+- **Project board:** toggle off → `[To Do][In Progress][Done]` exactly as before. Toggle on → `[To Do][In Progress][Done][Closed n]` as four equal columns at ≥752px (`repeat(4, minmax(0, 1fr))`, for example via a `--with-closed` modifier class); stacked one column below 752px, as today. Remove `grid-column: 1 / -1` / the full-width row.
+- **Temp board:** the same pattern, `[Open][Done][Closed n]`, three columns at ≥752px while toggled.
+- The compact right-panel board stacks as today.
+- Everything else is unchanged: the toggle, hidden by default, counts, labels, and the server side.
+See design-spec.md (SR-005) › Final File Responsibility Mapping, Concrete Examples and Key Tradeoffs.

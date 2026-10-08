@@ -5,7 +5,7 @@
 - Ticket: `task-closed-status` (SR-004, IR-001, API-REV-001)
 - Trigger: API/E2E Pass (95%) from `/software_engineering_team/api_e2e_engineer`, direct route (`task_size=Medium`, `architectural_risk=Low`); architecture review, code review and test-code review are `Not Applicable`
 - Bootstrap base reference: `origin/personal` @ `3a2496c95b16b0f7e0cedc7afdf615ada00b2267`
-- Integrated base reference used for docs sync: `origin/personal` @ `ace86bf1fb2e5e533e6f7b706179726a2db3bf8f` (13 new commits: idle-shutdown-background-tasks and the `v1.4.99-beta.1` release), merged into the ticket branch as `19a85ba3c`
+- Integrated base reference used for docs sync: `origin/personal` @ `ace86bf1fb2e5e533e6f7b706179726a2db3bf8f` (13 new commits: idle-shutdown-background-tasks and the `v1.4.99-beta.1` release), merged into the ticket branch as `19a85ba3c`; re-integrated with `origin/personal` @ `b5e0da5081273d116d7edd2422c91a4402375913` (8 more commits: archived-open-run-disappears and `v1.4.99-beta.2`) as `151a67f19`, a clean merge whose only doc overlap was `autobyteus-web/docs/chat.md` (base's archived-run paragraph; no Task-status content)
 - Post-integration verification reference: `release-deployment-report.md` § Initial Delivery Integration Refresh; logs in `delivery-evidence/`
 
 ## Why Docs Were Updated
