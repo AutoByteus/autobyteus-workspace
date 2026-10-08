@@ -449,7 +449,8 @@ defineCase('D04', 'SCN-002 (AC-003/004): Chat, pencil, catalog Run, Team Run, ru
   await page.locator(`${RUN_VIEW} button[aria-label="New Agent"]`).first().click(); await waitForNewChat(page); await delay(500)
   await check('run header +', 'Daily Assistant')
   await openSeedRun(page)
-  await page.locator('[data-test="workspace-agent-row"][data-agent-definition-id="autobyteus-daily-assistant"]').first().locator('xpath=..').locator('button').nth(1).click()
+  // The header's "+" by its name: the group's Archive-all button now sits before it.
+  await page.locator('[data-test="workspace-agent-row"][data-agent-definition-id="autobyteus-daily-assistant"]').first().locator('xpath=..').getByRole('button', { name: 'New run with this agent', exact: true }).click()
   await waitForNewChat(page); await delay(500)
   await check('workspace tree +', 'Daily Assistant')
   await openRow(page, T.agent)
