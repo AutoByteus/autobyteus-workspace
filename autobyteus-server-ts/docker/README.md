@@ -502,7 +502,8 @@ Workflow file: `.github/workflows/release-server-docker.yml`
 
 What it does:
 - Triggers on Git tags (e.g. `v1.2.3`).
-- Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`.
+- Runs the licensing release gate `python3 scripts/check_licensing.py` right after checking out the release ref. The release fails before any build if it fails.
+- Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`. The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in `docker/Dockerfile.allinone`, `docker/Dockerfile.remote-server` and `autobyteus-message-gateway/docker/Dockerfile`.
 - Push-tag releases publish only the default runtime image.
 - Stable default releases publish:
   - `<image>:<version>`

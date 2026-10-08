@@ -371,6 +371,7 @@ Located in `build/scripts/build.ts`:
 const options: Configuration = {
   appId: "com.autobyteus.app",
   productName: "AutoByteus",
+  copyright: PRODUCT_COPYRIGHT,
   directories: { output: "electron-dist" },
   files: ["dist/**/*", "package.json"],
   extraMetadata: { main: "dist/electron/main.js" },
@@ -384,10 +385,25 @@ const options: Configuration = {
     { from: "resources/server", to: "server" },
     { from: "build/icons", to: "icons" },
     NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
+    ...PRODUCT_LICENSE_EXTRA_RESOURCES,
+    ISOLATED_LAUNCH_MARKER_EXTRA_RESOURCE,
   ],
   // Platform-specific configurations...
 };
 ```
+
+### Product Licence Packaging
+
+Every desktop build ships the AutoByteus product licence. `build/scripts/productLicensePackaging.ts` owns these entries:
+
+- `PRODUCT_LICENSE_EXTRA_RESOURCES` copies three files into the packaged resources directory (`Contents/Resources/` on macOS, `resources/` on Windows and Linux):
+  - `LICENSE`, the package's own verbatim AGPL-3.0 text;
+  - the repository-root `LICENSING.md`;
+  - the repository-root `NOTICE`.
+- `PRODUCT_COPYRIGHT` is the electron-builder `copyright` value. It becomes the macOS About-panel line (`NSHumanReadableCopyright`) and the Windows `LegalCopyright` file property. Do not override the About panel in code.
+- The build preflight in `build/scripts/build.ts` fails if any of the three source files is missing.
+
+`tests/integration/product-license-packaging.integration.test.ts` covers this contract. The licensing model itself is defined in the root `LICENSING.md`. `scripts/check_licensing.py` guards it and runs as a gate in every release workflow.
 
 ### Platform Targets
 
