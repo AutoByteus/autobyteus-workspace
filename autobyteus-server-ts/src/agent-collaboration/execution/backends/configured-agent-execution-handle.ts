@@ -117,8 +117,18 @@ export class ConfiguredAgentExecutionHandle {
   }
   getOrCreateAgentRun(): Promise<AgentRun> { return this.ensureReady(); }
 
+  /** Teammate delivery: a start failure is a rejected reservation plus the member's error status, as for `postMessage`. */
   async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
-    const run = await this.ensureReady();
+    this.publishCommandStatus("initializing");
+    let run: AgentRun;
+    try {
+      run = await this.ensureReady();
+    } catch (error) {
+      const failure = error instanceof Error ? error.message : String(error);
+      this.publishCommandStatus("error", failure);
+      if (!this.agentRun?.isActive()) return { reserved: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: failure };
+      throw error;
+    }
     this.assertInputAllowed();
     return run.reserveUserMessage(message, options);
   }

@@ -67,12 +67,15 @@ async function harness(kind: RootSubjectKind, saved: { bindings?: Partial<Record
         return () => undefined;
       },
       getStatusSnapshot: () => ({ status: 'idle' }), getInputStateSnapshot: () => null,
-      postUserMessage: async () => { conversations.add(runId); return { accepted: true }; } };
+      postUserMessage: async () => { conversations.add(runId); return { accepted: true }; },
+      reserveUserMessage: async () => ({ reserved: true, reservation: { agentRunId: runId, cancel: vi.fn(),
+        commit: () => ({ release: () => { conversations.add(runId); } }) } }) };
     return run;
   };
   let threads = 0;
   const candidate = (runId: string, platformAgentRunId: string, log: string[]) => {
-    if (runId === control.failStart) throw new Error('Controlled provider start failure');
+    // Same shape as a real provider start failure (for example a retired AGY model).
+    if (runId === control.failStart) throw new Error('AGY_MODEL_UNAVAILABLE: retired-model');
     log.push(runId);
     const run = providerRun(runId);
     return new AgentRunActivationCandidate({ runId, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId,
@@ -186,6 +189,33 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: delegated
     expect(statusesOf(d.copy)).toEqual({ lead: 'idle', reviewer: 'offline', writer: 'error' });
     expect([...f.active.keys()]).toEqual([runIdOf('lead')]);
     expect(f.savedBindings()).toEqual({ lead: expect.any(String), reviewer: null, writer: null });
+  });
+
+  it('teammate delivery (input reservation) starts the not-started recipient and adopts its binding (AC-002)', async () => {
+    const f = await harness(kind);
+    const d = await f.delegate();
+    const result = await d.copy.reserveDirectAgentInput(runIdOf('reviewer'), work('Handoff: review this'));
+    if (!result.reserved) throw new Error(`Reservation rejected: ${result.message}`);
+    result.reservation.commit().release();
+    expect(f.created).toEqual([runIdOf('lead'), runIdOf('reviewer')]);
+    expect(statusesOf(d.copy)).toEqual({ lead: 'idle', reviewer: 'idle', writer: 'offline' });
+    expect(f.savedBindings()).toEqual({ lead: expect.any(String), reviewer: expect.stringMatching(/^thread-copy-reviewer-/), writer: null });
+  });
+
+  it('teammate delivery to a not-started member that cannot start is rejected with the cause; the member shows error (AC-004)', async () => {
+    const f = await harness(kind);
+    const d = await f.delegate();
+    f.control.failStart = runIdOf('writer');
+    const result = await d.copy.reserveDirectAgentInput(runIdOf('writer'), work('Handoff: write it'));
+    expect(result).toEqual({ reserved: false, code: 'AGENT_RUN_ACTIVATION_FAILED', message: expect.stringContaining('AGY_MODEL_UNAVAILABLE') });
+    expect(statusesOf(d.copy)).toEqual({ lead: 'idle', reviewer: 'offline', writer: 'error' });
+    expect([...f.active.keys()]).toEqual([runIdOf('lead')]);
+    expect(f.savedBindings()).toEqual({ lead: expect.any(String), reviewer: null, writer: null });
+    // The error clears once the member can start: a later delivery starts it normally.
+    f.control.failStart = null;
+    const retry = await d.copy.reserveDirectAgentInput(runIdOf('writer'), work('Handoff: write it'));
+    expect(retry.reserved).toBe(true);
+    expect(statusesOf(d.copy)).toEqual({ lead: 'idle', reviewer: 'offline', writer: 'idle' });
   });
 
   it('a coordinator that cannot start fails the delegated seed, which dispatch reports as a failed delegation (AC-004)', async () => {

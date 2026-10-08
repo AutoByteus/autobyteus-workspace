@@ -34,7 +34,9 @@ export type AgentRunBackendInputDispatchResult = Readonly<{
 
 export type AgentRunInputRejectionCode =
   | "AGENT_RUN_INPUT_INVALID"
-  | "AGENT_RUN_NOT_ACCEPTING_INPUT";
+  | "AGENT_RUN_NOT_ACCEPTING_INPUT"
+  /** A not-yet-started configured Agent could not start for this input; the message names the cause. */
+  | "AGENT_RUN_ACTIVATION_FAILED";
 
 export type AgentRunInputLifecycle =
   | Readonly<{ kind: "admitted" }>
