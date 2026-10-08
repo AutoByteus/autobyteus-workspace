@@ -17,11 +17,11 @@
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2 (IR-002 SR-005 last-column layout + IR-003 SR-006 rename CLOSED → CANCELLED, commit `7f7b2c8fb`); round-1 sections below are kept as the baseline, and the **Round 2 Delta** section supersedes them where they differ
 - Trigger: direct-route handoff (IR-001, implementation commit `17e4299a6`)
 - Prior Round Reviewed: None
-- Latest Authoritative Round: 1
+- Latest Authoritative Round: 2
 
 ## Routing Classification
 
@@ -215,9 +215,63 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
   - `delegate_task {task_id}` on a terminal Task returns `{error: {code: "TASK_AGENT_RESOURCE_CLOSED", message}}` rather than the description's `target_agent_run_id: null` shape. This is the pre-existing DONE behavior, unchanged by this ticket, and CLS-E2E asserts the current shape.
   - R-002 (external Project Task Manager skill not aware of CANCELLED) remains the approved follow-up.
 
+## Round 2 Delta (API-REV-002)
+
+- Trigger: IR-002 (SR-005: the Cancelled lane is the last board column, not a full-width row) and IR-003 (SR-006: rename CLOSED → CANCELLED, no alias; `CLOSED` and `CANCELED` are invalid). Implementation commit `7f7b2c8fb`, on top of delivery's merge of `origin/personal` (`b5e0da508`).
+- Coverage decisions:
+  - CLS-API-001 and CLS-E2E-001/002: renamed mechanically by implementation (committed in `7f7b2c8fb`). The invalid-status examples are now `CANCELED`/`CLOSED`. Still Valid; reviewed, not edited.
+  - PMU-017: Needs Update for SR-005, and I updated it (uncommitted; the implementation's rename sits on top). It now asserts:
+    - toggle on at 1440 px: four equal columns in one row, Cancelled last;
+    - toggle off: three equal columns spanning the board;
+    - 390 px: stacked, Cancelled last, no horizontal overflow;
+    - right panel: stacked, Cancelled last;
+    - Temp board: three equal columns, Cancelled last.
+  - The full-width assertions are replaced.
+  - `TESTING.md`: the PMU-017 line describes the last-column layout (uncommitted).
+- Compatibility check: no alias or fallback for `CLOSED`; it is rejected as invalid (CLS-API-001). No stored CLOSED data exists in any release, so no migration is needed. Persisted decision unchanged (`Directly Usable — No Migration`).
+
+| Order | Command | Configuration | Boundary Or Scenario Proven | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| R2-1 | `pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build` | current branch | dist for E2E/probe | Pass | `api-e2e-evidence/round-2/server/build.log` |
+| R2-2 | server unit (TESTING.md list + `tests/unit/api` + `tests/unit/agent-execution/prompt`) | — | renamed vocabulary, LLM-contract hashes, frozen migration reader | Pass 71/680 | `round-2/server/unit.log` |
+| R2-3 | server integration (2 files) | — | helper/termination | Pass 2/17 | `round-2/server/integration.log` |
+| R2-4 | `tests/e2e/projects` ungated | — | CLS-API-001 (CANCELLED), startup migration, boundaries | Pass 4 files/27 | `round-2/server/e2e-projects-ungated.log` |
+| R2-5 | `tests/e2e/projects` gated (scripted AGY) | parallel files | CLS-E2E-001/002 (CANCELLED) + DONE suites | CLS-E2E-001/002 and all DONE/closure/reactivation/feed cases pass. 2 non-ticket failures (below) | `round-2/server/e2e-projects-gated.log`, `round-2/server/cls-e2e/` |
+| R2-6 | failing gated files alone | — | classify | `ad-hoc-task-delegation` Pass 3/3. `task-copy-idle-lifetime` failed twice, on different timing bounds | `round-2/server/rerun-*.log` |
+| R2-7 | web Projects specs + localization guards | — | renamed toggle/lanes/labels, catalog parity | Pass 103/990 | `round-2/web/projects-specs.log`, `localization-guards.log` |
+| R2-8 | full `pnpm -C autobyteus-web test:nuxt --run` | — | whole web | Pass 588 files / 3996 tests, 0 failed | `round-2/web/full-test-nuxt.log` |
+| R2-9 | `pnpm -C autobyteus-web test:e2e:project-manager-ux --cases PMU-001,PMU-002,PMU-005,PMU-009,PMU-015,PMU-017 --output-dir …/round-2/pmu-run-1` | owned stack | SR-005 layout + SR-006 labels rendered live; regression | Pass 6/6; cleanup complete | `round-2/pmu-run-1/evidence.json`, screenshots |
+
+Measured layout (PMU-017, `round-2/pmu-run-1/evidence.json`):
+
+| State | Observed |
+| --- | --- |
+| Board, toggle on, 1440 px | TODO / IN_PROGRESS / DONE / CANCELLED, all top 258, each 251.25 px wide in a 1053 px grid; Cancelled at left 1156.75 (last) |
+| Board, toggle off, 1440 px | three columns of 340.33 px, top 258, spanning 1053 px |
+| Board, toggle on, 390 px | stacked at left 66, each 308 px (= grid), Cancelled last (top 790); `scrollWidth 340 = clientWidth 340` |
+| Right-panel board, toggle on | stacked at left 1002, each 426 px (= grid), Cancelled last |
+| Temp board, toggle on, 1440 px | open / done / cancelled, 340.33 px each, top 204, Cancelled last |
+| Labels | toggle "Cancelled (1)", titles "Show/Hide cancelled tasks", heading "Cancelled 1", pill "Cancelled" (`rgb(255,255,255)` / `rgb(100,116,139)`) vs Done (`rgb(236,253,245)` / `rgb(6,95,70)`) |
+
+Non-ticket failures (classified, not blocking this ticket):
+- `ad-hoc-task-delegation.e2e.test.ts` › Org root, in the parallel gated run only. `readdir` caught an in-flight atomic-write temp file (`agent_run_resources.json.<pid>.<ts>.tmp`) beside the expected files. It passed 3/3 when run alone. The cause is a test-side race on a directory listing while a write finishes, not ticket behavior.
+- `task-copy-idle-lifetime.e2e.test.ts`. This suite came with the `origin/personal` merge (idle-shutdown-background-tasks ticket), and this branch changes no idle-shutdown code. It failed in the parallel run (model-list "not available", timing) and twice alone, each time on a different timing bound:
+  - shutdown-after-step 58,683 ms against a 59,000 ms minimum. The window is anchored at the test's observation of the step's completion event, so event latency can shorten the measured gap.
+  - stop times 30,586 and 17,686 ms against a 15,000 ms maximum.
+  - Host load average was 11–35 during these runs. Delivery saw the same suite fail in parallel and pass isolated (DR-001, `delivery-evidence/e2e-idle-lifetime-isolated.log`).
+  - Classification: contention-sensitive timing bounds in another ticket's suite. Recommended owner: the idle-shutdown-background-tasks test owner, to re-anchor or widen the bounds. TESTING.md rule 9 applies to that owner; it is not this ticket's regression.
+- The interrupted IR-002 probe directory (`round-2/pmu-run-0-interrupted-ir002/`) lost its `evidence.json`. A later refused run overwrote it, because the probe's `finally` saves even when it refuses an existing output dir. This is a minor pre-existing probe quirk, and the run it held was superseded by R2-9.
+
+Round 2 confidence (changes from round 1 only):
+- User-surface: 95%. The SR-005 layout was measured directly at 1440 px, 390 px, in the right panel and on the Temp board; SR-006 labels were rendered.
+- Durable regression: 96%. PMU-017 now guards the column layout.
+- Every other category is unchanged, because the CANCELLED server cases passed at the real boundaries.
+- Overall: 95%. Every critical AC is proven directly; no category is below 90%.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
+- Result: `Pass` (round 2, API-REV-002)
 - Final validation confidence: 95%
-- Broader validation decision: `Required` → executed (Browser), Pass
-- Notes: CLS-MUT-001 confirmed the new durable cases detect a non-terminal CANCELLED.
+- Broader validation decision: `Required` → executed (Browser, PMU-017 + regression), Pass
+- Residual risks: the packaged desktop app and real-model behavior are delivery's user verification. The external Project Task Manager skill doesn't know CANCELLED (R-002). The non-ticket `task-copy-idle-lifetime` timing flakiness under load is routed to its owner. The `ProjectCard.vue` L34 comment is cosmetic.
+- Notes: CLS-MUT-001 (round 1) confirmed that the durable cases detect a non-terminal status. The round-2 rename is mechanical, and the renamed cases assert `CANCELLED` and reject `CLOSED`/`CANCELED`.

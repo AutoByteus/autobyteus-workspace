@@ -39,10 +39,22 @@
 | 10 | PMU-REG | 2026-10-08 | Completed | `--cases PMU-001,PMU-002,PMU-003,PMU-005,PMU-009,PMU-015,PMU-017 --output-dir …/pmu-regression-run-1` | all pass | 7/7 Pass; cleanup complete | Pass | `api-e2e-evidence/pmu-regression-run-1/` | — |
 | 11 | REG-WEB | 2026-10-08 | Completed | `pnpm -C autobyteus-web test:nuxt --run` | pass | 587 files passed, 2 skipped; 3978 tests; 0 failed | Pass | `api-e2e-evidence/web/full-test-nuxt.log` | — |
 
+### Round 2 (API-REV-002: IR-002 SR-005 last-column layout + IR-003 SR-006 rename to CANCELLED, commit `7f7b2c8fb`)
+
+| Sequence | Case ID | Timestamp | Event | Command / Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 12 | PMU-017 (IR-002) | 2026-10-08 ~17:15 | Checkpoint | `--cases PMU-001,PMU-002,PMU-005,PMU-009,PMU-015,PMU-017 --output-dir …/round-2/pmu-run-1` | — | Interrupted by the user mid-run (IR-003 rename followed). A later run's refusal overwrote this directory's `evidence.json` (probe `finally` saves even on refusal). Directory renamed to `pmu-run-0-interrupted-ir002` | Not Tested | `api-e2e-evidence/round-2/pmu-run-0-interrupted-ir002/` | superseded by event 17 |
+| 13 | REG-SRV | 2026-10-08 | Completed | rebuild; unit (+ `tests/unit/agent-execution/prompt`); integration; `tests/e2e/projects` ungated | pass | build 0; unit 71/680; integration 2/17; ungated 4 files/27 (6 gated files skipped) | Pass | `api-e2e-evidence/round-2/server/` | — |
+| 14 | CLS-API-001, CLS-E2E-001/002 + gated siblings | 2026-10-08 | Completed | `tests/e2e/projects` gated (parallel files) | pass | 46 passed, 1 skipped, 2 failed. All CLS cases (CANCELLED) pass. Failed: `ad-hoc-task-delegation` Org (transient `agent_run_resources.json.*.tmp` atomic-write file seen by `readdir`) and `task-copy-idle-lifetime` (model-list "not available" and timing bounds) | Pass (ticket cases) | `round-2/server/e2e-projects-gated.log` | rerun the failing files alone |
+| 15 | REG-SRV reruns | 2026-10-08 | Completed | each failing file alone | — | `ad-hoc-task-delegation` 3/3 Pass. `task-copy-idle-lifetime` failed alone twice on different timing bounds (58,683 ms < 59,000 min; then 30,586/17,686 ms > 15,000 max) at host load average 11–35 | Pass / Fail (non-ticket, contention) | `round-2/server/rerun-*.log`, `idle-lifetime-rerun-2/` | residual; owner of the idle-shutdown suite |
+| 16 | REG-WEB | 2026-10-08 | Completed | Projects specs + localization guards | pass | 103/990; guards 0 | Pass | `round-2/web/` | — |
+| 17 | PMU-017 (SR-005 + SR-006) + PMU-REG | 2026-10-08 | Completed | `--cases PMU-001,PMU-002,PMU-005,PMU-009,PMU-015,PMU-017 --output-dir …/round-2/pmu-run-1` | all pass; four equal columns with Cancelled last at 1440; three equal when off; stacked last at 390 and in the right panel; Temp 3 equal | 6/6 Pass; measured as expected; cleanup complete | Pass | `round-2/pmu-run-1/evidence.json` | — |
+| 18 | REG-WEB full | 2026-10-08 | Completed | `pnpm -C autobyteus-web test:nuxt --run` | pass | 588 files passed, 2 skipped; 3996 tests passed; 0 failed | Pass | `round-2/web/full-test-nuxt.log` | — |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 11
-- Last completed case and result: REG-WEB full suite — Pass
-- Cases still running, interrupted, or not started: None
-- Reconciled into execution coverage report: `Yes` — Test-Case Ledger Reconciliation section
-- Reconciliation note: PMU-017 runs 1–2 are test-code (probe selector) failures, superseded by run 3; no case lacks a terminal result.
+- Last durably recorded event: 18
+- Last completed case and result: see event 18
+- Cases still running, interrupted, or not started: None (event 12 interrupted, superseded by 17)
+- Reconciled into execution coverage report: `Yes` — Round 2 section
+- Reconciliation note: round 1 PMU-017 runs 1–2 were probe-selector failures, superseded by run 3. In round 2, the `task-copy-idle-lifetime` failures are outside the ticket (contention-sensitive timing in another ticket's suite).

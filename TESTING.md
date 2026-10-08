@@ -384,12 +384,12 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,B
   - a DONE from another root racing the message. Every allowed ordering leaves
     a DONE Task with a closed entry, no live worker process and refused input.
 
-  CLS-E2E-001/002 (Agent and Team roots) run the same journey with CLOSED
+  CLS-E2E-001/002 (Agent and Team roots) run the same journey with CANCELLED
   (dropped as not needed): live closure and no live worker process, a repeated
-  CLOSED re-publishing with no file change, `delegate_task {task_id}` and the
-  run-ID message refused naming CLOSED, DONE ↔ CLOSED as a repeated DONE,
+  CANCELLED re-publishing with no file change, `delegate_task {task_id}` and the
+  run-ID message refused naming CANCELLED, DONE ↔ CANCELLED as a repeated DONE,
   reopen (nothing starts) and the assigner's reactivation, a Task with no
-  Project closed by `task_id`, and every `/ws/projects` frame (CLOSED views
+  Project cancelled by `task_id`, and every `/ws/projects` frame (CANCELLED views
   included) matching the strict server schema.
 
   With `RUN_CLAUDE_E2E=1` and a logged-in `claude`, one more case gives the
@@ -442,7 +442,7 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence 
   - an Org-hosted root opened before its Org run is loaded.
   - compact cards for real-length descriptions (~10,000 words; multi-line) on the Project board and Temp tasks at 1440 and 1024 px: ≤2+2 rendered lines, short labels, full text on the Task pages (PMU-013).
   - compact-card edges at 1440, 1024 and 390 px: exactly 2 lines, a CJK hard cut, a 5,000-character unbroken token without horizontal overflow, a long card keeping its context-file and worker lines, and a short delete-confirmation summary (PMU-014).
-  - Closed Tasks (PMU-017): an agent's CLOSED hides the row live behind a "Closed (N)" toggle right before Refresh (absent at 0, `aria-pressed`, Enter/Space), which shows a full-width Closed lane after Done; search ignores hidden Closed Tasks; a muted "Closed" pill unlike Done; card open counts; a live reopen back to To Do; the Temp tasks board, header count and page; the right-panel board and Task detail.
+  - Cancelled Tasks (PMU-017): an agent's CANCELLED hides the row live behind a "Cancelled (N)" toggle right before Refresh (absent at 0, `aria-pressed`, Enter/Space), which shows the Cancelled lane as the last column after Done (four equal columns at 1440 px, stacked last at 390 px and in the right panel); search ignores hidden Cancelled Tasks; a muted "Cancelled" pill unlike Done; card open counts; a live reopen back to To Do; the Temp tasks board, header count and page; the right-panel board and Task detail.
   - the right-panel Projects tab (PMU-015):
     - first tab, with a live board beside the chat;
     - a worker opens in the center and the tab stays selected;
@@ -552,11 +552,11 @@ env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_A
   with a bad file keeps the worker's run open, and a Task with no Project
   refuses files. `TASK_CONTEXT_FILES_E2E_EVIDENCE_DIR` keeps a JSON receipt.
   Neither suite proves the packaged-app Task page; that is user verification.
-- **CLS-API-001** (boundaries suite, ungated). The CLOSED status contract over
+- **CLS-API-001** (boundaries suite, ungated). The CANCELLED status contract over
   MCP, the native tools and GraphQL: both tool schemas and descriptions, the
-  GraphQL enum (no status input), CLOSED closing an open run entry, retry and
-  DONE ↔ CLOSED leaving it untouched, input errors before closure, the
-  `list_project_tasks` CLOSED filter, the four-value error text, refused create
+  GraphQL enum (no status input), CANCELLED closing an open run entry, retry and
+  DONE ↔ CANCELLED leaving it untouched, input errors before closure, the
+  `list_project_tasks` CANCELLED filter, the four-value error text, refused create
   with a status, open counts, the stored key set and a status-only reopen.
 
 `projects-per-folder-v1` already uses its frozen `released-project-folder-v1.ts`

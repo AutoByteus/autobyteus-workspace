@@ -234,3 +234,11 @@ None at investigation time.
 - Broader validation decision: `Required` → executed, Pass
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
+
+## Round 2 Update (API-REV-002: SR-005 + SR-006)
+
+- Trigger: IR-002 (Cancelled lane becomes the last board column) and IR-003 (rename CLOSED → CANCELLED, no alias).
+- Validity decisions: CLS-API-001 and CLS-E2E-001/002 are `Still Valid` after implementation's mechanical rename. They now also reject `CLOSED` and `CANCELED` as invalid, which proves no alias exists. PMU-017 was `Needs Update` (its full-width assertions contradict SR-005) and is updated to the column layout at 1440 px, 390 px, in the right panel and on the Temp board. TESTING.md is updated.
+- Surfaces: server vocabulary and texts (rename only) are re-proven by the server layers. The web layout, a renderer change, is re-proven by PMU-017 in the browser.
+- Broader validation: `Required` (layout is rendered behavior) → executed, Pass. See the execution coverage report, Round 2 Delta.
+- Reroute: none. The non-ticket `task-copy-idle-lifetime` timing failures are recorded and routed to their owner.
