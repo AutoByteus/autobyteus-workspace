@@ -102,6 +102,11 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return this.codexThread.getPlatformAgentRunId() ?? null;
   }
 
+  /** Codex background terminals are polled by the model and not reported as background tasks. */
+  hasRunningBackgroundTasks(): boolean {
+    return false;
+  }
+
   getLifecycleSnapshot() {
     return projectCodexAgentLifecycleSnapshot({
       ...this.codexThread.getStatusSnapshotSource(),

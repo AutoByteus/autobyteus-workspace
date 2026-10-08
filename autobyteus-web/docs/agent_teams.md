@@ -180,7 +180,7 @@ right-side Team tab shows Messages only. The child's single execution-tree
 write becomes durable, and `TASK_EXECUTION_STARTED` is published, before its
 Agent frames are released, allowing an early-selected child monitor to advance
 without reload or refocus. A child that stays quiet is shut down after the
-server grace period and keeps its row with the standard `offline` status;
+server grace period (but not while it has a running background task) and keeps its row with the standard `offline` status;
 sending to it from the composer (or a peer `send_message_to` by run ID) wakes
 it with its conversation. Nothing distinguishes a shut-down child from a
 configured member that has not started other than the row kind.

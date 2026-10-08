@@ -55,8 +55,8 @@ const createHarness = () => {
     reserveDirectAgentInput: vi.fn(),
     deliverToDirectAgent: vi.fn(async () => ({ accepted: true })),
     executeDirectAgentCommand: vi.fn(async () => ({ accepted: true })),
-    prepareTaskAgent: vi.fn(),
-    prepareTaskTeam: vi.fn(),
+    beginTaskAgent: vi.fn(),
+    beginTaskTeam: vi.fn(),
     restoreTaskAgent: vi.fn(),
     restoreTaskTeam: vi.fn(),
     hasLiveDirectTaskExecution: vi.fn(() => true),
@@ -98,15 +98,15 @@ describe("FlatTeamRunBackend exact local facade integration", () => {
     const { backend, manager } = createHarness();
     const taskAgentInput = { taskId: "task-agent-1" } as never;
     const taskTeamInput = { taskId: "task-team-1" } as never;
-    const preparedAgent = Object.freeze({ executionKind: "task_agent" });
-    const preparedTeam = Object.freeze({ executionKind: "task_agent_team" });
+    const agentOperation = Object.freeze({ executionKind: "task_agent" });
+    const teamOperation = Object.freeze({ executionKind: "task_agent_team" });
     const preparedTermination = Object.freeze({ commit: vi.fn(), cancel: vi.fn() });
-    manager.prepareTaskAgent.mockResolvedValue(preparedAgent);
-    manager.prepareTaskTeam.mockResolvedValue(preparedTeam);
+    manager.beginTaskAgent.mockReturnValue(agentOperation);
+    manager.beginTaskTeam.mockReturnValue(teamOperation);
     manager.prepareTermination.mockResolvedValue(preparedTermination);
 
-    await expect(backend.prepareTaskAgent(taskAgentInput)).resolves.toBe(preparedAgent);
-    await expect(backend.prepareTaskTeam(taskTeamInput)).resolves.toBe(preparedTeam);
+    expect(backend.beginTaskAgent(taskAgentInput)).toBe(agentOperation);
+    expect(backend.beginTaskTeam(taskTeamInput)).toBe(teamOperation);
     const restoreInput = { address: "/reviewer", agentRunId: "task-agent-run", platformAgentRunId: null, sourceNode: {} } as never;
     backend.restoreTaskAgent(restoreInput);
     expect(backend.hasLiveDirectTaskExecution({ agentRunId: "task-agent-run" })).toBe(true);
@@ -114,8 +114,8 @@ describe("FlatTeamRunBackend exact local facade integration", () => {
     await expect(backend.prepareTermination()).resolves.toBe(preparedTermination);
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
 
-    expect(manager.prepareTaskAgent).toHaveBeenCalledWith(taskAgentInput);
-    expect(manager.prepareTaskTeam).toHaveBeenCalledWith(taskTeamInput);
+    expect(manager.beginTaskAgent).toHaveBeenCalledWith(taskAgentInput);
+    expect(manager.beginTaskTeam).toHaveBeenCalledWith(taskTeamInput);
     expect(manager.restoreTaskAgent).toHaveBeenCalledWith(restoreInput);
     expect(manager.hasLiveDirectTaskExecution).toHaveBeenCalledWith({ agentRunId: "task-agent-run" });
     expect(manager.tryShutDownDirectTaskExecutionIfQuiet).toHaveBeenCalledWith({ agentRunId: "task-agent-run" });

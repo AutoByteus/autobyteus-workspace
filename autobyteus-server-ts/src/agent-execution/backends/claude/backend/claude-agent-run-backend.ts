@@ -67,6 +67,10 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     return this.session.sessionId ?? null;
   }
 
+  hasRunningBackgroundTasks(): boolean {
+    return this.session.hasRunningBackgroundTasks();
+  }
+
   getLifecycleSnapshot() {
     return projectClaudeAgentLifecycleSnapshot({
       ...this.session.getStatusSnapshotSource(),

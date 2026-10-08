@@ -1,0 +1,40 @@
+{
+  "childRunId": "worker_9e77509f_8cc4869624d74892b5c8f716386202ec",
+  "taskId": "bo70zvz2r",
+  "outcome": "TEAM_COMMUNICATION_MESSAGE",
+  "outcomeStatus": null,
+  "idleToOutcomeMs": 91462,
+  "statuses": [
+    "initializing@-7434",
+    "running@-7434",
+    "running@-7434",
+    "running@-7434",
+    "running@-2496",
+    "running@-2496",
+    "running@-2485",
+    "running@-1313",
+    "running@-1313",
+    "running@-1308",
+    "running@-1308",
+    "running@-11",
+    "running@-11",
+    "running@-11",
+    "running@0",
+    "idle@0",
+    "idle@88728",
+    "idle@88728",
+    "running@88825",
+    "running@88825",
+    "running@91440",
+    "running@91440",
+    "running@91467",
+    "running@91467"
+  ],
+  "backgroundTask": [
+    "running@-1313",
+    "running@-1313",
+    "completed@88728",
+    "completed@88728"
+  ],
+  "markerContent": "done\n"
+}

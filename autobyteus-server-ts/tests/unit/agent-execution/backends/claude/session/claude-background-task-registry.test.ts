@@ -71,6 +71,23 @@ describe("ClaudeBackgroundTaskRegistry background-task view (DS-002)", () => {
     ]);
   });
 
+  it("reports a running background task until its last task ends, for the idle-shutdown quiet check", () => {
+    const { registry, feed } = createRegistry();
+    expect(registry.hasRunningTasks()).toBe(false);
+    feed(taskStarted("fg", false, { task_type: "local_agent" }));
+    expect(registry.hasRunningTasks()).toBe(false);
+    feed(bgChanged([["bg1", "one"], ["bg2", "two"]]), taskStarted("bg1", true), taskStarted("bg2", true));
+    expect(registry.hasRunningTasks()).toBe(true);
+    feed(taskUpdated("bg1", { status: "completed", end_time: 1 }), taskNotification("bg1"));
+    expect(registry.hasRunningTasks()).toBe(true);
+    feed(taskUpdated("bg2", { status: "failed", end_time: 2 }), taskNotification("bg2", "failed", "exit 1"));
+    expect(registry.hasRunningTasks()).toBe(false);
+    feed(bgChanged([["bg3", "three"]]), taskStarted("bg3", true));
+    expect(registry.hasRunningTasks()).toBe(true);
+    registry.clear();
+    expect(registry.hasRunningTasks()).toBe(false);
+  });
+
   it("never lists foreground tasks, even though they emit the same task frames (REQ-008, AC-010)", () => {
     const { emitted, feed } = createRegistry();
 
