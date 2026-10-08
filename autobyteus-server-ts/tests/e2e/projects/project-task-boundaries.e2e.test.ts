@@ -622,4 +622,88 @@ describe("Project Task production HTTP boundaries", () => {
     await fs.chmod(unreadable, 0o600);
   }, 120000);
 
+  // task-closed-status: CLOSED ("dropped as not needed") over the selected MCP session, the native tools and GraphQL.
+  // Live workers, refusals and reactivation are in the gated task-reactivation-root-visibility suite (CLS-E2E-*).
+  it("CLS-API-001: CLOSED patch/ack, DONE<->CLOSED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)", async () => {
+    // AC-007: both tool schemas offer CLOSED and the descriptions state its meaning, the worker stop and the reopen path.
+    const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: any }>;
+    const tool = (name: string) => tools.find(t => t.name === name)!;
+    for (const name of ["create_or_update_task", "list_project_tasks"]) {
+      expect(tool(name).inputSchema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CLOSED"]);
+    }
+    expect(tool("list_project_tasks").description).toContain("TODO, IN_PROGRESS, DONE or CLOSED status (CLOSED = dropped as not needed)");
+    expect(tool("create_or_update_task").description).toContain("CLOSED means the Task was dropped as not needed (not completed). Both stop the Task's delegated copies");
+    expect(tool("create_or_update_task").description).toContain("set the Task to TODO or IN_PROGRESS first");
+    // REQ-001 / AC-002: the GraphQL enum carries CLOSED (read-only: no status input anywhere).
+    const enumValues = (await gql<{ __type: { enumValues: Array<{ name: string }> } }>(
+      "{__type(name:\"ProjectTaskStatus\"){enumValues{name}}}")).__type.enumValues.map(v => v.name);
+    expect(enumValues.sort()).toEqual(["CLOSED", "DONE", "IN_PROGRESS", "TODO"]);
+    const updateInput = (await gql<{ __type: { inputFields: Array<{ name: string }> } }>(
+      "{__type(name:\"UpdateProjectTaskInput\"){inputFields{name}}}")).__type.inputFields.map(f => f.name);
+    expect(updateInput).not.toContain("status");
+
+    const projectId = await createProject("Closed status");
+    const ids: Record<string, string> = {};
+    for (const key of ["todo", "progress", "done", "closed"]) ids[key] = (await taskCall({ project_id: projectId, description: `Task ${key}` })).taskId;
+    // A current-format open run resource on the Task to be closed: CLOSED must close it exactly like DONE.
+    const resources = path.join(root, "projects", projectId, "tasks", ids.closed!, "agent_run_resources.json");
+    await fs.writeFile(resources, JSON.stringify({ taskId: ids.closed, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+      linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
+    // An invalid context file with CLOSED fails first and closes nothing (inputs are checked before closure).
+    const missing = path.join(root, "sources", "closed-missing.png");
+    const rejected = await call("create_or_update_task", { task_id: ids.closed, status: "CLOSED", context_files: [missing] });
+    expect(rejected.isError).toBe(true); expect(rejected.structuredContent.error.code).toBe("TASK_CONTEXT_FILE_UNAVAILABLE");
+    expect(JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0].closedAt).toBeNull();
+
+    // AC-004: CLOSED by task_id over MCP, IN_PROGRESS and DONE for the others.
+    expect(await taskCall({ task_id: ids.progress, status: "IN_PROGRESS" })).toEqual({ projectId, taskId: ids.progress, status: "IN_PROGRESS" });
+    expect(await taskCall({ task_id: ids.done, status: "DONE" })).toEqual({ projectId, taskId: ids.done, status: "DONE" });
+    expect(await taskCall({ task_id: ids.closed, status: "CLOSED" })).toEqual({ projectId, taskId: ids.closed, status: "CLOSED" });
+    const closedEntry = JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0];
+    expect(closedEntry.closedAt).toEqual(expect.any(String));
+    // Repeating CLOSED (retry) and DONE<->CLOSED change the status only; the closed entry is not rewritten.
+    const resourceBytes = await fs.readFile(resources, "utf8");
+    expect(await taskCall({ task_id: ids.closed, status: "CLOSED" })).toMatchObject({ status: "CLOSED" });
+    expect(await nativeTaskCall({ task_id: ids.closed, status: "DONE" })).toMatchObject({ status: "DONE" });
+    expect(await taskCall({ task_id: ids.closed, status: "CLOSED" })).toMatchObject({ status: "CLOSED" });
+    expect(await fs.readFile(resources, "utf8")).toBe(resourceBytes);
+    // AC-012: the stored Task keeps its exact key set; CLOSED reads back after reader reconstruction.
+    expect(Object.keys(await taskJson(projectId, ids.closed!)).sort()).toEqual(Object.keys(await taskJson(projectId, ids.todo!)).sort());
+    expect((await taskJson(projectId, ids.closed!)).status).toBe("CLOSED");
+    reset();
+
+    // AC-006: the CLOSED filter returns only the Closed Task; unfiltered returns all four; MCP equals native.
+    const filtered = (await call("list_project_tasks", { project_id: projectId, status: "CLOSED" })).structuredContent;
+    expect(filtered.tasks.map((t: { taskId: string; status: string }) => [t.taskId, t.status])).toEqual([[ids.closed, "CLOSED"]]);
+    expect(filtered).toEqual(JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId, status: "CLOSED" })));
+    const all = (await call("list_project_tasks", { project_id: projectId })).structuredContent.tasks as Array<{ taskId: string; status: string }>;
+    expect(Object.fromEntries(all.map(t => [t.taskId, t.status]))).toEqual({ [ids.todo!]: "TODO", [ids.progress!]: "IN_PROGRESS", [ids.done!]: "DONE", [ids.closed!]: "CLOSED" });
+    expect((await list(projectId)).find(t => t.taskId === ids.closed)?.status).toBe("CLOSED");
+    // AC-010: open = TODO + IN_PROGRESS; taskCount counts all four.
+    expect(await readProject(projectId)).toMatchObject({ taskCount: 4, openTaskCount: 2 });
+
+    // AC-004 errors: create with CLOSED is refused; an invalid status names all four values (MCP equals native).
+    const errors: Array<[string, Record<string, unknown>, string]> = [
+      ["create_or_update_task", { project_id: projectId, description: "x", status: "CLOSED" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
+      ["create_or_update_task", { task_id: ids.todo, status: "closed" }, "TASK_STATUS_INVALID"],
+      ["create_or_update_task", { task_id: ids.todo, status: "CANCELLED" }, "TASK_STATUS_INVALID"],
+      ["list_project_tasks", { project_id: projectId, status: "Closed" }, "TASK_STATUS_INVALID"],
+    ];
+    for (const [name, args, code] of errors) {
+      const native = await (name === "list_project_tasks" ? new ListProjectTasksTool() : new CreateOrUpdateTaskTool()).execute(null, args)
+        .then(() => null, (e: Error) => JSON.parse(e.message));
+      expect(native?.error.code, JSON.stringify(args)).toBe(code);
+      if (code === "TASK_STATUS_INVALID") expect(native.error.message).toBe("Task status must be TODO, IN_PROGRESS, DONE or CLOSED.");
+      const result = await call(name, args);
+      expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
+    }
+    expect(await list(projectId)).toHaveLength(4);
+
+    // AC-003 (status side): reopening a Closed Task writes only the status; the closed entry stays closed (nothing starts).
+    expect(await taskCall({ task_id: ids.closed, status: "TODO" })).toEqual({ projectId, taskId: ids.closed, status: "TODO" });
+    expect(await fs.readFile(resources, "utf8")).toBe(resourceBytes);
+    expect(await readProject(projectId)).toMatchObject({ taskCount: 4, openTaskCount: 3 });
+  }, 120000);
+
 });
