@@ -729,7 +729,8 @@ defineCase('D11', 'AC-008/009 (VIS-003/006/007): seven long drafts, one line eac
   for (let i = 0; i < 5; i += 1) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => { const a = document.activeElement; return a.getAttribute('data-test') ?? a.getAttribute('title') ?? a.innerText.trim() })) }
   await page.keyboard.press('Shift+Tab'); await page.keyboard.press('Shift+Tab')
   const ring = await page.evaluate(() => ({ test: document.activeElement.getAttribute('data-test'), shadow: getComputedStyle(document.activeElement).boxShadow }))
-  assert(order.join('|') === 'app-left-panel-new-chat|Collapse left panel|chat-draft-row|chat-draft-discard|chat-draft-row', 'Keyboard order differs', order)
+  // The collapse control is now named by its data-test (collapsed-left-panel-expand-keeps-run), so it reads as app-left-panel-collapse.
+  assert(order.join('|') === 'app-left-panel-new-chat|app-left-panel-collapse|chat-draft-row|chat-draft-discard|chat-draft-row', 'Keyboard order differs', order)
   assert(ring.test === 'chat-draft-row' && ring.shadow.includes(TOKENS.indigo500), 'No indigo focus ring on a keyboard-focused row', ring)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await watchRowMotion(page)
