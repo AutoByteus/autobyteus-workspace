@@ -311,8 +311,8 @@ on a Task created a Task with no Project for the copy; the caller marks it DONE
 with `create_or_update_task({task_id, status: "DONE"})` when the work is
 finished, which stops the copy and hides it. After delegation, parent and child communicate only through
 `send_message_to` with run IDs, in both directions. A child that stays quiet is
-shut down after the grace period and a same-root message to its run ID restores
-it with its conversation (see
+shut down after the grace period, but not while it has a running background
+task, and a same-root message to its run ID restores it with its conversation (see
 [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle)).
 
 `reference_files` on `delegate_task` must be normalized absolute local paths of

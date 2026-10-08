@@ -15,6 +15,7 @@ import type { TaskExecutionIdleTimers } from "../../agent-collaboration/executio
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+import { parseBackgroundTaskUpdatedPayload } from "../../agent-execution/domain/agent-background-task.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -281,6 +282,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       this.taskExecutions.onAgentStatus(identity.agentRunId, event.snapshot.details.status);
     } else if (event.kind === "agent_run" && event.event.eventType === "AGENT_STATUS") {
       this.taskExecutions.onAgentStatus(identity.agentRunId, normalizeAgentApiStatus(event.event.payload.status));
+    } else if (event.kind === "agent_run" && event.event.eventType === "BACKGROUND_TASK_UPDATED"
+      && parseBackgroundTaskUpdatedPayload(event.event.payload).status !== "running") {
+      this.taskExecutions.onAgentBackgroundTaskEnded(identity.agentRunId);
     }
   }
 

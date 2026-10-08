@@ -14,7 +14,7 @@ import { createPreparedAgentRunTermination, type PreparedAgentRunTermination } f
 
 type AgentRunTerminationOptions = Readonly<{
   runId: string;
-  backend: Pick<AgentRunBackend, "getLifecycleSnapshot" | "terminate">;
+  backend: Pick<AgentRunBackend, "getLifecycleSnapshot" | "hasRunningBackgroundTasks" | "terminate">;
   dispatchQueue: AgentRunEventDispatchQueue;
   lifecycleState: AgentTurnLifecycleState;
   segmentLifecycleState: AgentSegmentLifecycleState;
@@ -76,6 +76,8 @@ export class AgentRunTermination {
       this.options.lifecycleState.reconcileRuntimeSnapshot(this.options.backend.getLifecycleSnapshot());
       if (this.options.inputDispatch.active() || this.options.interruptState.hasActiveReservation
         || this.options.lifecycleState.activeTurn.kind !== "NONE" || this.options.lifecycleState.hasPendingCommand
+        // Idle shutdown only: a running background task is still work (DONE and root stop do not ask).
+        || this.options.backend.hasRunningBackgroundTasks()
         || !this.options.inputAdmissionState.tryQuiesceIfAlreadyQuiescent()) return null;
       return this.createTerminationPreparation();
     });

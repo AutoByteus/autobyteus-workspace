@@ -37,6 +37,14 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe("ClaudeAgentRunBackend", () => {
+  it("reports running background tasks from its session's task view", () => {
+    const hasRunningBackgroundTasks = vi.fn().mockReturnValue(true);
+    const { backend } = createBackend({ hasRunningBackgroundTasks });
+    expect(backend.hasRunningBackgroundTasks()).toBe(true);
+    hasRunningBackgroundTasks.mockReturnValue(false);
+    expect(backend.hasRunningBackgroundTasks()).toBe(false);
+  });
+
   it("delegates to the Claude session and exposes current session state", async () => {
     const { backend, session } = createBackend();
     const listener = vi.fn();

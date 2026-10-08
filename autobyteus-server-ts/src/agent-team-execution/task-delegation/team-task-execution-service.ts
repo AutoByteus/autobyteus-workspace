@@ -39,8 +39,12 @@ export class TeamTaskExecutionService {
   drain(): Promise<void> { return this.lifecycle.drain(); }
 
   onRootEvent(event: TeamRunEvent): void {
-    if (event.eventSourceType !== TeamRunEventSourceType.AGENT || event.payload.eventType !== "AGENT_STATUS") return;
-    this.lifecycle.onAgentStatus(event.execution.agentRunId, event.payload.details.status);
+    if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
+    if (event.payload.eventType === "AGENT_STATUS") {
+      this.lifecycle.onAgentStatus(event.execution.agentRunId, event.payload.details.status);
+    } else if (event.payload.eventType === "BACKGROUND_TASK_UPDATED" && event.payload.details.status !== "running") {
+      this.lifecycle.onAgentBackgroundTaskEnded(event.execution.agentRunId);
+    }
   }
 
   delegateTask(

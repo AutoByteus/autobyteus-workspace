@@ -25,6 +25,9 @@ import { flushMicrotasks, observeConfiguredHandles } from "../agent-org-executio
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
+import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
 
 const runnable = {
   validate: vi.fn(),
@@ -696,6 +699,29 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     live.close();
     await f.manager.stopRoot(HOST);
     expect((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions).toEqual([]);
+  });
+
+  it("forwards only a delegated copy's ended background tasks to the task-execution lifecycle (hybrid idle shutdown)", async () => {
+    const resources = new InMemoryTaskAgentResources();
+    resources.addTask("A");
+    const f = await buildManager(resources);
+    const root = (await f.manager.resolveRoot(HOST))!;
+    const ended = vi.spyOn(RootTaskExecutionLifecycle.prototype, "onAgentBackgroundTaskEnded");
+    const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    await flushMicrotasks();
+    const childId = assigned.target_agent_run_id!;
+    const child = f.handles.get(childId)!;
+    const backgroundTask = (status: AgentBackgroundTaskStatus) => child.input.callbacks.publishAgentEvent(child.input.identity, {
+      kind: "agent_run", event: { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId: childId, statusHint: null,
+        payload: buildBackgroundTaskUpdatedPayload({ taskId: "bg-1", kind: "shell", description: "sleep 90", command: "sleep 90",
+          status, summary: null, startedAt: "2026-10-08T07:41:00.000Z" }) },
+    });
+
+    backgroundTask("running");
+    expect(ended).not.toHaveBeenCalled();
+    for (const status of ["completed", "failed", "stopped"] as const) backgroundTask(status);
+    expect(ended.mock.calls).toEqual([[childId], [childId], [childId]]);
+    await f.manager.stopRoot(HOST);
   });
 
   it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED (REQ-004)", async () => {

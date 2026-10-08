@@ -543,7 +543,17 @@ through the wake path below. Helpers stay closed. See
   the timer fires, the shutdown command runs at the queue head, skips leased or
   non-live executions, and shuts the execution down only if
   `tryPrepareTerminationIfQuiescent` succeeds. A child waiting for tool approval
-  is never quiet. A task Agent keeps its registered handle and only its run
+  is never quiet, and neither is a child whose runtime reports a running
+  background task (`AgentRunBackend.hasRunningBackgroundTasks()`: a Claude
+  `run_in_background` task or an AGY background step; Codex, AutoByteus and ACP
+  report none). There is no time limit for such a wait. A Team copy is quiet only
+  when every member is. A skipped fire sets no new timer; when a background task
+  ends (`BACKGROUND_TASK_UPDATED` with `completed`, `failed` or `stopped`), the
+  root calls `onAgentBackgroundTaskEnded`, which re-arms every live execution
+  containing that agent, so an otherwise quiet copy is shut down one grace
+  period after the end even when no turn follows (AGY). The root-stop fence and
+  Task DONE release do not consult background tasks: they stop the copy and its
+  background work as before. A task Agent keeps its registered handle and only its run
   ends; a task Team terminates as a whole and is unregistered. Nothing is
   written to the tree on shutdown or wake.
 - **Grace period.** The server setting
@@ -594,8 +604,8 @@ sender's own team instance and an available agent or team is brought in on
 first use, from spawning a new copy with every `delegate_task` call (its
 "Delegated Agents" section). It also prohibits duplicate work-packet delivery,
 tells the Agent to follow up on a copy only through its returned run ID, states
-that a quiet copy is shut down and restored with its conversation on the next
-message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
+that a quiet copy is shut down (but not while it has a running background task)
+and restored with its conversation on the next message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
 Agent selects the single rule whose condition most specifically applies and
 notifies only that rule's recipient; it does not fan out one outcome to
 additional recipients. The renderer injects no flat recipient, representative,

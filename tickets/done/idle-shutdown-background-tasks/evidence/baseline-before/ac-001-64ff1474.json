@@ -1,0 +1,32 @@
+{
+  "childRunId": "worker_64ff1474_3ef16909674f49e3806954cdf39bffcb",
+  "taskId": "bo6s5qsr3",
+  "outcome": "BACKGROUND_TASK_UPDATED",
+  "outcomeStatus": "stopped",
+  "idleToOutcomeMs": 60012,
+  "statuses": [
+    "initializing@-8908",
+    "running@-8908",
+    "running@-8908",
+    "running@-8908",
+    "running@-4212",
+    "running@-4212",
+    "running@-4191",
+    "running@-3125",
+    "running@-3125",
+    "running@-3120",
+    "running@-3120",
+    "running@-10",
+    "running@-10",
+    "running@-10",
+    "running@0",
+    "idle@0",
+    "idle@60012"
+  ],
+  "backgroundTask": [
+    "running@-3125",
+    "running@-3125",
+    "stopped@60012"
+  ],
+  "markerContent": null
+}

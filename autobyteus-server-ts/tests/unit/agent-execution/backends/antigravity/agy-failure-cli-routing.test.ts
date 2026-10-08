@@ -5,6 +5,7 @@ import path from "node:path";
 import { spawn, type ChildProcess } from "node:child_process";
 import readline from "node:readline";
 import { afterEach, describe, expect, it } from "vitest";
+import { scanAgyTaskExitMessages } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-task-exit-message-reader.js";
 
 const fixture = path.resolve(process.cwd(), "tests/fixtures/agy-failure-cli.mjs");
 const boundConversation = "1bb59967-f04e-45f5-a1ad-a4dbfe2b0c18";
@@ -130,6 +131,22 @@ describe("merged AGY fixture scenario routing (local process boundary, not serve
       { path: missing, error: "ENOENT" },
     ]);
     // The existing linked_skills READ_SKILLS route still answers in the same process.
+    expect((await run.send("READ_SKILLS")).at(-1)!.result.response).toBe("SKILLS:[]");
+  });
+
+  it("linked_skills BACKGROUND_STEP leaves a daemon step open at turn end, then writes an exit message the production reader parses", async () => {
+    const owned = await ownedRoot(); const run = await launch("linked_skills", owned, boundConversation);
+    const frames = await run.send(`Delegated work.\nBACKGROUND_STEP:{"seconds":0.3,"exitCode":0}`);
+    expect(frames[0]!.step_update).toMatchObject({ step_index: 11, step_type: "tool", state: "ACTIVE", tool_name: "run_command",
+      tool_info: { parameters: { IsDaemon: true } } });
+    expect(frames.some((frame) => frame.step_update?.step_index === 11 && frame.step_update.state !== "ACTIVE")).toBe(false);
+    expect(frames.at(-1)!.result).toMatchObject({ status: "SUCCESS", response: "STARTED" });
+    const brainRoot = path.join(owned.root, ".gemini/antigravity-cli/brain");
+    expect(scanAgyTaskExitMessages(boundConversation, new Set(), brainRoot).exits).toEqual([]);
+    await until(() => scanAgyTaskExitMessages(boundConversation, new Set(), brainRoot).exits.length > 0);
+    expect(scanAgyTaskExitMessages(boundConversation, new Set(), brainRoot)).toMatchObject({ problem: null,
+      exits: [{ stepIndex: 11, exitCode: 0, summary: "Command exited with code 0" }] });
+    // The other linked_skills routes still answer in the same process.
     expect((await run.send("READ_SKILLS")).at(-1)!.result.response).toBe("SKILLS:[]");
   });
 
