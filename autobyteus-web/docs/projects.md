@@ -316,6 +316,12 @@ The saved acknowledgement contains Project metadata and workspaceRootPath/descri
 not workspace IDs, per-link timestamps, Task counts or availability. List requires explicit Project ID after discovery;
 create (`project_id` + text, no Task ID) makes a TODO Task with no status; update takes
 the Task ID alone (no `project_id`) and patches text and/or exact status; unknown ID fails.
+Both modes take optional `context_files` (absolute node-local file paths). The server
+copies each file into the Task's saved context under the same upload policy as the
+Task page (allowed types by extension, 25 MiB), so agent-attached files appear in
+Context Files exactly like UI uploads (image preview included) and outlive their
+sources. Patches append and never remove; any invalid entry fails the whole call
+with no change (including no DONE closure); Tasks with no Project refuse files.
 A description-only `delegate_task` creates a Task with no Project for its copy; such
 Tasks are on no Project board and not in `list_project_tasks` (the Projects page
 lists them read only as Temp tasks), and marking one DONE by its ID removes the
@@ -324,8 +330,9 @@ are available from listing. Each Task also carries its current (open)
 assignments `{targetAgentRunId, kind, assignedBy, outcome}` for follow-up, or
 `assignmentsUnavailable: true` if that Task's run file is damaged. Omitted
 fields and files persist. A mutation returns a compact recorded-status
-acknowledgement, not raw resource diagnostics or a work assessment. There is no
-batch or Task attachment mutation tool. See the
+acknowledgement, not raw resource diagnostics or a work assessment (plus
+`attachedContextFiles` only when the call attached files). There is no batch tool
+and no separate attachment tool; files are never removed through agent tools. See the
 [server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-four-agent-tools).
 
 No Project manager agent is shipped with the app. Any Agent that selects the

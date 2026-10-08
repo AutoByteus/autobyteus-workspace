@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { appendFileSync, existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
@@ -57,6 +57,15 @@ if (arg === "--version") {
       return { name, symlink, target: symlink ? readlinkSync(entry) : null, skillMd: read("SKILL.md"), marker: read("marker.md") };
     });
   };
+  // linked_skills: opens every path listed under "Reference files:" in the message (as a worker agent
+  // reads its Task's files) and reports each one's size and sha256, or the error code.
+  const readReferenceFiles = (content) => {
+    const block = content.slice(content.indexOf("Reference files:"));
+    return [...block.matchAll(/^- (\/.*)$/gm)].map(([, file]) => {
+      try { const bytes = readFileSync(file); return { path: file, size: bytes.length, sha256: createHash("sha256").update(bytes).digest("hex") }; }
+      catch (error) { return { path: file, error: error.code }; }
+    });
+  };
   const callAgentTool = async (name, args) => {
     const config = JSON.parse(readFileSync(path.join(process.cwd(), ".agents", "mcp_config.json"), "utf8"));
     const server = config.mcpServers?.autobyteus_agent_tools;
@@ -76,6 +85,7 @@ if (arg === "--version") {
     const call = requestedTool ? JSON.parse(requestedTool[1]) : null;
     const text = call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
+      : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
         : "OK";
     reply(turns * 10, text);

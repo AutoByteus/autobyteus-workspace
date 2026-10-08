@@ -1,6 +1,6 @@
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { extension as mimeExtension } from "mime-types";
+import { extension as mimeExtension, lookup as mimeLookup } from "mime-types";
 export const CONTEXT_FILE_MAX_BYTES = 25 * 1024 * 1024;
 export const CONTEXT_FILE_DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
 export const allowedMimeTypes = new Set([
@@ -33,6 +33,12 @@ export const allowedMimeTypes = new Set([
   "video/x-matroska",
   "video/webm",
 ]);
+
+/** The accepted MIME type of a local file, from its extension; null when the app does not accept that type. */
+export const contextFileMimeTypeForPath = (filePath: string): string | null => {
+  const mimeType = mimeLookup(filePath);
+  return mimeType && allowedMimeTypes.has(mimeType) ? mimeType : null;
+};
 
 const sanitizeFilenameStem = (filename: string): string => {
   const stem = path.parse(filename).name

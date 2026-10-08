@@ -27,6 +27,8 @@ export interface TaskAcknowledgementView {
   projectId: string | null;
   taskId: string;
   status: ProjectTaskStatus;
+  /** The saved context files this update attached, in request order; present only when it attached any. */
+  attachedContextFiles?: ProjectTaskContextFile[];
 }
 
 /** A Project as persisted in `<appDataDir>/projects/<projectId>/project.json`; its Tasks live in their own folders. */
@@ -148,11 +150,26 @@ export interface UpdateProjectTaskCommand {
   contextChanges?: ProjectTaskContextChanges | null;
 }
 
-/** A patch of any Task (Project or ad-hoc) by its unique id; never touches saved context. */
+/**
+ * Agent-tool create of a Project Task with node-local source files, copied into its saved context.
+ * Tool-facing only: local paths never travel on the GraphQL-reachable `CreateProjectTaskCommand`.
+ */
+export interface CreateTaskWithLocalContextFilesCommand {
+  projectId: string;
+  description: string;
+  /** Normalized absolute node-local file paths; may be empty. */
+  localContextFiles: string[];
+}
+
+/**
+ * A patch of any Task (Project or ad-hoc) by its unique id. `localContextFiles` (Project Tasks only)
+ * are copied in and appended to the saved context; existing saved context is never removed.
+ */
 export interface UpdateTaskByIdCommand {
   taskId: string;
   description?: string;
   status?: ProjectTaskStatus;
+  localContextFiles?: string[];
 }
 
 export interface DeleteProjectTaskCommand {

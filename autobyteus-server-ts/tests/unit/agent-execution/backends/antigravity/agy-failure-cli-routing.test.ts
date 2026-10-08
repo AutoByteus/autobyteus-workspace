@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import os from "node:os";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { spawn, type ChildProcess } from "node:child_process";
 import readline from "node:readline";
@@ -116,6 +117,21 @@ describe("merged AGY fixture scenario routing (local process boundary, not serve
       expect(inputs.map((input) => [input.conversation_id, input.turns, input.content])).toEqual([
         [boundConversation, 1, `Report runtime case: ${kind}`], [boundConversation, 2, "Continue the same work."]]);
     });
+
+  it("linked_skills READ_REFERENCE_FILES reports each listed reference file's size and sha256, or its error code", async () => {
+    const owned = await ownedRoot(); const run = await launch("linked_skills", owned, boundConversation);
+    const present = path.join(owned.root, "present file.md"); await fs.writeFile(present, "reference bytes\n");
+    const missing = path.join(owned.root, "missing.png");
+    const frames = await run.send(["Description:", "READ_REFERENCE_FILES", "", "Reference files:", `- ${present}`, `- ${missing}`].join("\n"));
+    const response = frames.at(-1)!.result.response as string;
+    expect(response.startsWith("REFERENCES:")).toBe(true);
+    expect(JSON.parse(response.slice("REFERENCES:".length))).toEqual([
+      { path: present, size: 16, sha256: createHash("sha256").update("reference bytes\n").digest("hex") },
+      { path: missing, error: "ENOENT" },
+    ]);
+    // The existing linked_skills READ_SKILLS route still answers in the same process.
+    expect((await run.send("READ_SKILLS")).at(-1)!.result.response).toBe("SKILLS:[]");
+  });
 
   it.each(["linked_skills", "image_done", "tool_denied", "mcp_calls", "default_failure", "daemon_background"])(
     "preserves the existing %s branch", async (mode) => {

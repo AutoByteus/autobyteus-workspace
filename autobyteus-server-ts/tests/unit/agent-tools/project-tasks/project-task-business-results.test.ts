@@ -80,6 +80,47 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     expect(reread.tasks[0]).toEqual({ ...native.tasks[0], description: "Revised saved work" });
   });
 
+  it("attaches context_files on create and patch through native and MCP, returning only this call's files compactly (AC-001, AC-002, AC-009)", async () => {
+    const sourceDir = path.join(dir, "agent-sources");
+    await fs.mkdir(sourceDir);
+    const file = async (name: string) => { const p = path.join(sourceDir, name); await fs.writeFile(p, `bytes of ${name}`); return p; };
+    const shot = await file("shot1.png"), notes = await file("notes.md");
+    const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, { project_id: projectId, description: "Fix green status", context_files: [shot, notes] }));
+    const taskId = created.task.taskId;
+    const saved = (await store.readTask(projectId, taskId))!.contextFiles!;
+    expect(created).toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO", attachedContextFiles: [
+      { storedFilename: saved[0]!.storedFilename, displayName: "shot1.png" }, { storedFilename: saved[1]!.storedFilename, displayName: "notes.md" }] } });
+    const patch = { task_id: taskId, context_files: [await file("shot2.png")] };
+    const viaMcp = (await mcp("create_or_update_task", patch)).structuredContent as typeof created;
+    const viaNative = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, patch));
+    const files = (await store.readTask(projectId, taskId))!.contextFiles!;
+    expect(files.map(f => f.displayName)).toEqual(["shot1.png", "notes.md", "shot2.png", "shot2.png"]);
+    expect(viaMcp).toEqual({ task: { projectId, taskId, status: "TODO", attachedContextFiles: [{ storedFilename: files[2]!.storedFilename, displayName: "shot2.png" }] } });
+    expect(viaNative).toEqual({ task: { projectId, taskId, status: "TODO", attachedContextFiles: [{ storedFilename: files[3]!.storedFilename, displayName: "shot2.png" }] } });
+    // The Task's full list (with locators and saved paths) stays on list_project_tasks.
+    const listed = (await mcp("list_project_tasks", { project_id: projectId })).structuredContent as { tasks: Array<{ contextFiles: Array<{ localPath: string }> }> };
+    expect(await fs.readFile(listed.tasks[0]!.contextFiles[0]!.localPath, "utf8")).toBe("bytes of shot1.png");
+    // Calls that attach nothing keep the exact plain acknowledgement.
+    expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, { project_id: projectId, description: "Plain", context_files: [] })))
+      .toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO" } });
+    expect((await mcp("create_or_update_task", { task_id: taskId, status: "IN_PROGRESS" })).structuredContent).toEqual({ task: { projectId, taskId, status: "IN_PROGRESS" } });
+  });
+
+  it.each(["native", "mcp"] as const)("reports an invalid context file through %s with its path and changes nothing (AC-005)", async mode => {
+    const task = await tasks.createTask({ projectId, description: "Unchanged" });
+    const before = await fs.readFile(layout.taskFile(projectId, task.taskId), "utf8");
+    const missing = path.join(dir, "gone.png");
+    const run = (args: Record<string, unknown>) => mode === "native"
+      ? new CreateOrUpdateTaskTool().execute(null, args).then(() => { throw new Error("Must reject"); }, e => JSON.parse(e.message))
+      : mcp("create_or_update_task", args).then(r => r.structuredContent);
+    expect(await run({ task_id: task.taskId, status: "DONE", context_files: [missing] }))
+      .toEqual({ error: { code: "TASK_CONTEXT_FILE_UNAVAILABLE", message: `Context file '${missing}' does not exist or cannot be accessed.` } });
+    expect(await run({ project_id: projectId, description: "Never", context_files: ["relative.md"] }))
+      .toEqual({ error: { code: "TASK_CONTEXT_INVALID", message: "Context file 'relative.md' must be a normalized absolute path." } });
+    expect(await fs.readFile(layout.taskFile(projectId, task.taskId), "utf8")).toBe(before);
+    expect((await store.listTasks(projectId)).map(t => t.taskId)).toEqual([task.taskId]);
+  });
+
   it("marks a Task whose agent run resources can't be read as assignments unavailable, never as an empty list", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await tasks.createTask({ projectId, description: "B" });
