@@ -11,6 +11,7 @@ import { AgentRunManager } from "./agent-run-manager.js";
 import type { AgentRunActivationCandidate } from "./agent-run-activation-candidate.js";
 import {
   AgentRunActivationError,
+  PreviousRuntimeReleasePendingError,
   isAgentRunActivationQuarantineError,
 } from "../errors.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
@@ -36,6 +37,9 @@ export type StandaloneAgentRunActivationResult = Readonly<{
 export type StandaloneHostActivationInput = Readonly<{
   memberExecutionContext: MemberExecutionContext | null;
 }>;
+
+/** Upper bound a send waits for a previous runtime to finish stopping (QR-001); AGY's own stop deadline is 5 s. */
+const PREVIOUS_RUNTIME_RELEASE_WAIT_MS = 30_000;
 
 const requiredRunId = (runId: string): string => {
   const normalized = runId.trim();
@@ -130,6 +134,8 @@ export class StandaloneAgentRunLifecycleService {
     }
     const quarantine = this.quarantines.get(runId);
     if (quarantine) throw quarantine;
+    // Its retryable failure is never quarantined, so the next send retries or joins the release.
+    await this.awaitPreviousRuntimeRelease(runId);
     try {
       return await this.activateOnce(runId, input);
     } catch (error) {
@@ -137,6 +143,29 @@ export class StandaloneAgentRunLifecycleService {
         this.quarantines.set(runId, error instanceof Error ? error : new Error(String(error)));
       }
       throw error;
+    }
+  }
+
+  /**
+   * Waits a bounded time for the exact release of a runtime that went offline (for example after an
+   * Antigravity interrupt). On timeout the release keeps running; a later activation joins it.
+   */
+  private async awaitPreviousRuntimeRelease(runId: string): Promise<void> {
+    const release = this.agentRunManager.releaseRetiredRun(runId);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new PreviousRuntimeReleasePendingError(
+        new Error(`Previous runtime release did not finish within ${PREVIOUS_RUNTIME_RELEASE_WAIT_MS} ms.`),
+      )), PREVIOUS_RUNTIME_RELEASE_WAIT_MS);
+    });
+    try {
+      await Promise.race([release, timeout]);
+    } catch (error) {
+      // The release outlives a timed-out wait; its later failure is reported by the next attempt.
+      void release.catch(() => undefined);
+      throw error;
+    } finally {
+      clearTimeout(timer);
     }
   }
 
