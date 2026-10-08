@@ -1,0 +1,8 @@
+# agy-interrupt-resend-transport.e2e.test.ts run against BASE source (fix stashed), 2026-10-08: both cases fail with the production symptom.
+SEND_MESSAGE command not accepted for agent run agy_interrupt_resend_bf3d57af_b7e6_466e_8009_b68_3d156df5b589457c98b0e2199430ecbd: [ACTIVATION_FAILED] Agent run 'agy_interrupt_resend_bf3d57af_b7e6_466e_8009_b68_3d156df5b589457c98b0e2199430ecbd' still owns retired cleanup.
+SEND_MESSAGE command not accepted for agent run agy_interrupt_resend_bf3d57af_b7e6_466e_8009_b68_3d156df5b589457c98b0e2199430ecbd: [ACTIVATION_FAILED] Agent run 'agy_interrupt_resend_bf3d57af_b7e6_466e_8009_b68_3d156df5b589457c98b0e2199430ecbd' still owns retired cleanup.
+SEND_MESSAGE command not accepted for agent run agy_interrupt_resend_bf3d57af_b7e6_466e_8009_b68_eab395d413e341cf8bfc49b568d2125b: [ACTIVATION_FAILED] Agent run 'agy_interrupt_resend_bf3d57af_b7e6_466e_8009_b68_eab395d413e341cf8bfc49b568d2125b' still owns retired cleanup.
+     × answers messages sent while the interrupted process is still stopping, with one restart (AC-001, AC-005) 20503ms
+     × answers a message sent after the interrupted process has fully stopped (AC-002) 22102ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed (2)
