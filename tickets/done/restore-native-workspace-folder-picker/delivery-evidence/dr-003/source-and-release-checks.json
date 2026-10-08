@@ -1,0 +1,16 @@
+{
+  "capturedAt": "2026-10-08T03:24:31.409201+00:00",
+  "sourceBase": "44619c2d2037b21df37fdc769025b32e089835bf",
+  "validatedCandidate": "59f94959106c76d184e8c3e881c4792d44860b8f",
+  "sourceChangedSinceCandidateExcludingTickets": [],
+  "releaseDeltaExcludingTickets": [
+    ".github/release-notes/release-notes.md",
+    "autobyteus-web/package.json"
+  ],
+  "tagCommit": "3dbb7b8acb000e01846839a0f5a089c80b3e12e4",
+  "command": "python3 -m unittest scripts.tests.test_release_versions scripts.tests.test_release_channel_workflow_steps scripts.tests.test_desktop_release_beta",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-native-workspace-folder-picker-stable-v1.4.97",
+  "exitCode": 0,
+  "result": "39 tests pass",
+  "log": "tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/release-tests-final.log"
+}

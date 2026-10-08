@@ -1,0 +1,12 @@
+{
+  "verifiedAt": "2026-10-08T03:19:00.151710+00:00",
+  "release": "v1.4.97",
+  "name": "AutoByteus_personal_android-1.4.97-release.apk",
+  "size": 1846691,
+  "publishedSha256": "044d03c496c48e757f279a520e2cbb953e55ccdcb037f19201e7f53a21d363c8",
+  "actualSha256": "044d03c496c48e757f279a520e2cbb953e55ccdcb037f19201e7f53a21d363c8",
+  "matches": true,
+  "source": "Published GitHub Release APK and adjacent checksum",
+  "temporaryDownloadDirectory": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-stable97-assets-e21k_iyx",
+  "cleanup": "owned temp removed in finally; no user app installation"
+}

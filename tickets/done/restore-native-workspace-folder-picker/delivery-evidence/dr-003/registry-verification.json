@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-10-08T03:48:06.832090+00:00",
+  "result": "Pass",
+  "registryImages": [
+    {
+      "tag": "1.4.97",
+      "digest": "sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "command": "docker buildx imagetools inspect docker.io/autobyteus/autobyteus-server:1.4.97",
+      "exitCode": 0
+    },
+    {
+      "tag": "latest",
+      "digest": "sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "command": "docker buildx imagetools inspect docker.io/autobyteus/autobyteus-server:latest",
+      "exitCode": 0
+    },
+    {
+      "tag": "beta",
+      "digest": "sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "command": "docker buildx imagetools inspect docker.io/autobyteus/autobyteus-server:beta",
+      "exitCode": 0
+    }
+  ],
+  "versionLatestBetaDigestMatch": true,
+  "noCustomerContainerUpgraded": true,
+  "sourceWorkflow": "workflow-docker-final.json"
+}

@@ -1,0 +1,29 @@
+{
+  "reason": "git diff --cached --check initially flagged CLI trailing whitespace; display logs right-trimmed only, original exact text preserved here. No behavior/content changed.",
+  "entries": [
+    {
+      "file": "docker-1.4.97-inspect.log",
+      "originalSha256": "afa0e78ce33c79da38a127d79d9f3a1b6608af18ae607e705ee59ff55db62fb6",
+      "originalText": "Name:      docker.io/autobyteus/autobyteus-server:1.4.97\nMediaType: application/vnd.oci.image.index.v1+json\nDigest:    sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f\n           \nManifests: \n  Name:      docker.io/autobyteus/autobyteus-server:1.4.97@sha256:27974a3b3245c87f81b9e429918661e03814176c691a188f3beba06e6410bde0\n  MediaType: application/vnd.oci.image.manifest.v1+json\n  Platform:  linux/amd64\n             \n  Name:      docker.io/autobyteus/autobyteus-server:1.4.97@sha256:0e122e85dac4372edcfaebbd94180e68fafa9d9a73e1b5096c051726ecb140d0\n  MediaType: application/vnd.oci.image.manifest.v1+json\n  Platform:  linux/arm64\n",
+      "normalizedSha256": "b26c8df2680da30473e16680aacd89492a52037fd7b42605962cfc73a24bae24"
+    },
+    {
+      "file": "docker-beta-inspect.log",
+      "originalSha256": "d0afcf48f4d38a5088eac4386e080452f890ac3a87011449981ce1153bf0fea3",
+      "originalText": "Name:      docker.io/autobyteus/autobyteus-server:beta\nMediaType: application/vnd.oci.image.index.v1+json\nDigest:    sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f\n           \nManifests: \n  Name:      docker.io/autobyteus/autobyteus-server:beta@sha256:27974a3b3245c87f81b9e429918661e03814176c691a188f3beba06e6410bde0\n  MediaType: application/vnd.oci.image.manifest.v1+json\n  Platform:  linux/amd64\n             \n  Name:      docker.io/autobyteus/autobyteus-server:beta@sha256:0e122e85dac4372edcfaebbd94180e68fafa9d9a73e1b5096c051726ecb140d0\n  MediaType: application/vnd.oci.image.manifest.v1+json\n  Platform:  linux/arm64\n",
+      "normalizedSha256": "fac11b9ab457a597ecd30dc8ddd8e04fce34db4acf223847cfc11dcd40abe804"
+    },
+    {
+      "file": "docker-latest-inspect.log",
+      "originalSha256": "9696cc2f6e20e24659f34d653e540cb7f502e665b6351f8bf09a3800a95415a4",
+      "originalText": "Name:      docker.io/autobyteus/autobyteus-server:latest\nMediaType: application/vnd.oci.image.index.v1+json\nDigest:    sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f\n           \nManifests: \n  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:27974a3b3245c87f81b9e429918661e03814176c691a188f3beba06e6410bde0\n  MediaType: application/vnd.oci.image.manifest.v1+json\n  Platform:  linux/amd64\n             \n  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:0e122e85dac4372edcfaebbd94180e68fafa9d9a73e1b5096c051726ecb140d0\n  MediaType: application/vnd.oci.image.manifest.v1+json\n  Platform:  linux/arm64\n",
+      "normalizedSha256": "9fee0258f587a67275b958ed5b4f740bdb0f8f6641cdd27ab75539a4ac03f92d"
+    },
+    {
+      "file": "personal-release-push.log",
+      "originalSha256": "b016cf1f72418b099f0b82dfa34408894acd8ba885254f5960d05ec9b9b2db7b",
+      "originalText": "remote: \nremote: GitHub found 940 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 429 moderate, 70 low). To find out more, visit:        \nremote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        \nremote: \nTo github.com-ryan:AutoByteus/autobyteus-workspace.git\n   44619c2d2..3dbb7b8ac  personal -> personal\n",
+      "normalizedSha256": "202d29f724b62e441c07d57948a33b8621511448787d80219c8b19f9926f8add"
+    }
+  ]
+}

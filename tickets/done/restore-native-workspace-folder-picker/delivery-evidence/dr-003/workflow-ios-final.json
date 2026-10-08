@@ -1,0 +1,369 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-10-08T03:12:59Z",
+  "databaseId": 37721658706,
+  "event": "push",
+  "headSha": "3dbb7b8acb000e01846839a0f5a089c80b3e12e4",
+  "jobs": [
+    {
+      "completedAt": "2026-10-08T03:13:41Z",
+      "conclusion": "success",
+      "databaseId": 113130455391,
+      "name": "Resolve iOS Release Metadata",
+      "startedAt": "2026-10-08T03:13:02Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T03:13:03Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T03:13:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:35Z",
+          "conclusion": "success",
+          "name": "Checkout workflow helper scripts",
+          "number": 2,
+          "startedAt": "2026-10-08T03:13:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:35Z",
+          "conclusion": "success",
+          "name": "Resolve release metadata",
+          "number": 3,
+          "startedAt": "2026-10-08T03:13:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:38Z",
+          "conclusion": "success",
+          "name": "Checkout release ref",
+          "number": 4,
+          "startedAt": "2026-10-08T03:13:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:38Z",
+          "conclusion": "success",
+          "name": "Resolve release commit SHA",
+          "number": 5,
+          "startedAt": "2026-10-08T03:13:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:38Z",
+          "conclusion": "success",
+          "name": "Summarize iOS release plan",
+          "number": 6,
+          "startedAt": "2026-10-08T03:13:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:38Z",
+          "conclusion": "success",
+          "name": "Post Checkout release ref",
+          "number": 11,
+          "startedAt": "2026-10-08T03:13:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:38Z",
+          "conclusion": "success",
+          "name": "Post Checkout workflow helper scripts",
+          "number": 12,
+          "startedAt": "2026-10-08T03:13:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:13:38Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "startedAt": "2026-10-08T03:13:38Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37721658706/job/113130455391"
+    },
+    {
+      "completedAt": "2026-10-08T03:25:25Z",
+      "conclusion": "success",
+      "databaseId": 113130631126,
+      "name": "Build And Test iOS App",
+      "startedAt": "2026-10-08T03:13:47Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T03:13:48Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T03:13:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:15:00Z",
+          "conclusion": "success",
+          "name": "Checkout workspace",
+          "number": 2,
+          "startedAt": "2026-10-08T03:13:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:15:04Z",
+          "conclusion": "success",
+          "name": "Select Xcode 26 or newer",
+          "number": 3,
+          "startedAt": "2026-10-08T03:15:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:16:14Z",
+          "conclusion": "success",
+          "name": "Install XcodeGen",
+          "number": 4,
+          "startedAt": "2026-10-08T03:15:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:16:15Z",
+          "conclusion": "success",
+          "name": "Select available iOS simulator",
+          "number": 5,
+          "startedAt": "2026-10-08T03:16:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:09Z",
+          "conclusion": "success",
+          "name": "Generate, build, and run implementation checks",
+          "number": 6,
+          "startedAt": "2026-10-08T03:16:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:10Z",
+          "conclusion": "success",
+          "name": "Write publish secret readiness summary",
+          "number": 7,
+          "startedAt": "2026-10-08T03:25:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:11Z",
+          "conclusion": "success",
+          "name": "Upload iOS build/test artifacts",
+          "number": 8,
+          "startedAt": "2026-10-08T03:25:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:12Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace",
+          "number": 16,
+          "startedAt": "2026-10-08T03:25:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:23Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-10-08T03:25:12Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37721658706/job/113130631126"
+    },
+    {
+      "completedAt": "2026-10-08T03:26:01Z",
+      "conclusion": "success",
+      "databaseId": 113133607792,
+      "name": "Validate iOS Publish Secrets",
+      "startedAt": "2026-10-08T03:25:26Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T03:25:28Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T03:25:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:59Z",
+          "conclusion": "success",
+          "name": "Checkout workspace",
+          "number": 2,
+          "startedAt": "2026-10-08T03:25:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:59Z",
+          "conclusion": "success",
+          "name": "Fail fast when iOS publish secrets are incomplete",
+          "number": 3,
+          "startedAt": "2026-10-08T03:25:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:59Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace",
+          "number": 6,
+          "startedAt": "2026-10-08T03:25:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:25:59Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 7,
+          "startedAt": "2026-10-08T03:25:59Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37721658706/job/113133607792"
+    },
+    {
+      "completedAt": "2026-10-08T03:29:21Z",
+      "conclusion": "success",
+      "databaseId": 113133763098,
+      "name": "Archive And Upload To App Store Connect",
+      "startedAt": "2026-10-08T03:26:11Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-08T03:26:13Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-08T03:26:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:30Z",
+          "conclusion": "success",
+          "name": "Checkout workspace",
+          "number": 2,
+          "startedAt": "2026-10-08T03:26:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:36Z",
+          "conclusion": "success",
+          "name": "Select Xcode 26 or newer",
+          "number": 3,
+          "startedAt": "2026-10-08T03:27:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:46Z",
+          "conclusion": "success",
+          "name": "Install XcodeGen",
+          "number": 4,
+          "startedAt": "2026-10-08T03:27:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:47Z",
+          "conclusion": "success",
+          "name": "Initialize temporary publish paths",
+          "number": 5,
+          "startedAt": "2026-10-08T03:27:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:47Z",
+          "conclusion": "success",
+          "name": "Import iOS distribution certificate into temporary keychain",
+          "number": 6,
+          "startedAt": "2026-10-08T03:27:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:48Z",
+          "conclusion": "success",
+          "name": "Decode, verify, and install App Store provisioning profiles",
+          "number": 7,
+          "startedAt": "2026-10-08T03:27:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:27:49Z",
+          "conclusion": "success",
+          "name": "Generate project and ExportOptions.plist",
+          "number": 8,
+          "startedAt": "2026-10-08T03:27:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:28:36Z",
+          "conclusion": "success",
+          "name": "Archive and export signed IPA",
+          "number": 9,
+          "startedAt": "2026-10-08T03:27:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:29:12Z",
+          "conclusion": "success",
+          "name": "Upload IPA to App Store Connect/TestFlight",
+          "number": 10,
+          "startedAt": "2026-10-08T03:28:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:29:12Z",
+          "conclusion": "success",
+          "name": "Summarize iOS TestFlight upload",
+          "number": 11,
+          "startedAt": "2026-10-08T03:29:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:29:13Z",
+          "conclusion": "success",
+          "name": "Cleanup iOS signing material",
+          "number": 12,
+          "startedAt": "2026-10-08T03:29:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:29:15Z",
+          "conclusion": "success",
+          "name": "Upload iOS publish artifacts",
+          "number": 13,
+          "startedAt": "2026-10-08T03:29:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:29:16Z",
+          "conclusion": "success",
+          "name": "Post Checkout workspace",
+          "number": 26,
+          "startedAt": "2026-10-08T03:29:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-08T03:29:19Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-10-08T03:29:16Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37721658706/job/113133763098"
+    }
+  ],
+  "name": "iOS App Store Connect Release",
+  "status": "completed",
+  "updatedAt": "2026-10-08T03:29:21Z",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/37721658706"
+}

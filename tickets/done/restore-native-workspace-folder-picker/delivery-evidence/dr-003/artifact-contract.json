@@ -1,0 +1,54 @@
+{
+  "stableTag": "v1.4.97",
+  "releaseCommit": "3dbb7b8acb000e01846839a0f5a089c80b3e12e4",
+  "expectedAssetNames": [
+    "AutoByteus_personal_android-1.4.97-release.apk",
+    "AutoByteus_personal_android-1.4.97-release.apk.sha256",
+    "AutoByteus_personal_linux-arm64-1.4.97.AppImage",
+    "AutoByteus_personal_linux-x64-1.4.97.AppImage",
+    "AutoByteus_personal_macos-arm64-1.4.97.dmg",
+    "AutoByteus_personal_macos-arm64-1.4.97.dmg.blockmap",
+    "AutoByteus_personal_macos-arm64-1.4.97.zip",
+    "AutoByteus_personal_macos-arm64-1.4.97.zip.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.97.dmg",
+    "AutoByteus_personal_macos-x64-1.4.97.dmg.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.97.zip",
+    "AutoByteus_personal_macos-x64-1.4.97.zip.blockmap",
+    "AutoByteus_personal_windows-1.4.97.exe",
+    "latest-linux-arm64.yml",
+    "latest-linux.yml",
+    "latest-mac.yml",
+    "latest.yml"
+  ],
+  "metadataFiles": [
+    "latest.yml",
+    "latest-mac.yml",
+    "latest-linux.yml",
+    "latest-linux-arm64.yml"
+  ],
+  "registryTags": [
+    "1.4.97",
+    "latest",
+    "beta"
+  ],
+  "requiredPlatforms": [
+    "linux/amd64",
+    "linux/arm64"
+  ],
+  "workflowIds": {
+    "desktop": 37721658733,
+    "android": 37721658682,
+    "ios": 37721658706,
+    "docker": 37721658676
+  },
+  "checks": [
+    "All four tag-push workflows success on exact release SHA",
+    "GitHub release not draft/not prerelease; /releases/latest tag matches",
+    "Expected nonempty uploaded assets; body equals curated release notes",
+    "All updater metadata versions 1.4.97 and advertised binary names exist",
+    "Android APK SHA256 matches published checksum",
+    "Registry stable version/latest/beta manifests and amd64/arm64 verified",
+    "iOS upload job success, not a claim of public App Store approval",
+    "Release temp worktree/branch safely removed; unrelated files preserved"
+  ]
+}

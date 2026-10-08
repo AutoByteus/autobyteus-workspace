@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-08T03:51:25.262440+00:00",
+  "rawCliWhitespaceCheck": "Initially failed; normalized display-only trailing whitespace, original raw text preserved in terminal-log-normalization.json",
+  "sourceAndReleaseTests": "39 pass; source-and-release-checks.json",
+  "cumulativeArtifactPaths": "101 checked/present; cumulative-package-check.json",
+  "scope": "Only own current five authority docs and dr-003 evidence staged; unrelated original hashes verified unchanged",
+  "finalWhitespaceCheck": "git diff --cached --check rerun after normalization"
+}

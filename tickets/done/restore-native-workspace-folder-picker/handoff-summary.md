@@ -1,35 +1,34 @@
-# Final Handoff — Restore Native Workspace Folder Picker
+# Final Handoff — Stable v1.4.97 / Native Workspace Folder Picker
 
-> **Latest continuation: stable v1.4.97 release IN PROGRESS (DR-003).** User requested another stable release and clarified it is unnecessary only if stable already matches origin/personal. Comparison confirms v1.4.96 lacks the two accepted tickets (native folder picker and Project workspace paths). UREL-001 supersedes the prior no-release instruction for this follow-up only. No completed commits/merges are replayed. Publication/verification pending; DR-002 below remains the completed repository-finalization history.
+**Delivery Completed — DR-003, 2026-10-08.** Subsequent user request UREL-001 authorizes this stable release because v1.4.96 lacked two accepted tickets in origin/personal. DR-002's no-release finalization remains correct history, not the current release state.
 
-**Delivery Completed — DR-002, 2026-10-07.** task_size **Small**; architectural_risk **Low**; **direct validated route**. R3/UREQ-001, Product UCONF-001, SR-007, IR-001, API-REV-001, UV-001; DR-001 initial hold retained. Independent architecture/source/test-code review artifacts/revisions **N/A — not applicable**.
+## Released Result
+https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.97
 
-## User-Verified Result
-Native **Browse…** restored beside typed workspace input in editable local embedded Electron Agent/Team Chat, Org-root and placed-Team settings. Native selection fills text only; explicit **Use folder** selects; existing Send/Run/Save owners and locks remain unchanged. Cancel/empty non-destructive, errors retry/manual entry, duplicate pending submission prevented. Browser/remote/mobile stay manual-only.
+- Restored native Browse beside manual local desktop Agent/Team/Org and editable placed-Team workspace paths. Choose fills input; **Use folder** applies; explicit launch/save owners and locks unchanged. Browser/remote/mobile remain manual-only.
+- Project workspace references use absolute path plus optional description without requiring registration; edit/unlink unavailable folder references remains supported.
+- Native picker **Small / Low, direct validated route**; R3/UREQ-001, UCONF-001, SR-007, IR-001, API-REV-001; independent architecture/source/test-code reviews **N/A**.
+- Project ticket independently **Medium / High, Reviewed route**, its ARCH-REV-001/CRR-001/002/API-REV-001 retained, not reclassified.
 
-User response: **“its working. finalize, no need to release.”** (UV-001). Verified44b03b9f3 candidate, then protected docs/archived and merged newer Project-only base665d8e0cd (13 commits including receipt) as92c96ce111. Picker/gate/bridge/catalogs and all relevant setting/launch/save owners unchanged; full integrated checks repeated, no material scoped change; renewed verification Not required. User is not claimed to have tested the rebuilt package.
+## User / Source / Repository
+UV-001 **“its working. finalize, no need to release.”**, Project explicit acceptance and subsequent **UREL-001 “could you please release another stable version?”** with latest-personal condition are recorded. Both tickets already finalized; source compared equal to validated candidate excluding ticket artifacts. No new product behavior/renewed verification required. Only release metadata/notes changed.
 
-## Finalization
-- Ticket commit **59f94959106c76d184e8c3e881c4792d44860b8f**, pushed to origin/codex/restore-native-workspace-folder-picker.
-- Personal behavior merge **f34dec632e60451c85c8ffe62d37d43034afbcef**, pushed/read back. Merge tree exactly equals the validated ticket candidate. Later commit contains final docs-only receipts; terminal message identifies final receipt HEAD.
-- **No release/version bump/tag/publication/deployment**; inherited package1.4.96 only.
-- Task archived here in durable main checkout. Task worktree/local branch removed safely; all owned verification/probe runtimes/data/fixtures cleaned. Remote ticket branch retained for audit; unrelated shared-checkout modifications preserved byte-for-byte.
+Release commit/tag **v1.4.97 → 3dbb7b8acb000e01846839a0f5a089c80b3e12e4**, helper-generated annotated tag5470def700a19d827c6df16010d12e7597ca66c9. Personal fast-forwarded/pushed before single tag push. Subsequent docs-only receipt identifies its exact pushed HEAD in terminal dispatch; immutable tag stays at release commit. No manual duplicate dispatch. Original DR-002 finalization (ticket59f949591, behavior mergef34dec632, receipt44619c2d2) not replayed.
 
-## Validation
-Fresh latest-base84 renderer/caller/service/store/gate +5 preload tests pass. Full rebuilt desktop plus7 actual manual/API cases pass, including real Org Run→Stop→member draft→explicit Save/readback, correct owners, en/zh-CN and desktop/narrow. No renderer errors or agent-run inference. Final mac-arm64 asar **a4f4a83519002fa560bb4799af4116f0b437ce4c5c597d82ab8f877c64e51741**. Evidence `delivery-evidence/dr-002/integrated-caller-02/evidence.json`, repository.log, preload.log, checks.log.
-Native-only FP-P03 not repeated on this rebuilt package. API's earlier all8 native-assisted cases/89 tests/reported95% confidence remain separately attributed to its beta.2 bundle; no fresh native or independent-review certification invented. Full Vue checking unavailable (vue-tsc), other OS/physical-mobile/live-remote/OS-error/exhaustive a11y/linguistic/paid-Send limits remain.
+## Verified Publication
+All original workflows success on exact release SHA: Desktop37721658733, Android37721658682, iOS37721658706, Docker37721658676. GitHub latest stable v1.4.97,17 uploaded nonempty expected assets and exact curated notes. Four updater feeds1.4.97 resolve advertised binaries/sizes. Downloaded Android APK checksum matches. Registry1.4.97/latest/beta share **sha256:090a823a1528b41f29306976ebff28af6cd7ea42e0512514e6a8ab071810043f**, amd64+arm64. iOS TestFlight upload succeeded; public App Store approval/processing availability not claimed. No customer container upgraded or desktop auto-update installation certified.
 
-## Disclosed Incident Still Uncertain
-API automation briefly reopened the closed worktree app unisolated (PID4683), immediately stopped without tests/UI actions. Startup may have accessed default profile; **cannot certify user data untouched**. No default data was inspected/reset/deleted. Disclosed before user acceptance; acceptance does not erase the uncertainty. All functional test evidence used isolated instances. No deployment/migration/data reset undertaken.
+## Validation / Docs / Cleanup
+Release tests39 pass; original counts35+4 overlap. Prior latest-base89 picker tests, full macOS build and7 manual/API cases pass; native-only FP-P03 not repeated. Earlier API actual-native all8/95% evidence and Project delivery9+browser16 retained with attribution, not combined/rescored. Canonical behavior docs remain correct; curated notes/version/release reports updated.
 
-## Durable Authorities / Complete Package
-Canonical root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker`.
-- `cumulative-package-manifest.md`: full approved requirements/design/history/Product supplement/implementation/API evidence and current absolute paths. Historical former-worktree/in-progress software references resolve to the same repository-relative files in this archive. Product remains external/canonical.
-- `docs-sync-report.md`: canonical settings and agent-execution architecture synchronized; TESTING runbook retained.
-- `release-deployment-report.md`: exact refresh/commands/results, verification, commit/push/merge, cleanup, release-not-required and rollback evidence.
-- `user-verification-record.md`: UV-001 exact signal, incident disclosure and non-material refresh rationale.
-- `delivery-revision-record.md`: DR-001 baseline → DR-002 completed result.
-- `delivery-evidence/dr-002/repository-finalization.json` and `cleanup.json`: actual operations, remote readbacks and owned cleanup receipts.
-- `release-notes.md`: scoped unreleased notes, not published.
+Release temp worktree removed without force, local release branch deleted normally. Original ticket/app cleanup already complete; Project deliberately retained manual profile untouched. All unrelated dirty hashes/untracked paths preserved. No open release/finalization/cleanup blocker.
 
-All required completion gates passed or are truthfully Not required. This is the authoritative terminal package for Solution Designer to verify. Dispatch success is recorded only by its actual accepted tool receipt; see final report. No duplicate handoff or release requested.
+## Compatibility And Disclosed Uncertainty
+Matched web/server required. Current Project saves remove obsolete ID fields; **no blind downgrade to old ID-required binaries after saving**, no mixed writers. No migration/reset performed; rollback favors forward-fix and separately authorized data-compatible recovery.
+
+API earlier auto-launched closed bundle unisolated PID4683, immediately stopped without tests/UI actions. Possible default-profile startup access remains unknown: **cannot certify user data untouched**. Disclosed before UV-001; no inspection/reset/deletion. All reported functional tests isolated; this release launched no app. Vue static check unavailable, not passed; mac-native-only proof, controlled edge/remote/mobile cases, no physical-mobile/exhaustive a11y/linguistic/paid-Send or released-app upgrade certification. Cross-platform CI packaging is not extra native-dialog proof.
+
+## Authorities / Terminal
+Canonical root `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker`. Full requirements/design/history/Product/implementation/API chain and included Project package are indexed in `cumulative-package-manifest.md`. Read `release-deployment-report.md`, `docs-sync-report.md`, `user-verification-record.md`, `delivery-revision-record.md`, `release-notes.md` and `delivery-evidence/dr-003/`.
+
+This is the authoritative terminal completion package for Solution Designer to verify. Fresh rule-based dispatch follows publication of final docs; actual accepted receipt alone proves message delivery. DR-001 baseline and DR-002 result retained; no replay.

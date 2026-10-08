@@ -1,0 +1,90 @@
+{
+  "capturedAt": "2026-10-08T03:37:14.480877+00:00",
+  "release": "v1.4.97",
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.97",
+  "draft": false,
+  "prerelease": false,
+  "latestTag": "v1.4.97",
+  "expectedAssetsPresent": 17,
+  "assetStatesAndSizesPass": true,
+  "curatedNotesExactMatch": true,
+  "updaterMetadata": [
+    {
+      "name": "latest.yml",
+      "version": "1.4.97",
+      "metadataSha256": "17e1c511627dc532d7be8743ce8cb85cd2bcc61f328d539f81ec6f78077771d4",
+      "sizeMatchesAsset": true,
+      "files": [
+        {
+          "asset": "AutoByteus_personal_windows-1.4.97.exe",
+          "publishedSize": 339740915,
+          "advertisedSize": null,
+          "sha512FieldValid": true
+        }
+      ]
+    },
+    {
+      "name": "latest-mac.yml",
+      "version": "1.4.97",
+      "metadataSha256": "09d7b0768c58324c630ee2a6027bba9f7daf16c4d68a881244783e441a63348e",
+      "sizeMatchesAsset": true,
+      "files": [
+        {
+          "asset": "AutoByteus_personal_macos-arm64-1.4.97.zip",
+          "publishedSize": 511141137,
+          "advertisedSize": 511141137,
+          "sha512FieldValid": true
+        },
+        {
+          "asset": "AutoByteus_personal_macos-arm64-1.4.97.dmg",
+          "publishedSize": 515386434,
+          "advertisedSize": 515386434,
+          "sha512FieldValid": true
+        },
+        {
+          "asset": "AutoByteus_personal_macos-x64-1.4.97.zip",
+          "publishedSize": 532780742,
+          "advertisedSize": 532780742,
+          "sha512FieldValid": true
+        },
+        {
+          "asset": "AutoByteus_personal_macos-x64-1.4.97.dmg",
+          "publishedSize": 538205372,
+          "advertisedSize": 538205372,
+          "sha512FieldValid": true
+        }
+      ]
+    },
+    {
+      "name": "latest-linux.yml",
+      "version": "1.4.97",
+      "metadataSha256": "a5895845727a465ffb9c4a0fba00bf6dcdb52408f13a9d154b40bb94d66b5c9a",
+      "sizeMatchesAsset": true,
+      "files": [
+        {
+          "asset": "AutoByteus_personal_linux-x64-1.4.97.AppImage",
+          "publishedSize": 459608046,
+          "advertisedSize": 459608046,
+          "sha512FieldValid": true
+        }
+      ]
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "version": "1.4.97",
+      "metadataSha256": "d53e94f97c489eb63c0e715c5480cdf1921e7586e03ce0ba75f2f1adc0f33f66",
+      "sizeMatchesAsset": true,
+      "files": [
+        {
+          "asset": "AutoByteus_personal_linux-arm64-1.4.97.AppImage",
+          "publishedSize": 447660355,
+          "advertisedSize": 447660355,
+          "sha512FieldValid": true
+        }
+      ]
+    }
+  ],
+  "androidVerification": "android-artifact-verification.json",
+  "desktopWorkflow": "workflow-desktop-final.json",
+  "verificationLimits": "Desktop binary bytes not independently downloaded/rehash-tested; CI packaging/checks and uploaded assets/feed consistency verified. APK bytes separately checksum-verified. iOS App Store approval not claimed."
+}

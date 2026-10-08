@@ -1,7 +1,7 @@
 # Docs Sync Report — Native Workspace Folder Picker
 
 ## Scope
-- Ticket: restore-native-workspace-folder-picker; initial delivery DR-001 (API-REV-001 trigger), now finalized DR-002 after UV-001.
+- Ticket: restore-native-workspace-folder-picker; initial delivery DR-001 (API-REV-001 trigger), repository finalized DR-002 after UV-001, followed by stable release DR-003 under UREL-001.
 - Classification preserved: **Small / Low; direct validated route**. Independent architecture, source and test-code review reports/revision records **N/A — not applicable**.
 - Bootstrap: `origin/personal@88fad73cbd20201642acdcfe75e69b1897ec135c`.
 - Integrated base: freshly fetched `origin/personal@af50bdd4056b9341e53494ad393b6283136a00ed`.
@@ -48,3 +48,10 @@ The text-only shared form description is replaced with native-assisted **and** t
 
 ## DR-002 Final Integrated-State Recheck
 After UV-001, delivery archived/protected docs in93a45f69c and merged actual base665d8e0cd3bf99e4164809569e4e29c5e16bb3c9 (initial fetch e87093f09; intervening documentation-only receipt) as92c96ce111c9874f9185cdc13d47fb615357344c. No conflict or folder-picker owner/behavior change. Fresh84+5 tests and rebuilt packaged seven manual/API cases pass; native-only case not repeated. The two long-lived doc updates remain correct without further content changes. DR-001 hold is superseded by explicit user UV-001; no release requested. Finalization receipts/current gates are in the current release-deployment-report.md.
+
+## DR-003 Stable Release Docs Sync — Pass
+- Fresh origin/personal44619c2d2 has unchanged product source from the validated candidate; release commit3dbb7b8ac changes only package version1.4.97 and curated release notes outside tickets. No new product/design behavior, obsolete component or additional durable runtime knowledge to promote.
+- **No additional long-lived behavior-doc impact:** settings/agent-execution architecture and Project docs remain accurate. Earlier DR-001/002 canonical updates remain in place. README, web AGENTS and documented release helper/workflows were followed without changes.
+- **Updated release-facing docs:** archived `release-notes.md` now summarizes both accepted tickets; helper copied it into `.github/release-notes/release-notes.md`; published body matches exactly. Version bumped by helper. UREL-001 captured separately from previous no-release acceptance.
+- **Updated authoritative delivery docs:** handoff/release reports now declare actual stable publication, four successful workflows,17 assets/four feeds/APK+registry readbacks, safe release-worktree cleanup, compatibility/rollback visibility and unchanged incident/coverage limits. Cumulative manifest and DR-003 revision index maintained. Previous DR-002 completed report/handoff retained byte-for-byte under DR-003 evidence as provenance, not current authorities.
+- No customer-data migration/reset or automatic installed-profile upgrade was performed. Project path-only save downgrade constraint is explicit in current handoff/report. Independent review applicability remains per ticket, not unified or reclassified by publication.

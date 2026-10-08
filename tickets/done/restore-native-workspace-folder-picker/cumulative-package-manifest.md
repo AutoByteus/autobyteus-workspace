@@ -1,11 +1,11 @@
 # Cumulative Delivery Package Manifest
 
-Package restore-native-workspace-folder-picker. R3 Approved UREQ-001; Product UCONF-001; SR-007; IR-001; API-REV-001; DR-001 → DR-002; UV-001. **Small / Low, direct validated route**. Independent architecture/source/test-code review reports and revisions **N/A — not applicable**. Prior delivery result **N/A**; DR-001 is the first baseline, not an inferred prior completion.
+Package restore-native-workspace-folder-picker. R3 Approved UREQ-001; Product UCONF-001; SR-007; IR-001; API-REV-001; DR-001 → DR-002 → DR-003; UV-001; UREL-001. **Small / Low, direct validated route**. Independent architecture/source/test-code review reports and revisions **N/A — not applicable**. Prior delivery result **N/A**; DR-001 is the first baseline, not an inferred prior completion.
 
 All paths below are verified durable final target archive locations; the ticket is merged/pushed into personal and its worktree is removed. Historical upstream absolute paths remain provenance, not a second current authority. Product stays in its own canonical repository.
 
 ## Current Cumulative Requirements / Design / Implementation / Validation / Supplements
-All following paths were checked to exist during DR-001:
+All following current paths were rechecked during DR-003 (initial chain collected in DR-001):
 - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/requirements-doc.md`
 - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/requirements-approval.md`
 - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/investigation-notes.md`
@@ -86,3 +86,41 @@ All historical software paths rooted in the removed task worktree or tickets/in-
 - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002`
 
 Final repository/cleanup receipts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/repository-finalization.json` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-002/cleanup.json`.
+
+## DR-003 Stable Publication Extension
+UREL-001 supersedes earlier no-release only for this subsequent stable follow-up. Immutable v1.4.97/release commit3dbb7b8ac; final docs-only receipt on personal follows. No completed ticket finalization is replayed.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/source-and-release-checks.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/workflows-final.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/github-publication-verification.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/registry-verification.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/android-artifact-verification.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/release-cleanup.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/prior-dr-002-release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-native-workspace-folder-picker/delivery-evidence/dr-003/prior-dr-002-handoff-summary.md`
+
+## Included Finalized Project-Workspace-Path Package
+Separate **Medium/High; Reviewed route**, not covered by native-picker review N/A classification. Its original no-release completion remains chronological; DR-003 releases its already accepted source under UREL-001. Matched client/server and no old-ID downgrade after reduced saves remain explicit. Full prior evidence directories remain adjacent.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/analysis-result.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/api-e2e-test-case-ledger.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/api-e2e-test-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/architecture-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/code-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/code-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/delivery-evidence/dr-001/commands.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/delivery-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/implementation-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/implementation-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/release-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/requirements-doc.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/solution-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/solution-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-workspace-path/handoff-summary.md`

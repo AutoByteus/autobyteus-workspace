@@ -1,0 +1,30 @@
+Updating autobyteus-web/package.json: 1.4.96 -> 1.4.97
+Synced curated release notes to .github/release-notes/release-notes.md
+[release/native-workspace-picker-v1.4.97 3dbb7b8ac] chore(release): bump workspace release version to 1.4.97
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 9 insertions(+), 33 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin release/native-workspace-picker-v1.4.97
+  git push origin v1.4.97
+
+--- RELEASE IDENTITY ---
+3dbb7b8acb000e01846839a0f5a089c80b3e12e4
+3dbb7b8acb000e01846839a0f5a089c80b3e12e4
+1.4.97
+Repository artifact hygiene check passed.
+Tracked files scanned: 56149
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
