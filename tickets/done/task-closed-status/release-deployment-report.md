@@ -2,14 +2,14 @@
 
 ## Release / Publication / Deployment Scope
 
-Ticket `task-closed-status`: SR-004 + SR-005 (Cancelled as the last column) + SR-006 (CLOSED → CANCELLED), IR-001..IR-003, API-REV-001/002. Current delivery round DR-002. Direct route: `task_size=Medium`, `architectural_risk=Low`. Repository finalization into `origin/personal` is pending user verification. A release is optional and decided by the user at finalization; the precedent is the `scripts/desktop-release.sh beta` used for idle-shutdown-background-tasks.
+Ticket `task-closed-status`: SR-004 + SR-005 (Cancelled as the last column) + SR-006 (CLOSED → CANCELLED), IR-001..IR-003, API-REV-001/002. Current delivery round DR-002. Direct route: `task_size=Medium`, `architectural_risk=Low`. Finalized into `origin/personal` (merge `a9bd12a6b`) after explicit user verification. No release (the user's decision).
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002` (DR-001 halted for SR-005)
+- Current delivery revision ID: `DR-003` (finalization; DR-002 re-delivery; DR-001 halted for SR-005)
 - Notes: awaiting user verification on a fresh isolated instance (see `handoff-summary.md`).
 
 ## Initial Delivery Integration Refresh
@@ -87,17 +87,17 @@ Pending the user's release decision.
 - Bootstrap context source: `investigation-notes.md` ("Finalization target remote / branch: `origin` / `personal`")
 - Ticket branch: `codex/task-closed-status`
 - Ticket branch commit result: local commits only (checkpoint, merge, delivery artifacts)
-- Ticket branch push result: pending verification
+- Ticket branch push result: `Completed` (`[new branch] codex/task-closed-status` at `d48dd3d3c`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `Yes`. `efc2bfd0f` → `23ca52e7a`, 8 commits: interrupt-resend-retired-cleanup-stuck (server standalone-run restore, `agy-failure-cli.mjs` fixture, `TESTING.md`, `agent_execution.md`) and `v1.4.99-beta.3`.
 - Delivery-owned edits protected before re-integration: `Completed` (all already committed at `c68cf040c`)
 - Re-integration before final merge result: `Completed`. Clean merge `a206578e9`. Rechecks (`delivery-evidence/finalization/`): server build pass; server focused unit (projects, agent-collaboration, agent-tools project-tasks/task-delegation, migration, api, agent-team-execution, agent-execution, standalone-agent-run-root) 231 files / 2177 tests pass; integration 2/17 pass; gated E2E `project-task-boundaries`, `task-reactivation-root-visibility`, `task-closure-root-visibility` and `project-change-feed` 4 files / 27 tests pass (1 skipped, live Claude); web Projects specs 102/984 pass.
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: `Blocked` (awaiting user verification; not a defect)
-- Blocker: user verification
+- Target branch update result: `Completed`. Done in the ticket worktree, detached at the fetched `origin/personal` @ `23ca52e7a`; the main checkout (which has other agents' uncommitted work) was not touched.
+- Merge into target result: `Completed`. `--no-ff` merge `a9bd12a6b` "Merge verified task-closed-status (add a Cancelled Task status for work dropped as not needed)". The merged tree is byte-identical to the checked ticket branch `d48dd3d3c` (`git diff --quiet`). Net non-ticket diff: 73 files, +1287/−218. `check_licensing.py` and `check_repository_artifact_hygiene.py` pass, and no Windows-invalid ticket paths were found.
+- Push target branch result: `Completed` (`23ca52e7a..a9bd12a6b HEAD -> personal`; the remote tip was re-checked as `23ca52e7a` immediately before)
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
@@ -111,21 +111,22 @@ Pending the user's release decision.
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed` (right after this record was pushed; the untracked, regenerable SDK `dist/` build output was discarded with the worktree)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`codex/task-closed-status`)
+- Remote branch cleanup result: `Not required` (the repo convention keeps `codex/*` remote branches)
+- Isolated verification instances: `iso-51705-f244` and the stale `iso-54394-19b5` were stopped, and their data roots removed (`delivery-evidence/finalization/isolated-app-stop.json`)
 - Blocker: none
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `tickets/in-progress/task-closed-status/release-notes.md`
-- Archived release notes artifact used for release/publication: pending
+- Archived release notes artifact used for release/publication: not used (no release)
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-None until the release decision.
+None. No release or deployment was requested.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -143,11 +144,11 @@ If the desktop verification shows Cancelled Tasks rendered as Done, workers not 
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: awaiting user verification and the release decision (DR-002). The DR-001 halt for SR-005 is resolved: SR-005 and SR-006 were implemented and validated (API-REV-002).
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: N/A
+- Explicit user testing/verification complete: `Yes` (`user-verification.md`)
+- Repository finalization complete: `Yes` (`personal` @ `a9bd12a6b`, plus this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, the user's decision)
+- Applicable safe cleanup complete or not required: `Yes` (performed right after this record was pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (after cleanup)
+- Terminal message/reference: delivery-engineer `send_message_to` → `/software_engineering_team/solution_designer`
