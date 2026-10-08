@@ -173,7 +173,8 @@ never brings anything in. A "Delegated Agents" subsection explains that every
 call spawns another copy (copies can work in parallel), the returned
 `target_agent_run_id` (or null plus `message` when nothing started), follow-up
 on a copy only through `send_message_to` with its run ID, and that a quiet copy
-is shut down and restored with its conversation on the next message. The section also
+is shut down (but not while it has a running background task) and restored with
+its conversation on the next message. The section also
 covers duplicate-dispatch prohibition, Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
 the single rule whose condition most specifically applies, notification of only
 that rule's recipient, requester-return when no rule applies to incoming work, and delivery confirmation. The
@@ -249,7 +250,8 @@ copy. Every call spawns another copy, so copies can work in parallel.
 
 Follow up on a copy only through `send_message_to` with its
 `target_agent_run_id`, in both directions. A copy that stays quiet is shut
-down after a while; a message to its run ID restores it with its
+down after a while, but not while it has a running background task; a
+message to its run ID restores it with its
 conversation. A copy whose Task is `DONE` or `CLOSED` is stopped. To continue
 with it, the run that assigned the work first moves the Task out of `DONE` or
 `CLOSED` (for example to `IN_PROGRESS`) with `create_or_update_task`, then

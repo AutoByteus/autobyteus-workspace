@@ -298,6 +298,111 @@ describe("RootTaskExecutionLifecycle idle shutdown", () => {
   });
 });
 
+describe("RootTaskExecutionLifecycle background-task waits (hybrid idle shutdown)", () => {
+  /** The adapter's fire-time quiet check, as AgentRunTermination answers it: not quiet while a background task runs. */
+  const setupWithBackgroundTasks = () => {
+    const running = new Set<string>();
+    const fake = setup({
+      tryShutDownIfQuiet: async (reference) => {
+        const key = taskExecutionReferenceKey(reference);
+        fake.state.shutdownCalls.push(key);
+        if (running.has(key) || !fake.state.quiet.has(key)) return false;
+        fake.state.live.delete(key);
+        return true;
+      },
+    });
+    return { ...fake, running };
+  };
+
+  it("does not shut a quiet copy down while its background task runs, however long; the task's end re-arms one grace period (AC-001/002/004)", async () => {
+    const { lifecycle, state, timers, running } = setupWithBackgroundTasks();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    state.quiet.add("agent:child-run");
+    running.add("agent:child-run");
+
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    // The fire-time check skipped the shutdown and set no new timer: no time limit while the task runs.
+    expect(state.live.has("agent:child-run")).toBe(true);
+    expect(timers.pendingCount()).toBe(0);
+    timers.advance(24 * GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
+
+    // The task ends with no following turn (AGY daemon exit): one grace period later the quiet copy is shut down.
+    running.delete("agent:child-run");
+    lifecycle.onAgentBackgroundTaskEnded("child-run");
+    expect(timers.pendingCount()).toBe(1);
+    timers.advance(GRACE - 1);
+    await flush();
+    expect(state.live.has("agent:child-run")).toBe(true);
+    timers.advance(1);
+    await flush();
+    expect(state.live.has("agent:child-run")).toBe(false);
+  });
+
+  it("re-arms through the idle that follows a completion turn, which replaces the end's timer (AC-005)", async () => {
+    const { lifecycle, state, timers, running } = setupWithBackgroundTasks();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    state.quiet.add("agent:child-run");
+    running.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+
+    // Claude: the completion ends the task and the CLI starts a turn, then the agent goes idle again.
+    running.delete("agent:child-run");
+    lifecycle.onAgentBackgroundTaskEnded("child-run");
+    lifecycle.onAgentStatus("child-run", "running");
+    expect(timers.pendingCount()).toBe(0);
+    timers.advance(GRACE / 2);
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE - 1);
+    await flush();
+    expect(state.live.has("agent:child-run")).toBe(true);
+    timers.advance(1);
+    await flush();
+    expect(state.live.has("agent:child-run")).toBe(false);
+  });
+
+  it("keeps a Team copy live while one member's task runs; that member's task end re-arms the whole chain (AC-003)", async () => {
+    const { lifecycle, state, timers, running } = setupWithBackgroundTasks();
+    state.chains.set("member-run", [team]);
+    state.chains.set("lead-run", [team]);
+    state.live.add("team:task-team-run");
+    state.quiet.add("team:task-team-run");
+    // A Team is quiet only when every member is: one member's running task makes the Team not quiet.
+    running.add("team:task-team-run");
+    lifecycle.onAgentStatus("lead-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.live.has("team:task-team-run")).toBe(true);
+    expect(timers.pendingCount()).toBe(0);
+
+    running.delete("team:task-team-run");
+    lifecycle.onAgentBackgroundTaskEnded("member-run");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.live.has("team:task-team-run")).toBe(false);
+  });
+
+  it("ignores a task end for an agent outside every copy, for a copy that is not live, and after the root stops admitting", async () => {
+    const { lifecycle, state, timers } = setupWithBackgroundTasks();
+    lifecycle.onAgentBackgroundTaskEnded("coordinator-run");
+    expect(timers.pendingCount()).toBe(0);
+    state.chains.set("child-run", [child]);
+    lifecycle.onAgentBackgroundTaskEnded("child-run");
+    expect(timers.pendingCount()).toBe(0);
+    state.live.add("agent:child-run");
+    lifecycle.closeExternalAdmission();
+    lifecycle.onAgentBackgroundTaskEnded("child-run");
+    expect(timers.pendingCount()).toBe(0);
+  });
+});
+
 describe("RootTaskExecutionLifecycle wake leases", () => {
   it("restores a shut-down chain, holds it against shutdown, and arms it on release (AR-001b)", async () => {
     const { lifecycle, state, timers } = setup();

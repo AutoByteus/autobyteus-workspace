@@ -145,6 +145,10 @@ export class ClaudeSession {
     return this.process.state;
   }
 
+  hasRunningBackgroundTasks(): boolean {
+    return this.taskRegistry.hasRunningTasks();
+  }
+
   getStatusSnapshotSource() {
     return {
       currentStatus: this.currentStatus,

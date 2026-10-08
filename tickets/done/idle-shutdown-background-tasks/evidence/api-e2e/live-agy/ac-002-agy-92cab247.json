@@ -1,0 +1,51 @@
+{
+  "childRunId": "worker_92cab247_9d915f633ca24bbb8dc172795dc7d683",
+  "taskId": "31a4c412-6e44-4214-ba0d-6dcdaafb1230/task-2",
+  "agyModel": "gemini-3.8-flash-high",
+  "graceMs": 60000,
+  "daemonSeconds": 180,
+  "statuses": [
+    "initializing@-9812",
+    "running@-9812",
+    "running@-9812",
+    "running@-2235",
+    "running@-11",
+    "running@-11",
+    "running@-11",
+    "running@0",
+    "running@0",
+    "idle@0",
+    "idle@0",
+    "initializing@75133",
+    "running@75133",
+    "running@75133",
+    "running@77211",
+    "running@77211",
+    "running@77211",
+    "running@77246",
+    "idle@77246",
+    "idle@178199",
+    "offline@238330",
+    "offline@238330"
+  ],
+  "backgroundTask": [
+    "running@0",
+    "completed@178199"
+  ],
+  "taskRunningAfterQuiet": true,
+  "pidsBefore": [
+    "12538"
+  ],
+  "pidsAfterQuiet": [
+    "12538"
+  ],
+  "pidsAfterFollowUp": [
+    "12538"
+  ],
+  "replyText": "ALIVE\n",
+  "followUpIdleToTaskEndMs": 100953,
+  "taskEndStatus": "completed",
+  "taskEndSummary": "The command exited with code 0.\nStdout:\n\nStderr:",
+  "taskEndToOfflineMs": 60131,
+  "idleToTaskEndMs": 178199
+}

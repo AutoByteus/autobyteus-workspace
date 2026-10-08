@@ -69,6 +69,9 @@ export class AgyBackgroundTaskMonitor {
     this.schedule(0);
   }
 
+  /** Whether any tracked step is still running. */
+  hasRunningTasks(): boolean { return this.running.size > 0; }
+
   /** AGY stopped: every running task becomes stopped and the monitor stays inert. */
   stopAll(): void {
     if (this.stopped) return;

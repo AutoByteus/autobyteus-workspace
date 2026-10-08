@@ -1,0 +1,12 @@
+== :1.4.99-beta.1
+Digest:    sha256:bde7a990f5fc47109edb4801bb0ab838202f468960a29a72a06b03398fd014f0
+  Platform:  linux/amd64
+  Platform:  linux/arm64
+== :beta
+Digest:    sha256:bde7a990f5fc47109edb4801bb0ab838202f468960a29a72a06b03398fd014f0
+  Platform:  linux/amd64
+  Platform:  linux/arm64
+== :latest
+Digest:    sha256:8aa17b2307ac834408d4f7b691cf4d2bb9f4904ccc6aff25ffc3bb46cb375187
+  Platform:  linux/amd64
+  Platform:  linux/arm64

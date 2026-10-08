@@ -117,6 +117,8 @@ class TestTeamBackend implements TeamRunBackend {
   readonly commands: Array<{ agentRunId: string; command: TeamMemberExecutionCommand }> = [];
   readonly liveTaskAgents = new Set<string>();
   readonly shutDownAgents: string[] = [];
+  /** Agents whose runtime reports a running background task: AgentRunTermination's quiet check refuses them. */
+  readonly backgroundBusyAgents = new Set<string>();
   readonly children = new Map<string, TestTeamBackend>();
   active = true;
 
@@ -229,6 +231,7 @@ class TestTeamBackend implements TeamRunBackend {
   }
   async tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
     if (!("agentRunId" in reference) || !this.liveTaskAgents.has(reference.agentRunId)) return false;
+    if (this.backgroundBusyAgents.has(reference.agentRunId)) return false;
     this.liveTaskAgents.delete(reference.agentRunId);
     this.shutDownAgents.push(reference.agentRunId);
     return true;
@@ -354,11 +357,18 @@ const createHarness = async (linked = false) => {
     execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress: assertAgentTeamAddress(memberAddress), agentRunId }),
     payload: { eventType: "AGENT_STATUS", statusHint: deriveTeamAgentStatusHint(status), details: createTeamAgentStatusDetails({ status }) },
   } as TeamRunEvent);
+  const emitBackgroundTask = (memberAddress: string, agentRunId: string, status: "running" | "completed") => publisher.publish({
+    eventSourceType: TeamRunEventSourceType.AGENT,
+    execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress: assertAgentTeamAddress(memberAddress), agentRunId }),
+    payload: { eventType: "BACKGROUND_TASK_UPDATED", statusHint: null, details: { taskId: "bg-monitor", kind: "shell",
+      description: "Monitor the release run", command: "sleep 7200 && echo done", status,
+      summary: status === "completed" ? "done" : null, startedAt: "2026-10-08T07:41:00.000Z" } },
+  } as TeamRunEvent);
   const lifecycle = (root as unknown as { taskExecutions: { drain(): Promise<void> } }).taskExecutions;
   const drain = async () => {
     for (let i = 0; i < 3; i += 1) { await new Promise<void>((resolve) => setImmediate(resolve)); await lifecycle.drain(); }
   };
-  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain, publisher, treeStore,
+  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, emitBackgroundTask, drain, publisher, treeStore,
     tasks, projectStore, projectsLayout, projects: new ProjectService({ store: projectStore }) };
 };
 
@@ -528,6 +538,31 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     await harness.drain();
     // Release after delivery re-arms the idle timer for the restored child.
     expect(harness.clock.pendingCount()).toBe(1);
+  });
+
+  it("keeps an idle delegated Agent with a running background task past the grace period; the task's end re-arms it (AC-001/004)", async () => {
+    const harness = await createHarness();
+    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
+    const { target_agent_run_id: child } = await delegate(harness.service, coordinator, {
+      recipient_address: "/worker", description: "Start the release monitor in the background and report when it ends.", reference_files: [],
+    }) as { target_agent_run_id: string };
+    await harness.drain();
+    harness.backend.backgroundBusyAgents.add(child);
+    harness.emitBackgroundTask("/worker", child, "running");
+    harness.emitStatus("/worker", child, "idle");
+    harness.clock.fireAll();
+    await harness.drain();
+    expect(harness.backend.shutDownAgents).toEqual([]);
+    expect(harness.clock.pendingCount()).toBe(0);
+    harness.emitBackgroundTask("/worker", child, "running");
+    expect(harness.clock.pendingCount()).toBe(0);
+
+    harness.backend.backgroundBusyAgents.delete(child);
+    harness.emitBackgroundTask("/worker", child, "completed");
+    expect(harness.clock.pendingCount()).toBe(1);
+    harness.clock.fireAll();
+    await harness.drain();
+    expect(harness.backend.shutDownAgents).toEqual([child]);
   });
 
   it("rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing", async () => {

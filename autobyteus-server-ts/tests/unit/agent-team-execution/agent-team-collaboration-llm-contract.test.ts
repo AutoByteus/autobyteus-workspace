@@ -58,7 +58,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateRecipient: "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
       delegateDescription: "31d5193d5849bf4df65d443af5061384cf1e32e41839793d1d711bfe493b9da4",
       delegateReferences: "8f6e0bd3e58880db150c3516c898ac4fb00ab30dce9fa0161739c0a09c5763ae",
-      collaborationPrompt: "1ca45167e0344743a750098f964b3deaa9b42f45cd56646756aa34cdee25efbb",
+      collaborationPrompt: "04bc40a0dfbc193c85279278715ec05855168ebe7be25fc723b6a71a0f5efd30",
     });
   });
 
@@ -71,7 +71,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
     expect(prompt).toContain("A run ID\n  never brings anything in.");
     expect(prompt).toContain("### Delegated Agents");
     expect(prompt).toContain("Follow up on a copy only through `send_message_to` with its\n`target_agent_run_id`");
-    expect(prompt).toContain("a message to its run ID restores it with its\nconversation");
+    expect(prompt).toContain("A copy that stays quiet is shut\ndown after a while, but not while it has a running background task; a\nmessage to its run ID restores it with its\nconversation");
     expect(prompt).toContain("including a\n  shut-down delegated agent");
     expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle|not_started|live-only/);
     expect(prompt).not.toMatch(/REQ-|DEC-|TODO|TBD/);

@@ -122,6 +122,11 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return this.runId;
   }
 
+  /** Native background processes are polled by the agent and not reported as background tasks. */
+  hasRunningBackgroundTasks(): boolean {
+    return false;
+  }
+
   getLifecycleSnapshot() {
     return projectAutoByteusAgentLifecycleSnapshot({
       currentStatus: this.agent.currentStatus,

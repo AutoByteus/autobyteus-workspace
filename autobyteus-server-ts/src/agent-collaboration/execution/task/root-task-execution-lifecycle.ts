@@ -228,7 +228,8 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   /**
    * Status of any agent in the root. Running or initializing cancels the grace
    * timers of every task execution containing the agent; idle, offline or error
-   * (re)arms them. The fire-time quiescence check is the only safety guard.
+   * (re)arms them. The fire-time quiescence check, which includes running
+   * background tasks, is the only safety guard.
    */
   onAgentStatus(agentRunId: string, status: TaskExecutionAgentStatus): void {
     const chain = this.adapter.taskExecutionChainFor(agentRunId);
@@ -241,6 +242,17 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       return;
     }
     this.armLive(chain);
+  }
+
+  /**
+   * A background task of an agent ended (completed, failed or stopped). While it ran, a grace fire
+   * skipped the shutdown without re-arming; re-arm every live task execution containing the agent so
+   * an otherwise quiet copy is shut down one grace period after the end, even when no turn follows.
+   */
+  onAgentBackgroundTaskEnded(agentRunId: string): void {
+    if (!this.accepting) return;
+    const chain = this.adapter.taskExecutionChainFor(agentRunId);
+    if (chain.length) this.armLive(chain);
   }
 
   /**

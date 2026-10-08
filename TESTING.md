@@ -26,6 +26,7 @@ package's script from its own directory.
 | Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run`; the interrupted-compaction cases alone (interrupt, terminate and app-server crash during an automatic compaction): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts --no-watch` (lowers the test app server's auto-compaction limit; a few turns of Codex quota per case) |
 | Claude compaction live E2E | Real Claude CLI/SDK `/compact`, Stop and CLI process exit during compaction, raw-trace rotation and reopened history, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts --no-watch`; add `RUN_CLAUDE_AUTO_COMPACTION_E2E=1` for the costly auto-compaction case (~300K input tokens) |
 | Claude background-task live E2E | Real Claude CLI/SDK background Bash tasks for a standalone agent and a team member: `BACKGROUND_TASK_UPDATED` snapshots with the shell `command` (explicit background and CLI auto-background, which the test enables itself), completion, failure, Stop+terminate and CLI crash, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-background-task.e2e.test.ts tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts --no-watch` |
+| Delegated background-task idle shutdown live E2E | A delegated copy is not idle-shut-down while its background task runs (grace set to 60 s by the test), then is shut down one grace period after it is quiet. Claude (Team root, Claude coordinator): a `run_in_background` task longer than the grace completes, the copy reports to its delegator, then goes offline. AGY (Team root, Claude coordinator, AGY worker): a daemon running 180 s outlives two grace periods with the same AGY process and answers a follow-up; its own exit finishes the task and the copy goes offline one grace period later | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts --no-watch` (optional `CLAUDE_E2E_TOOL_MODEL`, default `haiku`); `RUN_AGY_BACKGROUND_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts --no-watch` (optional `AGY_E2E_MODEL`; leave `ANTIGRAVITY_CLI_COMMAND` unset). `DELEGATED_BACKGROUND_E2E_EVIDENCE_DIR` keeps JSON receipts. About 4 and 6 minutes; uses Claude and AGY quota |
 | Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files, compaction rotation in `agy-compaction-rotation-transport.e2e.test.ts`, compaction version gate off in `agy-compaction-gate-off-transport.e2e.test.ts`) with a scripted CLI; no model call. `AGY_FAKE_VERSION` overrides the fake CLI's `--version` output | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
 | Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1`, `RUN_AGY_RECOVERY_E2E=1` or `RUN_AGY_COMPACTION_E2E=1` (automatic compaction from ~90K-token turns; uses AGY quota, leave `ANTIGRAVITY_CLI_COMMAND` unset; add `AGY_COMPACTION_E2E_CHECKPOINTS=2` to continue until a second compaction), then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
@@ -452,6 +453,31 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence 
   Every case fails on any browser error. PMU-007 allows errors only while the backend restarts. On failure, `evidence.json` keeps each page's URL, center text and its last console lines. PMU-004 and PMU-007 depend on earlier cases in the same run.
 
   Before the first case, the probe warms the Nuxt dev server. It visits its routes and waits until the server has stopped re-optimizing dependencies (`evidence.warmup`). On a cold cache, that "optimized dependencies changed. reloading" can wipe a page's first reads, such as the left panel's run history. The packaged app has no such reload.
+
+Idle shutdown of delegated copies with runtime background tasks has a gated
+server E2E for all three roots (about 3 minutes, no model calls):
+
+```bash
+RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts --no-watch
+```
+
+- **`task-copy-idle-lifetime.e2e.test.ts`.** Real HTTP/WS/scoped MCP, idle-shutdown
+  lifecycle and AGY background-task monitor; the scripted AGY actor's
+  `BACKGROUND_STEP:{"seconds":N}` route leaves a daemon step open at turn end
+  and writes AGY's exit message after N seconds (under a disposable `HOME`).
+  The grace setting is stored at its 60 s minimum. In the Agent, Team and Org
+  roots at once:
+  - an Agent copy and a Team copy (its coordinator) with a 100 s step are not
+    shut down while it runs, and are shut down one grace period after it exits
+    (no turn follows an AGY exit);
+  - a quiet copy is shut down after one grace period and the Manager's message
+    restores it (a relaunch with `--conversation`);
+  - Task DONE and root stop stop copies whose step still runs, at once.
+
+  Shutdown is proven by the copy's CLI process disappearing as well as by
+  `offline` on the root's view. `TASK_COPY_IDLE_LIFETIME_E2E_EVIDENCE_DIR`
+  keeps a JSON receipt with the measured times.
 
 `@` delegation and ad-hoc Tasks (Tasks with no Project, created by a described
 `delegate_task` and closed by `create_or_update_task({task_id, status: "DONE"})`)
