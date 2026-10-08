@@ -23,6 +23,7 @@ vi.mock('~/services/workspace/workspaceNavigationService', () => ({
 vi.mock('~/stores/chatDraftStore', () => ({ useChatDraftStore: () => ({ startNewChat: vi.fn() }) }))
 
 import ChatPage from '../chat.vue'
+import { ArchivedAgentRunOpenError } from '~/services/runOpen/agentRunOpenCoordinator'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
@@ -112,8 +113,75 @@ describe('pages/chat.vue', () => {
 
     expect(routing.replace).toHaveBeenCalledWith({ path: '/chat', query: { id: 'run-3' } })
     expect(routing.replace).not.toHaveBeenCalledWith('/chat')
+    expect(routing.replace).not.toHaveBeenCalledWith({ path: '/workspace' })
     expect(wrapper.find('[data-test="stub-frame"]').exists()).toBe(true)
     expect(useAgentSelectionStore().selectedRunId).toBe('run-3')
+  })
+
+  describe('an archived or deleted run leaves to the workspace empty view', () => {
+    it('leaves a displayed stored run that is removed, without re-opening it or selecting another run', async () => {
+      const contexts = useAgentContextsStore()
+      contexts.runs.set('run-other', buildContext('run-other'))
+      contexts.runs.set('run-open', buildContext('run-open'))
+      routing.route.query = { id: 'run-open' }
+      mountPage()
+      await flushPromises()
+      expect(useAgentSelectionStore().selectedRunId).toBe('run-open')
+
+      // Archive / Archive all / Delete cleanup removes the stored run's context.
+      contexts.removeRun('run-open')
+      await flushPromises()
+
+      expect(routing.replace).toHaveBeenCalledWith({ path: '/workspace' })
+      expect(routing.open).not.toHaveBeenCalled()
+      expect(contexts.getRun('run-open')).toBeUndefined()
+      expect(useAgentSelectionStore().selectedRunId).toBeNull()
+    })
+
+    it('keeps the displayed run when a different run is removed', async () => {
+      const contexts = useAgentContextsStore()
+      contexts.runs.set('run-other', buildContext('run-other'))
+      contexts.runs.set('run-open', buildContext('run-open'))
+      routing.route.query = { id: 'run-open' }
+      const wrapper = mountPage()
+      await flushPromises()
+
+      contexts.removeRun('run-other')
+      await flushPromises()
+
+      expect(routing.replace).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-test="stub-frame"]').exists()).toBe(true)
+      expect(useAgentSelectionStore().selectedRunId).toBe('run-open')
+    })
+
+    it('returns to New chat when a displayed draft is discarded', async () => {
+      const contexts = useAgentContextsStore()
+      contexts.registerDraftRun(buildContext('temp-5'))
+      routing.route.query = { id: 'temp-5' }
+      mountPage()
+      await flushPromises()
+
+      contexts.removeRun('temp-5')
+      await flushPromises()
+
+      expect(routing.replace).toHaveBeenCalledWith('/chat')
+      expect(routing.replace).not.toHaveBeenCalledWith({ path: '/workspace' })
+    })
+
+    it('leaves a stale address of an archived run without opening it', async () => {
+      useAgentContextsStore().runs.set('run-other', buildContext('run-other'))
+      useAgentSelectionStore().selectRun('run-other', 'agent')
+      routing.open.mockRejectedValue(new ArchivedAgentRunOpenError('run-archived'))
+      routing.route.query = { id: 'run-archived' }
+      const wrapper = mountPage()
+      await flushPromises()
+
+      expect(routing.open).toHaveBeenCalledWith({ kind: 'agent', runId: 'run-archived' })
+      expect(routing.replace).toHaveBeenCalledWith({ path: '/workspace' })
+      expect(wrapper.find('[data-test="chat-missing"]').exists()).toBe(false)
+      expect(useAgentContextsStore().getRun('run-archived')).toBeUndefined()
+      expect(useAgentSelectionStore().selectedRunId).toBeNull()
+    })
   })
 
   describe('run settings (⚙) belong to their run (CR-005)', () => {
