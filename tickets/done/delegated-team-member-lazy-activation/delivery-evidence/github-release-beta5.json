@@ -1,0 +1,26 @@
+{
+ "isDraft": false,
+ "isPrerelease": true,
+ "publishedAt": "2026-10-08T17:32:35Z",
+ "tagName": "v1.4.99-beta.5",
+ "asset_count": 17,
+ "assets": [
+  "AutoByteus_personal_android-1.4.99-beta.5-release.apk",
+  "AutoByteus_personal_android-1.4.99-beta.5-release.apk.sha256",
+  "AutoByteus_personal_linux-arm64-1.4.99-beta.5.AppImage",
+  "AutoByteus_personal_linux-x64-1.4.99-beta.5.AppImage",
+  "AutoByteus_personal_macos-arm64-1.4.99-beta.5.dmg",
+  "AutoByteus_personal_macos-arm64-1.4.99-beta.5.dmg.blockmap",
+  "AutoByteus_personal_macos-arm64-1.4.99-beta.5.zip",
+  "AutoByteus_personal_macos-arm64-1.4.99-beta.5.zip.blockmap",
+  "AutoByteus_personal_macos-x64-1.4.99-beta.5.dmg",
+  "AutoByteus_personal_macos-x64-1.4.99-beta.5.dmg.blockmap",
+  "AutoByteus_personal_macos-x64-1.4.99-beta.5.zip",
+  "AutoByteus_personal_macos-x64-1.4.99-beta.5.zip.blockmap",
+  "AutoByteus_personal_windows-1.4.99-beta.5.exe",
+  "latest-linux-arm64.yml",
+  "latest-linux.yml",
+  "latest-mac.yml",
+  "latest.yml"
+ ]
+}
