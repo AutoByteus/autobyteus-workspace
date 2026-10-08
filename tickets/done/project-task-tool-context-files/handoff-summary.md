@@ -1,11 +1,19 @@
 # Handoff Summary — Project Task Tool Context Files
 
 ## Current Delivery State
-- Package `project-task-tool-context-files`; `/software_engineering_team/delivery_engineer`; **DR-001: waiting for user verification**, 2026-10-08.
+- Package `project-task-tool-context-files`; `/software_engineering_team/delivery_engineer`; **DR-003 Delivery Completed**, 2026-10-08.
 - `task_size=Medium`, `architectural_risk=High`. The reviewed route was kept: ARCH-REV-001 Pass → CRR-001 Pass (9.4/10) → API-REV-001 Pass (95.6%) → CRR-002 Pass.
-- Revisions: SR-002 (requirements) / SR-003 (design) / ARCH-REV-001 / IR-001 / CRR-001 / API-REV-001 / CRR-002 / DR-001.
-- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-tool-context-files`, branch `codex/project-task-tool-context-files`, HEAD `a7b57e0ce`. Docs-sync edits and delivery artifacts are not committed yet.
-- Finalization target: `personal` (`origin/personal`).
+- Revisions: SR-002 / SR-003 / ARCH-REV-001 / IR-001 / CRR-001 / API-REV-001 / CRR-002 / DR-001 / DR-002 / DR-003.
+- User verification: "finalize and release a new beta version", then "now work on the release now…" (`user-verification.md`). This was a go-ahead; no in-app test result was reported.
+- Finalization:
+  - Ticket finalization commit `fa2d9f8c7`, pushed on `origin/codex/project-task-tool-context-files` (the remote branch is kept).
+  - `--no-ff` merge `abe2b1652` into `personal`, pushed.
+- Release: **`v1.4.98-beta.2`** is published as a pre-release, with all 4 workflows green. `v1.4.98-beta.1` was blocked and never published. See `release-deployment-report.md`.
+- Cleanup: the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-tool-context-files` and the local branch are removed.
+- Canonical durable root: `tickets/done/project-task-tool-context-files/` on `personal`.
+  - Older artifact paths under `.../autobyteus-worktrees/project-task-tool-context-files/tickets/in-progress/project-task-tool-context-files/<file>` now resolve to the same `<file>` there.
+  - On disk this is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/project-task-tool-context-files/`, once the main checkout is updated to `origin/personal`.
+- The "User Verification Requested" and "Finalization Plan" sections below are the DR-001 snapshot and are kept for history.
 
 ## What Changed (user-facing)
 Agents can attach files to a Project Task. `create_or_update_task` (native and MCP) takes an optional `context_files` list of absolute local file paths, both when creating and when updating a Task. The server copies each file into the Task's saved context. The copy shows in the Task page's Context Files like a UI upload (with image preview) and stays after the original is deleted. A later `delegate_task({task_id})` hands the copies to the worker as Reference files.

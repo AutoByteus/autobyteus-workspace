@@ -1,0 +1,8 @@
+Updating autobyteus-web/package.json: 1.4.98-beta.1 -> 1.4.98-beta.2
+[personal 714c41324] chore(release): bump workspace release version to 1.4.98-beta.2
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   82880ac21..714c41324  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.98-beta.2 -> v1.4.98-beta.2
+Release complete and pushed: branch 'personal', tag 'v1.4.98-beta.2'.
