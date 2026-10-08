@@ -27,7 +27,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // - a quiet Agent copy is shut down after one grace period, and the Manager's message restores it;
 // - copies whose 900 s step still runs are stopped at once by Task DONE and by root stop.
 // "Shut down" is proven physically (the copy's CLI process is gone) and on the root's status feed (`offline`).
-// About 5 minutes. `TASK_COPY_IDLE_LIFETIME_E2E_EVIDENCE_DIR` keeps a JSON receipt.
+// About 3 minutes. `TASK_COPY_IDLE_LIFETIME_E2E_EVIDENCE_DIR` keeps a JSON receipt.
 // Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts --no-watch
 // The AGY brain root (exit messages) is under HOME, resolved at module import: use a disposable HOME.
