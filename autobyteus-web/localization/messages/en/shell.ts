@@ -16,6 +16,7 @@ const shellMessages = {
   'shell.navigation.memory': 'Memory',
   'shell.navigation.nodes': 'Nodes',
   'shell.navigation.projects': 'Projects',
+  'shell.navigation.workspaces': 'Workspaces',
   'shell.navigation.settings': 'Settings',
   'shell.rightTabs.projects': 'Projects',
   'shell.rightTabs.files': 'Files',

@@ -34,7 +34,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016'];
+const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1137,6 +1137,175 @@ const projectsTabOtherRootsAndNarrow = async () => {
   } finally { for (const input of inputs) input.close(); }
 };
 
+// ---------------------------------------------------------------- collapsed-left-panel-expand-keeps-run (PMU-017)
+const stripWorkspaces = (page) => page.locator('[data-test="workspace-left-strip-workspaces"]');
+/** What the strip and the docked panel light, and where focus is. */
+const shellNavState = (page) => page.evaluate(() => {
+  const strip = document.querySelector('[data-test="workspace-left-navigation-strip"]');
+  const workspaces = document.querySelector('[data-test="workspace-left-strip-workspaces"]');
+  const chatRow = document.querySelector('[data-test="app-left-panel-chat"]');
+  return {
+    strip: Boolean(strip),
+    workspacesLit: workspaces ? workspaces.getAttribute('aria-current') === 'location' && workspaces.classList.contains('bg-gray-100') : null,
+    stripChatLit: strip?.querySelector('[data-nav-key="chat"]')?.classList.contains('bg-gray-100') ?? null,
+    panelChatLit: chatRow ? chatRow.classList.contains('bg-gray-100') : null,
+    focus: document.activeElement?.getAttribute('data-test') ?? document.activeElement?.tagName ?? null,
+  };
+});
+/** The deepest selected tree row and whether it is fully inside the tree's scroll container. */
+const revealedTreeRow = (page) => page.evaluate(() => {
+  const scrollers = [...document.querySelectorAll('[data-test="workspace-history-tree-scroll"]')].filter((e) => e.getBoundingClientRect().height > 0);
+  const scroller = scrollers.at(-1);
+  const rows = scroller ? scroller.querySelectorAll('[aria-current="true"], [aria-selected="true"]') : [];
+  const row = rows[rows.length - 1];
+  if (!scroller || !row) return null;
+  const box = scroller.getBoundingClientRect(); const rect = row.getBoundingClientRect();
+  return {
+    agentRunId: row.getAttribute('data-agent-run-id'), test: row.getAttribute('data-test'), text: row.textContent.replace(/\s+/g, ' ').trim().slice(0, 80),
+    visible: rect.height > 0 && rect.top >= box.top - 0.5 && rect.bottom <= box.bottom + 0.5,
+    scrollTop: Math.round(scroller.scrollTop), centreOffset: Math.round(rect.top + rect.height / 2 - (box.top + box.height / 2)),
+    focused: document.activeElement === row, selectedRows: rows.length,
+  };
+});
+const collapseLeftPanel = async (page) => {
+  await page.locator('[data-test="app-left-panel-collapse"]').click();
+  await stripWorkspaces(page).waitFor({ timeout: 15000 });
+  await sleep(200);
+};
+
+/**
+ * REQ-001..REQ-010: with the left panel collapsed, a worker opened from a Task card lights Workspaces (not Chat);
+ * Workspaces docks the panel without changing the route, the center or the Projects tab, and the worker's row is
+ * selected, its ancestors open (a task Team nested in a Team run included) and fully in view, with focus on it.
+ * Also: narrow drawer + Escape focus return, the short-window strip, and New chat with typed text.
+ */
+const collapsedStripWorkspaces = async () => {
+  const { ids, names } = await createDefinitions('PmuStrip');
+  const projectId = await createProject(`Strip Board ${randomUUID().slice(0, 6)}`);
+  const { page, errors } = await newPage({ width: 1440, height: 620 });
+  const panel = page.locator('[data-test="right-side-projects-panel"]');
+  const tabList = page.locator('[data-test="right-side-tab-list"] [data-tab-name]');
+  const details = {};
+  const inputs = [];
+  try {
+    // Team host: the Manager delegates to a task Team, so the worker (its coordinator) sits in a nested sub-team row.
+    const hosts = [
+      { kind: 'agent', recipient: `/${segment(names.worker)}`, activate: 'click' },
+      { kind: 'team', recipient: `/${segment(names.squad)}`, activate: 'click' },
+      { kind: 'org', recipient: '/worker', activate: 'Enter' },
+    ];
+    for (const host of hosts) {
+      const taskId = await createTask(projectId, `Strip journey hosted by the ${host.kind} run`);
+      const root = await createRoot(host.kind, ids);
+      const input = await managerInput(root); inputs.push(input);
+      input.send(callTool('delegate_task', { recipient_address: host.recipient, task_id: taskId }));
+      await until(`${host.kind}: worker started`, async () => (await rootOf(projectId, taskId))?.start === 'started', 60000);
+      const worker = await rootOf(projectId, taskId);
+      // Open the host conversation as a user does, with the panel docked.
+      if (host.kind === 'agent') {
+        await goto(page, `/chat?id=${encodeURIComponent(root.rootId)}`);
+      } else {
+        await goto(page, '/workspace');
+        await expandWorkspace(page);
+        if (host.kind === 'team') {
+          await page.locator(`[data-test="workspace-team-definition-row-${slug(names.team)}"]`).click();
+          await page.locator(`[data-test="workspace-team-row-${root.rootId}"]`).click();
+        } else {
+          await page.locator(`[data-test="agent-org-definition-${slug(names.org)}"]`).click();
+          await page.locator(`[data-test="agent-org-run-open-${root.rootId}"]`).click();
+        }
+      }
+      await tabList.first().waitFor({ timeout: 60000 });
+      // AC-012: collapsing moves focus to Workspaces.
+      await collapseLeftPanel(page);
+      const afterCollapse = await shellNavState(page);
+      assert(afterCollapse.strip && afterCollapse.focus === 'workspace-left-strip-workspaces', `${host.kind}: focus on Workspaces after collapse`, afterCollapse);
+      // Open the worker from the Task card in the right Projects tab.
+      if (await tabList.first().getAttribute('aria-selected') !== 'true') await tabList.first().click();
+      await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+      const line = panel.locator(`[data-testid="project-task-row-${taskId}"] [data-testid^="project-task-root-"][data-openable="true"]`);
+      await line.waitFor({ timeout: 60000 });
+      await line.click();
+      await until(`${host.kind}: worker conversation in the center`, async () => /Task delegator address/.test(await centerText(page)), 30000);
+      // AC-001/AC-011: Workspaces is lit, Chat is not.
+      const before = await until(`${host.kind}: Workspaces lit for the open worker`, async () => { const n = await shellNavState(page); return n.workspacesLit ? n : null; }, 15000);
+      assert(before.stripChatLit === false, `${host.kind}: Chat is not lit on an open run`, before);
+      // The open finishes with its own route write (an Org worker adds `agentRunId`); record the settled route.
+      const url = await until(`${host.kind}: route settled after opening the worker`, async () => {
+        const seen = page.url(); await sleep(750); return page.url() === seen ? seen : null;
+      }, 15000);
+      const center = await centerText(page);
+      await shot(page, `pmu-017-${host.kind}-collapsed-worker-open`);
+      // Workspaces: click, or keyboard Enter (AC-012).
+      if (host.activate === 'Enter') { await stripWorkspaces(page).focus(); await page.keyboard.press('Enter'); } else await stripWorkspaces(page).click();
+      await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+      const revealed = await until(`${host.kind}: worker row selected and in view`, async () => {
+        const r = await revealedTreeRow(page);
+        return r?.visible && (!worker.ingressAgentRunId || !r.agentRunId || r.agentRunId === worker.ingressAgentRunId) ? r : null;
+      }, 15000);
+      await sleep(400);
+      const settled = await revealedTreeRow(page);
+      const after = await shellNavState(page);
+      assert(page.url() === url, `${host.kind}: Workspaces changed the route`, { url, now: page.url() });
+      assert(await centerText(page) === center || /Task delegator address/.test(await centerText(page)), `${host.kind}: the center changed`);
+      assert(await tabList.first().getAttribute('aria-selected') === 'true', `${host.kind}: the Projects tab stays selected`);
+      assert(after.panelChatLit === false, `${host.kind}: the docked Chat row is not lit on a run`, after);
+      assert(settled?.visible && settled.focused, `${host.kind}: the revealed row keeps focus and stays in view`, settled);
+      await shot(page, `pmu-017-${host.kind}-workspaces-revealed`);
+      details[host.kind] = { worker: { ingressAgentRunId: worker.ingressAgentRunId, hostRoot: worker.hostRoot }, afterCollapse, before, revealed, settled, after, url };
+    }
+
+    // AC-005: narrow window — Workspaces opens the drawer with the run revealed; Escape returns focus to it.
+    await page.setViewportSize({ width: 760, height: 900 });
+    await stripWorkspaces(page).waitFor({ timeout: 15000 });
+    await sleep(400);
+    const narrowUrl = page.url();
+    assert(await page.locator('[data-test="workspace-left-navigation-strip"]').getAttribute('data-strip-activation') === 'open-drawer', 'narrow strip opens the drawer');
+    await stripWorkspaces(page).click();
+    await page.locator('[data-test="app-left-navigation-drawer"]').waitFor({ timeout: 15000 });
+    const drawerRow = await until('drawer: run row in view', async () => { const r = await revealedTreeRow(page); return r?.visible ? r : null; }, 15000);
+    await shot(page, 'pmu-017-narrow-drawer-revealed');
+    await page.keyboard.press('Escape');
+    await page.locator('[data-test="app-left-navigation-drawer"]').waitFor({ state: 'detached', timeout: 15000 });
+    const drawerClosed = await shellNavState(page);
+    assert(drawerClosed.focus === 'workspace-left-strip-workspaces' && page.url() === narrowUrl, 'drawer: Escape returns focus to Workspaces, route unchanged', drawerClosed);
+    details.narrow = { drawerRow, drawerClosed };
+
+    // AC-010 / REQ-010: short window — divider hidden, Settings still visible.
+    await page.setViewportSize({ width: 1440, height: 500 });
+    await sleep(600);
+    // The docked preference returns on a wide window; collapse it to show the strip.
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    await until('short-window strip', async () => page.locator('[data-test="workspace-left-strip-workspaces-divider"]').count(), 15000);
+    const short = await page.evaluate(() => {
+      const divider = document.querySelector('[data-test="workspace-left-strip-workspaces-divider"]');
+      const settings = document.querySelector('[data-test="workspace-left-navigation-strip"] [data-nav-key="settings"]')?.getBoundingClientRect();
+      return { dividerDisplay: divider ? getComputedStyle(divider).display : null, settingsBottom: settings ? Math.round(settings.bottom) : null, viewport: window.innerHeight };
+    });
+    await shot(page, 'pmu-017-short-window-strip');
+    assert(short.dividerDisplay === 'none' && short.settingsBottom !== null && short.settingsBottom <= short.viewport, 'short window: divider hidden, Settings visible', short);
+    details.short = short;
+
+    // AC-009 / REQ-006: New chat with typed text — Chat lit; Workspaces shows the panel and keeps the text and route.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await goto(page, '/chat');
+    const input = page.locator('[data-test="chat-composer"] textarea').first();
+    await input.waitFor({ timeout: 60000 });
+    if (await page.locator('[data-test="app-left-panel-collapse"]').isVisible().catch(() => false)) await collapseLeftPanel(page);
+    await input.click(); await input.type('Keep this draft text', { delay: 5 });
+    const onNewChat = await shellNavState(page);
+    assert(onNewChat.stripChatLit === true && onNewChat.workspacesLit === false, 'New chat: Chat lit, Workspaces not', onNewChat);
+    await stripWorkspaces(page).click();
+    await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+    const kept = { route: new URL(page.url()).pathname + new URL(page.url()).search, text: await input.inputValue() };
+    assert(kept.route === '/chat' && kept.text === 'Keep this draft text', 'New chat: route and draft text kept', kept);
+    await shot(page, 'pmu-017-new-chat-workspaces');
+    details.newChat = { onNewChat, kept };
+    assertNoBrowserErrors(errors);
+    return details;
+  } finally { for (const input of inputs) input.close(); }
+};
+
 const CASES = {
   'PMU-001': ['Projects list and board follow writes live (arrival highlight, counts)', listAndBoardLive],
   'PMU-002': ['Agent root: live status, live move highlight, opening the worker, DONE → Offline muted', agentRootOnBoard],
@@ -1154,6 +1323,7 @@ const CASES = {
   'PMU-014': ['Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation', compactCardEdges],
   'PMU-015': ['Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)', projectsTab],
   'PMU-016': ['Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first', projectsTabOtherRootsAndNarrow],
+  'PMU-017': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
 };
 
 let result = 'Pass';

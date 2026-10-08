@@ -325,6 +325,13 @@ export const useWorkspaceHistoryTreeState = (params: {
     setWorkspaceExpanded(ancestry.workspaceId, true);
     setTeamDefinitionExpanded(ancestry.workspaceId, ancestry.teamDefinitionGroupKey, true);
     setTeamExpanded(teamRunId, true);
+    // The focused member's sub-team rows open too, however it was opened (REQ-003). Until its row
+    // exists the reveal stays pending and re-applies on the next topology revision.
+    const team = params.runHistoryStore.getTeamNodes().find((node) => node.teamRunId === teamRunId);
+    const focusedAgentRunId = team?.focusedAgentRunId?.trim();
+    if (!team || !focusedAgentRunId) return true;
+    if (!team.executionRows.some((row) => row.agentRunId === focusedAgentRunId)) return false;
+    expandTeamMemberAncestors(ancestry.workspaceId, teamRunId, focusedAgentRunId);
     return true;
   };
 

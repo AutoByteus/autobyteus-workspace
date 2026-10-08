@@ -16,6 +16,7 @@ const shellMessages = {
   'shell.navigation.memory': '记忆',
   'shell.navigation.nodes': '节点',
   'shell.navigation.projects': '项目',
+  'shell.navigation.workspaces': '工作区',
   'shell.navigation.settings': '设置',
   'shell.rightTabs.projects': '项目',
   'shell.rightTabs.files': '文件',

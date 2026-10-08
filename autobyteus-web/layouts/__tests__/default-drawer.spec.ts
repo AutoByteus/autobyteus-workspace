@@ -7,6 +7,7 @@ import DefaultLayout from '../default.vue'
 const routeMock = {
   path: '/agents',
   fullPath: '/agents',
+  query: {},
 }
 const routerMock = {
   push: vi.fn(),
@@ -90,6 +91,45 @@ describe('default layout drawer lifecycle', () => {
 
     expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
     expect(document.activeElement).toBe(wrapper.get('[data-test="workspace-left-navigation-strip"] button[title="Agents"]').element)
+    wrapper.unmount()
+  })
+
+  it('opens the drawer from strip Workspaces without navigating and returns focus to it on close (AC-005)', async () => {
+    const wrapper = mount(DefaultLayout, {
+      attachTo: document.body,
+      global: {
+        plugins: [createTestingPinia({ createSpy: vi.fn, stubActions: false })],
+        stubs: {
+          Icon: true,
+          WorkspaceAgentRunsTreePanel: { template: '<div data-test="runs-tree-stub"></div>' },
+        },
+        mocks: { $t: (key: string) => key },
+      },
+      slots: { default: '<div data-test="workspace-slot"></div>' },
+    })
+    await nextTick()
+    await nextTick()
+    await nextTick()
+
+    const workspaces = () => wrapper.get('[data-test="workspace-left-strip-workspaces"]')
+    expect(workspaces().attributes('data-nav-key')).toBe('workspaces')
+    ;(workspaces().element as HTMLElement).focus()
+    await workspaces().trigger('click')
+    await nextTick()
+    await nextTick()
+    await nextTick()
+
+    const drawer = wrapper.get('[data-test="app-left-navigation-drawer"]')
+    expect(drawer.find('[data-test="app-left-panel-run-history"]').exists()).toBe(true)
+    expect(routerMock.push).not.toHaveBeenCalled()
+
+    await wrapper.get('[data-test="app-left-drawer-backdrop"]').trigger('click')
+    await nextTick()
+    await nextTick()
+
+    expect(wrapper.find('[data-test="app-left-navigation-drawer"]').exists()).toBe(false)
+    expect(document.activeElement).toBe(workspaces().element)
+    expect(routerMock.push).not.toHaveBeenCalled()
     wrapper.unmount()
   })
 

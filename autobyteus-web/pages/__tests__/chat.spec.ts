@@ -18,6 +18,7 @@ vi.mock('vue-router', () => ({
 }))
 vi.mock('~/services/workspace/workspaceNavigationService', () => ({
   buildAgentRunChatRoute: (runId: string) => ({ path: '/chat', query: { id: runId } }),
+  chatRouteRunId: (query: { id?: unknown }) => (typeof query.id === 'string' && query.id.trim()) || null,
   openWorkspaceExecutionLink: routing.open,
 }))
 vi.mock('~/stores/chatDraftStore', () => ({ useChatDraftStore: () => ({ startNewChat: vi.fn() }) }))

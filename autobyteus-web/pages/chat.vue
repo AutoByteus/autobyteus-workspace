@@ -45,7 +45,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { ArchivedAgentRunOpenError } from '~/services/runOpen/agentRunOpenCoordinator'
-import { buildAgentRunChatRoute, openWorkspaceExecutionLink } from '~/services/workspace/workspaceNavigationService'
+import { buildAgentRunChatRoute, chatRouteRunId, openWorkspaceExecutionLink } from '~/services/workspace/workspaceNavigationService'
 import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 
 /**
@@ -61,11 +61,7 @@ const selectionStore = useAgentSelectionStore()
 const chatDraftStore = useChatDraftStore()
 const showFileContent = useWorkspaceFileContentVisible()
 
-const routeRunId = computed(() => {
-  const value = route.query.id
-  const id = Array.isArray(value) ? value[0] : value
-  return typeof id === 'string' && id.trim() ? id.trim() : null
-})
+const routeRunId = computed(() => chatRouteRunId(route.query))
 // On New chat, Files and Terminal use the workspace chosen in the composer.
 provide(START_SURFACE_WORKSPACE, computed(() => (routeRunId.value ? null : startSurfaceWorkspaceOf(chatDraftStore.draft?.workspace))))
 const displayedContext = computed(() => (routeRunId.value ? agentContextsStore.getRun(routeRunId.value) ?? null : null))

@@ -27,8 +27,17 @@ describe('useShellPrimaryNavigation shared policy helpers', () => {
   });
 
   it('matches active route state for the Nodes primary item', () => {
-    expect(isShellPrimaryRouteActive('nodes', '/nodes')).toBe(true);
-    expect(isShellPrimaryRouteActive('nodes', '/nodes/details')).toBe(true);
-    expect(isShellPrimaryRouteActive('nodes', '/media')).toBe(false);
+    expect(isShellPrimaryRouteActive('nodes', { path: '/nodes', query: {} })).toBe(true);
+    expect(isShellPrimaryRouteActive('nodes', { path: '/nodes/details', query: {} })).toBe(true);
+    expect(isShellPrimaryRouteActive('nodes', { path: '/media', query: {} })).toBe(false);
+  });
+
+  // collapsed-left-panel-expand-keeps-run (REQ-008, AC-011): Chat means New chat.
+  it('lights Chat only on New chat, not on an open run', () => {
+    expect(isShellPrimaryRouteActive('chat', { path: '/chat', query: {} })).toBe(true);
+    expect(isShellPrimaryRouteActive('chat', { path: '/chat', query: { id: '  ' } })).toBe(true);
+    expect(isShellPrimaryRouteActive('chat', { path: '/chat', query: { id: 'run-1' } })).toBe(false);
+    expect(isShellPrimaryRouteActive('chat', { path: '/workspace', query: {} })).toBe(false);
+    expect(isShellPrimaryRouteActive('agents', { path: '/agents', query: { view: 'list' } })).toBe(true);
   });
 });

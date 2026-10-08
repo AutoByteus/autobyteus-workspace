@@ -369,7 +369,8 @@ defineCase('D02', 'SCN-001 Team (AC-001/002, VIS-002/004): row at the first char
   await atSize(page, 800, 738, () => shot(page, 'VIS-002-first-text-draft-row-selected-800x738'))
   await openSeedRun(page)
   const onRun = { rows: await readRows(page), chatSelected: await chatRowSelected(page) }
-  assert(onRun.rows.length === 1 && !onRun.rows[0].selected && onRun.rows[0].xOpacity === '0' && onRun.chatSelected, 'On a run: row not kept unselected / Chat row not as for a chat run (VIS-003)', onRun)
+  // Chat is lit only on New chat; on a run the strip's Workspaces icon is lit instead (collapsed-left-panel-expand-keeps-run REQ-008).
+  assert(onRun.rows.length === 1 && !onRun.rows[0].selected && onRun.rows[0].xOpacity === '0' && !onRun.chatSelected, 'On a run: row not kept unselected / Chat row lit on a run (VIS-003, REQ-008)', onRun)
   await openRow(page, T.team)
   await delay(800)
   const s2 = await snapshotNewChat(page)
@@ -755,10 +756,13 @@ defineCase('D11', 'AC-008/009 (VIS-003/006/007): seven long drafts, one line eac
   })
   await shot(page, 'VIS-007-collapsed-strip-unchanged-800x738')
   assert(!strip.digits && strip.chat.text === 'Chat' && strip.chat.tags === strip.agents.tags, 'The collapsed strip shows a draft indicator', strip)
-  await page.locator(`${sel('workspace-left-navigation-strip')} [data-nav-key="chat"]`).click()
+  // The strip's Workspaces icon reopens the panel on the open run without navigating
+  // (collapsed-left-panel-expand-keeps-run); Chat would open New chat instead.
+  const routeBeforeReopen = routeOf(page)
+  await page.locator(`${sel('workspace-left-navigation-strip')} [data-nav-key="workspaces"]`).click()
   await delay(800)
   const reopened = { route: routeOf(page), rows: (await readRows(page)).length, panel: await page.locator(sel('app-left-panel-chat')).isVisible() }
-  if (!reopened.panel) { await page.locator('[data-test="workspace-left-strip-open"]').first().click().catch(() => {}); await delay(500) }
+  assert(reopened.panel && reopened.route === routeBeforeReopen, 'Workspaces did not reopen the panel on the open run', { routeBeforeReopen, reopened })
   state.texts = [...(state.texts ?? []), ...long]
   return { problems, geo: geo.rows[0], enter: enter.slice(0, 2), enterCount: enter.length, rowsAddedWhileTyping: reinsertsWhileTyping, section, resized, order, ring, reduced, stripBefore, strip, reopened }
 })

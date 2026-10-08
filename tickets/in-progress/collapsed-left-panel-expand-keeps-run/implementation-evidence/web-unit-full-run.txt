@@ -1,0 +1,6 @@
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  4 failed | 585 passed | 2 skipped (591)
+      Tests  3 failed | 4005 passed | 5 skipped (4013)
+Rerun of the 4 files that failed while the server prebuild rebuilt SDK dist (same worktree, after the build):
+ Test Files  4 passed (4)
+      Tests  11 passed (11)
