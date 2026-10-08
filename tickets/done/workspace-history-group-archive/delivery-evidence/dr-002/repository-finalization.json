@@ -1,0 +1,14 @@
+{
+  "ticketBranch": "codex/workspace-history-group-archive",
+  "ticketFinalCommit": "abac35eb284c2333622b1bc55799e277f6c38fad",
+  "ticketBranchPushed": "origin/codex/workspace-history-group-archive",
+  "targetBeforeMerge": "4a51482a5ef8c678d69a3ffc995d6876fd170a2f",
+  "targetAdvancedAfterVerification": false,
+  "mergeCommit": "423a883d7f030f31c6e3f6bbab403c201e68cf71",
+  "targetPushed": "origin/personal 4a51482a5..423a883d7",
+  "release": "Not required (user declined)",
+  "worktreeRemoved": true,
+  "worktreePruned": true,
+  "localBranchDeleted": true,
+  "remoteBranchRetained": true
+}

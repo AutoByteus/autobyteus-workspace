@@ -1,0 +1,143 @@
+Merge made by the 'ort' strategy.
+ autobyteus-server-ts/docs/modules/run_history.md   |    29 +
+ .../src/api/graphql/types/run-history.ts           |    20 +
+ .../services/agent-run-history-service.ts          |    42 +
+ .../archive-run-history-graphql.e2e.test.ts        |   218 +-
+ .../e2e/workspaces/workspaces-graphql.e2e.test.ts  |    14 +-
+ ...ex-mcp-tool-args-projection.integration.test.ts |     6 +
+ ...emory-layout-and-projection.integration.test.ts |    23 +-
+ .../graphql/converters/workspace-converter.test.ts |    47 +-
+ .../studio-application-api-services.test.ts        |    16 +
+ .../types/memory-view-member-resolver.test.ts      |    10 +-
+ .../tests/unit/api/graphql/types/projects.test.ts  |     3 +-
+ .../services/agent-run-history-service.test.ts     |    60 +
+ .../history/WorkspaceAgentOrgHistoryCollection.vue |    17 +-
+ .../history/WorkspaceAgentRunsTreePanel.vue        |    53 +-
+ .../history/WorkspaceHistoryWorkspaceSection.vue   |    40 +-
+ .../__tests__/WorkspaceAgentRunsTreePanel.spec.ts  |    65 +
+ .../WorkspaceHistoryGroupArchiveHeaders.spec.ts    |   148 +
+ .../history/workspaceHistorySectionContracts.ts    |    15 +-
+ .../usage/__tests__/TokenUsageMeterPanel.spec.ts   |    13 +-
+ .../useWorkspaceHistoryGroupArchive.spec.ts        |   176 +
+ .../composables/useWorkspaceHistoryGroupArchive.ts |   172 +
+ .../docs/agent_execution_architecture.md           |    29 +
+ autobyteus-web/docs/agent_orgs.md                  |     8 +
+ .../graphql/mutations/runHistoryMutations.ts       |    10 +
+ .../localization/messages/en/workspace.ts          |    11 +
+ .../localization/messages/zh-CN/workspace.ts       |    11 +
+ .../stores/__tests__/runHistoryStore.spec.ts       |   138 +
+ autobyteus-web/stores/runHistoryMutationActions.ts |    85 +-
+ autobyteus-web/stores/runHistoryStore.ts           |    15 +-
+ autobyteus-web/stores/runHistoryTypes.ts           |    15 +
+ autobyteus-web/utils/escapeHtml.ts                 |     7 +
+ .../api-e2e-coverage-investigation.md              |   241 +
+ .../api-e2e-evidence/archive-group-confirm.js      |    15 +
+ .../api-e2e-evidence/blocked-check.js              |    15 +
+ .../api-e2e-evidence/click-group-archive.js        |    10 +
+ .../guard-audit:localization-literals.log          |     5 +
+ .../guard-guard:localization-boundary.log          |     1 +
+ .../api-e2e-evidence/guard-guard:web-boundary.log  |     1 +
+ .../api-e2e-evidence/live-01a-agent-blocked.png    |   Bin 0 -> 118345 bytes
+ .../live-01b-agent-hidden-live-server-blocked.png  |   Bin 0 -> 126722 bytes
+ .../api-e2e-evidence/live-02b-team-archived.png    |   Bin 0 -> 113519 bytes
+ .../api-e2e-evidence/live-03-org-blocked.png       |   Bin 0 -> 126837 bytes
+ .../live-03b-org-archived-route-left.png           |   Bin 0 -> 108292 bytes
+ .../api-e2e-evidence/live-04a-agent-run-open.png   |   Bin 0 -> 132776 bytes
+ .../live-04b-agent-group-archived-open-run.png     |   Bin 0 -> 121362 bytes
+ .../api-e2e-evidence/live-05a-zh-blocked.png       |   Bin 0 -> 103515 bytes
+ .../api-e2e-evidence/live-05b-zh-archived.png      |   Bin 0 -> 98126 bytes
+ .../live-06-per-run-archive-open-run.png           |   Bin 0 -> 120107 bytes
+ .../live-index-after-agent-archives.json           |    17 +
+ .../api-e2e-evidence/live-seed.json                |    28 +
+ .../api-e2e-evidence/live-seed.mjs                 |    91 +
+ ...repo-01-server-broader-after-baseline-fixes.log |   991 ++
+ .../api-e2e-evidence/repo-01-server-broader.log    |   988 ++
+ .../repo-02-web-full-after-baseline-fixes.log      | 10039 ++++++++++++++++++
+ .../api-e2e-evidence/repo-02-web-full.log          | 10232 +++++++++++++++++++
+ .../api-e2e-execution-coverage-report.md           |   272 +
+ .../api-e2e-revision-record.md                     |    58 +
+ .../api-e2e-test-case-ledger.md                    |    56 +
+ .../docs/modules/run_history.md                    |  1003 ++
+ .../docs/agent_execution_architecture.md           |  1818 ++++
+ .../docs-before/autobyteus-web/docs/agent_orgs.md  |   727 ++
+ .../dr-001/integration-refresh.log                 |     5 +
+ .../delivery-evidence/dr-001/server-focused.log    |   118 +
+ .../delivery-evidence/dr-001/web-focused.log       |    63 +
+ .../delivery-revision-record.md                    |    31 +
+ .../workspace-history-group-archive/design-spec.md |   283 +
+ .../docs-sync-report.md                            |    55 +
+ .../handoff-architecture-design-complete.md        |    61 +
+ .../handoff-summary.md                             |    49 +
+ .../01-agent-header-hover.png                      |   Bin 0 -> 145187 bytes
+ .../02-agent-header-focus-crop.png                 |   Bin 0 -> 27429 bytes
+ .../02-agent-header-focus.png                      |   Bin 0 -> 144527 bytes
+ .../implementation-evidence/03-agent-confirm.png   |   Bin 0 -> 137378 bytes
+ .../04-team-archived-toast.png                     |   Bin 0 -> 133799 bytes
+ .../05-final-build-agent-focus.png                 |   Bin 0 -> 142241 bytes
+ .../06-final-build-agent-archived-toast.png        |   Bin 0 -> 141739 bytes
+ .../implementation-handoff.md                      |   188 +
+ .../implementation-revision-record.md              |    35 +
+ .../investigation-notes.md                         |   150 +
+ .../release-deployment-report.md                   |   105 +
+ .../release-notes.md                               |    13 +
+ .../requirements-doc.md                            |   215 +
+ .../solution-revision-record.md                    |    71 +
+ .../user-verification.md                           |    10 +
+ 84 files changed, 29505 insertions(+), 71 deletions(-)
+ create mode 100644 autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryGroupArchiveHeaders.spec.ts
+ create mode 100644 autobyteus-web/composables/__tests__/useWorkspaceHistoryGroupArchive.spec.ts
+ create mode 100644 autobyteus-web/composables/useWorkspaceHistoryGroupArchive.ts
+ create mode 100644 autobyteus-web/utils/escapeHtml.ts
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/archive-group-confirm.js
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/blocked-check.js
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/click-group-archive.js
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/guard-audit:localization-literals.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/guard-guard:localization-boundary.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/guard-guard:web-boundary.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-01a-agent-blocked.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-01b-agent-hidden-live-server-blocked.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-02b-team-archived.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-03-org-blocked.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-03b-org-archived-route-left.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-04a-agent-run-open.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-04b-agent-group-archived-open-run.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-05a-zh-blocked.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-05b-zh-archived.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-06-per-run-archive-open-run.png
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-index-after-agent-archives.json
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-seed.json
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/live-seed.mjs
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/repo-01-server-broader-after-baseline-fixes.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/repo-01-server-broader.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/repo-02-web-full-after-baseline-fixes.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-evidence/repo-02-web-full.log
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-revision-record.md
+ create mode 100644 tickets/done/workspace-history-group-archive/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-evidence/dr-001/docs-before/autobyteus-server-ts/docs/modules/run_history.md
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-evidence/dr-001/docs-before/autobyteus-web/docs/agent_execution_architecture.md
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-evidence/dr-001/docs-before/autobyteus-web/docs/agent_orgs.md
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-evidence/dr-001/integration-refresh.log
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-evidence/dr-001/server-focused.log
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-evidence/dr-001/web-focused.log
+ create mode 100644 tickets/done/workspace-history-group-archive/delivery-revision-record.md
+ create mode 100644 tickets/done/workspace-history-group-archive/design-spec.md
+ create mode 100644 tickets/done/workspace-history-group-archive/docs-sync-report.md
+ create mode 100644 tickets/done/workspace-history-group-archive/handoff-architecture-design-complete.md
+ create mode 100644 tickets/done/workspace-history-group-archive/handoff-summary.md
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/01-agent-header-hover.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/02-agent-header-focus-crop.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/02-agent-header-focus.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/03-agent-confirm.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/04-team-archived-toast.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/05-final-build-agent-focus.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-evidence/06-final-build-agent-archived-toast.png
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-handoff.md
+ create mode 100644 tickets/done/workspace-history-group-archive/implementation-revision-record.md
+ create mode 100644 tickets/done/workspace-history-group-archive/investigation-notes.md
+ create mode 100644 tickets/done/workspace-history-group-archive/release-deployment-report.md
+ create mode 100644 tickets/done/workspace-history-group-archive/release-notes.md
+ create mode 100644 tickets/done/workspace-history-group-archive/requirements-doc.md
+ create mode 100644 tickets/done/workspace-history-group-archive/solution-revision-record.md
+ create mode 100644 tickets/done/workspace-history-group-archive/user-verification.md
