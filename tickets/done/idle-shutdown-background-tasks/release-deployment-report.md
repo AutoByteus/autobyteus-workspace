@@ -6,9 +6,9 @@ Server-side behavior change: idle shutdown of delegated copies is skipped while 
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/done/idle-shutdown-background-tasks/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/delivery-revision-record.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/done/idle-shutdown-background-tasks/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: classification preserved: `task_size=Medium`, `architectural_risk=High`, reviewed route
 
@@ -30,23 +30,23 @@ Server-side behavior change: idle shutdown of delegated copies is skipped while 
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (awaiting)
-- Initial verification / acceptance reference: pending
-- Renewed verification required after later re-integration: pending
-- Renewed verification received: pending
-- Renewed verification / acceptance reference: pending
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: `user-verification.md` ("fialize and release a new beta", 2026-10-08). This was a go-ahead; no in-app test result was reported.
+- Renewed verification required after later re-integration: `No`. `origin/personal` was still `3a2496c95` when re-fetched after verification.
+- Renewed verification received: `Not needed`
+- Renewed verification / acceptance reference: N/A
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/done/idle-shutdown-background-tasks/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: server module docs (agent_team_execution, agent_execution, antigravity_cli_runtime, agent_tools, prompt_engineering), web agent_teams.md, LLM contract and TESTING.md. Delivery fixed the E2E header duration (5 → 3 minutes).
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/idle-shutdown-background-tasks`: `No` (after user verification)
-- Archived ticket path: pending
+- Ticket moved to `tickets/done/idle-shutdown-background-tasks`: `Yes` (after user verification)
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/done/idle-shutdown-background-tasks`
 
 ## Version / Tag / Release Commit
 
@@ -89,7 +89,7 @@ Pending user decision.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/release-notes.md`
+- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/done/idle-shutdown-background-tasks/release-notes.md`
 - Archived release notes artifact used for release/publication: pending
 - Release notes status: `Updated`
 

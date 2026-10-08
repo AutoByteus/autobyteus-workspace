@@ -58,10 +58,10 @@ Hands-on, in the app built from this worktree:
 
 ## Delivery Artifacts
 
-- Docs sync: `tickets/in-progress/idle-shutdown-background-tasks/docs-sync-report.md`
-- Release notes: `tickets/in-progress/idle-shutdown-background-tasks/release-notes.md`
-- Release/deployment report: `tickets/in-progress/idle-shutdown-background-tasks/release-deployment-report.md`
-- Delivery revision record: `tickets/in-progress/idle-shutdown-background-tasks/delivery-revision-record.md` (DR-001)
+- Docs sync: `tickets/done/idle-shutdown-background-tasks/docs-sync-report.md`
+- Release notes: `tickets/done/idle-shutdown-background-tasks/release-notes.md`
+- Release/deployment report: `tickets/done/idle-shutdown-background-tasks/release-deployment-report.md`
+- Delivery revision record: `tickets/done/idle-shutdown-background-tasks/delivery-revision-record.md` (DR-001)
 
 ## Awaiting
 
