@@ -186,6 +186,9 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Check licensing consistency
+        run: python3 scripts/check_licensing.py
+
       - name: Validate workspace package versions match release tag
         if: ${{ steps.meta.outputs.enforce_version == 'true' }}
         shell: bash

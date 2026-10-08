@@ -140,6 +140,9 @@ jobs:
           ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
 
+      - name: Check licensing consistency
+        run: python3 scripts/check_licensing.py
+
       - name: Free runner disk space
         run: |
           set -euxo pipefail

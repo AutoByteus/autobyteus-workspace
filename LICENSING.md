@@ -63,6 +63,13 @@ permission to convey the resulting work. Corresponding Source for a non-source
 form of such a combination shall not include the source code for the parts of
 that library used.
 
+## Contributions
+
+Contributions require accepting the AutoByteus Contributor License Agreement
+([`CLA.md`](./CLA.md)), which lets the copyright holder offer them under
+AGPL-3.0-only and under commercial licenses. See
+[`CONTRIBUTING.md`](./CONTRIBUTING.md) for how to contribute and accept it.
+
 ## Third-party components
 
 Third-party components keep their own licenses. See

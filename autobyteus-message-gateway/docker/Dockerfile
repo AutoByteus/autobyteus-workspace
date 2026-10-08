@@ -2,6 +2,10 @@ FROM node:20-bookworm-slim
 
 WORKDIR /app
 
+# AutoByteus licence files and OCI licence label.
+COPY LICENSE LICENSING.md NOTICE /app/
+LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
+
 RUN corepack enable
 RUN apt-get update \
   && apt-get install -y --no-install-recommends python3 make g++ \

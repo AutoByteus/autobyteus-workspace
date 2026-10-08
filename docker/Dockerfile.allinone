@@ -40,6 +40,10 @@ RUN pnpm -C autobyteus-web build:mobile-web
 FROM autobyteus/chrome-vnc:${CHROME_VNC_TAG} AS runtime
 WORKDIR /app
 
+# AutoByteus licence files and OCI licence label.
+COPY LICENSE LICENSING.md NOTICE /app/
+LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
+
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl git ripgrep \
   && rm -rf /var/lib/apt/lists/*
