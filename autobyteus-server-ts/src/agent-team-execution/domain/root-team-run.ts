@@ -55,7 +55,7 @@ import { RootTeamRunMaterializationGate } from "./root-team-run-materialization-
 
 export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
-  /** Task executions of `tree` whose Task is DONE (read at the same point as the tree). */
+  /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
   messages: TeamCommunicationMessagesSnapshot;
   statuses: readonly TeamAgentStatusSnapshot[];

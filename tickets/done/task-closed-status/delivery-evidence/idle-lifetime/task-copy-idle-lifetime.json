@@ -1,0 +1,228 @@
+{
+  "org": {
+    "rootId": "til_org_4f1419_8bfbda29401a475195cdb173852f8685",
+    "quietShutdownMs": 60268,
+    "doneStopMs": 9277,
+    "rootStopMs": 9889,
+    "stopCopyAliveMs": 174881,
+    "doneCopyAliveBeforeDoneMs": 72572,
+    "doneTaskStoppedMs": 7838,
+    "agentCopy": {
+      "endStatus": "failed",
+      "runningMs": 103139,
+      "shutdownAfterEndMs": 62052
+    },
+    "teamCopy": {
+      "endStatus": "completed",
+      "members": [
+        "til_worker_4f1419_c2cce3add41f49ffb3fafa14ffbc7645",
+        "til_worker_4f1419_5585b57f560e47ab94c0796b4ee837a5"
+      ],
+      "runningMs": 102744,
+      "shutdownAfterEndMs": 68490
+    },
+    "wakeRelaunch": [
+      "--conversation",
+      "903c18c8-09fc-4069-ad86-b85661bd18df"
+    ]
+  },
+  "agent": {
+    "rootId": "til_manager_4f1419_00478de7b5264c94adc038c9d5ae14b6",
+    "quietShutdownMs": 64156,
+    "doneStopMs": 3623,
+    "rootStopMs": 2571,
+    "stopCopyAliveMs": 163363,
+    "doneCopyAliveBeforeDoneMs": 93949,
+    "doneTaskStoppedMs": 1880,
+    "agentCopy": {
+      "endStatus": "failed",
+      "runningMs": 103083,
+      "shutdownAfterEndMs": 62052
+    },
+    "teamCopy": {
+      "endStatus": "completed",
+      "members": [
+        "til_worker_4f1419_dcf2276b44634975a9775024c28dab1a",
+        "til_worker_4f1419_aff9ab0611804f1f95198194d357fdf3"
+      ],
+      "runningMs": 102626,
+      "shutdownAfterEndMs": 68490
+    },
+    "wakeRelaunch": [
+      "--conversation",
+      "e9293cc6-333a-42cc-9d60-1d6b4d6a7170"
+    ]
+  },
+  "team": {
+    "rootId": "til_team_4f1419_aab185291f73432483fc3524def49072",
+    "quietShutdownMs": 60246,
+    "doneStopMs": 6008,
+    "rootStopMs": 7094,
+    "stopCopyAliveMs": 179204,
+    "doneCopyAliveBeforeDoneMs": 78859,
+    "doneTaskStoppedMs": 2992,
+    "agentCopy": {
+      "endStatus": "failed",
+      "runningMs": 103214,
+      "shutdownAfterEndMs": 62052
+    },
+    "teamCopy": {
+      "endStatus": "completed",
+      "members": [
+        "til_worker_4f1419_2bcbd5b3b2344d4da68b435bc233244d",
+        "til_worker_4f1419_2b54fb26e0014784884f1e8c6e082104"
+      ],
+      "runningMs": 102756,
+      "shutdownAfterEndMs": 68487
+    },
+    "wakeRelaunch": [
+      "--conversation",
+      "484643cc-8cfb-4a38-b23a-ec7ad2991208"
+    ]
+  },
+  "processTimes": {
+    "til_manager_4f1419_00478de7b5264c94adc038c9d5ae14b6": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471628766
+    },
+    "til_manager_4f1419_aba0814e7e8a47cab594a012e3282b03": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471628766
+    },
+    "til_manager_4f1419_9802421424e54b848160e554ed9e205f": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471628766
+    },
+    "til_worker_4f1419_7cc48b63eee848709773c10f03d7dbc6": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471605912
+    },
+    "til_worker_4f1419_b9d7218d650a455e81f9e1da64a637fc": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471605912
+    },
+    "til_worker_4f1419_bfe0f0dcee7f4fc8ba31855ff28306af": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471605912
+    },
+    "til_worker_4f1419_2bcbd5b3b2344d4da68b435bc233244d": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471608070
+    },
+    "til_worker_4f1419_c2cce3add41f49ffb3fafa14ffbc7645": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471608070
+    },
+    "til_worker_4f1419_5585b57f560e47ab94c0796b4ee837a5": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471608070
+    },
+    "til_worker_4f1419_2b54fb26e0014784884f1e8c6e082104": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471608070
+    },
+    "til_worker_4f1419_dcf2276b44634975a9775024c28dab1a": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471608070
+    },
+    "til_worker_4f1419_aff9ab0611804f1f95198194d357fdf3": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471608070
+    },
+    "til_worker_4f1419_a1e9b06cd076459eb35ff05b1ad8e0e1": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471603238
+    },
+    "til_worker_4f1419_69f5b85b93bc4f4eafc77e998f631a76": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471603238
+    },
+    "til_worker_4f1419_ce99704f2e264bfa865c6cb2124b3c48": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471603238
+    },
+    "til_worker_4f1419_d7ba9a48ca3447ac910fab3200b0268a": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471524480
+    },
+    "til_worker_4f1419_d6a361045aa8450c8ece448657922bde": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471524480
+    },
+    "til_worker_4f1419_345ab6101a79414dba2378fe9be15618": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471628766
+    },
+    "til_worker_4f1419_3dc18aa6b89a4dfcb805324e60a158aa": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471628766
+    },
+    "til_worker_4f1419_4be39180bab649e6936243aa29a1d950": {
+      "firstSeen": 1791471454164,
+      "lastSeen": 1791471539863
+    },
+    "til_worker_4f1419_376e030f57f34d5990f87e9ed05b2b4a": {
+      "firstSeen": 1791471473730,
+      "lastSeen": 1791471628766
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation": {
+      "firstSeen": 1791471524480,
+      "lastSeen": 1791471631344
+    },
+    "dtl_manager_bcdf25_432ef4bf07f8479da2c3a2964f80c07e": {
+      "firstSeen": 1791471530488,
+      "lastSeen": 1791471631344
+    },
+    "dtl_manager_bcdf25_f1e5c68674ff479daca8a3a9bc5d88bd": {
+      "firstSeen": 1791471530488,
+      "lastSeen": 1791471631344
+    },
+    "dtl_manager_bcdf25_c5a40d667e57483cb7c72fa3581ef116": {
+      "firstSeen": 1791471530488,
+      "lastSeen": 1791471631344
+    },
+    "dtl_worker_bcdf25_712bd90b8bf942c2b91d6e260c501bc4": {
+      "firstSeen": 1791471530488,
+      "lastSeen": 1791471614808
+    },
+    "": {
+      "firstSeen": 1791471530488,
+      "lastSeen": 1791471628766
+    },
+    "dtl_worker_bcdf25_b3355a7b95464e5f9dcc05e85ba4d73b": {
+      "firstSeen": 1791471530488,
+      "lastSeen": 1791471628766
+    },
+    "dtl_worker_bcdf25_8c78ad68dc55495ca232bd1249a25e54": {
+      "firstSeen": 1791471539863,
+      "lastSeen": 1791471628766
+    },
+    "dtl_worker_bcdf25_ca5611a158b64052af12d4f9c35d584d": {
+      "firstSeen": 1791471556159,
+      "lastSeen": 1791471614808
+    },
+    "dtl_worker_bcdf25_b185deaf4ebb46e99f3066ddcba018b2": {
+      "firstSeen": 1791471556159,
+      "lastSeen": 1791471614808
+    },
+    "dtl_worker_bcdf25_7815dc7a167d45b38ce740a92ea6978a": {
+      "firstSeen": 1791471556159,
+      "lastSeen": 1791471614808
+    },
+    "dtl_worker_bcdf25_87b9a02bc8e644d692f2e726b7aa064f": {
+      "firstSeen": 1791471560490,
+      "lastSeen": 1791471614808
+    },
+    "dtl_worker_bcdf25_0193c053652445378eba2534eee082e0": {
+      "firstSeen": 1791471560490,
+      "lastSeen": 1791471614808
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

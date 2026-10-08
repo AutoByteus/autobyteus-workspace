@@ -53,7 +53,7 @@ import { projectAgentOrgAgentStatusSnapshots } from "../services/agent-org-agent
 
 export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
-  /** Task executions of `tree` whose Task is DONE (read at the same point as the tree). */
+  /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
   messages: AgentOrgCommunicationMessagesFileV1;
   statuses: readonly CollaborationAgentStatusSnapshot[];

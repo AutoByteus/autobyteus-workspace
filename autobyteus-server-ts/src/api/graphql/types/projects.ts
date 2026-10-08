@@ -58,7 +58,7 @@ export class Project {
   @Field(() => [ProjectWorkspace])
   workspaces!: ProjectWorkspace[];
 
-  /** Number of this Project's Tasks whose status is not DONE. */
+  /** Number of this Project's open Tasks (status not DONE or CANCELLED). */
   @Field(() => Int)
   openTaskCount!: number;
 

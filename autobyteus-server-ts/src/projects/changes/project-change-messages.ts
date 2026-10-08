@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ProjectTaskView, ProjectView, TaskLocation, TaskRootView, TaskWithoutProjectView } from "../domain/models.js";
+import { PROJECT_TASK_STATUSES } from "../domain/task-status.js";
 
 /**
  * The `/ws/projects` change feed (server → client, one JSON message per frame). Views are the
@@ -26,7 +27,7 @@ const rootSchema = z.strictObject({
   closed: z.boolean(),
   status: statusSchema,
 });
-const taskStatusSchema = z.enum(["TODO", "IN_PROGRESS", "DONE"]);
+const taskStatusSchema = z.enum(PROJECT_TASK_STATUSES);
 const projectTaskSchema = z.strictObject({
   contextFiles: z.array(z.strictObject({ storedFilename: text, displayName: z.string(), mimeType: z.string(), sizeBytes: z.number().int(), locator: text })),
   taskId: text, projectId: text, description: z.string(), status: taskStatusSchema,

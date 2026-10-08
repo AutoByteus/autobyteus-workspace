@@ -1,0 +1,5 @@
+build exit=0
+unit exit=0
+integration exit=0
+e2e-projects-ungated exit=0
+e2e-projects-gated exit=1

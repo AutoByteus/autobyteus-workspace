@@ -1,0 +1,144 @@
+{
+  "closed-agent": {
+    "refusals": {
+      "redelegated": {
+        "error": {
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task is CLOSED; move it to TODO or IN_PROGRESS before assigning new work."
+        }
+      },
+      "fenced": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      }
+    },
+    "rootId": "tra_manager_020ed0_5c5f3919bcc14deebee6cc6974e3138c",
+    "projectId": "project_c6ab64ba-cb1d-4e47-9477-ac0c83497580",
+    "taskC": "project_task_04824ca5-5177-4d72-8801-11f24824d497",
+    "worker": "tra_worker_020ed0_dcb6ed1b92c0424fa6cea3cc88e8b9ed",
+    "ack": {
+      "task": {
+        "projectId": "project_c6ab64ba-cb1d-4e47-9477-ac0c83497580",
+        "taskId": "project_task_04824ca5-5177-4d72-8801-11f24824d497",
+        "status": "CLOSED"
+      }
+    },
+    "reopenedAck": {
+      "task": {
+        "projectId": "project_c6ab64ba-cb1d-4e47-9477-ac0c83497580",
+        "taskId": "project_task_04824ca5-5177-4d72-8801-11f24824d497",
+        "status": "IN_PROGRESS"
+      }
+    },
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_020ed0_dcb6ed1b92c0424fa6cea3cc88e8b9ed. tra_worker_020ed0_dcb6ed1b92c0424fa6cea3cc88e8b9ed was reactivated.",
+      "target_agent_run_id": "tra_worker_020ed0_dcb6ed1b92c0424fa6cea3cc88e8b9ed"
+    },
+    "adHocTaskId": "ad_hoc_task_0ca200a1-71b0-4c64-8691-8585d004b33f",
+    "plain": "tra_worker_020ed0_0f853fe359e044148bdf402216d7231e",
+    "adHocAck": {
+      "task": {
+        "projectId": null,
+        "taskId": "ad_hoc_task_0ca200a1-71b0-4c64-8691-8585d004b33f",
+        "status": "CLOSED"
+      }
+    },
+    "adHocFenced": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_020ed0_0f853fe359e044148bdf402216d7231e. tra_worker_020ed0_0f853fe359e044148bdf402216d7231e was reactivated.",
+      "target_agent_run_id": "tra_worker_020ed0_0f853fe359e044148bdf402216d7231e"
+    },
+    "feedFrames": 46,
+    "statusesSeen": [
+      "CLOSED",
+      "DONE",
+      "IN_PROGRESS",
+      "TODO"
+    ]
+  },
+  "closed-team": {
+    "refusals": {
+      "redelegated": {
+        "error": {
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task is CLOSED; move it to TODO or IN_PROGRESS before assigning new work."
+        }
+      },
+      "fenced": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      }
+    },
+    "rootId": "tra_team_020ed0_52641cfc94fc442996aaa2f6f68513dd",
+    "projectId": "project_226a7ea0-88b7-4540-8125-8a147771df82",
+    "taskC": "project_task_943ac85d-8617-49fa-a2f7-0e1f59e64b92",
+    "worker": "tra_worker_020ed0_e7038def33cc473a90e6ed338f0f3d5d",
+    "ack": {
+      "task": {
+        "projectId": "project_226a7ea0-88b7-4540-8125-8a147771df82",
+        "taskId": "project_task_943ac85d-8617-49fa-a2f7-0e1f59e64b92",
+        "status": "CLOSED"
+      }
+    },
+    "reopenedAck": {
+      "task": {
+        "projectId": "project_226a7ea0-88b7-4540-8125-8a147771df82",
+        "taskId": "project_task_943ac85d-8617-49fa-a2f7-0e1f59e64b92",
+        "status": "IN_PROGRESS"
+      }
+    },
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_020ed0_e7038def33cc473a90e6ed338f0f3d5d. tra_worker_020ed0_e7038def33cc473a90e6ed338f0f3d5d was reactivated.",
+      "target_agent_run_id": "tra_worker_020ed0_e7038def33cc473a90e6ed338f0f3d5d"
+    },
+    "adHocTaskId": "ad_hoc_task_514b32a3-3125-4c93-a494-a1e81229147f",
+    "plain": "tra_worker_020ed0_c2549fc1d282445d98445447285a5d77",
+    "adHocAck": {
+      "task": {
+        "projectId": null,
+        "taskId": "ad_hoc_task_514b32a3-3125-4c93-a494-a1e81229147f",
+        "status": "CLOSED"
+      }
+    },
+    "adHocFenced": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_020ed0_c2549fc1d282445d98445447285a5d77. tra_worker_020ed0_c2549fc1d282445d98445447285a5d77 was reactivated.",
+      "target_agent_run_id": "tra_worker_020ed0_c2549fc1d282445d98445447285a5d77"
+    },
+    "feedFrames": 46,
+    "statusesSeen": [
+      "CLOSED",
+      "DONE",
+      "IN_PROGRESS",
+      "TODO"
+    ]
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

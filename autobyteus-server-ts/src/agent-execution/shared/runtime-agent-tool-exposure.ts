@@ -13,7 +13,7 @@ import type { MemberExecutionContext } from "../../agent-collaboration/execution
 
 /**
  * Collaboration tools every member context always gets: `send_message_to`, `delegate_task` and
- * `create_or_update_task` (which marks a delegation's Task DONE) for every member, plus
+ * `create_or_update_task` (which marks a delegation's Task DONE or CANCELLED) for every member, plus
  * `get_handoff_rules` only for Team-scoped members (REQ-012).
  */
 export const automaticCollaborationToolNames = (
