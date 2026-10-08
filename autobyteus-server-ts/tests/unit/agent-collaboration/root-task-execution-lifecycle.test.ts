@@ -1,9 +1,16 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
-import type { RootTaskExecutionAdapter } from "../../../src/agent-collaboration/execution/task/root-task-execution-adapter.js";
-import { TaskDelegationError } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
+import type {
+  PreparedTaskExecutionActivation,
+  RootTaskExecutionAdapter,
+} from "../../../src/agent-collaboration/execution/task/root-task-execution-adapter.js";
+import {
+  TaskDelegationError,
+  TaskExecutionTeardownIndeterminateError,
+} from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
+import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import {
   taskExecutionReferenceKey,
   type TaskExecutionReference,
@@ -13,8 +20,29 @@ import {
   createTeamRootExecutionIdentity,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
-/** Far beyond the removed idle-shutdown delay (default 10 min, maximum 24 h). */
-const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1_000;
+const GRACE = 600_000;
+
+/** Controllable clock: timers fire only when `advance` crosses their deadline. */
+class ManualTimers implements TaskExecutionIdleTimers {
+  now = 0;
+  private next = 1;
+  private readonly timers = new Map<number, { due: number; callback: () => void }>();
+  setTimeout = (callback: () => void, delayMs: number): unknown => {
+    const id = this.next++;
+    this.timers.set(id, { due: this.now + delayMs, callback });
+    return id;
+  };
+  clearTimeout = (handle: unknown): void => { this.timers.delete(handle as number); };
+  pendingCount(): number { return this.timers.size; }
+  advance(ms: number): void {
+    this.now += ms;
+    for (const [id, timer] of [...this.timers].sort(([, a], [, b]) => a.due - b.due)) {
+      if (timer.due > this.now) continue;
+      this.timers.delete(id);
+      timer.callback();
+    }
+  }
+}
 
 const flush = async (): Promise<void> => {
   for (let index = 0; index < 10; index += 1) await Promise.resolve();
@@ -28,19 +56,23 @@ const caller = createCollaborationMemberExecutionIdentity({
 
 type FakeState = {
   live: Set<string>;
+  quiet: Set<string>;
   chains: Map<string, TaskExecutionReference[]>;
   restorable: boolean;
   restoreFailure: Error | null;
   restoreCalls: string[];
+  shutdownCalls: string[];
 };
 
 const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> = {}) => {
   const state: FakeState = {
     live: new Set(),
+    quiet: new Set(),
     chains: new Map(),
     restorable: true,
     restoreFailure: null,
     restoreCalls: [],
+    shutdownCalls: [],
   };
   const adapter: RootTaskExecutionAdapter<string> = {
     isOpen: () => true,
@@ -59,32 +91,40 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     listTaskExecutions: () => [...new Map([...state.chains.values()].flat().map((reference) => [taskExecutionReferenceKey(reference), reference])).values()],
     taskExecutionStatus: (reference) => state.live.has(taskExecutionReferenceKey(reference)) ? "idle" : "offline",
     containsTaskExecution: () => false, publishTaskExecutionsClosed: vi.fn(),
+    isLive: (reference) => state.live.has(taskExecutionReferenceKey(reference)),
     assertRestorableChain: (agentRunId) => {
       if (!state.restorable) {
         throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", `No saved context for ${agentRunId}.`);
       }
     },
-    // Like the subject adapters: only non-live executions of the chain are restored (outermost first).
     restoreChain: async (agentRunId) => {
       state.restoreCalls.push(agentRunId);
       const chain = [...(state.chains.get(agentRunId) ?? [])].reverse();
       for (const reference of chain) {
-        if (state.live.has(taskExecutionReferenceKey(reference))) continue;
         if (state.restoreFailure && state.live.size > 0) throw state.restoreFailure;
         state.live.add(taskExecutionReferenceKey(reference));
       }
+    },
+    tryShutDownIfQuiet: async (reference) => {
+      const key = taskExecutionReferenceKey(reference);
+      state.shutdownCalls.push(key);
+      if (!state.quiet.has(key)) return false;
+      state.live.delete(key);
+      return true;
     },
     ...overrides,
   };
   return { adapter, state };
 };
 
-const setup = (overrides: Partial<RootTaskExecutionAdapter<string>> = {}) => {
+const setup = (overrides: Partial<RootTaskExecutionAdapter<string>> = {}, grace = GRACE) => {
+  const timers = new ManualTimers();
   const fake = createFakeAdapter(overrides);
+  let currentGrace = grace;
   // Production always binds the Task side; every delegated copy belongs to a Task.
   const resources = new InMemoryTaskAgentResources();
-  const lifecycle = new RootTaskExecutionLifecycle(fake.adapter, { taskAgentResources: resources });
-  return { ...fake, lifecycle, resources };
+  const lifecycle = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => currentGrace, timers, taskAgentResources: resources });
+  return { ...fake, timers, lifecycle, resources, setGrace: (value: number) => { currentGrace = value; } };
 };
 
 const child: TaskExecutionReference = { agentRunId: "child-run" };
@@ -102,7 +142,7 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
 
   it("rejects description-only delegation before any planning when no Task side is bound", async () => {
     const fake = createFakeAdapter();
-    const unbound = new RootTaskExecutionLifecycle(fake.adapter);
+    const unbound = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => GRACE, timers: new ManualTimers() });
     await expect(unbound.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" });
     expect(fake.adapter.planActivation).not.toHaveBeenCalled();
@@ -133,119 +173,219 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
   });
 });
 
-describe("RootTaskExecutionLifecycle copy lifetime (no idle shutdown)", () => {
-  afterEach(() => { vi.useRealTimers(); });
-
-  it("keeps quiet delegated Agent and Team copies live far past the old idle-shutdown delay; status only reaches the Task side (AC-002)", async () => {
-    vi.useFakeTimers();
-    const { lifecycle, state, resources, adapter } = setup({ releaseOwnedExecution: vi.fn(async () => ({ accepted: true })) });
+describe("RootTaskExecutionLifecycle idle shutdown", () => {
+  it("shuts a quiet child down after the grace period, not before (AC-004)", async () => {
+    const { lifecycle, state, timers } = setup();
     state.chains.set("child-run", [child]);
-    state.chains.set("member-run", [team]);
     state.live.add("agent:child-run");
-    state.live.add("team:task-team-run");
+    state.quiet.add("agent:child-run");
 
-    // Quiet statuses (idle, offline, error) of an agent in each copy, as the roots forward them.
-    for (let report = 0; report < 3; report += 1) {
-      lifecycle.onAgentStatus("child-run");
-      lifecycle.onAgentStatus("member-run");
-    }
-    expect(vi.getTimerCount()).toBe(0);
-    await vi.advanceTimersByTimeAsync(TWO_DAYS_MS);
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE - 1);
     await flush();
-
-    expect(state.live).toEqual(new Set(["agent:child-run", "team:task-team-run"]));
-    expect(adapter.releaseOwnedExecution).not.toHaveBeenCalled();
-    expect(lifecycle.taskExecutionStatus(child)).toBe("idle");
-    expect(lifecycle.taskExecutionStatus(team)).toBe("idle");
-    expect(resources.statusChanges.map((change) => change.references)).toEqual([
-      [child], [team], [child], [team], [child], [team],
-    ]);
-
-    // A same-root message reaches the live copy: nothing is rebuilt.
-    const delivered = vi.fn(async () => ({ accepted: true as const }));
-    await expect(lifecycle.withLiveChain("child-run", delivered)).resolves.toEqual({ accepted: true });
-    await expect(lifecycle.withLiveChain("member-run", delivered)).resolves.toEqual({ accepted: true });
-    expect(delivered).toHaveBeenCalledTimes(2);
-    expect(state.live).toEqual(new Set(["agent:child-run", "team:task-team-run"]));
+    expect(state.shutdownCalls).toEqual([]);
+    timers.advance(1);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
+    expect(state.live.has("agent:child-run")).toBe(false);
   });
 
-  it("reports every task execution offline on root termination and on fail-stop", async () => {
+  it("cancels on running work and restarts the countdown at the next quiet moment (AC-005)", async () => {
+    const { lifecycle, state, timers } = setup();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    state.quiet.add("agent:child-run");
+
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE / 2);
+    lifecycle.onAgentStatus("child-run", "running");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual([]);
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE - 1);
+    await flush();
+    expect(state.shutdownCalls).toEqual([]);
+    timers.advance(1);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
+  });
+
+  it("arms on error status so an errored child is still released (AR-001)", async () => {
+    const { lifecycle, state, timers } = setup();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    state.quiet.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "error");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
+  });
+
+  it("never shuts down work that the fire-time quiescence check rejects (approval pending, running turn)", async () => {
+    const { lifecycle, state, timers } = setup();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
+    expect(state.live.has("agent:child-run")).toBe(true);
+    expect(timers.pendingCount()).toBe(0);
+    state.quiet.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.live.has("agent:child-run")).toBe(false);
+  });
+
+  it("arms every live execution in the chain and ignores executions that are already shut down", async () => {
+    const { lifecycle, state, timers } = setup();
+    state.chains.set("member-run", [team]);
+    state.chains.set("nested-run", [child, team]);
+    state.live.add("team:task-team-run");
+    lifecycle.onAgentStatus("nested-run", "offline");
+    expect(timers.pendingCount()).toBe(1);
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["team:task-team-run"]);
+  });
+
+  it("reads the grace period at arm time", async () => {
+    const { lifecycle, state, timers, setGrace } = setup();
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    state.quiet.add("agent:child-run");
+    setGrace(120_000);
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(120_000);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
+  });
+
+  it("disposes every timer on root termination and on fail-stop", async () => {
     const terminated = setup();
     terminated.state.chains.set("child-run", [child]);
     terminated.state.live.add("agent:child-run");
+    terminated.state.quiet.add("agent:child-run");
+    terminated.lifecycle.onAgentStatus("child-run", "idle");
     terminated.lifecycle.closeExternalAdmission();
-    expect(terminated.lifecycle.taskExecutionStatus(child)).toBe("offline");
-    expect(terminated.resources.statusChanges.at(-1)?.references).toEqual([child]);
-    await expect(terminated.lifecycle.withLiveChain("child-run", async () => ({ accepted: true })))
-      .resolves.toMatchObject({ accepted: false, code: "ROOT_RUN_NOT_ACTIVE" });
+    expect(terminated.timers.pendingCount()).toBe(0);
+    terminated.lifecycle.onAgentStatus("child-run", "idle");
+    expect(terminated.timers.pendingCount()).toBe(0);
 
     const failStopped = setup();
     failStopped.state.chains.set("child-run", [child]);
+    failStopped.state.live.add("agent:child-run");
+    failStopped.lifecycle.onAgentStatus("child-run", "idle");
     failStopped.lifecycle.enterRootFailStop();
-    expect(failStopped.lifecycle.taskExecutionStatus(child)).toBe("offline");
-    await expect(failStopped.lifecycle.withLiveChain("child-run", async () => ({ accepted: true })))
-      .resolves.toMatchObject({ accepted: false, code: "ROOT_RUN_NOT_ACTIVE" });
-    expect(failStopped.state.restoreCalls).toEqual([]);
+    expect(failStopped.timers.pendingCount()).toBe(0);
+    await expect(failStopped.lifecycle.acquireLiveLease("child-run")).rejects.toMatchObject({ code: "ROOT_RUN_NOT_ACTIVE" });
+  });
+
+  it("logs and survives a teardown-indeterminate shutdown failure raised by the adapter", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const { lifecycle, state, timers } = setup({
+      tryShutDownIfQuiet: async () => { throw new TaskExecutionTeardownIndeterminateError("child-run", "did not finish"); },
+    });
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
   });
 });
 
-describe("RootTaskExecutionLifecycle withLiveChain (restore before delivery)", () => {
-  it("restores a non-live chain (after a restart) before running the operation", async () => {
-    const { lifecycle, state } = setup();
+describe("RootTaskExecutionLifecycle wake leases", () => {
+  it("restores a shut-down chain, holds it against shutdown, and arms it on release (AR-001b)", async () => {
+    const { lifecycle, state, timers } = setup();
     state.chains.set("child-run", [child]);
-    const order: string[] = [];
-    const result = await lifecycle.withLiveChain("child-run", async () => {
-      order.push(`deliver:live=${state.live.has("agent:child-run")}`);
-      return { accepted: true };
-    });
-    expect(result).toEqual({ accepted: true });
+    state.quiet.add("agent:child-run");
+
+    const lease = await lifecycle.acquireLiveLease("child-run");
     expect(state.restoreCalls).toEqual(["child-run"]);
-    expect(order).toEqual(["deliver:live=true"]);
+    expect(state.live.has("agent:child-run")).toBe(true);
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual([]);
+    expect(state.live.has("agent:child-run")).toBe(true);
+
+    lease.release();
+    expect(timers.pendingCount()).toBe(1);
+    timers.advance(GRACE);
+    await flush();
+    expect(state.shutdownCalls).toEqual(["agent:child-run"]);
   });
 
-  it("refuses with TASK_EXECUTION_CONTEXT_UNAVAILABLE before any restore (AC-011)", async () => {
+  it("restores a child whose wake arrives while its shutdown is in flight, after the shutdown completes (QR-002)", async () => {
+    let finishShutdown!: () => void;
+    const order: string[] = [];
+    const { lifecycle, state, timers } = setup({
+      tryShutDownIfQuiet: async (reference) => {
+        const key = taskExecutionReferenceKey(reference);
+        order.push(`shutdown-start:${key}`);
+        await new Promise<void>((resolve) => { finishShutdown = resolve; });
+        state.live.delete(key);
+        order.push(`shutdown-end:${key}`);
+        return true;
+      },
+    });
+    state.chains.set("child-run", [child]);
+    state.live.add("agent:child-run");
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(order).toEqual(["shutdown-start:agent:child-run"]);
+
+    // The message arrives mid-shutdown: its wake queues behind the shutdown instead of racing it.
+    let leased = false;
+    const leasePromise = lifecycle.acquireLiveLease("child-run").then((lease) => { leased = true; return lease; });
+    await flush();
+    expect(leased).toBe(false);
+    expect(state.restoreCalls).toEqual([]);
+
+    finishShutdown();
+    const lease = await leasePromise;
+    expect(order).toEqual(["shutdown-start:agent:child-run", "shutdown-end:agent:child-run"]);
+    expect(state.restoreCalls).toEqual(["child-run"]);
+    expect(state.live.has("agent:child-run")).toBe(true);
+    // Held live for delivery: a grace fire while leased cannot shut it down again.
+    lifecycle.onAgentStatus("child-run", "idle");
+    timers.advance(GRACE);
+    await flush();
+    expect(order).toHaveLength(2);
+    lease.release();
+    expect(timers.pendingCount()).toBe(1);
+  });
+
+  it("rejects with TASK_EXECUTION_CONTEXT_UNAVAILABLE before any restore (AC-011)", async () => {
     const { lifecycle, state } = setup();
     state.chains.set("child-run", [child]);
     state.restorable = false;
-    const operation = vi.fn(async () => ({ accepted: true as const }));
-    await expect(lifecycle.withLiveChain("child-run", operation)).resolves.toMatchObject({
-      accepted: false, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE",
-    });
-    expect(operation).not.toHaveBeenCalled();
+    await expect(lifecycle.acquireLiveLease("child-run")).rejects.toMatchObject({ code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" });
     expect(state.restoreCalls).toEqual([]);
     expect(state.live.size).toBe(0);
   });
 
-  it("converts restore errors to TASK_EXECUTION_RESTORE_FAILED and runs nothing", async () => {
-    const { lifecycle, state } = setup();
+  it("converts restore errors to TASK_EXECUTION_RESTORE_FAILED and arms executions restored before the failure", async () => {
+    const { lifecycle, state, timers } = setup();
     state.chains.set("nested-run", [child, team]);
     state.restoreFailure = new Error("provider session unavailable");
-    const operation = vi.fn(async () => ({ accepted: true as const }));
-    await expect(lifecycle.withLiveChain("nested-run", operation)).resolves.toMatchObject({
-      accepted: false, code: "TASK_EXECUTION_RESTORE_FAILED",
+    await expect(lifecycle.acquireLiveLease("nested-run")).rejects.toMatchObject({
+      code: "TASK_EXECUTION_RESTORE_FAILED",
     });
-    expect(operation).not.toHaveBeenCalled();
-    // The outer Team was restored before the failure and stays live; nothing shuts it down.
     expect(state.live.has("team:task-team-run")).toBe(true);
+    expect(timers.pendingCount()).toBe(1);
   });
 
-  it("refuses input to closed Task work (Task DONE) without restoring it", async () => {
-    const { lifecycle, state, resources } = setup();
-    state.chains.set("child-run", [child]);
-    resources.addTask("A");
-    await resources.linkAgentRun({ role: "assigned", taskId: "A", assignedBy: "coordinator-run", hostRoot: caller.root, agentRun: child });
-    resources.close("A");
-    const operation = vi.fn(async () => ({ accepted: true as const }));
-    await expect(lifecycle.withLiveChain("child-run", operation)).resolves.toMatchObject({
-      accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED",
-    });
-    expect(operation).not.toHaveBeenCalled();
+  it("returns a no-op lease for agents outside any delegated child", async () => {
+    const { lifecycle, state, timers } = setup();
+    const lease = await lifecycle.acquireLiveLease("coordinator-run");
+    lease.release();
     expect(state.restoreCalls).toEqual([]);
-  });
-
-  it("runs the operation directly for agents outside any delegated child", async () => {
-    const { lifecycle, state } = setup();
-    await expect(lifecycle.withLiveChain("coordinator-run", async () => ({ accepted: true }))).resolves.toEqual({ accepted: true });
-    expect(state.restoreCalls).toEqual([]);
+    expect(timers.pendingCount()).toBe(0);
   });
 });

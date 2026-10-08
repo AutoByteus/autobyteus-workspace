@@ -29,6 +29,7 @@ const createBackend = (): TeamRunBackend => ({
   restoreTaskAgent: vi.fn(),
   restoreTaskTeam: vi.fn(),
   hasLiveDirectTaskExecution: vi.fn(() => true),
+  tryShutDownDirectTaskExecutionIfQuiet: vi.fn(async () => true),
   prepareTermination: vi.fn(),
   freezeForRootTermination: vi.fn(),
   terminate: vi.fn(async () => ({ accepted: true })),
@@ -67,13 +68,15 @@ describe("TeamRun", () => {
     expect(backend.executeDirectAgentCommand).toHaveBeenCalledWith("coordinator-run-1", command);
   });
 
-  it("keeps status/open-work and liveness at the one local backend boundary", async () => {
+  it("keeps status/open-work, liveness, and quiet shutdown at the one local backend boundary", async () => {
     const backend = createBackend();
     const run = createRun(backend);
 
     expect(run.hasLiveDirectTaskExecution({ agentRunId: "task-agent-run-1" })).toBe(true);
+    await expect(run.tryShutDownDirectTaskExecutionIfQuiet({ agentRunId: "task-agent-run-1" })).resolves.toBe(true);
     expect(run.getLeafAgentStatusSnapshots()).toEqual([]);
     expect(run.hasOpenExecutionWork()).toBe(false);
     expect(backend.hasLiveDirectTaskExecution).toHaveBeenCalledWith({ agentRunId: "task-agent-run-1" });
+    expect(backend.tryShutDownDirectTaskExecutionIfQuiet).toHaveBeenCalledWith({ agentRunId: "task-agent-run-1" });
   });
 });

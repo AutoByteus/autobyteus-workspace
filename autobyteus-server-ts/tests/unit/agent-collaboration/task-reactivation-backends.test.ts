@@ -12,13 +12,13 @@ async function fixture(kind: 'agent' | 'agent_team' | 'agent_org') {
   const f = await nestedReleaseScenario(kind);
   await f.resources.markStarted({ teamRunId: 'A-team' });
   await f.resources.markStarted({ agentRunId: 'B-worker' });
-  const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources });
+  const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources, gracePeriodMs: () => 600_000 });
   const done = async (taskId: 'A' | 'B') => {
     const closed = f.resources.close(taskId);
     expect((await lifecycle.releaseTaskAgentResources(closed)).every(result => result.stopped)).toBe(true);
   };
   /** `send_message_to(run ID)` from the assigner, bound as the root facades bind it. */
-  const message = (target: string) => lifecycle.deliverToExactTarget(f.managerId, target, () => lifecycle.withLiveChain(target, async () => {
+  const message = (target: string) => lifecycle.deliverToExactTarget(f.managerId, target, () => lifecycle.withLiveLease(target, async () => {
     const run = target === 'A-lead' ? f.getManaged('A-team')! : null;
     return run ? run.postMessage(new AgentInputUserMessage('Next round'), 'A-lead') : { accepted: true, message: `Delivered message to ${target}.` };
   }));
@@ -55,7 +55,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
 
   it('a Team copy stopped while live is restored as a new TeamRun through its coordinator; its helpers stay closed (AC-002/005)', async () => {
     const f = await fixture(kind);
-    // The Team copy stayed live: DONE stops a live copy.
+    // Wake the quiet Team so DONE stops a live copy.
+    await f.adapter.restoreChain('A-lead', () => undefined);
     const live = f.getManaged('A-team')!;
     expect(live.isActive()).toBe(true);
     await f.done('A');

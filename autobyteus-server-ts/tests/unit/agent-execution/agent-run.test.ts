@@ -749,12 +749,28 @@ describe("AgentRun input admission", () => {
     expect([...firstLifecycle, ...secondLifecycle].some((fact) => fact.kind === "cancelled")).toBe(false);
   });
 
-  it("prepares an idle run and ordinary cancellation reopens admission", async () => {
+  it("returns null without side effects when quiescent preparation sees an active turn", async () => {
+    const harness = createHarness({
+      snapshot: {
+        availability: "active",
+        phase: "running",
+        currentTurn: { kind: "IDENTIFIED", turnId: "turn-active" },
+      },
+    });
+
+    await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("still admitted")))
+      .resolves.toMatchObject({ accepted: true });
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+  });
+
+  it("prepares an already-quiescent run and ordinary cancellation reopens admission", async () => {
     const harness = createHarness();
 
-    const prepared = await harness.run.prepareTermination();
+    const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
+    expect(prepared).not.toBeNull();
     expect(harness.backend.terminate).not.toHaveBeenCalled();
-    prepared.cancel();
+    prepared!.cancel();
 
     await expect(harness.run.postUserMessage(new AgentInputUserMessage("after cancel")))
       .resolves.toMatchObject({ accepted: true });
@@ -881,7 +897,8 @@ describe("AgentRun input admission", () => {
 
   it("does not reopen root-fenced admission when an earlier prepared termination is cancelled", async () => {
     const harness = createHarness();
-    const prepared = await harness.run.prepareTermination();
+    const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
+    if (!prepared) throw new Error("Expected preparation.");
 
     await expect(harness.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
     prepared.cancel();
@@ -1056,9 +1073,17 @@ describe("AgentRun root shutdown attempts (SR-006, F-1–F-4)", () => {
 });
 
 describe("AgentRun termination delegation keeps coalescing (agent-run-termination-extraction)", () => {
-  it("shares one preparation promise and one backend termination", async () => {
+  it("shares one preparation promise, one try-if-quiescent promise and one backend termination", async () => {
     const terminate = createDeferred<AgentOperationResult>();
     const harness = createHarness({ terminate: vi.fn().mockReturnValue(terminate.promise) });
+
+    // Concurrent tries while one is in flight share its promise (identity, not just its value).
+    const try1 = harness.run.tryPrepareTerminationIfQuiescent();
+    const try2 = harness.run.tryPrepareTerminationIfQuiescent();
+    expect(try2).toBe(try1);
+    const prepared = await try1;
+    if (!prepared) throw new Error("Expected an idle run to prepare.");
+    prepared.cancel();
 
     // Concurrent preparations share one promise.
     const prepare1 = harness.run.prepareTermination();

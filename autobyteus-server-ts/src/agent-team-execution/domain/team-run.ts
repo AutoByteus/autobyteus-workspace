@@ -84,9 +84,13 @@ export class TeamRun {
     this.backend.discardReleasedDirectTaskExecution(reference);
   }
   hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.backend.hasLiveDirectTaskExecution(reference); }
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
+    return this.backend.tryShutDownDirectTaskExecutionIfQuiet(reference);
+  }
   cancelRuntimeActivation(): void { this.backend.cancelRuntimeActivation(); }
   releaseOwnedRuntime() { return this.backend.releaseOwnedRuntime(); }
   prepareTermination() { return this.backend.prepareTermination(); }
+  tryPrepareTerminationIfQuiescent() { return this.backend.tryPrepareTerminationIfQuiescent(); }
   freezeForRootTermination() { return this.backend.freezeForRootTermination(); }
   terminate() { return this.backend.terminate(); }
 }

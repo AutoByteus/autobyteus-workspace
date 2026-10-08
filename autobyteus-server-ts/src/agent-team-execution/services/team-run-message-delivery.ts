@@ -44,8 +44,8 @@ export class TeamRunMessageDelivery {
     communication: TeamCommunicationService;
     authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void;
     isLiveAgent(agentRunId: string): boolean;
-    /** Runs the receiver's first accepted message with its task-execution chain live (restored first when needed). */
-    withLiveChain(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
+    /** Target lease that records the receiver's first accepted message. */
+    withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult>;
   }>) {}
 
   /** `send_message_to(address)`: sender instance, run-wide, then a catalog bring-in. */
@@ -65,7 +65,7 @@ export class TeamRunMessageDelivery {
     });
     if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
     const target = resolution.placement.receiver;
-    return this.options.withLiveChain(target.agentRunId, () => this.options.communication.deliver({
+    return this.options.withLiveLease(target.agentRunId, () => this.options.communication.deliver({
       intent,
       receiverIdentity: this.identityFor(target.address, target.agentRunId),
       receiverDisplayName: getAgentTeamAddressBasename(target.address) ?? target.agentRunId,
@@ -80,7 +80,7 @@ export class TeamRunMessageDelivery {
       return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.options.rootTeamRunId}'.` };
     }
     const receiver = this.identityFor(execution.address, execution.agentRunId);
-    return this.options.withLiveChain(execution.agentRunId, () => this.options.communication.deliver({
+    return this.options.withLiveLease(execution.agentRunId, () => this.options.communication.deliver({
       intent: {
         rootTeamRunId: this.options.rootTeamRunId,
         sender: buildDeliveryEndpointForParticipant(input.sender),

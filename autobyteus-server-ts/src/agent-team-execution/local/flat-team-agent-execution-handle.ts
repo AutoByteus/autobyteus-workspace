@@ -89,6 +89,10 @@ export class FlatTeamAgentExecutionHandle {
     if (this.construction) await this.construction.catch(() => null);
     return this.handle ? this.handle.prepareTermination() : completedTermination();
   }
+  async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
+    if (this.construction) return null;
+    return this.handle ? this.handle.tryPrepareTerminationIfQuiescent() : completedTermination();
+  }
   async terminate() { return this.handle ? this.handle.terminate() : { accepted: true as const }; }
   dispose(): void { this.handle?.dispose(); this.handle = null; }
 

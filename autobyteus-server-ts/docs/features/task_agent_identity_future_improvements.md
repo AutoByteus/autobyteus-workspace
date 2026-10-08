@@ -11,8 +11,8 @@ identity, or request-time migration fallback.
 
 ```text
 RootTaskExecutionLifecycle (+ Team / Org task-execution adapters)
-  owns delegated-child spawn, the per-root activation/wake/reopen FIFO and
-  restore before delivery. The execution tree is the only
+  owns delegated-child spawn, the per-root activation/wake/shutdown FIFO,
+  idle-shutdown scheduling, and live leases. The execution tree is the only
   persisted authority for delegated children (no task records).
 
 MixedTeamManager / TeamRun backends

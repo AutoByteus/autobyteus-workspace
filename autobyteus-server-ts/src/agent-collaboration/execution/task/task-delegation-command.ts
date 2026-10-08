@@ -47,6 +47,14 @@ export class RootTaskPersistenceFinalizationIndeterminateError extends Error {
   }
 }
 
+/** A committed local teardown of a quiet task execution did not finish; the root must fail-stop. */
+export class TaskExecutionTeardownIndeterminateError extends Error {
+  constructor(readonly taskExecutionRunId: string, message: string, options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = "TaskExecutionTeardownIndeterminateError";
+  }
+}
+
 /** Durable/publication/accepted-input uncertainty must not masquerade as a proven no-work failure. */
 export class TaskDispatchIndeterminateError extends Error {
   readonly code = "TASK_DISPATCH_INDETERMINATE";

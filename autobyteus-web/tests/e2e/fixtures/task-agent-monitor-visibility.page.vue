@@ -207,7 +207,7 @@ onMounted(() => {
       wsClient.emitMessage(snapshotMessage());
     },
     shutDownFocusedTask: () => {
-      // A delegated copy that is not running is reported through the standard status channel.
+      // Idle shutdown is reported through the standard status channel.
       wsClient.emitMessage({
         type: 'AGENT_STATUS',
         payload: {

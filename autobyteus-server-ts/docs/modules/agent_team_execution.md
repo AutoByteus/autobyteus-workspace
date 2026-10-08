@@ -143,8 +143,8 @@ governing durability step succeeds:
 - A delegated task Agent starts as a fresh execution. An external task binding
   is applied to the same lock-head tree snapshot as task activation, and the
   single execution-tree write finishes before publication and work release.
-  Native task Agents stage no provider binding. A task Agent that is not running
-  (after a restart or a reactivation) is later woken in `restore` mode (see
+  Native task Agents stage no provider binding. A task Agent that was shut down
+  for idleness is later woken in `restore` mode (see
   [Delegated Child Lifecycle](#delegated-child-lifecycle)).
 
 A failed pre-durability attempt aborts the private candidate and is retryable
@@ -232,9 +232,8 @@ The Team WebSocket accepts strict command DTOs from
 `TeamRun.executeMemberCommand(...)`. `FlatTeamExecutionManager` traverses the exact
 execution chain and dispatches to the selected configured Agent, task Agent, or
 task-Team Agent. Send may restore the root Team container as part of the
-supported Team follow-up path, and a send to a delegated child that is not
-running (after a restart or a reactivation) restores that child's chain at the
-queue head before input is reserved. Interrupt and
+supported Team follow-up path, and a send to a shut-down delegated child wakes
+that child's chain inside a live lease before input is reserved. Interrupt and
 tool decisions are active-only and must not restore stopped work: on a non-live
 task Agent they return `RUN_NOT_ACTIVE` without touching the handle.
 
@@ -328,7 +327,8 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
    runtime already died is no longer published by `AgentRunManager`. Its
    resources were released on inactive discovery, so its handle treats the root
    fence and termination as already complete. The root still fences the handle
-   first, so shutdown never re-activates it. Stop retains the package, catalog row, execution tree (including
+   first, so shutdown never re-activates it. Stop cancels every delegated-child
+   idle timer and retains the package, catalog row, execution tree (including
    delegated children), communication history, context, and resume identity.
 3. The root remains managed and the lifecycle/history projection remains
    `isActive: true` until that whole scope reaches accepted terminal completion
@@ -416,8 +416,8 @@ A Team root hosts each collaborator in its root TeamRun's
   first, then this registry. `FlatTeamMemberConfigResolver` and
   `runtimeContext.memberContexts` hold configured members only (REQ-002);
 - a collaborator Team is one TeamRun under the root, held by
-  `local/registries/collaborator-team-execution-registry.ts` (lazy members) and
-  registered with the root's `TeamRunResolver`;
+  `local/registries/collaborator-team-execution-registry.ts` (lazy members, no
+  idle shutdown) and registered with the root's `TeamRunResolver`;
   `requireTeamRun` falls back to `requireCollaboratorTeam`.
 
 `TeamExecutionIndex` records `collaborator` and `collaborator_team_member`
@@ -515,8 +515,8 @@ through `TaskAgentResourcePort`. That Task record, not the physical subtree or
 the definition/address, decides what DONE stops. The Manager, borrowed unowned
 runs and other Tasks are outside that set.
 
-The lifetime and wake rules below apply to unowned children and to Task-owned
-children while their record is open. Explicit DONE closes the Task's runs: while a
+The idle/wake rules below apply to unowned children and to Task-owned children
+while their record is open. Explicit DONE closes the Task's runs: while a
 record is closed its runs receive no input and are never woken or restored,
 including after restart; a deleted Task's runs stay closed. DONE cancels registered
 preparations and requests an exact stop of each closed run on every authority
@@ -534,32 +534,34 @@ through the wake path below. Helpers stay closed. See
 - **Liveness (one predicate, runtime-only, never persisted).** A task Agent is
   live only while its registry holds a handle **and** that handle's AgentRun is
   active. A task Team is live only while its TeamRun is registered. A chain is
-  live only if every task execution in it is live. Each subject adapter's own
-  liveness check drives the restore skip and precheck, status snapshots, and
-  command gating.
-- **Lifetime.** A delegated copy (Agent or Team, its members and brought-in
-  helpers) stays live until its Task is DONE, its root stops or fail-stops, or
-  the server stops. Nothing shuts a copy down for being idle or quiet, on any
-  runtime: a copy waiting on its own background task (a Claude
-  `run_in_background` task, an AGY background step) or on a long tool approval
-  keeps its runtime process, so the work finishes and the copy can report back.
-  Agent status (`idle`, `running`, …) is only forwarded to the Task side. An
-  open Task's copy therefore holds its runtime process until one of those events
-  (accepted operational cost). Nothing is written to the tree on wake.
-- **Wake-on-message (restore).** A copy is not running after a server restart or
-  after DONE followed by reactivation. A `send_message_to` run-ID delivery from
-  the same root, and an operator composer message, run through
-  `RootTaskExecutionLifecycle.withLiveChain`: a `wake` command at the queue head
-  checks that input is allowed, then `assertRestorableChain` checks that each
-  non-live ingress has readable conversation activity; otherwise the delivery is
-  rejected with `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and nothing is restored.
-  The non-live executions of the chain are then restored outermost-first in
-  `restore` mode (native or external provider session) and the message is
-  delivered; a live chain is delivered to directly. A restore failure returns
-  `TASK_EXECUTION_RESTORE_FAILED`. Senders in another root, and root-less
-  senders, can never wake a child.
+  live only if every task execution in it is live. The same predicate
+  (`adapter.isLive`) drives the idle schedule, the queue-head shutdown skip, the
+  restore precheck, open work, status snapshots, and command gating.
+- **Idle shutdown.** `TaskExecutionIdleShutdownSchedule` arms a grace timer for
+  every live execution in a child's chain on `idle`, `offline`, or `error` status
+  and on every live-lease release; `running` or `initializing` cancels it. When
+  the timer fires, the shutdown command runs at the queue head, skips leased or
+  non-live executions, and shuts the execution down only if
+  `tryPrepareTerminationIfQuiescent` succeeds. A child waiting for tool approval
+  is never quiet. A task Agent keeps its registered handle and only its run
+  ends; a task Team terminates as a whole and is unregistered. Nothing is
+  written to the tree on shutdown or wake.
+- **Grace period.** The server setting
+  `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` (default 600 000 ms = 10
+  minutes; accepted range 60 000–86 400 000 ms) is a predefined editable server
+  setting. It is read at arm time, so a change applies to the next quiet
+  moment.
+- **Wake-on-message.** A `send_message_to` run-ID delivery from the same root,
+  and an operator composer message, acquire a live lease for the target's chain.
+  `assertRestorableChain` first checks that each shut-down ingress has readable
+  conversation activity; otherwise the delivery is rejected with
+  `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and nothing is restored. The chain is then
+  restored outermost-first in `restore` mode (native or external provider
+  session) and the message is delivered. A restore failure returns
+  `TASK_EXECUTION_RESTORE_FAILED` and re-arms whatever was already restored.
+  Senders in another root, and root-less senders, can never wake a child.
 - **Open work.** A task execution counts as open work only while an Agent inside
-  it is `initializing` or `running`. An idle, errored or stopped child does not
+  it is `initializing` or `running`. An errored or shut-down child does not
   block the root.
 - **Status.** Non-live task Agents report the standard `offline` status; the UI
   has no separate shut-down state.
@@ -567,8 +569,8 @@ through the wake path below. Helpers stay closed. See
   starts shut down. Unowned children and children whose Task record is open
   are wakeable. Children closed in their Task's `agent_run_resources.json`
   stay fenced. There is no reopen repair.
-- **Root stop.** `closeExternalAdmission` / `enterRootFailStop` close command
-  admission; the frozen termination scope stops every live execution.
+- **Root stop.** `closeExternalAdmission` / `enterRootFailStop` dispose every
+  grace timer; the frozen termination scope stops every live execution.
 
 ## Collaboration And Handoffs
 
@@ -592,8 +594,8 @@ sender's own team instance and an available agent or team is brought in on
 first use, from spawning a new copy with every `delegate_task` call (its
 "Delegated Agents" section). It also prohibits duplicate work-packet delivery,
 tells the Agent to follow up on a copy only through its returned run ID, states
-that a copy stays running until its Task is DONE or the run stops and that a
-message to a copy that is not running restores it with its conversation, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
+that a quiet copy is shut down and restored with its conversation on the next
+message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
 Agent selects the single rule whose condition most specifically applies and
 notifies only that rule's recipient; it does not fan out one outcome to
 additional recipients. The renderer injects no flat recipient, representative,
@@ -627,8 +629,8 @@ later exchange with the child, in both directions, uses its run ID.
 `target_agent_run_id` is the exact AgentRun route owned by
 `src/agent-communication`. `GlobalAgentRunMessageRouter` sends a run-ID target
 that belongs to the sender's own collaboration root through that root
-(`deliverExactAgentMessage`) through `withLiveChain`: it restores a delegated
-child that is not running first, also reaches a not-yet-activated configured member
+(`deliverExactAgentMessage`), inside a live lease: it wakes a shut-down
+delegated child first, also reaches a not-yet-activated configured member
 (which then activates lazily), and is recorded as ordinary Team Communication.
 Targets outside the sender's root use the global live-only path, which creates
 no Team Communication projection and rejects an inactive target with
@@ -825,6 +827,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/task-delegation`
 - `src/agent-collaboration/execution`
 - `src/agent-tools/task-delegation`
+- `src/config/task-execution-idle-shutdown-setting.ts`
 - `src/run-history/store/run-execution-tree-shared-record-schemas.ts`
 - `src/run-history/store/team-run-execution-tree-schema.ts`
 - `src/app-data-migrations/legacy/released-run-package-shapes`

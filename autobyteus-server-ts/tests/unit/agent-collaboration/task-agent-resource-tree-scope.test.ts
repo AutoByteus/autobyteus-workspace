@@ -142,24 +142,24 @@ it('reports stopped when the root holds no authority at all, and refuses runs th
   expect(await scope.releaseTaskAgentResources(resources.close('A'))).toEqual([{ agentRun: { agentRunId: 'gone' }, stopped: true }]);
 });
 
-it('retains verified released Team cleanup authority across reactivation retirement, then replaces it only on a new publication', async () => {
+it('retains verified quiet Team cleanup authority across directory eviction, then replaces it only on a new publication', async () => {
   const { TeamRunResolver } = await import('../../../src/agent-team-execution/services/team-run-resolver.js');
   const { RootTeamExecutionDirectory } = await import('../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js');
-  const old = { teamRunId: 'released-team', isActive: () => false, isTerminated: () => true,
+  const old = { teamRunId: 'quiet-team', isActive: () => false, isTerminated: () => true,
     cancelRuntimeActivation: vi.fn(), releaseOwnedRuntime: vi.fn(async () => ({ accepted: true })) };
   const replacement = { ...old, inheritReleasedTaskExecutionProof: vi.fn(), isActive: () => true, isTerminated: () => false };
   const resolver = new TeamRunResolver({ rootTeamRun: { teamRunId: 'root', isTerminated: () => false } as never, getIndex: vi.fn() as never });
-  resolver.registerManaged(old as never); resolver.retireTerminated('released-team');
-  expect(resolver.getActive('released-team')).toBeNull(); expect(resolver.getManaged('released-team')).toBe(old);
-  resolver.registerManaged(replacement as never); expect(resolver.getManaged('released-team')).toBe(replacement);
+  resolver.registerManaged(old as never); resolver.unregisterTerminated();
+  expect(resolver.getActive('quiet-team')).toBeNull(); expect(resolver.getManaged('quiet-team')).toBe(old);
+  resolver.registerManaged(replacement as never); expect(resolver.getManaged('quiet-team')).toBe(replacement);
   expect(replacement.inheritReleasedTaskExecutionProof).toHaveBeenCalledExactlyOnceWith(old);
   const directory = new RootTeamExecutionDirectory({} as never);
-  directory.reserveTaskSubtree([old as never]).commit(); directory.discardReleasedTask('released-team');
-  expect(directory.get('released-team')).toBeNull(); expect(directory.getManaged('released-team')).toBe(old);
-  expect(await directory.releaseTask('released-team')).toEqual({ accepted: true });
+  directory.reserveTaskSubtree([old as never]).commit(); directory.unregisterTerminated();
+  expect(directory.get('quiet-team')).toBeNull(); expect(directory.getManaged('quiet-team')).toBe(old);
+  expect(await directory.releaseTask('quiet-team')).toEqual({ accepted: true });
   expect(old.releaseOwnedRuntime).toHaveBeenCalledOnce();
   directory.reserveTaskSubtree([replacement as never]).commit();
-  expect(directory.getManaged('released-team')).toBe(replacement);
+  expect(directory.getManaged('quiet-team')).toBe(replacement);
   expect(replacement.inheritReleasedTaskExecutionProof).toHaveBeenCalledTimes(2);
 });
 

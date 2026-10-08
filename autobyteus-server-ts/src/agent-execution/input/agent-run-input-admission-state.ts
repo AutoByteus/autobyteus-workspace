@@ -390,6 +390,12 @@ export class AgentRunInputAdmissionState {
     this.accepting = false;
   }
 
+  tryQuiesceIfAlreadyQuiescent(): boolean {
+    if (!this.isQuiescent()) return false;
+    this.accepting = false;
+    return true;
+  }
+
   fenceForRootShutdown(): void {
     this.rootShutdownFenced = true;
     this.accepting = false;

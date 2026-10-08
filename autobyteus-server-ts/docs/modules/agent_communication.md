@@ -148,9 +148,8 @@ that same object; it is not wrapped in an operation result.
 **Same-root path.** When the sender has a member collaboration context and the
 target AgentRun is recorded in the sender's own active root
 (`hasAgentExecution`), delivery goes through that root's
-`deliverExactAgentMessage`. The root runs the delivery through
-`withLiveChain`, which restores a delegated child that is not running (after a
-restart or a reactivation) in `restore` mode (rejecting with
+`deliverExactAgentMessage`. The root takes a live lease on the target's chain,
+wakes a shut-down delegated child in `restore` mode (rejecting with
 `TASK_EXECUTION_CONTEXT_UNAVAILABLE` or `TASK_EXECUTION_RESTORE_FAILED` when
 that is impossible), and delivers as ordinary root communication. An unknown
 run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never

@@ -35,9 +35,11 @@ export interface TeamRunBackend {
   /** Drops the released (fenced or terminated) authority of one direct task execution; a live one is kept. */
   discardReleasedDirectTaskExecution(reference: TaskExecutionReference): void;
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean;
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
   cancelRuntimeActivation(): void;
   releaseOwnedRuntime(): Promise<AgentOperationResult>;
   prepareTermination(): Promise<PreparedLocalExecutionTermination>;
+  tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null>;
   freezeForRootTermination(): FrozenTeamRunTerminationScope;
   terminate(): Promise<AgentOperationResult>;
 }

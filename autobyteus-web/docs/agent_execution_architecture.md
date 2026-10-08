@@ -508,7 +508,7 @@ Fresh Team open follows the same invariant: an explicitly requested focus must
 exist and its exact projection is fail-fast, while nonfocused projections remain
 best effort. The open coordinator commits the staged projection and Activity
 batch before mounting, selecting, or connecting the stream. Snapshot/reconnect
-processing invalidates retained-projection authority. A root stop or restart never
+processing invalidates retained-projection authority. Idle shutdown never
 removes delegated children from the tree, so it preserves focus (Task closure is
 the one case where they leave; see "Task closure" below); when focus repair chooses a
 different AgentRun,
@@ -610,9 +610,8 @@ Stream routing is projection-first: task-team root/scoped child identity wins
 before task-agent identity, then exact logical route/path identity, then
 compatible run-id fallback. The frontend must not recreate the removed
 `isTaskAgentRunId` generated-run-id heuristic or any other run-id-format parser
-as a routing authority. A delegated copy that is not running (after a root stop or
-restart) keeps its row in the tree with `offline` status, in active and historical
-views alike.
+as a routing authority. Idle shutdown does not remove delegated rows; they stay
+in the tree with `offline` status, in active and historical views alike.
 
 Task closure: when a Project Task becomes DONE, its task executions leave the
 Workspaces tree of their host root (standalone Agent, Agent Team or Agent Org),

@@ -205,6 +205,42 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     expect(manager.hasOpenExecutionWork()).toBe(false);
   });
 
+  it("cancels recursive task-Team descendants all-or-none when one remains busy", async () => {
+    const { manager } = createMixedManager();
+    const cancelOrder: string[] = [];
+    const prepared = (name: string) => Object.freeze({
+      cancel: vi.fn(() => cancelOrder.push(name)),
+      commit: vi.fn(() => Object.freeze({
+        finish: vi.fn(async () => ({ accepted: true as const })),
+      })),
+    });
+    const firstAttempt = prepared("first-attempt");
+    const first = {
+      tryPrepareTerminationIfQuiescent: vi.fn()
+        .mockResolvedValueOnce(firstAttempt)
+        .mockResolvedValueOnce(prepared("first-retry")),
+    };
+    const second = {
+      tryPrepareTerminationIfQuiescent: vi.fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(prepared("second-retry")),
+    };
+    const taskAgents = (manager as never as {
+      taskAgents: { listHandles(): readonly unknown[]; listPreparedHandles(): readonly unknown[] };
+    }).taskAgents;
+    vi.spyOn(taskAgents, "listHandles").mockReturnValue([first, second]);
+    vi.spyOn(taskAgents, "listPreparedHandles").mockReturnValue([]);
+
+    await expect(manager.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
+    expect(firstAttempt.cancel).toHaveBeenCalledOnce();
+    expect(cancelOrder).toEqual(["first-attempt"]);
+
+    const retry = await manager.tryPrepareTerminationIfQuiescent();
+    expect(retry).not.toBeNull();
+    retry?.cancel();
+    expect(cancelOrder).toEqual(["first-attempt", "second-retry", "first-retry"]);
+  });
+
   it("re-runs a frozen-scope fence that was not accepted (e.g. a dead member) on the next attempt", async () => {
     const { manager } = createMixedManager();
     const handle = {

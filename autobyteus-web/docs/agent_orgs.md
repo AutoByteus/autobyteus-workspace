@@ -579,10 +579,9 @@ archived root.
   not fabricated empty history. Configuration comes from the captured launch
   snapshot and projections use the actual execution/provider binding, never a
   same-address configured Agent's transcript or the Org-root memory path.
-- Delegated children stay live until their Task is DONE or the Org stops;
-  there is no idle shutdown. After a restart they stay in the tree with
-  `offline` status, and in an active Org sending to such a child wakes it on
-  the server. In an inactive Org, delegated children are read-only (no composer,
+- Delegated children stay in the tree after idle shutdown with `offline`
+  status. In an active Org, sending to a shut-down child wakes it on the
+  server. In an inactive Org, delegated children are read-only (no composer,
   tool decisions or interrupt authority). Inactive configured Agents may expose
   a continuable
   composer: inspection itself remains observational, while deliberate Send

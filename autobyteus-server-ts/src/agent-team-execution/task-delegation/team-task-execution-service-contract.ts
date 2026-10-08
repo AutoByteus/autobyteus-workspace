@@ -3,6 +3,7 @@ import type { TokenUsageMigrationReadiness } from "../../token-usage/providers/t
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
@@ -27,10 +28,12 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   requireTeamRun(teamRunId: string): Promise<TeamRun>;
   teamRunResolver: TeamRunResolver;
   commitTaskActivation(command: PreparedTaskActivationMutation): Promise<ExecutionTreeCommitResult>;
+  enterLifecycleFailStop(): void;
   replaceTree(tree: TeamRunExecutionTreeSnapshot): void;
   publish(event: TeamRunEvent): void;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   memoryLocator?: RootedAgentMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   tokenUsageMigrationReadiness?: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
+  idleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
 }>;

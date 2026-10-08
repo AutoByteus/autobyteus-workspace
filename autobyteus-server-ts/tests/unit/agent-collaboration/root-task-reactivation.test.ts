@@ -54,6 +54,7 @@ function fixture() {
     containsTaskExecution: reference => key(reference) in ingress,
     publishTaskExecutionsClosed: vi.fn((references: readonly TaskExecutionReference[]) => { log.push(`closed:${references.map(key)}`); }),
     publishTaskExecutionsReopened: vi.fn((references: readonly TaskExecutionReference[]) => { log.push(`reopened:${references.map(key)}`); }),
+    isLive: reference => authority.get(key(reference)) === "live",
     assertRestorableChain: agentRunId => {
       log.push(`restorable:${agentRunId}`);
       if (!control.restorable) throw new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", "The saved conversation is unavailable.");
@@ -68,8 +69,9 @@ function fixture() {
         authority.set(key(reference), "live");
       }
     },
+    tryShutDownIfQuiet: async () => false,
   };
-  const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskAgentResources: resources });
+  const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskAgentResources: resources, gracePeriodMs: () => 600_000 });
   const assign = async (agentRun: TaskExecutionReference, coordinatorAgentRunId?: string) => {
     await resources.linkAgentRun({ role: "assigned", taskId: "task-A", assignedBy: "manager", hostRoot: root, agentRun,
       ...(coordinatorAgentRunId ? { coordinatorAgentRunId } : {}) });
@@ -80,7 +82,7 @@ function fixture() {
   const done = async () => { await lifecycle.releaseTaskAgentResources(resources.close("task-A")); log.length = 0; };
   /** `send_message_to(run ID)` as the root facades bind it: the target is woken and the message delivered. */
   const message = (sender: string, target: string) => lifecycle.deliverToExactTarget(sender, target,
-    () => lifecycle.withLiveChain(target, async () => { log.push(`deliver:${target}`); return { accepted: true, message: `Delivered message to ${target}.` }; }));
+    () => lifecycle.withLiveLease(target, async () => { log.push(`deliver:${target}`); return { accepted: true, message: `Delivered message to ${target}.` }; }));
   return { resources, authority, log, control, adapter, lifecycle, assign, done, message };
 }
 

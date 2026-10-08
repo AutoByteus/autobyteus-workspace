@@ -234,8 +234,9 @@ Mixed Team-member stop, and `stopAllAgentRuns()` all use the same exact-instance
 wrapper around `AgentRun.prepareTermination()`. Concurrent preparation and
 finish calls coalesce per exact run.
 
-Inside the run, `AgentRun` delegates its three termination methods
-(`prepareTermination`, `fenceInputAndInterruptForRootShutdown`, `terminate`) to its internal owner
+Inside the run, `AgentRun` delegates its four termination methods
+(`prepareTermination`, `tryPrepareTerminationIfQuiescent`,
+`fenceInputAndInterruptForRootShutdown`, `terminate`) to its internal owner
 `AgentRunTermination` (`domain/agent-run-termination.ts`). That owner holds the
 termination lifecycle (preparation, cancel, commit, finish retry) and the
 root-shutdown fence attempts, and reaches the run's state only through the

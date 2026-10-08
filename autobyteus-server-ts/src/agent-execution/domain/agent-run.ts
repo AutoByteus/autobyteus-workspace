@@ -250,6 +250,10 @@ export class AgentRun {
     return this.termination.prepare();
   }
 
+  tryPrepareTerminationIfQuiescent(): Promise<PreparedAgentRunTermination | null> {
+    return this.termination.tryPrepareIfQuiescent();
+  }
+
   fenceInputAndInterruptForRootShutdown(): Promise<AgentOperationResult> {
     return this.termination.fenceForRootShutdown();
   }

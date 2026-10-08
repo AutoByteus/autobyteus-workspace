@@ -15,7 +15,7 @@ export const taskTeamNode = (id: string) => testAgentTeamNode({
 export const observeConfiguredHandles = (activationFailure?: Error) => {
   const build = (input: Parameters<ConfiguredAgentExecutionFactory["create"]>[0]) => {
     let status: AgentApiStatus = "offline";
-    /** Whether the handle's AgentRun is active (AR-005 liveness); an ended run clears only the run. */
+    /** Whether the handle's AgentRun is active (AR-005 liveness); a shutdown clears only the run. */
     let runActive = true;
     const snapshot = () => createCollaborationAgentStatusSnapshot({ execution: input.identity, status });
     const emit = (next: AgentApiStatus) => {
@@ -62,6 +62,7 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
         cancel: vi.fn(),
         commit: vi.fn(() => { emit("running"); return { release: vi.fn() }; }),
       } })),
+      tryPrepareTerminationIfQuiescent: vi.fn(async () => status === "running" || status === "initializing" ? null : prepare()),
       prepareTermination: vi.fn(async () => prepare()),
       terminate: finish,
       fenceForRootShutdown: vi.fn(async () => ({ accepted: true as const })),

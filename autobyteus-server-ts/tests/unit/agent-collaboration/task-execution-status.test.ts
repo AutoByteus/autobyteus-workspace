@@ -6,15 +6,17 @@ import { nestedReleaseScenario } from '../../fixtures/task-release-generation-fi
 afterEach(() => vi.restoreAllMocks());
 
 // Actual root adapters, registries, factory and handles for each root kind; provider runs and the
-// Task side are controlled. Task A is an assigned Team, Task B an assigned Agent; both stay live until DONE.
+// Task side are controlled. Task A is an assigned Team (quiet-shut-down by the fixture), Task B an assigned Agent.
 describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: a task execution\'s own live status for the Task side', kind => {
   it('reports the live worker status, the folded team status, and offline once stopped or not admitting (DEC-006)', async () => {
     const f = await nestedReleaseScenario(kind);
-    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources });
-    // The live Agent copy reports its handle's status.
+    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources, gracePeriodMs: () => 600_000 });
+    // The live Agent copy reports its handle's status; the quiet-shut-down Team copy reports offline.
     expect(lifecycle.taskExecutionStatus({ agentRunId: 'B-worker' })).toBe('idle');
-    // The live Team copy folds its members' live statuses.
-    expect(lifecycle.taskExecutionStatus({ teamRunId: 'A-team' })).toBe('idle');
+    expect(lifecycle.taskExecutionStatus({ teamRunId: 'A-team' })).toBe('offline');
+    // Restored (live) Team: its status folds its members' live statuses.
+    await f.adapter.restoreChain('A-lead', () => undefined);
+    expect(lifecycle.taskExecutionStatus({ teamRunId: 'A-team' })).toBe('offline'); // members activate lazily
     expect(await f.getManaged('A-team')!.postMessage(new AgentInputUserMessage('Next round'), 'A-lead')).toMatchObject({ accepted: true });
     const lead = f.getManaged('A-team')!.getLeafAgentStatusSnapshots().find((snapshot) => snapshot.execution.agentRunId === 'A-lead');
     expect(lead?.details.status).not.toBe('offline');
@@ -30,16 +32,16 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: a task ex
 
   it('forwards every status change of an agent in a copy to the Task side, and announces all copies when it stops admitting', async () => {
     const f = await nestedReleaseScenario(kind);
-    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources });
-    lifecycle.onAgentStatus('A-child');
+    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources, gracePeriodMs: () => 600_000 });
+    lifecycle.onAgentStatus('A-child', 'running');
     expect(f.resources.statusChanges.at(-1)).toEqual({ hostRoot: f.root, references: [{ agentRunId: 'A-child' }, { teamRunId: 'A-team' }] });
-    lifecycle.onAgentStatus('not-in-a-copy');
+    lifecycle.onAgentStatus('not-in-a-copy', 'running');
     expect(f.resources.statusChanges).toHaveLength(1);
     lifecycle.closeExternalAdmission();
     const announced = f.resources.statusChanges.at(-1)!.references.map((reference) => 'agentRunId' in reference ? reference.agentRunId : reference.teamRunId);
     expect(announced).toEqual(expect.arrayContaining(['A-team', 'A-child', 'A-nested', 'A-grand', 'A-helper', 'B-worker']));
     // Status changes after the root stopped admitting (its agents going offline) are still forwarded.
-    lifecycle.onAgentStatus('B-worker');
+    lifecycle.onAgentStatus('B-worker', 'offline');
     expect(f.resources.statusChanges.at(-1)!.references).toEqual([{ agentRunId: 'B-worker' }]);
   });
 });

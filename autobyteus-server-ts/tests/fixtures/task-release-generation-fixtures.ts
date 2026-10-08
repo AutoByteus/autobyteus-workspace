@@ -19,7 +19,7 @@ import { InMemoryTaskAgentResources } from './task-agent-resource-fixtures.js';
 import { testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from './current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from './current-agent-org-run-fixtures.js';
 
-/** Concrete local factory/registries/release/restore; provider and business admission boundaries controlled. */
+/** Concrete local factory/registries/quiet/restore; provider and business admission boundaries controlled. */
 export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', abort?: (id: string) => Promise<any>, rejectBindingFor?: string) {
   const root = createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: 'root' });
   const active = new Map<string, any>(), acquired: any[] = [], stopped: any[] = [];
@@ -42,7 +42,7 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   const termination = (run: any) => ({ cancel: () => undefined, commit: () => ({ finish: () => stop(run) }) });
   const manager = testActivationManager({ newPreparation: create, restorePreparation: (c: any) => create({ runId: c.runId }),
     getActiveRun: (id: string) => active.get(id), releaseExactRun: stop,
-    prepareAgentRunTermination: async (run: any) => termination(run) });
+    tryPrepareAgentRunTerminationIfQuiescent: async (run: any) => termination(run), prepareAgentRunTermination: async (run: any) => termination(run) });
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange: async () => undefined,
     buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
@@ -91,13 +91,13 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   const teamCommand = { address: teamNode.address, teamRunId: teamNode.teamRunId, handoffs: [], teamNode };
   const teamOp = rootTeam ? rootTeam.beginTaskTeam(teamCommand) : f.teams.beginRootTaskTeam({ task: teamCommand,
     physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: ['A-team'] }), callbacks: f.callbacks });
-  const firstTeam = (await commit(teamOp)).preparedTeamRuns[0];
-  if (!rootTeam) f.teams.reserveTaskSubtree([firstTeam]).commit();
-  const childOp = firstTeam.beginTaskAgent({ address: childNode.address, agentRunId: 'A-child', sourceNode: childNode }); await commit(childOp);
-  const nestedOp = firstTeam.beginTaskTeam({ address: nestedNode.address, teamRunId: 'A-nested', handoffs: [], teamNode: nestedNode });
-  const firstNested = (await commit(nestedOp)).preparedTeamRuns[0];
-  const grandOp = firstNested.beginTaskAgent({ address: grandNode.address, agentRunId: 'A-grand', sourceNode: grandNode }); await commit(grandOp);
-  if (!rootTeam) f.teams.reserveTaskSubtree([firstNested]).commit();
+  const oldTeam = (await commit(teamOp)).preparedTeamRuns[0];
+  if (!rootTeam) f.teams.reserveTaskSubtree([oldTeam]).commit();
+  const childOp = oldTeam.beginTaskAgent({ address: childNode.address, agentRunId: 'A-child', sourceNode: childNode }); await commit(childOp);
+  const nestedOp = oldTeam.beginTaskTeam({ address: nestedNode.address, teamRunId: 'A-nested', handoffs: [], teamNode: nestedNode });
+  const oldNested = (await commit(nestedOp)).preparedTeamRuns[0];
+  const grandOp = oldNested.beginTaskAgent({ address: grandNode.address, agentRunId: 'A-grand', sourceNode: grandNode }); await commit(grandOp);
+  if (!rootTeam) f.teams.reserveTaskSubtree([oldNested]).commit();
   const copies = ['A-helper', 'B-worker', 'borrowed'].map(id => testAgentNode(`/${id}`, { agentRunId: id }));
   for (const node of copies) {
     const input = { address: node.address, agentRunId: node.agentRunId, sourceNode: node };
@@ -120,7 +120,7 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     const base = testExecutionTree({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' });
     tree = { ...base, rootTeam: { ...base.rootTeam, taskExecutions: tasks } }; index = new TeamExecutionIndex(tree);
     resolver = new TeamRunResolver({ rootTeamRun: rootTeam, getIndex: () => index });
-    resolver.registerManaged(firstTeam); resolver.registerManaged(firstNested);
+    resolver.registerManaged(oldTeam); resolver.registerManaged(oldNested);
     adapter = new TeamTaskExecutionAdapter({ rootTeamRunId: 'root', config: testTeamRunConfig({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' }),
       getIndex: () => index, teamRunResolver: resolver, requireTeamRun: async (id: string) => { const run = resolver!.getActive(id); if (!run) throw Error('Missing active host'); return run; },
       tokenUsageMigrationReadiness: {}, publish: vi.fn(), activityInspector: presentConversation } as never);
@@ -150,8 +150,11 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   }
   await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-helper' } });
   await resources.linkAgentRun({ ...assigned, taskId: 'B', agentRun: { agentRunId: 'B-worker' } });
-  // Every copy is live: nothing shuts a quiet copy down; only Task DONE or the root stop release it.
+  const quiet = rootTeam ? await rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' })
+    : await f.teams.tryShutDownRootTaskTeamIfQuiet('A-team');
+  if (!quiet) throw Error('Fixture must reach actual verified quiet shutdown');
+  if (resolver) resolver.unregisterTerminated(); else f.teams.unregisterTerminated();
   const getManaged = (id: string) => resolver ? resolver.getManaged(id) : f.teams.getManaged(id);
-  return { ...f, tree, adapter, rootTeam, resources, getManaged, firstTeam, firstNested, managerId: managerNode.agentRunId,
+  return { ...f, tree, adapter, rootTeam, resources, getManaged, retireTerminated: () => resolver ? resolver.unregisterTerminated() : f.teams.unregisterTerminated(), oldTeam, oldNested, managerId: managerNode.agentRunId,
     requested: [{ teamRunId: 'A-team' }, { agentRunId: 'A-child' }, { teamRunId: 'A-nested' }, { agentRunId: 'A-grand' }, { agentRunId: 'A-helper' }] };
 }

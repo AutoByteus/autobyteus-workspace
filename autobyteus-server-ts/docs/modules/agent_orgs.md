@@ -289,9 +289,8 @@ queue.
   `AgentOrgTaskSourceResolver` reads first on activation and restore.
   `AgentOrgRun.listAvailableAgents(sender)` serves `list_available_agents`.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
-  through `AgentOrgTaskExecutionAdapter`: copies stay live until Task DONE or
-  root stop (no idle shutdown), same-root wake-on-message in `restore` mode for
-  copies that are not running (after a restart or a reactivation), one liveness predicate
+  through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
+  same-root wake-on-message in `restore` mode, one liveness predicate
   (`RootAgentExecutionRegistry.isTaskLive` or the hosting Team
   registry), and open work counting only `initializing`/`running` children. See
   [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
@@ -407,14 +406,14 @@ of becoming empty history. Inactive views have no live statuses; retained client
 contexts initialize offline.
 
 Inspection does not activate providers, Restore, rewrite packages, migrate, or
-repair data. Exact retained task Agent/Team identity survives a stop and restore and
+repair data. Exact retained task Agent/Team identity survives idle shutdown and
 distinguishes repeated runs at one logical address. Member projections use the
 actual retained physical execution/provider binding, not the configured source's
 memory directory or an Org-root fallback. Configuration derives from captured
 launch data rather than current mutable definitions. The existing tree and
 communication families are sufficient; this inspection query adds no persisted
-family or migration. A delegated copy that is not running (after a root stop or
-restart) keeps its row in the view with `offline` status; it is not retired.
+family or migration. Idle shutdown keeps delegated rows in the view with
+`offline` status; it does not retire them.
 
 ### Stopped History Archive And Delete
 

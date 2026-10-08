@@ -63,6 +63,10 @@ export class AgentRunManager {
     AgentRun,
     Promise<PreparedAgentRunTermination>
   >();
+  private readonly quiescentTerminationAttempts = new WeakMap<
+    AgentRun,
+    Promise<PreparedAgentRunTermination | null>
+  >();
 
   static getInstance(): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -174,6 +178,10 @@ export class AgentRunManager {
     }
     const existing = this.managedTerminationPreparations.get(expectedRun);
     if (existing) return existing;
+    const quiescentAttempt = this.quiescentTerminationAttempts.get(expectedRun);
+    if (quiescentAttempt) {
+      return quiescentAttempt.then((prepared) => prepared ?? this.prepareAgentRunTermination(expectedRun));
+    }
     const preparation = expectedRun.prepareTermination()
       .then((runPreparation) => createManagedAgentRunTermination({
         expectedRun,
@@ -192,6 +200,47 @@ export class AgentRunManager {
       }
     });
     return preparation;
+  }
+
+  async tryPrepareAgentRunTerminationIfQuiescent(
+    expectedRun: AgentRun,
+  ): Promise<PreparedAgentRunTermination | null> {
+    this.assertCurrentPublishedRun(expectedRun);
+    const existing = this.managedTerminationPreparations.get(expectedRun);
+    if (existing || this.quiescentTerminationAttempts.has(expectedRun)) return null;
+    let attempt!: Promise<PreparedAgentRunTermination | null>;
+    attempt = expectedRun.tryPrepareTerminationIfQuiescent().then((runPreparation) => {
+      if (!runPreparation) return null;
+      let managedPromise!: Promise<PreparedAgentRunTermination>;
+      const managed = createManagedAgentRunTermination({
+        expectedRun,
+        runPreparation,
+        clearPreparation: () => {
+          if (this.managedTerminationPreparations.get(expectedRun) === managedPromise) {
+            this.managedTerminationPreparations.delete(expectedRun);
+          }
+        },
+        finishPublished: (run, termination) => this.finishPublishedAgentRunTermination(run, termination),
+      });
+      managedPromise = Promise.resolve(managed);
+      this.managedTerminationPreparations.set(expectedRun, managedPromise);
+      return managed;
+    });
+    this.quiescentTerminationAttempts.set(expectedRun, attempt);
+    void attempt.finally(() => {
+      if (this.quiescentTerminationAttempts.get(expectedRun) === attempt) {
+        this.quiescentTerminationAttempts.delete(expectedRun);
+      }
+    }).catch(() => undefined);
+    return attempt;
+  }
+
+  private assertCurrentPublishedRun(expectedRun: AgentRun): void {
+    if (!this.isCurrentPublishedRun(expectedRun)) {
+      throw new AgentTerminationError(
+        `Agent run '${expectedRun.runId}' is not the current published run.`,
+      );
+    }
   }
 
   private isCurrentPublishedRun(expectedRun: AgentRun): boolean {

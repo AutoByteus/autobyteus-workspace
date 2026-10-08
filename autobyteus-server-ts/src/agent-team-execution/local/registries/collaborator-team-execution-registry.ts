@@ -14,7 +14,7 @@ export type PreparedCollaboratorTeam = Readonly<{
 
 /**
  * Collaborator Teams of a Team root: one TeamRun each under the root TeamRun, with lazily
- * started members. Modelled on mounted Teams in the Org: the root
+ * started members and no idle shutdown. Modelled on mounted Teams in the Org: the root
  * restores them with the run and terminates them with it.
  */
 export class CollaboratorTeamExecutionRegistry {

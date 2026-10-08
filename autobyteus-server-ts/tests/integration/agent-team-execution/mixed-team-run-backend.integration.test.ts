@@ -60,6 +60,7 @@ const createHarness = () => {
     restoreTaskAgent: vi.fn(),
     restoreTaskTeam: vi.fn(),
     hasLiveDirectTaskExecution: vi.fn(() => true),
+    tryShutDownDirectTaskExecutionIfQuiet: vi.fn(async () => true),
     prepareTermination: vi.fn(),
     terminate: vi.fn(async () => ({ accepted: true })),
   };
@@ -93,7 +94,7 @@ describe("FlatTeamRunBackend exact local facade integration", () => {
     expect(manager.executeDirectAgentCommand).toHaveBeenCalledWith("reviewer-run", command);
   });
 
-  it("forwards task execution operations, restore, liveness, and termination capabilities without alternate ownership", async () => {
+  it("forwards prepared task execution, restore, liveness, quiet shutdown, and termination capabilities without alternate ownership", async () => {
     const { backend, manager } = createHarness();
     const taskAgentInput = { taskId: "task-agent-1" } as never;
     const taskTeamInput = { taskId: "task-team-1" } as never;
@@ -109,6 +110,7 @@ describe("FlatTeamRunBackend exact local facade integration", () => {
     const restoreInput = { address: "/reviewer", agentRunId: "task-agent-run", platformAgentRunId: null, sourceNode: {} } as never;
     backend.restoreTaskAgent(restoreInput);
     expect(backend.hasLiveDirectTaskExecution({ agentRunId: "task-agent-run" })).toBe(true);
+    await expect(backend.tryShutDownDirectTaskExecutionIfQuiet({ agentRunId: "task-agent-run" })).resolves.toBe(true);
     await expect(backend.prepareTermination()).resolves.toBe(preparedTermination);
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
 
@@ -116,6 +118,7 @@ describe("FlatTeamRunBackend exact local facade integration", () => {
     expect(manager.beginTaskTeam).toHaveBeenCalledWith(taskTeamInput);
     expect(manager.restoreTaskAgent).toHaveBeenCalledWith(restoreInput);
     expect(manager.hasLiveDirectTaskExecution).toHaveBeenCalledWith({ agentRunId: "task-agent-run" });
+    expect(manager.tryShutDownDirectTaskExecutionIfQuiet).toHaveBeenCalledWith({ agentRunId: "task-agent-run" });
     expect(manager.terminate).toHaveBeenCalledOnce();
   });
 });

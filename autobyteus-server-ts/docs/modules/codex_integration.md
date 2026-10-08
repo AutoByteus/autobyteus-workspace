@@ -630,21 +630,16 @@ the user's running app/data. Follow `TESTING.md` isolation and exact cleanup.
 - `codex-long-turn-cadence.probe.test.ts` records backend long-turn event cadence over time.
 - `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` is the gated live
   delegated-child resource-lifecycle proof across AutoByteus (LMStudio), Codex,
-  and Claude: `delegate_task` spawn, run-ID conversation, quiet children (and
-  children waiting for tool approval) staying live past the old idle-shutdown
-  delay, root stop, and wake-on-message with restored context after a reopen. It
-  skips without its live flags. Enable runtimes with `RUN_LMSTUDIO_E2E=1`,
-  `RUN_CODEX_E2E=1`, and/or `RUN_CLAUDE_E2E=1` (model pins: `LMSTUDIO_MODEL_ID` /
-  `LMSTUDIO_TARGET_TEXT_MODEL`, `CODEX_E2E_TOOL_MODEL`, `CLAUDE_E2E_TOOL_MODEL`).
-  Run it from a sanitized environment that does not inherit a real
-  `DATABASE_URL` or `AUTOBYTEUS_MEMORY_DIR`. Example:
-  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`.
-- `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts` is the gated
-  live proof that a delegated Claude agent whose `run_in_background` task runs
-  longer than the old one-minute idle-shutdown minimum stays live, receives the
-  completion and reports to its delegator:
-  `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts --no-watch`
-  (optional `CLAUDE_E2E_TOOL_MODEL`, default `haiku`; `DELEGATED_BACKGROUND_E2E_EVIDENCE_DIR` keeps a JSON receipt).
+  and Claude: `delegate_task` spawn, run-ID conversation, idle shutdown after
+  the grace period, and wake-on-message with restored context. It skips without
+  its live flags. Enable runtimes with `RUN_LMSTUDIO_E2E=1`, `RUN_CODEX_E2E=1`,
+  and/or `RUN_CLAUDE_E2E=1` (model pins: `LMSTUDIO_MODEL_ID` /
+  `LMSTUDIO_TARGET_TEXT_MODEL`, `CODEX_E2E_TOOL_MODEL`, `CLAUDE_E2E_TOOL_MODEL`)
+  and shorten the grace period with
+  `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000`. Run it from a
+  sanitized environment that does not inherit a real `DATABASE_URL` or
+  `AUTOBYTEUS_MEMORY_DIR`. Example:
+  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`.
 - These live probes are intentionally opt-in and require the matching local
   runtime prerequisites; they must not become default CI prerequisites.
 

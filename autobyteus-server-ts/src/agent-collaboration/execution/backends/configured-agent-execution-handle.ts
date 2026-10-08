@@ -237,6 +237,15 @@ export class ConfiguredAgentExecutionHandle {
     return Object.freeze({ cancel: () => undefined, commit: () => Object.freeze({ finish: () => this.releaseRuntime() }) });
   }
 
+  async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
+    if (this.readinessAttempt) return null;
+    const run = this.agentRun;
+    if (!run) return this.activationOperation ? null : completedLocalTermination(() => this.dispose());
+    const prepared = await this.manager.tryPrepareAgentRunTerminationIfQuiescent(run);
+    if (!prepared) return null;
+    return this.wrapPreparedTermination(prepared);
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     const prepared = await this.prepareTermination();
     return prepared.commit().finish();
@@ -435,3 +444,13 @@ export class ConfiguredAgentExecutionHandle {
     );
   }
 }
+
+const completedLocalTermination = (
+  finish: () => void,
+): PreparedLocalExecutionTermination => Object.freeze({
+  cancel: () => undefined,
+  commit: () => Object.freeze({ finish: async () => {
+    finish();
+    return { accepted: true as const };
+  } }),
+});
