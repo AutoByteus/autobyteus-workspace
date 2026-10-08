@@ -44,13 +44,15 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
+import { ArchivedAgentRunOpenError } from '~/services/runOpen/agentRunOpenCoordinator'
 import { buildAgentRunChatRoute, openWorkspaceExecutionLink } from '~/services/workspace/workspaceNavigationService'
 import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 
 /**
  * `/chat` shows the New chat surface; `/chat?id=<runId>` shows that single-agent run in the
  * workspace frame (the product agent run view), opening it first when it is not mounted. An id that is neither registered nor openable
- * shows the missing-chat state; a `temp-*` id that is no longer registered returns to New chat.
+ * shows the missing-chat state; a `temp-*` id that is no longer registered returns to New chat. A run that is
+ * archived, or that is archived or deleted while displayed, leaves to the `/workspace` empty view.
  */
 const route = useRoute()
 const router = useRouter()
@@ -69,6 +71,12 @@ provide(START_SURFACE_WORKSPACE, computed(() => (routeRunId.value ? null : start
 const displayedContext = computed(() => (routeRunId.value ? agentContextsStore.getRun(routeRunId.value) ?? null : null))
 const openState = ref<'idle' | 'opening' | 'missing'>('idle')
 let openGeneration = 0
+
+// A run that was archived or deleted is closed to the workspace empty view; no other run is opened.
+const leaveToWorkspace = () => {
+  selectionStore.clearSelection()
+  void router.replace({ path: '/workspace' })
+}
 
 const ensureRunOpen = async (runId: string | null) => {
   const generation = ++openGeneration
@@ -92,6 +100,10 @@ const ensureRunOpen = async (runId: string | null) => {
     openState.value = agentContextsStore.getRun(runId) ? 'idle' : 'missing'
   } catch (error) {
     if (generation !== openGeneration) return
+    if (error instanceof ArchivedAgentRunOpenError) {
+      leaveToWorkspace()
+      return
+    }
     console.warn(`Chat '${runId}' could not be opened:`, error)
     openState.value = 'missing'
   }
@@ -113,12 +125,14 @@ watch(displayedContext, (context) => {
   if (context !== settingsContext) workspaceCenterViewStore.showChat()
 }, { immediate: true })
 
-// A displayed run that disappears (for example, deleted from the Workspaces tree) is re-resolved.
-// A promoted context keeps its object but carries the new id; useChatRouteRunSync moves the route.
+// A displayed stored run that disappears was archived or deleted from the Workspaces tree, so Chat
+// leaves it instead of re-opening it. A discarded draft (`temp-*`) returns to New chat. A promoted
+// context keeps its object but carries the new id; useChatRouteRunSync moves the route.
 watch(displayedContext, (context, previous) => {
   if (context || !previous || !routeRunId.value) return
   if (previous.state.runId !== routeRunId.value) return
-  if (!agentContextsStore.getRun(routeRunId.value)) void ensureRunOpen(routeRunId.value)
+  if (isTemporaryRunId(routeRunId.value)) void ensureRunOpen(routeRunId.value)
+  else leaveToWorkspace()
 })
 
 useChatRouteRunSync({

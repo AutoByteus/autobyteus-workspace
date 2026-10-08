@@ -138,7 +138,7 @@ describe('agentContextsStore', () => {
     });
 
     describe('removeRun', () => {
-        it('should auto-select another runContext when removing the selected one', () => {
+        it('clears the selection instead of selecting another loaded runContext when removing the selected one', () => {
             const store = useAgentContextsStore();
             const configStore = useAgentRunConfigStore();
             const selectionStore = useAgentSelectionStore();
@@ -153,9 +153,10 @@ describe('agentContextsStore', () => {
             store.removeRun(id2);
 
             expect(store.runs.has(id2)).toBe(false);
-            // Should auto-select the remaining runContext
-            expect(selectionStore.selectedRunId).toBe(id1);
-            expect(selectionStore.selectedType).toBe('agent');
+            expect(store.runs.has(id1)).toBe(true);
+            // The other loaded run is not opened in place of the removed one.
+            expect(selectionStore.selectedRunId).toBeNull();
+            expect(selectionStore.selectedType).toBeNull();
         });
 
         it('should clear selection when removing the only runContext', () => {

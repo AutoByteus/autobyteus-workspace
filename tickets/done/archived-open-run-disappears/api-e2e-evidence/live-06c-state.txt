@@ -1,0 +1,1 @@
+{"hash": "#/workspace", "emptyState": true, "selection": {"type": null, "id": null}, "orgRows": [], "localBadges": 0}

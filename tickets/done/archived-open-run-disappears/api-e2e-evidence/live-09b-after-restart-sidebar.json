@@ -1,0 +1,27 @@
+{
+ "hash": "#/chat",
+ "emptyState": false,
+ "chatMissing": false,
+ "groupHeaders": [
+  "KA Keeper Agent (1)",
+  "LA Live Agent (2)",
+  "Live Team (1)",
+  "Other Team (1)",
+  "Live Org (1)"
+ ],
+ "agentRowIds": [
+  "keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec",
+  "live_agent_8dd87a0ac51f49168d95833431138ff9",
+  "live_agent_045b1ade16914d28bd452e1502fd23b0"
+ ],
+ "teamRowIds": [
+  "other_team_9924fa62808c4bfaaf0d06cd5aad9afd"
+ ],
+ "orgRowIds": [
+  "live_org_1dbf30a62fdf4997a4cac7fd1d4e96d8"
+ ],
+ "mentionsArchived": [],
+ "hasOpenAgentText": false,
+ "hasBridgeTeamText": false,
+ "hasDeliveryOrgText": false
+}

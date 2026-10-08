@@ -1,0 +1,1 @@
+{"c1": "ok", "confirm": {"waited": true, "dialogText": "Delete Agent Org history permanently Delete this Agent Org history permanently? This removes only this run and cannot be undone. Cancel Delete Agent Org history permanently", "clicked": "ok"}, "toast": "Agent Org history deleted permanently.", "transitions": [{"ms": 0, "s": "#/workspace|EMPTY"}], "finalHash": "#/workspace"}

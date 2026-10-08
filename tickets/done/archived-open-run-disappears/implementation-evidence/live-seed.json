@@ -1,0 +1,23 @@
+{
+  "workspaceRoot": "/tmp/aord-live-ws",
+  "workspace": {
+    "workspaceId": "agent_ws_f74bcca1fc5d78bd4ced17b0aa912cfdb67a0bc381647f14cd42d9d19bc5ec73"
+  },
+  "agentA": "open-agent",
+  "agentB": "keeper-agent",
+  "member": "bridge-lead",
+  "team": "bridge-team",
+  "org": "delivery-org",
+  "agentAStopped": [
+    "open_agent_bb7772c764c745dd972ea842b1276af4",
+    "open_agent_bb2b77498cb64b0cae2d9ede1a122ce2",
+    "open_agent_384b633ecb974fc7a61512fa02395d0a"
+  ],
+  "agentBStopped": "keeper_agent_1b626fd455e34f0c825c787cc9205eb1",
+  "teamStopped": [
+    "bridge_team_c81bcfa304ac4e08a1f0fdaf0312ab24",
+    "bridge_team_1e88eeafc4e041d5b20d23d7fa0622fd",
+    "bridge_team_76e744a031c94bf78b19768cbe23c779"
+  ],
+  "orgStopped": "delivery_org_f85ff40ade4a497aa62b4f632950a9ee"
+}
