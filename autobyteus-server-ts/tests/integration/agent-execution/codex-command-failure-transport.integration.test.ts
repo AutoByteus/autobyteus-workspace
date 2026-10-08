@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { TeamAgentEventAdapter } from "../../../src/agent-team-execution/services/team-agent-event-adapter.js";
 import { AgentRunEventMessageMapper } from "../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
@@ -55,7 +56,7 @@ describe("Codex command failure transport integration", () => {
     });
 
     const execution = createTeamAgentExecutionBinding({
-      rootTeamRunId: "root-team-command-failure",
+      root: createTeamRootExecutionIdentity("root-team-command-failure"),
       memberAddress: "/implementation_engineer",
       agentRunId: runId,
     });
