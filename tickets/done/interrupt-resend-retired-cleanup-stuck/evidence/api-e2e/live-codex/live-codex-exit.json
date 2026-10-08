@@ -1,0 +1,69 @@
+{
+  "case": "LIVE-CODEX-EXIT",
+  "model": "gpt-5.6-luna",
+  "runId": "codex_exit_resend_cd50aa7c_1f84_4ed2_a1d3_f25224_3a6a35b183664edf8286644606237fdb",
+  "crashed": [
+    {
+      "pid": 53305,
+      "command": "codex app-server -c agents.enabled=false"
+    }
+  ],
+  "framesAfterCrash": [
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "CODEX_APP_SERVER_CLOSED",
+        "message": "Codex app server process closed unexpectedly (SIGKILL).",
+        "error_scope": "runtime",
+        "error_effect": "terminal",
+        "turn_id": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "error",
+        "recoverableBlock": null,
+        "agent_id": "codex_exit_resend_cd50aa7c_1f84_4ed2_a1d3_f25224_3a6a35b183664edf8286644606237fdb"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "ab87d02d-7c5d-44a7-9eec-d412ace12625",
+        "revision": 4,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    }
+  ],
+  "recallAck": {
+    "command_type": "SEND_MESSAGE",
+    "run_id": "codex_exit_resend_cd50aa7c_1f84_4ed2_a1d3_f25224_3a6a35b183664edf8286644606237fdb",
+    "message_id": "e2e-8980a44e-326c-4236-8bd5-e768acf3b877",
+    "dedupe_key": "agent_run_input:e2e:e2e-8980a44e-326c-4236-8bd5-e768acf3b877",
+    "state": "accepted",
+    "accepted": true,
+    "duplicate": false,
+    "status": {
+      "status": "initializing",
+      "recoverableBlock": null,
+      "agent_id": "codex_exit_resend_cd50aa7c_1f84_4ed2_a1d3_f25224_3a6a35b183664edf8286644606237fdb"
+    }
+  },
+  "recallText": "CODE-C-5800f1e0",
+  "statusesAfterRecall": [
+    "initializing",
+    "offline",
+    "initializing",
+    "running",
+    "idle"
+  ],
+  "restarted": [
+    {
+      "pid": 56713,
+      "command": "codex app-server -c agents.enabled=false"
+    }
+  ],
+  "result": "Pass"
+}

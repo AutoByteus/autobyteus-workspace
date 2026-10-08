@@ -1,0 +1,216 @@
+# Full server suite failures present on base origin/personal ace86bf1f (same files run sequentially with --no-file-parallelism, 2026-10-08).
+# 213 failing tests in 58 files on base; with fccd1a009 the same set fails and nothing else (memory-layout-and-projection regression fixed in the commit).
+tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > persists root, nested-Team, and exact-Agent configurations and restores them after process restart
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'blank' 'Agent' runtime before workspace or run side effects
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'blank' 'Team' runtime before workspace or run side effects
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'missing' 'Agent' runtime before workspace or run side effects
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'missing' 'Team' runtime before workspace or run side effects
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'unsupported' 'Agent' runtime before workspace or run side effects
+tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'unsupported' 'Team' runtime before workspace or run side effects
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > keeps a rejected Error runtime active and retryable without recording false termination
+tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts > Standalone Error run status and termination GraphQL lifecycle > lists a manager-owned Error runtime as active, terminates it, and retains inactive history
+tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > token-only-rerun: preserves usage and conversation through full restore, replay and advancing response
+tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts > Memory Sync multi-process backend e2e > syncs fake source memory from one real backend server process into another
+tests/e2e/run-history/nested-team-history-restart.e2e.test.ts > nested TeamRun history startup/restart hydration > keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action
+tests/e2e/run-history/nested-team-history-restart.e2e.test.ts > nested TeamRun history startup/restart hydration > moves released flat configured/task memory before public reads and remains canonical after process restart
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without changing Event Monitor visuals
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives
+tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > announces a background completion and streams the turn Claude starts on its own (AC-002)
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > delivers a message sent to a busy agent into the running turn (AC-003)
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > interrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md
+tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps ordinary native tools and configured skill reads explicit in the same active run
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=false reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=false reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=true reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'ALL_INSTALLED' retain=true reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=false reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=false reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=true reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'claude'/'CONFIGURED' retain=true reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=false reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=false reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=true reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'ALL_INSTALLED' retain=true reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=false reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=false reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=true reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'codex'/'CONFIGURED' retain=true reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=false reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'ALL_INSTALLED' retain=true reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=false reverse=true
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=true reverse=false
+tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts > GitHub skill sources through production GraphQL documents > prepares later run after real API update: 'grok'/'CONFIGURED' retain=true reverse=true
+tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > does not silently skip malformed application-owned agents during catalog reads
+tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > updates application-owned agent defaultLaunchConfig in place
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active autobyteus run through the matching backend factory
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active claude_agent_sdk run through the matching backend factory
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > creates and registers an active codex_app_server run through the matching backend factory
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > evicts inactive runs when queried or listed
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > rejects unsupported runtime kinds for create and restore
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores Claude platform state with auto approval separate from provider permission mode
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a autobyteus run through the matching backend factory
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a claude_agent_sdk run through the matching backend factory
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > restores a codex_app_server run through the matching backend factory
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > returns false for missing runs and for unaccepted termination without unregistering
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > terminates and unregisters active runs on accepted termination
+tests/integration/agent-execution/agent-run-manager.integration.test.ts > AgentRunManager integration > wraps termination failures in AgentTerminationError
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > falls back to description when fresh definition instructions are blank
+tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts > AgentRunService fresh definition runtime integration > uses fresh definition instructions for the next run even when the cache is stale
+tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > restores a started autobyteus run through the correct exact continuation path
+tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > restores a started claude_agent_sdk run through the correct exact continuation path
+tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > restores a started codex_app_server run through the correct exact continuation path
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > creates a live backend that can process a turn and terminate cleanly
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > respects a preferred run id and provisions the standalone memory directory explicitly
+tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts > AutoByteusAgentRunBackendFactory integration > restores a terminated run with the same run id
+tests/integration/agent-execution/claude-session-manager.integration.test.ts > ClaudeSessionManager explicit Agent Tools activator > materializes an activated headerless provider-neutral descriptor into the Claude streaming session config
+tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts > Codex command failure transport integration > preserves one enriched provider-shaped failure through standalone and Team wire paths
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"]
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"]
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"]
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > emits root lifecycle transitions and unregisters only after accepted termination
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds Team archive's manager lane through tree/index commit before Restore
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds Team unarchive's manager lane through tree/index commit before Restore
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > holds one exact-ID transition lane across unmanaged deletion and restore registration
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > orders an exact-ID Team restore after an in-flight Save and restores committed config
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > refuses Team archive and unarchive after Restore owns the exact-root lane
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > rejects active updates, then persists a stopped narrow patch for the next restore
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > returns RUN_ACTIVE when an exact-ID Team restore completes before Save
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > org Stop drains first readiness and leaves no published worker after success
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > readiness rejection remains an error for the exact worker, without starting other members
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > restores full Offline scope and durably readies only each addressed member
+tests/integration/agent-team-execution/configured-scope-readiness.test.ts > fresh and restored configured scope use deferred readiness > team Stop drains first readiness and leaves no published worker after success
+tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts > Team WebSocket exact AgentRun command integration > returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > preserves B while rejecting a retired turn's late segment content across reconnect
+tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /images
+tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/files
+tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > hydrates historical AutoByteus team-member file changes through GraphQL and REST
+tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts > Brief Studio production application Agent Tool through MCP > lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation
+tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged role prompts with context-first validation and publication ordering
+tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team configs with the research-first coordinator handoff
+tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch reinforcement without replacing role-local ownership
+tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service
+tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+tests/skill-improvement/skill-improvement-graphql-resolver.test.ts > SkillImprovementResolver GraphQL boundary > exposes explicit skill-improvement API fields only at capability/run boundaries
+tests/skill-improvement/skill-improvement-target-notification-service.test.ts > SkillImprovementTargetNotificationService > emits a runtime-neutral local notification event for active idle autobyteus runs
+tests/skill-improvement/skill-improvement-target-notification-service.test.ts > SkillImprovementTargetNotificationService > emits a runtime-neutral local notification event for active idle claude_agent_sdk runs
+tests/skill-improvement/skill-improvement-target-notification-service.test.ts > SkillImprovementTargetNotificationService > emits a runtime-neutral local notification event for active idle codex_app_server runs
+tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > emits media segment events
+tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > reads only the requested root's tree when the team run ID is a stored root (REQ-005)
+tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves an AgentOrg member's own run inside the requested org root
+tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves only one exact current address/run match while retaining its configured launch placement
+tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > still resolves a nested team run ID by searching every root
+tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > lists the configured member and its task instance as separate runs
+tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > reports a delegated task instance with its own run ID (AC-011)
+tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > skips a corrupt root tree with a warning while other roots still list (AC-003)
+tests/unit/agent-memory/team-memory-explorer-service.test.ts > TeamMemoryExplorerService member identity and invalid roots > skips a root folder whose tree names a different team run, while other roots still list
+tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > validates package roots and counts shared agents, team-local agents, and teams
+tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event
+tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation
+tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > transfers one complete frozen K8 kernel with fixed idempotent construction abort
+tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > unwinds the exact owned authority at K6
+tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts > buildApplicationExecutionScopeKernel construction transaction > unwinds the exact owned authority at K7
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > authorizes configured and dynamic application Team producers through the live root topology
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > continues authority close after shutdown failure and aggregates both failures
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > delegates construction abort exactly once after kernel transfer
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > maps restore-aware Agent and Team input without changing target or errors
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > owns one complete graph-local kernel and freezes every outward capability
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects Agent launch identity without leaking the service result
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > projects direct configured Team Agents, excludes task nodes, and deep-freezes
+tests/unit/application-platform/application-execution-scope.test.ts > ApplicationExecutionScope > quiesces issue admission and closes run graph before authority exactly once
+tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > materializes a fresh selected application runtime cwd before definition/provider readiness
+tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+tests/unit/config/streaming-content-flush-interval-setting.test.ts > streaming content flush interval setting > falls back for invalid runtime input undefined
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+tests/unit/llm-management/gemini-configuration-service.test.ts > GeminiConfigurationService explicit mode commands > starts with no selected mode and no implicit priority
+tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm defaults to non-query log kinds
+tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors explicit environment query-log policy only
+tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors typed policy and typed-false precedence
+tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm import acquires no Prisma client or datasource
+tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm rejects a conflicting post-bind logging policy
+tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code
+tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and initializes a SkillWorkspace for skill_ws_ IDs

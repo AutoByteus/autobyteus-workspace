@@ -1,0 +1,21 @@
+{
+  "case": "LIVE-ORG-R7",
+  "model": "gemini-3.8-flash-high",
+  "orgRunId": "agy_recovery_org_843c4a6c_0036_4f1d_8e7d_88516cc3c4f0_2a418d9d89864ad5a6c8e8fae21e4925",
+  "directorRunId": "agy_recovery_director_843c4a6c_0036_4f1d_8e7d_88_4520179c75c5437f94c93a1b2364b81c",
+  "workerRunId": "agy_recovery_worker_843c4a6c_0036_4f1d_8e7d_8851_a5b54b089dad4cc085128c4880274ed8",
+  "directorStop": {
+    "toolStarted": true,
+    "agyBeforeStop": [
+      {
+        "pid": 90562,
+        "command": "agy --new-project --agent autobyteus-5e063aaf8dc139ee --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-zA2fPf/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ],
+    "stopAck": null,
+    "turnEnd": "TURN_INTERRUPTED",
+    "agyGone": true
+  },
+  "result": "Fail",
+  "error": "AssertionError: null: expected undefined to be 'accepted' // Object.is equality"
+}
