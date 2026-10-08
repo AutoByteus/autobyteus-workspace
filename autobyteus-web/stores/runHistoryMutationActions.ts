@@ -4,6 +4,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import {
+  ArchiveStoredAgentRunGroup,
   ArchiveStoredRun,
   ArchiveStoredTeamRun,
   DeleteStoredRun,
@@ -14,13 +15,16 @@ import {
   DeleteStoredAgentOrgRun,
 } from '~/graphql/mutations/agentOrgRunMutations';
 import type {
+  AgentRunGroupArchiveOutcome,
   ArchiveStoredAgentOrgRunMutationData,
+  ArchiveStoredAgentRunGroupMutationData,
   ArchiveStoredRunMutationData,
   ArchiveStoredTeamRunMutationData,
   DeleteStoredAgentOrgRunMutationData,
   DeleteStoredRunMutationData,
   DeleteStoredTeamRunMutationData,
   AgentOrgRunHistoryItem,
+  RunGroupArchiveOutcome,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
   TeamRunResumeConfigPayload,
@@ -40,6 +44,7 @@ type RunHistoryMutationStoreLike = {
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
   refreshTreeQuietly(limitPerAgent?: number): Promise<void>;
+  refreshRunNavigationTopology(reason: string): void;
 };
 
 const cleanupStoredRunLocalState = (
@@ -208,7 +213,7 @@ export const deleteTeamRunFromHistoryStore = async (
   }
 };
 
-export const archiveTeamRunInHistoryStore = async (
+const archiveTeamRunRecord = async (
   store: RunHistoryMutationStoreLike,
   teamRunId: string,
 ): Promise<boolean> => {
@@ -234,12 +239,20 @@ export const archiveTeamRunInHistoryStore = async (
     }
 
     cleanupStoredTeamRunLocalState(store, normalizedTeamRunId);
-    await store.refreshTreeQuietly();
     return true;
   } catch (error: any) {
     console.error(`Failed to archive team run '${normalizedTeamRunId}':`, error);
     return false;
   }
+};
+
+export const archiveTeamRunInHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  teamRunId: string,
+): Promise<boolean> => {
+  const archived = await archiveTeamRunRecord(store, teamRunId);
+  if (archived) await store.refreshTreeQuietly();
+  return archived;
 };
 
 export const deleteAgentOrgRunFromHistoryStore = async (
@@ -268,7 +281,7 @@ export const deleteAgentOrgRunFromHistoryStore = async (
   }
 };
 
-export const archiveAgentOrgRunInHistoryStore = async (
+const archiveAgentOrgRunRecord = async (
   store: RunHistoryMutationStoreLike,
   orgRunId: string,
 ): Promise<boolean> => {
@@ -286,10 +299,74 @@ export const archiveAgentOrgRunInHistoryStore = async (
     if (!result?.success || result.orgRunId !== normalizedOrgRunId) return false;
 
     cleanupStoredAgentOrgRunLocalState(store, normalizedOrgRunId);
-    await store.refreshTreeQuietly();
     return true;
   } catch (error) {
     console.error(`Failed to archive AgentOrg run '${normalizedOrgRunId}':`, error);
     return false;
   }
 };
+
+export const archiveAgentOrgRunInHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  orgRunId: string,
+): Promise<boolean> => {
+  const archived = await archiveAgentOrgRunRecord(store, orgRunId);
+  if (archived) await store.refreshTreeQuietly();
+  return archived;
+};
+
+const refreshAfterGroupArchive = async (store: RunHistoryMutationStoreLike): Promise<void> => {
+  await store.refreshTreeQuietly();
+  store.refreshRunNavigationTopology('group-archive');
+};
+
+/**
+ * Archives every stored run of one standalone agent in one workspace through the server
+ * (which also reaches runs beyond the listing cap), then refreshes once. The server
+ * archives nothing when any run of the group is active. Transport errors are thrown.
+ */
+export const archiveAgentRunGroupInHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  workspaceRootPath: string,
+  agentDefinitionId: string,
+): Promise<AgentRunGroupArchiveOutcome> => {
+  const { data, errors } = await getApolloClient().mutate<ArchiveStoredAgentRunGroupMutationData>({
+    mutation: ArchiveStoredAgentRunGroup,
+    variables: { workspaceRootPath, agentDefinitionId },
+  });
+  if (errors?.length) throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
+  const outcome = data?.archiveStoredAgentRunGroup;
+  if (!outcome) throw new Error('archiveStoredAgentRunGroup returned no result.');
+
+  for (const runId of outcome.archivedRunIds) cleanupStoredRunLocalState(store, runId);
+  if (outcome.archivedRunIds.length > 0) await refreshAfterGroupArchive(store);
+  return outcome;
+};
+
+/**
+ * Archives the listed runs of one group one at a time with the per-run archive core,
+ * then refreshes history and run-navigation topology once for the whole group.
+ */
+const archiveRunsOfGroup = async (
+  store: RunHistoryMutationStoreLike,
+  runIds: string[],
+  archiveRecord: (store: RunHistoryMutationStoreLike, runId: string) => Promise<boolean>,
+): Promise<RunGroupArchiveOutcome> => {
+  const outcome: RunGroupArchiveOutcome = { archivedRunIds: [], failedRunIds: [] };
+  for (const runId of runIds) {
+    const archived = await archiveRecord(store, runId);
+    (archived ? outcome.archivedRunIds : outcome.failedRunIds).push(runId);
+  }
+  if (outcome.archivedRunIds.length > 0) await refreshAfterGroupArchive(store);
+  return outcome;
+};
+
+export const archiveTeamRunsInHistoryStore = (
+  store: RunHistoryMutationStoreLike,
+  teamRunIds: string[],
+): Promise<RunGroupArchiveOutcome> => archiveRunsOfGroup(store, teamRunIds, archiveTeamRunRecord);
+
+export const archiveAgentOrgRunsInHistoryStore = (
+  store: RunHistoryMutationStoreLike,
+  orgRunIds: string[],
+): Promise<RunGroupArchiveOutcome> => archiveRunsOfGroup(store, orgRunIds, archiveAgentOrgRunRecord);

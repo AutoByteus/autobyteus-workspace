@@ -28,6 +28,13 @@ export interface ArchiveStoredRunResult {
   message: string;
 }
 
+export interface ArchiveStoredAgentRunGroupResult {
+  archivedRunIds: string[];
+  /** Non-empty means the group had running runs and nothing was archived. */
+  activeRunIds: string[];
+  failedRunIds: string[];
+}
+
 export class AgentRunHistoryService {
   private readonly catalogService: AgentRunHistoryCatalogService;
   private readonly agentRunManager: AgentRunManager;
@@ -137,6 +144,41 @@ export class AgentRunHistoryService {
 
   async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
     return this.catalogService.archiveRun(runId);
+  }
+
+  /**
+   * Archives every unarchived stored run of one agent in one workspace, including runs
+   * beyond the history listing cap. All-or-nothing: when any of those runs is active,
+   * nothing is archived and the active run IDs are returned.
+   */
+  async archiveStoredAgentRunGroup(input: {
+    workspaceRootPath: string;
+    agentDefinitionId: string;
+  }): Promise<ArchiveStoredAgentRunGroupResult> {
+    const agentDefinitionId = input.agentDefinitionId.trim();
+    if (!input.workspaceRootPath.trim() || !agentDefinitionId) {
+      throw new Error("workspaceRootPath and agentDefinitionId are required.");
+    }
+    const workspaceRootPath = canonicalizeWorkspaceRootPath(input.workspaceRootPath);
+    const groupRunIds = (await this.catalogService.listCatalogRows())
+      .filter((row) => !row.archivedAt
+        && row.agentDefinitionId === agentDefinitionId
+        && canonicalizeWorkspaceRootPath(row.workspaceRootPath) === workspaceRootPath)
+      .map((row) => row.runId);
+
+    const activeRunIds = groupRunIds.filter(
+      (runId) => this.statusProjectionService.getCatalogListStatusProjection(runId).isActive,
+    );
+    if (activeRunIds.length > 0) {
+      return { archivedRunIds: [], activeRunIds, failedRunIds: [] };
+    }
+
+    const result: ArchiveStoredAgentRunGroupResult = { archivedRunIds: [], activeRunIds: [], failedRunIds: [] };
+    for (const runId of groupRunIds) {
+      const archived = await this.catalogService.archiveRun(runId);
+      (archived.success ? result.archivedRunIds : result.failedRunIds).push(runId);
+    }
+    return result;
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {

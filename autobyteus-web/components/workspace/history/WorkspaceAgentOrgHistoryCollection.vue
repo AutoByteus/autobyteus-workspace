@@ -4,9 +4,10 @@
       {{ t('workspace.agentOrg.history.collectionLabel') }}
     </div>
     <div v-for="group in groups" :key="group.stableKey" class="rounded-md">
+      <div class="group/org-header flex items-center rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50">
       <button
         type="button"
-        class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+        class="flex min-w-0 flex-1 items-center text-left"
         :data-test="`agent-org-definition-${group.definitionId}`"
         :aria-expanded="isDefinitionExpanded(group.definitionId)"
         @click="toggleDefinition(group.definitionId)"
@@ -21,6 +22,19 @@
         <span class="truncate font-medium">{{ group.name }}</span>
         <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
       </button>
+      <button
+        v-if="actions.onArchiveAgentOrgGroup"
+        type="button"
+        :data-test="`agent-org-group-archive-${group.definitionId}`"
+        class="ml-2 inline-flex h-5 w-5 flex-none items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 focus:opacity-100 md:opacity-0 md:group-hover/org-header:opacity-100 md:group-focus-within/org-header:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+        :title="t('workspace.history.groupArchive.archiveAll')"
+        :aria-label="t('workspace.history.groupArchive.archiveAll')"
+        :disabled="props.state.isGroupArchiving?.(agentOrgGroupArchiveKey(workspaceId, group.definitionId)) ?? false"
+        @click.stop="actions.onArchiveAgentOrgGroup(workspaceId, group)"
+      >
+        <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+      </button>
+      </div>
 
       <div v-if="isDefinitionExpanded(group.definitionId)" class="ml-3 mt-0.5 space-y-0.5">
         <div v-for="run in group.runs" :key="run.stableKey" class="rounded-md">
@@ -166,6 +180,7 @@ import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
 import WorkspaceHierarchyBranches from './WorkspaceHierarchyBranches.vue'
 import type { WorkspaceHistoryAvatarBindings, WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from './workspaceHistorySectionContracts'
 import { useLocalization } from '~/composables/useLocalization'
+import { agentOrgGroupArchiveKey } from '~/composables/useWorkspaceHistoryGroupArchive'
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import type { AgentStatus } from '~/types/agent/AgentStatus'
 import { useLeavingTreeRows } from './useLeavingTreeRows'

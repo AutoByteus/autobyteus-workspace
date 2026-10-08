@@ -1,4 +1,12 @@
-import type { AgentOrgRunHistoryItem, TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type {
+  AgentOrgHistoryDefinitionGroup,
+  AgentOrgRunHistoryItem,
+  TeamMemberFocusTarget,
+  TeamMemberTreeRow,
+  TeamTreeNode,
+  WorkspaceHistoryWorkspaceNode,
+} from '~/stores/runHistoryTypes';
+import type { WorkspaceHistoryTeamDefinitionDisplayGroup } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext';
 import type { WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
@@ -50,6 +58,8 @@ export interface WorkspaceHistorySectionState {
   isAgentOrgArchiving?: (rootRunId: string) => boolean;
   agentOrgTerminationError?: (rootRunId: string) => string | null;
   agentOrgContextFor?: (rootRunId: string) => AgentOrgExecutionContext | null;
+  /** True while "Archive all" runs for the header identified by `groupKey` (keys from `useWorkspaceHistoryGroupArchive`). */
+  isGroupArchiving?: (groupKey: string) => boolean;
 }
 
 export interface WorkspaceHistoryAvatarBindings {
@@ -99,4 +109,7 @@ export interface WorkspaceHistorySectionActions {
   onTerminateAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void | WorkspaceSelectionOutcome> | void;
   onArchiveAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
   onDeleteAgentOrg?: (run: AgentOrgRunHistoryItem) => void;
+  onArchiveAgentGroup?: (workspaceNode: WorkspaceHistoryWorkspaceNode, agentNode: WorkspaceHistoryWorkspaceNode['agents'][number]) => void;
+  onArchiveTeamGroup?: (workspacePresentationId: string, group: WorkspaceHistoryTeamDefinitionDisplayGroup) => void;
+  onArchiveAgentOrgGroup?: (workspacePresentationId: string, group: AgentOrgHistoryDefinitionGroup) => void;
 }

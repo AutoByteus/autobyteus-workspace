@@ -2589,4 +2589,142 @@ describe('runHistoryStore', () => {
     expect(agentOrgContextsStoreMock.releaseContext).not.toHaveBeenCalled();
   });
 
+  describe('group archive', () => {
+    const agentGroupWorkspace = (runIds: string[]) => buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/ws/a',
+      workspaceName: 'a',
+      agents: [{
+        agentDefinitionId: 'agent-def-1',
+        agentName: 'SuperAgent',
+        runs: runIds.map((runId) => ({
+          runId,
+          summary: runId,
+          lastActivityAt: '2026-01-01T00:00:00.000Z',
+          lastKnownStatus: 'IDLE',
+          isActive: false,
+        })),
+      }],
+      teamRuns: [],
+    });
+    const teamGroupWorkspace = (teamRunIds: string[]) => buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/ws/a',
+      workspaceName: 'a',
+      agents: [],
+      teamRuns: teamRunIds.map((teamRunId) => ({
+        teamRunId,
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: teamRunId,
+        lastActivityAt: '2026-01-01T00:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        deleteLifecycle: 'READY',
+        isActive: false,
+        members: [],
+      })),
+    });
+    const groupResult = (archivedRunIds: string[], activeRunIds: string[] = [], failedRunIds: string[] = []) => ({
+      data: { archiveStoredAgentRunGroup: { archivedRunIds, activeRunIds, failedRunIds } },
+      errors: [],
+    });
+
+    it('archiveAgentRunGroup archives through one server mutation, cleans each archived run and refreshes once', async () => {
+      mutateMock.mockResolvedValueOnce(groupResult(['run-1', 'run-hidden']));
+      const store = useRunHistoryStore();
+      store.workspaceGroups = [agentGroupWorkspace(['run-1'])];
+      store.selectedRunId = 'run-1';
+      selectionStoreMock.selectedType = 'agent';
+      selectionStoreMock.selectedRunId = 'run-1';
+      agentContextsStoreMock.runs.set('run-1', { config: { workspaceId: 'ws-1' }, state: { conversation: { messages: [] } } });
+      const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+      const topologySpy = vi.spyOn(store, 'refreshRunNavigationTopology');
+
+      await expect(store.archiveAgentRunGroup('/ws/a', 'agent-def-1')).resolves.toEqual({
+        archivedRunIds: ['run-1', 'run-hidden'], activeRunIds: [], failedRunIds: [],
+      });
+
+      expect(mutateMock).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
+        variables: { workspaceRootPath: '/ws/a', agentDefinitionId: 'agent-def-1' },
+      }));
+      expect(agentContextsStoreMock.removeRun).toHaveBeenCalledWith('run-1');
+      expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+      expect(store.selectedRunId).toBeNull();
+      expect(store.workspaceGroups).toEqual([]);
+      expect(refreshSpy).toHaveBeenCalledOnce();
+      expect(topologySpy).toHaveBeenCalledExactlyOnceWith('group-archive');
+    });
+
+    it('archiveAgentRunGroup keeps local state and skips the refresh when the server reports running runs', async () => {
+      mutateMock.mockResolvedValueOnce(groupResult([], ['run-1']));
+      const store = useRunHistoryStore();
+      store.workspaceGroups = [agentGroupWorkspace(['run-1', 'run-2'])];
+      const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+
+      const outcome = await store.archiveAgentRunGroup('/ws/a', 'agent-def-1');
+
+      expect(outcome.activeRunIds).toEqual(['run-1']);
+      expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs.map((run: any) => run.runId)).toEqual(['run-1', 'run-2']);
+      expect(refreshSpy).not.toHaveBeenCalled();
+    });
+
+    it('archiveAgentRunGroup throws transport errors to the caller', async () => {
+      mutateMock.mockResolvedValueOnce({ data: null, errors: [{ message: 'boom' }] });
+      const store = useRunHistoryStore();
+      await expect(store.archiveAgentRunGroup('/ws/a', 'agent-def-1')).rejects.toThrow('boom');
+    });
+
+    it('archiveTeamRuns archives each listed team run, records refusals and refreshes once', async () => {
+      mutateMock
+        .mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: true, message: 'ok' } }, errors: [] })
+        .mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: false, message: 'Team run is active.' } }, errors: [] })
+        .mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: true, message: 'ok' } }, errors: [] });
+      const store = useRunHistoryStore();
+      store.workspaceGroups = [teamGroupWorkspace(['team-1', 'team-2', 'team-3'])];
+      const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+      const topologySpy = vi.spyOn(store, 'refreshRunNavigationTopology');
+
+      await expect(store.archiveTeamRuns(['team-1', 'team-2', 'team-3'])).resolves.toEqual({
+        archivedRunIds: ['team-1', 'team-3'], failedRunIds: ['team-2'],
+      });
+
+      expect(mutateMock.mock.calls.map(([options]: any) => options.variables)).toEqual([
+        { teamRunId: 'team-1' }, { teamRunId: 'team-2' }, { teamRunId: 'team-3' },
+      ]);
+      expect(teamContextsStoreMock.removeTeamContext.mock.calls).toEqual([['team-1'], ['team-3']]);
+      expect(flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0]).map((run) => run.teamRunId)).toEqual(['team-2']);
+      expect(refreshSpy).toHaveBeenCalledOnce();
+      expect(topologySpy).toHaveBeenCalledExactlyOnceWith('group-archive');
+    });
+
+    it('archiveTeamRuns does not refresh when nothing was archived', async () => {
+      mutateMock.mockResolvedValueOnce({ data: { archiveStoredTeamRun: { success: false, message: 'active' } }, errors: [] });
+      const store = useRunHistoryStore();
+      store.workspaceGroups = [teamGroupWorkspace(['team-1'])];
+      const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+
+      await expect(store.archiveTeamRuns(['team-1'])).resolves.toEqual({ archivedRunIds: [], failedRunIds: ['team-1'] });
+      expect(refreshSpy).not.toHaveBeenCalled();
+    });
+
+    it('archiveAgentOrgRuns archives each listed Org run, releases its context and refreshes once', async () => {
+      mutateMock
+        .mockResolvedValueOnce({ data: { archiveStoredAgentOrgRun: { success: true, message: 'ok', orgRunId: 'org-1' } }, errors: [] })
+        .mockResolvedValueOnce({ data: { archiveStoredAgentOrgRun: { success: true, message: 'ok', orgRunId: 'org-2' } }, errors: [] });
+      const store = useRunHistoryStore();
+      store.agentOrgHistory = parseAgentOrgHistoryItems([
+        buildAgentOrgHistoryRow({ rootRunId: 'org-1' }),
+        buildAgentOrgHistoryRow({ rootRunId: 'org-2' }),
+        buildAgentOrgHistoryRow({ rootRunId: 'org-other' }),
+      ]);
+      const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+
+      await expect(store.archiveAgentOrgRuns(['org-1', 'org-2'])).resolves.toEqual({
+        archivedRunIds: ['org-1', 'org-2'], failedRunIds: [],
+      });
+
+      expect(store.agentOrgHistory.map((run) => run.rootRunId)).toEqual(['org-other']);
+      expect(agentOrgContextsStoreMock.releaseContext.mock.calls).toEqual([['org-1'], ['org-2']]);
+      expect(refreshSpy).toHaveBeenCalledOnce();
+    });
+  });
 });

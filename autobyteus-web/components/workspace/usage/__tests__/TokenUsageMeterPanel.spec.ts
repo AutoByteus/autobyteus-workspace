@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
@@ -14,6 +14,17 @@ import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GET_STANDALONE_RUN_TOKEN_USAGE_SUMMARY } from '~/graphql/queries/token_usage_meter_queries';
+
+// The panel formats numbers with the host default locale; pin it so these English
+// assertions do not depend on the machine's region (e.g. de_DE renders "0,0020 $").
+const HostNumberFormat = Intl.NumberFormat;
+beforeAll(() => {
+  vi.spyOn(Intl, 'NumberFormat').mockImplementation(((locales?: string | string[], options?: Intl.NumberFormatOptions) =>
+    new HostNumberFormat(locales ?? 'en-US', options)) as typeof Intl.NumberFormat);
+});
+afterAll(() => {
+  vi.mocked(Intl.NumberFormat).mockRestore();
+});
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
