@@ -547,14 +547,6 @@ These actions never delete an Org definition, referenced Agent/Team definitions,
 workspace registration, providers, or unrelated history. No archived-history
 browser, unarchive path, migration, or mounted-member lifecycle action is added.
 
-Each AgentOrg definition group header also has an **Archive all runs** icon. It
-uses the shared group-archive policy described in
-[Agent Execution Architecture](./agent_execution_architecture.md#archive-all-from-a-group-header).
-A running root blocks the whole group. Otherwise the user confirms, and the
-client archives each listed root with the same per-root Archive path. It then
-refreshes history once and leaves the Org route if that route belonged to an
-archived root.
-
 - A new AgentOrg row displays `New - <AgentOrg name>` until the first
   successfully accepted non-empty external user message reaches an exact
   configured direct Agent or an Agent inside a mounted Team.
