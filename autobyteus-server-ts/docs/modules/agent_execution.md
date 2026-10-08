@@ -226,6 +226,32 @@ the first process open receives only `sessionId`, later and restored opens recei
 only `resume`, and every provider-reported session ID must confirm the same UUID.
 The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
 
+### Previous Runtime Release Before Restore
+
+When a published run's backend reports inactive (for example after an
+Antigravity interrupt-stop or a Codex app-server exit), the activation registry
+parks that exact run as *retired*: it owes an exact release, and the registry
+refuses any claim for the same run ID until that release has proven the old
+runtime stopped. A replacement never starts beside the previous process.
+
+Before activating, `StandaloneAgentRunLifecycleService` calls
+`AgentRunManager.releaseRetiredRun(runId)` inside the run's transition lane and
+waits up to 30 s. The manager is the only reader of the registry's retired
+entry; it applies `releaseExactRun` (force-terminate, which joins an in-flight
+interrupt or termination, then release attachments and clear the entry) and is a
+no-op when nothing is owed. Then the run restores in the same provider
+conversation and the message is posted, so a send right after Stop is accepted.
+
+A failed, not-accepted or timed-out release raises
+`AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING` with the plain chat text "The
+agent's previous session was still shutting down, so this message couldn't be
+delivered. Please send it again." That code is always retryable and is never a
+quarantine: nothing is cached, a timed-out release keeps running, and the next
+send joins or repeats it. The registry's claim guard raises the same code as the
+last line of defence. A configured Agent execution (Team member, collaborator,
+task copy) keeps the exact previous run and marks the attempt retry-safe when
+its release fails, so the next work retries the same release.
+
 ## Published-Run Termination And Resource Finalization
 
 `AgentRunManager.prepareAgentRunTermination(expectedRun)` is the only
