@@ -152,7 +152,7 @@ describe("Brief package team prompt authority", () => {
         memberExecutionContext,
       }),
       runtimeContext: null,
-    }));
+    }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
     const prompt = result.runtimeContext.codexThreadConfig.baseInstructions;
     expect(memberExecutionContext.authoredEnclosingScopeInstruction).toBe(packageTeam.instructions.trim());
