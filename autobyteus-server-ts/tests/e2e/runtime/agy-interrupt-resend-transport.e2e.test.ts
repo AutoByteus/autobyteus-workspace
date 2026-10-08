@@ -11,6 +11,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 
 // A standalone Antigravity run interrupted mid-turn, then sent a new message, through the real server and
 // WebSocket (fake AGY transport: tests/fixtures/agy-failure-cli.mjs, case interrupt_resend). AGY's interrupt
@@ -174,6 +175,98 @@ suite("AGY interrupt followed by a new message through the app WebSocket", () =>
     expect(run.ack(interruptId)?.payload).toMatchObject({ command_type: "INTERRUPT_GENERATION", state: "accepted" });
     expectSameConversationAndOneLiveProcess(run);
     expectNoStuckError(run);
+  }, 60_000);
+
+  it("restarts a Team member interrupted on AGY when it immediately receives new work (AC-006)", async () => {
+    // A Team member is a configured agent execution (not the standalone lifecycle): its readiness releases the
+    // exact previous run before re-activating. This drives it through the real Team WebSocket.
+    const processLog = path.join(dataDir, `agy-team-processes-${randomUUID()}.jsonl`);
+    process.env["AGY_FAKE_PROCESS_LOG"] = processLog;
+    const teamDefinitionId = (await graphql<{ createAgentTeamDefinition: { id: string } }>(
+      "mutation($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }",
+      { input: { name: "agy-interrupt-resend-team-" + randomUUID(), description: "interrupt resend team probe",
+        instructions: "Answer briefly.", coordinatorMemberName: "alpha",
+        nodes: [{ memberName: "alpha", ref: definitionId, refScope: "SHARED" }] } })).createAgentTeamDefinition.id;
+    let teamRunId = "";
+    try {
+      const created = await graphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
+        "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
+        { input: { teamDefinitionId,
+          teamConfigs: [{ teamAddress: "/", llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: {},
+            autoExecuteTools: true, runtimeKind: "antigravity_cli", workspaceRootPath: workspace }],
+          memberConfigs: [{ memberAddress: "/alpha", agentDefinitionId: definitionId,
+            llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: {}, autoExecuteTools: true,
+            runtimeKind: "antigravity_cli", workspaceRootPath: workspace }] } });
+      expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
+      teamRunId = created.createAgentTeamRun.teamRunId!;
+      const tree = (await graphql<{ getTeamRunResumeConfig: { executionTree: Record<string, unknown> } }>(
+        "query($id: String!) { getTeamRunResumeConfig(teamRunId: $id) { executionTree } }", { id: teamRunId }))
+        .getTeamRunResumeConfig.executionTree;
+      const alpha = flattenE2eConfiguredAgentExecutions(tree).find((member) => member.memberName === "alpha")!.agentRunId;
+
+      const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${teamRunId}`);
+      sockets.push(socket);
+      const frames: Wire[] = [];
+      socket.on("message", (raw: unknown) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+          if (typeof parsed.type === "string") frames.push({ type: parsed.type,
+            payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? parsed.payload as Record<string, unknown> : {} });
+        } catch { /* Ignore only malformed diagnostic transport rows. */ }
+      });
+      await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+      const until = async (predicate: () => boolean, ms = 20_000) => {
+        const deadline = Date.now() + ms;
+        while (Date.now() < deadline && !predicate()) await wait(25);
+        expect(predicate(), JSON.stringify(frames)).toBe(true);
+      };
+      const ofAlpha = (type: string) => frames.filter((f) => f.type === type && f.payload["agent_run_id"] === alpha);
+      const send = (content: string) => {
+        const ids = buildE2eClientCommandIds();
+        socket.send(JSON.stringify({ type: "SEND_MESSAGE",
+          payload: { ...ids, context_file_paths: [], image_urls: [], agent_run_id: alpha, content } }));
+        return ids.message_id;
+      };
+      const replyText = () => ofAlpha("SEGMENT_CONTENT").map((f) => String(f.payload["delta"] ?? "")).join("");
+      const processes = (): ProcessEvent[] => {
+        try {
+          return readFileSync(processLog, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as ProcessEvent);
+        } catch { return []; }
+      };
+
+      send("HOLD the long task");
+      await until(() => ofAlpha("TOOL_EXECUTION_STARTED").length > 0);
+      const interruptId = `interrupt-${randomUUID()}`;
+      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: interruptId, agent_run_id: alpha } }));
+      await until(() => ofAlpha("TURN_INTERRUPTED").length > 0);
+      // New work arrives while the interrupted member process is still stopping.
+      send("work after interrupt");
+      expect(processes().some((e) => e.event === "exit"), JSON.stringify(processes())).toBe(false);
+      await until(() => replyText().includes("REPLY:work after interrupt"));
+      await wait(200);
+
+      const text = JSON.stringify(frames);
+      expect(text).not.toContain("retired cleanup");
+      expect(text).not.toContain("AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING");
+      expect(frames.some((f) => f.type === "AGENT_COMMAND_ACK" && (f.payload["state"] === "rejected"
+        || f.payload["state"] === "failed" || f.payload["accepted"] === false)), text).toBe(false);
+      const events = processes();
+      const launches = events.filter((e) => e.event === "launch");
+      expect(launches, JSON.stringify(events)).toHaveLength(2);
+      const [previous, replacement] = launches as [ProcessEvent, ProcessEvent];
+      expect(replacement.conversation_id).toBe(previous.conversation_id);
+      const previousExit = events.findIndex((e) => e.event === "exit" && e.pid === previous.pid);
+      expect(previousExit, JSON.stringify(events)).toBeGreaterThanOrEqual(0);
+      expect(previousExit).toBeLessThan(events.indexOf(replacement));
+      expect(isAlive(previous.pid)).toBe(false);
+      expect(isAlive(replacement.pid)).toBe(true);
+    } finally {
+      if (teamRunId) await graphql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }",
+        { id: teamRunId }).catch(() => undefined);
+      await graphql("mutation($id: String!) { deleteAgentTeamDefinition(id: $id) { success } }",
+        { id: teamDefinitionId }).catch(() => undefined);
+    }
   }, 60_000);
 
   it("answers a message sent after the interrupted process has fully stopped (AC-002)", async () => {
