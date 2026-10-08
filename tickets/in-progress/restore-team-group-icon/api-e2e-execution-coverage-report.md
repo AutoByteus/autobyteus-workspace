@@ -128,3 +128,23 @@ Preliminary final failure classification: **N/A**, no unresolved failure. Expect
 
 ## Applied handoff rule
 2026-10-08 `get_handoff_rules` matched exactly the Pass + Small/Low + direct route + no required test-code review rule: **`/software_engineering_team/delivery_engineer`**. Selected only that recipient. No final failure/upstream gap/review trigger. This route does not authorize a release. Evidence text logs have trailing whitespace/extra EOF blanks normalized for repository hygiene; substantive output unchanged.
+
+## API-REV-002 — User-requested isolated Electron setup (2026-10-08)
+**Setup result Pass; glyph-validation result remains Pass / 95.71%.** User asked to start test Electron and then import the public agent package for manual testing. This is not user acceptance or merge/push/release authorization. ME-001 and ME-002 both completed; no unresolved failures. No production or durable-test changes and no new claim of rerunning the earlier glyph suite.
+
+Execution from isolated task worktree `codex/restore-team-group-icon`, HEAD `028b0bf7ba6c9da4086dd2f76295519e83c31323`, with Delivery documentation-only changes preserved:
+1. `pnpm --filter 'autobyteus^...' build` — Pass, prerequisite build.
+2. `pnpm --silent isolated-app start --build --keep` — Pass, current backend/mobile/renderer/Electron packaged and launched. Electron42.4.1, app1.4.97, local arm64 unsigned build; publish disabled, no installed-app replacement.
+3. Retained one-off `evidence/manual-electron/ui.mjs` connects through this instance's CDP endpoint. Actual Settings > Agent Packages UI import of `https://github.com/AutoByteus/autobyteus-agents` succeeded: **7 shared agents, 47 team-local agents, 14 teams, 0 applications**. Import/catalog GraphQL HTTP200; no observed page errors. No mocked network or fixture writes. Real renderer -> bundled backend -> public package storage boundary exercised.
+4. Returned to Agent Teams; Software Engineering Team is present in the catalog. Both screenshots inspected; successful installed-package state and populated catalog visible. Automation disconnected, not app shutdown. `isolated-app list` confirms running after disconnect.
+
+### Active resource handover — supersedes historical cleanup status for this new session
+- Instance **iso-57073-e937**, PID94986; backend `http://127.0.0.1:57074`, control `http://127.0.0.1:57073`.
+- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Fresh owned data: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-xQ51lb`.
+- **Intentionally left open for user testing. Do not stop, rebuild over, or remove app/worktree/data while user is testing.** Later authorized stop, from this worktree: `pnpm --silent isolated-app stop iso-57073-e937`. Start used `--keep`, so data is retained after stop; later deletion is separate cleanup.
+- Only own generated untracked SDK dist outputs removed after packaging; packaged app/resources/data retained. User's normal app/data and concurrent Archive worktree untouched. Delivery's uncommitted files preserved.
+
+Evidence: `evidence/manual-electron/{prerequisites.log,build.log,start.json,list.json,ui.mjs,ui-import.json,ui-teams.json,public-package-imported.png,team-catalog-ready.png}`; intermediate read-only UI observations also retained. Text-log trailing whitespace/EOF normalized only.
+
+Limits: startup, isolated lifecycle readiness and real package import proven, not all desktop/native functionality, model execution, Team delegation or full icon journeys on live runtime data. No model turns started, no credentials copied/configured. Existing seven-category glyph scorecard remains 95/100/95/95/95/95/95 (95.71%); setup success does not inflate it. Broader validation for this supplemental request Required — Isolated Electron, completed. No new durable coverage appropriate for one-off user environment provisioning; existing regression remains authoritative. Small/Low, test review Not Required — direct low-risk route. Delivery owns explicit user verification and finalization; this update must not be treated as UV-001 acceptance.

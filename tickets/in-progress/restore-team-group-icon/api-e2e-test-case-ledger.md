@@ -65,3 +65,18 @@ No execution yet. All planned cases Not Tested. Record terminal result before ne
 - Final browser-03: B01/B02/B03/B04 Pass; no console/page/HTTP errors; cleanup browser/route/process/both ports Pass. All planned cases completed, none unresolved or blocked. Failed attempts retained, not reclassified as passes.
 - Final screenshots 1440/768/focused reviewed directly. Test/source hashes match committed `792e17de2`. Owned generated contract output removed after all checks. No user-state changes.
 - Reconciled into `api-e2e-execution-coverage-report.md`, latest result Pass / 95.71%. Finalization, docs sync and explicit user verification remain Delivery-owned.
+
+## Supplemental manual-test setup (not a new glyph regression verdict)
+- ME-001 planned: source-current isolated Electron build/launch, healthy backend and own control endpoint, kept open for user.
+- ME-002 planned: public AutoByteus/autobyteus-agents package imported through real UI, installed catalog verified.
+- ME-001 Started: user explicitly requested manual test app; command/logs in evidence/manual-electron/. No acceptance or finalization inferred.
+
+- 2026-10-08T05:27:04Z ME-001 Checkpoint: backend/mobile/Electron source builds passed; arm64 app and DMG packaged, ZIP compression still running. No instance readiness claimed yet. Build log retained.
+
+- 2026-10-08T05:29:09Z ME-001 Completed: Pass. Current worktree packaged and launched iso-57073-e937 PID94986; own backend57074/control57073 ready, fresh private data kept. See evidence/manual-electron/start.json.
+- ME-002 Started: import public package through the real test Electron UI, after launch.
+
+- 2026-10-08T05:30:12Z ME-002 Completed: Pass. Actual Settings import success for public AutoByteus/autobyteus-agents: 7 shared Agents, 47 Team-local Agents, 14 Teams, 0 Applications. Real GraphQL import and catalog queries HTTP200, no observed page errors. Software Engineering Team visible in Team catalog; app brought forward and retained for user. Evidence ui-import.json/ui-teams.json/screenshots/list.json.
+
+### Reconciliation — API-REV-002
+ME-001 and ME-002 completed Pass; no partial/blocked/unstarted supplemental cases. Current running instance verified after UI automation disconnected. Both screenshots inspected. Setup accepted as ready, not user acceptance of glyph change. Canonical execution report records limits/commands/retention and unchanged glyph confidence95.71%. Own generated SDK dist outputs cleaned; app/data intentionally remain for user testing.

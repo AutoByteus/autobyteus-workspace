@@ -19,3 +19,10 @@ Current coverage investigation and execution report are authoritative. Baseline 
 - Direct Low-Risk Small/Low remains; test review Not Required — direct low-risk route. Delivery owns current-doc sync, refreshed integration preserving Archive all, explicit user verification and allowed finalization. No release/installed-app authorization.
 
 - Applied rule lookup: Pass, Small/Low, direct -> `/software_engineering_team/delivery_engineer` only; no duplicate source-review/Designer/manager forward.
+
+## API-REV-002 — Manual Electron environment ready
+- Trigger: explicit user request to start test Electron and import public agent package after startup; follows DR-001 verification hold, not a defect/rework finding.
+- Prior/current glyph verdict: Pass / 95.71% -> Pass / 95.71%, unchanged scope and seven-category rationale. Supplemental ME-001/ME-002 Pass: current source package/isolated startup and actual UI public import (7 shared/47 team-local agents,14 teams). No prior unresolved failure, new failure or source/test change.
+- Required supplemental mode Isolated Electron completed; exact commands, receipts, limitations and active-resource ownership in canonical execution report and ledger. One-off UI helper retained as evidence, not a new durable regression.
+- Instance iso-57073-e937 intentionally retained for user, fresh owned data kept; this supersedes prior no-running-process status for the new session only. No credentials/model runs/normal-app mutation/release.
+- Canonical investigation/report/ledger updated; Delivery files untouched. Small/Low direct route remains, test review Not Required. Explicit user verification and any merge/push still pending; do not infer acceptance from setup request.
