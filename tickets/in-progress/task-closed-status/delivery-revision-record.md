@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass (API-REV-001, 95%), direct route | N/A | Integrated and docs synced; superseded by SR-005 before user verification (halted) | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
+| DR-002 | API/E2E Pass round 2 (API-REV-002, 95%) for SR-005 + SR-006, direct route | DR-001 (halted, superseded by SR-005) | Base current; docs synced for last column + CANCELLED; release notes rewritten; awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `autobyteus-server-ts/docs/modules/agent_communication.md` |
 
 ## Revision Entries
 
@@ -38,3 +39,27 @@
   - Commit attribution: the delivery commit `76a306554` also picked up the Solution Designer's concurrent SR-005 edits to `requirements-doc.md`, `design-spec.md`, `investigation-notes.md`, `solution-revision-record.md` and `handoff-to-implementation.md`, because the ticket folder was staged as a whole. The content is the Solution Designer's and unchanged. The history was not rewritten because another agent shares this index and branch.
   - The branch stays integrated with `origin/personal` @ `b5e0da508` (merge `151a67f19`). The SR-005 rework builds on it.
   - Next: SR-005 returns through implementation and API/E2E (direct route). Delivery resumes as DR-002 on that package: re-check the base, rerun checks, update docs sync, the handoff summary and release notes, then request user verification.
+
+### DR-002 — Re-delivery of SR-005 (last column) and SR-006 (CANCELLED) after the DR-001 halt
+
+- Delivery round and trigger: second delivery round, triggered by the `/software_engineering_team/api_e2e_engineer` round-2 Pass (API-REV-002, 95%) for `7f7b2c8fb` (IR-002 `814e41a26`, IR-003 `7f7b2c8fb`) plus the uncommitted test changes.
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (Round 2 Delta), `api-e2e-revision-record.md` (API-REV-002), `api-e2e-evidence/round-2/`.
+- Prior authoritative result: DR-001, integrated and docs-synced for SR-004 and halted before user verification when SR-005 arrived.
+- Current authoritative result:
+  - Checkpoint `2dc190601` (API-REV-002 tests, TESTING.md, api-e2e artifacts, round-2 evidence; staged explicitly, SDK `dist/` excluded).
+  - `origin/personal` was re-fetched and is still at `b5e0da508`; the branch is 0 behind. No integration was needed, and API/E2E round 2 had already run on the integrated state.
+  - Docs sync delta: corrected `agent_communication.md` (DONE or CANCELLED triggers and re-publishes `task_executions_closed`). Verified the implementation's SR-005/SR-006 doc text. Rewrote `release-notes.md` to use the verb "cancel" and the last-column layout.
+  - Delta checks: the collaboration contract and member-instruction parity tests pass (2 files / 8 tests); licensing and artifact hygiene pass.
+  - Fresh isolated desktop instance built from the branch for user verification. The stale pre-SR-005 instance `iso-54394-19b5` was no longer running; its record and data root were removed with `isolated-app stop`.
+- Record note: the implementation commit `7f7b2c8fb` mechanically renamed CLOSED → CANCELLED inside the DR-001 text and the delivery reports. Those DR-001 statements described the then-current CLOSED wording; the facts (conflict union, hash re-pin, closure path) are unchanged. The pinned prompt hash now reflects the CANCELLED wording.
+- Known non-ticket test flakiness (from API-REV-002, consistent with DR-001):
+  - `task-copy-idle-lifetime` (idle-shutdown-background-tasks suite) misses timing bounds under host load.
+  - `ad-hoc-task-delegation` Org root has a `.tmp` readdir race in the parallel run; it passes alone.
+  - Neither touches this ticket's code. Recommended owner: the idle-shutdown suite's test owner.
+- Docs sync report: `docs-sync-report.md`
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- User verification/finalization state: verification requested; finalization not started.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Next recipient/action: the user verifies in the fresh isolated instance and decides on a release.
+- Remaining blockers, rollback concerns, or untested scope: user verification; R-002 (external manager skill, out of scope).

@@ -1,73 +1,82 @@
-# Handoff Summary — task-closed-status
+# Handoff Summary — task-closed-status (DR-002)
 
 ## What Changed
-A fourth Task status, **CANCELLED** ("Cancelled" / "已取消"), meaning the Task was dropped as not needed and was not completed.
-- Agents set it with `create_or_update_task` (patch only). It closes and stops the Task's workers exactly as DONE does.
-- Saved-ID delegation and reactivation are refused while a Task is Cancelled. Reopening to TODO or IN_PROGRESS starts nothing.
-- `list_project_tasks` filters by CANCELLED.
+A fourth Task status, **CANCELLED** ("Cancelled" / "已取消"), meaning the Task was dropped as not needed and was not completed. SR-006 renamed it from the earlier working name CLOSED, with no alias: CLOSED and CANCELED are rejected.
+- Agents set it with `create_or_update_task` (patch only). It stops the Task's workers exactly as DONE does.
+- Saved-ID delegation and reactivation are refused while a Task is Cancelled, with messages that name CANCELLED. Reopening to TODO or IN_PROGRESS starts nothing; after that, the assigner can reactivate as after DONE.
+- `list_project_tasks` filters by CANCELLED. Invalid-status errors list all four values.
 - The app is display-only for status:
-  - On the Project board, the right-panel board and the Temp tasks board, Cancelled Tasks are hidden behind a "Cancelled (N)" toggle beside Refresh.
-  - The Task pages and right-panel detail show a muted "Cancelled" pill.
+  - The Project board, right-panel board and Temp tasks board hide Cancelled Tasks behind a **Cancelled (N)** toggle beside Refresh. The toggle is absent at 0.
+  - With the toggle on, Cancelled is the **last column, after Done** (SR-005): four equal columns, or three on the Temp board. Narrow widths and the right panel stack the columns, with Cancelled last.
+  - The Task pages and right-panel detail show a muted "Cancelled" pill, distinct from Done's green.
   - The open count is TODO + IN_PROGRESS.
 - Existing data loads unchanged, with no migration.
 
 ## Classification And Route
-- `task_size=Medium`, `architectural_risk=Low`, direct route.
+- `task_size=Medium`, `architectural_risk=Low`, direct route (unchanged through SR-005/SR-006).
 - Architecture review, code review and test-code review: `Not Applicable`.
 
 ## Branch State For Verification
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status`
-- Ticket branch: `codex/task-closed-status`. Recorded at verification (see `user-verification.md`); the local tip includes the delivery commit.
-  - `17e4299a6` feat (implementation)
-  - `ee78e1e19` API/E2E checkpoint (delivery-safety commit)
-  - `19a85ba3c` merge of `origin/personal` @ `ace86bf1f`
-  - `c387ce7b5` delivery docs sync and artifacts
-  - `151a67f19` re-integration merge of `origin/personal` @ `b5e0da508`
-  - a commit that records this re-integration in the delivery artifacts
-- Integration method: two merges of the latest `origin/personal`:
-  1. 13 commits (idle-shutdown-background-tasks and `v1.4.99-beta.1`).
-  2. During delivery, 8 more commits (archived-open-run-disappears and `v1.4.99-beta.2`). This merge was clean.
-- The branch is current with `origin/personal` @ `b5e0da508`, checked by a fetch after the re-integration checks.
-- One conflict, in the collaboration prompt paragraph (source, `prompt_engineering.md` and the hash pin). It was resolved as a union of the base's background-task clause and the ticket's CANCELLED wording. Every assertion from both tickets passes unchanged, and only the pinned hash changed.
-- Nothing has been pushed or merged into `personal`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status`. Branch `codex/task-closed-status`, local only; nothing pushed or merged.
+- Commits since the base:
+  - `17e4299a6` feat
+  - `ee78e1e19` API/E2E r1 checkpoint
+  - `19a85ba3c` and `151a67f19` merges of `origin/personal`
+  - DR-001 delivery records
+  - `814e41a26` SR-005 last column
+  - `7f7b2c8fb` SR-006 CANCELLED rename
+  - `2dc190601` API/E2E r2 checkpoint
+  - the DR-002 delivery commit (docs sync and artifacts)
+- Current with `origin/personal` @ `b5e0da508` (re-fetched at DR-002 start; 0 behind).
+- DR-001 resolved one integration conflict, in the collaboration-prompt paragraph, as a union of both tickets' wording. See `release-deployment-report.md`.
 
-## Post-Integration Verification (on the merged state)
-- Server build: pass.
-- Server unit, full tree: 647 files pass. 15 files fail, and they are exactly the pre-existing failure set that also fails on the base ticket's own full-unit evidence (agent-memory, application-platform, file-explorer, logging and others; none touched here). The list is in `delivery-evidence/server-unit-full-preexisting-failures.txt`.
-- Server integration (3 files, including mixed-team-run-backend from the base): 20/20 pass.
-- `tests/e2e/projects` gated (scripted AGY): 9/10 files and 47 tests pass, 1 skipped (live Claude). This includes CLS-API-001 and CLS-E2E-001/002.
-  - The base's new `task-copy-idle-lifetime` failed in the parallel suite run: model-list timeout and slow timings under load.
-  - It passed 1/1 when rerun in isolation with the base ticket's recipe.
-- Web Projects specs: 102 files / 981 tests pass. The localization literal audit and boundary guard pass.
-- `check_licensing.py` and `check_repository_artifact_hygiene.py` pass.
-- After the second merge (web chat/stores and server run-history tests only):
-  - full web `test:nuxt`: 588 files / 3996 tests pass, 0 failed;
-  - localization guards pass;
-  - server `tests/unit/run-history` plus the collaboration contract test: 47 files / 233 tests pass.
+## Verification Evidence
+- API-REV-002 (95%) on `7f7b2c8fb`:
+  - Server unit 71 files / 680 tests; integration 2/17.
+  - Projects E2E: ungated 4/27; gated CLS-E2E-001/002 plus every DONE closure, reactivation and feed case.
+  - Web Projects specs 103/990; full web `test:nuxt` 588/3996, 0 failed.
+  - Browser probe PMU 001/002/005/009/015/017: 6/6. Measured: four 251px columns with Cancelled last; three 340px columns with the toggle off; stacked at 390px and in the right panel; the Temp board has three columns.
+- DR-001 (integration): the full server unit tree fails only the 15 pre-existing files that also fail on the base. Integration 20/20, gated Projects E2E pass, licensing and hygiene pass.
+- DR-002 delta: the contract and parity tests pass (2/8); licensing and hygiene pass.
+- Known non-ticket flakiness, which does not block this ticket:
+  - `task-copy-idle-lifetime`, from the idle-shutdown ticket, misses timing bounds under host load.
+  - `ad-hoc-task-delegation` Org root has a `.tmp` readdir race in the parallel run.
+  - Both pass alone or are unrelated to this ticket's code.
 
 ## Docs Sync
-- See `docs-sync-report.md`. Implementation docs were verified.
-- Delivery corrected `agent_team_execution.md` (DONE or CANCELLED release) and the damaged-file paragraph in `projects.md`.
-- Delivery also fixed the stale `ProjectCard.vue` comment.
+See `docs-sync-report.md`. Delivery corrected:
+- `agent_team_execution.md`
+- `projects.md` (damaged file)
+- `agent_communication.md` (DONE or CANCELLED publish and re-publish)
+- `prompt_engineering.md` (merge union)
+- the `ProjectCard.vue` comment
+
+The implementation's SR-005/SR-006 doc text was verified. The release notes were rewritten for "cancel" and the last-column layout.
 
 ## User Verification Requested
-1. From the worktree: `pnpm --silent isolated-app start --build`.
-2. In a Project with a delegated Task, ask an agent to close the Task (`create_or_update_task` status `CANCELLED`).
-3. Check that:
-   - the Task leaves the lanes;
-   - "Cancelled (1)" appears beside Refresh and reveals a Cancelled lane;
-   - the Task page says "Cancelled" (not Done green);
-   - the worker shows Offline.
-4. Ask the agent to reopen the Task to TODO. Check that it returns to To Do and that nothing starts.
-5. Optionally, check that a Temp task closed by an agent behaves the same.
+A fresh isolated desktop instance built from this branch is running:
+- Instance: **`iso-51705-f244`** (backend `http://127.0.0.1:51706`; GraphQL status enum `TODO, IN_PROGRESS, DONE, CANCELLED`). It was built at `2dc190601`; later commits change docs only.
+- The stale pre-rename instance `iso-54394-19b5` was already stopped, and its data root has been removed.
 
-Also please decide on the release: finalize only, or finalize and publish a release (a new beta via `scripts/desktop-release.sh beta`, as for the previous ticket).
+Steps:
+1. In a Project, have an agent delegate a Task. Then ask the agent to cancel it (`create_or_update_task` status `CANCELLED`).
+2. Check that:
+   - the Task leaves To Do / In Progress / Done;
+   - **Cancelled (1)** appears beside Refresh;
+   - turning it on shows Cancelled as the **fourth column after Done**;
+   - the Task page shows a muted "Cancelled" pill (not Done green);
+   - the worker shows Offline.
+3. Ask the agent to reopen the Task to TODO. Check that it moves back to To Do live and that nothing starts.
+4. Optionally, check that a Temp task cancelled by an agent shows the same way (Open / Done / Cancelled).
+5. When you are done: `pnpm --silent isolated-app stop iso-51705-f244`, or ask delivery to stop it.
+
+Please also decide on the release: finalize only, or finalize and publish a new beta (`scripts/desktop-release.sh beta`, as for the previous tickets; the current beta is `v1.4.99-beta.2`).
 
 ## Residual Risks (non-blocking)
 - R-002: the external Project Task Manager skill (`autobyteus-agents` repo) does not know CANCELLED. Approved out of scope; follow-up candidate.
 - `delegate_task {task_id}` on a terminal Task returns `{error:{code,message}}`, unlike the description's `target_agent_run_id: null` shape. This is pre-existing DONE behavior and unchanged here.
 - Downgrade: an older app may not show Cancelled Tasks (approved non-goal).
-- The packaged desktop app and a real model choosing CANCELLED are proven only by the user verification above.
+- The packaged app and a real model choosing CANCELLED are proven only by the user verification above.
 
 ## Artifacts
 `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/` contains:

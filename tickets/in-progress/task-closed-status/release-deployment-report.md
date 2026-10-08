@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-Ticket `task-closed-status` (SR-004, IR-001, API-REV-001). Direct route: `task_size=Medium`, `architectural_risk=Low`. Repository finalization into `origin/personal` is pending user verification. A release is optional and decided by the user at finalization; the precedent is the `scripts/desktop-release.sh beta` used for idle-shutdown-background-tasks.
+Ticket `task-closed-status`: SR-004 + SR-005 (Cancelled as the last column) + SR-006 (CLOSED → CANCELLED), IR-001..IR-003, API-REV-001/002. Current delivery round DR-002. Direct route: `task_size=Medium`, `architectural_risk=Low`. Repository finalization into `origin/personal` is pending user verification. A release is optional and decided by the user at finalization; the precedent is the `scripts/desktop-release.sh beta` used for idle-shutdown-background-tasks.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: awaiting user verification.
+- Current delivery revision ID: `DR-002` (DR-001 halted for SR-005)
+- Notes: awaiting user verification on a fresh isolated instance (see `handoff-summary.md`).
 
 ## Initial Delivery Integration Refresh
 
@@ -51,6 +51,7 @@ Ticket `task-closed-status` (SR-004, IR-001, API-REV-001). Direct route: `task_s
     - `vitest run tests/unit/run-history tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts` → 47 files / 233 tests pass (`r2-server-run-history-and-contract.log`)
   - Server source was unchanged by this merge, so the earlier server build, integration and E2E results still apply.
 - Handoff state current with latest tracked remote base: `Yes` (`origin/personal` @ `b5e0da508`, re-fetched after the reruns; ahead 0 behind)
+- DR-002 refresh: `origin/personal` was re-fetched at the start of DR-002 and is still at `b5e0da508` (the branch is 0 behind). New base commits integrated: `No`. A local checkpoint (`2dc190601`) protected the API-REV-002 changes. No-rerun rationale: the base is unchanged, and API-REV-002 ran its full validation on `7f7b2c8fb`, which already contains both integration merges. That validation covered server unit 71/680, integration 2/17, Projects E2E ungated 4/27, gated CLS-E2E and the DONE closure, reactivation and feed cases, web Projects 103/990, full web `test:nuxt` 588/3996 and browser PMU 6/6. Delivery's own delta checks were the collaboration contract and parity tests (2 files / 8 tests, `delivery-evidence/dr2-contract-parity.log`) and licensing and hygiene (`dr2-licensing-hygiene.log`).
 - Blocker: none
 
 ## User Verification
@@ -146,7 +147,7 @@ If the desktop verification shows Cancelled Tasks rendered as Done, workers not 
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No`
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: DR-001 superseded by SR-005 (concurrent design refinement now in implementation); user verification deliberately not requested. Classification: upstream-owned revision in flight (`Design` refinement, no intended-behavior change); recipient `/software_engineering_team/solution_designer`
+- Unresolved blocker: awaiting user verification and the release decision (DR-002). The DR-001 halt for SR-005 is resolved: SR-005 and SR-006 were implemented and validated (API-REV-002).
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
 - Terminal message/reference: N/A

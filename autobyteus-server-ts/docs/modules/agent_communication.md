@@ -437,11 +437,11 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
 - **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
   stored read) carries `closed_task_executions` beside the unfiltered tree: the
   task executions whose Task is DONE or CANCELLED, read through the Task port
-  (`closedAgentRunsIn`) and the shared `listClosedTaskExecutions`. When DONE asks
-  an active root to stop a Task's runs, `RootTaskAgentResourceScope` first
+  (`closedAgentRunsIn`) and the shared `listClosedTaskExecutions`. When DONE or
+  CANCELLED asks an active root to stop a Task's runs, `RootTaskAgentResourceScope` first
   publishes the released runs that are closed and in the tree as the sequenced
-  `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE
-  re-publishes them. The Workspaces tree leaves those executions and their
+  `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE or
+  CANCELLED re-publishes them. The Workspaces tree leaves those executions and their
   subtrees out; messages and contexts keep them. A reactivation publishes the
   reopened execution as `task_executions_reopened` (Team:
   `TASK_EXECUTIONS_REOPENED`, same reference shape) after its Task-side commit;
