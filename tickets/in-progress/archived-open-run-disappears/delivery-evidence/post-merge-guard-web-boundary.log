@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.99-beta.1 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
