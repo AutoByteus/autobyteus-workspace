@@ -30,7 +30,7 @@ Idle shutdown of delegated copies is removed end to end (DEC-004). A delegated c
 
 Commits on the branch (base `3a2496c95`):
 - `ba0437e00` test(baseline): mixed backend facade test used the removed `prepareTaskAgent` API (TESTING.md rule 9 baseline fix, separate commit).
-- Implementation commit (this handoff): see `git log` on the branch, message `refactor(task-execution): remove idle shutdown of delegated copies`.
+- `28afa0884` refactor(task-execution): remove idle shutdown of delegated copies (implementation, tests, docs, ticket package and evidence).
 
 ## Routing Classification (Mandatory)
 
