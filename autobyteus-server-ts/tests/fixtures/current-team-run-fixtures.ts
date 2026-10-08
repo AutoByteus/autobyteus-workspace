@@ -17,6 +17,8 @@ import type { TeamRunExecutionTreeSnapshot } from "../../src/agent-team-executio
 import type { RootTeamRun } from "../../src/agent-team-execution/domain/root-team-run.js";
 import { buildInitialTeamRunExecutionTree } from "../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
+import { TeamRunExecutionTreeStore } from "../../src/run-history/store/team-run-execution-tree-store.js";
+import { TeamCommunicationV1Store } from "../../src/services/team-communication/team-communication-v1-store.js";
 
 export const testAgentNode = (
   addressValue: string,
@@ -156,3 +158,19 @@ export const testExecutionTree = (input: {
   teamDefinitionName: input.teamDefinitionName ?? "Test Team",
   createdAt: input.createdAt ?? "2026-08-15T00:00:00.000Z",
 });
+
+/**
+ * Writes a complete current Team run package: the execution tree plus the empty
+ * Team communication-messages authority that current root admission requires.
+ */
+export const writeCurrentTeamRunPackage = async (
+  teamDir: string,
+  tree: TeamRunExecutionTreeSnapshot,
+): Promise<void> => {
+  await new TeamRunExecutionTreeStore().write(teamDir, tree);
+  await new TeamCommunicationV1Store().write(teamDir, {
+    schemaVersion: 1,
+    rootTeamRunId: tree.rootTeam.teamRunId,
+    messages: [],
+  });
+};
