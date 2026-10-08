@@ -1,0 +1,38 @@
+[
+  {
+    "attempt": 1,
+    "conclusion": "success",
+    "createdAt": "2026-10-08T15:00:57Z",
+    "databaseId": 37797231461,
+    "name": "Android APK Release",
+    "status": "completed",
+    "updatedAt": "2026-10-08T15:04:51Z"
+  },
+  {
+    "attempt": 1,
+    "conclusion": "success",
+    "createdAt": "2026-10-08T15:00:57Z",
+    "databaseId": 37797231229,
+    "name": "iOS App Store Connect Release",
+    "status": "completed",
+    "updatedAt": "2026-10-08T15:17:10Z"
+  },
+  {
+    "attempt": 1,
+    "conclusion": "success",
+    "createdAt": "2026-10-08T15:00:57Z",
+    "databaseId": 37797231284,
+    "name": "Desktop Release",
+    "status": "completed",
+    "updatedAt": "2026-10-08T15:25:14Z"
+  },
+  {
+    "attempt": 2,
+    "conclusion": "success",
+    "createdAt": "2026-10-08T15:00:57Z",
+    "databaseId": 37797231269,
+    "name": "Server Docker Release",
+    "status": "completed",
+    "updatedAt": "2026-10-08T15:52:24Z"
+  }
+]
