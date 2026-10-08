@@ -12,6 +12,7 @@ import {
   AgentRunActivationError,
   AgentTerminationError,
   PlatformAgentRunRestoreError,
+  PreviousRuntimeReleasePendingError,
 } from "../errors.js";
 import type { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import type {
@@ -331,6 +332,26 @@ export class AgentRunManager {
     if (removal.kind !== "removed") throw new AgentTerminationError("Exact runtime removal authority is unavailable.");
     this.activationRegistry.assertCleanupSucceeded(removal);
     return result!;
+  }
+
+  /**
+   * Exact-releases the run for this id that went offline and still owes its release, proving its
+   * runtime stopped before a replacement may be claimed. No-op when nothing is owed; never touches
+   * a published run. Every failure is retryable: a later call joins or repeats the same release.
+   */
+  async releaseRetiredRun(runId: string): Promise<void> {
+    const retiredRun = this.activationRegistry.getRetiredRun(normalizeRequiredRunId(runId));
+    if (!retiredRun) return;
+    let failure: unknown;
+    try {
+      const result = await this.releaseExactRun(retiredRun);
+      if (result.accepted) return;
+      failure = new AgentTerminationError(result.message ?? "The previous runtime did not accept its release.");
+    } catch (error) {
+      failure = error;
+    }
+    logger.warn(`AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING agentRunId=${retiredRun.runId}: ${String(failure)}`);
+    throw new PreviousRuntimeReleasePendingError(failure);
   }
 
   private resolveBackendFactory(runtimeKind: RuntimeKind): AgentRunBackendFactory | null {

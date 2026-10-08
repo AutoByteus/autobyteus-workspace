@@ -1,4 +1,8 @@
-import { AgentCreationError, AgentRunActivationError } from "../errors.js";
+import {
+  AgentCreationError,
+  AgentRunActivationError,
+  PreviousRuntimeReleasePendingError,
+} from "../errors.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import type {
   AgentRunResourceManager,
@@ -94,8 +98,8 @@ export class AgentRunActivationRegistry {
         `Agent run '${runId}' is already active.`,
       );
     }
-    if (this.retired.has(runId)) throw new AgentRunActivationError(
-      "AGENT_RUN_ACTIVATION_CLEANUP_FAILED", `Agent run '${runId}' still owns retired cleanup.`);
+    // A replacement never starts before the previous runtime's exact release has proven it stopped.
+    if (this.retired.has(runId)) throw new PreviousRuntimeReleasePendingError();
     const existing = this.pending.get(runId);
     if (existing) {
       throw new AgentRunActivationError(
@@ -188,6 +192,11 @@ export class AgentRunActivationRegistry {
       reason: "inactive_discovery",
     }));
     return null;
+  }
+
+  /** The run that went offline and still owes its exact release, if any. */
+  getRetiredRun(runId: string): AgentRun | null {
+    return this.retired.get(runId) ?? null;
   }
 
   listActiveRunIds(): string[] {

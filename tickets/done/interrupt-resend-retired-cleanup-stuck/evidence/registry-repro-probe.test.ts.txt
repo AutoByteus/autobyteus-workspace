@@ -1,0 +1,25 @@
+// Disposable reproduction probe (run 2026-10-08 against origin/personal ace86bf1f; removed from source tree after run).
+// Place at autobyteus-server-ts/tests/unit/agent-execution/runtime/ and run `npx vitest run <file>`.
+import { describe, expect, it, vi } from "vitest";
+import { AgentRunActivationRegistry } from "../../../../src/agent-execution/runtime/agent-run-activation-registry.js";
+
+const rel = (runId: string) => ({ state: "released" as const, runId, deactivatedSessionCount: 1,
+  detached: { fileChanges: true, artifactRelay: true, memoryRecorder: true }, errors: [] });
+
+describe("PROBE: self-inactive run discovered before re-activation", () => {
+  it("reproduces permanent 'still owns retired cleanup'", () => {
+    const registry = new AgentRunActivationRegistry({ attach: vi.fn(), release: vi.fn(rel) } as never);
+    const run = { runId: "r", active: true, isActive() { return this.active; } };
+    const c = registry.claim("r"); registry.markPrepared(c, run as never); registry.publish(c, run as never);
+    run.active = false; // AGY interrupt kills the process -> backend inactive
+    expect(registry.getActiveRun("r")).toBeNull(); // inactive discovery (host ensureReady)
+    let msg = ""; try { registry.claim("r"); } catch (e) { msg = String((e as Error).message); }
+    let msg2 = ""; try { registry.claim("r"); } catch (e) { msg2 = String((e as Error).message); }
+    expect(msg).toContain("still owns retired cleanup");
+    expect(msg2).toContain("still owns retired cleanup");
+  });
+});
+// Observed output:
+//   first claim: Agent run 'r' still owns retired cleanup.
+//   later claim: Agent run 'r' still owns retired cleanup.
+//   1 passed

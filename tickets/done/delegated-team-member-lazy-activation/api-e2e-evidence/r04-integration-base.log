@@ -1,0 +1,337 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.21                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+[90mstdout[2m | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts [2m([22m[2m14 tests[22m[2m | [22m[31m14 failed[39m[2m)[22m[32m 21[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"][39m[32m 7[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"][39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"][39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m creates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"][39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m supplies only root-neutral local Team callbacks during materialization[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m emits root lifecycle transitions and unregisters only after accepted termination[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m holds one exact-ID transition lane across unmanaged deletion and restore registration[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m refuses Team archive and unarchive after Restore owns the exact-root lane[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m holds Team archive's manager lane through tree/index commit before Restore[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m holds Team unarchive's manager lane through tree/index commit before Restore[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m rejects active updates, then persists a stopped narrow patch for the next restore[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m orders an exact-ID Team restore after an in-flight Save and restores committed config[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m returns RUN_ACTIVE when an exact-ID Team restore completes before Save[39m[32m 1[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22m[2mfresh and restored configured scope use deferred readiness[2m > [22m[2mfresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base/autobyteus-server-ts
+
+ [31m❯[39m tests/integration/agent-team-execution/configured-scope-readiness.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 3284[2mms[22m[39m
+[31m     [31m×[31m publishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none[39m[32m 65[2mms[22m[39m
+[31m     [31m×[31m fresh standalone Team stays unstarted until exact input; concurrent first input shares readiness[39m[33m 1027[2mms[22m[39m
+[31m     [31m×[31m restores full Offline scope and durably readies only each addressed member[39m[32m 35[2mms[22m[39m
+[31m     [31m×[31m readiness rejection remains an error for the exact worker, without starting other members[39m[32m 28[2mms[22m[39m
+     [32m✓[39m org Stop before first use fences all unused workers without startup[32m 30[2mms[22m[39m
+     [32m✓[39m team Stop before first use fences all unused workers without startup[32m 29[2mms[22m[39m
+[31m     [31m×[31m org Stop drains first readiness and leaves no published worker after success[39m[33m 1030[2mms[22m[39m
+[31m     [31m×[31m team Stop drains first readiness and leaves no published worker after success[39m[33m 1039[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mAgentRunManager initialized.
+
+ [31m❯[39m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 73[2mms[22m[39m
+[31m     [31m×[31m keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice[39m[32m 72[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session 18f517d3-b6c5-464f-9e91-da3e70561714 for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[22m[39mClosed agent session 18f517d3-b6c5-464f-9e91-da3e70561714
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session ce4932ca-6269-4d12-8a6d-e1d413543fbf for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mClosed agent session ce4932ca-6269-4d12-8a6d-e1d413543fbf
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session 2c2d4032-1be3-45b6-9f4f-a1f9e6de197d for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mClosed agent session 2c2d4032-1be3-45b6-9f4f-a1f9e6de197d
+
+ [31m❯[39m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 4166[2mms[22m[39m
+[31m     [31m×[31m preserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets[39m[33m 2035[2mms[22m[39m
+[31m     [31m×[31m returns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution[39m[33m 2022[2mms[22m[39m
+     [32m✓[39m rejects a legacy selector at the strict WebSocket contract before root execution[32m 108[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 23 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["codex_app_server"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["claude_agent_sdk"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus","codex_app_server","claude_agent_sdk"]
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22msupplies only root-neutral local Team callbacks during materialization
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mrestores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22memits root lifecycle transitions and unregisters only after accepted termination
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mholds one exact-ID transition lane across unmanaged deletion and restore registration
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mrefuses Team archive and unarchive after Restore owns the exact-root lane
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mholds Team archive's manager lane through tree/index commit before Restore
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mholds Team unarchive's manager lane through tree/index commit before Restore
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mrejects active updates, then persists a stopped narrow patch for the next restore
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22morders an exact-ID Team restore after an in-flight Save and restores committed config
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22mAgentTeamRunManager strict current V2 package integration[2m > [22mreturns RUN_ACTIVE when an exact-ID Team restore completes before Save
+[31m[1mTypeError[22m: input.factory.beginMaterialization is not a function[39m
+[36m [2m❯[22m materializeTeamRoot src/agent-team-execution/services/team-root-materializer.ts:[2m91:40[22m[39m
+    [90m 89| [39m      : Promise.reject(new Error("RootTeamRun construction is incomple…
+    [90m 90| [39m  })[33m;[39m
+    [90m 91| [39m  [35mconst[39m prepared [33m=[39m [35mawait[39m input[33m.[39mfactory[33m.[39m[34mbeginMaterialization[39m({
+    [90m   | [39m                                       [31m^[39m
+    [90m 92| [39m    physicalScope[33m,[39m
+    [90m 93| [39m    teamNode[33m:[39m input[33m.[39mconfig[33m.[39mrootTeam[33m,[39m
+[90m [2m❯[22m src/agent-team-execution/services/agent-team-run-manager.ts:[2m143:26[22m[39m
+[90m [2m❯[22m AgentTeamRunManager.withRootTransition src/agent-team-execution/services/agent-team-run-manager.ts:[2m487:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mpublishes the whole coordinator-free Org with four Offline/unstarted workers; inspection starts none
+[31m[1mAssertionError[22m: expected { accepted: false, …(4) } to match object { accepted: true }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": true,[39m
+[31m+   "accepted": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m120:5[22m[39m
+
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mfresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m134:57[22m[39m
+    [90m132| [39m    const send = () => run.executeAgentCommand('lead', { kind: 'post_m…
+    [90m133| [39m    [35mconst[39m a [33m=[39m [34msend[39m()[33m;[39m [35mconst[39m b [33m=[39m [34msend[39m()[33m;[39m
+    [90m134| [39m    await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCall…
+    [90m   | [39m                                                        [31m^[39m
+    [90m135| [39m    [34mexpect[39m(f[33m.[39mactive[33m.[39msize)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m f[33m.[39m[34mrelease[39m()[33m;[39m
+    [90m136| [39m    expect((await Promise.all([a, b])).every(r => r.accepted)).toBe(tr…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mrestores full Offline scope and durably readies only each addressed member
+[31m[1mAssertionError[22m: expected { accepted: false, …(4) } to match object { accepted: true }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": true,[39m
+[31m+   "accepted": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m146:5[22m[39m
+    [90m144| [39m    [34mexpect[39m(f[33m.[39mactive[33m.[39msize)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m145| [39m
+    [90m146| [39m    [35mawait[39m [34mexpect[39m(run[33m.[39m[34mexecuteAgentCommand[39m([32m'lead'[39m[33m,[39m {
+    [90m   | [39m    [31m^[39m
+    [90m147| [39m      kind: 'post_message', message: new AgentInputUserMessage('first …
+    [90m148| [39m    }))[33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({ accepted[33m:[39m [35mtrue[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mreadiness rejection remains an error for the exact worker, without starting other members
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m165:65[22m[39m
+    [90m163| [39m    await expect(run.executeAgentCommand('director', { kind: 'post_mes…
+    [90m164| [39m    expect(run.getAgentStatusSnapshots().find(s => s.execution.agentRu…
+    [90m165| [39m    expect(f.active.size).toBe(0); expect(f.prepareNewAgentRun).toHave…
+    [90m   | [39m                                                                [31m^[39m
+    [90m166| [39m  })[33m;[39m
+    [90m167| [39m  it.each(['org', 'team'] as const)('%s Stop before first use fences a…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22morg Stop drains first readiness and leaves no published worker after success
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22mfresh and restored configured scope use deferred readiness[2m > [22mteam Stop drains first readiness and leaves no published worker after success
+[31m[1mAssertionError[22m: expected "vi.fn()" to be called 1 times, but got 0 times[39m
+[36m [2m❯[22m tests/integration/agent-team-execution/configured-scope-readiness.test.ts:[2m179:57[22m[39m
+    [90m177| [39m    [35mconst[39m id [33m=[39m kind [33m===[39m [32m'org'[39m [33m?[39m [32m'director'[39m [33m:[39m [32m'lead'[39m[33m;[39m f[33m.[39m[34mblock[39m(id)[33m;[39m
+    [90m178| [39m    const input = run.executeAgentCommand(id, { kind: 'post_message', …
+    [90m179| [39m    await vi.waitFor(() => expect(f.prepareNewAgentRun).toHaveBeenCall…
+    [90m   | [39m                                                        [31m^[39m
+    [90m180| [39m    [35mconst[39m stop [33m=[39m run[33m.[39m[34mterminate[39m()[33m;[39m f[33m.[39m[34mrelease[39m()[33m;[39m [35mawait[39m input[33m;[39m
+    [90m181| [39m    [35mawait[39m [34mexpect[39m(stop)[33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({ accepted[33m:[39m [35mtrue[39m })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22msupported Team Agent Tools MCP lifecycle integration[2m > [22mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[31m[1mAssertionError[22m: expected { accepted: false, …(4) } to match object { accepted: true }
+(4 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "accepted": true,[39m
+[31m+   "accepted": false,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts:[2m240:7[22m[39m
+    [90m238| [39m      })[33m;[39m
+    [90m239| [39m      expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBe…
+    [90m240| [39m      await expect(freshTeam.postMessage(new AgentInputUserMessage("St…
+    [90m   | [39m      [31m^[39m
+    [90m241| [39m      const currentRun = agentRunManager.getActiveRun(memberNode.agent…
+    [90m242| [39m      [34mexpect[39m(currentRun)[33m.[39mnot[33m.[39m[34mtoBeNull[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22mTeam WebSocket exact AgentRun command integration[2m > [22mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[31m[1mError[22m: Timed out waiting for four exact AgentRun commands[39m
+[36m [2m❯[22m waitFor tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m19:9[22m[39m
+    [90m 17| [39m    [35mawait[39m [34mwait[39m([34m10[39m)[33m;[39m
+    [90m 18| [39m  }
+    [90m 19| [39m  [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m        [31m^[39m
+    [90m 20| [39m}[33m;[39m
+    [90m 21| [39m
+[90m [2m❯[22m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m131:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22mTeam WebSocket exact AgentRun command integration[2m > [22mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[31m[1mError[22m: Timed out waiting for INVALID_TARGET[39m
+[36m [2m❯[22m waitFor tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m19:9[22m[39m
+    [90m 17| [39m    [35mawait[39m [34mwait[39m([34m10[39m)[33m;[39m
+    [90m 18| [39m  }
+    [90m 19| [39m  [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m        [31m^[39m
+    [90m 20| [39m}[33m;[39m
+    [90m 21| [39m
+[90m [2m❯[22m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts:[2m150:19[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m4 failed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m23 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (26)[39m
+[2m   Start at [22m 15:55:38
+[2m   Duration [22m 16.54s[2m (transform 3.54s, setup 27ms, import 7.69s, tests 7.54s, environment 0ms)[22m
+

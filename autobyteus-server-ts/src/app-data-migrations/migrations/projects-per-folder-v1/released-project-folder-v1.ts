@@ -40,3 +40,45 @@ export const readReleasedProjectFolderV1 = (raw: unknown, projectId: string): Re
     workspaces: c.workspaces.filter(isValidLink).map((l) => ({
       workspaceId: l.workspaceId, workspaceRootPath: l.workspaceRootPath, description: l.description, addedAt: l.addedAt })) };
 };
+
+/*
+ * Frozen Task target reader from project-store.ts (`readTaskFile`), domain/models.ts and
+ * domain/project-task-context.ts at 3a2496c95b16b0f7e0cedc7afdf615ada00b2267 (before the CANCELLED
+ * status). Keeps the Task CURRENT/CONFLICT classification and post-write validation stable.
+ */
+/** A saved Task context file as persisted inside a released Task record. */
+export interface ReleasedFolderTaskContextFile {
+  storedFilename: string;
+  displayName: string;
+  mimeType: string;
+  sizeBytes: number;
+}
+
+/** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` by the released per-folder layout. */
+export interface ReleasedFolderTask {
+  taskId: string;
+  description: string;
+  status: "TODO" | "IN_PROGRESS" | "DONE";
+  contextFiles?: ReleasedFolderTaskContextFile[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+const RELEASED_TASK_STATUSES: ReadonlySet<string> = new Set(["TODO", "IN_PROGRESS", "DONE"]);
+const isReleasedContextFilename = (name: unknown): name is string =>
+  typeof name === "string" && /^ctx_[a-zA-Z0-9_-]+__[a-zA-Z0-9._-]+$/.test(name);
+const normalizeReleasedContextFiles = (files: unknown): ReleasedFolderTaskContextFile[] =>
+  Array.isArray(files) ? files.filter((f) => f && isReleasedContextFilename(f.storedFilename)
+    && typeof f.displayName === "string" && typeof f.mimeType === "string"
+    && Number.isSafeInteger(f.sizeBytes) && f.sizeBytes >= 0).map((f) => ({
+      storedFilename: f.storedFilename, displayName: f.displayName, mimeType: f.mimeType, sizeBytes: f.sizeBytes,
+    })) : [];
+
+/** Frozen released reader of `task.json`; its ids must match its folders. */
+export const readReleasedTaskFileV1 = (raw: unknown, projectId: string, taskId: string): ReleasedFolderTask | null => {
+  const c = raw as (Partial<ReleasedFolderTask> & { projectId?: unknown }) | null;
+  if (!c || c.taskId !== taskId || c.projectId !== projectId || !isNonEmptyString(c.description)
+    || !RELEASED_TASK_STATUSES.has(c.status as string) || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
+  return { taskId, description: c.description, status: c.status as ReleasedFolderTask["status"], createdAt: c.createdAt, updatedAt: c.updatedAt,
+    contextFiles: normalizeReleasedContextFiles(c.contextFiles) };
+};

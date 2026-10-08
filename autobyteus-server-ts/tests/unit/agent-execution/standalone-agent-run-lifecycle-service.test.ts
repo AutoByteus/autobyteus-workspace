@@ -1,6 +1,10 @@
-import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
+import { testActivationManager, testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import type { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
+import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
@@ -10,6 +14,7 @@ import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/a
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
+import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -656,6 +661,49 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(activeRun.postUserMessage).toHaveBeenCalledOnce();
   });
 
+  it("returns the plain retryable error as the command ack and accepts the next send (AC-004, AC-008)", async () => {
+    const activeRun = commandReadyRun();
+    const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
+    const restoredCandidate = candidate({ run: activeRun });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: started }], restoredCandidate });
+    restoredCandidate.commitPublication.mockImplementation(() => {
+      current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
+      return activeRun;
+    });
+    current.agentRunManager.releaseRetiredRun.mockRejectedValueOnce(
+      new PreviousRuntimeReleasePendingError(new Error("provider stop unconfirmed")),
+    );
+    const coordinator = exactCommandCoordinator(current);
+    const send = (id: string) => coordinator.postUserMessage({
+      runId: RUN_ID, messageId: id, dedupeKey: `d-${id}`, message: new AgentInputUserMessage("continue"),
+    });
+
+    const refused = await send("m-1");
+    expect(refused.ack).toMatchObject({ accepted: false, code: "ACTIVATION_FAILED" });
+    expect(refused.ack.message).toMatch(/still shutting down.*send it again/);
+    expect(refused.ack.message).not.toMatch(/retired|quarantin|standalone-run-1/i);
+    expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
+
+    await expect(send("m-2")).resolves.toMatchObject({ ack: { accepted: true } });
+    expect(current.agentRunManager.releaseRetiredRun).toHaveBeenCalledTimes(2);
+    expect(activeRun.postUserMessage).toHaveBeenCalledOnce();
+  });
+
+  it("never quarantines a reclaim refused while the previous runtime still owes its release", async () => {
+    const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
+    const restoredCandidate = candidate();
+    const current = harness({ metadataStates: [{ kind: "present", metadata: started }], restoredCandidate });
+    current.agentRunManager.platformPreparation
+      .mockRejectedValueOnce(new PreviousRuntimeReleasePendingError())
+      .mockResolvedValueOnce(restoredCandidate);
+
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({
+      code: "AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING",
+    });
+    await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ run: { runId: RUN_ID } });
+    expect(current.agentRunManager.platformPreparation).toHaveBeenCalledTimes(2);
+  });
+
   it("keeps helpers on the plain path: a mention is unavailable and nothing is posted", async () => {
     const activeRun = commandReadyRun();
     const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ launchPurpose: "server_helper", startedAt: "2026-08-17T20:01:00.000Z" }) }] });
@@ -669,5 +717,197 @@ describe("StandaloneAgentRunLifecycleService", () => {
       runId: RUN_ID, messageId: "m-2", dedupeKey: "d-2", message: new AgentInputUserMessage("hello"),
     })).resolves.toMatchObject({ ack: { accepted: true } });
     expect(activeRun.postUserMessage).toHaveBeenCalledOnce();
+  });
+});
+
+/**
+ * A real AgentRunManager and activation registry with fake Codex backends: a published run whose runtime
+ * stops by itself (crash, exit, or an Antigravity interrupt) must be released before its replacement starts.
+ */
+describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
+  const THREAD_ID = "thread-offline-1";
+  const started = metadata({
+    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    llmModelIdentifier: "gpt-5.3-codex",
+    platformAgentRunId: THREAD_ID,
+    startedAt: "2026-08-17T20:05:00.000Z",
+    launchPurpose: "server_helper",
+  });
+  const HELPER = { memberExecutionContext: null };
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  const fakeCodexBackend = (context: AgentRunContext<never>) => {
+    let active = true;
+    let stopGate: Promise<void> | null = null;
+    return {
+      runId: context.runId,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      inputCapabilities: { kind: "start_only" },
+      compactionRecovery: { kind: "unsupported" },
+      getContext: () => context,
+      getPlatformAgentRunId: () => THREAD_ID,
+      isActive: () => active,
+      getLifecycleSnapshot: () => ({
+        availability: active ? "active" as const : "inactive" as const,
+        phase: active ? "running" as const : "terminated" as const,
+        currentTurn: { kind: "NONE" as const },
+      }),
+      subscribeToSourceEventBatches: () => () => undefined,
+      postUserMessage: vi.fn(async () => ({ accepted: true })),
+      approveToolInvocation: vi.fn(async () => ({ accepted: true })),
+      interrupt: vi.fn(async () => ({ accepted: true })),
+      terminate: vi.fn(async () => {
+        if (stopGate) await stopGate;
+        active = false;
+        return { accepted: true };
+      }),
+      /** The runtime went offline on its own; its provider stop has not been proven yet. */
+      goOffline: (gate?: Promise<void>) => { active = false; stopGate = gate ?? null; },
+    };
+  };
+
+  const realManagerHarness = async () => {
+    const backends: ReturnType<typeof fakeCodexBackend>[] = [];
+    const restoreBackend = vi.fn(async (context: AgentRunContext<never>) => {
+      const backend = fakeCodexBackend(context);
+      backends.push(backend);
+      return backend;
+    });
+    const unavailable = { createBackend: vi.fn(), restoreBackend: vi.fn() };
+    const noop = { attachToRun: vi.fn(() => vi.fn()) };
+    const memoryRecorder = { attachToRun: vi.fn(() => vi.fn()), onUserMessageForwarded: vi.fn() };
+    const runSessions = { deactivateForRun: vi.fn(() => 0) };
+    const activationRegistry = new AgentRunActivationRegistry(new AgentRunResourceManager({
+      runSessions, runFileChangeService: noop as never, publishedArtifactRelayService: noop as never,
+      memoryRecorder: memoryRecorder as never,
+    }));
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: testBackendFactory(unavailable) as never,
+      codexBackendFactory: testBackendFactory({ createBackend: vi.fn(), restoreBackend }) as never,
+      claudeBackendFactory: testBackendFactory(unavailable) as never,
+      agyBackendFactory: testBackendFactory(unavailable) as never,
+      grokBackendFactory: testBackendFactory(unavailable) as never,
+      activationRegistry,
+      memoryRecorder: memoryRecorder as never,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+      agentToolMcpRunSessionDeactivator: runSessions,
+    });
+    const service = new StandaloneAgentRunLifecycleService("/unused", {
+      agentRunManager: manager,
+      metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present", metadata: started })) } as never,
+      historyCatalogService: { recordRunStarted: vi.fn(async (target: AgentRunMetadata) => target) } as never,
+      workspaceManager: { ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-1" })) } as never,
+      modelSelectionValidator: { validate: vi.fn() },
+    });
+    const beginActivation = vi.spyOn(manager, "beginActivation");
+    const previous = (await service.activateHost(RUN_ID, HELPER)).run;
+    beginActivation.mockClear();
+    return { service, manager, activationRegistry, restoreBackend, backends, beginActivation, previous };
+  };
+
+  it("releases a runtime that stopped by itself, then restores the same conversation (AC-002, AC-003)", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => undefined);
+    const current = await realManagerHarness();
+    current.backends[0]!.goOffline();
+
+    const { run } = await current.service.activateHost(RUN_ID, HELPER);
+
+    expect(run).not.toBe(current.previous);
+    expect(run.getPlatformAgentRunId()).toBe(THREAD_ID);
+    expect(current.manager.getActiveRun(RUN_ID)).toBe(run);
+    expect(current.backends[0]!.terminate).toHaveBeenCalledOnce();
+    expect(current.activationRegistry.getRetiredRun(RUN_ID)).toBeNull();
+    expect(current.restoreBackend).toHaveBeenCalledTimes(2);
+  });
+
+  it("starts exactly one replacement, only after the previous runtime has stopped (AC-005)", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => undefined);
+    const current = await realManagerHarness();
+    let stop!: () => void;
+    current.backends[0]!.goOffline(new Promise<void>((resolve) => { stop = resolve; }));
+    expect(current.manager.getActiveRun(RUN_ID)).toBeNull();
+
+    const first = current.service.activateHost(RUN_ID, HELPER);
+    const second = current.service.activateHost(RUN_ID, HELPER);
+    await vi.waitFor(() => expect(current.backends[0]!.terminate).toHaveBeenCalledOnce());
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(current.beginActivation).not.toHaveBeenCalled();
+    expect(current.activationRegistry.getRetiredRun(RUN_ID)).toBe(current.previous);
+    stop();
+
+    const [a, b] = await Promise.all([first, second]);
+    expect(a.run).toBe(b.run);
+    expect(current.beginActivation).toHaveBeenCalledOnce();
+    expect(current.backends).toHaveLength(2);
+    expect(current.backends[0]!.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("stops waiting after 30 s with the retryable error; a later send finds the finished release (QR-001)", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => undefined);
+    const current = await realManagerHarness();
+    let stop!: () => void;
+    current.backends[0]!.goOffline(new Promise<void>((resolve) => { stop = resolve; }));
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      const waiting = current.service.activateHost(RUN_ID, HELPER).catch((error: unknown) => error);
+      await vi.advanceTimersByTimeAsync(29_999);
+      expect(current.beginActivation).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(1);
+
+      const timedOut = await waiting;
+      expect(timedOut).toBeInstanceOf(PreviousRuntimeReleasePendingError);
+      expect(current.beginActivation).not.toHaveBeenCalled();
+      expect(current.activationRegistry.getRetiredRun(RUN_ID)).toBe(current.previous);
+    } finally {
+      vi.useRealTimers();
+    }
+
+    stop();
+    await vi.waitFor(() => expect(current.activationRegistry.getRetiredRun(RUN_ID)).toBeNull());
+    const { run } = await current.service.activateHost(RUN_ID, HELPER);
+    expect(current.manager.getActiveRun(RUN_ID)).toBe(run);
+    expect(current.backends[0]!.terminate).toHaveBeenCalledOnce();
+    expect(current.beginActivation).toHaveBeenCalledOnce();
+  });
+
+  it("a later send joins a release still in flight after a timed-out wait", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => undefined);
+    const current = await realManagerHarness();
+    let stop!: () => void;
+    current.backends[0]!.goOffline(new Promise<void>((resolve) => { stop = resolve; }));
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      const waiting = current.service.activateHost(RUN_ID, HELPER).catch((error: unknown) => error);
+      await vi.advanceTimersByTimeAsync(30_000);
+      await expect(waiting).resolves.toBeInstanceOf(PreviousRuntimeReleasePendingError);
+    } finally {
+      vi.useRealTimers();
+    }
+
+    const retry = current.service.activateHost(RUN_ID, HELPER);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(current.beginActivation).not.toHaveBeenCalled();
+    stop();
+
+    const { run } = await retry;
+    expect(current.manager.getActiveRun(RUN_ID)).toBe(run);
+    expect(current.backends[0]!.terminate).toHaveBeenCalledOnce();
+    expect(current.beginActivation).toHaveBeenCalledOnce();
+  });
+
+  it("a failed release is not quarantined and the next send retries it (AC-004, AC-008)", async () => {
+    vi.spyOn(console, "info").mockImplementation(() => undefined);
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const current = await realManagerHarness();
+    current.backends[0]!.goOffline();
+    current.backends[0]!.terminate.mockRejectedValueOnce(new Error("provider stop unconfirmed"));
+
+    await expect(current.service.activateHost(RUN_ID, HELPER)).rejects.toBeInstanceOf(PreviousRuntimeReleasePendingError);
+    expect(current.beginActivation).not.toHaveBeenCalled();
+    expect(current.activationRegistry.getRetiredRun(RUN_ID)).toBe(current.previous);
+
+    const { run } = await current.service.activateHost(RUN_ID, HELPER);
+    expect(current.manager.getActiveRun(RUN_ID)).toBe(run);
+    expect(current.backends[0]!.terminate).toHaveBeenCalledTimes(2);
   });
 });

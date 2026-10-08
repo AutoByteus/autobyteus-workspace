@@ -34,25 +34,27 @@ describe("FlatTeamExecutionFactory", () => {
       ancestors: ["mounted-team-run"],
       teamNode: node("/ReviewTeam", "mounted-team-run"),
     },
-  ])("materializes one Agent-only $kind without a public root aggregate", async ({ root, ancestors, teamNode }) => {
+  ])("materializes one Agent-only $kind without a public root aggregate or member activation", async ({ root, ancestors, teamNode }) => {
     const physicalScope = createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: ancestors });
-    const prepared = await new FlatTeamExecutionFactory().beginMaterialization({
+    const prepareNewAgentRun = vi.fn();
+    const prepared = await new FlatTeamExecutionFactory({ agentRunManager: { prepareNewAgentRun } as never }).beginMaterialization({
       physicalScope,
       teamNode,
       handoffs: [],
       activationMode: "fresh",
       callbacks,
-      prepareConfiguredAgents: false,
     }).prepare();
 
     expect(prepared.teamRun.teamRunId).toBe(teamNode.teamRunId);
     expect(prepared.teamRun.context.physicalScope).toEqual(physicalScope);
     expect(prepared.teamRun.context.runtimeContext?.memberContexts.map((item) => item.address))
       .toEqual(teamNode.children.map((item) => item.address));
-    expect(prepared.stagedPlatformBindings).toEqual([]);
-    expect(prepared.stagedNoConversationBindingReplacements).toEqual([]);
     prepared.commitAfterDurability();
     expect(prepared.teamRun.isActive()).toBe(true);
+    // Scope-only: members stay Offline and no AgentRun is prepared until a member receives work.
+    expect(prepared.teamRun.getLeafAgentStatusSnapshots().map((item) => item.details.status)).toEqual(["offline"]);
+    expect(prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(callbacks.buildMemberExecutionContext).not.toHaveBeenCalled();
   });
 
   it("rejects a configured child Team before any Agent activation", async () => {
@@ -77,7 +79,6 @@ describe("FlatTeamExecutionFactory", () => {
       handoffs: [],
       activationMode: "fresh",
       callbacks,
-      prepareConfiguredAgents: false,
     })).toThrow("cannot contain a configured Team");
     expect(callbacks.buildMemberExecutionContext).not.toHaveBeenCalled();
   });
@@ -90,7 +91,6 @@ describe("FlatTeamExecutionFactory", () => {
       handoffs: [],
       activationMode: "fresh",
       callbacks,
-      prepareConfiguredAgents: false,
     })).toThrow("contains TeamRun 'none', not 'mounted-team-run'");
   });
 });

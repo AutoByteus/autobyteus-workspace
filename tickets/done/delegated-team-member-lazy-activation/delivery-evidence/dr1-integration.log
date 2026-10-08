@@ -1,0 +1,232 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts[2m > [22m[2mcurrent delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message)[2m > [22m[2mkeeps two Task address bring-ins independent at /scope_helper, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+
+ [32m✓[39m tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1388[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps two Task address bring-ins independent at /scope_helper, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013) [33m 413[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps two Task address bring-ins independent at /scope_helpers, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013) [33m 336[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22m[2mAgentTeamRunManager strict current V2 package integration[2m > [22m[2mcreates exactly one admitted root and the two-file current package (tree V3 + messages) for ["autobyteus"]
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts[2m > [22m[2mAgentTeamRunManager strict current V2 package integration[2m > [22m[2morders an exact-ID Team restore after an in-flight Save and restores committed config
+[22m[39m[2026-10-08T17:11:48.094Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ [32m✓[39m tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 632[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/configured-scope-readiness.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/configured-scope-readiness.test.ts[2m > [22m[2mfresh and restored configured scope use deferred readiness[2m > [22m[2mfresh standalone Team stays unstarted until exact input; concurrent first input shares readiness
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+
+ [32m✓[39m tests/integration/agent-team-execution/configured-scope-readiness.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 524[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session 3139c85b-4048-434c-a935-23f21c6f11c7 for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mpreserves persistent, task Agent, outer task-Team, and nested task-Team AgentRun targets
+[22m[39mAgent Team WebSocket connected: session=3139c85b-4048-434c-a935-23f21c6f11c7, run=team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mClosed agent session 3139c85b-4048-434c-a935-23f21c6f11c7
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session b63148b9-5fdf-4774-911a-a6e730ec5c9b for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mreturns INVALID_TARGET for a stale exact AgentRun without retry or persistent substitution
+[22m[39mAgent Team WebSocket connected: session=b63148b9-5fdf-4774-911a-a6e730ec5c9b, run=team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mClosed agent session b63148b9-5fdf-4774-911a-a6e730ec5c9b
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mAgent team websocket attached for team run team-run-1
+Created agent session b39e17ff-97a3-461c-b35d-63939e8b713a for run team-run-1
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mAgent Team WebSocket connected: session=b39e17ff-97a3-461c-b35d-63939e8b713a, run=team-run-1
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts[2m > [22m[2mTeam WebSocket exact AgentRun command integration[2m > [22m[2mrejects a legacy selector at the strict WebSocket contract before root execution
+[22m[39mError handling team message for b39e17ff-97a3-461c-b35d-63939e8b713a: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "member_route_key"
+    ],
+    "path": [
+      "payload"
+    ],
+    "message": "Unrecognized key: \"member_route_key\""
+  }
+]
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts
+[22m[39mClosed agent session b39e17ff-97a3-461c-b35d-63939e8b713a
+
+ [32m✓[39m tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 164[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts[2m > [22m[2msupported Team Agent Tools MCP lifecycle integration[2m > [22m[2mkeeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+[22m[39mAgentRunManager initialized.
+
+ [32m✓[39m tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 107[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mtransports a canonical provider error through standalone, Team, wire, and application projections
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mcorrelates a real AutoByteus native sequence before Team, standalone, and application projection
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mpreserves exact Claude delta bytes once through direct and nested Team presentation
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2memits a diagnostic for missing identity and accepts a later valid sequence without generated identity
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2memits a diagnostic for missing identity and accepts a later valid sequence without generated identity
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mrejects content before start, then correlates the same exact identity after start
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mrejects conflicting type and preserves the original exact segment lifecycle
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2msuppresses exact start/end replays and rejects content after terminal end
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mrejects source content carrying a surplus type instead of treating canonical output as source input
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mretires an ended turn and accepts a fresh exact segment on the next run-owned turn
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+[90mstderr[2m | tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts[2m > [22m[2mAgentRun-owned Team segment lifecycle[2m > [22m[2mretires an ended turn and accepts a fresh exact segment on the next run-owned turn
+[22m[39m[AgentRun] failed to publish runtime events for run 'teacher-agent-run': TypeError: Cannot read properties of undefined (reading 'kind')
+
+ [32m✓[39m tests/integration/agent-team-execution/team-agent-segment-admission.integration.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/agent-team-execution/team-run-service.integration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m      Tests [22m [1m[32m56 passed[39m[22m[90m (56)[39m
+[2m   Start at [22m 19:11:39
+[2m   Duration [22m 15.63s[2m (transform 4.27s, setup 44ms, import 11.58s, tests 2.85s, environment 1ms)[22m
+

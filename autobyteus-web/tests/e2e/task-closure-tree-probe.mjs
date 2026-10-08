@@ -528,6 +528,14 @@ const restoreRoot = async (root) => {
   assert(r.success, `restore ${root.kind} root failed: ${r.message}`);
 };
 const centerText = (page) => page.locator('[data-test="workspace-center-pane"]').innerText();
+/** The rendered status of one member row: an Org row's `data-status`, else the colour of its status dot. */
+const memberRowStatus = async (page, kind, agentRunId) => {
+  const row = page.locator(rowSelector(kind, { agentRunId })).first();
+  if (kind === 'org') return row.getAttribute('data-status');
+  const dot = await row.locator('[data-test="workspace-transient-status-dot"]').getAttribute('class');
+  const byClass = [['gray', 'offline'], ['green', 'idle'], ['blue', 'running'], ['amber', 'initializing'], ['red', 'error']];
+  return byClass.find(([colour]) => (dot ?? '').includes(`-${colour}-`))?.[1] ?? `unknown(${dot})`;
+};
 const expandTaskTeam = async (page, kind, teamRef) => {
   const row = page.locator(rowSelector(kind, teamRef));
   if ((await row.getAttribute('aria-expanded')) === 'false') await (kind === 'org' ? row : row.locator('[data-test="workspace-team-transient-disclosure"]')).click();
@@ -548,6 +556,20 @@ const liveReactivation = async (kind, label) => {
     const helperSel = helperRefs.map((r) => rowSelector(kind, r));
     const teamSel = rowSelector(kind, s.bRef);
     for (const sel of [workerSel, ...helperSel, teamSel]) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
+    // A delegated Task Team starts only its coordinator (delegated-team-member-lazy-activation AC-001, REQ-003): its row
+    // renders Idle once it has answered, and the member no work has reached renders Offline (gray).
+    await expandTaskTeam(page, kind, s.bRef);
+    const lazyMembers = teamMembersOf(await storedTree(s.root), s.bRef.teamRunId);
+    const lazyCoordinator = lazyMembers.find((m) => /\/reviewer$/.test(m.address));
+    const lazyMember = lazyMembers.find((m) => /\/editor$/.test(m.address));
+    assert(lazyCoordinator?.agentRunId && lazyMember?.agentRunId, 'task Team members not found', { members: lazyMembers });
+    for (const m of [lazyCoordinator, lazyMember]) await page.locator(rowSelector(kind, { agentRunId: m.agentRunId })).waitFor({ state: 'visible', timeout: 30000 });
+    await until('task Team coordinator Idle, unused member Offline', async () => (await memberRowStatus(page, kind, lazyCoordinator.agentRunId)) === 'idle'
+      && (await memberRowStatus(page, kind, lazyMember.agentRunId)) === 'offline', 30000);
+    await sleep(1500);
+    const lazyStatuses = { coordinator: await memberRowStatus(page, kind, lazyCoordinator.agentRunId), unused: await memberRowStatus(page, kind, lazyMember.agentRunId) };
+    assert(lazyStatuses.coordinator === 'idle' && lazyStatuses.unused === 'offline', 'task Team member statuses', lazyStatuses);
+    await shot(page, `${kind}-task-team-lazy-members`);
     s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Status of the release notes? PRE-DONE-7731' }));
     await sleep(2500); // The scripted worker answers at once; its conversation is asserted after the reactivation.
     // DONE: the Task A rows leave.
@@ -608,7 +630,7 @@ const liveReactivation = async (kind, label) => {
     } finally { await fresh.context.close(); }
     reactivated[kind] = { root: s.root, names: s.names, projectId: s.projectId, taskA: s.taskA, taskB: s.taskB, worker, helperRefs,
       teamRef: s.bRef, coordinator: coordinator.agentRunId, members: members.map((m) => m.agentRunId) };
-    return { root: s.root, worker, helperRefs, teamRef: s.bRef, coordinator: coordinator.agentRunId, reappearMs };
+    return { root: s.root, worker, helperRefs, teamRef: s.bRef, coordinator: coordinator.agentRunId, reappearMs, lazyStatuses };
   } finally { s.input.close(); await context.close(); }
 };
 /**

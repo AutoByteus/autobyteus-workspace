@@ -22,8 +22,9 @@ suite('controlled agent drives Org publication through real public boundaries', 
   it('keeps collaborator/task identities, communication references, checkpoint and conversation through fresh reads, reconnect and Stop/restore', async () => {
     const run = await fixture.create('org', 'linked_skills');
     const other = await fixture.create('org', 'linked_skills');
+    const helperName = 'publication-helper-' + randomUUID();
     const helperId = (await fixture.graphql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
-      { input: { name: 'publication-helper-' + randomUUID(), description: 'Owned publication helper',
+      { input: { name: helperName, description: 'Owned publication helper',
         instructions: 'Reply OK to ordinary requests.', toolNames: [] } })).createAgentDefinition.id;
     const read = async () => (await fixture.graphql(`query($id:String!){getAgentOrgRootHistory(orgRunId:$id){root_run_id is_active org}}`,
       { id: run.rootId })).getAgentOrgRootHistory;
@@ -50,7 +51,8 @@ suite('controlled agent drives Org publication through real public boundaries', 
       { id: run.rootId })).collaboratorMentionCandidates;
     expect(candidates.availability).toBe('AVAILABLE');
     expect(candidates.candidates).toContainEqual({ kind: 'agent', definitionId: helperId });
-    await send('Please include the helper.', { mentions: [{ kind: 'agent', definition_id: helperId }] });
+    // An available Agent is brought in as a collaborator on its first `send_message_to` (an `@` mention adds none).
+    await call('send_message_to', { recipient_address: '/' + helperName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, ''), content: 'Reply OK.' });
     const admitted = await read();
     const collaborator = admitted.org.rootOrg.collaborators.find((c: any) => c.agentDefinitionId === helperId);
     expect(collaborator).toMatchObject({ kind: 'agent', addedViaAgentRunId: run.runId,
@@ -62,13 +64,16 @@ suite('controlled agent drives Org publication through real public boundaries', 
     expect(afterAdmission.changeSequence).toBeGreaterThan(baseline.changeSequence);
     const remaining = (await fixture.graphql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent_org",rootRunId:$id){candidates{definitionId}}}`,
       { id: run.rootId })).collaboratorMentionCandidates.candidates;
-    expect(remaining.some((c: any) => c.definitionId === helperId)).toBe(false);
+    // A definition already in the run stays an `@` candidate (mentioning it points to the in-run collaborator).
+    expect(remaining.some((c: any) => c.definitionId === helperId)).toBe(true);
 
     const reference = path.join(fixture.workspace, 'publication-reference.txt');
     await fs.writeFile(reference, 'REFERENCE-BYTES-7719\n');
     await call('send_message_to', { target_agent_run_id: collaborator.agentRunId, content: 'Please read this owned reference.', reference_files: [reference] });
-    await until(() => stream.frames.some(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'communication'), 'real communication publication');
-    const communication = stream.frames.find(f => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'communication')!.payload.event.message;
+    const referenced = (f: any) => f.type === 'ROOT_EXECUTION_EVENT' && f.payload.event.kind === 'communication'
+      && f.payload.event.message.referenceFiles?.length > 0;
+    await until(() => stream.frames.some(referenced), 'real communication publication');
+    const communication = stream.frames.find(referenced)!.payload.event.message;
     expect(communication).toMatchObject({ senderAgentRunId: run.runId, receiverAgentRunId: collaborator.agentRunId });
     expect(communication.referenceFiles).toEqual([reference]);
     const referenceId = createHash('sha256').update(`${communication.messageId}\0${reference}`).digest('hex');

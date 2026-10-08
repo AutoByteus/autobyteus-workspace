@@ -1,0 +1,196 @@
+{
+  "agent": {
+    "inRunCandidates": [
+      "aht-reviewer-377664",
+      "aht-helper-377664",
+      "aht-assistant-377664",
+      "aht-worker-377664",
+      "aht-team-377664"
+    ],
+    "pendingTaskId": "ad_hoc_task_51d723ca-951a-4f30-9920-216977d8c32e",
+    "rootId": "aht_manager_377664_fbcbc760cc80487f9a333dca816d1e5a",
+    "managerRunId": "aht_manager_377664_fbcbc760cc80487f9a333dca816d1e5a",
+    "projectId": "project_e9c53a7b-f6ec-42fa-b781-b80df03860f6",
+    "projectTaskId": "project_task_23d9b6e6-a7d9-4626-88f3-e5e8970ef4cc",
+    "adHocTaskId": "ad_hoc_task_1ac3c65f-2e9a-4d74-9290-7c88cf1891da",
+    "copy": {
+      "agentRunId": "aht_reviewer_377664_35ce875467d54c5c81c814a8ff6b3879",
+      "address": "/aht_reviewer_377664",
+      "startedAt": "2026-10-08T14:24:14.696Z",
+      "delegatorAgentRunId": "aht_manager_377664_fbcbc760cc80487f9a333dca816d1e5a"
+    },
+    "subCopy": {
+      "agentRunId": "aht_helper_377664_c90c0aed301a4615a984a569f9678a6f",
+      "address": "/aht_helper_377664",
+      "startedAt": "2026-10-08T14:24:15.100Z",
+      "delegatorAgentRunId": "aht_reviewer_377664_35ce875467d54c5c81c814a8ff6b3879"
+    },
+    "closedPayload": [
+      {
+        "agentRunId": "aht_reviewer_377664_35ce875467d54c5c81c814a8ff6b3879"
+      },
+      {
+        "agentRunId": "aht_helper_377664_c90c0aed301a4615a984a569f9678a6f"
+      }
+    ],
+    "collaboratorRunId": "aht_assistant_377664_d665d986fc304073860dfe03a9fbdee4",
+    "storedAdHocTask": {
+      "taskId": "ad_hoc_task_1ac3c65f-2e9a-4d74-9290-7c88cf1891da",
+      "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/aht_helper_377664\",\"description\":\"Reply OK.\"}}",
+      "referenceFiles": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-4x1767/workspace/review-notes.md"
+      ],
+      "status": "TODO",
+      "createdAt": "2026-10-08T14:24:14.697Z",
+      "updatedAt": "2026-10-08T14:24:14.697Z"
+    },
+    "delegated": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": \\\"aht_reviewer_377664_35ce875467d54c5c81c814a8ff6b3879\\\",\\n  \\\"target_kind\\\": \\\"agent\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_1ac3c65f-2e9a-4d74-9290-7c88cf1891da\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":\"aht_reviewer_377664_35ce875467d54c5c81c814a8ff6b3879\",\"target_kind\":\"agent\",\"task_id\":\"ad_hoc_task_1ac3c65f-2e9a-4d74-9290-7c88cf1891da\"}}",
+    "rejectedDelegation": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}",
+    "rejected": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"Unsupported tool argument.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"Unsupported tool argument.\"}},\"isError\":true}",
+    "unknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_NOT_FOUND\\\",\\\"message\\\":\\\"Task 'ad_hoc_task_ad59f37c-52f0-4fcf-bd87-61ed405bb404' must identify exactly one current node-local Task (found 0).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'ad_hoc_task_ad59f37c-52f0-4fcf-bd87-61ed405bb404' must identify exactly one current node-local Task (found 0).\"}},\"isError\":true}",
+    "createWithoutProject": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"project_id must be a non-empty string.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}},\"isError\":true}",
+    "done": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"task\\\":{\\\"projectId\\\":null,\\\"taskId\\\":\\\"ad_hoc_task_1ac3c65f-2e9a-4d74-9290-7c88cf1891da\\\",\\\"status\\\":\\\"DONE\\\"}}\"}],\"structuredContent\":{\"task\":{\"projectId\":null,\"taskId\":\"ad_hoc_task_1ac3c65f-2e9a-4d74-9290-7c88cf1891da\",\"status\":\"DONE\"}}}",
+    "fenced": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_AGENT_RESOURCE_CLOSED\\\",\\\"message\\\":\\\"This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.\\\",\\\"target_agent_run_id\\\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CLOSED\",\"message\":\"This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.\",\"target_agent_run_id\":null},\"isError\":true}",
+    "closedAfterStop": [
+      {
+        "agentRunId": "aht_reviewer_377664_35ce875467d54c5c81c814a8ff6b3879"
+      },
+      {
+        "agentRunId": "aht_helper_377664_c90c0aed301a4615a984a569f9678a6f"
+      },
+      {
+        "agentRunId": "aht_reviewer_377664_a4bf8abff4f740bfa0c5be08b550bd73"
+      }
+    ],
+    "otherTaskId": "ad_hoc_task_e781133a-6d84-458b-b978-24c25ca882b5"
+  },
+  "team": {
+    "inRunCandidates": [
+      "aht-manager-377664",
+      "aht-reviewer-377664",
+      "aht-helper-377664",
+      "aht-assistant-377664",
+      "aht-worker-377664"
+    ],
+    "rootId": "aht_team_377664_49b7faffc44243d59b2dcef8934e7050",
+    "managerRunId": "aht_manager_377664_13813b186f3f486d8aa976ec3cbb01e0",
+    "projectId": "project_51991f4d-8e06-4457-ada7-f7e37affe63b",
+    "projectTaskId": "project_task_bb8d6329-11db-4119-8870-fcbd1e7de921",
+    "adHocTaskId": "ad_hoc_task_d1913a21-9627-4acf-bacc-716a354d5d76",
+    "copy": {
+      "agentRunId": "aht_reviewer_377664_a8de0f40c10047289bc9c29b2277c860",
+      "address": "/aht_reviewer_377664",
+      "startedAt": "2026-10-08T14:24:18.640Z",
+      "delegatorAgentRunId": "aht_manager_377664_13813b186f3f486d8aa976ec3cbb01e0"
+    },
+    "subCopy": {
+      "agentRunId": "aht_helper_377664_411e95e2bbc346b1be871c9f0192c0a4",
+      "address": "/aht_helper_377664",
+      "startedAt": "2026-10-08T14:24:18.987Z",
+      "delegatorAgentRunId": "aht_reviewer_377664_a8de0f40c10047289bc9c29b2277c860"
+    },
+    "closedPayload": [
+      {
+        "agent_run_id": "aht_reviewer_377664_a8de0f40c10047289bc9c29b2277c860"
+      },
+      {
+        "agent_run_id": "aht_helper_377664_411e95e2bbc346b1be871c9f0192c0a4"
+      }
+    ],
+    "collaboratorRunId": "aht_assistant_377664_eee2d2e85ac642238fba0fd50438af8e",
+    "storedAdHocTask": {
+      "taskId": "ad_hoc_task_d1913a21-9627-4acf-bacc-716a354d5d76",
+      "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/aht_helper_377664\",\"description\":\"Reply OK.\"}}",
+      "referenceFiles": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-4x1767/workspace/review-notes.md"
+      ],
+      "status": "TODO",
+      "createdAt": "2026-10-08T14:24:18.640Z",
+      "updatedAt": "2026-10-08T14:24:18.640Z"
+    },
+    "delegated": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": \\\"aht_reviewer_377664_a8de0f40c10047289bc9c29b2277c860\\\",\\n  \\\"target_kind\\\": \\\"agent\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_d1913a21-9627-4acf-bacc-716a354d5d76\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":\"aht_reviewer_377664_a8de0f40c10047289bc9c29b2277c860\",\"target_kind\":\"agent\",\"task_id\":\"ad_hoc_task_d1913a21-9627-4acf-bacc-716a354d5d76\"}}",
+    "rejectedDelegation": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}",
+    "rejected": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"Unsupported tool argument.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"Unsupported tool argument.\"}},\"isError\":true}",
+    "unknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_NOT_FOUND\\\",\\\"message\\\":\\\"Task 'ad_hoc_task_b86e87a7-387c-44d6-8a09-20cea5621665' must identify exactly one current node-local Task (found 0).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'ad_hoc_task_b86e87a7-387c-44d6-8a09-20cea5621665' must identify exactly one current node-local Task (found 0).\"}},\"isError\":true}",
+    "createWithoutProject": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"project_id must be a non-empty string.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}},\"isError\":true}",
+    "done": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"task\\\":{\\\"projectId\\\":null,\\\"taskId\\\":\\\"ad_hoc_task_d1913a21-9627-4acf-bacc-716a354d5d76\\\",\\\"status\\\":\\\"DONE\\\"}}\"}],\"structuredContent\":{\"task\":{\"projectId\":null,\"taskId\":\"ad_hoc_task_d1913a21-9627-4acf-bacc-716a354d5d76\",\"status\":\"DONE\"}}}",
+    "fenced": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_AGENT_RESOURCE_CLOSED\\\",\\\"message\\\":\\\"This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.\\\",\\\"target_agent_run_id\\\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CLOSED\",\"message\":\"This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.\",\"target_agent_run_id\":null},\"isError\":true}",
+    "closedAfterStop": [
+      {
+        "agentRunId": "aht_reviewer_377664_a8de0f40c10047289bc9c29b2277c860"
+      },
+      {
+        "agentRunId": "aht_helper_377664_411e95e2bbc346b1be871c9f0192c0a4"
+      }
+    ],
+    "otherTaskId": "ad_hoc_task_7bb2e655-83ff-49a6-b551-a9b1dfd0ccf8"
+  },
+  "org": {
+    "inRunCandidates": [
+      "aht-manager-377664",
+      "aht-reviewer-377664",
+      "aht-helper-377664",
+      "aht-assistant-377664",
+      "aht-worker-377664",
+      "aht-team-377664"
+    ],
+    "rootId": "aht_org_377664_131a636c8f4c41b4b1af649f3ec38bc2",
+    "managerRunId": "aht_manager_377664_a71ea5865cb44f568347236d6b31a65a",
+    "projectId": "project_e87d55db-6f23-4b7c-9d3b-d6b62ca19640",
+    "projectTaskId": "project_task_fd219428-1bcc-47bb-870e-17c94d6021c4",
+    "adHocTaskId": "ad_hoc_task_a0d64a31-c8b3-47ff-a0b9-e7ae3d235ccd",
+    "copy": {
+      "agentRunId": "aht_reviewer_377664_b32a02a34e244b83bd9544a0520b0d84",
+      "address": "/aht_reviewer_377664",
+      "startedAt": "2026-10-08T14:24:21.996Z",
+      "delegatorAgentRunId": "aht_manager_377664_a71ea5865cb44f568347236d6b31a65a"
+    },
+    "subCopy": {
+      "agentRunId": "aht_helper_377664_16feac3031c142a4881393796cc6b899",
+      "address": "/aht_helper_377664",
+      "startedAt": "2026-10-08T14:24:22.358Z",
+      "delegatorAgentRunId": "aht_reviewer_377664_b32a02a34e244b83bd9544a0520b0d84"
+    },
+    "closedPayload": [
+      {
+        "agentRunId": "aht_reviewer_377664_b32a02a34e244b83bd9544a0520b0d84"
+      },
+      {
+        "agentRunId": "aht_helper_377664_16feac3031c142a4881393796cc6b899"
+      }
+    ],
+    "collaboratorRunId": "aht_assistant_377664_31c2f3b313f24782a9236c144a540e21",
+    "storedAdHocTask": {
+      "taskId": "ad_hoc_task_a0d64a31-c8b3-47ff-a0b9-e7ae3d235ccd",
+      "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/aht_helper_377664\",\"description\":\"Reply OK.\"}}",
+      "referenceFiles": [
+        "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-4x1767/workspace/review-notes.md"
+      ],
+      "status": "TODO",
+      "createdAt": "2026-10-08T14:24:21.996Z",
+      "updatedAt": "2026-10-08T14:24:21.996Z"
+    },
+    "delegated": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": \\\"aht_reviewer_377664_b32a02a34e244b83bd9544a0520b0d84\\\",\\n  \\\"target_kind\\\": \\\"agent\\\",\\n  \\\"task_id\\\": \\\"ad_hoc_task_a0d64a31-c8b3-47ff-a0b9-e7ae3d235ccd\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":\"aht_reviewer_377664_b32a02a34e244b83bd9544a0520b0d84\",\"target_kind\":\"agent\",\"task_id\":\"ad_hoc_task_a0d64a31-c8b3-47ff-a0b9-e7ae3d235ccd\"}}",
+    "rejectedDelegation": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/no_such_agent_aht' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}",
+    "rejected": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"Unsupported tool argument.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"Unsupported tool argument.\"}},\"isError\":true}",
+    "unknown": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TASK_NOT_FOUND\\\",\\\"message\\\":\\\"Task 'ad_hoc_task_d922306a-41fc-48b3-b1e8-3604f03fa3dd' must identify exactly one current node-local Task (found 0).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'ad_hoc_task_d922306a-41fc-48b3-b1e8-3604f03fa3dd' must identify exactly one current node-local Task (found 0).\"}},\"isError\":true}",
+    "createWithoutProject": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"PROJECT_TOOL_ARGUMENT_INVALID\\\",\\\"message\\\":\\\"project_id must be a non-empty string.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}},\"isError\":true}",
+    "done": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"task\\\":{\\\"projectId\\\":null,\\\"taskId\\\":\\\"ad_hoc_task_a0d64a31-c8b3-47ff-a0b9-e7ae3d235ccd\\\",\\\"status\\\":\\\"DONE\\\"}}\"}],\"structuredContent\":{\"task\":{\"projectId\":null,\"taskId\":\"ad_hoc_task_a0d64a31-c8b3-47ff-a0b9-e7ae3d235ccd\",\"status\":\"DONE\"}}}",
+    "fenced": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"accepted\\\":false,\\\"code\\\":\\\"TASK_AGENT_RESOURCE_CLOSED\\\",\\\"message\\\":\\\"This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.\\\",\\\"target_agent_run_id\\\":null}\"}],\"structuredContent\":{\"accepted\":false,\"code\":\"TASK_AGENT_RESOURCE_CLOSED\",\"message\":\"This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.\",\"target_agent_run_id\":null},\"isError\":true}",
+    "closedAfterStop": [
+      {
+        "agentRunId": "aht_reviewer_377664_b32a02a34e244b83bd9544a0520b0d84"
+      },
+      {
+        "agentRunId": "aht_helper_377664_16feac3031c142a4881393796cc6b899"
+      }
+    ],
+    "otherTaskId": "ad_hoc_task_c1e925d7-7431-44c9-92dc-dd7ae75845fe"
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

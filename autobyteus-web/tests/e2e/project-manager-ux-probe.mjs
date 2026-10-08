@@ -34,7 +34,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018'];
+const ALL_CASES = ['PMU-001', 'PMU-002', 'PMU-003', 'PMU-004', 'PMU-005', 'PMU-006', 'PMU-007', 'PMU-008', 'PMU-009', 'PMU-010', 'PMU-011', 'PMU-012', 'PMU-013', 'PMU-014', 'PMU-015', 'PMU-016', 'PMU-017', 'PMU-018', 'PMU-019'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -1137,7 +1137,205 @@ const projectsTabOtherRootsAndNarrow = async () => {
   } finally { for (const input of inputs) input.close(); }
 };
 
-// ---------------------------------------------------------------- collapsed-left-panel-expand-keeps-run (PMU-017)
+// ---------------------------------------------------------------- Cancelled Tasks (task-closed-status, PMU-017)
+/** The board's Cancelled toggle: absent, or its text, pressed state, tag and whether Refresh follows it. */
+const cancelledToggleState = async (scope, testId) => {
+  const toggle = scope.locator(`[data-testid="${testId}"]`);
+  if (!(await toggle.count())) return null;
+  return toggle.evaluate((e) => ({ text: e.textContent.trim(), pressed: e.getAttribute('aria-pressed'), tag: e.tagName, type: e.getAttribute('type'),
+    title: e.getAttribute('title'), nextTestId: e.nextElementSibling?.getAttribute('data-testid') ?? null }));
+};
+/** Layout of a board's lanes: each lane's box, so the Cancelled column's place in the board grid can be asserted. */
+const laneBoxes = (scope, prefix) => scope.locator(`section[data-testid^="${prefix}"]`).evaluateAll((es) => es.map((e) => {
+  const r = e.getBoundingClientRect(); const grid = e.parentElement.getBoundingClientRect();
+  return { id: e.getAttribute('data-testid'), top: r.top, bottom: r.bottom, left: r.left, width: r.width, gridWidth: grid.width };
+}));
+/** Lanes side by side in one row: one top, equal widths, left to right in DOM order, within the grid. */
+const inOneRow = (lanes) => lanes.length > 1 && lanes.every((l) => Math.abs(l.top - lanes[0].top) < 2 && Math.abs(l.width - lanes[0].width) < 2)
+  && lanes.every((l, i) => i === 0 || l.left > lanes[i - 1].left) && lanes.reduce((sum, l) => sum + l.width, 0) <= lanes[0].gridWidth + 1;
+/** Lanes stacked in one column: one left edge, each below the previous, each as wide as the grid. */
+const stacked = (lanes) => lanes.length > 1 && lanes.every((l, i) => Math.abs(l.left - lanes[0].left) < 2 && Math.abs(l.width - l.gridWidth) < 2
+  && (i === 0 || l.top >= lanes[i - 1].bottom - 1));
+const pillStyle = (locator) => locator.evaluate((e) => ({ text: e.textContent.trim(), className: e.className, background: getComputedStyle(e).backgroundColor, color: getComputedStyle(e).color }));
+/**
+ * AC-001, AC-003, AC-008..AC-011: an agent cancels Tasks as not needed while the user watches. The Project board hides
+ * them behind "Cancelled (N)" beside Refresh (absent at 0, aria-pressed, keyboard), which shows the Cancelled lane as
+ * the last column after Done (SR-005: four equal columns at 1440 px, stacked last at 390 px); the Task page shows a muted "Cancelled" pill unlike Done; the card counts only open Tasks; the agent's
+ * reopen moves the row back live; the Temp tasks board, its header count and page do the same; and the right-panel
+ * Projects tab's compact board and Task detail follow live.
+ */
+const cancelledTasksJourney = async () => {
+  const { ids, names } = await createDefinitions('PmuCancelled');
+  const projectId = await createProject(`Cancelled Board ${randomUUID().slice(0, 6)}`);
+  const dropped = await createTask(projectId, 'Translate the legacy FAQ.');
+  const kept = await createTask(projectId, 'Ship the onboarding guide.');
+  const finished = await createTask(projectId, 'Publish the changelog.');
+  const root = await createRoot('agent', ids);
+  const input = await managerInput(root);
+  const workerAddress = `/${segment(names.worker)}`;
+  const { page, errors } = await newPage();
+  const details = {};
+  const statusOf = async (taskId) => (await projectTasks(projectId)).find((t) => t.taskId === taskId)?.status;
+  try {
+    input.send(callTool('delegate_task', { recipient_address: workerAddress, task_id: dropped }));
+    await until('worker started on the Task to drop', async () => (await rootOf(projectId, dropped))?.start === 'started', 60000);
+    input.send(callTool('create_or_update_task', { task_id: finished, status: 'DONE' }));
+    await until('finished Task DONE', async () => (await statusOf(finished)) === 'DONE', 30000);
+    await goto(page, '/projects');
+    const card = page.getByTestId(`project-card-${projectId}`);
+    await card.waitFor({ timeout: 30000 });
+    details.cardBefore = await card.getByTestId('project-card-counts').innerText();
+    assert(/\b2 open tasks\b/.test(details.cardBefore), 'card counts TODO + IN_PROGRESS before the cancel', details);
+    await card.click();
+    await row(page, dropped).waitFor({ timeout: 30000 });
+    assert(await cancelledToggleState(page, 'project-tasks-cancelled-toggle') === null, 'no Cancelled toggle while nothing is Cancelled');
+
+    // The agent drops the Task: it leaves the open lanes live, the toggle appears beside Refresh, the lane stays hidden.
+    input.send(callTool('create_or_update_task', { task_id: dropped, status: 'CANCELLED' }));
+    details.toggleHidden = await until('row hidden and toggle "Cancelled (1)" appears live', async () => {
+      const toggle = await cancelledToggleState(page, 'project-tasks-cancelled-toggle');
+      return (await row(page, dropped).count()) === 0 && toggle?.text === 'Cancelled (1)' ? toggle : null;
+    }, 30000, 50);
+    assert(details.toggleHidden.pressed === 'false' && details.toggleHidden.tag === 'BUTTON' && details.toggleHidden.type === 'button'
+      && details.toggleHidden.nextTestId === 'project-tasks-refresh' && details.toggleHidden.title === 'Show cancelled tasks', 'toggle: unpressed button right before Refresh', details.toggleHidden);
+    assert(await page.getByTestId('project-task-column-CANCELLED').count() === 0, 'Cancelled lane hidden by default');
+    assert((await columnOf(page, finished)) === 'project-task-column-DONE' && (await columnOf(page, kept)) === 'project-task-column-TODO', 'other Tasks keep their lanes');
+    assert((await statusOf(dropped)) === 'CANCELLED', 'server status CANCELLED');
+    await until('dropped Task root closed (worker stopped and removed)', async () => (await rootOf(projectId, dropped))?.closed === true, 30000);
+    await shot(page, 'pmu-017-board-cancelled-hidden');
+
+    // Search ignores hidden Cancelled Tasks: no match until the toggle is on (the toggle stays with its count).
+    await page.getByTestId('project-tasks-search-input').fill('legacy');
+    await page.getByTestId('project-tasks-no-match').waitFor({ timeout: 10000 });
+    assert((await cancelledToggleState(page, 'project-tasks-cancelled-toggle'))?.text === 'Cancelled (1)', 'toggle stays visible during a search');
+    await page.getByTestId('project-tasks-cancelled-toggle').click();
+    await row(page, dropped).waitFor({ timeout: 10000 });
+    assert((await columnOf(page, dropped)) === 'project-task-column-CANCELLED', 'search + toggle: the Cancelled Task in the Cancelled lane');
+    await page.getByTestId('project-tasks-search-input').fill('');
+
+    // Toggle on (SR-005): Cancelled is the last of four equal columns in one row; the row Offline and not openable.
+    details.togglePressed = await cancelledToggleState(page, 'project-tasks-cancelled-toggle');
+    assert(details.togglePressed.pressed === 'true' && details.togglePressed.title === 'Hide cancelled tasks', 'toggle pressed', details.togglePressed);
+    const lanes = await laneBoxes(page, 'project-task-column-');
+    details.lanes = lanes;
+    assert(lanes.map((l) => l.id).join() === 'project-task-column-TODO,project-task-column-IN_PROGRESS,project-task-column-DONE,project-task-column-CANCELLED', 'lane order: Cancelled after Done', lanes);
+    assert(inOneRow(lanes), 'Cancelled is the last of four equal columns in one row at 1440 px (not a full-width row)', lanes);
+    const heading = await page.getByTestId('project-task-column-CANCELLED').locator('h2').innerText();
+    assert(/^Cancelled\s*1$/.test(heading.trim()), 'Cancelled lane heading names it in text with its count', { heading });
+    details.closedRoot = await rootState(page, dropped);
+    assert(details.closedRoot?.state === 'offline' && details.closedRoot.openable === 'false', 'closed worker shows Offline, not openable', details.closedRoot);
+    await shot(page, 'pmu-017-board-cancelled-lane-shown');
+    // Keyboard: Enter hides, Space shows.
+    await page.getByTestId('project-tasks-cancelled-toggle').focus();
+    await page.keyboard.press('Enter');
+    await until('Enter hides the lane', async () => (await page.getByTestId('project-task-column-CANCELLED').count()) === 0
+      && (await cancelledToggleState(page, 'project-tasks-cancelled-toggle'))?.pressed === 'false', 5000);
+    // Toggle off: the three open lanes exactly as before (three equal columns spanning the board).
+    details.lanesOff = await laneBoxes(page, 'project-task-column-');
+    assert(details.lanesOff.map((l) => l.id).join() === 'project-task-column-TODO,project-task-column-IN_PROGRESS,project-task-column-DONE'
+      && inOneRow(details.lanesOff) && Math.abs(details.lanesOff[2].left + details.lanesOff[2].width - details.lanesOff[0].left - details.lanesOff[0].gridWidth) < 2,
+    'toggle off: three equal columns across the board', details.lanesOff);
+    await page.keyboard.press('Space');
+    await until('Space shows the lane', async () => (await page.getByTestId('project-task-column-CANCELLED').count()) === 1, 5000);
+    // Narrow (390 px): the lanes stack with Cancelled last and nothing overflows sideways.
+    await page.setViewportSize({ width: 390, height: 844 });
+    details.lanesNarrow = await until('lanes stacked at 390 px', async () => { const l = await laneBoxes(page, 'project-task-column-'); return stacked(l) ? l : null; }, 5000)
+      .catch(async () => { throw Object.assign(new Error('lanes not stacked at 390 px'), { details: await laneBoxes(page, 'project-task-column-') }); });
+    assert(details.lanesNarrow.at(-1).id === 'project-task-column-CANCELLED', 'Cancelled is the last stacked lane at 390 px', details.lanesNarrow);
+    details.narrowOverflow = await noHorizontalOverflow(page);
+    assert(details.narrowOverflow.ok, 'no horizontal overflow at 390 px with Cancelled shown', details.narrowOverflow);
+    await page.getByTestId('project-task-column-CANCELLED').scrollIntoViewIfNeeded();
+    await shot(page, 'pmu-017-board-cancelled-lane-narrow');
+    await page.setViewportSize({ width: 1440, height: 1000 });
+
+    // The Task page: a muted "Cancelled" pill, unlike Done's.
+    await row(page, dropped).getByTestId('project-task-row-link').click();
+    const cancelledPill = await pillStyle(page.getByTestId('task-page-status'));
+    await shot(page, 'pmu-017-task-page-cancelled');
+    assert(await page.locator('[data-testid="task-page-status"] ~ select, select[data-testid*="status"], [data-testid*="status-picker"]').count() === 0, 'no status control on the Task page (AC-002)');
+    await page.getByTestId('task-back-to-board').click();
+    await row(page, finished).waitFor({ timeout: 30000 });
+    // A new visit starts hidden.
+    assert((await cancelledToggleState(page, 'project-tasks-cancelled-toggle'))?.pressed === 'false' && await page.getByTestId('project-task-column-CANCELLED').count() === 0, 'every visit starts with Cancelled hidden');
+    await row(page, finished).getByTestId('project-task-row-link').click();
+    const donePill = await pillStyle(page.getByTestId('task-page-status'));
+    details.pills = { cancelledPill, donePill };
+    assert(cancelledPill.text === 'Cancelled' && donePill.text === 'Done' && cancelledPill.background !== donePill.background && cancelledPill.color !== donePill.color, 'Cancelled pill is labelled and styled apart from Done', details.pills);
+    await goto(page, '/projects');
+    details.cardCancelled = await page.getByTestId(`project-card-${projectId}`).getByTestId('project-card-counts').innerText();
+    assert(/\b1 open task\b/.test(details.cardCancelled), 'card counts only TODO + IN_PROGRESS (Cancelled is not open)', details);
+
+    // The agent reopens it: back in To Do live with the moved highlight; the toggle disappears; the worker stays Offline.
+    await page.getByTestId(`project-card-${projectId}`).click();
+    await row(page, finished).waitFor({ timeout: 30000 });
+    input.send(callTool('create_or_update_task', { task_id: dropped, status: 'TODO' }));
+    details.reopened = await until('reopened row back in To Do, highlighted, toggle gone', async () => (await columnOf(page, dropped)) === 'project-task-column-TODO'
+      && (await row(page, dropped).getAttribute('data-live')) === 'moved' && (await cancelledToggleState(page, 'project-tasks-cancelled-toggle')) === null
+      ? await rootState(page, dropped) : null, 30000, 50);
+    assert(details.reopened?.state === 'offline' && details.reopened.openable === 'false', 'a reopen starts nothing (root stays Offline)', details.reopened);
+    await shot(page, 'pmu-017-board-reopened');
+
+    // Temp tasks: header count excludes Cancelled; Cancelled is in neither Open nor Done; toggle; page pill.
+    const openTemps = async () => (await tempTasks()).filter((t) => t.status === 'TODO' || t.status === 'IN_PROGRESS').length;
+    input.send(callTool('delegate_task', { recipient_address: workerAddress, description: 'Collect the stale links.' }));
+    const temp = await until('Temp task started', async () => (await tempTasks()).find((t) => t.description === 'Collect the stale links.' && t.root?.start === 'started'), 60000);
+    await goto(page, '/projects');
+    const linkCount = () => page.getByTestId('temp-tasks-link-count').innerText({ timeout: 1000 }).catch(() => '');
+    const openBefore = await openTemps();
+    await until('header counts the open Temp task', async () => (await linkCount()) === `${openBefore} open`, 15000);
+    input.send(callTool('create_or_update_task', { task_id: temp.taskId, status: 'CANCELLED' }));
+    await until('Temp task CANCELLED on the server', async () => (await tempTasks()).find((t) => t.taskId === temp.taskId)?.status === 'CANCELLED', 30000);
+    const openAfter = await openTemps();
+    await until('header count drops live (Cancelled is not open)', async () => (await linkCount()) === (openAfter ? `${openAfter} open` : ''), 15000);
+    details.tempCounts = { openBefore, openAfter };
+    await page.getByTestId('temp-tasks-link').click();
+    await page.getByTestId('temp-task-board').waitFor({ timeout: 30000 });
+    await until('Temp Cancelled toggle', async () => /^Cancelled \(\d+\)$/.test((await cancelledToggleState(page, 'temp-tasks-cancelled-toggle'))?.text ?? ''), 15000);
+    assert(await row(page, temp.taskId).count() === 0 && await page.getByTestId('temp-task-lane-cancelled').count() === 0, 'Cancelled Temp task hidden, in neither Open nor Done');
+    details.tempToggle = await cancelledToggleState(page, 'temp-tasks-cancelled-toggle');
+    assert(details.tempToggle.pressed === 'false' && details.tempToggle.nextTestId === 'temp-tasks-refresh', 'Temp toggle beside Refresh', details.tempToggle);
+    await page.getByTestId('temp-tasks-cancelled-toggle').click();
+    await until('Temp Cancelled lane shows the row', async () => (await columnOf(page, temp.taskId)) === 'temp-task-lane-cancelled', 10000);
+    details.tempLanes = await laneBoxes(page, 'temp-task-lane-');
+    assert(details.tempLanes.map((l) => l.id).join() === 'temp-task-lane-open,temp-task-lane-done,temp-task-lane-cancelled'
+      && inOneRow(details.tempLanes), 'Temp: Cancelled is the last of three equal columns in one row at 1440 px', details.tempLanes);
+    await shot(page, 'pmu-017-temp-board-cancelled-lane');
+    await row(page, temp.taskId).getByTestId('project-task-row-link').click();
+    await page.getByTestId('temp-task-page').waitFor();
+    details.tempPill = await pillStyle(page.getByTestId('temp-task-status'));
+    assert(details.tempPill.text === 'Cancelled' && details.tempPill.background !== donePill.background, 'Temp page labels it Cancelled', details.tempPill);
+    await shot(page, 'pmu-017-temp-page-cancelled');
+
+    // Right-panel Projects tab beside the Manager's chat: the compact board follows the agent's cancel live.
+    await goto(page, `/chat?id=${encodeURIComponent(root.rootId)}`);
+    const panel = page.locator('[data-test="right-side-projects-panel"]');
+    const tabButton = page.locator('[data-test="right-side-tab-list"] [data-tab-name="projects"]');
+    await tabButton.waitFor({ timeout: 60000 });
+    if (await tabButton.getAttribute('aria-selected') !== 'true') await tabButton.click();
+    await panel.getByTestId('projects-panel-picker-select').selectOption(`project:${projectId}`);
+    await panel.locator(`[data-testid="project-task-row-${dropped}"]`).waitFor({ timeout: 30000 });
+    assert(await cancelledToggleState(panel, 'project-tasks-cancelled-toggle') === null, 'panel: no toggle while nothing is Cancelled');
+    input.send(callTool('create_or_update_task', { task_id: kept, status: 'CANCELLED' }));
+    details.panelToggle = await until('panel: row hidden and toggle appears live', async () => {
+      const toggle = await cancelledToggleState(panel, 'project-tasks-cancelled-toggle');
+      return (await panel.locator(`[data-testid="project-task-row-${kept}"]`).count()) === 0 && toggle?.text === 'Cancelled (1)' ? toggle : null;
+    }, 30000, 50);
+    await panel.getByTestId('project-tasks-cancelled-toggle').click();
+    await panel.locator(`[data-testid="project-task-column-CANCELLED"] [data-testid="project-task-row-${kept}"]`).waitFor({ timeout: 10000 });
+    details.panelLanes = await laneBoxes(panel, 'project-task-column-');
+    assert(stacked(details.panelLanes) && details.panelLanes.at(-1).id === 'project-task-column-CANCELLED', 'right panel: lanes stack with Cancelled last', details.panelLanes);
+    await shot(page, 'pmu-017-panel-cancelled-lane');
+    await panel.locator(`[data-testid="project-task-row-${kept}"]`).getByTestId('project-task-row-link').click();
+    await panel.getByTestId('projects-panel-task').waitFor();
+    details.panelPill = await pillStyle(panel.getByTestId('projects-panel-task-status'));
+    assert(details.panelPill.text === 'Cancelled', 'panel detail labels it Cancelled', details.panelPill);
+    await shot(page, 'pmu-017-panel-task-detail');
+    assertNoBrowserErrors(errors);
+    return details;
+  } finally { input.close(); }
+};
+
+// ---------------------------------------------------------------- collapsed-left-panel-expand-keeps-run (PMU-018)
 const stripWorkspaces = (page) => page.locator('[data-test="workspace-left-strip-workspaces"]');
 /** What the strip and the docked panel light, and where focus is. */
 const shellNavState = (page) => page.evaluate(() => {
@@ -1253,7 +1451,7 @@ const collapsedStripWorkspaces = async () => {
       }, 15000);
       const center = await centerText(page);
       const selectionBefore = await selectionState(page);
-      await shot(page, `pmu-017-${host.kind}-collapsed-worker-open`);
+      await shot(page, `pmu-018-${host.kind}-collapsed-worker-open`);
       // Workspaces: click, or keyboard Enter (AC-012).
       if (host.activate === 'Enter') { await stripWorkspaces(page).focus(); await page.keyboard.press('Enter'); } else await stripWorkspaces(page).click();
       await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
@@ -1275,7 +1473,7 @@ const collapsedStripWorkspaces = async () => {
       assert(after.panelChatLit === false, `${host.kind}: the docked Chat row is not lit on a run`, after);
       assert(settled?.visible && settled.focused && settled.agentRunId === worker.ingressAgentRunId && settled.selectedRows === 1,
         `${host.kind}: the worker row keeps focus, stays in view and is the only selected row`, settled);
-      await shot(page, `pmu-017-${host.kind}-workspaces-revealed`);
+      await shot(page, `pmu-018-${host.kind}-workspaces-revealed`);
       details[host.kind] = { worker: { ingressAgentRunId: worker.ingressAgentRunId, hostRoot: worker.hostRoot }, afterCollapse, before, revealed, settled, after, url,
         selectionBefore, centerUnchanged: (await centerText(page)) === center };
     }
@@ -1289,7 +1487,7 @@ const collapsedStripWorkspaces = async () => {
     await stripWorkspaces(page).click();
     await page.locator('[data-test="app-left-navigation-drawer"]').waitFor({ timeout: 15000 });
     const drawerRow = await until('drawer: run row in view', async () => { const r = await revealedTreeRow(page); return r?.visible ? r : null; }, 15000);
-    await shot(page, 'pmu-017-narrow-drawer-revealed');
+    await shot(page, 'pmu-018-narrow-drawer-revealed');
     await page.keyboard.press('Escape');
     await page.locator('[data-test="app-left-navigation-drawer"]').waitFor({ state: 'detached', timeout: 15000 });
     const drawerClosed = await shellNavState(page);
@@ -1307,7 +1505,7 @@ const collapsedStripWorkspaces = async () => {
       const settings = document.querySelector('[data-test="workspace-left-navigation-strip"] [data-nav-key="settings"]')?.getBoundingClientRect();
       return { dividerDisplay: divider ? getComputedStyle(divider).display : null, settingsBottom: settings ? Math.round(settings.bottom) : null, viewport: window.innerHeight };
     });
-    await shot(page, 'pmu-017-short-window-strip');
+    await shot(page, 'pmu-018-short-window-strip');
     assert(short.dividerDisplay === 'none' && short.settingsBottom !== null && short.settingsBottom <= short.viewport, 'short window: divider hidden, Settings visible', short);
     details.short = short;
 
@@ -1331,14 +1529,14 @@ const collapsedStripWorkspaces = async () => {
     // AC-009: no run is newly selected (the typed text's Draft row, not a run, marks where the user is).
     assert(kept.tree && kept.tree.selected.length === 0 && JSON.stringify(kept.selection) === JSON.stringify(newChatSelection),
       'New chat: nothing selected in the tree, selection unchanged', { kept, newChatSelection });
-    await shot(page, 'pmu-017-new-chat-workspaces');
+    await shot(page, 'pmu-018-new-chat-workspaces');
     details.newChat = { onNewChat, kept };
     assertNoBrowserErrors(errors);
     return details;
   } finally { for (const input of inputs) input.close(); }
 };
 
-// ---------------------------------------------------------------- PMU-018: the other ways a run is opened while collapsed
+// ---------------------------------------------------------------- PMU-019: the other ways a run is opened while collapsed
 /** Opens a Team run from the docked left panel, as a user does. */
 const openTeamRunFromPanel = async (page, names, root) => {
   await goto(page, '/workspace');
@@ -1433,9 +1631,9 @@ const collapsedStripOtherEntries = async () => {
     await collapseLeftPanel(page);
     const nestedOpen = await settledOpenRun(page, 'nested member');
     assert(nestedOpen.nav.stripChatLit === false, 'nested member: Chat not lit', nestedOpen.nav);
-    await shot(page, 'pmu-018-nested-member-collapsed');
+    await shot(page, 'pmu-019-nested-member-collapsed');
     details.nestedMember = { nestedMember, open: nestedOpen, ...(await workspacesReveals(page, 'nested member', nestedMember.agentRunId, nestedOpen)) };
-    await shot(page, 'pmu-018-nested-member-workspaces-revealed');
+    await shot(page, 'pmu-019-nested-member-workspaces-revealed');
 
     // B. New chat first send while collapsed (REQ-005).
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -1462,9 +1660,9 @@ const collapsedStripOtherEntries = async () => {
     const sentRunId = new URL(page.url()).searchParams.get('id');
     const firstSend = await settledOpenRun(page, 'first send');
     assert(firstSend.nav.stripChatLit === false, 'first send: Chat not lit once the run opens', firstSend.nav);
-    await shot(page, 'pmu-018-first-send-collapsed');
+    await shot(page, 'pmu-019-first-send-collapsed');
     details.firstSend = { sentRunId, open: firstSend, ...(await workspacesReveals(page, 'first send', sentRunId, firstSend)) };
-    await shot(page, 'pmu-018-first-send-workspaces-revealed');
+    await shot(page, 'pmu-019-first-send-workspaces-revealed');
 
     // C. An Org worker far down a long tree: many Agent rows above the Orgs (AC-004 large scroll).
     for (let i = 0; i < 24; i += 1) {
@@ -1490,7 +1688,7 @@ const collapsedStripOtherEntries = async () => {
     const maxScroll = s.scrollHeight - s.clientHeight;
     assert(s.scrollTop >= 300 && (Math.abs(s.centreOffset) <= s.clientHeight / 4 || s.scrollTop >= maxScroll - 1),
       'far org: the tree scrolled a long way and the row is roughly centred', { settled: s, maxScroll, longTree });
-    await shot(page, 'pmu-018-far-org-workspaces-revealed');
+    await shot(page, 'pmu-019-far-org-workspaces-revealed');
     details.farOrg = { longTree, open: far, ...farReveal, maxScroll };
 
     // D. Rows that arrive after the panel appears. With the panel shown, an open Org worker's row is already rendered from
@@ -1525,12 +1723,12 @@ const collapsedStripOtherEntries = async () => {
     assert(takeover.end.row?.agentRunId === farWorker.ingressAgentRunId && takeover.end.tree.scrollTop === takeover.afterWheel.scrollTop
       && takeover.end.row.focused !== true && !takeover.end.row.visible,
       'slow start, user scrolls: no jump to the row and no focus move after the user scrolled', takeover);
-    await shot(page, 'pmu-018-slow-start-user-scrolled');
+    await shot(page, 'pmu-019-slow-start-user-scrolled');
     const waited = await slowStart('slow start, no input', 800, false);
     assert(waited.atMount.workerRows === 0, 'slow start (no input): precondition — the worker row is not rendered when the panel appears', waited.atMount);
     assert(waited.end.row?.agentRunId === farWorker.ingressAgentRunId && waited.end.row.visible && waited.end.tree.scrollTop >= 300 && waited.end.url === far.url,
       'slow start, no input: the row is revealed once it arrives', waited);
-    await shot(page, 'pmu-018-slow-start-revealed');
+    await shot(page, 'pmu-019-slow-start-revealed');
     details.slowStart = { takeover, waited };
 
     // E. Highlight: the Org launch page while a Team run is still selected, an empty /workspace, /agents (AC-011).
@@ -1586,7 +1784,7 @@ const collapsedStripOtherEntries = async () => {
       'in-app New chat: route, draft text and selection kept', details.newChatInApp);
     assert(inAppAfter.focus === 'app-left-panel-run-history' && inAppAfter.tree.scrollTop === 0,
       'in-app New chat: Workspaces scrolled to or focused a run row although no run is open (REQ-009)', details.newChatInApp);
-    await shot(page, 'pmu-018-new-chat-in-app-workspaces');
+    await shot(page, 'pmu-019-new-chat-in-app-workspaces');
 
     // H. Other pages reached in-app after a run (its selection stays in the store): /agents after an Agent run and
     // /projects after a Team run. Workspaces only shows the panel; nothing is scrolled to or focused (REQ-006, REQ-009).
@@ -1609,7 +1807,7 @@ const collapsedStripOtherEntries = async () => {
       assert(before.nav.workspacesLit === false, `${label}: Workspaces not lit off a run`, result);
       assert(JSON.stringify(after.selection) === JSON.stringify(before.selection), `${label}: route or selection changed`, result);
       assert(after.focus === 'app-left-panel-run-history' && after.tree.scrollTop === 0, `${label}: Workspaces scrolled to or focused a run row off a run (REQ-009)`, result);
-      await shot(page, `pmu-018-${label.replace(/[^a-z]+/gi, '-')}-workspaces`);
+      await shot(page, `pmu-019-${label.replace(/[^a-z]+/gi, '-')}-workspaces`);
       return result;
     };
     details.agentsAfterAgentRun = await workspacesOnPageAfterRun('agents after an Agent run',
@@ -1638,8 +1836,9 @@ const CASES = {
   'PMU-014': ['Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation', compactCardEdges],
   'PMU-015': ['Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)', projectsTab],
   'PMU-016': ['Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first', projectsTabOtherRootsAndNarrow],
-  'PMU-017': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
-  'PMU-018': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)', collapsedStripOtherEntries],
+  'PMU-017': ['Cancelled Tasks (task-closed-status): agent cancel hides the row behind "Cancelled (N)" beside Refresh, Cancelled as the last column (stacked last when narrow), keyboard, muted Cancelled pill vs Done, open counts, live reopen; Temp board/header/page; right-panel board and detail', cancelledTasksJourney],
+  'PMU-018': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
+  'PMU-019': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)', collapsedStripOtherEntries],
 };
 
 let result = 'Pass';

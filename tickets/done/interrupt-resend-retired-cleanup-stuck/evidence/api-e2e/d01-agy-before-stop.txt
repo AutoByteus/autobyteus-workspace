@@ -1,0 +1,1 @@
+28751 45424 agy --new-project --agent autobyteus-776b37bf890bde81 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WyRMDq/server-data/temp_workspace --model gemini-3.8-flash-hig

@@ -5,7 +5,7 @@ import { createRootExecutionIdentity, createRootExecutionPhysicalScope, type Roo
 import { FlatTeamExecutionFactory } from '../../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import type { TeamRun } from '../../../src/agent-team-execution/domain/team-run.js';
 import type { TaskExecutionPreparationOperation } from '../../../src/agent-team-execution/domain/prepared-task-execution.js';
-import { releaseGenerationFixture } from '../../fixtures/task-release-generation-fixtures.js';
+import { activateTeamMembers, releaseGenerationFixture } from '../../fixtures/task-release-generation-fixtures.js';
 import { testAgentNode, testAgentTeamNode } from '../../fixtures/current-team-run-fixtures.js';
 import { observeConfiguredHandles } from '../agent-org-execution/helpers/task-publication-handles.js';
 
@@ -28,7 +28,6 @@ const teamNode = (address: string, id: string, two = true) => {
 async function fixture(kind: RootSubjectKind, placement: Placement) {
   const f = releaseGenerationFixture(kind);
   const listeners = new Map<string, (event: AgentRunEvent) => void>();
-  const bound = new Set<any>();
   const control: { mode: 'pending' | 'failed' | null; hold: Promise<void> | null } = { mode: null, hold: null };
   let targetIds: string[] = [];
   const emit = (id: string, status: 'idle' | 'offline') => listeners.get(id)?.({
@@ -45,25 +44,22 @@ async function fixture(kind: RootSubjectKind, placement: Placement) {
     if (result.accepted && wasActive) emit(run.runId, 'offline');
     return result;
   });
-  const bindNew = () => {
-    for (const run of f.acquired) if (!bound.has(run)) {
-      bound.add(run);
-      run.subscribeToEvents = (listener: (event: AgentRunEvent) => void) => {
-        listeners.set(run.runId, listener); emit(run.runId, 'idle');
-        return () => { listeners.delete(run.runId); };
-      };
-    }
+  f.providerEvents.subscribe = (run, listener) => {
+    listeners.set(run.runId, listener); emit(run.runId, 'idle');
+    return () => { listeners.delete(run.runId); };
   };
   const scope = (ids: string[]) => createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: ids });
   const rootTask = (node: ReturnType<typeof teamNode>) => f.teams.beginRootTaskTeam({
     task: { address: node.address, teamRunId: node.teamRunId, teamNode: node, handoffs: [] },
     physicalScope: scope([node.teamRunId]), callbacks: f.callbacks,
   });
-  const commit = async (operation: TaskExecutionPreparationOperation, directory = false) => {
-    const prepared = await operation.prepare(); bindNew();
+  // A committed task Team has no started member; each member starts on its first work.
+  const commit = async (operation: TaskExecutionPreparationOperation, directory = false, start: readonly string[] = []) => {
+    const prepared = await operation.prepare();
     const count = f.callbacks.publishAgentEvent.mock.calls.length;
     prepared.sealForCommit(); prepared.commitAfterDurability();
     if (directory) f.teams.reserveTaskSubtree(prepared.preparedTeamRuns).commit();
+    if (start.length) await activateTeamMembers(prepared.preparedTeamRuns[0], start);
     return { prepared, count };
   };
   let rootTeam: TeamRun | null = null;
@@ -72,7 +68,8 @@ async function fixture(kind: RootSubjectKind, placement: Placement) {
       children: [testAgentNode('/Manager', { agentRunId: 'manager' })] });
     const prepared = await f.factory.beginMaterialization({ physicalScope: scope([]), teamNode: rootNode,
       handoffs: [], activationMode: 'fresh', callbacks: f.callbacks }).prepare();
-    bindNew(); prepared.commitAfterDurability(); rootTeam = prepared.teamRun;
+    prepared.commitAfterDurability(); rootTeam = prepared.teamRun;
+    await activateTeamMembers(rootTeam, ['manager']);
   } else {
     const prepared = await f.rootAgents.prepareConfigured(testAgentNode('/Manager', { agentRunId: 'manager' }), 'fresh');
     prepared.commitAfterDurability(); await prepared.handle.getOrCreateAgentRun();
@@ -89,7 +86,7 @@ async function fixture(kind: RootSubjectKind, placement: Placement) {
     const host = teamNode('/Host', 'host', false);
     const owner = parent;
     const op = parent ? parent.beginTaskTeam({ address: host.address, teamRunId: host.teamRunId, teamNode: host, handoffs: [] }) : rootTask(host);
-    parent = (await commit(op, !parent)).prepared.preparedTeamRuns[0];
+    parent = (await commit(op, !parent, ['host-lead'])).prepared.preparedTeamRuns[0];
     releaseParent = () => owner ? owner.releaseDirectTaskExecution({ teamRunId: host.teamRunId }) : f.teams.releaseTask(host.teamRunId);
   }
   const node = teamNode(placement === 'root-team' ? '/Workers' : '/Host/Workers', 'target');
@@ -99,11 +96,12 @@ async function fixture(kind: RootSubjectKind, placement: Placement) {
   const operation = placement === 'nested-agent'
     ? parent!.beginTaskAgent({ address: agent.address, agentRunId: agent.agentRunId, sourceNode: agent })
     : parent ? parent.beginTaskTeam({ address: node.address, teamRunId: node.teamRunId, teamNode: node, handoffs: [] }) : rootTask(node);
-  const { prepared, count } = await commit(operation, !parent);
+  const { prepared, count } = await commit(operation, !parent, placement === 'nested-agent' ? [] : targetIds);
   const statuses = () => f.callbacks.publishAgentEvent.mock.calls
     .filter(([identity, event]) => targetIds.includes(identity.agentRunId) && event.kind === 'agent_run' && event.event.eventType === AgentRunEventType.AGENT_STATUS)
     .map(([identity, event]) => ({ id: identity.agentRunId, address: identity.memberAddress, root: identity.root, status: event.event.payload.status }));
-  expect(f.callbacks.publishAgentEvent.mock.calls.slice(count).map(([id]) => id.agentRunId)).toEqual(targetIds);
+  expect(f.callbacks.publishAgentEvent.mock.calls.slice(count)
+    .filter(([, event]) => event.kind === 'agent_run').map(([id]) => id.agentRunId)).toEqual(targetIds);
   const idle = statuses(); expect(idle.map(s => s.status)).toEqual(targetIds.map(() => 'idle'));
   f.callbacks.publishAgentEvent.mockClear();
   const acquired = [...f.acquired];

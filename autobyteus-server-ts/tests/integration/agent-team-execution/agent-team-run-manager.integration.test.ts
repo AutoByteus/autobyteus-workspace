@@ -77,7 +77,7 @@ const createFactory = (input: {
   const callbacks: FlatTeamExecutionCallbacks[] = [];
   const backends: Array<Record<string, unknown>> = [];
   const materialize = vi.fn(async (
-    request: Parameters<FlatTeamExecutionFactory["materialize"]>[0],
+    request: Parameters<FlatTeamExecutionFactory["beginMaterialization"]>[0],
   ) => {
     callbacks.push(request.callbacks);
     const runtimeContext = new FlatTeamExecutionContext({
@@ -125,14 +125,17 @@ const createFactory = (input: {
     await input.beforeBackendReturn?.(request.callbacks);
     return Object.freeze({
       teamRun: new TeamRun(context, backend as never),
-      stagedPlatformBindings: Object.freeze([]),
-      stagedNoConversationBindingReplacements: Object.freeze([]),
       commitAfterDurability: vi.fn(),
       abort: vi.fn(async () => undefined),
     });
   });
+  // The current synchronous materialization contract; `materialize` records each request for assertions.
+  const beginMaterialization = (request: Parameters<FlatTeamExecutionFactory["beginMaterialization"]>[0]) => {
+    let attempt: ReturnType<typeof materialize> | null = null;
+    return { prepare: () => attempt ??= materialize(request), cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })) };
+  };
   return {
-    factory: { materialize } as unknown as FlatTeamExecutionFactory,
+    factory: { beginMaterialization } as unknown as FlatTeamExecutionFactory,
     materialize,
     callbacks,
     backends,
@@ -241,6 +244,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const beforeBackendReturn = vi.fn(async (callbacks: FlatTeamExecutionCallbacks) => {
       expect(Object.keys(callbacks).sort()).toEqual([
         "applicationExecutionContext",
+        "assertExecutionInputAllowed",
         "buildMemberExecutionContext",
         "commitPlatformBindingChange",
         "publishAgentEvent",

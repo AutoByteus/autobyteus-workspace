@@ -45,7 +45,7 @@ export type TeamRunEvent =
       payload: TeamRunTaskExecutionEvent;
     }>
   | Readonly<{
-      /** These task executions' Task became DONE; published before they are stopped. */
+      /** These task executions' Task became DONE or CANCELLED; published before they are stopped. */
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED;
       taskExecutions: readonly TaskExecutionReference[];
     }>

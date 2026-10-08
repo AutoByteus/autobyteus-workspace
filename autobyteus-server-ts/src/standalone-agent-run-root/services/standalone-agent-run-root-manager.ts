@@ -224,7 +224,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     }) });
   }
 
-  /** Closed (Task DONE) task executions of a stored tree of this root. */
+  /** Closed (Task DONE or CANCELLED) task executions of a stored tree of this root. */
   private closedTaskExecutionsFor(hostRunId: string, tree: StandaloneRootTreeSnapshot): readonly TaskExecutionReference[] {
     const index = new StandaloneRootExecutionIndex(tree);
     return listClosedTaskExecutions({ port: this.options.taskAgentResources, root: createAgentRootExecutionIdentity(hostRunId),

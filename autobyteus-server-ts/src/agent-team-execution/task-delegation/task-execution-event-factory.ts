@@ -14,7 +14,7 @@ export const taskExecutionStartedEvent = (input: {
   },
 });
 
-/** These task executions' Task became DONE (before they are stopped). */
+/** These task executions' Task became DONE or CANCELLED (before they are stopped). */
 export const taskExecutionsClosedEvent = (taskExecutions: readonly TaskExecutionReference[]): TeamRunEvent => ({
   eventSourceType: TeamRunEventSourceType.TASK_EXECUTIONS_CLOSED,
   taskExecutions,

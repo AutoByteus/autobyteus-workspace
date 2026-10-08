@@ -81,7 +81,7 @@ include:
   change, each with exact `agent_execution`;
 - Team-only events: `TASK_EXECUTION_STARTED` (a delegated child committed under
   its host TeamRun, with nullable `delegator_agent_run_id`),
-  `TASK_EXECUTIONS_CLOSED` (task executions whose Task became DONE; see below),
+  `TASK_EXECUTIONS_CLOSED` (task executions whose Task became DONE or CANCELLED; see below),
   `TASK_EXECUTIONS_REOPENED` (closed task executions their assigner
   reactivated; see below), `TEAM_COMMUNICATION_MESSAGE`, and `MEMBER_INPUT_MESSAGE` with their explicit
   exact execution/participant addresses;
@@ -94,14 +94,14 @@ include:
 Unknown fields and invalid union combinations are rejected. The browser parses
 the same shared schema before mutating application state.
 
-### Closed task executions (Task DONE)
+### Closed task executions (Task DONE or CANCELLED)
 
 The execution tree is never filtered: every task execution stays in
 `execution_tree`, so message participants and history keep their identities.
 Closure is a separate fact beside the tree:
 
 - `closed_task_executions` in the snapshot lists, as `{agent_run_id}` or
-  `{team_run_id}` references, the root's task executions whose Task is DONE. It is
+  `{team_run_id}` references, the root's task executions whose Task is DONE or CANCELLED. It is
   read at the same point as the tree, so it is consistent with
   `base_change_sequence`.
 - `TASK_EXECUTIONS_CLOSED {change_sequence, task_executions}` is a sequenced
@@ -110,7 +110,7 @@ Closure is a separate fact beside the tree:
   present in its tree **before** it stops them, whatever the stop outcome. A
   repeated DONE re-publishes the same references; applying them again is a no-op.
 - `TASK_EXECUTIONS_REOPENED {change_sequence, task_executions}` has the same
-  payload shape. After the Task is moved out of DONE, the run that assigned the
+  payload shape. After the Task is moved out of DONE or CANCELLED, the run that assigned the
   work can reactivate one assignment by messaging its run ID (a Team copy's
   coordinator). The root publishes that reference after the Task-side commit and
   before the message is delivered. Clients remove it from their closed set, so

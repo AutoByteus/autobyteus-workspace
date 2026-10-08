@@ -12,6 +12,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { ProjectChangeMessageSchema } from "../../../src/projects/changes/project-change-messages.js";
 
 // Reactivation of a DONE Task's worker (reactivate-done-task-runs AC-001..AC-008, AC-010, AC-012,
 // AC-014, AC-015, QR-001, QR-002) through the real Studio HTTP/WebSocket server, scoped MCP,
@@ -22,6 +23,9 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // An optional case (RUN_CLAUDE_E2E=1 and a logged-in `claude`) gives the worker a real Claude model and
 // proves it remembers its pre-DONE conversation after reactivation.
 // Rendering and a real backend restart (AC-004, AC-011) are covered by `test:e2e:task-closure-tree` BR-008..BR-011.
+// CLS-E2E-001/002 (task-closed-status AC-001, AC-003..AC-005, AC-011): the same live journey with CANCELLED ("dropped as
+// not needed") in an Agent and a Team root: closure and physical stop, retry, refusals naming CANCELLED, DONE<->CANCELLED,
+// reopen and reactivation, a Task with no Project, and the strict `/ws/projects` frames that carry CANCELLED.
 const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
   && spawnSync(cli, ["--version"], { stdio: "ignore" }).status === 0;
@@ -528,6 +532,164 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     evidence[kind] = { ...record, rootId: root.rootId, managerRunId, projectId, taskA, taskB, adHocTaskId, worker, helpers: helpers.map(refOf),
       reactivated, followUp, again, deleted, adHocReactivated, reopenedEvent: root.refsOf(reopenedEvents[0]!), resumedConversation: resumed[0], conversationFiles: conversationHits.length };
   };
+
+  /** task-closed-status: CANCELLED ends a Task's work exactly like DONE, refuses new and reactivated work naming CANCELLED, and reopens. */
+  const cancelledScenario = async (kind: Kind) => {
+    const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
+      { input: { name: `Task cancelled ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
+    const taskC = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
+      { input: { projectId, description: "Draft the migration guide." } })).createProjectTask.taskId as string;
+    const cDir = projectTaskDir(projectId, taskC);
+    const workerAddress = kind === "agent" ? `/${segment(names.worker)}` : "/worker";
+    // A raw /ws/projects client: every frame must satisfy the strict server schema, including CANCELLED views.
+    const feed = new WebSocket(`ws://${url.host}/ws/projects`);
+    sockets.push(feed);
+    const feedFrames: any[] = [];
+    feed.on("message", (raw: unknown) => feedFrames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { feed.once("open", resolve); feed.once("error", reject); });
+    await until(() => feedFrames.some((f) => f.type === "connected"), "projects feed connected");
+    const upserts = (taskId: string, from = 0) => feedFrames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId).map((f) => f.task);
+    const root = await startRoot(kind);
+    const status = () => statusOf(projectId, taskC);
+    const openCount = async () => (await graphql(`query($id:String!){project(projectId:$id){taskCount openTaskCount}}`, { id: projectId })).project;
+    const record: Record<string, unknown> = {};
+
+    // Delegate and talk to the worker before the close.
+    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskC }));
+    expect(delegated).toMatchObject({ target_kind: "agent" });
+    const worker = delegated.target_agent_run_id as string;
+    const workerNode = (await root.waitForNodes("Task C worker", (nodes) => nodes.some((node) => node.agentRunId === worker)))
+      .find((node) => node.agentRunId === worker)!;
+    await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Start the guide. Marker PRE-CLOSE-4410." }));
+    await until(async () => JSON.stringify(await root.conversationOf(worker, workerNode.address)).includes("PRE-CLOSE-4410"), "worker got the pre-close message", 60_000);
+    await until(() => liveAgyCwds().some((cwd) => cwd.includes(worker)), "worker process is live before the close", 30_000);
+    expect(await openCount()).toEqual({ taskCount: 1, openTaskCount: 1 });
+
+    // AC-001 / AC-004: the Manager closes the Task as not needed: ack CANCELLED, one live closure of exactly the worker,
+    // its entry closed, its process stopped, and the feed carries CANCELLED with a closed root.
+    let view = root.state.view; let from = view.frames.length; let feedFrom = feedFrames.length;
+    const ack = await root.managerCalls(callTool("create_or_update_task", { task_id: taskC, status: "CANCELLED" }));
+    expect(ack).toMatchObject({ task: { projectId, taskId: taskC, status: "CANCELLED" } });
+    await until(() => view.frames.slice(from).some(root.closedFrame), "live closure on CANCELLED", 60_000);
+    expect(keys(root.refsOf(view.frames.slice(from).find(root.closedFrame)!))).toEqual([`agent:${worker}`]);
+    expect(await status()).toBe("CANCELLED");
+    expect((await closedAtByKey(cDir))[`agent:${worker}`]).toEqual(expect.any(String));
+    await until(() => liveAgyCwds().every((cwd) => !cwd.includes(worker)), "no live worker process after CANCELLED", 30_000);
+    expect(keys((await root.snapshot()).closed)).toEqual([`agent:${worker}`]);
+    await until(() => upserts(taskC, feedFrom).some((t) => t.status === "CANCELLED" && t.root?.closed === true && t.root?.status === "offline"),
+      "feed: CANCELLED view with a closed, Offline root", 30_000);
+    expect(await openCount()).toEqual({ taskCount: 1, openTaskCount: 0 });
+    const resourcesClosed = await readBytes(path.join(cDir, "agent_run_resources.json"));
+    const taskCancelled = await readBytes(path.join(cDir, "task.json"));
+
+    // AC-004: repeating CANCELLED re-requests the stop (closure re-published) and changes no file.
+    view = root.state.view; from = view.frames.length;
+    await root.managerCalls(callTool("create_or_update_task", { task_id: taskC, status: "CANCELLED" }));
+    await until(() => view.frames.slice(from).some(root.closedFrame), "repeated CANCELLED re-publishes the closure", 60_000);
+    expect(await readBytes(path.join(cDir, "agent_run_resources.json"))).toBe(resourcesClosed);
+    expect(await readBytes(path.join(cDir, "task.json"))).toBe(taskCancelled);
+
+    // AC-005: while CANCELLED, saved-ID delegation spawns nothing and a run-ID message is refused; both name CANCELLED.
+    const nodesBefore = taskNodes(await root.liveTree()).length;
+    view = root.state.view; from = view.frames.length;
+    const redelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskC }));
+    expect(redelegated).toEqual({ error: { code: "TASK_AGENT_RESOURCE_CLOSED",
+      message: "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work." } });
+    const fenced = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "While cancelled?" }));
+    expect(fenced).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(fenced.message).toMatch(/This Task is CANCELLED\. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again\./);
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    expect(taskNodes(await root.liveTree()).length).toBe(nodesBefore);
+    expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
+    expect(await readBytes(path.join(cDir, "agent_run_resources.json"))).toBe(resourcesClosed);
+    expect(await readBytes(path.join(cDir, "task.json"))).toBe(taskCancelled);
+    expect(JSON.stringify(await root.conversationOf(worker, workerNode.address))).not.toContain("While cancelled?");
+    expect(liveAgyCwds().every((cwd) => !cwd.includes(worker))).toBe(true);
+    record.refusals = { redelegated, fenced };
+
+    // DONE<->CANCELLED behaves as a repeated DONE: closure re-published, resources unchanged, refusals name the current status.
+    for (const next of ["DONE", "CANCELLED"] as const) {
+      view = root.state.view; from = view.frames.length;
+      await root.managerCalls(callTool("create_or_update_task", { task_id: taskC, status: next }));
+      await until(() => view.frames.slice(from).some(root.closedFrame), `${next} after a terminal status re-publishes the closure`, 60_000);
+      expect(await status()).toBe(next);
+      expect(await readBytes(path.join(cDir, "agent_run_resources.json"))).toBe(resourcesClosed);
+      const refused = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: `Still ${next}?` }));
+      expect(refused).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+      expect(refused.message).toMatch(new RegExp(`This Task is ${next}\\.`));
+    }
+
+    // AC-003: the agent reopens the Task: the status changes live, nothing starts, the entry stays closed.
+    view = root.state.view; from = view.frames.length; feedFrom = feedFrames.length;
+    const reopenedAck = await root.managerCalls(callTool("create_or_update_task", { task_id: taskC, status: "IN_PROGRESS" }));
+    expect(reopenedAck).toMatchObject({ task: { taskId: taskC, status: "IN_PROGRESS" } });
+    await until(() => upserts(taskC, feedFrom).some((t) => t.status === "IN_PROGRESS"), "feed: reopened view", 30_000);
+    expect(await readBytes(path.join(cDir, "agent_run_resources.json"))).toBe(resourcesClosed);
+    expect(view.frames.slice(from).some(root.reopenedFrame)).toBe(false);
+    expect(keys((await root.snapshot()).closed)).toEqual([`agent:${worker}`]);
+    expect(liveAgyCwds().every((cwd) => !cwd.includes(worker))).toBe(true);
+    expect(await openCount()).toEqual({ taskCount: 1, openTaskCount: 1 });
+
+    // AC-005 (after reopen): the assigner's message reactivates exactly the worker, which continues its conversation.
+    view = root.state.view; from = view.frames.length;
+    const reactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: worker, content: "Back on. Marker POST-CLOSE-7720." }));
+    expect(reactivated).toMatchObject({ accepted: true, target_agent_run_id: worker });
+    expect(reactivated.message).toMatch(new RegExp(`${worker} was reactivated\\.$`));
+    await until(() => view.frames.slice(from).some(root.reopenedFrame), "live task_executions_reopened after a CANCELLED reopen", 30_000);
+    expect(keys(root.refsOf(view.frames.slice(from).find(root.reopenedFrame)!))).toEqual([`agent:${worker}`]);
+    let conversation = "";
+    await until(async () => { conversation = JSON.stringify(await root.conversationOf(worker, workerNode.address));
+      return conversation.includes("POST-CLOSE-7720"); }, "reactivated worker got the message", 60_000);
+    expect(conversation.indexOf("PRE-CLOSE-4410")).toBeGreaterThan(-1);
+    expect(conversation.indexOf("PRE-CLOSE-4410")).toBeLessThan(conversation.indexOf("POST-CLOSE-7720"));
+    expect((await closedAtByKey(cDir))[`agent:${worker}`]).toBeNull();
+    expect(await status()).toBe("IN_PROGRESS");
+
+    // A Task with no Project (Temp task): CANCELLED by task_id alone closes its copy, fences it, reopens and reactivates.
+    const plainDelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, description: "Collect the open questions." }));
+    const adHocTaskId = AD_HOC_ID.exec(JSON.stringify(plainDelegated))?.[0] as string;
+    expect(adHocTaskId, JSON.stringify(plainDelegated)).toBeTruthy();
+    const plain = plainDelegated.target_agent_run_id as string;
+    await root.waitForNodes("Temp task copy", (nodes) => nodes.some((node) => node.agentRunId === plain));
+    view = root.state.view; from = view.frames.length; feedFrom = feedFrames.length;
+    const adHocAck = await root.managerCalls(callTool("create_or_update_task", { task_id: adHocTaskId, status: "CANCELLED" }));
+    expect(adHocAck).toMatchObject({ task: { projectId: null, taskId: adHocTaskId, status: "CANCELLED" } });
+    await until(() => view.frames.slice(from).some(root.closedFrame), "live closure of the Temp task copy", 60_000);
+    expect(keys(root.refsOf(view.frames.slice(from).find(root.closedFrame)!))).toEqual([`agent:${plain}`]);
+    expect(JSON.parse(await readBytes(path.join(adHocTaskDir(adHocTaskId), "task.json"))).status).toBe("CANCELLED");
+    expect(((await graphql(`query{tasksWithoutProject{taskId status}}`)).tasksWithoutProject as any[]).find((t) => t.taskId === adHocTaskId)?.status).toBe("CANCELLED");
+    await until(() => feedFrames.slice(feedFrom).some((f) => f.type === "task_upserted" && f.scope.kind === "no_project"
+      && f.task.taskId === adHocTaskId && f.task.status === "CANCELLED"), "feed: Temp task CANCELLED", 30_000);
+    await until(() => liveAgyCwds().every((cwd) => !cwd.includes(plain)), "no live Temp copy process after CANCELLED", 30_000);
+    const adHocFenced = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: plain, content: "Temp, cancelled?" }));
+    expect(adHocFenced).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+    expect(adHocFenced.message).toMatch(/This Task is CANCELLED\./);
+    await root.managerCalls(callTool("create_or_update_task", { task_id: adHocTaskId, status: "TODO" }));
+    view = root.state.view; from = view.frames.length;
+    const adHocReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: plain, content: "Temp, again." }));
+    expect(adHocReactivated).toMatchObject({ accepted: true });
+    expect(adHocReactivated.message).toMatch(/was reactivated\.$/);
+    await until(() => view.frames.slice(from).some(root.reopenedFrame), "Temp copy reopened event", 30_000);
+
+    // Every /ws/projects frame of this journey matched the strict server schema (CANCELLED included).
+    const invalid = feedFrames.filter((frame) => !ProjectChangeMessageSchema.safeParse(frame).success);
+    expect(invalid, JSON.stringify(invalid).slice(0, 2000)).toEqual([]);
+    const statusesSeen = [...new Set(feedFrames.filter((f) => f.type === "task_upserted").map((f) => f.task.status))].sort();
+    expect(statusesSeen).toEqual(expect.arrayContaining(["CANCELLED", "DONE", "IN_PROGRESS", "TODO"]));
+    feed.close();
+    root.close();
+    await terminate(kind, root.rootId);
+    evidence[`closed-${kind}`] = { ...record, rootId: root.rootId, projectId, taskC, worker, ack, reopenedAck, reactivated,
+      adHocTaskId, plain, adHocAck, adHocFenced, adHocReactivated, feedFrames: feedFrames.length, statusesSeen };
+  };
+
+  it("CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED", async () => {
+    await cancelledScenario("agent");
+  }, 300000);
+
+  it("CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)", async () => {
+    await cancelledScenario("team");
+  }, 300000);
 
   it("standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO", async () => {
     await rootScenario("agent");

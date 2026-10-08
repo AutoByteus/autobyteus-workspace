@@ -13,6 +13,7 @@ import type {
 import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js";
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
+import { isTerminalTaskStatus, validateTaskStatus } from "../domain/task-status.js";
 import type { TaskAssignment } from "../domain/task-agent-resources.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { AdHocTaskStore } from "../stores/ad-hoc-task-store.js";
@@ -46,10 +47,8 @@ const normalizeDescription = (description: unknown): string => {
   if (typeof description !== "string" || !description.trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
   return description.trim();
 };
-export const validateTaskStatus = (status: unknown): ProjectTaskStatus => {
-  if (status !== "TODO" && status !== "IN_PROGRESS" && status !== "DONE") throw new ProjectError("TASK_STATUS_INVALID", "Task status must be TODO, IN_PROGRESS or DONE.");
-  return status;
-};
+const terminalAssignment = (status: ProjectTaskStatus): ProjectError => new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
+  `The Task is ${status}; move it to TODO or IN_PROGRESS before assigning new work.`);
 const compareTasks = (a: ProjectTask, b: ProjectTask): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
   try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
@@ -61,7 +60,7 @@ type ContextUpdate = { removals: string[]; writesContextList: boolean; prepare: 
 /**
  * The Task subject boundary: Project Task metadata and context (released semantics over the
  * per-Project store), Tasks with no Project (ad-hoc, created only by described delegation), saved
- * work for assignment, status rules, and DONE / assignment orchestration for both. It is the
+ * work for assignment, status rules, and closure (DONE or CANCELLED) / assignment orchestration for both. It is the
  * runtime's `TaskAgentResourcePort`, delegating agent run facts to TaskAgentResourceService.
  */
 export class ProjectTaskService implements TaskAgentResourcePort {
@@ -74,7 +73,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     this.resources = deps.taskAgentResources
       ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout, this.adHocTasks.layout));
     this.release = new TaskAgentResourceRelease(deps.requestRelease);
-    // Every committed run-resource write may change a Task's root (link, start, fail, DONE, reopen).
+    // Every committed run-resource write may change a Task's root (link, start, fail, DONE or CANCELLED, reopen).
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
   private get changes(): ProjectChangeMarks { return this.deps.changes ?? getProjectChangePublisher(); }
@@ -125,7 +124,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   /**
    * Patches any Task by its unique id: an ad-hoc Task (direct path read, no Projects gate) or else
    * a Project Task (found across Projects). Description and status; for Project Tasks also
-   * `localContextFiles`, copied in and appended (never removed). DONE closes its agent runs.
+   * `localContextFiles`, copied in and appended (never removed). DONE or CANCELLED closes its agent runs.
    */
   async updateTaskById(command: UpdateTaskByIdCommand): Promise<TaskAcknowledgementView> {
     const hasDescription = Object.hasOwn(command, "description");
@@ -146,7 +145,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
         const meaningful = (description !== undefined && current.description !== description) || (status !== undefined && current.status !== status);
         return meaningful ? { ...current, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}), updatedAt: this.nowIso() } : current;
       });
-      const updated = status === "DONE" ? await this.closeAndWrite({ projectId: null, taskId }, write) : await write();
+      const updated = status !== undefined && isTerminalTaskStatus(status) ? await this.closeAndWrite({ projectId: null, taskId }, write) : await write();
       this.changes.taskChanged({ projectId: null, taskId });
       return { projectId: null, taskId, status: updated.status };
     }
@@ -234,13 +233,13 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     const filePath = await this.context.savedFile(projectId, taskId, file).catch(() => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved Task bytes are unavailable."); });
     return { file, filePath };
   }
-  /** Settles stop requests already made by DONE (tests and orderly shutdown). */
+  /** Settles stop requests already made by DONE or CANCELLED (tests and orderly shutdown). */
   async drainRuntimeReleases(): Promise<void> { await this.release.drain(); }
 
   // ── TaskAgentResourcePort (runtime-facing) ──
   async resolveAssignment(taskId: string) {
     const { projectId, task } = await this.uniqueTask(taskId);
-    if (task.status === "DONE") throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The Task is DONE; reopen it before assigning new work.");
+    if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
     await this.resources.load();
     this.resources.assertTaskReadable(taskId);
     const referenceFiles = await Promise.all((task.contextFiles ?? []).map(f => this.context.savedFile(projectId, taskId, f)));
@@ -251,10 +250,10 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
     const { projectId } = await this.uniqueTask(input.taskId);
     await this.resources.serialize(input.taskId, async () => {
-      // Status re-check inside the Task's serialization: a DONE is entirely before or entirely after.
+      // Status re-check inside the Task's serialization: a DONE or CANCELLED is entirely before or entirely after.
       const task = await this.store.readTask(projectId, input.taskId);
       if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${input.taskId}' was not found.`);
-      if (task.status === "DONE") throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The Task is DONE; reopen it before assigning new work.");
+      if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
       await this.resources.linkAssigned({ projectId, taskId: input.taskId }, input);
     });
     return { taskId: input.taskId };
@@ -279,14 +278,14 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   async assertReopenable(input: TaskAgentResourceReopenInput): Promise<void> {
     const location = await this.reopenLocation(input.agentRun);
     this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
-    await this.assertTaskNotDone(location);
+    await this.assertTaskNotTerminal(location);
   }
-  /** The reactivation commit: re-validated under the Task's serialization, so a DONE is entirely before or after. Status is never written. */
+  /** The reactivation commit: re-validated under the Task's serialization, so a DONE or CANCELLED is entirely before or after. Status is never written. */
   async reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult> {
     const location = await this.reopenLocation(input.agentRun);
     return this.resources.serialize(location.taskId, async () => {
       this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
-      await this.assertTaskNotDone(location);
+      await this.assertTaskNotTerminal(location);
       return { taskId: location.taskId, reopened: await this.resources.reopenAssignment(location, input.agentRun, input.requestedBy) };
     });
   }
@@ -301,7 +300,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     await this.resources.serialize(taskId, () => this.resources.linkAssigned({ projectId: null, taskId }, link));
     return taskId;
   }
-  /** DONE (both Task kinds): close the Task's agent runs first (fences at once), then write the status, then ask roots to stop them. */
+  /** DONE or CANCELLED (both Task kinds): close the Task's agent runs first (fences at once), then write the status, then ask roots to stop them. */
   private async closeAndWrite<T>(location: TaskLocation, write: () => Promise<T>): Promise<T> {
     let closed = false, written: T | undefined;
     try {
@@ -321,16 +320,16 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     return location;
   }
   /** Reactivation needs the Task to exist and be TODO or IN_PROGRESS; only the agent changes that status. */
-  private async assertTaskNotDone(location: TaskLocation): Promise<void> {
+  private async assertTaskNotTerminal(location: TaskLocation): Promise<void> {
     const task = location.projectId === null
       ? await this.adHocTasks.read(location.taskId)
       // A deleted Project took its Tasks with it.
       : await this.store.readTask(location.projectId, location.taskId)
         .catch((error: unknown) => { if ((error as { code?: unknown }).code === "PROJECT_NOT_FOUND") return null; throw error; });
     if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
-    if (task.status === "DONE") {
+    if (isTerminalTaskStatus(task.status)) {
       throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-        "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.");
+        `This Task is ${task.status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`);
     }
   }
   /** Shared create body: input and owner checks, then the context step, then the in-lock commit that publishes it. */
@@ -352,14 +351,14 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   /**
    * Shared Project Task update body over a validated patch. The context step (draft prepare or local
    * import) runs after every input check and before any write, so a failure changes nothing and DONE
-   * never closes runs first. Prepared files are appended to the current list under the Task lock.
+   * or CANCELLED never closes runs first. Prepared files are appended to the current list under the Task lock.
    */
   private async update(projectId: string, taskId: string, patch: { description?: string; status?: ProjectTaskStatus }, context: ContextUpdate)
     : Promise<{ task: ProjectTask; attached: ProjectTaskContextFile[] }> {
     const { description, status } = patch;
     const { removals } = context;
     const existing = await this.assertOwner(projectId, taskId);
-    // Input errors are rejected before anything is written (DONE would otherwise already have closed its runs).
+    // Input errors are rejected before anything is written (DONE or CANCELLED would otherwise already have closed its runs).
     if (removals.some((name) => !(existing?.contextFiles ?? []).some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
     const prepared = await context.prepare();
     let removed: ProjectTaskContextFile[] = [];
@@ -373,7 +372,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
       return meaningful ? { ...current, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}),
         ...(context.writesContextList ? { contextFiles: [...files.filter((f) => !removals.includes(f.storedFilename)), ...prepared.files] } : {}), updatedAt: this.nowIso() } as ProjectTask : current;
     });
-    const updated = status === "DONE" ? await this.closeAndWrite({ projectId, taskId }, writeMetadata) : await writeMetadata();
+    const updated = status !== undefined && isTerminalTaskStatus(status) ? await this.closeAndWrite({ projectId, taskId }, writeMetadata) : await writeMetadata();
     this.changes.taskChanged({ projectId, taskId });
     await this.consume(projectId, prepared);
     if (removed.length) await cleanup(() => this.context.cleanupRemoved(projectId, taskId, removed));

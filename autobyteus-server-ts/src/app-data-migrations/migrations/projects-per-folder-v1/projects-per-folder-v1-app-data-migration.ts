@@ -1,10 +1,9 @@
-import { readReleasedProjectFolderV1 } from "./released-project-folder-v1.js";
+import { readReleasedProjectFolderV1, readReleasedTaskFileV1 } from "./released-project-folder-v1.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { writeJsonFile } from "../../../persistence/file/store-utils.js";
 import { ProjectsLayout } from "../../../projects/stores/projects-layout.js";
-import { readTaskFile } from "../../../projects/stores/project-store.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -120,7 +119,7 @@ export class ProjectsPerFolderV1AppDataMigration implements AppDataMigrationDefi
     // Conflicts are detected before anything is written for this Project.
     const projectState = await this.targetState(projectFile, raw => readReleasedProjectFolderV1(raw, projectId), readReleasedProjectFolderV1(projectContent, projectId));
     const taskStates = await Promise.all(tasks.map(t => this.targetState(this.layout.taskFile(projectId, t.taskId),
-      raw => readTaskFile(raw, projectId, t.taskId), readTaskFile(taskContent(t), projectId, t.taskId))));
+      raw => readReleasedTaskFileV1(raw, projectId, t.taskId), readReleasedTaskFileV1(taskContent(t), projectId, t.taskId))));
     if (projectState === "CONFLICT" || taskStates.includes("CONFLICT")) return "SKIPPED_TARGET_CONFLICT_WARNING";
 
     let wrote = false;
@@ -156,8 +155,8 @@ export class ProjectsPerFolderV1AppDataMigration implements AppDataMigrationDefi
       throw new Error("project.json does not validate after writing.");
     }
     for (const task of tasks) {
-      const written = readTaskFile(await readJson(this.layout.taskFile(projectId, task.taskId)), projectId, task.taskId);
-      if (!isDeepStrictEqual(written, readTaskFile(taskContent(task), projectId, task.taskId))) throw new Error(`task.json for '${task.taskId}' does not validate after writing.`);
+      const written = readReleasedTaskFileV1(await readJson(this.layout.taskFile(projectId, task.taskId)), projectId, task.taskId);
+      if (!isDeepStrictEqual(written, readReleasedTaskFileV1(taskContent(task), projectId, task.taskId))) throw new Error(`task.json for '${task.taskId}' does not validate after writing.`);
     }
     return wrote ? "MIGRATED" : "SKIPPED_ALREADY_CURRENT";
   }

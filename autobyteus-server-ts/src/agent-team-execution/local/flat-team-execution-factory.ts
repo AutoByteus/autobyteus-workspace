@@ -24,8 +24,6 @@ export type FlatTeamCollaboratorHost = Pick<
 export type PreparedFlatTeamExecution = Readonly<{
   teamRun: TeamRun;
   collaboratorHost: FlatTeamCollaboratorHost;
-  stagedPlatformBindings: readonly import("../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js").CollaborationAgentPlatformBinding[];
-  stagedNoConversationBindingReplacements: readonly import("../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js").CollaborationAgentNoConversationBindingReplacement[];
   commitAfterDurability(): void;
   abort(): Promise<void>;
 }>;
@@ -46,7 +44,6 @@ export class FlatTeamExecutionFactory {
     applicationBinding?: TeamRunApplicationBinding | null;
     activationMode: ConfiguredMemberActivationMode;
     callbacks: FlatTeamExecutionCallbacks;
-    prepareConfiguredAgents?: boolean;
   }>): FlatTeamPreparationOperation {
     const physicalScope = createRootExecutionPhysicalScope(input.physicalScope);
     if (!sameRootExecutionIdentity(physicalScope.root, input.physicalScope.root)) {
@@ -101,7 +98,7 @@ export class FlatTeamExecutionFactory {
     );
     const manager = createManager(context);
     const teamRun = new TeamRun(context, new FlatTeamRunBackend(context, manager));
-    return beginFlatTeamPreparation({ teamRun, manager, prepareConfiguredAgents: input.prepareConfiguredAgents !== false });
+    return beginFlatTeamPreparation({ teamRun, manager });
   }
 }
 
@@ -111,9 +108,12 @@ export type FlatTeamPreparationOperation = Readonly<{
   release(): Promise<AgentOperationResult>;
 }>;
 
-/** Exact Team aggregate is constructed and retained before any member preparation. */
+/**
+ * Exact Team aggregate is constructed and retained; preparation is scope-only. No member is
+ * activated here: each member's handle activates on its first input and commits its own binding.
+ */
 export function beginFlatTeamPreparation(input: {
-  teamRun: TeamRun; manager: FlatTeamExecutionManager; prepareConfiguredAgents: boolean;
+  teamRun: TeamRun; manager: FlatTeamExecutionManager;
 }): FlatTeamPreparationOperation {
   const teamRunId = input.teamRun.teamRunId;
   let teamRun: TeamRun | null = input.teamRun, manager: FlatTeamExecutionManager | null = input.manager;
@@ -144,18 +144,14 @@ export function beginFlatTeamPreparation(input: {
         if (attempt) return attempt;
         if (cancelled) return Promise.reject(new Error("Flat Team preparation cancelled."));
         attempt = (async () => {
-          const activation = !input.prepareConfiguredAgents ? null : await manager!.prepareConfiguredActivation();
           if (cancelled) throw new Error("Flat Team preparation cancelled.");
           let committed = false;
           return Object.freeze({
             teamRun: teamRun!, collaboratorHost: manager!,
-            stagedPlatformBindings: activation?.stagedPlatformBindings ?? Object.freeze([]),
-            stagedNoConversationBindingReplacements: activation?.stagedNoConversationBindingReplacements ?? Object.freeze([]),
             commitAfterDurability: () => {
               if (cancelled || committed) throw new Error(`Flat Team '${teamRunId}' is not publishable.`);
-              // Transition before a fallible member publication; release retains each exact published/private member.
+              // From here on, release goes through the published TeamRun (members activated by first input).
               published = true;
-              activation?.commitAfterDurability();
               committed = true;
             },
             abort: async () => {

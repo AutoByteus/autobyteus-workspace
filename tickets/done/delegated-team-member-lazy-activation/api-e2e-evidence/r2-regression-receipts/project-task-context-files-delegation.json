@@ -1,0 +1,112 @@
+{
+  "rootId": "tcf_manager_6224af_59b666d652024056b8094585e8094ccf",
+  "projectId": "project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb",
+  "taskId": "project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9",
+  "worker": "tcf_worker_6224af_6ae6c556c9054061a6db35edf839de3c",
+  "create": {
+    "task": {
+      "projectId": "project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb",
+      "taskId": "project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9",
+      "status": "TODO",
+      "attachedContextFiles": [
+        {
+          "storedFilename": "ctx_3ab16d2a5e91__Screenshot_2026-10-08_at_10.15.32_AM.png",
+          "displayName": "Screenshot 2026-10-08 at 10.15.32 AM.png"
+        },
+        {
+          "storedFilename": "ctx_8cc9fcfd7abf__notes.md",
+          "displayName": "notes.md"
+        }
+      ]
+    }
+  },
+  "patch": {
+    "task": {
+      "projectId": "project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb",
+      "taskId": "project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9",
+      "status": "TODO",
+      "attachedContextFiles": [
+        {
+          "storedFilename": "ctx_5976fc1dd770__server.log.txt",
+          "displayName": "server.log.txt"
+        }
+      ]
+    }
+  },
+  "localPaths": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_3ab16d2a5e91__Screenshot_2026-10-08_at_10.15.32_AM.png",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_8cc9fcfd7abf__notes.md",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_5976fc1dd770__server.log.txt"
+  ],
+  "workerFirstMessage": "Task delegator address: /tcf_manager_6224af\nTask delegator AgentRun ID: tcf_manager_6224af_59b666d652024056b8094585e8094ccf\n\nDescription:\nREAD_REFERENCE_FILES\n\nReference files:\n- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_3ab16d2a5e91__Screenshot_2026-10-08_at_10.15.32_AM.png\n- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_8cc9fcfd7abf__notes.md\n- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_5976fc1dd770__server.log.txt",
+  "workerRead": [
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_3ab16d2a5e91__Screenshot_2026-10-08_at_10.15.32_AM.png",
+      "size": 70,
+      "sha256": "6b7fa434f92a8b80aab02d9bf1a12e49ffcae424e4013a1c4f68b67e3d2bbcd0"
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_8cc9fcfd7abf__notes.md",
+      "size": 36,
+      "sha256": "bea7b759d7d8cf1b72e8825f0c96791a540a16ef7a415b17a16350345b5168a0"
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/projects/project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb/tasks/project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9/context/ctx_5976fc1dd770__server.log.txt",
+      "size": 22,
+      "sha256": "013fa141a634aa4a9f305f7cfc8c7bf68acd8f658f655d2768dce94631131af4"
+    }
+  ],
+  "badDone": {
+    "error": {
+      "code": "TASK_CONTEXT_FILE_UNAVAILABLE",
+      "message": "Context file '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-context-files-e2e-09DcPz/workspace/already-deleted.png' does not exist or cannot be accessed."
+    },
+    "isError": true
+  },
+  "stillOpen": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Message delivered.",
+    "target_agent_run_id": "tcf_worker_6224af_6ae6c556c9054061a6db35edf839de3c"
+  },
+  "done": {
+    "task": {
+      "projectId": "project_b1778dce-df00-43f5-b135-e3d3c9ed6bdb",
+      "taskId": "project_task_5e712e31-ce55-41cd-815f-b2f54320c9b9",
+      "status": "DONE",
+      "attachedContextFiles": [
+        {
+          "storedFilename": "ctx_888eb10dd6fe__final.md",
+          "displayName": "final.md"
+        }
+      ]
+    }
+  },
+  "closedRefs": [
+    {
+      "agentRunId": "tcf_worker_6224af_6ae6c556c9054061a6db35edf839de3c"
+    }
+  ],
+  "adHocTaskId": "ad_hoc_task_72789927-9ddf-496f-bb61-8985d3eda824",
+  "refused": {
+    "error": {
+      "code": "TASK_CONTEXT_INVALID",
+      "message": "Context files can be attached only to Project Tasks; this Task has no Project."
+    },
+    "isError": true
+  },
+  "textPatch": {
+    "task": {
+      "projectId": null,
+      "taskId": "ad_hoc_task_72789927-9ddf-496f-bb61-8985d3eda824",
+      "status": "IN_PROGRESS"
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "sourcesRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

@@ -245,17 +245,18 @@ copy. Every call spawns another copy, so copies can work in parallel.
   the failure.
 - A description-only delegation that creates a Task also returns its
   `task_id`. When the work is finished, call `create_or_update_task` with that
-  `task_id` and status `DONE`; this stops the copy and removes it from the run.
+  `task_id` and status `DONE` (or `CANCELLED` if the work turned out not to be
+  needed); this stops the copy and removes it from the run.
 
 Follow up on a copy only through `send_message_to` with its
 `target_agent_run_id`, in both directions. A copy that stays quiet is shut
 down after a while, but not while it has a running background task; a
 message to its run ID restores it with its
-conversation. A copy whose Task is `DONE` is stopped. To continue with it, the
-run that assigned the work first moves the Task out of `DONE` (for example to
-`IN_PROGRESS`) with `create_or_update_task`, then messages the copy's run ID;
-that reactivates it with its conversation. Setting the status alone starts
-nothing.
+conversation. A copy whose Task is `DONE` or `CANCELLED` is stopped. To continue
+with it, the run that assigned the work first moves the Task out of `DONE` or
+`CANCELLED` (for example to `IN_PROGRESS`) with `create_or_update_task`, then
+messages the copy's run ID; that reactivates it with its conversation. Setting
+the status alone starts nothing.
 
 ### Rule-Based Handoffs
 

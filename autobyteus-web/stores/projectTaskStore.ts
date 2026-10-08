@@ -7,6 +7,7 @@ import { GetProjectTasks, GetTasksWithoutProject } from '~/graphql/queries/proje
 import { CreateProjectTask, DeleteProjectTask, UpdateProjectTask } from '~/graphql/mutations/projectTaskMutations'
 import type { ProjectChangeMessage, ProjectTask, ProjectTaskContextDraft, ProjectTaskContextChanges, TaskScope, TaskWithoutProject } from '~/types/project'
 import { ProjectRequestError, throwProjectGraphqlErrors, toProjectRequestError } from '~/utils/projects/projectRequestError'
+import { isOpenTaskStatus, tempTaskLaneOf } from '~/utils/projects/taskStatusPresentation'
 export interface TaskListState<T> {
   status: 'loading' | 'ready' | 'error'
   tasks: T[]
@@ -26,8 +27,8 @@ export const LIVE_HIGHLIGHT_MS = 2400
 export const listIdOf = (scope: TaskScope): string => scope.kind === 'project' ? scope.projectId : TEMP_TASKS_LIST_ID
 const empty = (): TaskListState<AnyTask> => ({status: 'loading', tasks: [], hasLoaded: false, initialPending: false, refreshPending: false, error: null})
 const compare = (a: AnyTask, b: AnyTask) => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId)
-/** The board lane a Task is shown in: Project boards by status; Temp tasks Open or Done. */
-const laneOf = (id: string, task: AnyTask) => id === TEMP_TASKS_LIST_ID ? (task.status === 'DONE' ? 'done' : 'open') : task.status
+/** The board lane a Task is shown in: Project boards by status; Temp tasks Open, Done or Cancelled. */
+const laneOf = (id: string, task: AnyTask) => id === TEMP_TASKS_LIST_ID ? tempTaskLaneOf(task.status) : task.status
 /**
  * Current-node cache of Task lists: one per Project, and one for the Tasks with no Project.
  * Snapshots come from reads (load, Refresh, reconnect); the `/ws/projects` feed applies changes in
@@ -75,7 +76,7 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
   const publish = (id: string, tasks: AnyTask[]) => {
     const sorted = [...tasks].sort(compare)
     setList(id, {status: 'ready', tasks: sorted, hasLoaded: true, initialPending: false, refreshPending: false, error: null})
-    if (id !== TEMP_TASKS_LIST_ID) useProjectStore().setTaskCounts(id, sorted.length, sorted.filter((t) => t.status !== 'DONE').length)
+    if (id !== TEMP_TASKS_LIST_ID) useProjectStore().setTaskCounts(id, sorted.length, sorted.filter((t) => isOpenTaskStatus(t.status)).length)
     return sorted
   }
   const highlight = (taskId: string, change: 'arrived' | 'moved') => {

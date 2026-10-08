@@ -1,0 +1,143 @@
+{
+  "startedAt": "2026-10-08T14:28:49.655Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-017": {
+      "result": "Fail",
+      "description": "Closed Tasks (task-closed-status): agent close hides the row behind \"Closed (N)\" beside Refresh, full-width Closed lane, keyboard, muted Closed pill vs Done, open counts, live reopen; Temp board/header/page; right-panel board and detail",
+      "durationMs": 33728,
+      "message": "lane order: Closed after Done",
+      "details": [
+        {
+          "id": "project-task-column-TODO",
+          "top": 258,
+          "bottom": 380,
+          "left": 355,
+          "width": 340.328125,
+          "gridWidth": 1053
+        },
+        {
+          "id": "project-task-column-count",
+          "top": 274.5,
+          "bottom": 290.5,
+          "left": 418.21875,
+          "width": 5.578125,
+          "gridWidth": 338.328125
+        },
+        {
+          "id": "project-task-column-IN_PROGRESS",
+          "top": 258,
+          "bottom": 380,
+          "left": 711.328125,
+          "width": 340.328125,
+          "gridWidth": 1053
+        },
+        {
+          "id": "project-task-column-count",
+          "top": 274.5,
+          "bottom": 290.5,
+          "left": 812.765625,
+          "width": 7.5625,
+          "gridWidth": 338.328125
+        },
+        {
+          "id": "project-task-column-empty",
+          "top": 307,
+          "bottom": 379,
+          "left": 712.328125,
+          "width": 338.328125,
+          "gridWidth": 340.328125
+        },
+        {
+          "id": "project-task-column-DONE",
+          "top": 258,
+          "bottom": 380,
+          "left": 1067.65625,
+          "width": 340.34375,
+          "gridWidth": 1053
+        },
+        {
+          "id": "project-task-column-count",
+          "top": 274.5,
+          "bottom": 290.5,
+          "left": 1127.8125,
+          "width": 5.578125,
+          "gridWidth": 338.34375
+        },
+        {
+          "id": "project-task-column-CLOSED",
+          "top": 396,
+          "bottom": 534,
+          "left": 355,
+          "width": 1053,
+          "gridWidth": 1053
+        },
+        {
+          "id": "project-task-column-count",
+          "top": 412.5,
+          "bottom": 428.5,
+          "left": 426.78125,
+          "width": 5.578125,
+          "gridWidth": 1051
+        }
+      ],
+      "pages": [
+        {
+          "url": "http://127.0.0.1:65180/projects/project_9892c3f7-0490-4176-9af1-7acf65db5975",
+          "center": "",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Agent WebSocket connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 99641,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 99079,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-017",
+      "message": "lane order: Closed after Done"
+    }
+  ],
+  "feed": {
+    "total": 21,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 9,
+      "task_upserted": 8,
+      "task_worker_status": 3
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:65179",
+    "frontendUrl": "http://127.0.0.1:65180",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-JOgrbt"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T14:29:55.202Z"
+}

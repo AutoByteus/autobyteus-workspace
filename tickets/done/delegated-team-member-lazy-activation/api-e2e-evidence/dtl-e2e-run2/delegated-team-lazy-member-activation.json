@@ -1,0 +1,212 @@
+{
+  "agent": {
+    "delegation": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_e6fd47_c76c274bcd7a4baa9272b5b4ee20c1db",
+        "target_kind": "team"
+      },
+      "teamRunId": "dtl_squad_e6fd47_39a6947a25be4206bc41822d59199f2a",
+      "members": {
+        "lead": {
+          "address": "/dtl_squad_e6fd47/lead",
+          "agentRunId": "dtl_worker_e6fd47_c76c274bcd7a4baa9272b5b4ee20c1db"
+        },
+        "reviewer": {
+          "address": "/dtl_squad_e6fd47/reviewer",
+          "agentRunId": "dtl_worker_e6fd47_2bf34ae845d64c2597310301b9b61f02"
+        },
+        "writer": {
+          "address": "/dtl_squad_e6fd47/writer",
+          "agentRunId": "dtl_worker_e6fd47_0f704e72a75b4b019cbdca30bfebb3d5"
+        },
+        "tester": {
+          "address": "/dtl_squad_e6fd47/tester",
+          "agentRunId": "dtl_worker_e6fd47_22e3f5749ec84161aad45c6b036717c0"
+        }
+      },
+      "launches": [
+        {
+          "runId": "dtl_worker_e6fd47_c76c274bcd7a4baa9272b5b4ee20c1db",
+          "resumed": false,
+          "conversation": null,
+          "at": 1791468589331
+        }
+      ],
+      "bindings": {
+        "lead": "a7e120de-e1dc-462a-92b8-f70241627231",
+        "reviewer": null,
+        "writer": null,
+        "tester": null
+      }
+    },
+    "handoff": {
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /dtl_squad_e6fd47/reviewer.",
+        "target_agent_run_id": "dtl_worker_e6fd47_2bf34ae845d64c2597310301b9b61f02"
+      },
+      "reviewerStatuses": [
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "bindings": {
+        "lead": "a7e120de-e1dc-462a-92b8-f70241627231",
+        "reviewer": "378f1716-af23-4f43-ae07-5ce5e3b150d9",
+        "writer": null,
+        "tester": null
+      }
+    },
+    "nestedCopy": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_e6fd47_225390918ac24bbc9172419364044ab8",
+        "target_kind": "team"
+      },
+      "teamRunId": "dtl_squad_e6fd47_d5c19f765c3e47678eb6232183a721a3"
+    },
+    "idleRestore": {
+      "launches": [
+        {
+          "runId": "dtl_worker_e6fd47_c76c274bcd7a4baa9272b5b4ee20c1db",
+          "resumed": true,
+          "conversation": "a7e120de-e1dc-462a-92b8-f70241627231",
+          "at": 1791468678721
+        }
+      ]
+    },
+    "reactivation": {
+      "launches": [
+        {
+          "runId": "dtl_worker_e6fd47_c76c274bcd7a4baa9272b5b4ee20c1db",
+          "resumed": true,
+          "conversation": "a7e120de-e1dc-462a-92b8-f70241627231",
+          "at": 1791468692322
+        }
+      ]
+    },
+    "legacyRestore": {
+      "legacyBinding": "legacy-unused-65a68f96-bc41-42b4-ab14-f4e303c18c78",
+      "finalBindings": {
+        "lead": "a7e120de-e1dc-462a-92b8-f70241627231",
+        "reviewer": "378f1716-af23-4f43-ae07-5ce5e3b150d9",
+        "writer": null,
+        "tester": "a6d3e807-8170-48ce-8f63-abc5e2f53d8f"
+      }
+    }
+  },
+  "team": {
+    "delegation": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_e6fd47_62a42bc162764ca9a0eefe3d40040cb9",
+        "target_kind": "team",
+        "task_id": "ad_hoc_task_593b24d1-7acb-4a21-9846-4eea33eeea58"
+      },
+      "teamRunId": "dtl_squad_e6fd47_c0bd304bc46d4bc1bd40f770bfdcd614",
+      "members": {
+        "lead": {
+          "address": "/dtl_squad_e6fd47/lead",
+          "agentRunId": "dtl_worker_e6fd47_62a42bc162764ca9a0eefe3d40040cb9"
+        },
+        "reviewer": {
+          "address": "/dtl_squad_e6fd47/reviewer",
+          "agentRunId": "dtl_worker_e6fd47_60f5e56f314f41128f7e846b9fe413f1"
+        },
+        "writer": {
+          "address": "/dtl_squad_e6fd47/writer",
+          "agentRunId": "dtl_worker_e6fd47_181731dda5e5418aaf25b5cd7a060267"
+        },
+        "tester": {
+          "address": "/dtl_squad_e6fd47/tester",
+          "agentRunId": "dtl_worker_e6fd47_c7daaa19858043d7887fee567d27beb4"
+        }
+      },
+      "launches": [
+        {
+          "runId": "dtl_worker_e6fd47_62a42bc162764ca9a0eefe3d40040cb9",
+          "resumed": false,
+          "conversation": null,
+          "at": 1791468593173
+        }
+      ],
+      "bindings": {
+        "lead": "ee2e66b6-4444-4242-8db8-2c1b96fb5553",
+        "reviewer": null,
+        "writer": null,
+        "tester": null
+      }
+    },
+    "handoff": {
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /dtl_squad_e6fd47/reviewer.",
+        "target_agent_run_id": "dtl_worker_e6fd47_60f5e56f314f41128f7e846b9fe413f1"
+      },
+      "reviewerStatuses": [
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "bindings": {
+        "lead": "ee2e66b6-4444-4242-8db8-2c1b96fb5553",
+        "reviewer": "9b84e0e7-419e-4f2b-80d2-f9a8150e8762",
+        "writer": null,
+        "tester": null
+      }
+    },
+    "nestedCopy": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_e6fd47_c5ed2f91914549828aedeb49eea11e95",
+        "target_kind": "team"
+      },
+      "teamRunId": "dtl_squad_e6fd47_b54915426a7043529767952d4ad59048"
+    },
+    "idleRestore": {
+      "launches": [
+        {
+          "runId": "dtl_worker_e6fd47_62a42bc162764ca9a0eefe3d40040cb9",
+          "resumed": true,
+          "conversation": "ee2e66b6-4444-4242-8db8-2c1b96fb5553",
+          "at": 1791468678320
+        }
+      ]
+    },
+    "reactivation": {
+      "launches": [
+        {
+          "runId": "dtl_worker_e6fd47_62a42bc162764ca9a0eefe3d40040cb9",
+          "resumed": true,
+          "conversation": "ee2e66b6-4444-4242-8db8-2c1b96fb5553",
+          "at": 1791468688531
+        }
+      ]
+    },
+    "legacyRestore": {
+      "legacyBinding": "legacy-unused-3319a718-7d55-4a7a-b703-dba6cbd599c6",
+      "finalBindings": {
+        "lead": "ee2e66b6-4444-4242-8db8-2c1b96fb5553",
+        "reviewer": "9b84e0e7-419e-4f2b-80d2-f9a8150e8762",
+        "writer": null,
+        "tester": "7f96c352-f3c8-4f6f-b9e9-be9b1ce0bf2a"
+      }
+    }
+  },
+  "org": {},
+  "cleanup": {
+    "dataRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "leftoverProcesses": [],
+    "errors": []
+  }
+}

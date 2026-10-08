@@ -1,0 +1,109 @@
+{
+  "case": "LIVE-STANDALONE-INT",
+  "model": "gemini-3.8-flash-high",
+  "runId": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366",
+  "previousAliveAtImmediateSend": true,
+  "immediate": {
+    "previous": {
+      "pid": 61021,
+      "command": "agy --new-project --agent autobyteus-3ed70621f59bf7fb --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    },
+    "recallAck": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366",
+      "message_id": "e2e-595c938d-183a-45c5-afde-7b0e8a83c9fe",
+      "dedupe_key": "agent_run_input:e2e:e2e-595c938d-183a-45c5-afde-7b0e8a83c9fe",
+      "state": "accepted",
+      "accepted": true,
+      "duplicate": false,
+      "status": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366"
+      }
+    },
+    "secondAck": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366",
+      "message_id": "e2e-efb03c45-0def-4d61-ad67-2ed22530326e",
+      "dedupe_key": "agent_run_input:e2e:e2e-efb03c45-0def-4d61-ad67-2ed22530326e",
+      "state": "accepted",
+      "accepted": true,
+      "duplicate": false,
+      "status": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366"
+      }
+    },
+    "interruptAck": {
+      "command_type": "INTERRUPT_GENERATION",
+      "command_id": "interrupt-be8de276-3ce9-4ea0-b0a1-bd894380d6e5",
+      "target": {
+        "target_kind": "standalone_run",
+        "run_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366"
+      },
+      "state": "accepted"
+    },
+    "recallText": "CODE-S-ee8b31b5\nSECOND-OK",
+    "agyAfter": [
+      {
+        "pid": 94236,
+        "command": "agy --conversation 2dd0b007-bafb-4446-9aa6-ee9ab680a6ee --agent autobyteus-3ed70621f59bf7fb --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ]
+  },
+  "later": {
+    "previous": {
+      "pid": 94236,
+      "command": "agy --conversation 2dd0b007-bafb-4446-9aa6-ee9ab680a6ee --agent autobyteus-3ed70621f59bf7fb --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    },
+    "ack": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366",
+      "message_id": "e2e-19607e8b-e6f5-4e77-a6e8-abf36a04ca0b",
+      "dedupe_key": "agent_run_input:e2e:e2e-19607e8b-e6f5-4e77-a6e8-abf36a04ca0b",
+      "state": "accepted",
+      "accepted": true,
+      "duplicate": false,
+      "status": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_ca0a4980bbbb46cfa1d4c6426731b366"
+      }
+    },
+    "agyAfter": [
+      {
+        "pid": 14231,
+        "command": "agy --conversation 2dd0b007-bafb-4446-9aa6-ee9ab680a6ee --agent autobyteus-3ed70621f59bf7fb --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ]
+  },
+  "statuses": [
+    "idle",
+    "initializing",
+    "running",
+    "idle",
+    "initializing",
+    "running",
+    "offline",
+    "initializing",
+    "offline",
+    "initializing",
+    "running",
+    "idle",
+    "initializing",
+    "running",
+    "idle",
+    "initializing",
+    "running",
+    "offline",
+    "initializing",
+    "offline",
+    "initializing",
+    "running",
+    "idle"
+  ],
+  "rejectedAcks": [],
+  "result": "Pass"
+}

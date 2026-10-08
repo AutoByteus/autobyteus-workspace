@@ -36,7 +36,6 @@ export class TaskTeamExecutionFactory {
     parentContext: TeamRunContext<FlatTeamExecutionContext>;
     teamNode: TeamRunAgentTeamNode;
     activationMode: ConfiguredMemberActivationMode;
-    prepareConfiguredAgents: boolean;
   }): FlatTeamPreparationOperation {
     return this.materialize({ ...input, applicationBinding: null,
       configuredMemberActivationMode: input.activationMode });
@@ -48,7 +47,6 @@ export class TaskTeamExecutionFactory {
     applicationBinding: TeamRunApplicationBinding | null;
     teamNode: TeamRunAgentTeamNode;
     configuredMemberActivationMode: ConfiguredMemberActivationMode;
-    prepareConfiguredAgents: boolean;
   }): FlatTeamPreparationOperation {
     const context = this.options.buildContext({
       handoffs: input.handoffs,
@@ -66,7 +64,7 @@ export class TaskTeamExecutionFactory {
     const events = new TaskAgentDurabilityEventGate(this.options.publishAgentEvent);
     const manager = this.options.createTeamManager(context, events.publish);
     const teamRun = new TeamRun(context, new FlatTeamRunBackend(context, manager));
-    const operation = beginFlatTeamPreparation({ teamRun, manager, prepareConfiguredAgents: input.prepareConfiguredAgents });
+    const operation = beginFlatTeamPreparation({ teamRun, manager });
     let committed = false;
     return Object.freeze({
       // Cancellation fences acquisition/input; only unpublished events are discarded.

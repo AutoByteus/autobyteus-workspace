@@ -65,6 +65,35 @@ describe('Projects live changes (/ws/projects) in the stores', () => {
     expect(store.liveChanges).toEqual({})
   })
 
+  it('closing and reopening a Task live moves it out of and back into the open lanes, highlighted, with open counts (AC-011, AC-010)', async () => {
+    vi.useFakeTimers()
+    apolloClientMock.query.mockResolvedValue({ data: { projectTasks: [task('t1', '2026-09-26T01:00:00.000Z', 'IN_PROGRESS'), task('t2', '2026-09-26T00:30:00.000Z', 'DONE')] } })
+    const store = useProjectTaskStore()
+    await store.fetchTasks('p1')
+    expect(useProjectStore().projects[0]).toMatchObject({ taskCount: 2, openTaskCount: 1 })
+    store.applyChange({ type: 'task_upserted', scope, task: task('t1', '2026-09-26T02:00:00.000Z', 'CANCELLED') })
+    expect(store.liveChanges).toEqual({ t1: 'moved' })
+    expect(useProjectStore().projects[0]).toMatchObject({ taskCount: 2, openTaskCount: 0 })
+    vi.advanceTimersByTime(LIVE_HIGHLIGHT_MS)
+    // DONE -> CANCELLED is a lane move too (Done and Cancelled are separate lanes).
+    store.applyChange({ type: 'task_upserted', scope, task: task('t2', '2026-09-26T02:30:00.000Z', 'CANCELLED') })
+    expect(store.liveChanges).toEqual({ t2: 'moved' })
+    vi.advanceTimersByTime(LIVE_HIGHLIGHT_MS)
+    store.applyChange({ type: 'task_upserted', scope, task: task('t1', '2026-09-26T03:00:00.000Z', 'TODO') })
+    expect(store.liveChanges).toEqual({ t1: 'moved' })
+    expect(useProjectStore().projects[0]).toMatchObject({ taskCount: 2, openTaskCount: 1 })
+  })
+
+  it('a Temp task closing live moves from Open (or Done) to Cancelled', async () => {
+    vi.useFakeTimers()
+    apolloClientMock.query.mockResolvedValue({ data: { tasksWithoutProject: [temp('x1', '2026-09-26T01:00:00.000Z'), temp('x2', '2026-09-26T00:30:00.000Z', 'DONE')] } })
+    const store = useProjectTaskStore()
+    await store.fetchTasks(TEMP_TASKS_LIST_ID)
+    store.applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: temp('x1', '2026-09-26T02:00:00.000Z', 'CANCELLED') })
+    store.applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: temp('x2', '2026-09-26T02:30:00.000Z', 'CANCELLED') })
+    expect(store.liveChanges).toEqual({ x1: 'moved', x2: 'moved' })
+  })
+
   it('queues changes while a read is in flight and replays them onto the arriving snapshot (DS-006)', async () => {
     const store = useProjectTaskStore()
     const pending = deferred<unknown>()

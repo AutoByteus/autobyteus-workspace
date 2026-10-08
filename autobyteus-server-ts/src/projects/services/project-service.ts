@@ -16,6 +16,7 @@ import type {
   UpdateProjectWorkspaceCommand,
 } from "../domain/models.js";
 import { ProjectError } from "../domain/project-errors.js";
+import { isTerminalTaskStatus } from "../domain/task-status.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 
@@ -269,7 +270,7 @@ export class ProjectService {
       ...fields,
       workspaces,
       taskCount: tasks.length,
-      openTaskCount: tasks.filter((task) => task.status !== "DONE").length,
+      openTaskCount: tasks.filter((task) => !isTerminalTaskStatus(task.status)).length,
     };
   }
 }

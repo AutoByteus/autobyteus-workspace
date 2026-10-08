@@ -1,0 +1,92 @@
+{
+  "case": "LIVE-ORG-B1",
+  "model": "gemini-3.8-flash-high",
+  "orgRunId": "agy_recovery_org_384c435d_5d2d_4947_a572_54eaf8a93831_2f7b3480c59e4a6fb5e00381f44d0d7f",
+  "directorRunId": "agy_recovery_director_384c435d_5d2d_4947_a572_54_fa01e37704b24afea8861d7628135976",
+  "workerRunId": "agy_recovery_worker_384c435d_5d2d_4947_a572_54ea_3720ac008bce4b8bb0a738841002de9b",
+  "remember": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_384c435d_5d2d_4947_a572_54eaf8a93831_2f7b3480c59e4a6fb5e00381f44d0d7f",
+      "command_id": "08f15c41-5d1a-4882-893a-7d303af1dc22",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_fa01e37704b24afea8861d7628135976",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "OK",
+    "start": 3
+  },
+  "crashed": {
+    "pid": 19540,
+    "command": "agy --new-project --agent autobyteus-6ebeabc90419cb39 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+  },
+  "stateAfterCrash": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent organization run terminated successfully."
+  },
+  "stateAfterTerminate": {
+    "configIsActive": false,
+    "inspectionIsActive": false
+  },
+  "secondTerminate": {
+    "success": false,
+    "message": "Agent organization run not found."
+  },
+  "stateAfterSecondTerminate": {
+    "configIsActive": false,
+    "inspectionIsActive": false
+  },
+  "restore": {
+    "success": true,
+    "message": "Agent organization run restored successfully.",
+    "agentOrgRunId": "agy_recovery_org_384c435d_5d2d_4947_a572_54eaf8a93831_2f7b3480c59e4a6fb5e00381f44d0d7f"
+  },
+  "stateAfterRestore": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "recall": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_384c435d_5d2d_4947_a572_54eaf8a93831_2f7b3480c59e4a6fb5e00381f44d0d7f",
+      "command_id": "634dac9d-75dd-4afd-b7a3-62a649b8c3c8",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_director_384c435d_5d2d_4947_a572_54_fa01e37704b24afea8861d7628135976",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "CODE-D-5416598a\n",
+    "start": 3
+  },
+  "resumedAgy": [
+    {
+      "pid": 28780,
+      "command": "agy --conversation c172b63c-e62f-439a-a86f-547952beca7d --agent autobyteus-6ebeabc90419cb39 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "directorNode": {
+    "address": "/director",
+    "agentDefinitionId": "agy-recovery-director-384c435d-5d2d-4947-a572-54eaf8a93831",
+    "role": null,
+    "description": null,
+    "agentRunId": "agy_recovery_director_384c435d_5d2d_4947_a572_54_fa01e37704b24afea8861d7628135976",
+    "platformAgentRunId": "c172b63c-e62f-439a-a86f-547952beca7d",
+    "launchConfiguration": {
+      "runtimeKind": "antigravity_cli",
+      "llmModelIdentifier": "gemini-3.8-flash-high",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace"
+    }
+  },
+  "result": "Pass"
+}

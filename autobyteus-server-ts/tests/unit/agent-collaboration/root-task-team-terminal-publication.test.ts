@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AgentRunEventType, type AgentRunEvent } from '../../../src/agent-execution/domain/agent-run-event.js';
 import { createRootExecutionPhysicalScope } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
-import { releaseGenerationFixture } from '../../fixtures/task-release-generation-fixtures.js';
+import { activateTeamMembers, releaseGenerationFixture } from '../../fixtures/task-release-generation-fixtures.js';
 import { testAgentNode, testAgentTeamNode } from '../../fixtures/current-team-run-fixtures.js';
 
 // Real directory/factory/configured handles; provider events and exact release are controlled.
@@ -16,7 +16,6 @@ function fixture() {
     ],
   });
   const listeners = new Map<string, (event: AgentRunEvent) => void>();
-  const publishedDuringBinding: number[] = [];
   const emit = (id: string, status: 'idle' | 'offline') => listeners.get(id)?.({
     eventType: AgentRunEventType.AGENT_STATUS, runId: id,
     payload: { status }, statusHint: status === 'idle' ? 'IDLE' : null,
@@ -33,15 +32,10 @@ function fixture() {
     physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [node.teamRunId] }),
     callbacks: f.callbacks,
   });
-  const bindProviderEvents = () => {
-    for (const run of f.acquired) {
-      run.subscribeToEvents = (listener: (event: AgentRunEvent) => void) => {
-        listeners.set(run.runId, listener);
-        emit(run.runId, 'idle');
-        publishedDuringBinding.push(f.callbacks.publishAgentEvent.mock.calls.length);
-        return () => { listeners.delete(run.runId); };
-      };
-    }
+  f.providerEvents.subscribe = (run, listener) => {
+    listeners.set(run.runId, listener);
+    emit(run.runId, 'idle');
+    return () => { listeners.delete(run.runId); };
   };
   const statuses = () => f.callbacks.publishAgentEvent.mock.calls
     .filter(([, event]) => event.kind === 'agent_run' && event.event.eventType === AgentRunEventType.AGENT_STATUS)
@@ -49,14 +43,15 @@ function fixture() {
       id: identity.agentRunId, address: identity.memberAddress, root: identity.root,
       status: event.event.payload.status,
     }));
-  return { ...f, node, operation, bindProviderEvents, publishedDuringBinding, statuses };
+  return { ...f, node, operation, statuses };
 }
 
 describe('root-hosted Task Team terminal publication (AC-006/007)', () => {
-  it('keeps private prepared/aborted Team members unpublished', async () => {
+  it('prepares no Team member and keeps an aborted preparation unpublished', async () => {
     const f = fixture();
     const prepared = await f.operation.prepare();
-    expect(f.acquired).toHaveLength(2);
+    expect(f.acquired).toHaveLength(0);
+    expect(prepared.stagedPlatformBindings).toEqual([]);
     expect(f.active.size).toBe(0);
     expect(f.callbacks.publishAgentEvent).not.toHaveBeenCalled();
     await prepared.abort();
@@ -68,11 +63,13 @@ describe('root-hosted Task Team terminal publication (AC-006/007)', () => {
   it('forwards every committed configured member terminal event after exact successful Task release', async () => {
     const f = fixture();
     const prepared = await f.operation.prepare();
-    f.bindProviderEvents();
     prepared.sealForCommit();
     prepared.commitAfterDurability();
     f.teams.reserveTaskSubtree(prepared.preparedTeamRuns).commit();
-    expect(f.publishedDuringBinding).toEqual([0, 0]);
+    // Committed scope only: every member stays Offline until its own work arrives.
+    expect(f.acquired).toHaveLength(0);
+    expect(prepared.preparedTeamRuns[0].getLeafAgentStatusSnapshots().map(s => s.details.status)).toEqual(['offline', 'offline']);
+    await activateTeamMembers(prepared.preparedTeamRuns[0], ['task-lead', 'task-reader']);
     const expected = f.node.children.filter(member => member.kind === 'agent').map(member => ({
       id: member.agentRunId, address: member.address, root: f.root, status: 'idle',
     }));

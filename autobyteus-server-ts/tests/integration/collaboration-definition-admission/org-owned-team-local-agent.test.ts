@@ -174,21 +174,24 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     });
     let callbacks: FlatTeamExecutionCallbacks | undefined;
     // Only the execution plane is substituted; all definition reads remain real.
-    const materialize = vi.fn(async (input: Parameters<FlatTeamExecutionFactory['materialize']>[0]) => {
+    const beginMaterialization = vi.fn((input: Parameters<FlatTeamExecutionFactory['beginMaterialization']>[0]) => {
       callbacks = input.callbacks;
-      return { teamRun: { teamRunId: input.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } };
+      return {
+        prepare: async () => ({ teamRun: { teamRunId: input.teamNode.teamRunId }, commitAfterDurability() { }, abort: async () => { } }),
+        cancel() { }, release: async () => ({ accepted: true }),
+      };
     });
     const prepareNewAgentRun = vi.fn();
     const read = vi.spyOn(f.service, 'getDefinitionById');
     const builder = new AgentOrgExecutionScopeBuilder({
-      flatTeamExecutionFactory: { materialize } as never,
+      flatTeamExecutionFactory: { beginMaterialization } as never,
       taskExecutionIdentity: {} as never,
       agentRunManager: { prepareNewAgentRun } as never,
       orgDefinitions: { getDefinitionById: id => f.orgs.getById(id) },
       teamDefinitions: f.service,
     });
     await builder.build({ state, persistence: {} as never, activationMode: 'fresh', persistInitialPackage: false });
-    expect(materialize.mock.calls[0]![0].prepareConfiguredAgents).toBe(false);
+    expect(beginMaterialization).toHaveBeenCalledOnce();
     expect(prepareNewAgentRun).not.toHaveBeenCalled();
     const member = state.index.listAgents().find(agent => agent.address === '/group/lead')!;
     const identity = createCollaborationMemberExecutionIdentity({

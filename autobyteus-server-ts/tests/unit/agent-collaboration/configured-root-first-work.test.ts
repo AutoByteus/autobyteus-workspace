@@ -119,7 +119,8 @@ for (const placement of placements) describe(`${placement} configured first work
     { activity: "indeterminate", binding: "old-thread", code: "COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE" },
   ] as const)("fails closed on $code at first work, not scope restore", async (row) => {
     const f = await build(placement, row);
-    expect(await f.send()).toMatchObject({ accepted: false, code: row.code });
+    // One activation-failure code; the underlying cause is named in the message.
+    expect(await f.send()).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: expect.stringContaining(row.code) });
     Object.values(f.manager).forEach((prepare) => expect(prepare).not.toHaveBeenCalled());
     expect(f.write).not.toHaveBeenCalled(); expect(f.publish).not.toHaveBeenCalled();
   });
@@ -140,8 +141,9 @@ for (const placement of placements) describe(`${placement} configured first work
   if (placement !== "direct_org") it("latches a post-root Flat cache failure as nonretryable without rolling back the tree", async () => {
     const f = await build(placement);
     vi.spyOn(FlatAgentExecutionContext.prototype, "replaceCommittedPlatformAgentRunId").mockImplementation(() => { throw new Error("cache failed"); });
-    expect(await f.send()).toMatchObject({ accepted: false, code: "COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED" });
-    expect(await f.send()).toMatchObject({ accepted: false, code: "COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED" });
+    const cacheFailure = { accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: expect.stringContaining("COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED") };
+    expect(await f.send()).toMatchObject(cacheFailure);
+    expect(await f.send()).toMatchObject(cacheFailure);
     expect(f.manager.newPreparation).toHaveBeenCalledTimes(1);
     expect(f.members()[1]!.platformAgentRunId).toBe("new-thread-1");
     expect(await f.reload()).toEqual(f.members());

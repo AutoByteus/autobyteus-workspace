@@ -1,0 +1,514 @@
+{
+  "closed-agent": {
+    "refusals": {
+      "redelegated": {
+        "error": {
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work."
+        }
+      },
+      "fenced": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      }
+    },
+    "rootId": "tra_manager_781983_fe5d5e99cb3e46138e3940f3dad5074c",
+    "projectId": "project_2f0ba4bc-d40d-4ae5-9384-e69d47782369",
+    "taskC": "project_task_09f96711-ae36-4c33-816a-90f19f413210",
+    "worker": "tra_worker_781983_0e4ba39a394e4683aa57118417ad8c37",
+    "ack": {
+      "task": {
+        "projectId": "project_2f0ba4bc-d40d-4ae5-9384-e69d47782369",
+        "taskId": "project_task_09f96711-ae36-4c33-816a-90f19f413210",
+        "status": "CANCELLED"
+      }
+    },
+    "reopenedAck": {
+      "task": {
+        "projectId": "project_2f0ba4bc-d40d-4ae5-9384-e69d47782369",
+        "taskId": "project_task_09f96711-ae36-4c33-816a-90f19f413210",
+        "status": "IN_PROGRESS"
+      }
+    },
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_0e4ba39a394e4683aa57118417ad8c37. tra_worker_781983_0e4ba39a394e4683aa57118417ad8c37 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_0e4ba39a394e4683aa57118417ad8c37"
+    },
+    "adHocTaskId": "ad_hoc_task_5dd05586-806b-4b09-ba8f-6ae4108e0d19",
+    "plain": "tra_worker_781983_836eb1b9d21644ed89e9d56a4e48f388",
+    "adHocAck": {
+      "task": {
+        "projectId": null,
+        "taskId": "ad_hoc_task_5dd05586-806b-4b09-ba8f-6ae4108e0d19",
+        "status": "CANCELLED"
+      }
+    },
+    "adHocFenced": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_836eb1b9d21644ed89e9d56a4e48f388. tra_worker_781983_836eb1b9d21644ed89e9d56a4e48f388 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_836eb1b9d21644ed89e9d56a4e48f388"
+    },
+    "feedFrames": 46,
+    "statusesSeen": [
+      "CANCELLED",
+      "DONE",
+      "IN_PROGRESS",
+      "TODO"
+    ]
+  },
+  "closed-team": {
+    "refusals": {
+      "redelegated": {
+        "error": {
+          "code": "TASK_AGENT_RESOURCE_CLOSED",
+          "message": "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work."
+        }
+      },
+      "fenced": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      }
+    },
+    "rootId": "tra_team_781983_93b89ff8fe6242b38032010307fdeab8",
+    "projectId": "project_3969dc62-4d2c-4052-958b-003bb08f773b",
+    "taskC": "project_task_42568dd2-1ebe-4c1c-b22e-ddaa4f561e1d",
+    "worker": "tra_worker_781983_51cc055e109c459a920a4fcc60b2d9e0",
+    "ack": {
+      "task": {
+        "projectId": "project_3969dc62-4d2c-4052-958b-003bb08f773b",
+        "taskId": "project_task_42568dd2-1ebe-4c1c-b22e-ddaa4f561e1d",
+        "status": "CANCELLED"
+      }
+    },
+    "reopenedAck": {
+      "task": {
+        "projectId": "project_3969dc62-4d2c-4052-958b-003bb08f773b",
+        "taskId": "project_task_42568dd2-1ebe-4c1c-b22e-ddaa4f561e1d",
+        "status": "IN_PROGRESS"
+      }
+    },
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_51cc055e109c459a920a4fcc60b2d9e0. tra_worker_781983_51cc055e109c459a920a4fcc60b2d9e0 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_51cc055e109c459a920a4fcc60b2d9e0"
+    },
+    "adHocTaskId": "ad_hoc_task_205a3142-f166-4af0-bf33-26a75bd97854",
+    "plain": "tra_worker_781983_3a74dd15fe8a4d428d303cc1155d5f75",
+    "adHocAck": {
+      "task": {
+        "projectId": null,
+        "taskId": "ad_hoc_task_205a3142-f166-4af0-bf33-26a75bd97854",
+        "status": "CANCELLED"
+      }
+    },
+    "adHocFenced": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_3a74dd15fe8a4d428d303cc1155d5f75. tra_worker_781983_3a74dd15fe8a4d428d303cc1155d5f75 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_3a74dd15fe8a4d428d303cc1155d5f75"
+    },
+    "feedFrames": 46,
+    "statusesSeen": [
+      "CANCELLED",
+      "DONE",
+      "IN_PROGRESS",
+      "TODO"
+    ]
+  },
+  "agent": {
+    "delegations": {
+      "delegatedA": {
+        "target_agent_run_id": "tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1",
+        "target_kind": "agent"
+      },
+      "delegatedB": {
+        "target_agent_run_id": "tra_worker_781983_a2e3af97d9184a7d8ebdd041b921692c",
+        "target_kind": "team"
+      },
+      "delegatedPlain": {
+        "target_agent_run_id": "tra_worker_781983_0a314fee3cb44d728fe01a8c09c8d04b",
+        "target_kind": "agent",
+        "task_id": "ad_hoc_task_6cc03c32-4d3a-4d68-99d7-51d28c3746f5"
+      }
+    },
+    "refusals": {
+      "tooEarly": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      },
+      "toHelper": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task work is closed. Only the run that assigned it can reactivate it: move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.",
+        "target_agent_run_id": null
+      },
+      "nonAssigner": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task work is closed. Only the run that assigned it can reactivate it: move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.",
+        "target_agent_run_id": null
+      }
+    },
+    "team": {
+      "teamRunId": "tra_squad_781983_f73080fdbf4f40e5b228b37851975154",
+      "coordinator": "tra_worker_781983_a2e3af97d9184a7d8ebdd041b921692c",
+      "mate": "tra_worker_781983_4f2f2d655c7b41398e80b9531d64ba39",
+      "members": [
+        "tra_worker_781983_4f2f2d655c7b41398e80b9531d64ba39",
+        "tra_worker_781983_a2e3af97d9184a7d8ebdd041b921692c"
+      ],
+      "toMember": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This run is part of closed Task work. Only the run that assigned the work can reactivate it: move the Task to TODO or IN_PROGRESS, then message the run ID delegate_task returned (for a Team, its coordinator).",
+        "target_agent_run_id": null
+      },
+      "teamReactivated": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to tra_worker_781983_a2e3af97d9184a7d8ebdd041b921692c. tra_worker_781983_a2e3af97d9184a7d8ebdd041b921692c was reactivated.",
+        "target_agent_run_id": "tra_worker_781983_a2e3af97d9184a7d8ebdd041b921692c"
+      }
+    },
+    "rootId": "tra_manager_781983_4d29e260f1db4c0ba16d5a1ba5173027",
+    "managerRunId": "tra_manager_781983_4d29e260f1db4c0ba16d5a1ba5173027",
+    "projectId": "project_5659ecf2-db6e-44c6-9575-9663df08562f",
+    "taskA": "project_task_f858c376-d439-452e-a591-f816749173e4",
+    "taskB": "project_task_a3e04814-cecb-499b-8fe2-6a702488eb74",
+    "adHocTaskId": "ad_hoc_task_6cc03c32-4d3a-4d68-99d7-51d28c3746f5",
+    "worker": "tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1",
+    "helpers": [
+      {
+        "agentRunId": "tra_helper_781983_b38fa737ac3a47c5abe824c93c8c8ae6"
+      },
+      {
+        "agentRunId": "tra_assistant_781983_d5b3eab9896b4c24ac4f7628a0ced5e4"
+      }
+    ],
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1. tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1"
+    },
+    "followUp": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Message delivered.",
+      "target_agent_run_id": "tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1"
+    },
+    "again": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1. tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1"
+    },
+    "deleted": {
+      "accepted": false,
+      "code": "TASK_NOT_FOUND",
+      "message": "The Task was deleted; its work cannot be reactivated.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_0a314fee3cb44d728fe01a8c09c8d04b. tra_worker_781983_0a314fee3cb44d728fe01a8c09c8d04b was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_0a314fee3cb44d728fe01a8c09c8d04b"
+    },
+    "reopenedEvent": [
+      {
+        "agentRunId": "tra_worker_781983_fa6b739441034e55a4cea8eb45b83ed1"
+      }
+    ],
+    "resumedConversation": "d78b2109-84af-41ef-b930-07d74ef712dc",
+    "conversationFiles": 1
+  },
+  "team": {
+    "delegations": {
+      "delegatedA": {
+        "target_agent_run_id": "tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d",
+        "target_kind": "agent"
+      },
+      "delegatedB": {
+        "target_agent_run_id": "tra_worker_781983_94ce141018794b62bc8bd1ac94a074f1",
+        "target_kind": "team"
+      },
+      "delegatedPlain": {
+        "target_agent_run_id": "tra_worker_781983_53238c488eff46d9bd30fedfcb39fe20",
+        "target_kind": "agent",
+        "task_id": "ad_hoc_task_e3b5fd51-8ec0-42c7-8abf-0f0be2333d1b"
+      }
+    },
+    "refusals": {
+      "tooEarly": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      },
+      "toHelper": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task work is closed. Only the run that assigned it can reactivate it: move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.",
+        "target_agent_run_id": null
+      },
+      "nonAssigner": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task work is closed. Only the run that assigned it can reactivate it: move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.",
+        "target_agent_run_id": null
+      }
+    },
+    "team": {
+      "teamRunId": "tra_squad_781983_b379f3f380424d2898e81f15a61a754b",
+      "coordinator": "tra_worker_781983_94ce141018794b62bc8bd1ac94a074f1",
+      "mate": "tra_worker_781983_bb32150fa7df4872a5dc6fb18229a982",
+      "members": [
+        "tra_worker_781983_94ce141018794b62bc8bd1ac94a074f1",
+        "tra_worker_781983_bb32150fa7df4872a5dc6fb18229a982"
+      ],
+      "toMember": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This run is part of closed Task work. Only the run that assigned the work can reactivate it: move the Task to TODO or IN_PROGRESS, then message the run ID delegate_task returned (for a Team, its coordinator).",
+        "target_agent_run_id": null
+      },
+      "teamReactivated": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to tra_worker_781983_94ce141018794b62bc8bd1ac94a074f1. tra_worker_781983_94ce141018794b62bc8bd1ac94a074f1 was reactivated.",
+        "target_agent_run_id": "tra_worker_781983_94ce141018794b62bc8bd1ac94a074f1"
+      }
+    },
+    "rootId": "tra_team_781983_43f202f088054a61951f6cd2b96d6399",
+    "managerRunId": "tra_manager_781983_7f82785a8d4840d7beefaedcb0dd0460",
+    "projectId": "project_3b1c4e19-3e49-477c-8b89-0a188d3774e7",
+    "taskA": "project_task_481f5f43-b65c-4612-9f4c-bbe78197a43d",
+    "taskB": "project_task_f5c1a092-c657-48ef-bce6-dfcd4b93f346",
+    "adHocTaskId": "ad_hoc_task_e3b5fd51-8ec0-42c7-8abf-0f0be2333d1b",
+    "worker": "tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d",
+    "helpers": [
+      {
+        "agentRunId": "tra_helper_781983_a83adf1613d84a8ebb8b79dfa4d45bba"
+      },
+      {
+        "agentRunId": "tra_assistant_781983_f40f5b3be0f648f4a5f79ae5208f7ff7"
+      }
+    ],
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d. tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d"
+    },
+    "followUp": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Message delivered.",
+      "target_agent_run_id": "tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d"
+    },
+    "again": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d. tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d"
+    },
+    "deleted": {
+      "accepted": false,
+      "code": "TASK_NOT_FOUND",
+      "message": "The Task was deleted; its work cannot be reactivated.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_53238c488eff46d9bd30fedfcb39fe20. tra_worker_781983_53238c488eff46d9bd30fedfcb39fe20 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_53238c488eff46d9bd30fedfcb39fe20"
+    },
+    "reopenedEvent": [
+      {
+        "agent_run_id": "tra_worker_781983_70b1c2f4561e4bfb8218e600166eb90d"
+      }
+    ],
+    "resumedConversation": "c25e8976-0dfe-4ec6-b69a-6b06c458af8b",
+    "conversationFiles": 1
+  },
+  "org": {
+    "delegations": {
+      "delegatedA": {
+        "target_agent_run_id": "tra_worker_781983_b6755a5f25294238817d0f75ada09b50",
+        "target_kind": "agent"
+      },
+      "delegatedB": {
+        "target_agent_run_id": "tra_worker_781983_490f8d39fab64794a33550cbbe3c06d3",
+        "target_kind": "team"
+      },
+      "delegatedPlain": {
+        "target_agent_run_id": "tra_worker_781983_8bb46066a0664450a42c637e77ef13ff",
+        "target_kind": "agent",
+        "task_id": "ad_hoc_task_c9321346-1636-479a-aa72-369d7da6ec30"
+      }
+    },
+    "refusals": {
+      "tooEarly": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.",
+        "target_agent_run_id": null
+      },
+      "toHelper": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task work is closed. Only the run that assigned it can reactivate it: move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.",
+        "target_agent_run_id": null
+      },
+      "nonAssigner": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This Task work is closed. Only the run that assigned it can reactivate it: move the Task to TODO or IN_PROGRESS with create_or_update_task, then message the run ID delegate_task returned.",
+        "target_agent_run_id": null
+      }
+    },
+    "team": {
+      "teamRunId": "tra_squad_781983_efaf538243734c6997facdc1e651c6b4",
+      "coordinator": "tra_worker_781983_490f8d39fab64794a33550cbbe3c06d3",
+      "mate": "tra_worker_781983_0c7683e49d0148c1b14a83e2c0a17935",
+      "members": [
+        "tra_worker_781983_0c7683e49d0148c1b14a83e2c0a17935",
+        "tra_worker_781983_490f8d39fab64794a33550cbbe3c06d3"
+      ],
+      "toMember": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This run is part of closed Task work. Only the run that assigned the work can reactivate it: move the Task to TODO or IN_PROGRESS, then message the run ID delegate_task returned (for a Team, its coordinator).",
+        "target_agent_run_id": null
+      },
+      "teamReactivated": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to tra_worker_781983_490f8d39fab64794a33550cbbe3c06d3. tra_worker_781983_490f8d39fab64794a33550cbbe3c06d3 was reactivated.",
+        "target_agent_run_id": "tra_worker_781983_490f8d39fab64794a33550cbbe3c06d3"
+      }
+    },
+    "rootId": "tra_org_781983_d8d3e57ef97445ea8f11501be8f980a2",
+    "managerRunId": "tra_manager_781983_a2cbc64bdfbf4a3aaa324374b4521da6",
+    "projectId": "project_422286ac-0668-4f71-8ed8-0b25e2f41fec",
+    "taskA": "project_task_1c7cfbc9-a90e-4550-a2c6-8b7479bbacaf",
+    "taskB": "project_task_f5ed7e40-aa94-4773-b1e2-b69a5c72a131",
+    "adHocTaskId": "ad_hoc_task_c9321346-1636-479a-aa72-369d7da6ec30",
+    "worker": "tra_worker_781983_b6755a5f25294238817d0f75ada09b50",
+    "helpers": [
+      {
+        "agentRunId": "tra_helper_781983_751f0a9152b94bfbb83dd928317e3330"
+      },
+      {
+        "agentRunId": "tra_assistant_781983_e99e0ef9e1ec47ffb6efa1aeb21750da"
+      }
+    ],
+    "reactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_b6755a5f25294238817d0f75ada09b50. tra_worker_781983_b6755a5f25294238817d0f75ada09b50 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_b6755a5f25294238817d0f75ada09b50"
+    },
+    "followUp": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Message delivered.",
+      "target_agent_run_id": "tra_worker_781983_b6755a5f25294238817d0f75ada09b50"
+    },
+    "again": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_b6755a5f25294238817d0f75ada09b50. tra_worker_781983_b6755a5f25294238817d0f75ada09b50 was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_b6755a5f25294238817d0f75ada09b50"
+    },
+    "deleted": {
+      "accepted": false,
+      "code": "TASK_NOT_FOUND",
+      "message": "The Task was deleted; its work cannot be reactivated.",
+      "target_agent_run_id": null
+    },
+    "adHocReactivated": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to tra_worker_781983_8bb46066a0664450a42c637e77ef13ff. tra_worker_781983_8bb46066a0664450a42c637e77ef13ff was reactivated.",
+      "target_agent_run_id": "tra_worker_781983_8bb46066a0664450a42c637e77ef13ff"
+    },
+    "reopenedEvent": [
+      {
+        "agentRunId": "tra_worker_781983_b6755a5f25294238817d0f75ada09b50"
+      }
+    ],
+    "resumedConversation": "1374ba04-4d4b-4341-bd01-b10272d308ed",
+    "conversationFiles": 1
+  },
+  "race": {
+    "projectId": "project_9e7fd1aa-b907-4d4c-adc1-ed0afaa6c92e",
+    "taskId": "project_task_5e2394cf-9df0-4ac4-86c4-ac8dbe54906e",
+    "worker": "tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d",
+    "rounds": [
+      {
+        "round": 1,
+        "outcome": "done-after-commit:TASK_EXECUTION_RESTORE_FAILED",
+        "done": "{\"task\":{\"projectId\":\"project_9e7fd1aa-b907-4d4c-adc1-ed0afaa6c92e\",\"taskId\":\"project_task_5e2394cf-9df0-4ac4-86c4-ac8dbe54906e\",\"status\":\"DONE\"}}",
+        "message": {
+          "accepted": false,
+          "code": "TASK_EXECUTION_RESTORE_FAILED",
+          "message": "The delegated execution for AgentRun 'tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d' could not be restored: AgentRun backend preparation was cancelled. tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d was reactivated (its Task work is open again) but did not receive this message; message it again.",
+          "target_agent_run_id": null
+        }
+      },
+      {
+        "round": 2,
+        "outcome": "done-after-commit:TASK_EXECUTION_RESTORE_FAILED",
+        "done": "{\"task\":{\"projectId\":\"project_9e7fd1aa-b907-4d4c-adc1-ed0afaa6c92e\",\"taskId\":\"project_task_5e2394cf-9df0-4ac4-86c4-ac8dbe54906e\",\"status\":\"DONE\"}}",
+        "message": {
+          "accepted": false,
+          "code": "TASK_EXECUTION_RESTORE_FAILED",
+          "message": "The delegated execution for AgentRun 'tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d' could not be restored: AgentRun backend preparation was cancelled. tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d was reactivated (its Task work is open again) but did not receive this message; message it again.",
+          "target_agent_run_id": null
+        }
+      },
+      {
+        "round": 3,
+        "outcome": "done-after-commit:TASK_EXECUTION_RESTORE_FAILED",
+        "done": "{\"task\":{\"projectId\":\"project_9e7fd1aa-b907-4d4c-adc1-ed0afaa6c92e\",\"taskId\":\"project_task_5e2394cf-9df0-4ac4-86c4-ac8dbe54906e\",\"status\":\"DONE\"}}",
+        "message": {
+          "accepted": false,
+          "code": "TASK_EXECUTION_RESTORE_FAILED",
+          "message": "The delegated execution for AgentRun 'tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d' could not be restored: AgentRun backend preparation was cancelled. tra_worker_781983_f26e9a5b7395417bb8c30b0ad0110c4d was reactivated (its Task work is open again) but did not receive this message; message it again.",
+          "target_agent_run_id": null
+        }
+      }
+    ]
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}

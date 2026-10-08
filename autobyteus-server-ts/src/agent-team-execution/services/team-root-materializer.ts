@@ -95,7 +95,6 @@ export const materializeTeamRoot = async (
     applicationBinding: input.config.applicationBinding,
     activationMode: input.mode,
     callbacks,
-    prepareConfiguredAgents: false,
   }).prepare();
   const tree = input.tree;
   try {

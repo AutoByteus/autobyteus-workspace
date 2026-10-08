@@ -50,7 +50,7 @@ export class TaskTeamExecutionRegistry {
       throw new Error(`Task TeamRun '${teamRunId}' is already active or reserved.`);
     }
     const operation = this.options.subTeamRunFactory.beginTaskTeam({
-      activationMode: "restore", prepareConfiguredAgents: false,
+      activationMode: "restore",
       handoffs: input.handoffs,
       parentContext: this.options.teamContext,
       teamNode: input.teamNode,
@@ -85,7 +85,7 @@ export class TaskTeamExecutionRegistry {
     }
     this.reserved.add(teamRunId);
     const factoryControl = this.options.subTeamRunFactory.beginTaskTeam({
-      handoffs: input.handoffs, parentContext: this.options.teamContext, teamNode: input.teamNode, activationMode: "fresh", prepareConfiguredAgents: true,
+      handoffs: input.handoffs, parentContext: this.options.teamContext, teamNode: input.teamNode, activationMode: "fresh",
     });
     const operation = createTaskExecutionPreparation({
       cancel: () => factoryControl.cancel(),
@@ -112,7 +112,8 @@ export class TaskTeamExecutionRegistry {
         coordinatorAgentRunId: coordinator.agentRunId,
       }),
       preparedTeamRuns: Object.freeze([root]),
-      stagedPlatformBindings: prepared.stagedPlatformBindings,
+      // Members bind on first work (the coordinator through the seed), never at preparation.
+      stagedPlatformBindings: Object.freeze([]),
       sealForCommit: () => {
         if (state !== "preparing" || !this.reserved.has(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' cannot be sealed.`);
         state = "sealed";

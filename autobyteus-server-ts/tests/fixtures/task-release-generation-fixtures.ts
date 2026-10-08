@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { AgentRunActivationCandidate } from '../../src/agent-execution/services/agent-run-activation-candidate.js';
 import { FlatTeamExecutionFactory } from '../../src/agent-team-execution/local/flat-team-execution-factory.js';
 import { RootAgentExecutionRegistry } from '../../src/agent-collaboration/execution/backends/root-agent-execution-registry.js';
@@ -24,9 +25,12 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   const root = createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: 'root' });
   const active = new Map<string, any>(), acquired: any[] = [], stopped: any[] = [];
   const stopFailures = new Set<any>();
+  /** Provider event subscription seam: Team members subscribe when first work activates them. */
+  const providerEvents: { subscribe: ((run: any, listener: (event: any) => void) => () => void) | null } = { subscribe: null };
   const create = async ({ runId }: any) => {
-    const run = { runId, alive: true, isActive() { return this.alive; }, bindExecutionAdmissionFence: vi.fn(),
-      subscribeToEvents: () => () => undefined, getStatusSnapshot: () => ({ status: 'idle' }),
+    const run: any = { runId, alive: true, isActive() { return this.alive; }, bindExecutionAdmissionFence: vi.fn(),
+      subscribeToEvents: (listener: (event: any) => void) => providerEvents.subscribe ? providerEvents.subscribe(run, listener) : () => undefined,
+      getStatusSnapshot: () => ({ status: 'idle' }),
       getInputStateSnapshot: () => null, postUserMessage: async () => ({ accepted: true }) };
     acquired.push(run);
     return new AgentRunActivationCandidate({ runId, runtimeKind: (runId === rejectBindingFor ? 'claude_agent_sdk' : 'autobyteus') as never, platformAgentRunId: null,
@@ -52,7 +56,15 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   const factory = new FlatTeamExecutionFactory(dependencies);
   const teams = new RootTeamExecutionDirectory(factory);
   const rootAgents = new RootAgentExecutionRegistry({ root, callbacks, ...dependencies });
-  return { root, kind, factory, callbacks, manager, active, acquired, stopped, stop, stopFailures, teams, rootAgents };
+  return { root, kind, factory, callbacks, manager, active, acquired, stopped, stop, stopFailures, teams, rootAgents, providerEvents };
+}
+
+/** Team members start on first work: deliver one input to each exact member, as a teammate or seed would. */
+export async function activateTeamMembers(teamRun: { postMessage(message: AgentInputUserMessage, agentRunId: string): Promise<{ accepted: boolean }> }, agentRunIds: readonly string[]) {
+  for (const agentRunId of agentRunIds) {
+    const result = await teamRun.postMessage(new AgentInputUserMessage('Work for this member'), agentRunId);
+    if (!result.accepted) throw new Error(`Team member '${agentRunId}' did not accept its first work.`);
+  }
 }
 const now = '2026-10-03T00:00:00.000Z';
 /** Saved conversations are present (the restore precondition), as the registries' controlled inspector says. */
@@ -77,8 +89,9 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   if (kind === 'agent_team') {
     const rootNode = testAgentTeamNode({ address: '/', teamRunId: 'root', coordinatorAddress: '/Manager', children: [managerNode] });
     const prepared = await f.factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: [] }),
-      teamNode: rootNode, handoffs: [], activationMode: 'fresh', callbacks: f.callbacks, prepareConfiguredAgents: true }).prepare();
+      teamNode: rootNode, handoffs: [], activationMode: 'fresh', callbacks: f.callbacks }).prepare();
     prepared.commitAfterDurability(); rootTeam = prepared.teamRun;
+    await activateTeamMembers(rootTeam, ['manager']);
   } else {
     const prepared = await f.rootAgents.prepareConfigured(managerNode, 'fresh');
     prepared.commitAfterDurability(); await prepared.handle.getOrCreateAgentRun();
@@ -92,10 +105,12 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
   const teamOp = rootTeam ? rootTeam.beginTaskTeam(teamCommand) : f.teams.beginRootTaskTeam({ task: teamCommand,
     physicalScope: createRootExecutionPhysicalScope({ root: f.root, ancestorTeamRunIds: ['A-team'] }), callbacks: f.callbacks });
   const oldTeam = (await commit(teamOp)).preparedTeamRuns[0];
+  await activateTeamMembers(oldTeam, ['A-lead']); // The coordinator starts with the delegated work.
   if (!rootTeam) f.teams.reserveTaskSubtree([oldTeam]).commit();
   const childOp = oldTeam.beginTaskAgent({ address: childNode.address, agentRunId: 'A-child', sourceNode: childNode }); await commit(childOp);
   const nestedOp = oldTeam.beginTaskTeam({ address: nestedNode.address, teamRunId: 'A-nested', handoffs: [], teamNode: nestedNode });
   const oldNested = (await commit(nestedOp)).preparedTeamRuns[0];
+  await activateTeamMembers(oldNested, ['A-nested-lead']);
   const grandOp = oldNested.beginTaskAgent({ address: grandNode.address, agentRunId: 'A-grand', sourceNode: grandNode }); await commit(grandOp);
   if (!rootTeam) f.teams.reserveTaskSubtree([oldNested]).commit();
   const copies = ['A-helper', 'B-worker', 'borrowed'].map(id => testAgentNode(`/${id}`, { agentRunId: id }));

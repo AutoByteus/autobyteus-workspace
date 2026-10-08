@@ -63,7 +63,7 @@ const startHarness = async () => {
   const root = {
     teamRunId: "team-run-1",
     openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, tasks, messages: messagesSnapshot, statuses: [] },
+      snapshot: { tree, closedTaskExecutions: [], messages: messagesSnapshot, statuses: [], inputStates: [] },
       baseChangeSequence: 0,
       queuedEvents: [],
       subscribe: vi.fn(() => vi.fn()),

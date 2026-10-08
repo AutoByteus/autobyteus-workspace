@@ -48,7 +48,7 @@ export const linkTaskAgentResource = (file: TaskAgentResourceFile, link: TaskAge
   if (find(file, link.agentRun)) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is already linked to this Task.");
   if (link.role !== "assigned") {
     const creator = find(file, link.creator);
-    if (!creator || creator.closedAt !== null) throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The creating Task agent run is closed (Task DONE).");
+    if (!creator || creator.closedAt !== null) throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The creating Task agent run is closed (its Task is DONE or CANCELLED).");
   }
   const team = "teamRunId" in link.agentRun;
   if (team && !link.coordinatorAgentRunId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "A Team agent run needs its coordinator.");
@@ -73,7 +73,7 @@ export const settleTaskAgentResourceStart = (file: TaskAgentResourceFile, agentR
 };
 
 /**
- * DONE: every open entry is closed. A closed entry stays closed until its assigner reactivates it
+ * DONE or CANCELLED: every open entry is closed. A closed entry stays closed until its assigner reactivates it
  * (`reopenTaskAgentResource`); helper entries never reopen.
  */
 export const closeTaskAgentResources = (file: TaskAgentResourceFile, now: string): TaskAgentResourceFile =>

@@ -1,0 +1,9 @@
+Updating autobyteus-web/package.json: 1.4.99-beta.3 -> 1.4.99-beta.4
+[release-beta4-personal fa04d1290] chore(release): bump workspace release version to 1.4.99-beta.4
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin release-beta4-personal
+  git push origin v1.4.99-beta.4
+   64331eb63..fa04d1290  HEAD -> personal
+ * [new tag]             v1.4.99-beta.4 -> v1.4.99-beta.4

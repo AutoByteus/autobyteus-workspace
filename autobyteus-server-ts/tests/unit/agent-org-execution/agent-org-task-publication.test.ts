@@ -15,7 +15,7 @@ const teamInput = (id: string) => ({ taskId: `task-${id}`, address: "/target" as
 afterEach(() => vi.restoreAllMocks());
 
 describe("Org-root prepared task publishers", () => {
-  it("forwards root task-Team and recursively materialized Team/Agent events after ordered durable release", async () => {
+  it("forwards root task-Team and recursively materialized Team/Agent events after ordered durable release; Team members start only with their work", async () => {
     const handles = observeConfiguredHandles();
     const seen: string[] = [];
     const callbacks: FlatTeamExecutionCallbacks = {
@@ -26,13 +26,14 @@ describe("Org-root prepared task publishers", () => {
         if (event.kind !== "status_overlay") throw new Error("Expected exact status event");
         expect(event.snapshot.execution).toEqual(identity);
         seen.push(`${identity.agentRunId}:${event.snapshot.details.status}`);
-        // A publication during the initial flush must follow all already retained events.
-        if (seen.at(-1) === "parent-lead:initializing") handles.get("parent-lead")!.emit("idle");
       }),
     };
     const directory = new RootTeamExecutionDirectory(new FlatTeamExecutionFactory());
     const prepared = await directory.beginRootTaskTeam({ task: teamInput("parent"),
       physicalScope: { root, ancestorTeamRunIds: ["parent"] }, callbacks }).prepare();
+    // Scope-only preparation: no member handle activation and no staged provider binding.
+    expect(prepared.stagedPlatformBindings).toEqual([]);
+    expect(handles.has("parent-lead")).toBe(false);
     const registration = directory.reserveTaskSubtree(prepared.preparedTeamRuns);
     expect(seen).toEqual([]);
     prepared.sealForCommit();
@@ -42,7 +43,7 @@ describe("Org-root prepared task publishers", () => {
     const committed = prepared.commitAfterDurability();
     await committed.releaseWork(() => undefined);
     expect(() => committed.releaseWork(() => undefined)).toThrow();
-    expect(seen).toEqual(["activated", "parent-lead:initializing", "parent-lead:idle", "parent-lead:idle", "parent-lead:running"]);
+    expect(seen).toEqual(["activated", "parent-lead:running"]);
     await flushMicrotasks();
     expect(handles.get("parent-lead")!.handle.postMessage).toHaveBeenCalledExactlyOnceWith(message);
     expect(seen.at(-1)).toBe("parent-lead:running");
@@ -61,7 +62,8 @@ describe("Org-root prepared task publishers", () => {
       await flushMicrotasks();
       const execution = handles.get(`${id}-lead`)!;
       execution.emit("idle"); execution.emit("offline");
-      expect(seen.slice(before)).toEqual([`${id}:activated`, `${id}-lead:initializing`, `${id}-lead:idle`, `${id}-lead:running`, `${id}-lead:idle`, `${id}-lead:offline`]);
+      expect(seen.slice(before)).toEqual([`${id}:activated`, `${id}-lead:running`, `${id}-lead:idle`, `${id}-lead:offline`]);
+      expect(execution.handle.prepareConfiguredActivation).not.toHaveBeenCalled();
       expect(execution.handle.postMessage).toHaveBeenCalledExactlyOnceWith(message);
       expect(execution.input.identity.memberAddress).toBe("/target/lead");
       expect(execution.input.physicalScope.ancestorTeamRunIds).toEqual(id === "child" ? ["parent", "child"] : ["parent", "child", "grandchild"]);
@@ -96,16 +98,14 @@ describe("Org-root prepared task publishers", () => {
     expect(forward).not.toHaveBeenCalled();
   });
 
-  it.each(["agent", "team"] as const)("closes the %s publisher when preparation rejects", async (kind) => {
+  // A task Team prepares no member, so only the single-Agent preparation activates a provider.
+  it("closes the agent publisher when preparation rejects", async () => {
     const failure = new Error("Provider preparation rejected");
     const handles = observeConfiguredHandles(failure);
     const forward = vi.fn();
     const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn() };
-    const prepare = kind === "team"
-      ? new RootTeamExecutionDirectory(new FlatTeamExecutionFactory()).beginRootTaskTeam({
-          task: teamInput("failed"), physicalScope: { root, ancestorTeamRunIds: ["failed"] }, callbacks }).prepare()
-      : new RootAgentExecutionRegistry({ root, callbacks }).beginTaskPreparation({
-          taskId: "failed", address: "/worker", agentRunId: "failed-agent", sourceNode: testAgentNode("/worker"), message }).prepare();
+    const prepare = new RootAgentExecutionRegistry({ root, callbacks }).beginTaskPreparation({
+      taskId: "failed", address: "/worker", agentRunId: "failed-agent", sourceNode: testAgentNode("/worker"), message }).prepare();
     await expect(prepare).rejects.toBe(failure);
     for (const execution of handles.values()) {
       execution.emit("idle");

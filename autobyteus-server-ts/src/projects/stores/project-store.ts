@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { readJsonFile, updateJsonFile, withFilePathLock, writeJsonFile } from "../../persistence/file/store-utils.js";
-import type { Project, ProjectTask, ProjectTaskStatus, ProjectWorkspaceLink } from "../domain/models.js";
+import type { Project, ProjectTask, ProjectWorkspaceLink } from "../domain/models.js";
+import { isProjectTaskStatus } from "../domain/task-status.js";
 import { isSafeContextFilename, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isSafeSegment, ProjectsLayout } from "./projects-layout.js";
 
 const isNonEmptyString = (value: unknown): value is string => typeof value === "string" && value.length > 0;
-const STATUSES: ReadonlySet<ProjectTaskStatus> = new Set(["TODO", "IN_PROGRESS", "DONE"]);
 const isValidLink = (link: unknown): link is ProjectWorkspaceLink => {
   const c = link as Partial<ProjectWorkspaceLink> | null;
   return Boolean(c) && isNonEmptyString(c?.workspaceRootPath)
@@ -33,8 +33,8 @@ export const readProjectFile = (raw: unknown, projectId: string): Project | null
 export const readTaskFile = (raw: unknown, projectId: string, taskId: string): ProjectTask | null => {
   const c = raw as (Partial<ProjectTask> & { projectId?: unknown }) | null;
   if (!c || c.taskId !== taskId || c.projectId !== projectId || !isNonEmptyString(c.description)
-    || !STATUSES.has(c.status as ProjectTaskStatus) || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
-  return { taskId, description: c.description, status: c.status as ProjectTaskStatus, createdAt: c.createdAt, updatedAt: c.updatedAt,
+    || !isProjectTaskStatus(c.status) || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
+  return { taskId, description: c.description, status: c.status, createdAt: c.createdAt, updatedAt: c.updatedAt,
     contextFiles: normalizeContextFiles(c.contextFiles) };
 };
 /** Exact writer shapes. */

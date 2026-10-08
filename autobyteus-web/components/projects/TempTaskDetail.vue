@@ -17,7 +17,7 @@
       <template v-else>
         <header class="mb-4 mt-4 flex flex-wrap items-center gap-3">
           <h1 class="text-2xl font-semibold tracking-tight text-slate-900" data-testid="temp-task-heading">{{ t('projects.ui.taskDetails') }}</h1>
-          <span class="rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset" :class="task.status === 'DONE' ? 'bg-emerald-50 text-emerald-800 ring-emerald-200' : 'bg-blue-50 text-blue-800 ring-blue-200'" data-testid="temp-task-status">{{ t(task.status === 'DONE' ? 'projects.temp.lane.done' : 'projects.temp.lane.open') }}</span>
+          <span class="rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset" :class="tempLanePillClass(tempTaskLaneOf(task.status))" data-testid="temp-task-status">{{ t(TEMP_LANE_LABEL_KEYS[tempTaskLaneOf(task.status)]) }}</span>
         </header>
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white" aria-labelledby="temp-description-heading">
           <div class="p-5 sm:p-6">
@@ -45,6 +45,7 @@ import TaskRootSection from './TaskRootSection.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFeed'
 import { TEMP_TASKS_LIST_ID, useProjectTaskStore } from '~/stores/projectTaskStore'
+import { TEMP_LANE_LABEL_KEYS, tempLanePillClass, tempTaskLaneOf } from '~/utils/projects/taskStatusPresentation'
 
 const props = defineProps<{ taskId: string }>()
 const { t } = useLocalization()

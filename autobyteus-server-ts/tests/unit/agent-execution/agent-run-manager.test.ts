@@ -8,6 +8,10 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import {
+  PreviousRuntimeReleasePendingError,
+  isAgentRunActivationQuarantineError,
+} from "../../../src/agent-execution/errors.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import type { AgentToolMcpRunSessionDeactivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
@@ -663,6 +667,94 @@ describe("AgentRunManager published-run termination", () => {
 
     await manager.terminateAgentRun(run.runId);
     await expect((await manager.prepareAgentRunTermination(run)).commit().finish()).resolves.toEqual({ accepted: true });
+  });
+
+  describe("releaseRetiredRun", () => {
+    const publishThenGoOffline = async (input: { runId: string; backend: ReturnType<typeof createBackend> }) => {
+      const restored = createBackend({ runId: input.runId });
+      const restoreBackend = vi.fn(async () => restored);
+      const fixture = createManagerFixture({
+        codexBackendFactory: { createBackend: vi.fn(async () => input.backend), restoreBackend },
+      });
+      const run = (await fixture.manager.beginActivation({ kind: "new", runId: input.runId, config: createConfig() })
+        .prepare()).commitPublication();
+      input.backend.setActive(false);
+      expect(fixture.manager.getActiveRun(input.runId)).toBeNull();
+      const restore = () => fixture.manager.beginActivation({ kind: "restore", context: new AgentRunContext({
+        runId: input.runId, config: createConfig(), runtimeContext: null,
+      }) }).prepare();
+      return { ...fixture, run, restore, restoreBackend };
+    };
+
+    it("does nothing for an unknown id or a live published run", async () => {
+      const { manager, run, backend } = await publish({ runId: "run-live-release" });
+
+      await expect(manager.releaseRetiredRun("unknown-run")).resolves.toBeUndefined();
+      await expect(manager.releaseRetiredRun(run.runId)).resolves.toBeUndefined();
+
+      expect(backend.terminate).not.toHaveBeenCalled();
+      expect(manager.getActiveRun(run.runId)).toBe(run);
+    });
+
+    it("exact-releases a run that went offline so its replacement can be claimed (AC-003)", async () => {
+      const backend = createBackend({ runId: "run-offline" });
+      const { manager, activationRegistry, run, restore } = await publishThenGoOffline({ runId: "run-offline", backend });
+      await expect(Promise.resolve().then(restore)).rejects.toMatchObject({
+        code: "AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING",
+      });
+
+      await expect(manager.releaseRetiredRun(` ${run.runId} `)).resolves.toBeUndefined();
+
+      expect(backend.terminate).toHaveBeenCalledOnce();
+      expect(activationRegistry.getRetiredRun(run.runId)).toBeNull();
+      const replacement = (await restore()).commitPublication();
+      expect(replacement).not.toBe(run);
+      expect(manager.getActiveRun(run.runId)).toBe(replacement);
+      await expect(manager.releaseRetiredRun(run.runId)).resolves.toBeUndefined();
+      expect(manager.getActiveRun(run.runId)).toBe(replacement);
+    });
+
+    it.each([
+      ["throws", (backend: ReturnType<typeof createBackend>) =>
+        backend.terminate.mockRejectedValueOnce(new Error("provider stop unconfirmed"))],
+      ["is not accepted", (backend: ReturnType<typeof createBackend>) =>
+        backend.terminate.mockResolvedValueOnce({ accepted: false, code: "BUSY", message: "still stopping" })],
+    ] as const)("keeps the release owed and retryable when the previous runtime's stop %s (AC-008)", async (_label, failOnce) => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      const backend = createBackend({ runId: "run-release-retry" });
+      const { manager, activationRegistry, run, restore } = await publishThenGoOffline({ runId: "run-release-retry", backend });
+      failOnce(backend);
+
+      const failure = await manager.releaseRetiredRun(run.runId).catch((error: unknown) => error);
+      expect(failure).toBeInstanceOf(PreviousRuntimeReleasePendingError);
+      expect(isAgentRunActivationQuarantineError(failure)).toBe(false);
+      expect((failure as Error).message).toMatch(/send it again/);
+      expect(activationRegistry.getRetiredRun(run.runId)).toBe(run);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING"));
+
+      await expect(manager.releaseRetiredRun(run.runId)).resolves.toBeUndefined();
+      expect(backend.terminate).toHaveBeenCalledTimes(2);
+      expect(activationRegistry.getRetiredRun(run.runId)).toBeNull();
+      expect((await restore()).commitPublication().runId).toBe(run.runId);
+    });
+
+    it("joins an in-flight release instead of stopping the previous runtime twice (AC-005)", async () => {
+      let finishStop!: () => void;
+      const stopped = new Promise<void>((resolve) => { finishStop = resolve; });
+      const backend = createBackend({ runId: "run-release-join" });
+      backend.terminate.mockImplementation(async () => { await stopped; return { accepted: true }; });
+      const { manager, activationRegistry, run } = await publishThenGoOffline({ runId: "run-release-join", backend });
+
+      const first = manager.releaseRetiredRun(run.runId);
+      const second = manager.releaseRetiredRun(run.runId);
+      await Promise.resolve();
+      expect(activationRegistry.getRetiredRun(run.runId)).toBe(run);
+      finishStop();
+
+      await expect(Promise.all([first, second])).resolves.toEqual([undefined, undefined]);
+      expect(backend.terminate).toHaveBeenCalledOnce();
+      expect(activationRegistry.getRetiredRun(run.runId)).toBeNull();
+    });
   });
 
   it("routes stop-all active runs through the managed prepared boundary", async () => {
