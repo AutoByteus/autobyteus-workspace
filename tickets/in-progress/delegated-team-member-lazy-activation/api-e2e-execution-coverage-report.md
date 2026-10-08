@@ -105,7 +105,7 @@ Evidence paths below are relative to `tickets/in-progress/delegated-team-member-
 | E-04 | Same after baseline fix | worktree | Org publication chain | Pass | `org-publication-worktree-fixed.log` |
 | E-05 | `task-copy-idle-lifetime.e2e.test.ts` alone | worktree | Idle lifetime incl. Team copy with a never-addressed member (`mate`) | Pass | `idle-lifetime-rerun.log`, `idle-lifetime-rerun/` |
 
-E-02 `task-copy-idle-lifetime` failure, classified as environmental: Agent `delegate_task` failed with `Antigravity model discovery timed out; check the CLI and retry.`, a quiet-copy shutdown came 58.8 s after idle against a 59 s lower bound, and an Org idle wait timed out. All three hit Agent copies and timing that this change does not touch. The suite passes alone (E-05).
+E-02 `task-copy-idle-lifetime` failure, classified as environmental: Agent `delegate_task` failed with `Antigravity model discovery timed out; check the CLI and retry.`, a quiet-copy shutdown came 58.8 s after idle against a 59 s lower bound, and an Org idle wait timed out. All three hit Agent copies and timing that this change does not touch. The suite passes alone (E-05). Another worktree (`interrupt-resend-retired-cleanup-stuck`, not owned by this run) was running scripted-AGY E2E batches on the same host at the time, which explains the load.
 
 ## Validation Confidence Scorecard (Mandatory)
 
