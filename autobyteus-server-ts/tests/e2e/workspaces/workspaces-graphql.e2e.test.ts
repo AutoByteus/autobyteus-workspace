@@ -260,6 +260,15 @@ describe("Workspaces GraphQL e2e", () => {
     }>(createMutation, { input: { rootPath } });
     const workspaceId = created.createWorkspace.workspaceId;
 
+    // The process run managers are initialized by server startup; here they have no active runs.
+    const agentManagerSpy = vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({
+      listActiveRuns: () => [],
+      getActiveRun: () => null,
+    } as any);
+    const teamManagerSpy = vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({
+      listManagedTeamRunIds: () => [],
+      getManagedTeamRun: () => null,
+    } as any);
     const removed = await execGraphql<{
       removeWorkspace: {
         success: boolean;
@@ -267,7 +276,10 @@ describe("Workspaces GraphQL e2e", () => {
         workspaceId: string;
         workspaceRootPath: string | null;
       };
-    }>(removeMutation, { input: { workspaceId } });
+    }>(removeMutation, { input: { workspaceId } }).finally(() => {
+      agentManagerSpy.mockRestore();
+      teamManagerSpy.mockRestore();
+    });
 
     expect(removed.removeWorkspace).toMatchObject({
       success: true,
