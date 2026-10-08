@@ -1,6 +1,5 @@
 import { createFrozenRootTerminationScope } from "../../agent-collaboration/execution/backends/frozen-root-termination-scope.js";
 import type { FlatTeamExecutionManagerOptions } from "./flat-team-execution-manager-options.js";
-import { prepareFlatTeamConfiguredActivation } from "./prepare-flat-team-configured-activation.js";
 import { releaseOwnedFlatTeamRuntime } from "./owned-flat-team-runtime-release.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -85,14 +84,6 @@ export class FlatTeamExecutionManager {
     const run = this.collaboratorTeams.get(teamRunId);
     if (!run) throw new Error(`Collaborator TeamRun '${teamRunId}' is not active in TeamRun '${this.context.teamRunId}'.`);
     return run;
-  }
-
-
-  prepareConfiguredActivation() {
-    this.assertActive();
-    const handles = this.context.runtimeContext.memberContexts.map(member => this.configured.getOrCreate(member));
-    return prepareFlatTeamConfiguredActivation({ teamRunId: this.context.teamRunId, handles,
-      releasePrivate: () => this.releasePrivateActivation() });
   }
 
   cancelPrivateActivation(): void {

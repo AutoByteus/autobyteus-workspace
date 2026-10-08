@@ -47,7 +47,7 @@ export class CollaboratorTeamExecutionRegistry {
     try {
       const source = { handoffs: input.handoffs, parentContext: this.options.teamContext, teamNode: input.teamNode };
       const prepared = await this.options.subTeamRunFactory.beginTaskTeam({ ...source,
-        activationMode: input.mode, prepareConfiguredAgents: false }).prepare();
+        activationMode: input.mode }).prepare();
       prepared.commitAfterDurability();
       run = prepared.teamRun;
     } catch (error) {
