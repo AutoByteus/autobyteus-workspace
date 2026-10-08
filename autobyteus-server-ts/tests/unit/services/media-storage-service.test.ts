@@ -47,7 +47,7 @@ describe("MediaStorageService", () => {
       "https://example.com/remote_image.png",
       destinationDir,
     );
-    expect(url).toBe("http://unittest.server:8000/rest/files/images/downloaded.png");
+    expect(url).toBe("/rest/files/images/downloaded.png");
   });
 
   it("stores media from a data URI", async () => {
