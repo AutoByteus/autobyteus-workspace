@@ -1584,8 +1584,38 @@ const collapsedStripOtherEntries = async () => {
     assert(inAppBefore.nav.stripChatLit === true && inAppBefore.nav.workspacesLit === false, 'in-app New chat: Chat lit, Workspaces not', inAppBefore);
     assert(inAppAfter.route === '/chat' && inAppAfter.text === 'Draft after a Team run' && JSON.stringify(inAppAfter.selection) === JSON.stringify(inAppBefore.selection),
       'in-app New chat: route, draft text and selection kept', details.newChatInApp);
-    assert(inAppAfter.focus === 'app-left-panel-run-history', 'in-app New chat: Workspaces moved focus onto a run row although no run is open (REQ-009)', details.newChatInApp);
+    assert(inAppAfter.focus === 'app-left-panel-run-history' && inAppAfter.tree.scrollTop === 0,
+      'in-app New chat: Workspaces scrolled to or focused a run row although no run is open (REQ-009)', details.newChatInApp);
     await shot(page, 'pmu-018-new-chat-in-app-workspaces');
+
+    // H. Other pages reached in-app after a run (its selection stays in the store): /agents after an Agent run and
+    // /projects after a Team run. Workspaces only shows the panel; nothing is scrolled to or focused (REQ-006, REQ-009).
+    const workspacesOnPageAfterRun = async (label, openRun, navLabel, pathPrefix) => {
+      await openRun();
+      await page.locator('[data-test="app-left-panel-collapse"]').waitFor({ timeout: 60000 });
+      await sleep(500);
+      await navTo(page, navLabel);
+      await until(`${label}: on ${pathPrefix}`, async () => new URL(page.url()).pathname.startsWith(pathPrefix), 30000);
+      await sleep(800);
+      const docked = await treeSummary(page);
+      await collapseLeftPanel(page);
+      const before = { nav: await shellNavState(page), selection: await selectionState(page) };
+      await stripWorkspaces(page).click();
+      await page.locator('[data-test="app-left-panel-run-history"]').waitFor({ timeout: 15000 });
+      await sleep(1000);
+      const after = { focus: await page.evaluate(() => document.activeElement?.getAttribute('data-test') ?? document.activeElement?.tagName ?? null),
+        selection: await selectionState(page), tree: await treeSummary(page) };
+      const result = { docked, before, after };
+      assert(before.nav.workspacesLit === false, `${label}: Workspaces not lit off a run`, result);
+      assert(JSON.stringify(after.selection) === JSON.stringify(before.selection), `${label}: route or selection changed`, result);
+      assert(after.focus === 'app-left-panel-run-history' && after.tree.scrollTop === 0, `${label}: Workspaces scrolled to or focused a run row off a run (REQ-009)`, result);
+      await shot(page, `pmu-018-${label.replace(/[^a-z]+/gi, '-')}-workspaces`);
+      return result;
+    };
+    details.agentsAfterAgentRun = await workspacesOnPageAfterRun('agents after an Agent run',
+      () => goto(page, `/chat?id=${encodeURIComponent(sentRunId)}`), 'Agents', '/agents');
+    details.projectsAfterTeamRun = await workspacesOnPageAfterRun('projects after a Team run',
+      () => openTeamRunFromPanel(page, names, teamRoot), 'Projects', '/projects');
     assertNoBrowserErrors(errors);
     return details;
   } finally { for (const input of inputs) input.close(); }
@@ -1609,7 +1639,7 @@ const CASES = {
   'PMU-015': ['Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)', projectsTab],
   'PMU-016': ['Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first', projectsTabOtherRootsAndNarrow],
   'PMU-017': ['Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat', collapsedStripWorkspaces],
-  'PMU-018': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates', collapsedStripOtherEntries],
+  'PMU-018': ['Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)', collapsedStripOtherEntries],
 };
 
 let result = 'Pass';

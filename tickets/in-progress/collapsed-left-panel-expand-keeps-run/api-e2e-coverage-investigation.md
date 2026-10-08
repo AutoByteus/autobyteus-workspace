@@ -18,10 +18,10 @@ All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/c
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002`
 - API/E2E Test-Case Ledger: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 1
-- Trigger: implementation handoff IR-001 (commit `1639cba95`, base `origin/personal@efc2bfd0f`)
+- Current Investigation Round: 2
+- Trigger: round 1 — implementation handoff IR-001 (`1639cba95`); round 2 — IR-002 (`d0bf3db82`), Local Fix for CR-001 / FAIL-001
 - Prior Investigation Reviewed: none (first round)
 - Latest Authoritative Investigation: this file
 
@@ -231,6 +231,21 @@ Scored after the unit suite and before the browser/desktop runs.
 | --- | --- | --- | --- |
 | FAIL-001: on New chat reached in-app after a Team run, Workspaces scrolls to and focuses the stale Team member row (REQ-009/REQ-006) | `Local Fix` (preliminary; execution failure → failure-origin review) | PMU-018 step G (`api-e2e-evidence/pmu-018-r6/`), DSK-001 run-4 | implementation_engineer via code_reviewer |
 | REQ-005/AC-002 name a "right Team tab" member open; the right Team tab is messages-only in this product | Observation (non-blocking) | `RightSideTabs.vue` → `CollaborationOverviewPanel`; `TeamMembersPanel` fixture-only | solution_designer (wording) |
+
+## Round 2 Delta (IR-002)
+
+- Changed boundary: `useRevealSelectedTreeRow(container, runShown)`. It returns early unless a run is shown, with `runShown` = `useShellPrimaryNavigation().isWorkspacesActive` passed by `AppLeftPanel` to the tree panel, plus a `watch(runShown)` reschedule.
+- Validity of existing coverage:
+  - PMU-017 and PMU-018 A–G remain valid; G is the FAIL-001 reproduction.
+  - Unit specs were updated by IR-002 (run-shown gate cases).
+  - NAV-PROBE and CDR-LIVE are unaffected (strip order, highlight, route, rows).
+- Added: PMU-018 step H (`/agents` after an Agent run, `/projects` after a Team run), the code reviewer's FO-SCN-002. G now also asserts `scrollTop` 0.
+- Plan:
+  1. Recheck FAIL-001 first (PMU-018).
+  2. Unit suite.
+  3. Full PMU.
+  4. Rebuilt app + DSK-001 (with an Org host added).
+- Result: all Pass; see the execution coverage report (Pass, 95%).
 
 ## Investigation Decision
 

@@ -45,12 +45,20 @@
 | 17 | DSK-001 | 2026-10-08 | Completed | `dsk-001.mjs` run-4 | Agent + Team journeys; New chat focus on the Workspaces section | Agent Pass, Team Pass; New chat Fail: focus on the stale Team row on `#/chat` | Fail (FAIL-001) | `isolated-desktop/run-4/evidence.json` | Instance stopped, data root removed |
 | 18 | PMU-018 | 2026-10-08 | Completed | `--cases PMU-018` r6 with step G (in-app New chat after a Team run) | Focus on `app-left-panel-run-history` | Focus on `workspace-team-member-<team>-/manager`, tree scrolled 773→844; route/text/selection unchanged | Fail (FAIL-001) | `api-e2e-evidence/pmu-018-r6/` | Routed for failure-origin review |
 
+| 19 | UNIT-FULL | 2026-10-08 | Completed | Round 2 (IR-002 `d0bf3db82`): `pnpm -C autobyteus-web test:nuxt --run` | all pass | 589 files passed / 2 skipped; 4021 tests passed / 3 skipped | Pass | `api-e2e-evidence/web-unit-full-run-r2.log` | |
+| 20 | PMU-018 | 2026-10-08 | Completed | Round 2 `--cases PMU-018`, with new step H (`/agents` after an Agent run, `/projects` after a Team run) | A–H pass; G/H focus on the Workspaces section, `scrollTop` 0 | All pass. G: stale Team row at docked 773 → after Workspaces `scrollTop` 0, focus `app-left-panel-run-history`. H: same on `/agents` and `/projects` | Pass (FAIL-001 resolved) | `api-e2e-evidence/r2-pmu-018/` | |
+| 21 | PMU-FULL | 2026-10-08 | Started | Round 2 full run | PMU-001..018 pass | running | — | `api-e2e-evidence/r2-pmu-full/` | |
+| 22 | PMU-FULL | 2026-10-08 | Completed | same | PMU-001..018 pass | 18/18 Pass (PMU-018 A–H); processes terminated, browser closed, data root removed | Pass | `api-e2e-evidence/r2-pmu-full/evidence.json` | |
+| 23 | DSK-001 | 2026-10-08 | Checkpoint | Round 2 rebuild `pnpm -C autobyteus-web build:electron:mac`; driver extended with an Org host and a return to the Team run before New chat | — | interrupted by a machine restart (`build-electron-mac-r2-interrupted.log`), rebuilt: EXIT=0 | — | `isolated-desktop/build-electron-mac-r2.log` | |
+| 24 | DSK-001 | 2026-10-08 | Checkpoint | `isolated-app start --from-worktree --data-root /tmp/clp-dsk-root-CVKc` (restricted PATH) + `.env` + `restart` → `iso-63466-7dc1`; r2-run-1..5 | — | r2-run-1: default 1200×768 window shows the right panel as a strip (existing responsive policy) → OS window resized to 1512×913 with `osascript` on this instance's PID (CDP `Browser.*` is not available in Electron: r2-run-2/3); r2-run-4: driver Team-row reopen; r2-run-5: the driver's round-1 "no selected row" check was stricter than REQ-009 (the stale highlight predates this change) → aligned with PMU-018 G | — | `isolated-desktop/r2-run-1..5/` | Driver-only corrections |
+| 25 | DSK-001 | 2026-10-08 | Completed | `dsk-001.mjs` r2-run-6 on 1512×913 | Agent/Team/Org: worker row selected, visible, focused, route/selection/center/Projects tab kept; New chat after a Team run: focus on the Workspaces section, no scroll, no row focus | Agent `scrollTop` 0; Team 241; Org 352 (end of list); New chat: focus `app-left-panel-run-history`, stale row hidden, not focused, `scrollTop` 0; no renderer errors | Pass (FAIL-001 resolved in the packaged app) | `isolated-desktop/r2-run-6/` | Instance stopped (ports released), data root removed |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 18
-- Last completed case and result: PMU-018 r6 Fail (FAIL-001)
+- Last durably recorded event: 25 (round 2)
+- Last completed case and result: DSK-001 r2-run-6 Pass (round 2)
 - Cases still running, interrupted, or not started: none
 - Reconciled into execution coverage report: `Yes` — § Test-Case Ledger Reconciliation
-- Rerun plan after rework: PMU-018 (A–G), PMU-017, UNIT-FULL, DSK-001 New chat step (the driver is reusable)
+- Round 2 complete: UNIT-FULL, PMU-018 (A–H), PMU-FULL, DSK-001 all Pass
 - Next case or recovery action: DSK-001 after CDR-LIVE (the desktop build rebuilds shared server/SDK outputs)
 - Reconciled into execution coverage report: `No`

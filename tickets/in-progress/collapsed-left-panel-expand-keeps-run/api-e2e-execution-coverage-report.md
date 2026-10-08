@@ -1,6 +1,6 @@
 # API/E2E Execution Coverage Report — collapsed-left-panel-expand-keeps-run
 
-All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/`. Evidence: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-evidence/` (abbreviated `EV/`).
+All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/`. Evidence: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-evidence/` (abbreviated `EV/`; on disk, not committed).
 
 ## Execution Round Meta
 
@@ -11,223 +11,194 @@ All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/c
 - Supplemental Task Artifacts: Product `ui-ux-spec.md` + VIS-001..008 (`/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/collapsed-left-panel-expand-keeps-run/`); `handoff-architecture-design-complete.md`; `product-design-request.md`; `approval-request.md`
 - Design Review Report: `N/A — not applicable` (direct route)
 - Architecture Review Revision Record: `N/A — not applicable` (direct route)
-- Implementation Handoff: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-handoff.md` (IR-001)
-- Implementation Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-revision-record.md`
-- Code Review Report: `N/A — not applicable` (direct route)
-- Code Review Revision Record: `N/A — not applicable` (direct route)
+- Implementation Handoff: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-handoff.md` (IR-002)
+- Implementation Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-revision-record.md` (IR-001, IR-002)
+- Code Review Report: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/code-review-report.md` (failure-origin review of FAIL-001, CR-001 `Local Fix`)
+- Code Review Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/code-review-revision-record.md` (CRR-001)
 - Delivery Revision Record: `N/A`
 - Coverage Investigation: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
-- Trigger: implementation handoff IR-001, commit `1639cba95`
-- Prior Round Reviewed: none
-- Latest Authoritative Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2
+- Trigger: implementation IR-002 (`d0bf3db82`), the Local Fix for CR-001 / FAIL-001
+- Prior Round Reviewed: round 1 (API-REV-001, Fail, FAIL-001)
+- Latest Authoritative Round: 2
 
 ## Routing Classification
 
-- Task size: `Medium`
-- Architectural risk: `Low`
-- Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery` (not reached: this round is `Fail`)
-- Proportional test-code review decision: `Not Required — direct low-risk route` (the Fail goes to failure-origin review)
+- Task size: `Medium`; Architectural risk: `Low` (CRR-001 confirmed the classification)
+- Input route: `Direct Low-Risk`; Successful-output route: `Delivery`
+- Proportional test-code review decision: `Not Required — direct low-risk route`
 
 ## Investigation And Execution Basis
 
-- Coverage investigation completed before durable coverage changes or final execution: `Yes`
-- Investigation plan followed: `Yes`, with three evidence-driven revisions recorded in the investigation:
-  - The right Team tab has no member list in this product (messages only), so SCN-A1 became "nested non-coordinator member selected in the docked tree → collapse → Workspaces".
-  - An open Org worker's row is already rendered when Workspaces docks the panel, so "rows arrive late" (SCN-A4) is exercised at app start with a slow backend.
-  - The projects-navigation probe was found to read the strip's page-icon order and was updated.
-- Reroute required during execution: `Yes` — validation failure (FAIL-001), routed for failure-origin review.
+- Coverage investigation completed before durable coverage changes or final execution: `Yes` (round 1; round 2 delta recorded there)
+- Round 2 plan:
+  - recheck FAIL-001 first (PMU-018 G, DSK-001 New chat)
+  - add step H for the code reviewer's FO-SCN-002 (`/agents`, `/projects` after a run)
+  - rerun the unit suite, full PMU and DSK-001 on a rebuilt worktree app
+- Reroute required: `No`
+
+## Prior Failure Resolution
+
+| Failure | Round-1 Evidence | Round-2 Result | Evidence |
+| --- | --- | --- | --- |
+| FAIL-001: Workspaces on New chat after a Team run scrolled to and focused the stale Team row | PMU-018 G (`EV/pmu-018-r6/`), DSK-001 run-4 | Resolved. Focus is on `app-left-panel-run-history`, `scrollTop` stays 0 (the docked tree had the stale row at 773), and route, draft and selection are kept. | Browser: `EV/r2-pmu-018/`, `EV/r2-pmu-full/`. Desktop: `EV/isolated-desktop/r2-run-6/` (stale row hidden, `focused: false`, `scrollTop` 0). |
 
 ## Test-Case Ledger Reconciliation
 
-- Ledger initialized before execution: `Yes`; every completed case recorded immediately: `Yes`; reconciled: `Yes`
-- Last durably recorded event: see ledger (DSK-001 / PMU-018 r6)
+- Ledger initialized before execution and updated after every case: `Yes`; reconciled: `Yes`
 
 | Case ID | Final Result | Last Event | Evidence / Artifact Path | Reconciled Result / Follow-Up |
 | --- | --- | --- | --- | --- |
-| UNIT-FULL | Pass | Completed | `EV/web-unit-full-run.log` | 589 files / 4016 tests pass |
-| PMU-017 | Pass | Completed (full run) | `EV/pmu-full-r1/` | tightened assertions |
-| PMU-018 | Fail | Completed r6 | `EV/pmu-018-r6/` | Steps A–F pass (also in `EV/pmu-full-r1/`, before step G existed); step G = FAIL-001 |
-| PMU-FULL | Pass | Completed | `EV/pmu-full-r1/evidence.json` | PMU-001..PMU-018 (A–F) pass |
-| NAV-PROBE | Pass | Completed r3 | `EV/projects-navigation-r3/` | stale selector fixed |
-| CDR-LIVE | Pass | Completed r2 | `EV/chat-draft-rows-r2/` | D04 baseline fix; D11 expectation fixed |
-| DSK-001 | Fail | Completed run-4 | `EV/isolated-desktop/run-4/` | Agent + Team host journeys pass; New chat step = FAIL-001 |
+| UNIT-FULL | Pass | Round 2 | `EV/web-unit-full-run-r2.log` | 589 files / 4021 tests pass (3 skipped) |
+| PMU-017 | Pass | Round 2 full | `EV/r2-pmu-full/` | |
+| PMU-018 (A–H) | Pass | Round 2 | `EV/r2-pmu-018/`, `EV/r2-pmu-full/` | G and H prove FAIL-001 / FO-SCN-002 |
+| PMU-FULL | Pass | Round 2 | `EV/r2-pmu-full/evidence.json` | PMU-001..PMU-018 |
+| NAV-PROBE | Pass | Round 1 r3 | `EV/projects-navigation-r3/` | Not affected by IR-002 (strip order only) |
+| CDR-LIVE | Pass | Round 1 r2 | `EV/chat-draft-rows-r2/` | Not rerun. IR-002 only gates the reveal; D02/D11 assert highlight, route, panel and rows, which IR-002 does not change. PMU covers the reveal paths. |
+| DSK-001 | Pass | Round 2 r2-run-6 | `EV/isolated-desktop/r2-run-6/` | Agent, Team, Org hosts + New chat after a Team run |
 
 ## Compatibility / Legacy Scope Check
 
-- Requirements/design introduce or tolerate backward compatibility: `No`
-- Compatibility-only or legacy-retention behavior observed: `No` (path-only Chat rule replaced; inline parsers removed; D11 dead fallback removed — confirmed in the diff)
-- Persisted-data transition: `N/A` (`Not Affected`)
-- Durable coverage retained only for compatibility: `No`
+- Backward compatibility in scope: `No`; compatibility/legacy behavior observed: `No`; persisted data: `N/A` (`Not Affected`); compatibility-only coverage: `No`
+- IR-002 adds a required `runShown` input to `useRevealSelectedTreeRow` (a bounded D-4 signature change, recorded in IR-002). There is no fallback or dual path.
 
 ## Changed Boundary And Evidence Matrix
 
 | Case ID | Behavior / Requirement / AC IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| UNIT-FULL | AC-006/007/010/011, REQ-003/004/009, D-1..D-7 | Highlight, strip, panel, tree state, reveal composable, predicates | Vitest/jsdom | Durable | Pass | `EV/web-unit-full-run.log` |
-| PMU-017 Agent/Team/Org hosts | AC-001, AC-003, AC-008, AC-011, AC-012, REQ-001..005 | Task card → Workspaces → reveal | Browser, real backend + scripted AGY | Durable, Browser | Pass | `EV/pmu-full-r1/` (`pmu-017-*.png`) |
-| PMU-017 drawer 760×900 | AC-005, REQ-009 | Drawer + Escape focus return | Browser | Durable | Pass | same |
-| PMU-017 short 1440×500 | AC-010, REQ-010 | Divider hidden, Settings visible | Browser | Durable | Pass | same |
-| PMU-017 New chat (fresh load) | AC-009, REQ-006 | Draft/route/selection kept; nothing selected | Browser | Durable | Pass | same |
-| PMU-018 A nested member | AC-002, D-5 | Fresh tree mount reopens the nested task-Team member (`…/editor`) | Browser | Durable | Pass | `EV/pmu-full-r1/` |
-| PMU-018 B first send | REQ-005 | New chat first send while collapsed → Workspaces reveals the new run | Browser | Durable | Pass | same |
-| PMU-018 C far Org | AC-004 | 24+ Agent rows above; reveal scrolls 921–1445 px, row visible, focused | Browser | Durable | Pass | same |
-| PMU-018 D slow start | AC-004 alternate, QR-002 | User wheel before rows arrive → no jump (scrollTop 0, row hidden, not focused); no input → row revealed on arrival | Browser (GraphQL held 3000/800 ms) | Durable | Pass | same |
-| PMU-018 E highlight | AC-011, DEC-005 | Org launch page with a Team still selected: neither lit; empty `/workspace`: not lit; `/agents`: Agents lit | Browser | Durable | Pass | same |
-| PMU-018 F page icon | AC-006, REQ-007 | Collapsed Projects icon docks + navigates | Browser | Durable | Pass | same |
-| PMU-018 G in-app New chat | REQ-009, REQ-006, AC-009 | Workspaces on New chat after viewing a Team run | Browser | Durable | **Fail** | `EV/pmu-018-r6/` |
-| PMU-001..016 | Preserved Projects/left-panel journeys (REQ-007) | Regression | Browser | Durable | Pass | `EV/pmu-full-r1/` |
-| NAV-PROBE B-001..B-005 | AC-010, REQ-001 | Strip page-icon order; Workspaces after the page icons | Browser, renderer-only | Durable | Pass | `EV/projects-navigation-r3/` |
-| CDR-LIVE D00–D14 | REQ-008 (D02), R-002 (D11) | On-run Chat row not lit; Workspaces reopen keeps `/chat?id=` | Browser + real Codex | Durable | Pass | `EV/chat-draft-rows-r2/` |
-| DSK-001 agent/team | AC-001, AC-002 (coordinator), AC-011, AC-012 | Packaged renderer | Isolated desktop instance | Temporary, Desktop | Pass | `EV/isolated-desktop/run-4/` |
-| DSK-001 New chat | REQ-009, AC-009 | Packaged renderer | Isolated desktop instance | Temporary, Desktop | **Fail** (FAIL-001) | `EV/isolated-desktop/run-4/evidence.json` |
-
-## Failure FAIL-001 — Workspaces moves focus onto a run row on New chat (no run open)
-
-- Requirement: REQ-009 "Activating Workspaces so that the panel docks moves focus onto the revealed row (**to the Workspaces section when no run is open**)". Related: REQ-006 "When no run is open (e.g. New chat …), Workspaces **just shows the panel**", AC-009.
-- Real-use steps (both surfaces):
-  1. Open a Team run (docked tree).
-  2. Click the docked **Chat** row (New chat, `/chat`).
-  3. Collapse the panel and type a draft.
-  4. Click the strip **Workspaces**.
-- Expected: panel docks; focus on `[data-test="app-left-panel-run-history"]`; no run row revealed.
-- Observed (browser, PMU-018 step G, `EV/pmu-018-r6/evidence.json` → `details.newChatInApp`):
-  - before: Chat lit, Workspaces not lit (correct); selection store still `team_run` with focused member `/manager` (pre-existing)
-  - docked on New chat, before collapsing: the tree already marks `workspace-team-member-<teamRunId>-/manager` selected (pre-existing stale highlight)
-  - after Workspaces: `document.activeElement` = that Team member row; tree scrolled 773 → 844; route `/chat`, draft text and selection unchanged
-- Observed (packaged desktop, DSK-001 run-4, `EV/isolated-desktop/run-4/evidence.json` → `failure`): same — `row.focused: true` on `workspace-team-transient-execution-row` of the Team-hosted worker, `selectedRows: 1`, on `#/chat`.
-- Not affected: route, draft, selection store (no run newly selected), Chat/Workspaces highlight.
-- Analysis (evidence for failure-origin review, not a final ruling):
-  - `WorkspaceAgentRunsTreePanel.sectionState.selectedRunId` is route-aware on `/chat` (none on New chat), but `isTeamRunSelected` reads only the selection store. A Team run viewed earlier therefore stays highlighted on New chat. That code is unchanged by this diff (pre-existing).
-  - `useRevealSelectedTreeRow` (new, D-4) treats any `[aria-current="true"], [aria-selected="true"]` row as the open run: it scrolls it into view and, because focus is on the Workspaces section, focuses it. The design assumed "selected row = open run"; a stale Team selection breaks that assumption when no run is shown.
-  - Wider reach of the same cause: any no-run page reached in-app after a Team run (e.g. `/agents`, `/projects`) should behave the same; not separately executed.
-  - Candidate fix directions for the owner: gate the reveal/focus on a run actually being shown (the D-2 "run shown" signal), and/or make the tree's Team selection route-aware on `/chat` like `selectedRunId`. Choosing between them is the owner's decision.
-- Preliminary classification: `Local Fix` (bounded renderer correction inside the existing owners, protecting REQ-009/REQ-006). Recommended owner: `implementation_engineer`, subject to failure-origin review.
+| UNIT-FULL | AC-006/007/010/011, REQ-003/004/006/009, D-1..D-7 (+ IR-002 run-shown gate) | Highlight, strip, panel, tree state, reveal composable, predicates | Vitest/jsdom | Durable | Pass | `EV/web-unit-full-run-r2.log` |
+| PMU-017 hosts | AC-001, AC-003, AC-008, AC-011, AC-012 | Task card → Workspaces → exact worker row selected, visible, focused; route/selection/center/Projects tab kept | Browser, real backend + scripted AGY | Durable | Pass | `EV/r2-pmu-full/` |
+| PMU-017 drawer / short / New chat | AC-005, AC-009, AC-010, REQ-010 | Drawer + Escape focus return; divider hidden at 500 px tall; fresh New chat selects nothing | Browser | Durable | Pass | same |
+| PMU-018 A | AC-002, D-5 | Nested non-coordinator task-Team member reopened after a fresh tree mount | Browser | Durable | Pass | same |
+| PMU-018 B | REQ-005 | New chat first send while collapsed → new run revealed | Browser | Durable | Pass | same |
+| PMU-018 C | AC-004 | Far-down Org worker (large scroll) | Browser | Durable | Pass | same |
+| PMU-018 D | AC-004 alternate, QR-002 | Slow app start: user scroll first → no jump; no input → revealed on arrival | Browser | Durable | Pass | same |
+| PMU-018 E | AC-011, DEC-005 | Org launch page (Team still selected), empty `/workspace`: not lit; `/agents`: Agents lit | Browser | Durable | Pass | same |
+| PMU-018 F | AC-006, REQ-007 | Collapsed page icon docks + navigates | Browser | Durable | Pass | same |
+| PMU-018 G | REQ-006, REQ-009, AC-009 | In-app New chat after a Team run: focus on the Workspaces section, no scroll | Browser | Durable | Pass | `EV/r2-pmu-018/` |
+| PMU-018 H | REQ-006, REQ-009 (FO-SCN-002) | `/agents` after an Agent run, `/projects` after a Team run: same | Browser | Durable | Pass | same |
+| PMU-001..016 | Preserved Projects/left-panel journeys (REQ-007) | Regression | Browser | Durable | Pass | `EV/r2-pmu-full/` |
+| NAV-PROBE | AC-010, REQ-001 | Strip page-icon order; Workspaces after the page icons | Browser, renderer-only | Durable | Pass (round 1) | `EV/projects-navigation-r3/` |
+| CDR-LIVE | REQ-008 (D02), R-002 (D11) | On-run Chat row not lit; Workspaces reopen keeps `/chat?id=` | Browser + real Codex | Durable | Pass (round 1) | `EV/chat-draft-rows-r2/` |
+| DSK-001 | AC-001, AC-002 (task Team coordinator), AC-003, AC-011, AC-012, REQ-006/009 | Packaged renderer, real window | Isolated desktop instance | Temporary, Desktop | Pass | `EV/isolated-desktop/r2-run-6/` |
 
 ## Validation Confidence Scorecard
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 80% | 75% | −5 | AC-001..AC-012 each have direct browser proof; REQ-009 (Should) fails in the in-app New-chat case | FAIL-001 |
-| Changed-boundary execution directness | 85% | 95% | +10 | Real stores, routes, backend roots, real geometry for every host kind | — |
-| Cross-boundary integration realism and mock gap | 80% | 95% | +15 | Real built backend, real Task roots via scripted AGY, real Codex runtime for draft rows | Scripted CLI instead of a model (no effect on the renderer boundary) |
-| Environment, configuration, identity, and fixture fidelity | 80% | 90% | +10 | Nuxt dev + packaged desktop instance of this worktree's build | Dev-server path for most cases |
-| Failure, edge-case, lifecycle, and recovery evidence | 75% | 90% | +15 | Far-down scroll, slow start with/without user takeover, nested member after remount, drawer, short window | Slow window > 3 s not exercised (spec permits) |
-| User-surface, browser, and desktop-shell confidence | 70% | 85% | +15 | Packaged app: Agent + Team journeys pass | New chat step fails (FAIL-001); Org host and drawer not run in the packaged app |
-| Durable regression coverage quality and relevance | 85% | 95% | +10 | PMU-017 tightened, PMU-018 added (incl. a reproducing step for FAIL-001), NAV-PROBE and CDR-LIVE updated | — |
+| Requirement and acceptance-criteria proof | 80% | 95% | +15 | Every AC-001..AC-012 and REQ-006/REQ-009 directly proven in the browser; core journeys also in the packaged app | Right Team-tab member open has no product trigger (requirement wording) |
+| Changed-boundary execution directness | 85% | 95% | +10 | Real stores, routes, backend roots and geometry for every host kind and the no-run pages | — |
+| Cross-boundary integration realism and mock gap | 80% | 95% | +15 | Built backend, real Task roots (scripted AGY), real Codex for draft rows, packaged app | Scripted model (no renderer effect) |
+| Environment, configuration, identity, and fixture fidelity | 80% | 95% | +15 | Rebuilt worktree app after IR-002; isolated instance with owned data | Most cases on the Nuxt dev path |
+| Failure, edge-case, lifecycle, and recovery evidence | 75% | 95% | +20 | Far-down scroll, slow start with/without takeover, nested member after remount, stale selections on 3 no-run pages | > 3 s history loads not exercised (spec allows it) |
+| User-surface, browser, and desktop-shell confidence | 70% | 95% | +25 | Packaged app: Agent, Team, Org hosts and New chat after a Team run on a real 1512×913 window | Drawer/short window/zh-CN browser- and unit-proven only |
+| Durable regression coverage quality and relevance | 85% | 95% | +10 | PMU-017 tightened; PMU-018 A–H; NAV-PROBE, CDR-LIVE updated; D04 baseline fixed | — |
 
 - Overall post-repository confidence: 79%
-- Overall final confidence: 89% (simple average)
-- Every critical acceptance criterion directly proven: `Yes` for the Must ACs; REQ-009 (Should) fails in one supported scenario
-- Any final applicable category below `90%`: `Yes` — requirement/AC proof (75%), user-surface/desktop (85%)
-- Default 95% target met: `No`
+- Overall final confidence: 95% (simple average)
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below 90%: `No`
+- Default 95% target met: `Yes`
+- Residual risks:
+  - a history load slower than the 3 s reveal window selects and expands but does not scroll (spec permits)
+  - the pre-existing stale Team/Agent highlight on no-run pages remains, but is now inert for the reveal; out of scope
 
 ## Broader Validation Decision And Execution
 
-- Decision: `Required`; modes: Browser (PMU, projects-navigation, chat-draft-rows-live) + Project Desktop Validation (isolated instance).
-- Startup and readiness:
-  - The probes own their stacks (`evidence.stack`, warm-up).
-  - Desktop:
-    - `pnpm -C autobyteus-web build:electron:mac` (EXIT=0)
-    - `node autobyteus-web/scripts/isolated-app/cli.mjs start --from-worktree --data-root /tmp/clp-dsk-root-osxQ`, run with the env reduced to HOME/USER/TMPDIR/LANG and `PATH=/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin`, so the real `agy` is not reachable
-    - add `ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs` and `AGY_FAKE_CASE=linked_skills` to the instance's own `server-data/.env`
-    - `restart iso-58732-348d`; GraphQL ready
-- Seed data: probe/driver GraphQL mutations; Task roots by scripted Manager `delegate_task`; no provider credentials; no user data.
+- Decision: `Required`; executed as Browser (PMU, NAV-PROBE, CDR-LIVE) and Project Desktop Validation (isolated instance).
+- Desktop round 2:
+  - Rebuild: `pnpm -C autobyteus-web build:electron:mac`, EXIT=0. A machine restart interrupted the first attempt; its log is kept as `build-electron-mac-r2-interrupted.log`.
+  - Start: `node autobyteus-web/scripts/isolated-app/cli.mjs start --from-worktree --data-root /tmp/clp-dsk-root-CVKc`, with the env reduced to HOME/USER/TMPDIR/LANG and `PATH=/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin`, so the real `agy` is not reachable.
+  - Scripted CLI: `ANTIGRAVITY_CLI_COMMAND` (the repository's scripted CLI) and `AGY_FAKE_CASE=linked_skills` added to the instance's own `server-data/.env`, then `restart iso-63466-7dc1`.
+  - Window: OS-resized to 1512×913 with `osascript` on that instance's PID. The default 1200×768 shows the right panel as a strip (existing responsive policy), and Electron exposes no CDP `Browser` window domain.
+  - Driver: `EV/isolated-desktop/dsk-001.mjs` over the control port (attach only).
 
 | Scenario / Journey Step | Expected | Actual | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Desktop Agent host: collapse → Task card worker → Workspaces | Lit; docks; route/selection unchanged; worker row visible+focused | As expected | `EV/isolated-desktop/run-4/dsk-001-agent-*.png`, `evidence.json` | Pass |
-| Desktop Team host (task Team coordinator) | Same | As expected (route `#/workspace`, focused member kept) | `dsk-001-team-*.png` | Pass |
-| Desktop New chat after Team, Workspaces | Panel shows; focus on the Workspaces section | Focus on the stale Team row | `evidence.json` `failure` | Fail |
+| Agent host: collapse → Task card worker → Workspaces | Lit; docks; route/selection/center/tab kept; worker row visible + focused | As expected (`scrollTop` 0, already visible) | `r2-run-6/dsk-001-agent-*.png`, `evidence.json` | Pass |
+| Team host (task Team coordinator) | Same | As expected (`scrollTop` 241) | `dsk-001-team-*.png` | Pass |
+| Org host | Same | As expected (`scrollTop` 352, end of list) | `dsk-001-org-*.png` | Pass |
+| New chat after the Team run: collapse, type, Workspaces | Chat lit, Workspaces not; panel shows; draft/route/selection kept; focus on the Workspaces section; stale row not scrolled to or focused | As expected (stale row hidden, `focused: false`, `scrollTop` 0) | `dsk-001-new-chat-workspaces.png` | Pass |
 
 ## Desktop Application Validation
 
-- Approach: an isolated instance of this worktree's packaged build, driven over its CDP control port (Playwright `connectOverCDP`, attach only). The same mechanism as the browser-automation attach-only path.
-- Web-equivalent behavior: everything in this change; the browser probes are the main evidence.
-- Shell-specific behavior: none changed. The packaged run confirms the production renderer bundle: the `ph:tree-view` icon renders, the label is "Workspaces", `redock-panel` activation, highlight, reveal and focus.
-- Effect on running desktop apps: none. A foreign instance `iso-63369-6c20` (agpl-slice-2) was left untouched; the user's app/data were not used.
-- Not proven in the packaged app: the Org host, the drawer, the short window and zh-CN. They are covered by the browser probe and unit tests.
+- Shell-specific behavior: none changed. The packaged build confirms the production renderer bundle: icon and label, `redock-panel` activation, highlight, reveal, focus and the IR-002 gate.
+- Effect on running desktop apps: none. The foreign instance record `iso-63369-6c20` was untouched; the user's app/data were not used.
+- Not proven in the packaged app: the drawer, the short window and zh-CN (browser- and unit-proven).
 
 ## Platform / Runtime Targets
 
-- macOS (Darwin 25.5.0, arm64); headless Google Chrome via playwright-core; Electron packaged AutoByteus 1.4.99-beta.2 (window 1512×917 after reload).
-- Viewports: 1440×620, 1440×900, 760×900, 1440×500 (PMU); 800×738, 390×844 (CDR); en-US (zh-CN in CDR D14 and unit tests).
+- macOS (Darwin 25.5.0, arm64); headless Google Chrome (playwright-core); packaged AutoByteus 1.4.99-beta.2 (Electron), window 1512×913.
+- PMU viewports: 1440×620, 1440×900, 760×900, 1440×500; en-US.
 
 ## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
-- `Not Affected`; no persisted data read/written differently. Instance restart was used only to apply its own `.env`.
+- `Not Affected`. The instance restart only applied its own `.env`.
 
 ## Durable Coverage Changed In The Codebase
 
-- Durable coverage added/updated this round: `Yes`
-
 | Path / Test | Change | Requirement / Boundary | Execution Result |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` PMU-017 | Updated | AC-001/003/008/009: exact worker row, only selected row, selection/route unchanged; New chat nothing selected | Pass |
-| `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` PMU-018 (+ helpers `selectionState`, `treeSummary`, `slowGraphql`, …) | Added | AC-002/004/006/011, REQ-005/006/009, QR-002 | A–F Pass; G Fail (FAIL-001) |
-| `autobyteus-web/tests/e2e/projects-primary-navigation-probe.mjs` | Updated | AC-010/REQ-001: page-icon selector excludes Workspaces; Workspaces directly follows the page icons | Pass |
-| `autobyteus-web/tests/e2e/chat-draft-rows-live-probe.mjs` D11 | Updated | The collapse control is identified by its new `data-test` (same order) | Pass |
-| `autobyteus-web/tests/e2e/chat-draft-rows-live-probe.mjs` D04 | Updated (baseline fix, own commit `db0ed1c3c`) | Base `9faa6bc75` put Archive-all before "+"; select "+" by name | Pass |
+| `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` PMU-017 | Updated (round 1) | AC-001/003/008/009 | Pass |
+| `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` PMU-018 A–G (round 1), H + G `scrollTop` check (round 2) | Added | AC-002/004/006/011, REQ-005/006/009, QR-002 | Pass |
+| `autobyteus-web/tests/e2e/projects-primary-navigation-probe.mjs` | Updated (round 1) | AC-010/REQ-001 | Pass |
+| `autobyteus-web/tests/e2e/chat-draft-rows-live-probe.mjs` D11 | Updated (round 1) | Collapse control identity | Pass |
+| `autobyteus-web/tests/e2e/chat-draft-rows-live-probe.mjs` D04 | Baseline fix (round 1, commit `db0ed1c3c`) | Base `9faa6bc75` Archive-all before "+" | Pass |
 
-- Removed paths: none.
-- Docs follow-up for delivery: `TESTING.md` lists PMU-001..PMU-016; add PMU-017/PMU-018.
+- Removed paths: none. Test-code review: `Not Required — direct low-risk route`.
+- Docs follow-up for delivery: `TESTING.md` lists PMU-001..PMU-016; add PMU-017 and PMU-018 (A–H).
 
 ## Other Execution Artifacts
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `EV/web-unit-full-run.log` | Unit run | Retained | |
-| `EV/pmu-017-018-r1/`, `EV/pmu-018-r2..r6/` | Probe iterations | Retained | r2–r4 = probe corrections; r6 = FAIL-001 |
-| `EV/pmu-full-r1/` | Full PMU regression | Retained | |
-| `EV/projects-navigation-r1..r3/` | NAV-PROBE | Retained | r1 stale selector; r2 cold-cache reload |
-| `EV/chat-draft-rows-r1/`, `-r2/` | CDR-LIVE | Retained | |
-| `EV/isolated-desktop/` | DSK-001 driver, build log, start/restart/stop receipts, instance log, run-1..run-4 | Retained (evidence) | runs 1–3 failed on driver locators/state, not the product |
+| `EV/web-unit-full-run.log`, `EV/web-unit-full-run-r2.log` | Unit runs | Retained | |
+| `EV/pmu-*` (round 1), `EV/r2-pmu-018/`, `EV/r2-pmu-full/` | PMU runs | Retained | `EV/pmu-018-r6/` = FAIL-001 reproduction |
+| `EV/projects-navigation-r1..r3/`, `EV/chat-draft-rows-r1/`, `-r2/` | Round-1 probes | Retained | |
+| `EV/isolated-desktop/` | Driver, build logs, start/restart/stop receipts, instance logs, runs | Retained | `run-1..4` round 1; `r2-run-1..6` round 2 (1–5 = driver/window corrections) |
 
 ## Temporary Execution Methods / Scaffolding
 
 | Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| `EV/isolated-desktop/dsk-001.mjs` | Packaged-app journey | run-4: Agent/Team Pass, New chat Fail | Instance stopped; owned data root removed |
+| `EV/isolated-desktop/dsk-001.mjs` | Packaged-app journey | r2-run-6 Pass | Instance stopped, ports released, data root removed |
+| `osascript` window resize of my instance (PID-scoped) | A docked right panel needs a wide window | 1512×913 | Window closed with the instance |
 
 ## Dependencies Mocked Or Emulated
 
-| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
+| Dependency | Method | Why | Confidence Limitation |
 | --- | --- | --- | --- |
-| Agent model (AGY) | Repository scripted CLI `agy-failure-cli.mjs` (`linked_skills`) | Deterministic real tool calls, no provider spend | None at the renderer boundary |
-| Slow backend | Playwright route holding GraphQL responses | Deterministic late rows | Emulated latency |
+| Agent model (AGY) | Repository scripted CLI (`linked_skills`) | Deterministic real tool calls, no provider spend | None at the renderer boundary |
+| Slow backend | Playwright route holding GraphQL responses (PMU-018 D) | Deterministic late rows | Emulated latency |
 
 ## Result Summary
 
 | Result | Case IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | UNIT-FULL, PMU-001..PMU-017, PMU-018 A–F, NAV-PROBE, CDR-LIVE, DSK-001 agent/team | |
-| Fail | PMU-018 G, DSK-001 New chat | FAIL-001 (REQ-009) |
-| Not Tested | Right-panel Team-tab member open | No such trigger in this product (Team tab is messages-only); nested member covered via the tree path |
+| Pass | UNIT-FULL, PMU-001..PMU-018, NAV-PROBE, CDR-LIVE, DSK-001 | |
+| Not Tested | Right-panel Team-tab member open | No such trigger in this product (the Team tab is messages-only); the nested member is covered via the tree |
 
 ## Cleanup Performed
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| PMU / NAV / CDR stacks | Probe-owned | Probes' finally blocks | Processes terminated, data roots removed, ports free (receipts in each evidence file) |
-| Isolated instance `iso-58732-348d` | Mine | `isolated-app stop` | Stopped; control/server ports released |
-| `/private/tmp/clp-dsk-root-osxQ` | Mine (`--data-root`) | `rm -rf` | Removed |
-| Leftover processes | — | `pgrep` for probe/fake CLI | None |
-| Foreign instance `iso-63369-6c20` | Not mine | None | Untouched |
+| PMU stacks (round 2) | Probe-owned | Probe finally blocks | Terminated, browser closed, data roots removed |
+| Instance `iso-63466-7dc1` | Mine | `isolated-app stop` | Stopped; control/server ports released |
+| `/private/tmp/clp-dsk-root-CVKc` | Mine (`--data-root`) | `rm -rf` | Removed |
+| Leftover processes | — | `pgrep` | None |
+| Foreign record `iso-63369-6c20` | Not mine | None | Untouched |
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Final validation confidence: 89%
-- Default 95% target met: `No`
-- Final applicable categories below 90%: requirement/AC proof (75%), user-surface/desktop (85%)
+- Result: `Pass`
+- Final validation confidence: 95%
+- Default 95% target met: `Yes`; no applicable category below 90%
 - Broader validation decision: `Required` — executed (browser + packaged desktop)
-- Critical acceptance criteria lacking direct proof: none among the Must ACs; REQ-009 (Should) fails (FAIL-001)
-- Preliminary classification and recommended owner: `Local Fix` → `implementation_engineer`, pending failure-origin review by `code_reviewer`
-- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review)
+- Critical acceptance criteria lacking direct proof: none
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer` (direct route, Medium/Low, no test-code review)
 - Notes:
-  - On re-entry, rerun at least PMU-018 (step G must pass), PMU-017, the unit suite, and the DSK-001 New chat step.
-  - Observation for the Solution Designer (non-blocking): REQ-005/AC-002 name "a member opened from the right Team tab", but the right Team tab is messages-only in the current product.
+  - Non-blocking requirement-wording note for the Solution Designer: REQ-005 and AC-002 mention a member opened from the right Team tab, which is messages-only in this product.
+  - Explicit user verification in the desktop app remains with delivery.

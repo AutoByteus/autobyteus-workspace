@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | implementation_engineer handoff IR-001 / round 1 | SR-004 (requirements SR-003), IR-001 | N/A | Fail / 89% |
+| API-REV-002 | implementation_engineer handoff IR-002 (Local Fix CR-001) / round 2 | SR-004, IR-002, CRR-001 | Fail / 89% | Pass / 95% |
 
 ## Revision Entries
 
@@ -33,3 +34,32 @@ None.
 - Remaining risks, blocked evidence, or untested scope:
   - Org host, drawer and short window not rerun in the packaged app (browser-proven)
   - The right Team-tab member open has no product trigger
+
+### API-REV-002 — Re-validation of the CR-001 fix; FAIL-001 resolved
+
+- Triggering role, report path, and round: implementation_engineer, `implementation-handoff.md` (IR-002, `d0bf3db82`), round 2
+- Triggering finding or case IDs: FAIL-001 → CR-001 (`code-review-report.md`, CRR-001; FO-SCN-001/002)
+- Related revision IDs: SR-004, IR-002, CRR-001
+- Why recorded: rework validation after a failure
+- Coverage decisions or durable test paths changed: `project-manager-ux-probe.mjs` PMU-018 gains step H (`/agents` after an Agent run, `/projects` after a Team run) and a `scrollTop` check in G
+- Cases added, changed, removed, or rechecked: UNIT-FULL, PMU-018 (A–H), PMU-FULL, DSK-001 (driver extended with an Org host). NAV-PROBE and CDR-LIVE carried forward with rationale.
+- Commands, environment, fixture, or broader-validation delta:
+  - rebuilt worktree app; new isolated instance `iso-63466-7dc1`
+  - the OS window is resized to 1512×913 (the default 1200×768 docks no right panel)
+  - the driver's New-chat assertion is aligned with REQ-009 (the stale highlight predates this change)
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| FAIL-001 (PMU-018 G; DSK-001 run-4) | Local Fix (confirmed by CR-001) | Resolved: focus on the Workspaces section, `scrollTop` 0, no row focus; also on `/agents` and `/projects` (H) | `api-e2e-evidence/r2-pmu-018/`, `r2-pmu-full/`, `isolated-desktop/r2-run-6/` |
+
+- Canonical artifacts and sections updated: execution coverage report (full rewrite to round 2), coverage investigation (round-2 delta), ledger (events 19–25)
+- Prior result and confidence: Fail, 89%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: delivery_engineer
+- Remaining risks, blocked evidence, or untested scope:
+  - history loads > 3 s are not scrolled (spec permits)
+  - drawer, short window and zh-CN not rerun in the packaged app
+  - the right Team-tab member open has no product trigger
