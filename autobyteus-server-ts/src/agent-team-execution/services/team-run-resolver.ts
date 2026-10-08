@@ -96,12 +96,6 @@ export class TeamRunResolver {
     if (run?.isTerminated()) { this.releasedTeams.set(teamRunId, run); this.managed.delete(teamRunId); }
   }
 
-  unregisterTerminated(): void {
-    for (const [teamRunId, run] of this.managed) {
-      if (run.isTerminated()) { this.releasedTeams.set(teamRunId, run); this.managed.delete(teamRunId); }
-    }
-  }
-
   listManaged(): readonly TeamRun[] {
     return Object.freeze([...this.managed.values()]);
   }

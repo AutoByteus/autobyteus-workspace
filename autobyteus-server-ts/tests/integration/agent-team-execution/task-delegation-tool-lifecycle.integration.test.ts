@@ -26,7 +26,6 @@ import {
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberTaskCommandCapability } from "../../../src/agent-collaboration/execution/task/member-task-command-capability.js";
 import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
-import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { TeamMemberExecutionCommand } from "../../../src/agent-team-execution/domain/team-member-execution-command.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -65,6 +64,8 @@ import {
 } from "../../fixtures/current-team-run-fixtures.js";
 
 const rootTeamRunId = "task-delegation-integration-run";
+/** Far beyond the removed idle-shutdown delay (default 10 min, maximum 24 h). */
+const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1_000;
 const tempDirs: string[] = [];
 
 const createChildPhysicalScope = (
@@ -116,7 +117,6 @@ class TestTeamBackend implements TeamRunBackend {
   readonly reservations: string[] = [];
   readonly commands: Array<{ agentRunId: string; command: TeamMemberExecutionCommand }> = [];
   readonly liveTaskAgents = new Set<string>();
-  readonly shutDownAgents: string[] = [];
   readonly children = new Map<string, TestTeamBackend>();
   active = true;
 
@@ -227,20 +227,11 @@ class TestTeamBackend implements TeamRunBackend {
   hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
     return "agentRunId" in reference ? this.liveTaskAgents.has(reference.agentRunId) : this.children.has(reference.teamRunId);
   }
-  async tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
-    if (!("agentRunId" in reference) || !this.liveTaskAgents.has(reference.agentRunId)) return false;
-    this.liveTaskAgents.delete(reference.agentRunId);
-    this.shutDownAgents.push(reference.agentRunId);
-    return true;
-  }
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     return Object.freeze({
       cancel: () => undefined,
       commit: () => Object.freeze({ finish: () => this.terminate() }),
     });
-  }
-  async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
-    return this.prepareTermination();
   }
   freezeForRootTermination() {
     return Object.freeze({
@@ -262,16 +253,6 @@ const config = () => testTeamRunConfig({
   ],
 });
 
-const manualTimers = () => {
-  const pending = new Map<number, () => void>();
-  let next = 0;
-  const timers: TaskExecutionIdleTimers = {
-    setTimeout: (callback) => { const id = ++next; pending.set(id, callback); return id; },
-    clearTimeout: (handle) => { pending.delete(handle as number); },
-  };
-  return { timers, pendingCount: () => pending.size, fireAll: () => { const due = [...pending.values()]; pending.clear(); due.forEach((fire) => fire()); } };
-};
-
 const createHarness = async (linked = false) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-current-integration-"));
   tempDirs.push(memoryDir);
@@ -288,7 +269,6 @@ const createHarness = async (linked = false) => {
     currentConfig,
   );
   const publisher = new TeamRunEventPublisher<TeamRunEvent>();
-  const clock = manualTimers();
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocatedTaskAgentOrdinal = 0;
   let root: RootTeamRun | null = null;
@@ -338,7 +318,6 @@ const createHarness = async (linked = false) => {
     persistence,
     publisher,
     activityInspector: { inspect } as never,
-    taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
     // Linked cases admit Task-owned helpers; unlinked cases have an empty catalog.
     collaboratorAdmission: linked ? helperAdmission : createCollaboratorAdmission({
       listAgentDefinitions: async () => [], listTeamDefinitions: async () => [],
@@ -354,11 +333,18 @@ const createHarness = async (linked = false) => {
     execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress: assertAgentTeamAddress(memberAddress), agentRunId }),
     payload: { eventType: "AGENT_STATUS", statusHint: deriveTeamAgentStatusHint(status), details: createTeamAgentStatusDetails({ status }) },
   } as TeamRunEvent);
+  const emitBackgroundTask = (memberAddress: string, agentRunId: string, status: "running" | "completed") => publisher.publish({
+    eventSourceType: TeamRunEventSourceType.AGENT,
+    execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress: assertAgentTeamAddress(memberAddress), agentRunId }),
+    payload: { eventType: "BACKGROUND_TASK_UPDATED", statusHint: null, details: { taskId: "bg-monitor", kind: "shell",
+      description: "Monitor the release run", command: "sleep 7200 && echo done", status,
+      summary: status === "completed" ? "done" : null, startedAt: "2026-10-08T07:41:00.000Z" } },
+  } as TeamRunEvent);
   const lifecycle = (root as unknown as { taskExecutions: { drain(): Promise<void> } }).taskExecutions;
   const drain = async () => {
     for (let i = 0; i < 3; i += 1) { await new Promise<void>((resolve) => setImmediate(resolve)); await lifecycle.drain(); }
   };
-  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain, publisher, treeStore,
+  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, inspect, emitStatus, emitBackgroundTask, drain, publisher, treeStore,
     tasks, projectStore, projectsLayout, projects: new ProjectService({ store: projectStore }) };
 };
 
@@ -386,7 +372,7 @@ const delegate = async (
   return entry.execute(service, toolContext, entry.parseInput(raw) as never);
 };
 
-describe("current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message)", () => {
+describe("current delegate_task lifecycle integration (pure spawn, live until DONE, restore-on-message)", () => {
   // Real root address/lifetime admission and disk commits; provider resources are the local backend double.
   it.each(["/scope_helper", "/scope_helpers"])("keeps two Task address bring-ins independent at %s, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013)", async address => {
     const h = await createHarness(true);
@@ -498,23 +484,26 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual(["delegate_task"]);
   });
 
-  it("shuts an idle delegated Agent down after the grace period and restores it when a message arrives", async () => {
+  it("keeps an idle delegated Agent live far past the old idle-shutdown delay and delivers a follow-up without restore (AC-002)", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
     const { target_agent_run_id: child } = await delegate(harness.service, coordinator, {
       recipient_address: "/worker", description: "Do the work.", reference_files: [],
     }) as { target_agent_run_id: string };
     await harness.drain();
-    harness.emitStatus("/worker", child, "idle");
-    expect(harness.clock.pendingCount()).toBe(1);
-    harness.emitStatus("/worker", child, "running");
-    expect(harness.clock.pendingCount()).toBe(0);
-    harness.emitStatus("/worker", child, "idle");
-    harness.clock.fireAll();
+    vi.useFakeTimers({ toFake: ["setTimeout", "setInterval"] });
+    try {
+      harness.emitStatus("/worker", child, "idle");
+      harness.emitStatus("/worker", child, "running");
+      harness.emitStatus("/worker", child, "idle");
+      expect(vi.getTimerCount()).toBe(0);
+      await vi.advanceTimersByTimeAsync(TWO_DAYS_MS);
+    } finally {
+      vi.useRealTimers();
+    }
     await harness.drain();
-    expect(harness.backend.shutDownAgents).toEqual([child]);
+    expect(harness.backend.hasLiveDirectTaskExecution({ agentRunId: child })).toBe(true);
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : null)).toEqual([child]);
-    expect(harness.root.hasAgentExecution(child)).toBe(true);
 
     const delivered = await harness.root.deliverExactAgentMessage({
       sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" } as never,
@@ -522,24 +511,58 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       content: "One follow-up question.",
     });
     expect(delivered).toMatchObject({ accepted: true });
-    expect(harness.inspect).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: child }));
-    expect(harness.backend.restoredAgents).toEqual([expect.objectContaining({ address: "/worker", agentRunId: child })]);
+    // Delivered to the live run: no saved-context check and no restore.
+    expect(harness.inspect).not.toHaveBeenCalled();
+    expect(harness.backend.restoredAgents).toEqual([]);
     expect(harness.backend.reservations).toContain(child);
-    await harness.drain();
-    // Release after delivery re-arms the idle timer for the restored child.
-    expect(harness.clock.pendingCount()).toBe(1);
   });
 
-  it("rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing", async () => {
+  it("keeps a delegated Agent with a running background task live for hours; its completion turn reports to the delegator (AC-001)", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
     const { target_agent_run_id: child } = await delegate(harness.service, coordinator, {
-      recipient_address: "/worker", description: "Do the work.", reference_files: [],
+      recipient_address: "/worker", description: "Start the release monitor in the background and report when it ends.", reference_files: [],
     }) as { target_agent_run_id: string };
     await harness.drain();
-    harness.emitStatus("/worker", child, "idle");
-    harness.clock.fireAll();
+    vi.useFakeTimers({ toFake: ["setTimeout", "setInterval"] });
+    try {
+      // The copy starts its background task and ends its turn.
+      harness.emitStatus("/worker", child, "running");
+      harness.emitBackgroundTask("/worker", child, "running");
+      harness.emitStatus("/worker", child, "idle");
+      expect(vi.getTimerCount()).toBe(0);
+      await vi.advanceTimersByTimeAsync(2 * 60 * 60 * 1_000);
+    } finally {
+      vi.useRealTimers();
+    }
     await harness.drain();
+    // Nothing stopped the copy while it waited.
+    expect(harness.backend.hasLiveDirectTaskExecution({ agentRunId: child })).toBe(true);
+
+    // The completion starts a turn and the copy messages its delegator by run ID.
+    harness.emitBackgroundTask("/worker", child, "completed");
+    harness.emitStatus("/worker", child, "running");
+    const reported = await harness.root.deliverExactAgentMessage({
+      sender: { kind: "agent", identity: context(harness.commands, "/worker", child).identity, displayName: "worker" } as never,
+      targetAgentRunId: "run-coordinator",
+      content: "Release monitor finished: done.",
+    });
+    expect(reported).toMatchObject({ accepted: true });
+    expect(harness.backend.reservations).toContain("run-coordinator");
+    expect(harness.backend.restoredAgents).toEqual([]);
+  });
+
+  it("refuses reactivation with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the stopped copy's saved conversation is missing", async () => {
+    const harness = await createHarness();
+    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
+    const { target_agent_run_id: child, task_id: taskId } = await delegate(harness.service, coordinator, {
+      recipient_address: "/worker", description: "Do the work.", reference_files: [],
+    }) as { target_agent_run_id: string; task_id: string };
+    await harness.drain();
+    // Task DONE is what stops a copy; the assigner then reopens the Task and messages the run ID.
+    await harness.tasks.updateTaskById({ taskId, status: "DONE" }); await harness.tasks.drainRuntimeReleases();
+    expect(harness.backend.hasLiveDirectTaskExecution({ agentRunId: child })).toBe(false);
+    await harness.tasks.updateTaskById({ taskId, status: "IN_PROGRESS" });
     harness.inspect.mockReturnValue({ kind: "absent" } as never);
 
     await expect(harness.root.deliverExactAgentMessage({

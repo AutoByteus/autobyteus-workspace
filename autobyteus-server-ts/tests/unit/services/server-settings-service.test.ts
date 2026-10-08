@@ -568,5 +568,23 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.delete).toHaveBeenCalledWith('ENABLE_PROJECTS');
   });
 
+  // idle-shutdown-background-tasks (AC-004, REQ-003): delegated copies have no idle shutdown, so its delay
+  // setting is no longer offered. A value stored by an earlier release is not read; it lists as an ordinary
+  // custom setting the user can delete.
+  it("does not offer the removed idle-shutdown delay and lists a stored value as an ordinary, deletable custom setting", () => {
+    const key = 'AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS';
+    mockConfig.getConfigData.mockReturnValue({});
+    expect(new ServerSettingsService().getAvailableSettings().find((entry) => entry.key === key)).toBeUndefined();
+
+    mockConfig.getConfigData.mockReturnValue({ [key]: '60000' });
+    mockConfig.delete.mockImplementation(() => undefined);
+    const service = new ServerSettingsService();
+    expect(service.getAvailableSettings().find((entry) => entry.key === key)).toMatchObject({
+      value: '60000', description: 'Custom user-defined setting', isEditable: true, isDeletable: true,
+    });
+    expect(service.deleteSetting(key)[0]).toBe(true);
+    expect(mockConfig.delete).toHaveBeenCalledWith(key);
+  });
+
 
 });

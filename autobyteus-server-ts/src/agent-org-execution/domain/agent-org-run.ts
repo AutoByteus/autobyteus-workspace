@@ -11,16 +11,14 @@ import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExec
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type { DelegateTaskInput, DelegateTaskResult, TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
-import { createCollaborationAgentStatusSnapshot, type CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
+import type { CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution-tree.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
@@ -31,7 +29,6 @@ import { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-per
 import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
 import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
 import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
-import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-retirement.js";
 import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
 import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
 import { AgentOrgRunMessageDelivery } from "../services/agent-org-run-message-delivery.js";
@@ -71,7 +68,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly operationGate: RootOperationGate;
   private readonly delivery: AgentOrgRunMessageDelivery;
   private readonly collaborators: AgentOrgRunCollaborators;
-  private readonly eventRetirement: AgentOrgTaskEventRetirement;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
   private failStopped = false;
@@ -85,10 +81,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.operationGate = new RootOperationGate({
       rootLabel: `AgentOrg '${this.orgRunId}'`,
       canEnter: () => this.isAdmitting(),
-    });
-    this.eventRetirement = new AgentOrgTaskEventRetirement({
-      getIndex: () => this.index,
-      identityFor: (agentRunId, address) => this.identityFor(agentRunId, address as AgentTeamAddress),
     });
     this.presentation = new CollaborationAgentPresentationEventAdapter((agentRunId) => {
       const agent = this.index.getAgent(agentRunId);
@@ -105,19 +97,13 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       getIndex: () => this.index,
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
-      beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
       replaceTree: (tree) => this.replaceTree(tree),
       publishTaskExecutionStarted: (host, taskExecution) => options.publisher.publish({ kind: "task_execution_started", host, taskExecution }),
       publishTaskExecutionsClosed: (taskExecutions) => options.publisher.publish({ kind: "task_executions_closed", taskExecutions }),
       publishTaskExecutionsReopened: (taskExecutions) => options.publisher.publish({ kind: "task_executions_reopened", taskExecutions }),
-      publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
-        kind: "status_overlay",
-        snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
-      }),
-      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskAgentResources: options.taskAgentResources });
+    }), { taskAgentResources: options.taskAgentResources });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       identities: options.taskExecutionIdentity,
@@ -232,7 +218,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
-    return this.operationGate.run(() => this.taskExecutions.withLiveLease(sender.agentRunId, () => this.delivery.deliverToAddress(sender, input)));
+    return this.operationGate.run(() => this.taskExecutions.withLiveChain(sender.agentRunId, () => this.delivery.deliverToAddress(sender, input)));
   }
 
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
@@ -268,7 +254,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
 
   onAgentExecutionEvent(identity: CollaborationMemberExecutionIdentity, event: CollaborationAgentExecutionEvent): void {
     if (!sameRootExecutionIdentity(identity.root, this.options.root)) throw new Error("AgentOrg event belongs to another root.");
-    if (this.eventRetirement.isCommittedTeardownStatus(identity, event)) return;
     const adapted = this.presentation.adapt(identity, event);
     if (adapted.kind === "rejected") {
       this.enterFailStop();
@@ -277,10 +262,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (adapted.kind === "publish") {
       this.options.publisher.publish({ kind: "agent_presentation", execution: identity, message: adapted.message });
     }
-    if (event.kind === "status_overlay") {
-      this.taskExecutions.onAgentStatus(identity.agentRunId, event.snapshot.details.status);
-    } else if (event.kind === "agent_run" && event.event.eventType === "AGENT_STATUS") {
-      this.taskExecutions.onAgentStatus(identity.agentRunId, normalizeAgentApiStatus(event.event.payload.status));
+    if (event.kind === "status_overlay" || (event.kind === "agent_run" && event.event.eventType === "AGENT_STATUS")) {
+      this.taskExecutions.onAgentStatus(identity.agentRunId);
     }
   }
 

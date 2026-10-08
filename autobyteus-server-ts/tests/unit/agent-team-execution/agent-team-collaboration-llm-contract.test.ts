@@ -57,7 +57,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateRecipient: "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
       delegateDescription: "31d5193d5849bf4df65d443af5061384cf1e32e41839793d1d711bfe493b9da4",
       delegateReferences: "8f6e0bd3e58880db150c3516c898ac4fb00ab30dce9fa0161739c0a09c5763ae",
-      collaborationPrompt: "30f81632a0e6b0bdbe6ab1537853474c9c6e09cf847e9f4c970e32303e89120c",
+      collaborationPrompt: "39ef5113a0c9584a96eda36c916176b408448f47d0832812e36a8e40e1c25ffe",
     });
   });
 

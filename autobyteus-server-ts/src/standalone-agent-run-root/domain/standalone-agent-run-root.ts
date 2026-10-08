@@ -5,7 +5,6 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 import { collectStandaloneRootInputSnapshots } from "../services/standalone-root-input-snapshot.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type {
   StandaloneHostTerminationResult,
   StandaloneRunPostInput,
@@ -22,7 +21,6 @@ import {
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type { DelegateTaskInput, DelegateTaskResult, TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher, RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -101,7 +99,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     taskAgentResources?: TaskAgentResourcePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
-    taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     /** Prepares hosted handles for new collaborator entries (published after the tree write). */
     prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
@@ -145,14 +142,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       publishTaskExecutionStarted: (host, taskExecution) => options.publisher.publish({ kind: "task_execution_started", host, taskExecution }),
       publishTaskExecutionsClosed: (taskExecutions) => options.publisher.publish({ kind: "task_executions_closed", taskExecutions }),
       publishTaskExecutionsReopened: (taskExecutions) => options.publisher.publish({ kind: "task_executions_reopened", taskExecutions }),
-      publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
-        kind: "status_overlay",
-        snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
-      }),
-      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskAgentResources: options.taskAgentResources });
+    }), { taskAgentResources: options.taskAgentResources });
     const recipients: StandaloneRootRecipientResolver = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
       taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
         resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
@@ -276,7 +268,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
-    return this.operationGate.run(() => this.taskExecutions.withLiveLease(sender.agentRunId, () => this.delivery.deliverToAddress(sender, input)));
+    return this.operationGate.run(() => this.taskExecutions.withLiveChain(sender.agentRunId, () => this.delivery.deliverToAddress(sender, input)));
   }
 
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
@@ -317,10 +309,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     if (adapted.kind === "publish") {
       this.options.publisher.publish({ kind: "agent_presentation", execution: identity, message: adapted.message });
     }
-    if (event.kind === "status_overlay") {
-      this.taskExecutions.onAgentStatus(identity.agentRunId, event.snapshot.details.status);
-    } else if (event.kind === "agent_run" && event.event.eventType === "AGENT_STATUS") {
-      this.taskExecutions.onAgentStatus(identity.agentRunId, normalizeAgentApiStatus(event.event.payload.status));
+    if (event.kind === "status_overlay" || (event.kind === "agent_run" && event.event.eventType === "AGENT_STATUS")) {
+      this.taskExecutions.onAgentStatus(identity.agentRunId);
     }
   }
 

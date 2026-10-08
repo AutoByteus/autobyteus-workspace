@@ -8,7 +8,6 @@ import type { TeamRunAgentTeamNode } from "../../domain/team-run-config.js";
 import type { TaskTeamExecutionFactory } from "../task-team-execution-factory.js";
 import type { FlatTeamExecutionContext } from "../flat-team-execution-context.js";
 import { isRunningTaskExecutionStatus } from "../../../agent-collaboration/execution/task/task-execution-running-work.js";
-import { TaskExecutionTeardownIndeterminateError } from "../../../agent-collaboration/execution/task/task-delegation-command.js";
 
 import type { FlatTeamPreparationOperation } from "../flat-team-execution-factory.js";
 
@@ -21,7 +20,6 @@ export class TaskTeamExecutionRegistry {
   private readonly active = new Map<string, TeamRun>();
   private readonly reserved = new Set<string>();
   private readonly preparedTeamRuns = new Map<string, TeamRun>();
-  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly options: {
@@ -174,37 +172,11 @@ export class TaskTeamExecutionRegistry {
     return { accepted: true };
   }
 
-  /** Shuts the task Team down as a whole only when every agent and nested child in it is quiet. */
-  async tryShutDownIfQuiet(teamRunId: string): Promise<boolean> {
-    const run = this.active.get(teamRunId);
-    if (!run || this.shuttingDown.has(teamRunId)) return false;
-    this.shuttingDown.add(teamRunId);
-    try {
-      const local = await run.tryPrepareTerminationIfQuiescent();
-      if (!local) return false;
-      if (this.active.get(teamRunId) !== run) {
-        local.cancel();
-        return false;
-      }
-      const result = await local.commit().finish().catch((cause: unknown) => {
-        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' shutdown did not finish.`, { cause });
-      });
-      if (!result.accepted) {
-        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
-      }
-      this.active.delete(teamRunId);
-      return true;
-    } finally {
-      this.shuttingDown.delete(teamRunId);
-    }
-  }
-
   dispose(): void {
     this.operations.forEach(operation => operation.cancel());
     this.active.clear();
     this.reserved.clear();
     this.preparedTeamRuns.clear();
-    this.shuttingDown.clear();
     this.restorations.clear();
   }
 }

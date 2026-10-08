@@ -2,7 +2,7 @@ import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-cont
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { RootTaskExecutionLifecycle, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type {
   DelegateTaskInput,
   DelegateTaskResult,
@@ -18,7 +18,7 @@ export class TeamTaskExecutionService {
   private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
-    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskAgentResources: options.taskAgentResources });
+    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { taskAgentResources: options.taskAgentResources });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
@@ -40,7 +40,7 @@ export class TeamTaskExecutionService {
 
   onRootEvent(event: TeamRunEvent): void {
     if (event.eventSourceType !== TeamRunEventSourceType.AGENT || event.payload.eventType !== "AGENT_STATUS") return;
-    this.lifecycle.onAgentStatus(event.execution.agentRunId, event.payload.details.status);
+    this.lifecycle.onAgentStatus(event.execution.agentRunId);
   }
 
   delegateTask(
@@ -51,15 +51,11 @@ export class TeamTaskExecutionService {
     return this.lifecycle.delegate(context, input, placement);
   }
 
-  withLiveLease(id: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return this.lifecycle.withLiveLease(id, operation);
+  withLiveChain(id: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.lifecycle.withLiveChain(id, operation);
   }
 
   deliverToExactTarget(sender: string, target: string, deliver: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     return this.lifecycle.deliverToExactTarget(sender, target, deliver);
-  }
-
-  acquireLiveLease(agentRunId: string): Promise<TaskExecutionLiveLease> {
-    return this.lifecycle.acquireLiveLease(agentRunId);
   }
 }

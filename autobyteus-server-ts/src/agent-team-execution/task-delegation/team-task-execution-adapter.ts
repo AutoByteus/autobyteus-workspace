@@ -7,28 +7,17 @@ import { beginRootTaskActivation, type RegisteredTaskActivation, type TaskExecut
   type TaskExecutionActivationCommitResult,
   type TaskExecutionActivationPreparation,
 } from "../../agent-collaboration/execution/task/root-task-execution-adapter.js";
-import {
-  TaskDelegationError,
-  TaskExecutionTeardownIndeterminateError,
-} from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { foldTeamAggregateStatus, type AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { restoreTaskTeamNode } from "../../agent-collaboration/execution/task/task-team-node-restoration.js";
-import {
-  createCollaborationMemberExecutionIdentity,
-  createTeamRootExecutionIdentity,
-} from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { getAgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
 import type { TaskExecution, TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import {
-  createTeamAgentStatusDetails,
-  createTeamAgentStatusEvent,
-  createTeamAgentStatusSnapshot,
-} from "../domain/team-agent-status.js";
 import type { IndexedTaskExecution } from "../services/team-execution-index.js";
 import { resolveTaskCopyHost } from "../../agent-collaboration/execution/task/task-copy-host.js";
 import { addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
@@ -185,7 +174,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       .find((snapshot) => snapshot.execution.agentRunId === indexed.agentRunId)?.details.status ?? "offline";
   }
 
-  isLive(reference: TaskExecutionReference): boolean {
+  private isLive(reference: TaskExecutionReference): boolean {
     const indexed = this.options.getIndex().getTaskExecution(reference);
     if (!indexed) return false;
     const host = this.options.teamRunResolver.getActive(indexed.ownerTeamRunId);
@@ -238,35 +227,6 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       this.options.teamRunResolver.registerManaged(run);
       assertOpen();
     }
-  }
-
-  async tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
-    const index = this.options.getIndex();
-    const indexed = index.getTaskExecution(reference);
-    if (!indexed) return false;
-    const host = this.options.teamRunResolver.getActive(indexed.ownerTeamRunId);
-    if (!host) return false;
-    const key = indexed.kind === "agent" ? indexed.agentRunId : indexed.teamRunId;
-    const affectedAgents = index.listAgentExecutions().filter((agent) =>
-      index.listTaskExecutionChainForAgent(agent.agentRunId).some((execution) =>
-        (execution.kind === "agent" ? execution.agentRunId : execution.teamRunId) === key));
-    let shutDown: boolean;
-    try {
-      shutDown = await host.tryShutDownDirectTaskExecutionIfQuiet(reference);
-    } catch (error) {
-      if (error instanceof TaskExecutionTeardownIndeterminateError) this.options.enterLifecycleFailStop();
-      throw error;
-    }
-    if (!shutDown) return false;
-    this.options.teamRunResolver.unregisterTerminated();
-    const root = createTeamRootExecutionIdentity(this.options.rootTeamRunId);
-    for (const agent of affectedAgents) {
-      this.options.publish(createTeamAgentStatusEvent(createTeamAgentStatusSnapshot({
-        execution: createCollaborationMemberExecutionIdentity({ root, memberAddress: agent.address, agentRunId: agent.agentRunId }),
-        details: createTeamAgentStatusDetails({ status: "offline" }),
-      })));
-    }
-    return true;
   }
 
   private ingressOf(indexed: IndexedTaskExecution): Readonly<{ agentRunId: string; scopeTeamRunId: string }> {

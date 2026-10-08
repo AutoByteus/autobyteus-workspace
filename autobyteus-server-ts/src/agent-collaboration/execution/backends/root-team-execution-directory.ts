@@ -8,7 +8,6 @@ import type { TeamRun } from "../../../agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode } from "../../../agent-team-execution/domain/team-run-config.js";
 import type { PrepareTaskTeamInput } from "../../../agent-team-execution/domain/task-team-execution.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
-import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import type { ConfiguredMemberActivationMode } from "../../../agent-team-execution/local/flat-team-execution-context.js";
 import type { FrozenTeamRunTerminationScope } from "../../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
@@ -29,7 +28,6 @@ export class RootTeamExecutionDirectory {
   private readonly active = new Map<string, TeamRun>();
   private readonly reserved = new Set<string>();
   private readonly taskTeamRunIds = new Set<string>();
-  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly factory: FlatTeamExecutionFactory) {}
@@ -58,15 +56,6 @@ export class RootTeamExecutionDirectory {
     return [...this.active].some(([teamRunId, run]) => this.taskTeamRunIds.has(teamRunId)
       ? run.getLeafAgentStatusSnapshots().some((snapshot) => isRunningTaskExecutionStatus(snapshot.details.status))
       : run.hasOpenExecutionWork());
-  }
-  /** Removes TeamRuns terminated by a quiet shutdown of their task execution. */
-  unregisterTerminated(): void {
-    for (const [teamRunId, run] of this.active) {
-      if (!run.isTerminated()) continue;
-      this.releasedTeams.set(teamRunId, run);
-      this.active.delete(teamRunId);
-      this.taskTeamRunIds.delete(teamRunId);
-    }
   }
   /** Registers a task TeamRun restored inside a hosting TeamRun (flat identity lookup only). */
   registerRestoredTaskTeam(run: TeamRun): void {
@@ -269,33 +258,6 @@ export class RootTeamExecutionDirectory {
         if ((await operation.release()).accepted) { this.restorations.delete(id); this.releaseIds([id]); }
       } catch (cleanup) { throw new AggregateError([error, cleanup], "Root Task Team restore and exact cleanup failed."); }
       throw error;
-    }
-  }
-
-  /** Shuts one root-hosted task Team down as a whole only when it is quiet. */
-  async tryShutDownRootTaskTeamIfQuiet(teamRunId: string): Promise<boolean> {
-    const run = this.active.get(teamRunId);
-    if (!run || !this.taskTeamRunIds.has(teamRunId) || this.shuttingDown.has(teamRunId)) return false;
-    this.shuttingDown.add(teamRunId);
-    try {
-      const local = await run.tryPrepareTerminationIfQuiescent();
-      if (!local) return false;
-      if (this.active.get(teamRunId) !== run) {
-        local.cancel();
-        return false;
-      }
-      const result = await local.commit().finish().catch((cause: unknown) => {
-        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' shutdown did not finish.`, { cause });
-      });
-      if (!result.accepted) {
-        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
-      }
-      this.releasedTeams.set(teamRunId, run);
-      this.active.delete(teamRunId);
-      this.taskTeamRunIds.delete(teamRunId);
-      return true;
-    } finally {
-      this.shuttingDown.delete(teamRunId);
     }
   }
 

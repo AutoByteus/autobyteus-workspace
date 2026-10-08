@@ -75,7 +75,7 @@ export class FlatTeamExecutionManager {
     return this.collaboratorAgents.prepare(node, mode);
   }
 
-  /** Prepares a collaborator Team as one TeamRun under this TeamRun (lazy members, no idle shutdown). */
+  /** Prepares a collaborator Team as one TeamRun under this TeamRun (lazy members). */
   prepareCollaboratorTeam(input: Parameters<CollaboratorTeamExecutionRegistry["prepare"]>[0]): Promise<PreparedCollaboratorTeam> {
     this.assertActive();
     return this.collaboratorTeams.prepare(input);
@@ -227,13 +227,6 @@ export class FlatTeamExecutionManager {
       : this.taskTeams.get(reference.teamRunId)?.isActive() ?? false;
   }
 
-  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
-    this.assertActive();
-    return "agentRunId" in reference
-      ? this.taskAgents.tryShutDownIfQuiet(reference.agentRunId)
-      : this.taskTeams.tryShutDownIfQuiet(reference.teamRunId);
-  }
-
   /** The caller owns this entire stamped assembly; not the outer root or a borrowed host. */
   cancelRuntimeActivation(): void {
     this.taskTeams.cancelRestorations();
@@ -267,44 +260,6 @@ export class FlatTeamExecutionManager {
       if (this.preparingTermination === preparation) this.preparingTermination = null;
     }).catch(() => undefined);
     return preparation;
-  }
-
-  async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
-    if (this.preparedTermination) return this.preparedTermination;
-    if (this.preparingTermination || this.lifecycle !== "active") return null;
-    this.lifecycle = "quiescing";
-    const locals: PreparedLocalExecutionTermination[] = [];
-    try {
-      for (const handle of this.taskAgents.listHandles()) {
-        const local = await handle.tryPrepareTerminationIfQuiescent();
-        if (!local) return this.cancelDeferredPreparation(locals);
-        locals.push(local);
-      }
-      for (const handle of this.taskAgents.listPreparedHandles()) {
-        const local = await handle.tryPrepareTerminationIfQuiescent();
-        if (!local) return this.cancelDeferredPreparation(locals);
-        locals.push(local);
-      }
-      for (const run of this.taskTeams.listTeamRuns()) {
-        const local = await run.tryPrepareTerminationIfQuiescent();
-        if (!local) return this.cancelDeferredPreparation(locals);
-        locals.push(local);
-      }
-      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
-        const local = await run.tryPrepareTerminationIfQuiescent();
-        if (!local) return this.cancelDeferredPreparation(locals);
-        locals.push(local);
-      }
-      for (const handle of [...this.directAgentHandles()].reverse()) {
-        const local = await handle.tryPrepareTerminationIfQuiescent();
-        if (!local) return this.cancelDeferredPreparation(locals);
-        locals.push(local);
-      }
-      return this.createPreparedTermination(locals);
-    } catch (error) {
-      this.cancelDeferredPreparation(locals);
-      throw error;
-    }
   }
 
   freezeForRootTermination(): FrozenTeamRunTerminationScope {
@@ -395,14 +350,6 @@ export class FlatTeamExecutionManager {
     });
     this.preparedTermination = prepared;
     return prepared;
-  }
-
-  private cancelDeferredPreparation(
-    locals: readonly PreparedLocalExecutionTermination[],
-  ): null {
-    [...locals].reverse().forEach((local) => local.cancel());
-    this.lifecycle = "active";
-    return null;
   }
 
   private finishCommittedTermination(

@@ -58,7 +58,7 @@ function fixture(kind: RootKind) {
     containsTaskExecution: ref => committed.has('agentRunId' in ref ? ref.agentRunId : ''), publishTaskExecutionsClosed: vi.fn(),
     discardReleasedExecution: vi.fn(), taskExecutionWithIngress: agentRunId => committed.has(agentRunId) ? { agentRunId } : null,
     publishTaskExecutionsReopened: vi.fn(),
-    isLive: () => false, assertRestorableChain: () => undefined, restoreChain: async () => undefined, tryShutDownIfQuiet: async () => false,
+    assertRestorableChain: () => undefined, restoreChain: async () => undefined,
   };
   const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskAgentResources: resources });
   const manager = member('manager', '/manager');

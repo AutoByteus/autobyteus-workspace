@@ -201,16 +201,16 @@ export class StandaloneRootMessageDelivery {
       : this.options.teams.require(agent.host.hostRunId).executeDirectAgentCommand(agentRunId, command);
     if (command.kind !== "post_message") {
       return this.isLiveChild(agentRunId)
-        ? this.options.taskExecutions.withLiveLease(agentRunId, execute)
+        ? this.options.taskExecutions.withLiveChain(agentRunId, execute)
         : Promise.resolve({ accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in Agent root '${this.options.hostRunId}'.` });
     }
     // Operator input wakes a shut-down child exactly like send_message_to.
-    return this.withLiveLease(agentRunId, execute);
+    return this.withLiveChain(agentRunId, execute);
   }
 
-  /** Target lease that records the receiver's first accepted message or operator post. */
-  withLiveLease(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
-    return this.options.taskExecutions.withLiveLease(agentRunId, operation);
+  /** Runs the receiver's first accepted message or operator post with its task-execution chain live (restored first when needed). */
+  withLiveChain(agentRunId: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
+    return this.options.taskExecutions.withLiveChain(agentRunId, operation);
   }
 
   isLiveChild(agentRunId: string): boolean {
@@ -224,7 +224,7 @@ export class StandaloneRootMessageDelivery {
     return Boolean(host && (agent.executionKind !== "task" || host.hasLiveDirectTaskExecution({ agentRunId })));
   }
 
-  /** The host is made ready through its handle; a child through its live lease. */
+  /** The host is made ready through its handle; a child through `withLiveChain` (restored first when not live). */
   private async deliverTo(targetAgentRunId: string, input: DeliveryInput): Promise<AgentOperationResult> {
     const receiver = this.options.getIndex().requireAgent(targetAgentRunId);
     const deliver = () => this.options.getCommunication().deliver({
@@ -232,7 +232,7 @@ export class StandaloneRootMessageDelivery {
       receiverIdentity: this.identityFor(receiver.agentRunId, receiver.address),
       receiverDisplayName: getAgentTeamAddressBasename(receiver.address) ?? receiver.agentRunId,
     });
-    if (receiver.executionKind !== "host") return this.withLiveLease(receiver.agentRunId, deliver);
+    if (receiver.executionKind !== "host") return this.withLiveChain(receiver.agentRunId, deliver);
     try {
       await this.options.host.ensureReady();
     } catch (error) {

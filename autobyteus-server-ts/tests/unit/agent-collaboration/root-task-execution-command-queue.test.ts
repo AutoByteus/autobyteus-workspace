@@ -19,14 +19,14 @@ describe("RootTaskExecutionCommandQueue", () => {
       },
     });
     const second = queue.submit({ kind: "wake", executeAtQueueHead: async () => { order.push("wake"); return "woken"; } });
-    const third = queue.submit({ kind: "shutdown", executeAtQueueHead: async () => { order.push("shutdown"); } });
+    const third = queue.submit({ kind: "reopen", executeAtQueueHead: async () => { order.push("reopen"); } });
     await Promise.resolve();
     await Promise.resolve();
     releaseFirst();
     await expect(first).resolves.toBe("activated");
     await expect(second).resolves.toBe("woken");
     await third;
-    expect(order).toEqual(["activate:start", "activate:end", "wake", "shutdown"]);
+    expect(order).toEqual(["activate:start", "activate:end", "wake", "reopen"]);
   });
 
   it("rejects new commands once admission closes and drains in-flight work", async () => {
@@ -43,10 +43,10 @@ describe("RootTaskExecutionCommandQueue", () => {
     const queue = new RootTaskExecutionCommandQueue();
     let release!: () => void;
     const head = queue.submit({
-      kind: "shutdown",
+      kind: "reopen",
       executeAtQueueHead: () => new Promise<string>((resolve) => { release = () => resolve("head"); }),
     });
-    const trailing = queue.submit({ kind: "shutdown", executeAtQueueHead: async () => "trailing" });
+    const trailing = queue.submit({ kind: "wake", executeAtQueueHead: async () => "trailing" });
     await Promise.resolve();
     queue.enterRootFailStop();
     await expect(trailing).rejects.toBeInstanceOf(RootTaskExecutionFailStoppedError);

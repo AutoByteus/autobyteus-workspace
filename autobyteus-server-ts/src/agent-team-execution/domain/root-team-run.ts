@@ -43,7 +43,6 @@ import {
   type DelegateTaskResult,
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";
@@ -101,7 +100,6 @@ export class RootTeamRun {
     taskAgentResources?: TaskAgentResourcePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
-    taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorAdmission;
     disposeRootSubjects?(): void;
     onTerminated?(): void;
@@ -132,13 +130,11 @@ export class RootTeamRun {
       requireTeamRun: (teamRunId) => this.requireTeamRun(teamRunId),
       teamRunResolver: this.teamRunResolver,
       commitTaskActivation: (command) => options.persistence.commitTaskActivation(command),
-      enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
       taskExecutionIdentity: options.taskExecutionIdentity,
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-      idleShutdown: options.taskExecutionIdleShutdown,
       taskAgentResources: options.taskAgentResources,
     });
     this.communication = new TeamCommunicationService({
@@ -174,7 +170,7 @@ export class RootTeamRun {
       communication: this.communication,
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
-      withLiveLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation),
+      withLiveChain: (agentRunId, operation) => this.taskExecutions.withLiveChain(agentRunId, operation),
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -327,7 +323,7 @@ export class RootTeamRun {
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
-    return this.materializationGate.run(() => this.taskExecutions.withLiveLease(intent.sender.participant.identity.agentRunId, () => this.delivery.deliverToAddress(intent)));
+    return this.materializationGate.run(() => this.taskExecutions.withLiveChain(intent.sender.participant.identity.agentRunId, () => this.delivery.deliverToAddress(intent)));
   }
 
   deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
@@ -348,14 +344,14 @@ export class RootTeamRun {
         if (!this.isLiveAgent(agentRunId)) {
           return { accepted: false, code: "RUN_NOT_ACTIVE", message: `AgentRun '${agentRunId}' is shut down in root '${this.teamRunId}'.` };
         }
-        return this.taskExecutions.withLiveLease(agentRunId, async () => {
+        return this.taskExecutions.withLiveChain(agentRunId, async () => {
           const run = await this.requireContainingTeamRun(agentRunId);
           this.taskExecutions.assertInputAllowed(agentRunId);
           return run.executeDirectAgentCommand(agentRunId, command);
         });
       }
       // Operator input wakes a shut-down child exactly like send_message_to.
-      return this.taskExecutions.withLiveLease(agentRunId, async () => {
+      return this.taskExecutions.withLiveChain(agentRunId, async () => {
         const run = await this.requireContainingTeamRun(agentRunId);
         return run.executeDirectAgentCommand(agentRunId, command);
       });

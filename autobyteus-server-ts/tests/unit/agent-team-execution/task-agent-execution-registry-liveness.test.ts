@@ -47,7 +47,7 @@ const buildRegistry = () => {
 };
 
 describe("TaskAgentExecutionRegistry single liveness predicate (AR-005)", () => {
-  it("keeps the handle registered on shutdown, reports it offline, gates commands, and re-activates it on wake", async () => {
+  it("keeps the handle registered when its AgentRun ends, reports it offline, gates commands, and re-activates it on wake", async () => {
     const { registry, handles, worker } = buildRegistry();
     const prepared = await registry.beginPreparation({
       address: "/worker", agentRunId: "task-run", sourceNode: worker,
@@ -60,15 +60,16 @@ describe("TaskAgentExecutionRegistry single liveness predicate (AR-005)", () => 
     expect(registry.isLive("task-run")).toBe(true);
 
     execution.emit("idle");
-    await expect(registry.tryShutDownIfQuiet("task-run")).resolves.toBe(true);
-    expect(execution.finish).toHaveBeenCalledOnce();
+    // A quiet copy stays live: idle alone ends nothing.
+    expect(registry.isLive("task-run")).toBe(true);
+    // The runtime ends the AgentRun on its own (for example its process exited).
+    await execution.finish();
     // The handle stays registered; only its AgentRun ended.
     const retained = registry.get("task-run");
     expect(retained).not.toBeNull();
     expect(registry.isLive("task-run")).toBe(false);
     expect(registry.getLeafAgentStatusSnapshots().map((snapshot) => snapshot.details.status)).toEqual(["offline"]);
     expect(registry.hasRunningWork()).toBe(false);
-    await expect(registry.tryShutDownIfQuiet("task-run")).resolves.toBe(false);
 
     // approve/interrupt on a non-live task Agent never touch the handle.
     await expect(registry.executeCommand("task-run", { kind: "approve_tool", invocationId: "inv", approved: true, reason: null }))

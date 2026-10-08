@@ -81,7 +81,6 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
   const prepareAgentRunTermination = vi.fn(async () => ({
     cancel: vi.fn(), commit: () => ({ finish: localFinish }),
   }));
-  const tryPrepareAgentRunTerminationIfQuiescent = vi.fn(async () => null);
   const releaseExactRun = vi.fn(async () => { await localFinish(); return { accepted: true }; });
   const publishAgentEvent = vi.fn();
   const commitPlatformBindingChange = vi.fn();
@@ -102,7 +101,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     callbacks: { publishAgentEvent, commitPlatformBindingChange },
     agentRunManager: testActivationManager({
       newPreparation: prepareNewAgentRun, platformPreparation: prepareRestoreAgentRunFromPlatformState, restorePreparation: prepareRestoreAgentRun,
-      getActiveRun, prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent,
+      getActiveRun, prepareAgentRunTermination,
       releaseExactRun,
     }) as never,
     memoryLocator: {
@@ -117,7 +116,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
   return {
     activity, commitPlatformBindingChange, prepareRestoreAgentRunFromPlatformState, prepareRestoreAgentRun, handle, root,
     identity, scope, memberExecutionContext, prepareNewAgentRun, fakeRun, abort, publishAgentEvent, getActiveRun,
-    prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent, localFinish, releaseExactRun,
+    prepareAgentRunTermination, localFinish, releaseExactRun,
     /** The runtime died: AgentRunManager discovers it inactive and stops publishing it. */
     crash: () => { fakeRun.isActive.mockReturnValue(false); },
   };
@@ -250,17 +249,6 @@ describe("dead member (stale run) termination", () => {
     expect(f.prepareAgentRunTermination).toHaveBeenCalledWith(f.fakeRun);
     expect(f.handle.getStatusSnapshot().details.status).toBe("offline");
     await expect(f.handle.terminate()).resolves.toEqual({ accepted: true });
-  });
-
-  it("completes quiescent termination of a stale run", async () => {
-    const f = build("agent_team", RuntimeKind.ANTIGRAVITY_CLI);
-    await activate(f);
-    f.crash();
-    f.tryPrepareAgentRunTerminationIfQuiescent.mockResolvedValue(await f.prepareAgentRunTermination() as never);
-    const prepared = await f.handle.tryPrepareTerminationIfQuiescent();
-    expect(prepared).not.toBeNull();
-    await expect(prepared!.commit().finish()).resolves.toEqual({ accepted: true });
-    expect(f.tryPrepareAgentRunTerminationIfQuiescent).toHaveBeenCalledWith(f.fakeRun);
   });
 
   it("accepts the root-shutdown fence for a stale run and never re-activates it afterwards", async () => {

@@ -15,7 +15,6 @@ import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js"
 import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
 import { TaskAgentDurabilityEventGate } from "../../../agent-collaboration/execution/services/task-agent-durability-event-gate.js";
 import { isRunningTaskExecutionStatus } from "../../../agent-collaboration/execution/task/task-execution-running-work.js";
-import { TaskExecutionTeardownIndeterminateError } from "../../../agent-collaboration/execution/task/task-delegation-command.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
 /** Direct task-Agent mechanics for one TeamRun; the resource lifecycle policy remains root-owned. */
@@ -25,7 +24,6 @@ export class TaskAgentExecutionRegistry {
   private readonly reserved = new Set<string>();
   private readonly preparedHandles = new Map<string, FlatTeamAgentExecutionHandle>();
   private readonly eventGates = new Map<string, TaskAgentDurabilityEventGate>();
-  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly options: {
@@ -65,10 +63,10 @@ export class TaskAgentExecutionRegistry {
   }
 
   /**
-   * Wakes one shut-down task Agent inside a live lease: registers a `restore`-mode handle
-   * when none exists (after a root reopen), then activates its AgentRun so the chain is
-   * live before any input is reserved. A retained handle (idle shutdown within a live
-   * root) re-activates in `restore` mode, continuing the persisted conversation.
+   * Wakes one non-live task Agent before delivery: registers a `restore`-mode handle when
+   * none exists (after a root reopen or a reactivation), then activates its AgentRun so the
+   * chain is live before any input is reserved. A retained handle whose AgentRun ended
+   * re-activates in `restore` mode, continuing the persisted conversation.
    */
   async restore(input: RestoreTaskAgentInput): Promise<void> {
     if (!this.materializationOpen) throw new Error("Task Agent materialization is closed for TeamRun termination.");
@@ -238,33 +236,6 @@ export class TaskAgentExecutionRegistry {
     }
   }
 
-  /**
-   * Shuts the task Agent down only when it is quiet (no active turn, queued input or
-   * pending command). The handle stays registered; only its AgentRun is terminated.
-   */
-  async tryShutDownIfQuiet(agentRunId: string): Promise<boolean> {
-    const handle = this.active.get(agentRunId);
-    if (!handle || !this.isLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
-    this.shuttingDown.add(agentRunId);
-    try {
-      const local = await handle.tryPrepareTerminationIfQuiescent();
-      if (!local) return false;
-      if (this.active.get(agentRunId) !== handle) {
-        local.cancel();
-        return false;
-      }
-      const result = await local.commit().finish().catch((cause: unknown) => {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' shutdown did not finish.`, { cause });
-      });
-      if (!result.accepted) {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' shutdown was rejected.`);
-      }
-      return true;
-    } finally {
-      this.shuttingDown.delete(agentRunId);
-    }
-  }
-
   dispose(): void {
     this.operations.forEach(operation => operation.cancel());
     this.eventGates.forEach((gate) => gate.abort());
@@ -274,6 +245,5 @@ export class TaskAgentExecutionRegistry {
     this.reserved.clear();
     this.preparedHandles.clear();
     this.eventGates.clear();
-    this.shuttingDown.clear();
   }
 }

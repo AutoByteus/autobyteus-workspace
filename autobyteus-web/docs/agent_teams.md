@@ -179,11 +179,12 @@ Tasks surface, task status, submission, review, or task reference file. The
 right-side Team tab shows Messages only. The child's single execution-tree
 write becomes durable, and `TASK_EXECUTION_STARTED` is published, before its
 Agent frames are released, allowing an early-selected child monitor to advance
-without reload or refocus. A child that stays quiet is shut down after the
-server grace period and keeps its row with the standard `offline` status;
-sending to it from the composer (or a peer `send_message_to` by run ID) wakes
-it with its conversation. Nothing distinguishes a shut-down child from a
-configured member that has not started other than the row kind.
+without reload or refocus. A child stays running until its Task is DONE or the
+run stops; nothing shuts it down for being idle. After a restart it keeps its
+row with the standard `offline` status, and sending to it from the composer (or
+a peer `send_message_to` by run ID) wakes it with its conversation. Nothing
+distinguishes such a child from a configured member that has not started other
+than the row kind.
 
 When the Project Task that a child was delegated for becomes DONE, the child
 (and, for a task Team, its members and nested delegations) leaves the Team's

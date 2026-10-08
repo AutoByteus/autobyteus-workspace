@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { RootTaskAgentResourceScope } from '../../../src/agent-collaboration/execution/task/root-task-agent-resource-scope.js';
+import { RootTaskExecutionLifecycle } from '../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js';
 import { createRootExecutionPhysicalScope } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { nestedReleaseScenario } from '../../fixtures/task-release-generation-fixtures.js';
 
@@ -10,31 +11,34 @@ const doneScope = (f: Awaited<ReturnType<typeof nestedReleaseScenario>>) => {
   f.resources.close('A');
   return new RootTaskAgentResourceScope(f.adapter, f.resources);
 };
-describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generation exact Task release', kind => {
-  it('coordinator-only follow-up preserves verified nested Agent/Team/grandchild proof and separately stops sibling helper', async () => {
+describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s released-generation exact Task release', kind => {
+  it('a reactivated Team generation carries the verified nested Agent/Team/grandchild proof of the released one into the next DONE', async () => {
     const f = await nestedReleaseScenario(kind), history = JSON.stringify(f.tree);
-    expect(f.oldTeam.isTerminated()).toBe(true); expect(f.oldNested.isTerminated()).toBe(true);
-    expect([...f.active.keys()].sort()).toEqual(['A-helper', 'B-worker', 'borrowed', f.managerId].sort());
-    await f.adapter.restoreChain('A-lead', () => undefined);
+    await f.resources.markStarted({ teamRunId: 'A-team' });
+    // Every copy is live until DONE: nothing was stopped for being quiet.
+    expect(f.firstTeam.isActive()).toBe(true); expect(f.firstNested.isActive()).toBe(true);
+    expect([...f.active.keys()].sort()).toEqual(['A-child', 'A-grand', 'A-helper', 'A-lead', 'A-nested-lead', 'B-worker', 'borrowed', f.managerId].sort());
+    // First DONE stops the live Team generation with its nested children.
+    expect((await doneScope(f).releaseTaskAgentResources(f.requested)).every(outcome => outcome.stopped)).toBe(true);
+    expect(f.firstTeam.isTerminated()).toBe(true); expect(f.firstNested.isTerminated()).toBe(true);
+    // Reactivation: the Task is reopened and the assigner's message restores a new Team generation.
+    f.resources.setTaskOpen('A');
+    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources });
+    expect(await lifecycle.deliverToExactTarget(f.managerId, 'A-lead', () => lifecycle.withLiveChain('A-lead',
+      () => f.getManaged('A-team')!.postMessage(message(), 'A-lead')))).toMatchObject({ accepted: true });
     const current = f.getManaged('A-team')!;
-    expect(current).not.toBe(f.oldTeam);
-    expect(await current.postMessage(message(), 'A-lead')).toMatchObject({ accepted: true });
-    // A second quiet/follow-up cycle must carry the same exact terminal receipts, not just one replacement.
-    const prepared = await current.tryPrepareTerminationIfQuiescent();
-    expect(await prepared!.commit().finish()).toMatchObject({ accepted: true });
-    f.retireTerminated();
-    // Parent registry notices the terminated child and retires it on the normal quiet path.
-    if (f.rootTeam) await f.rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' });
-    await f.adapter.restoreChain('A-lead', () => undefined);
-    expect(await f.getManaged('A-team')!.postMessage(message(), 'A-lead')).toMatchObject({ accepted: true });
+    expect(current).not.toBe(f.firstTeam);
+    expect(current.isActive()).toBe(true);
+    // Second DONE: the new generation is stopped and the still-closed nested children report the first generation's proof.
     const scope = doneScope(f);
     expect(await scope.releaseTaskAgentResources(f.requested)).toEqual(f.requested.map(agentRun => ({ agentRun, stopped: true })));
+    expect(current.isTerminated()).toBe(true);
     expect(await scope.releaseTaskAgentResources([{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).toEqual([
       { agentRun: { agentRunId: 'A-child' }, stopped: true }, { agentRun: { teamRunId: 'A-nested' }, stopped: true }]);
-    expect(f.acquired.filter(r => ['A-child', 'A-nested-lead', 'A-grand'].includes(r.runId))).toHaveLength(3);
+    expect(f.acquired.filter(r => ['A-child', 'A-nested-lead', 'A-grand'].includes(r.runId)).map(r => r.runId).sort()).toEqual(['A-child', 'A-grand', 'A-nested-lead']);
     expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);
-    expect(await f.getManaged('A-team')!.releaseDirectTaskExecution({ agentRunId: 'never-owned' })).toEqual({ accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' });
+    expect(await current.releaseDirectTaskExecution({ agentRunId: 'never-owned' })).toEqual({ accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' });
     // A new root/startup host has no runtime-local terminal receipts: history/absence alone proves nothing.
     const fresh = await f.factory.beginMaterialization({ physicalScope: current.context.physicalScope, teamNode: current.context.teamNode,
       callbacks: f.callbacks, handoffs: [], activationMode: 'restore', prepareConfiguredAgents: false }).prepare();
@@ -47,28 +51,30 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
       root: { rootSubjectKind: kind === 'agent' ? 'agent_org' : 'agent', rootRunId: 'root' }, ancestorTeamRunIds: ['A-team'] }),
       teamNode: current.context.teamNode, callbacks: f.callbacks, handoffs: [], activationMode: 'restore', prepareConfiguredAgents: false }).prepare();
     wrongRoot.commitAfterDurability();
-    expect(() => wrongRoot.teamRun.inheritReleasedTaskExecutionProof(f.oldTeam)).toThrow('exact verified terminal Team placement');
+    expect(() => wrongRoot.teamRun.inheritReleasedTaskExecutionProof(f.firstTeam)).toThrow('exact verified terminal Team placement');
     expect(await wrongRoot.teamRun.releaseOwnedRuntime()).toMatchObject({ accepted: true });
+    lifecycle.closeExternalAdmission();
     await cleanProtected(f);
   });
 
-  it.each(['A-child', 'A-grand'])('requires current restored descendant %s proof; failed stop retries same exact generation, never historical success', async id => {
+  it.each(['A-child', 'A-grand'])('a live descendant %s needs no restore; a failed stop retries the same exact run, never historical success', async id => {
     const f = await nestedReleaseScenario(kind), history = JSON.stringify(f.tree);
+    // The copy stayed live: restoring its chain is a no-op and acquires nothing.
     await f.adapter.restoreChain(id, () => undefined);
-    const restored = f.active.get(id); expect(restored).toBeDefined();
-    expect(f.acquired.filter(r => r.runId === id)).toHaveLength(2);
-    f.stopFailures.add(restored);
+    const live = f.active.get(id); expect(live?.alive).toBe(true);
+    expect(f.acquired.filter(r => r.runId === id)).toHaveLength(1);
+    f.stopFailures.add(live);
     const scope = doneScope(f);
     const first = await scope.releaseTaskAgentResources(f.requested);
     expect(first.find(o => 'agentRunId' in o.agentRun && o.agentRun.agentRunId === id)?.stopped).toBe(false);
-    expect(f.active.get(id)).toBe(restored); expect(restored.alive).toBe(true);
+    expect(f.active.get(id)).toBe(live); expect(live.alive).toBe(true);
     expect(f.active.has('A-helper')).toBe(false);
-    f.stopFailures.delete(restored);
+    f.stopFailures.delete(live);
     expect((await scope.releaseTaskAgentResources(f.requested)).every(o => o.stopped)).toBe(true);
     const stops = f.stopped.length, acquisitions = f.acquired.length;
     expect((await scope.releaseTaskAgentResources(f.requested)).every(o => o.stopped)).toBe(true);
     expect(f.stopped).toHaveLength(stops); expect(f.acquired).toHaveLength(acquisitions);
-    expect(restored.alive).toBe(false); expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
+    expect(live.alive).toBe(false); expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);
     await cleanProtected(f);
   });

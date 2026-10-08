@@ -1,0 +1,43 @@
+exit=1
+
+[90mstdout[2m | tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts[2m > [22m[2mDelegated Claude agent background task outlives the old idle grace period (live E2E)
+[22m[39mIn-memory cache: Removed agent definition with ID coordinator-64ff1474.
+
+[90mstdout[2m | tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts[2m > [22m[2mDelegated Claude agent background task outlives the old idle grace period (live E2E)
+[22m[39mAgent Definition with ID coordinator-64ff1474 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts[2m > [22m[2mDelegated Claude agent background task outlives the old idle grace period (live E2E)
+[22m[39mIn-memory cache: Removed agent definition with ID worker-64ff1474.
+
+[90mstdout[2m | tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts[2m > [22m[2mDelegated Claude agent background task outlives the old idle grace period (live E2E)
+[22m[39mAgent Definition with ID worker-64ff1474 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 80041[2mms[22m[39m
+[31m     [31m×[31m AC-001: the copy stays live, its background task completes, and it reports to its delegator[39m[33m 76787[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts[2m > [22mDelegated Claude agent background task outlives the old idle grace period (live E2E)[2m > [22mAC-001: the copy stays live, its background task completes, and it reports to its delegator
+[31m[1mAssertionError[22m: copy was shut down or its task stopped: {"childRunId":"worker_64ff1474_3ef16909674f49e3806954cdf39bffcb","taskId":"bo6s5qsr3","outcome":"BACKGROUND_TASK_UPDATED","outcomeStatus":"stopped","idleToOutcomeMs":60012,"statuses":["initializing@-8908","running@-8908","running@-8908","running@-8908","running@-4212","running@-4212","running@-4191","running@-3125","running@-3125","running@-3120","running@-3120","running@-10","running@-10","running@-10","running@0","idle@0","idle@60012"],"backgroundTask":["running@-3125","running@-3125","stopped@60012"],"markerContent":null}: expected 'BACKGROUND_TASK_UPDATED' to be 'TEAM_COMMUNICATION_MESSAGE' // Object.is equality[39m
+
+Expected: [32m"TEAM_COMMUNICATION_MESSAGE"[39m
+Received: [31m"BACKGROUND_TASK_UPDATED"[39m
+
+[36m [2m❯[22m tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts:[2m189:97[22m[39m
+    [90m187| [39m    }
+    [90m188| [39m
+    [90m189| [39m    expect(outcome.type, `copy was shut down or its task stopped: ${JS…
+    [90m   | [39m                                                                                                [31m^[39m
+    [90m190| [39m    expect(evidence.idleToOutcomeMs).toBeGreaterThanOrEqual(OLD_MINIMU…
+    [90m191| [39m    expect(childStatuses().filter((m) => m.payload.status === "offline…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 11:15:45
+[2m   Duration [22m 90.04s[2m (transform 4.59s, setup 14ms, import 9.17s, tests 80.04s, environment 0ms)[22m
+
+
+[exited with code 0]

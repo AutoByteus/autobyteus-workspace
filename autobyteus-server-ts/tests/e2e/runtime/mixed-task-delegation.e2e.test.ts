@@ -13,7 +13,6 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
-import { TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY } from "../../../src/config/task-execution-idle-shutdown-setting.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -28,10 +27,11 @@ import {
 /**
  * Live delegated-child resource lifecycle across AutoByteus, Codex and Claude:
  * `delegate_task` spawns a child and returns only its run ID; the child and the
- * delegator then talk through `send_message_to`; a quiet child is shut down after
- * the grace period and a same-root message by run ID restores it with its
- * conversation. Children are "resources, not tasks": no submit/review tools and
- * no task records or task events exist.
+ * delegator then talk through `send_message_to`; a quiet child stays live until its
+ * Task is DONE or its root stops (there is no idle shutdown), and after a root stop
+ * and reopen a same-root message by run ID restores it with its conversation.
+ * Children are "resources, not tasks": no submit/review tools and no task records
+ * or task events exist.
  */
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
@@ -43,15 +43,11 @@ const liveAllRuntimeDelegationEnabled =
   process.env.RUN_CLAUDE_E2E === "1";
 const describeLive = liveAllRuntimeDelegationEnabled ? describe : describe.skip;
 
-/** The shortest supported grace period, so each shutdown is observable within about a minute. */
-const GRACE_MS = 60_000;
-/** Allowance for status-event delivery latency when checking "not before the grace period". */
-const GRACE_OBSERVATION_TOLERANCE_MS = 2_000;
-const SHUTDOWN_TIMEOUT_MS = GRACE_MS + 90_000;
+/** Longer than the removed idle-shutdown delay's minimum (60 s): quiet children must stay live through it. */
+const QUIET_OBSERVATION_MS = 75_000;
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const CODEX_SEND_MESSAGE_TOOL = "mcp__autobyteus_agent_tools__send_message_to";
 const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-const originalGraceSetting = process.env[TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY];
 
 type WsMessage = { type: string; payload: Record<string, unknown>; receivedAt: number };
 type WorkerRuntime = "auto" | "codex" | "claude";
@@ -203,7 +199,6 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
 
   beforeAll(async () => {
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
-    process.env[TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY] = String(GRACE_MS);
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "delegated-child-lifecycle-e2e-appdata-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
@@ -230,8 +225,6 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
   afterAll(async () => {
     if (typeof originalCodexApprovalPolicy === "string") process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
     else delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-    if (typeof originalGraceSetting === "string") process.env[TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY] = originalGraceSetting;
-    else delete process.env[TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY];
     if (runtimeServerApp) await runtimeServerApp.close();
     runtimeServerApp = null;
     await closeLiveRuntimeSecretVault();
@@ -427,30 +420,13 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
   const statusTimeline = (connection: Connection, startIndex: number, agentRunId: string) =>
     connection.messages.slice(startIndex).filter((message) => message.type === "AGENT_STATUS" && message.payload.agent_run_id === agentRunId);
 
-  /**
-   * Start of the quiet streak that ended in `offline`: the first idle/error status after the last
-   * running/initializing status. Every later quiet status only re-arms the timer (a later deadline),
-   * so the shutdown can never legitimately happen before this moment plus the grace period.
-   */
-  const quietStreakStartBefore = (timeline: WsMessage[], offline: WsMessage): number => {
-    const beforeOffline = timeline.slice(0, timeline.indexOf(offline));
-    const lastBusy = beforeOffline.map((message) => String(message.payload.status))
-      .findLastIndex((status) => status === "running" || status === "initializing");
-    const streak = beforeOffline.slice(lastBusy + 1).filter((message) => ["idle", "error"].includes(String(message.payload.status)));
-    expect(streak.length, "no quiet status before the shutdown").toBeGreaterThan(0);
-    return streak[0]!.receivedAt;
-  };
-
-  const expectShutdownAfterGrace = async (connection: Connection, quietIndex: number, agentRunId: string, label: string) => {
-    const offline = await waitForAgentStatus(connection, quietIndex, agentRunId, "offline", `${label} idle shutdown`, SHUTDOWN_TIMEOUT_MS);
-    const timeline = statusTimeline(connection, quietIndex, agentRunId);
-    const streakStart = quietStreakStartBefore(timeline, offline);
-    const observedGraceMs = offline.receivedAt - streakStart;
-    const trace = timeline.map((message) => `${String(message.payload.status)}@${message.receivedAt - streakStart}`).join(",");
-    console.log(`[grace] ${label} ${agentRunId}: offline ${observedGraceMs} ms after quiet streak start; statuses ${trace}`);
-    expect(observedGraceMs, `${label} shut down ${observedGraceMs} ms after its quiet streak began (${trace})`)
-      .toBeGreaterThanOrEqual(GRACE_MS - GRACE_OBSERVATION_TOLERANCE_MS);
-    return { offline, observedGraceMs };
+  /** Quiet children are never shut down for being idle: no `offline` status for any of them over the window. */
+  const expectStaysLive = async (connection: Connection, children: Array<{ runId: string; fromIndex: number; label: string }>) => {
+    await wait(QUIET_OBSERVATION_MS);
+    for (const child of children) {
+      const offline = statusTimeline(connection, child.fromIndex, child.runId).filter((message) => message.payload.status === "offline");
+      expect(offline, `${child.label} went offline while quiet`).toEqual([]);
+    }
   };
 
   const expectNoRetiredTaskSurface = (connection: Connection) => {
@@ -470,7 +446,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     };
   };
 
-  it("LIVE-001/LIVE-004: spawns a child per runtime, shuts quiet children down after the grace period, rejects a cross-root wake, and wakes them with their conversation", async () => {
+  it("LIVE-001: spawns a child per runtime, keeps quiet children live past the old idle-shutdown delay, and a same-root follow-up reaches them with their conversation", async () => {
     const runtimes: WorkerRuntime[] = ["auto", "codex", "claude"];
     const root = await startTeam({
       name: "delegation-root",
@@ -534,47 +510,27 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     }
     expect(persisted.files.filter((file) => /task.*record/i.test(file))).toEqual([]);
 
-    // A second root is prepared while the grace period runs, for the cross-root probe.
-    const outsider = await startTeam({
-      name: "outsider-root",
-      coordinator: "outsider",
-      members: [{ name: "outsider", runtime: COORDINATOR_RUNTIME, toolNames: ["send_message_to"], instructions: COORDINATOR_INSTRUCTIONS }],
-    });
-
-    // AC-004 / QR-001: each quiet child is shut down, and not before the grace period.
-    const graceEvidence: Record<string, number> = {};
-    for (const [runtime, child] of children) {
-      graceEvidence[runtime] = (await expectShutdownAfterGrace(connection, child.quietIndex, child.runId, `${runtime} child`)).observedGraceMs;
-    }
-    console.log("[LIVE-001 observed grace ms]", JSON.stringify(graceEvidence));
+    // REQ-001 / AC-002: no quiet child is shut down, however long it is idle.
+    await expectStaysLive(connection, [...children].map(([runtime, child]) => ({ runId: child.runId, fromIndex: child.quietIndex, label: `${runtime} child` })));
     expect(await checkpointHasOpenWork(teamRunId)).toBe(false);
-    const afterShutdown = await readRootTree(teamRunId);
-    expect(afterShutdown.tree.rootTeam.taskExecutions).toHaveLength(children.size);
+    const afterQuiet = await readRootTree(teamRunId);
+    expect(afterQuiet.tree.rootTeam.taskExecutions).toHaveLength(children.size);
 
-    // LIVE-004 / AC-012: a sender in another root cannot reach, or wake, a shut-down child.
-    const autoChild = children.get("auto")!;
-    const crossRootIndex = connection.messages.length;
-    const crossRoot = await callToolVia(outsider.connection, outsider.runIdByAddress.get("/outsider")!, "send_message_to", {
-      target_agent_run_id: autoChild.runId, content: `Cross-root probe ${root.unique}`,
-    }, "cross-root", { expectRejection: true });
-    expect(crossRoot.result).toMatchObject({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
-    await wait(5_000);
-    expect(connection.messages.slice(crossRootIndex).filter((message) =>
-      message.payload.agent_run_id === autoChild.runId && message.type === "AGENT_STATUS" && message.payload.status !== "offline")).toEqual([]);
-
-    // AC-007: a same-root message by run ID restores each child with its conversation, and it replies.
+    // AC-002: a same-root message by run ID reaches each live child with its conversation, and it replies.
     for (const [runtime, child] of children) {
       const followUp = "Follow-up from your delegator: call send_message_to exactly once with recipient_address \"/coordinator\" " +
         "and content made of the word RECALLED, one space, and the secret recall code from your original delegated task. " +
         "Then reply with the single word DONE.";
       const { result, startIndex } = await callToolVia(connection, coordinatorRunId, "send_message_to", {
         target_agent_run_id: child.runId, content: followUp,
-      }, `${runtime} wake`);
+      }, `${runtime} follow-up`);
       expect(result).toMatchObject({ accepted: true, target_agent_run_id: child.runId });
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         isCommunication(message, { sender: child.runId, receiver: coordinatorRunId, contains: child.recall }),
-      `${runtime} restored child recalls its original packet`, 300_000);
-      await waitForAgentStatus(connection, startIndex, child.runId, "idle", `${runtime} restored child quiet`, 300_000);
+      `${runtime} live child recalls its original packet`, 300_000);
+      await waitForAgentStatus(connection, startIndex, child.runId, "idle", `${runtime} live child quiet`, 300_000);
+      // Delivered to the live run: no shutdown and no restore in between.
+      expect(statusTimeline(connection, child.quietIndex, child.runId).filter((message) => message.payload.status === "offline")).toEqual([]);
     }
 
     // BEH-012: only the spawn packet is a task notification; follow-ups are ordinary messages.
@@ -583,10 +539,9 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
         message.type === "SYSTEM_TASK_NOTIFICATION" && message.payload.agent_run_id === child.runId).length).toBeLessThanOrEqual(1);
     }
     expectNoRetiredTaskSurface(connection);
-    expectNoRetiredTaskSurface(outsider.connection);
   }, 1_800_000);
 
-  it("LIVE-002: never shuts down a child that is waiting for tool approval past the grace period", async () => {
+  it("LIVE-002: a child waiting for tool approval stays live with open work past the old idle-shutdown delay, then finishes and stays live", async () => {
     const runtimes: WorkerRuntime[] = ["auto", "codex", "claude"];
     const root = await startTeam({
       name: "approval-root",
@@ -616,17 +571,13 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       gates.set(runtime, { runId: childRunId, approvalIndex: connection.messages.indexOf(approval), invocation: invocationId(approval.payload)! });
     }
 
-    // AC-006: hold every approval past the grace period; no child is shut down and the root keeps open work.
+    // Hold every approval past the old idle-shutdown delay; no child is shut down and the root keeps open work.
     const heldFrom = Date.now();
-    await wait(GRACE_MS + 30_000);
-    for (const [runtime, gate] of gates) {
-      const offline = connection.messages.slice(gate.approvalIndex).filter((message) => isStatus(message, gate.runId, "offline"));
-      expect(offline, `${runtime} child was shut down while awaiting approval`).toEqual([]);
-    }
+    await expectStaysLive(connection, [...gates].map(([runtime, gate]) => ({ runId: gate.runId, fromIndex: gate.approvalIndex, label: `${runtime} child awaiting approval` })));
     expect(await checkpointHasOpenWork(teamRunId)).toBe(true);
     console.log("[LIVE-002 approvals held ms]", Date.now() - heldFrom);
 
-    // After approval the child finishes, goes quiet, and the normal grace shutdown applies again.
+    // After approval the child finishes, goes quiet, and stays live.
     const resumedIndex = connection.messages.length;
     for (const gate of gates.values()) {
       connection.socket.send(JSON.stringify({
@@ -661,9 +612,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       denying = false;
       await denyExtraApprovals;
     }
-    for (const [runtime, gate] of gates) {
-      await expectShutdownAfterGrace(connection, resumedIndex, gate.runId, `${runtime} approved child`);
-    }
+    await expectStaysLive(connection, [...gates].map(([runtime, gate]) => ({ runId: gate.runId, fromIndex: resumedIndex, label: `${runtime} approved child` })));
     expect(await checkpointHasOpenWork(teamRunId)).toBe(false);
     expectNoRetiredTaskSurface(connection);
   }, 1_200_000);
@@ -778,7 +727,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     return { orgRunId, unique, runIdByAddress, connection: { socket, messages }, send };
   };
 
-  it("LIVE-003: in an Agent Org root, shuts a quiet task Team down as a whole, wakes it through its coordinator, and lets a grandchild wake its shut-down delegator", async () => {
+  it("LIVE-003: in an Agent Org root, keeps a quiet task Team and a delegating child live; a message reaches the Team through its coordinator and a grandchild reaches its delegator", async () => {
     const org = await startOrg();
     const { connection, orgRunId } = org;
     const coordinatorRunId = org.runIdByAddress.get("/coordinator")!;
@@ -841,12 +790,15 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     await waitForAgentStatus(connection, connection.messages.indexOf(helperStarted), plannerRunId, "idle", "planner quiet", 300_000);
     await waitForAgentStatus(connection, connection.messages.indexOf(helperStarted), helperRunId, "idle", "grandchild quiet", 300_000);
 
-    // The whole task Team and the delegating child shut down, not before the grace period.
-    await expectShutdownAfterGrace(connection, teamReplyIndex, leadRunId, "task Team coordinator");
-    await expectShutdownAfterGrace(connection, plannerSpawn.startIndex, plannerRunId, "delegating child");
+    // Neither the quiet task Team nor the delegating child is shut down.
+    await expectStaysLive(connection, [
+      ...teamMemberRunIds.map((runId) => ({ runId, fromIndex: teamReplyIndex, label: `task Team member ${runId}` })),
+      { runId: plannerRunId, fromIndex: plannerSpawn.startIndex, label: "delegating child" },
+      { runId: helperRunId, fromIndex: connection.messages.indexOf(helperStarted), label: "grandchild" },
+    ]);
     expect(await orgHasOpenWork()).toBe(false);
 
-    // AC-009: a message to the task Team coordinator's run ID restores the team; the coordinator recalls its packet.
+    // AC-009: a message to the task Team coordinator's run ID reaches the live team; the coordinator recalls its packet.
     const teamWake = await coordinatorCall("send_message_to", {
       target_agent_run_id: leadRunId,
       content: "Follow-up from your delegator: call send_message_to exactly once with recipient_address \"/coordinator\" and content made of " +
@@ -855,9 +807,9 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     expect(teamWake.result).toMatchObject({ accepted: true, target_agent_run_id: leadRunId });
     await waitForMessageAfter(connection.messages, teamWake.startIndex, (message) =>
       isCommunication(message, { sender: leadRunId, receiver: coordinatorRunId, contains: teamRecall }),
-    "restored task Team coordinator recalls its packet", 300_000);
+    "live task Team coordinator recalls its packet", 300_000);
 
-    // AC-010: the operator messages the grandchild; its message by run ID wakes its shut-down delegator.
+    // AC-010: the operator messages the grandchild; its message by run ID reaches its live delegator.
     const grandchildIndex = connection.messages.length;
     org.send(helperRunId, `Call send_message_to exactly once now with these exact JSON arguments: ${JSON.stringify({
       target_agent_run_id: plannerRunId,
@@ -865,10 +817,10 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     })}. Do not call any other tool.`);
     await waitForMessageAfter(connection.messages, grandchildIndex, (message) =>
       isCommunication(message, { sender: helperRunId, receiver: plannerRunId, contains: plannerToken }),
-    "grandchild message to its shut-down delegator", 300_000);
+    "grandchild message to its delegator", 300_000);
     await waitForMessageAfter(connection.messages, grandchildIndex, (message) =>
       isCommunication(message, { sender: plannerRunId, receiver: coordinatorRunId, contains: plannerToken }),
-    "restored delegator acts on the grandchild message", 300_000);
+    "delegator acts on the grandchild message", 300_000);
     expectNoRetiredTaskSurface(connection);
     const orgTree = JSON.parse(await readFile(path.join(appConfigProvider.config.getMemoryDir(), "agent_orgs", orgRunId, "agent_org_run_execution_tree.json"), "utf8"));
     expect(orgTree).not.toHaveProperty("schemaVersion");
@@ -876,7 +828,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       .not.toContain("agent_org_task_delegation_records.json");
   }, 1_800_000);
 
-  it("LIVE-005: stopping the root stops every child, and after a reopen a message restores an earlier child with its conversation", async () => {
+  it("LIVE-005/LIVE-004: stopping the root stops every child; after a reopen another root cannot wake a child, and a same-root message restores it with its conversation", async () => {
     const runtimes: WorkerRuntime[] = ["auto", "codex", "claude"];
     const root = await startTeam({
       name: "reopen-root",
@@ -901,7 +853,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       children.set(runtime, { runId: childRunId, recall });
     }
 
-    // AC-014: children are live (inside their grace period) when the root stops; the stop takes all of them down.
+    // AC-014: children are live when the root stops; the stop takes all of them down.
     const stopIndex = root.connection.messages.length;
     const stopped = await execGraphql<{ terminateAgentTeamRun: { success: boolean } }>(
       `mutation T($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success } }`, { teamRunId: root.teamRunId },
@@ -922,6 +874,23 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
     const reopened = await openTeamSocket(root.teamRunId);
     expect(await checkpointHasOpenWork(root.teamRunId)).toBe(false);
+
+    // LIVE-004 / AC-012: a sender in another root cannot reach, or wake, a child that is not running.
+    const outsider = await startTeam({
+      name: "outsider-root",
+      coordinator: "outsider",
+      members: [{ name: "outsider", runtime: COORDINATOR_RUNTIME, toolNames: ["send_message_to"], instructions: COORDINATOR_INSTRUCTIONS }],
+    });
+    const autoChild = children.get("auto")!;
+    const crossRootIndex = reopened.messages.length;
+    const crossRoot = await callToolVia(outsider.connection, outsider.runIdByAddress.get("/outsider")!, "send_message_to", {
+      target_agent_run_id: autoChild.runId, content: `Cross-root probe ${root.unique}`,
+    }, "cross-root", { expectRejection: true });
+    expect(crossRoot.result).toMatchObject({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
+    await wait(5_000);
+    expect(reopened.messages.slice(crossRootIndex).filter((message) =>
+      message.payload.agent_run_id === autoChild.runId && message.type === "AGENT_STATUS" && message.payload.status !== "offline")).toEqual([]);
+    expectNoRetiredTaskSurface(outsider.connection);
     for (const [runtime, child] of children) {
       const { result, startIndex } = await callToolVia(reopened, coordinatorRunId, "send_message_to", {
         target_agent_run_id: child.runId,

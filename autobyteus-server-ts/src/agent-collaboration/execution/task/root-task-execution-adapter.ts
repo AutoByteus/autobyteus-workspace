@@ -114,11 +114,10 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void;
   /** Publishes the root's sequenced "task executions reopened" event (reactivation) into its publisher. */
   publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void;
-  /** Index-only containment chain for idle shutdown and restore. */
+  /** Index-only containment chain for restore and status. */
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[];
   /** Every task execution node of the root's current tree (any depth). */
   listTaskExecutions(): readonly TaskExecutionReference[];
-  isLive(reference: TaskExecutionReference): boolean;
   /**
    * The copy's own live status, read without waking anything: an Agent's status, or a Team's folded
    * member status; `offline` when it is not live.
@@ -126,5 +125,4 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   taskExecutionStatus(reference: TaskExecutionReference): AgentExecutionStatus;
   assertRestorableChain(agentRunId: string): void;
   restoreChain(agentRunId: string, assertOpen: () => void): Promise<void>;
-  tryShutDownIfQuiet(reference: TaskExecutionReference): Promise<boolean>;
 }

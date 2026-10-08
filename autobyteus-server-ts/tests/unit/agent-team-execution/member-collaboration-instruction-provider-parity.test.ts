@@ -113,7 +113,7 @@ describe("member collaboration instruction provider parity", () => {
       expect(prompt).toContain("The letters in this example are placeholders only.");
       expect(prompt).toContain("Never use both to deliver the same work.");
       expect(prompt).toContain("it is not an alias for the new\ncopy.");
-      expect(prompt).toContain("A copy that stays quiet is shut\ndown after a while");
+      expect(prompt).toContain("A copy stays running until its\nTask is `DONE` or the run stops.");
       expect(prompt).not.toMatch(/submit_task_result|review_task_result|Task Lifecycle/);
       expect(prompt).toContain(
         "Select the single rule whose `when` condition most specifically applies",

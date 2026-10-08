@@ -12,7 +12,6 @@ import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity 
 import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
 import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import { createTaskExecutionPreparation, type TaskExecutionPreparationOperation, type PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
-import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
 import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
 import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
 import type { PrepareTaskAgentInput } from "../../../agent-team-execution/domain/task-agent-execution.js";
@@ -35,7 +34,6 @@ export class RootAgentExecutionRegistry {
   private readonly active = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly prepared = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly taskAgentRunIds = new Set<string>();
-  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly options: Readonly<{
@@ -225,7 +223,7 @@ export class RootAgentExecutionRegistry {
     }
   }
   /**
-   * Wakes one shut-down root-hosted task Agent inside a live lease: registers a `restore`-mode
+   * Wakes one non-live root-hosted task Agent before delivery: registers a `restore`-mode
    * handle when none exists (after a root reopen), then activates its AgentRun. A retained
    * handle re-activates in `restore` mode, continuing the persisted conversation.
    */
@@ -245,30 +243,6 @@ export class RootAgentExecutionRegistry {
     }
     // The chain is live before any input is reserved.
     await handle.getOrCreateAgentRun();
-  }
-
-  /** Shuts one root-hosted task Agent down only when it is quiet; the handle stays registered. */
-  async tryShutDownTaskIfQuiet(agentRunId: string): Promise<boolean> {
-    const handle = this.active.get(agentRunId);
-    if (!handle || !this.isTaskLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
-    this.shuttingDown.add(agentRunId);
-    try {
-      const local = await handle.tryPrepareTerminationIfQuiescent();
-      if (!local) return false;
-      if (this.active.get(agentRunId) !== handle) {
-        local.cancel();
-        return false;
-      }
-      const result = await local.commit().finish().catch((cause: unknown) => {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' shutdown did not finish.`, { cause });
-      });
-      if (!result.accepted) {
-        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' shutdown was rejected.`);
-      }
-      return true;
-    } finally {
-      this.shuttingDown.delete(agentRunId);
-    }
   }
 
   private async createHandle(

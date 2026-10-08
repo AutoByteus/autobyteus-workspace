@@ -38,15 +38,13 @@ type AgentRunTerminationOptions = Readonly<{
 }>;
 
 /**
- * AgentRun's internal owner of the run's termination lifecycle (prepare, try-if-quiescent,
- * commit/finish, cancel) and of its root-shutdown fence attempts (SR-006 F-1–F-4 selection and
+ * AgentRun's internal owner of the run's termination lifecycle (prepare, commit/finish, cancel) and of its root-shutdown fence attempts (SR-006 F-1–F-4 selection and
  * evaluation). It reaches AgentRun state only through its options; callers use AgentRun.
  */
 export class AgentRunTermination {
   private recoveryShutdownFenced = false;
   /** The current root-shutdown attempt: shared while pending, kept once accepted, replaced after a failure. */
   private attempt: AgentRunRootShutdownFence | null = null;
-  private tryingQuiescent: Promise<PreparedAgentRunTermination | null> | null = null;
   private preparing: Promise<PreparedAgentRunTermination> | null = null;
   private prepared: PreparedAgentRunTermination | null = null;
   private finishing: Promise<AgentOperationResult> | null = null;
@@ -56,34 +54,12 @@ export class AgentRunTermination {
   prepare(): Promise<PreparedAgentRunTermination> {
     if (this.prepared) return Promise.resolve(this.prepared);
     if (this.preparing) return this.preparing;
-    if (this.tryingQuiescent) {
-      return this.tryingQuiescent.then((prepared) => prepared ?? this.prepare());
-    }
     const preparation = this.prepareTerminationOnce();
     this.preparing = preparation;
     void preparation.finally(() => {
       if (this.preparing === preparation) this.preparing = null;
     }).catch(() => undefined);
     return preparation;
-  }
-
-  tryPrepareIfQuiescent(): Promise<PreparedAgentRunTermination | null> {
-    if (this.prepared) return Promise.resolve(this.prepared);
-    if (this.preparing) return Promise.resolve(null);
-    if (this.tryingQuiescent) return this.tryingQuiescent;
-    const attempt = this.options.dispatchQueue.enqueue(this.options.runId, () => {
-      if (this.prepared) return this.prepared;
-      this.options.lifecycleState.reconcileRuntimeSnapshot(this.options.backend.getLifecycleSnapshot());
-      if (this.options.inputDispatch.active() || this.options.interruptState.hasActiveReservation
-        || this.options.lifecycleState.activeTurn.kind !== "NONE" || this.options.lifecycleState.hasPendingCommand
-        || !this.options.inputAdmissionState.tryQuiesceIfAlreadyQuiescent()) return null;
-      return this.createTerminationPreparation();
-    });
-    this.tryingQuiescent = attempt;
-    void attempt.finally(() => {
-      if (this.tryingQuiescent === attempt) this.tryingQuiescent = null;
-    }).catch(() => undefined);
-    return attempt;
   }
 
   async fenceForRootShutdown(): Promise<AgentOperationResult> {

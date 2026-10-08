@@ -172,8 +172,9 @@ the sender's own team instance, first-use bring-in, and run-ID selection, which
 never brings anything in. A "Delegated Agents" subsection explains that every
 call spawns another copy (copies can work in parallel), the returned
 `target_agent_run_id` (or null plus `message` when nothing started), follow-up
-on a copy only through `send_message_to` with its run ID, and that a quiet copy
-is shut down and restored with its conversation on the next message. The section also
+on a copy only through `send_message_to` with its run ID, that a copy stays
+running until its Task is DONE or the run stops, and that a message to a copy
+that is not running restores it with its conversation. The section also
 covers duplicate-dispatch prohibition, Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
 the single rule whose condition most specifically applies, notification of only
 that rule's recipient, requester-return when no rule applies to incoming work, and delivery confirmation. The
@@ -247,8 +248,9 @@ copy. Every call spawns another copy, so copies can work in parallel.
   `task_id` and status `DONE`; this stops the copy and removes it from the run.
 
 Follow up on a copy only through `send_message_to` with its
-`target_agent_run_id`, in both directions. A copy that stays quiet is shut
-down after a while; a message to its run ID restores it with its
+`target_agent_run_id`, in both directions. A copy stays running until its
+Task is `DONE` or the run stops. If the copy is not running (for example
+after a restart), a message to its run ID restores it with its
 conversation. A copy whose Task is `DONE` is stopped. To continue with it, the
 run that assigned the work first moves the Task out of `DONE` (for example to
 `IN_PROGRESS`) with `create_or_update_task`, then messages the copy's run ID;

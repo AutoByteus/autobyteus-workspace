@@ -199,7 +199,7 @@ describe('staged AgentOrg context hydration and publication', () => {
     expect(useAgentActivityStore().getActivities('agent-task-lead')).toEqual([])
   })
 
-  it('projects an idle-shutdown task Agent as offline while its hierarchy row stays visible', async () => {
+  it('projects a stopped (not running) task Agent as offline while its hierarchy row stays visible', async () => {
     const view = taskBearingView()
     const context = await hydrateAgentOrgExecutionContext({
       orgRunId: 'org-run',
@@ -233,7 +233,7 @@ describe('staged AgentOrg context hydration and publication', () => {
     expect(context.error).toBeNull()
   })
 
-  it('projects every Agent in an idle-shutdown task Team to offline without removing the execution', async () => {
+  it('projects every Agent in a stopped (not running) task Team to offline without removing the execution', async () => {
     const view = taskBearingView()
     const context = await hydrateAgentOrgExecutionContext({
       orgRunId: 'org-run',
