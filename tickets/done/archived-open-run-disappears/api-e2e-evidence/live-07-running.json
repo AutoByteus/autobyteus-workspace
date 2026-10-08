@@ -1,0 +1,41 @@
+{
+ "before": {
+  "agentRowTitles": [
+   "Archive run",
+   "Delete run permanently"
+  ],
+  "teamRowTitles": [
+   "Active team run"
+  ],
+  "orgArchiveBtn": false,
+  "orgDeleteBtn": false,
+  "groupButtons": [
+   "workspace-agent-group-archive-keeper-agent",
+   "workspace-agent-group-archive-live-agent",
+   "workspace-team-group-archive-live-team",
+   "workspace-team-group-archive-other-team",
+   "agent-org-group-archive-live-org"
+  ]
+ },
+ "results": {
+  "workspace-agent-group-archive-live-agent": {
+   "click": true,
+   "toast": null,
+   "dialog": "confirm dialog opened",
+   "hash": "#/workspace"
+  },
+  "workspace-team-group-archive-live-team": {
+   "click": true,
+   "toast": "Stop running runs first.",
+   "dialog": null,
+   "hash": "#/workspace"
+  },
+  "agent-org-group-archive-live-org": {
+   "click": true,
+   "toast": "Stop running runs first.",
+   "dialog": null,
+   "hash": "#/workspace"
+  }
+ },
+ "hash": "#/workspace"
+}

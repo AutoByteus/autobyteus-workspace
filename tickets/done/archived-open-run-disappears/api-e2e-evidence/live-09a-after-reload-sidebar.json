@@ -1,0 +1,22 @@
+{
+ "hash": "#/workspace",
+ "emptyState": true,
+ "chatMissing": false,
+ "groupHeaders": [
+  "KA Keeper Agent (1)",
+  "LA Live Agent (2)",
+  "Live Team (1)",
+  "Other Team (1)",
+  "Live Org (1)"
+ ],
+ "agentRowIds": [],
+ "teamRowIds": [
+  "live_team_68bd12fc86c943eb84cc408993ff1535",
+  "other_team_9924fa62808c4bfaaf0d06cd5aad9afd"
+ ],
+ "orgRowIds": [],
+ "mentionsArchived": [],
+ "hasOpenAgentText": false,
+ "hasBridgeTeamText": false,
+ "hasDeliveryOrgText": false
+}

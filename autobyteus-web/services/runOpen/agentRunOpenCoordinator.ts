@@ -33,6 +33,20 @@ export interface OpenRunWithCoordinatorResult {
   resumeConfig: RunResumeConfigPayload;
 }
 
+/** The stored run is archived and stopped, so it is not projected into a loaded context. */
+export class ArchivedAgentRunOpenError extends Error {
+  readonly runId: string;
+
+  constructor(runId: string) {
+    super(`Agent run '${runId}' is archived.`);
+    this.name = 'ArchivedAgentRunOpenError';
+    this.runId = runId;
+  }
+}
+
+const isArchivedAndStopped = (resumeConfig: RunResumeConfigPayload): boolean =>
+  resumeConfig.modelConfigEditability?.reason === 'RUN_ARCHIVED' && !resumeConfig.isActive;
+
 export function openAgentRun(input: OpenRunWithCoordinatorInput & { selectRun: false }): Promise<OpenRunWithCoordinatorResult>;
 export function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<OpenRunWithCoordinatorResult | SupersededSelection>;
 export async function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<OpenRunWithCoordinatorResult | SupersededSelection> {
@@ -50,6 +64,7 @@ export async function openAgentRun(input: OpenRunWithCoordinatorInput): Promise<
   }
   if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
   const { resumeConfig, config, conversation, activities, fileChanges } = candidate;
+  if (isArchivedAndStopped(resumeConfig)) throw new ArchivedAgentRunOpenError(input.runId);
 
   const currentContext = agentContextsStore.getRun(input.runId) ?? null;
   const agentRunStore = useAgentRunStore();

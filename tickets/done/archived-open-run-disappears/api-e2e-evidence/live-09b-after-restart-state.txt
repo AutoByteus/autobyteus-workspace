@@ -1,0 +1,1 @@
+{"hash": "#/chat", "selection": {"type": null, "id": null}, "agentContexts": [], "teamContexts": [], "localBadges": 0}

@@ -1,0 +1,28 @@
+{
+ "before": {
+  "agentRowTitles": [
+   "Terminate run"
+  ],
+  "teamRowTitles": [
+   "Active team run"
+  ],
+  "orgArchiveBtn": false,
+  "orgDeleteBtn": false,
+  "groupButtons": [
+   "workspace-agent-group-archive-keeper-agent",
+   "workspace-agent-group-archive-live-agent",
+   "workspace-team-group-archive-live-team",
+   "workspace-team-group-archive-other-team",
+   "agent-org-group-archive-live-org"
+  ]
+ },
+ "results": {
+  "workspace-agent-group-archive-live-agent": {
+   "click": true,
+   "toast": "Stop running runs first.",
+   "dialog": null,
+   "hash": "#/workspace"
+  }
+ },
+ "hash": "#/workspace"
+}

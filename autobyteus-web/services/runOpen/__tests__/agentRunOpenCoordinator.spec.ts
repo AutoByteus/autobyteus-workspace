@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator';
+import { ArchivedAgentRunOpenError, openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator';
 
 const mocks = vi.hoisted(() => ({
   loadCandidate: vi.fn(), hydrateFiles: vi.fn(), mergeFiles: vi.fn(), selectRun: vi.fn(),
@@ -136,4 +136,51 @@ describe('openAgentRun', () => {
     expect(mocks.selectRun).not.toHaveBeenCalled(); expect(mocks.clearAgentConfig).not.toHaveBeenCalled();
   });
 
+  describe('archived runs', () => {
+    const withEditability = (runId: string, isActive: boolean, reason: string | null) => {
+      const value = candidate(runId, isActive);
+      return {
+        ...value,
+        resumeConfig: { ...value.resumeConfig, modelConfigEditability: { editable: reason === null, reason } },
+      };
+    };
+
+    it('refuses an archived, stopped run before any Activity, context, selection or stream change', async () => {
+      mocks.getRun.mockReturnValue(undefined);
+      mocks.loadCandidate.mockResolvedValue(withEditability('archived-1', false, 'RUN_ARCHIVED'));
+
+      const pending = openAgentRun({ runId: 'archived-1', fallbackAgentName: null, resolveWorkspaceMetadataByRootPath: vi.fn() });
+
+      await expect(pending).rejects.toBeInstanceOf(ArchivedAgentRunOpenError);
+      await expect(pending).rejects.toMatchObject({ runId: 'archived-1' });
+      expect(mocks.replaceActivities).not.toHaveBeenCalled();
+      expect(mocks.upsertContext).not.toHaveBeenCalled();
+      expect(mocks.patchConfig).not.toHaveBeenCalled();
+      expect(mocks.hydrateFiles).not.toHaveBeenCalled();
+      expect(mocks.selectRun).not.toHaveBeenCalled();
+      expect(mocks.selectRunWithoutShellNavigation).not.toHaveBeenCalled();
+      expect(mocks.connect).not.toHaveBeenCalled();
+    });
+
+    it('still opens an archived run that is active, so no live run is hidden', async () => {
+      mocks.getRun.mockReturnValue(undefined);
+      mocks.loadCandidate.mockResolvedValue(withEditability('archived-live', true, 'RUN_ARCHIVED'));
+
+      await openAgentRun({ runId: 'archived-live', fallbackAgentName: null, resolveWorkspaceMetadataByRootPath: vi.fn() });
+
+      expect(mocks.upsertContext).toHaveBeenCalledWith(expect.objectContaining({ runId: 'archived-live' }));
+      expect(mocks.selectRun).toHaveBeenCalledWith('archived-live', 'agent');
+      expect(mocks.connect).toHaveBeenCalledWith('archived-live');
+    });
+
+    it('opens a stopped run that is not archived', async () => {
+      mocks.getRun.mockReturnValue(undefined);
+      mocks.loadCandidate.mockResolvedValue(withEditability('stopped-1', false, null));
+
+      await openAgentRun({ runId: 'stopped-1', fallbackAgentName: null, resolveWorkspaceMetadataByRootPath: vi.fn() });
+
+      expect(mocks.upsertContext).toHaveBeenCalledWith(expect.objectContaining({ runId: 'stopped-1' }));
+      expect(mocks.selectRun).toHaveBeenCalledWith('stopped-1', 'agent');
+    });
+  });
 });
