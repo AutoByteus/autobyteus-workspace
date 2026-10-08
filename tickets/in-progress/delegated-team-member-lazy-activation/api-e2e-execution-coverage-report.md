@@ -95,6 +95,7 @@ Evidence paths below are relative to `api-e2e-evidence/`. They are retained loca
 | BR-008..010 render check | REQ-003; AC-001 (web-equivalent of AC-007) | Rendered Workspaces tree | Built backend + Nuxt dev + headless Chrome | Durable (browser probe) | Pass | Agent, Team, Org: coordinator row `idle` (green), unused member row `offline` (gray); screenshots `*-task-team-lazy-members.png` |
 | BR-011 | AC-005 (cold restart) | Real backend process restarts | Same probe | Durable | Pass | Reactivated Task Team copy (new null-binding data shape) survives two real backend restarts; conversation continues |
 | REG-E2E | REQ-007; AC-006 | Existing journeys | Live API (serial) | Durable (existing) | Pass | See Additional Repository Coverage |
+| DTL-E01 | REQ-001/002/003; AC-001, AC-002 (the AC-007 journey, agent-run) | Packaged Electron app (desktop shell + renderer + embedded server) | Isolated instance of this worktree build; test agent package; real Claude haiku; real composer input | Temporary (live desktop) | Pass | A few seconds after delegation the real sidebar shows lead green, reviewer blue (handoff), writer and tester gray Offline. Steady state: lead and reviewer green, writer and tester gray. The saved tree has `writer: null, tester: null`, and only lead and reviewer have memory dirs. Screenshots `electron/05-after-delegation.png`, `electron/06-steady-state.png` |
 
 ## Additional Repository Coverage Execution
 
@@ -127,6 +128,8 @@ All commands run from the worktree root with `env -u AUTOBYTEUS_AGENT_PACKAGE_RO
 - Every critical acceptance criterion directly proven: `Yes` (AC-007 is explicit user verification)
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
+- Desktop confirmation: DTL-E01 ran the journey in the packaged Electron app of this worktree with real Claude, at the user's request. It is agent-run evidence, not the user's AC-007 verification.
+- Observation (non-blocking, outside scope): the Task Team row's screen-reader label reads "offline" while its members are active. Nothing visual shows it.
 - Confidence-limiting residual risks:
   - PREM-001 race is covered by unit tests only.
   - The Codex runtime was not exercised.

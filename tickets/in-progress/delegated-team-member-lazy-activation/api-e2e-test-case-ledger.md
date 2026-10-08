@@ -58,10 +58,11 @@ Evidence paths are relative to `tickets/in-progress/delegated-team-member-lazy-a
 | 22 | DTL-001..008 | 2026-10-08 18:47 | Completed | after the grace-evidence edit | pass | Pass; `graceShutdownAccepted` none | Pass | `r2-ir3-dtl-final/` | — |
 | 23 | DTL-009 | 2026-10-08 18:57 | Completed | `RUN_CLAUDE_E2E=1`, real HOME; earlier attempts: "Not logged in" under disposable HOME (fixed: real HOME for the live case); prompt-echo false positive (fixed: assistant reply required) | only the coordinator has a Claude session | `{lead: <session>, others: null}`; full suite 3/3 in that run; default run 2 passed + 1 skipped | Pass | `r2-final-with-claude/`, `r2-final-default/` | — |
 | 24 | BR-008..BR-011 | 2026-10-08 19:10 | Completed | built dist + Nuxt + Chrome; new render check | coordinator Idle, unused Offline; restarts | all Pass; `lazyStatuses` `{coordinator: idle, unused: offline}` in all roots; 2 real backend restarts | Pass | `r2-task-closure-tree/` | — |
+| 25 | DTL-E01 | 2026-10-08 19:24 | Completed | Packaged Electron app of this worktree (`pnpm --silent isolated-app start --build --keep`, instance `iso-60679-3968`, own data root); test agent package `/tmp/dtl-electron-agent-package` (Manager + 4-member team-local Squad) imported as a LOCAL_PATH package; Manager on real Claude haiku; delegation request typed into the real composer | Only work-reached members start; others gray Offline | Seconds after delegation: lead green, reviewer blue (handoff), writer/tester gray; steady state lead+reviewer green, writer/tester gray; saved tree `writer: null, tester: null`; memory dirs only for lead and reviewer | Pass | `electron/04..06-*.png` | Observation: the Task Team row's screen-reader label reads "offline" while members are active (not rendered visually) |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 24
+- Last durably recorded event: 25
 - Last completed case and result: BR-008..BR-011 Pass; round 2 complete (API-REV-002 Pass)
 - Cases still running, interrupted, or not started: None
 - Next case or recovery action: none (handoff for test-code review)
