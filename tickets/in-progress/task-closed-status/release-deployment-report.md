@@ -146,7 +146,7 @@ If the desktop verification shows Closed Tasks rendered as Done, workers not sto
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No`
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: awaiting user verification and release decision
+- Unresolved blocker: DR-001 superseded by SR-005 (concurrent design refinement now in implementation); user verification deliberately not requested. Classification: upstream-owned revision in flight (`Design` refinement, no intended-behavior change); recipient `/software_engineering_team/solution_designer`
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
 - Terminal message/reference: N/A

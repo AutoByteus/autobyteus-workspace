@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | API/E2E Pass (API-REV-001, 95%), direct route | N/A | Integrated, docs synced; awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
+| DR-001 | API/E2E Pass (API-REV-001, 95%), direct route | N/A | Integrated and docs synced; superseded by SR-005 before user verification (halted) | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -33,3 +33,8 @@
   - Awaiting user verification.
   - R-002: the external manager skill (out of scope).
   - The packaged app and a real model choosing CLOSED are proven only by user verification.
+
+- **Halt note (2026-10-08 17:10):** before user verification was requested, upstream issued SR-005, a design refinement from user feedback: the Closed lane becomes the last column after Done instead of a full-width row. `/software_engineering_team/implementation_engineer` began editing this worktree (`ProjectTaskBoard.vue`, `TempTaskBoard.vue`, their specs, `autobyteus-web/docs/projects.md`). The DR-001 handoff state no longer matches the intended UI, so user verification was not requested and finalization did not start.
+  - Commit attribution: the delivery commit `76a306554` also picked up the Solution Designer's concurrent SR-005 edits to `requirements-doc.md`, `design-spec.md`, `investigation-notes.md`, `solution-revision-record.md` and `handoff-to-implementation.md`, because the ticket folder was staged as a whole. The content is the Solution Designer's and unchanged. The history was not rewritten because another agent shares this index and branch.
+  - The branch stays integrated with `origin/personal` @ `b5e0da508` (merge `151a67f19`). The SR-005 rework builds on it.
+  - Next: SR-005 returns through implementation and API/E2E (direct route). Delivery resumes as DR-002 on that package: re-check the base, rerun checks, update docs sync, the handoff summary and release notes, then request user verification.
