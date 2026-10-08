@@ -1,0 +1,15 @@
+tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts
+tests/unit/agent-memory/agent-memory-location-service.test.ts
+tests/unit/agent-memory/team-memory-explorer-service.test.ts
+tests/unit/agent-packages/package-root-summary.test.ts
+tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts
+tests/unit/application-platform/application-execution-scope.test.ts
+tests/unit/application-platform/application-platform-lifecycle.test.ts
+tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+tests/unit/config/streaming-content-flush-interval-setting.test.ts
+tests/unit/file-explorer/file-explorer.test.ts
+tests/unit/llm-management/gemini-configuration-service.test.ts
+tests/unit/logging/prisma-query-log-policy.test.ts
+tests/unit/services/media-storage-service.test.ts
+tests/unit/workspaces/workspace-manager-skill-integration.test.ts

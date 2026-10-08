@@ -23,12 +23,12 @@ package's script from its own directory.
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
 | Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
 | Grok Build compaction live E2E | Real `grok` CLI automatic compaction (interrupted, then completed) and `/compact` through the server, with raw-trace rotation | `RUN_GROK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts --no-watch` (temporary `GROK_HOME` with a symlinked `auth.json` and a 10% auto-compaction threshold; never writes `~/.grok`; one four-turn run on the user's Grok credits; set `GROK_E2E_EVIDENCE_DIR` to keep evidence on failure, never `auth.json`). Zero-credit replay of the same flows (automatic, Stop, `/compact`) through the real server with the fake Grok CLI, no gate: `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts --no-watch` |
-| Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run`; the interrupted-compaction cases alone (interrupt, terminate and app-server crash during an automatic compaction): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts --no-watch` (lowers the test app server's auto-compaction limit; a few turns of Codex quota per case) |
+| Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run`; the interrupted-compaction cases alone (interrupt, terminate and app-server crash during an automatic compaction): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts --no-watch` (lowers the test app server's auto-compaction limit; a few turns of Codex quota per case); a send after the Codex app server crashed (the previous runtime is released, then the same thread is restored): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts --no-watch` |
 | Claude compaction live E2E | Real Claude CLI/SDK `/compact`, Stop and CLI process exit during compaction, raw-trace rotation and reopened history, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts --no-watch`; add `RUN_CLAUDE_AUTO_COMPACTION_E2E=1` for the costly auto-compaction case (~300K input tokens) |
 | Claude background-task live E2E | Real Claude CLI/SDK background Bash tasks for a standalone agent and a team member: `BACKGROUND_TASK_UPDATED` snapshots with the shell `command` (explicit background and CLI auto-background, which the test enables itself), completion, failure, Stop+terminate and CLI crash, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-background-task.e2e.test.ts tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts --no-watch` |
 | Delegated background-task idle shutdown live E2E | A delegated copy is not idle-shut-down while its background task runs (grace set to 60 s by the test), then is shut down one grace period after it is quiet. Claude (Team root, Claude coordinator): a `run_in_background` task longer than the grace completes, the copy reports to its delegator, then goes offline. AGY (Team root, Claude coordinator, AGY worker): a daemon running 180 s outlives two grace periods with the same AGY process and answers a follow-up; its own exit finishes the task and the copy goes offline one grace period later | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts --no-watch` (optional `CLAUDE_E2E_TOOL_MODEL`, default `haiku`); `RUN_AGY_BACKGROUND_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts --no-watch` (optional `AGY_E2E_MODEL`; leave `ANTIGRAVITY_CLI_COMMAND` unset). `DELEGATED_BACKGROUND_E2E_EVIDENCE_DIR` keeps JSON receipts. About 4 and 6 minutes; uses Claude and AGY quota |
-| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files, compaction rotation in `agy-compaction-rotation-transport.e2e.test.ts`, compaction version gate off in `agy-compaction-gate-off-transport.e2e.test.ts`) with a scripted CLI; no model call. `AGY_FAKE_VERSION` overrides the fake CLI's `--version` output | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
-| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1`, `RUN_AGY_RECOVERY_E2E=1` or `RUN_AGY_COMPACTION_E2E=1` (automatic compaction from ~90K-token turns; uses AGY quota, leave `ANTIGRAVITY_CLI_COMMAND` unset; add `AGY_COMPACTION_E2E_CHECKPOINTS=2` to continue until a second compaction), then the same `vitest run` command |
+| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files, compaction rotation in `agy-compaction-rotation-transport.e2e.test.ts`, compaction version gate off in `agy-compaction-gate-off-transport.e2e.test.ts`, Stop then an immediate send for a standalone run and a Team member in `agy-interrupt-resend-transport.e2e.test.ts`) with a scripted CLI; no model call. `AGY_FAKE_VERSION` overrides the fake CLI's `--version` output | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
+| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1`, `RUN_AGY_RECOVERY_E2E=1` (`agy-runtime-stop-recovery-live.e2e.test.ts`: crash, terminate and shutdown recovery, plus Stop mid-turn then an immediate send for a standalone run and a Team member, `LIVE-STANDALONE-INT` and `LIVE-TEAM-INT`) or `RUN_AGY_COMPACTION_E2E=1` (automatic compaction from ~90K-token turns; uses AGY quota, leave `ANTIGRAVITY_CLI_COMMAND` unset; add `AGY_COMPACTION_E2E_CHECKPOINTS=2` to continue until a second compaction), then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
 | Composer voice lifetime regression | Unchanged Team publication vs genuine destination cancellation through run/Chat composers and native browser capture | `pnpm -C autobyteus-web test:e2e:composer-voice-lifetime --output-dir <fresh-dir>` |
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
@@ -384,6 +384,14 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,B
   - a DONE from another root racing the message. Every allowed ordering leaves
     a DONE Task with a closed entry, no live worker process and refused input.
 
+  CLS-E2E-001/002 (Agent and Team roots) run the same journey with CANCELLED
+  (dropped as not needed): live closure and no live worker process, a repeated
+  CANCELLED re-publishing with no file change, `delegate_task {task_id}` and the
+  run-ID message refused naming CANCELLED, DONE ↔ CANCELLED as a repeated DONE,
+  reopen (nothing starts) and the assigner's reactivation, a Task with no
+  Project cancelled by `task_id`, and every `/ws/projects` frame (CANCELLED views
+  included) matching the strict server schema.
+
   With `RUN_CLAUDE_E2E=1` and a logged-in `claude`, one more case gives the
   worker a real Claude model. It must recall a codeword from before DONE.
   `TASK_REACTIVATION_E2E_EVIDENCE_DIR` keeps a JSON receipt.
@@ -434,6 +442,7 @@ pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir <fresh evidence 
   - an Org-hosted root opened before its Org run is loaded.
   - compact cards for real-length descriptions (~10,000 words; multi-line) on the Project board and Temp tasks at 1440 and 1024 px: ≤2+2 rendered lines, short labels, full text on the Task pages (PMU-013).
   - compact-card edges at 1440, 1024 and 390 px: exactly 2 lines, a CJK hard cut, a 5,000-character unbroken token without horizontal overflow, a long card keeping its context-file and worker lines, and a short delete-confirmation summary (PMU-014).
+  - Cancelled Tasks (PMU-017): an agent's CANCELLED hides the row live behind a "Cancelled (N)" toggle right before Refresh (absent at 0, `aria-pressed`, Enter/Space), which shows the Cancelled lane as the last column after Done (four equal columns at 1440 px, stacked last at 390 px and in the right panel); search ignores hidden Cancelled Tasks; a muted "Cancelled" pill unlike Done; card open counts; a live reopen back to To Do; the Temp tasks board, header count and page; the right-panel board and Task detail.
   - the right-panel Projects tab (PMU-015):
     - first tab, with a live board beside the chat;
     - a worker opens in the center and the tab stays selected;
@@ -585,11 +594,18 @@ env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_A
   with a bad file keeps the worker's run open, and a Task with no Project
   refuses files. `TASK_CONTEXT_FILES_E2E_EVIDENCE_DIR` keeps a JSON receipt.
   Neither suite proves the packaged-app Task page; that is user verification.
+- **CLS-API-001** (boundaries suite, ungated). The CANCELLED status contract over
+  MCP, the native tools and GraphQL: both tool schemas and descriptions, the
+  GraphQL enum (no status input), CANCELLED closing an open run entry, retry and
+  DONE ↔ CANCELLED leaving it untouched, input errors before closure, the
+  `list_project_tasks` CANCELLED filter, the four-value error text, refused create
+  with a status, open counts, the stored key set and a status-only reopen.
 
 `projects-per-folder-v1` already uses its frozen `released-project-folder-v1.ts`
-for Project target classification/validation; never reconnect it to the current
-tolerant `readProjectFile`. It still imports current `ProjectsLayout` and
-`readTaskFile`: freeze those dependencies before changing their released
+for Project target classification/validation and its frozen
+`readReleasedTaskFileV1` (three statuses) for Tasks; never reconnect it to the
+current tolerant `readProjectFile` or `readTaskFile`. It still imports current
+`ProjectsLayout`: freeze it before changing its released
 contracts (data_migration_guideline §4). Rerun migration and actual startup tests
 when changing current Project readers or these historical boundaries.
 

@@ -18,7 +18,12 @@ keep their own `/workspace` views; Agent Orgs start on the Org launch page (see
 `pages/chat.vue` resolves the id: a mounted context is selected and shown; an
 unmounted permanent id is opened through `openWorkspaceExecutionLink` (showing
 "Opening chat..."); an id that cannot be opened shows the missing-chat state;
-an unregistered `temp-*` id returns to `/chat`. Agent execution links
+an unregistered `temp-*` id returns to `/chat`. An archived, inactive run is not
+re-opened: the open coordinator raises `ArchivedAgentRunOpenError` and Chat goes
+to the `/workspace` empty view. When the displayed stored run is archived or
+deleted while it is open, Chat also leaves to the `/workspace` empty view and
+selects no other run (see "Workspace History Archive And Delete Actions" in
+`agent_execution_architecture.md`). Agent execution links
 (`buildWorkspaceExecutionRoute`, `resolveSelectionRoute`) build the chat route,
 and `/workspace` execution-link queries accept team links only.
 
@@ -380,7 +385,7 @@ target mode.
   a `[Mentioned collaborators]` note to the stored message that tells the
   focused agent to `delegate_task` to that address. When the agent delegates, a
   delegated (task) row appears; it disappears once the agent marks that
-  delegation's Task DONE with `create_or_update_task` (for example when the user
+  delegation's Task DONE (or CANCELLED) with `create_or_update_task` (for example when the user
   asks it to), live and after reopen. It returns (live, via
   `task_executions_reopened`) when the agent sets that Task back to TODO or
   IN_PROGRESS and then messages the copy's run ID, which reactivates it. Notes saved by earlier releases still

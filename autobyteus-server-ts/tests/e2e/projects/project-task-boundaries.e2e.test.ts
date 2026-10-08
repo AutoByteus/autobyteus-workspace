@@ -622,4 +622,89 @@ describe("Project Task production HTTP boundaries", () => {
     await fs.chmod(unreadable, 0o600);
   }, 120000);
 
+  // task-closed-status: CANCELLED ("dropped as not needed") over the selected MCP session, the native tools and GraphQL.
+  // Live workers, refusals and reactivation are in the gated task-reactivation-root-visibility suite (CLS-E2E-*).
+  it("CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012)", async () => {
+    // AC-007: both tool schemas offer CANCELLED and the descriptions state its meaning, the worker stop and the reopen path.
+    const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: any }>;
+    const tool = (name: string) => tools.find(t => t.name === name)!;
+    for (const name of ["create_or_update_task", "list_project_tasks"]) {
+      expect(tool(name).inputSchema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
+    }
+    expect(tool("list_project_tasks").description).toContain("TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed)");
+    expect(tool("create_or_update_task").description).toContain("CANCELLED means the Task was dropped as not needed (not completed). Both stop the Task's delegated copies");
+    expect(tool("create_or_update_task").description).toContain("set the Task to TODO or IN_PROGRESS first");
+    // REQ-001 / AC-002: the GraphQL enum carries CANCELLED (read-only: no status input anywhere).
+    const enumValues = (await gql<{ __type: { enumValues: Array<{ name: string }> } }>(
+      "{__type(name:\"ProjectTaskStatus\"){enumValues{name}}}")).__type.enumValues.map(v => v.name);
+    expect(enumValues.sort()).toEqual(["CANCELLED", "DONE", "IN_PROGRESS", "TODO"]);
+    const updateInput = (await gql<{ __type: { inputFields: Array<{ name: string }> } }>(
+      "{__type(name:\"UpdateProjectTaskInput\"){inputFields{name}}}")).__type.inputFields.map(f => f.name);
+    expect(updateInput).not.toContain("status");
+
+    const projectId = await createProject("Cancelled status");
+    const ids: Record<string, string> = {};
+    for (const key of ["todo", "progress", "done", "cancelled"]) ids[key] = (await taskCall({ project_id: projectId, description: `Task ${key}` })).taskId;
+    // A current-format open run resource on the Task to be cancelled: CANCELLED must close it exactly like DONE.
+    const resources = path.join(root, "projects", projectId, "tasks", ids.cancelled!, "agent_run_resources.json");
+    await fs.writeFile(resources, JSON.stringify({ taskId: ids.cancelled, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+      linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
+    // An invalid context file with CANCELLED fails first and closes nothing (inputs are checked before closure).
+    const missing = path.join(root, "sources", "cancelled-missing.png");
+    const rejected = await call("create_or_update_task", { task_id: ids.cancelled, status: "CANCELLED", context_files: [missing] });
+    expect(rejected.isError).toBe(true); expect(rejected.structuredContent.error.code).toBe("TASK_CONTEXT_FILE_UNAVAILABLE");
+    expect(JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0].closedAt).toBeNull();
+
+    // AC-004: CANCELLED by task_id over MCP, IN_PROGRESS and DONE for the others.
+    expect(await taskCall({ task_id: ids.progress, status: "IN_PROGRESS" })).toEqual({ projectId, taskId: ids.progress, status: "IN_PROGRESS" });
+    expect(await taskCall({ task_id: ids.done, status: "DONE" })).toEqual({ projectId, taskId: ids.done, status: "DONE" });
+    expect(await taskCall({ task_id: ids.cancelled, status: "CANCELLED" })).toEqual({ projectId, taskId: ids.cancelled, status: "CANCELLED" });
+    const closedEntry = JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0];
+    expect(closedEntry.closedAt).toEqual(expect.any(String));
+    // Repeating CANCELLED (retry) and DONE<->CANCELLED change the status only; the closed entry is not rewritten.
+    const resourceBytes = await fs.readFile(resources, "utf8");
+    expect(await taskCall({ task_id: ids.cancelled, status: "CANCELLED" })).toMatchObject({ status: "CANCELLED" });
+    expect(await nativeTaskCall({ task_id: ids.cancelled, status: "DONE" })).toMatchObject({ status: "DONE" });
+    expect(await taskCall({ task_id: ids.cancelled, status: "CANCELLED" })).toMatchObject({ status: "CANCELLED" });
+    expect(await fs.readFile(resources, "utf8")).toBe(resourceBytes);
+    // AC-012: the stored Task keeps its exact key set; CANCELLED reads back after reader reconstruction.
+    expect(Object.keys(await taskJson(projectId, ids.cancelled!)).sort()).toEqual(Object.keys(await taskJson(projectId, ids.todo!)).sort());
+    expect((await taskJson(projectId, ids.cancelled!)).status).toBe("CANCELLED");
+    reset();
+
+    // AC-006: the CANCELLED filter returns only the Cancelled Task; unfiltered returns all four; MCP equals native.
+    const filtered = (await call("list_project_tasks", { project_id: projectId, status: "CANCELLED" })).structuredContent;
+    expect(filtered.tasks.map((t: { taskId: string; status: string }) => [t.taskId, t.status])).toEqual([[ids.cancelled, "CANCELLED"]]);
+    expect(filtered).toEqual(JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId, status: "CANCELLED" })));
+    const all = (await call("list_project_tasks", { project_id: projectId })).structuredContent.tasks as Array<{ taskId: string; status: string }>;
+    expect(Object.fromEntries(all.map(t => [t.taskId, t.status]))).toEqual({ [ids.todo!]: "TODO", [ids.progress!]: "IN_PROGRESS", [ids.done!]: "DONE", [ids.cancelled!]: "CANCELLED" });
+    expect((await list(projectId)).find(t => t.taskId === ids.cancelled)?.status).toBe("CANCELLED");
+    // AC-010: open = TODO + IN_PROGRESS; taskCount counts all four.
+    expect(await readProject(projectId)).toMatchObject({ taskCount: 4, openTaskCount: 2 });
+
+    // AC-004 errors: create with CANCELLED is refused; an invalid status names all four values (MCP equals native).
+    const errors: Array<[string, Record<string, unknown>, string]> = [
+      ["create_or_update_task", { project_id: projectId, description: "x", status: "CANCELLED" }, "TASK_CREATE_STATUS_UNSUPPORTED"],
+      ["create_or_update_task", { task_id: ids.todo, status: "cancelled" }, "TASK_STATUS_INVALID"],
+      ["create_or_update_task", { task_id: ids.todo, status: "CANCELED" }, "TASK_STATUS_INVALID"],
+      ["create_or_update_task", { task_id: ids.todo, status: "CLOSED" }, "TASK_STATUS_INVALID"],
+      ["list_project_tasks", { project_id: projectId, status: "Cancelled" }, "TASK_STATUS_INVALID"],
+    ];
+    for (const [name, args, code] of errors) {
+      const native = await (name === "list_project_tasks" ? new ListProjectTasksTool() : new CreateOrUpdateTaskTool()).execute(null, args)
+        .then(() => null, (e: Error) => JSON.parse(e.message));
+      expect(native?.error.code, JSON.stringify(args)).toBe(code);
+      if (code === "TASK_STATUS_INVALID") expect(native.error.message).toBe("Task status must be TODO, IN_PROGRESS, DONE or CANCELLED.");
+      const result = await call(name, args);
+      expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
+    }
+    expect(await list(projectId)).toHaveLength(4);
+
+    // AC-003 (status side): reopening a Cancelled Task writes only the status; the closed entry stays closed (nothing starts).
+    expect(await taskCall({ task_id: ids.cancelled, status: "TODO" })).toEqual({ projectId, taskId: ids.cancelled, status: "TODO" });
+    expect(await fs.readFile(resources, "utf8")).toBe(resourceBytes);
+    expect(await readProject(projectId)).toMatchObject({ taskCount: 4, openTaskCount: 3 });
+  }, 120000);
+
 });

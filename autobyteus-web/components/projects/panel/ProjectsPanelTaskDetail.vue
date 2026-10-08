@@ -25,7 +25,7 @@
         <div class="p-4">
           <div class="flex items-center justify-between gap-2">
             <h2 id="projects-panel-task-description" class="text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h2>
-            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700" data-testid="projects-panel-task-status">{{ statusLabel }}</span>
+            <span class="rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="statusPillClass" data-testid="projects-panel-task-status">{{ statusLabel }}</span>
           </div>
           <p class="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-800" data-testid="projects-panel-task-description">{{ task.description }}</p>
           <section v-if="contextFiles.length" class="mt-4 border-t border-slate-100 pt-3" data-testid="projects-panel-task-context-files">
@@ -57,7 +57,7 @@ import { createProjectTaskContextClient } from '~/services/projects/projectTaskC
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import type { ProjectsPanelChoice } from '~/stores/projectsPanelStore'
 import type { ProjectTask, TaskWithoutProject } from '~/types/project'
-import { TASK_STATUS_LABEL_KEYS } from '~/utils/projects/taskStatusLabelKey'
+import { TASK_STATUS_LABEL_KEYS, TEMP_LANE_LABEL_KEYS, taskStatusPillClass, tempLanePillClass, tempTaskLaneOf } from '~/utils/projects/taskStatusPresentation'
 
 const props = defineProps<{ choice: ProjectsPanelChoice; taskId: string }>()
 const emit = defineEmits<{ (event: 'back'): void }>()
@@ -74,10 +74,14 @@ const client = computed(() => props.choice.kind === 'project' ? createProjectTas
 const pageRoute = computed(() => props.choice.kind === 'project'
   ? `/projects/${props.choice.projectId}/tasks/${props.taskId}`
   : `/projects/temp-tasks/tasks/${props.taskId}`)
-// Literal keys (localization audit): a Project Task shows its status; a Temp task Open or Done.
+// A Project Task shows its status; a Temp task Open, Done or Cancelled.
 const statusLabel = computed(() => {
   if (!task.value) return ''
   if (props.choice.kind === 'project') return t(TASK_STATUS_LABEL_KEYS[task.value.status])
-  return t(task.value.status === 'DONE' ? 'projects.temp.lane.done' : 'projects.temp.lane.open')
+  return t(TEMP_LANE_LABEL_KEYS[tempTaskLaneOf(task.value.status)])
+})
+const statusPillClass = computed(() => {
+  if (!task.value) return ''
+  return props.choice.kind === 'project' ? taskStatusPillClass(task.value.status) : tempLanePillClass(tempTaskLaneOf(task.value.status))
 })
 </script>

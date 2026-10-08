@@ -79,6 +79,7 @@ describe("memory layout and projection integration", () => {
           })),
         })),
         getActiveRun: vi.fn().mockReturnValue(null),
+        releaseRetiredRun: vi.fn().mockResolvedValue(undefined),
         restoreAgentRun: vi.fn(),
         hasActiveRun: vi.fn().mockReturnValue(false),
       };

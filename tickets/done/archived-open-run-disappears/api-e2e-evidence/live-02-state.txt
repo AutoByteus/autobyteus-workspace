@@ -1,0 +1,2 @@
+{"hash": "#/workspace", "emptyState": true, "chatMissing": false, "chatRunFrame": false, "selection": {"type": null, "id": null}, "agentContexts": ["live_agent_045b1ade16914d28bd452e1502fd23b0", "keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec"], "localBadges": 0}
+['keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec']

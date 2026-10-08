@@ -51,7 +51,7 @@ export class TaskAgentResourceService {
     return this.loading;
   }
 
-  /** In-process ordering of assignment linking and DONE closure for one Task. */
+  /** In-process ordering of assignment linking and DONE or CANCELLED closure for one Task. */
   serialize<T>(taskId: string, operation: () => Promise<T>): Promise<T> {
     const previous = this.chains.get(taskId) ?? Promise.resolve();
     const next = previous.catch(() => undefined).then(operation);
@@ -81,7 +81,7 @@ export class TaskAgentResourceService {
     await this.settle(agentRun, { start: "failed", error });
   }
 
-  /** DONE: closes every open entry first (under the Task's serialization), then runs `afterClose`. */
+  /** DONE or CANCELLED: closes every open entry first (under the Task's serialization), then runs `afterClose`. */
   async closeTask(location: TaskLocation, afterClose: () => Promise<void>): Promise<void> {
     await this.load();
     await this.serialize(location.taskId, async () => {
@@ -121,7 +121,7 @@ export class TaskAgentResourceService {
     return reopened;
   }
 
-  /** Every closed agent run of the Task, grouped by host root (repeated DONE re-requests all of them). */
+  /** Every closed agent run of the Task, grouped by host root (a repeated DONE or CANCELLED re-requests all of them). */
   closedByHostRoot(taskId: string): TaskAgentResourceGroup[] {
     const groups = new Map<string, { hostRoot: RootExecutionIdentity; agentRuns: TaskExecutionReference[] }>();
     for (const entry of this.files.get(taskId)?.file.agentRunResources ?? []) {

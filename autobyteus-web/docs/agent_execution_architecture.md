@@ -988,6 +988,34 @@ affordance remains separate and continues to use the existing permanent-delete
 confirmation path for users who intend to remove stored memory. There is
 currently no archived-history browser or unarchive UI in this frontend slice.
 
+When the archived or deleted run is the one currently open, the user lands on
+the `/workspace` empty view. Nothing is opened in its place:
+
+- `agentContextsStore.removeRun` and
+  `agentTeamContextsStore.removeTeamContext` clear the selection when the
+  removed run was selected. They never auto-select another loaded run or team.
+- `pages/chat.vue` leaves to `/workspace` (`leaveToWorkspace()`) when the
+  displayed stored run's context disappears and the run was not promoted. It
+  never re-opens the removed run. A discarded `temp-*` draft still returns to
+  New chat.
+- Team and member views fall to the `WorkspaceAdaptiveLayout` empty state, and
+  an open Org route is left as before.
+
+This applies to the per-run Archive, the group-header **Archive all runs**, and
+permanent Delete. Archiving or deleting a run that is not open leaves the open
+run as it is. Running runs still expose no archive or delete.
+
+The open coordinator also guards stale addresses (a window reload, browser Back
+or an old link to an archived run). `openAgentRun` throws
+`ArchivedAgentRunOpenError` when the server resume config reports
+`modelConfigEditability.reason === 'RUN_ARCHIVED'` with `isActive === false`,
+before any Activity, context, selection or stream change. Chat maps that error
+to the `/workspace` empty view, and other callers treat it as an ordinary open
+failure. An archived run that is still active opens normally. A deleted run's
+stale address still shows the missing-chat state. The server half of this
+contract is pinned by
+`autobyteus-server-ts/tests/unit/run-history/services/agent-run-resume-config-service.test.ts`.
+
 #### Archive All From A Group Header
 
 Every agent, agent team and Agent Org group header in the Workspaces sidebar

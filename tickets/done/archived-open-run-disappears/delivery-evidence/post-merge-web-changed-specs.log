@@ -1,0 +1,76 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/autobyteus-web
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/chat.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/chat.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts (9 tests) 8ms
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts (7 tests) 12ms
+ ✓ stores/__tests__/agentContextsStore.spec.ts (12 tests) 35ms
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts > archive / delete of the open run > archiveRun of the open agent run leaves no context, no sidebar row and no other run selected
+[runTreeProjection] Draft run missing workspace root path { runId: [32m'run-other'[39m }
+
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts > archive / delete of the open run > deleteRun of the open agent run leaves no context, no sidebar row and no other run selected
+[runTreeProjection] Draft run missing workspace root path { runId: [32m'run-other'[39m }
+
+stderr | stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts > archive / delete of the open run > archiving a different agent run keeps the open run selected
+[runTreeProjection] Draft run missing workspace root path { runId: [32m'run-open'[39m }
+
+ ✓ stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts (7 tests) 119ms
+stderr | pages/__tests__/chat.spec.ts > pages/chat.vue > shows the missing-chat state for an id that cannot be opened
+Chat 'gone' could not be opened: Error: not found
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/autobyteus-web/[39mpages/__tests__/chat.spec.ts:88:36
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1729:8)
+    at runFiles (file:///Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1787:3)
+
+ ✓ pages/__tests__/chat.spec.ts (13 tests) 89ms
+
+ Test Files  5 passed (5)
+      Tests  48 passed (48)
+   Start at  16:30:08
+   Duration  13.32s (transform 7.16s, setup 42.98s, collect 5.96s, tests 262ms, environment 1.55s, prepare 974ms)
+

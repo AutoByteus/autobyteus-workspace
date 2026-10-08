@@ -131,7 +131,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
 
     /**
      * Remove a run.
-     * If the removed run was selected, auto-select another remaining run.
+     * If the removed run was selected, the selection is cleared; another run is never selected in its place.
      */
     removeRun(runId: string) {
       const selectionStore = useAgentSelectionStore();
@@ -140,15 +140,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       if (this.runs.has(runId)) {
         resetRecentEventMonitorBaseline(this.runs.get(runId)!);
         this.runs.delete(runId);
-        if (isSelected) {
-          // Auto-select another agent run if available
-          const remainingRunIds = Array.from(this.runs.keys());
-          if (remainingRunIds.length > 0) {
-            selectionStore.selectRun(remainingRunIds[0], 'agent');
-          } else {
-            selectionStore.clearSelection();
-          }
-        }
+        if (isSelected) selectionStore.clearSelection();
       }
     },
 

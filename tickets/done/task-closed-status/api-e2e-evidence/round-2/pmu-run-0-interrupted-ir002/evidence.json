@@ -1,0 +1,29 @@
+{
+  "startedAt": "2026-10-08T15:45:34.553Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {},
+  "cleanup": {
+    "browser": "not-started",
+    "frontend": {
+      "pid": null,
+      "status": "not-running"
+    },
+    "backend": {
+      "pid": null,
+      "status": "not-running"
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "message": "Refusing to overwrite /Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/api-e2e-evidence/round-2/pmu-run-1/evidence.json; use a fresh --output-dir"
+    }
+  ],
+  "feed": {
+    "total": 0,
+    "byType": {}
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T15:45:34.555Z"
+}

@@ -404,6 +404,30 @@ describe("re-activation after the member's runtime died", () => {
     expect(f.prepareNewAgentRun).toHaveBeenCalledOnce();
   });
 
+  it.each([
+    ["throws", (f: ReturnType<typeof build>) =>
+      f.releaseExactRun.mockRejectedValueOnce(new AggregateError([new Error("provider stop unconfirmed")], "Exact release failed."))],
+    ["is not accepted", (f: ReturnType<typeof build>) =>
+      f.releaseExactRun.mockResolvedValueOnce({ accepted: false, code: "BUSY", message: "still stopping" } as never)],
+  ] as const)("retries the previous runtime's release on the next work after it %s once (AC-006)", async (_label, failOnce) => {
+    const f = build("agent_team", RuntimeKind.ANTIGRAVITY_CLI, "fresh");
+    await f.handle.getOrCreateAgentRun();
+    f.activity.kind = "present";
+    f.crash(); // e.g. an Antigravity interrupt stopped the member's process
+    failOnce(f);
+
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toThrow();
+    expect(f.releaseExactRun).toHaveBeenLastCalledWith(f.fakeRun);
+    expect(f.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+
+    f.fakeRun.isActive.mockReturnValue(true);
+    f.fakeRun.isActive.mockReturnValueOnce(false);
+    await expect(f.handle.getOrCreateAgentRun()).resolves.toBe(f.fakeRun);
+    expect(f.releaseExactRun).toHaveBeenCalledTimes(2);
+    expect(f.releaseExactRun).toHaveBeenNthCalledWith(2, f.fakeRun);
+    expect(f.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledOnce();
+  });
+
   it("keeps the constructor mode when the first activation fails", async () => {
     const f = build("agent_org", RuntimeKind.AUTOBYTEUS, "fresh");
     f.prepareNewAgentRun.mockRejectedValueOnce(new Error("provider unavailable"));

@@ -305,8 +305,14 @@ export class ConfiguredAgentExecutionHandle {
     this.unsubscribe?.();
     this.unsubscribe = null;
     if (this.agentRun) {
-      const cleanup = await this.manager.releaseExactRun(this.agentRun);
-      if (!cleanup.accepted) throw new Error(cleanup.message ?? "Prior exact Agent runtime cleanup failed.");
+      try {
+        const cleanup = await this.manager.releaseExactRun(this.agentRun);
+        if (!cleanup.accepted) throw new Error(cleanup.message ?? "Prior exact Agent runtime cleanup failed.");
+      } catch (error) {
+        // The exact previous run stays retained, so the next work retries the same release.
+        markRetrySafe();
+        throw error;
+      }
       this.agentRun = null; this.dispose();
     }
     let prepared: Awaited<ReturnType<ConfiguredAgentActivationOperation["prepare"]>> | null = null;

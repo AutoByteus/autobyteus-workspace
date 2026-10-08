@@ -3,6 +3,7 @@ import {
   AgentRunActivationRegistry,
   AgentRunRemovalCleanupError,
 } from "../../../../src/agent-execution/runtime/agent-run-activation-registry.js";
+import { isAgentRunActivationQuarantineError } from "../../../../src/agent-execution/errors.js";
 
 const releaseResult = (runId: string, errors: Error[] = []) => ({
   state: "released" as const,
@@ -111,6 +112,41 @@ describe("AgentRunActivationRegistry", () => {
       expect.objectContaining({ message: "file detach failed" }),
     ]);
     expect(resourceManager.release).toHaveBeenCalledTimes(2);
+  });
+
+  it("refuses a reclaim with a retryable plain error while a run that went offline owes its release", () => {
+    const { registry } = createRegistry();
+    const run = createRun("run-offline");
+    const claim = registry.claim(run.runId);
+    registry.markPrepared(claim, run as never);
+    registry.publish(claim, run as never);
+    run.active = false;
+
+    expect(registry.getActiveRun(run.runId)).toBeNull();
+    expect(registry.getRetiredRun(run.runId)).toBe(run);
+    let refusal: unknown;
+    try { registry.claim(run.runId); } catch (error) { refusal = error; }
+    expect(refusal).toMatchObject({ code: "AGENT_RUN_PREVIOUS_RUNTIME_RELEASE_PENDING" });
+    expect(isAgentRunActivationQuarantineError(refusal)).toBe(false);
+    expect(String((refusal as Error).message)).not.toMatch(/retired|quarantin/i);
+    expect((refusal as Error).message).toMatch(/send it again/);
+
+    expect(registry.removeIfCurrent({
+      runId: run.runId, expectedRun: run as never, reason: "explicit_termination",
+    }).kind).toBe("removed");
+    expect(registry.getRetiredRun(run.runId)).toBeNull();
+    expect(registry.claim(run.runId).runId).toBe(run.runId);
+  });
+
+  it("returns no retired run for a published or unknown run id", () => {
+    const { registry } = createRegistry();
+    const run = createRun("run-live");
+    const claim = registry.claim(run.runId);
+    registry.markPrepared(claim, run as never);
+    registry.publish(claim, run as never);
+
+    expect(registry.getRetiredRun(run.runId)).toBeNull();
+    expect(registry.getRetiredRun("unknown")).toBeNull();
   });
 
   it("blocks new claims without discarding already prepared private ownership", () => {

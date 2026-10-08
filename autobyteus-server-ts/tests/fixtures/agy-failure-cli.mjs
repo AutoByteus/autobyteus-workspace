@@ -29,11 +29,26 @@ if (arg === "--version") {
   const imageDone = process.env.AGY_FAKE_CASE === "image_done";
   const nativeArguments = process.env.AGY_FAKE_CASE === "native_arguments";
   const autoCompaction = process.env.AGY_FAKE_CASE === "auto_compaction";
+  const interruptResend = process.env.AGY_FAKE_CASE === "interrupt_resend";
   // These independent fixtures all model exact conversation binding on resume.
-  const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction
+  const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction || interruptResend
     ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
+  if (interruptResend) {
+    // Records each AGY process's launch, SIGTERM and exit (one JSON line each, in time order) so a test can
+    // prove a replacement started only after the interrupted process exited. On SIGTERM the process keeps
+    // running for AGY_FAKE_SIGTERM_EXIT_DELAY_MS (below the server's SIGKILL escalation), as a real AGY
+    // finishing its shutdown does, which makes the "previous runtime still stopping" window deterministic.
+    const log = (event) => process.env.AGY_FAKE_PROCESS_LOG && appendFileSync(process.env.AGY_FAKE_PROCESS_LOG,
+      JSON.stringify({ event, pid: process.pid, conversation_id, at: Date.now() }) + "\n");
+    log("launch");
+    process.on("exit", () => log("exit"));
+    process.on("SIGTERM", () => {
+      log("sigterm");
+      setTimeout(() => process.exit(0), Number(process.env.AGY_FAKE_SIGTERM_EXIT_DELAY_MS ?? 0));
+    });
+  }
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
   const permission_mode = process.argv.includes("--dangerously-skip-permissions") ? "always-proceed" : "request-review";
   emit({ event: "init", conversation_id, init: { agent: argValue("--agent"),
@@ -154,6 +169,19 @@ if (arg === "--version") {
     if (linkedSkills) {
       linkedSkillsTurn(line).catch((error) => emit({ event: "result", result: { conversation_id, status: "ERROR",
         error: String(error?.message ?? error), response: "" } }));
+      return;
+    }
+    if (interruptResend) {
+      // HOLD opens a long tool step and leaves the turn running until the user stops it; any other
+      // message is answered with REPLY:<content>, so a test can tell which message each turn served.
+      const content = String(JSON.parse(line)?.message?.content ?? "");
+      if (content.includes("HOLD")) {
+        emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
+          state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600" } } } });
+        return;
+      }
+      reply(turns * 10, `REPLY:${content}`);
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `REPLY:${content}` } });
       return;
     }
     if (autoCompaction) {

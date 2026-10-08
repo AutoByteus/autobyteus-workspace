@@ -1,20 +1,19 @@
 import fs from "node:fs/promises";
 import { readJsonFile, updateJsonFile, withFilePathLock } from "../../persistence/file/store-utils.js";
 import type { AdHocTask } from "../domain/ad-hoc-task.js";
-import type { ProjectTaskStatus } from "../domain/models.js";
+import { isProjectTaskStatus } from "../domain/task-status.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { AdHocTasksLayout } from "./ad-hoc-tasks-layout.js";
 import { isSafeSegment } from "./projects-layout.js";
 
-const STATUSES: ReadonlySet<ProjectTaskStatus> = new Set(["TODO", "IN_PROGRESS", "DONE"]);
 const isNonEmptyString = (value: unknown): value is string => typeof value === "string" && value.length > 0;
 
 /** Current tolerant reader of an ad-hoc `task.json`; its id must match its folder. */
 export const readAdHocTaskFile = (raw: unknown, taskId: string): AdHocTask | null => {
   const c = raw as Partial<AdHocTask> | null;
-  if (!c || c.taskId !== taskId || !isNonEmptyString(c.description) || !STATUSES.has(c.status as ProjectTaskStatus)
+  if (!c || c.taskId !== taskId || !isNonEmptyString(c.description) || !isProjectTaskStatus(c.status)
     || !isNonEmptyString(c.createdAt) || !isNonEmptyString(c.updatedAt)) return null;
-  return { taskId, description: c.description, status: c.status as ProjectTaskStatus, createdAt: c.createdAt, updatedAt: c.updatedAt,
+  return { taskId, description: c.description, status: c.status, createdAt: c.createdAt, updatedAt: c.updatedAt,
     referenceFiles: Array.isArray(c.referenceFiles) ? c.referenceFiles.filter(isNonEmptyString) : [] };
 };
 /** Exact writer shape. */

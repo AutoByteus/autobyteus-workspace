@@ -1,0 +1,2 @@
+{"hash": "#/chat?id=keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec", "emptyState": false, "chatRunFrame": true, "selection": {"type": "agent", "id": "keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec"}, "agentContexts": ["live_agent_045b1ade16914d28bd452e1502fd23b0", "keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec"], "localBadges": 0}
+['keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec', 'open_agent_cad405463b3640e48c65056ab947d4fa', 'open_agent_ad7875436eb648ac9f0ce1e32a824333', 'open_agent_25175d32bb874407bd9d0a7938a1323c']
