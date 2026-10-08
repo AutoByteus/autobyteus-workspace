@@ -453,8 +453,13 @@ icon and semibold name, while configured Agent rows retain their circular
 avatar. Delegated (transient) rows under Agent, Team and Org roots use the
 ordinary tree-row style: no border or tint at rest, `gray-50` hover, a 2px
 `indigo-500` `:focus-visible` ring, and the same selected treatment as a member
-row. A transient task-Team row is marked only by an unboxed 16px `slate-500`
-bolt icon and a semibold name; a transient task-Agent shows the member marker (solid
+row. A transient task-Team row uses an unboxed 16px `slate-500` filled
+people-group icon (`heroicons:user-group-20-solid`) and a semibold name. Team
+identity uses this group glyph regardless of configured, collaborator or delegated
+role; existing image-first Team avatars remain unchanged. Project/Temp Task Team
+workers and Memory Team groups use the same glyph, retaining their existing sizes
+and Memory task-role boxes/colors. Unrelated capability icons, including the model
+Fast/service-tier bolt, are unchanged. A transient task-Agent shows the member marker (solid
 `StatusDot` plus initials) centered on its name line, so its exact status color
 remains visible. Neither role adds visible `Temp` / `Temporary` or `Task:` copy
 to the row body, and neither shows a visible "Started by" line. The starter of a

@@ -1,0 +1,27 @@
+PASS exact executable source delta: autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue (one glyph; comments excepted)
+PASS exact executable source delta: autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue (one glyph; comments excepted)
+PASS exact executable source delta: autobyteus-web/components/projects/ProjectTaskWorkers.vue (one glyph; comments excepted)
+PASS exact executable source delta: autobyteus-web/components/memory/CollaborationMemoryDetail.vue (one glyph; comments excepted)
+PASS byte-identical Fast/service-tier bolt
+d64560aee9f828853c75a0abff7347ec4fbaf54b 2026-08-30T11:28:38Z feat(web): clarify nested team history hierarchy
+
++        <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
+ import { Icon } from '@iconify/vue';
+c21d312c0ae952165535c51d6f6de676f6a30b59 2026-10-06T06:46:51+02:00 feat(web): clean delegated-row style in the Workspaces tree
+
+                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
+                 <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
+-                <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-3.5 w-3.5 flex-none text-indigo-600" />
++                <Icon icon="heroicons:bolt-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
+7c2553f486f0a45ecc22d4903753af4de59e0050 2026-09-25T15:08:21+02:00 Merge origin/personal into memory-team-view-slow-load; apply SR-004
+
++                    ><Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" /></span>
++                    <Icon v-else icon="heroicons:user-group-20-solid" class="h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
++import { Icon } from '@iconify/vue';
+4d469b0c5b8efe10a40dae00a7046680928bcaca 2026-10-07T12:02:31+02:00 feat(projects): live Projects pages, Task roots with worker status, Temp tasks
+
++        ><Icon icon="heroicons:bolt-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
++          <Icon v-if="presentation.state === 'failed'" icon="heroicons:exclamation-circle-20-solid" class="h-3.5 w-3.5" aria-hidden="true" />
++        <Icon v-if="presentation.openable" icon="heroicons:chevron-right-20-solid" class="h-3.5 w-3.5 flex-shrink-0 text-slate-300 group-hover/root:text-slate-500" aria-hidden="true" />
++import { Icon } from '@iconify/vue'
+PASS pinned source introduction/restyle; no installed-app timing inference
