@@ -1,0 +1,43 @@
+{
+  "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ctxfiles-bv001-4ZrSLA",
+  "pasted": "/private/tmp/ctxfiles-bv001-src-WbXjV3",
+  "startedAt": "2026-10-08T06:25:15.870Z",
+  "backendUrl": "http://127.0.0.1:60863",
+  "frontendUrl": "http://127.0.0.1:60879",
+  "projectId": "project_47a7a080-3cbe-487e-b478-8cb5bf2d250e",
+  "managerRunId": "bv_manager_beac2699961a473e9241a55c7d7d6f7c",
+  "task": {
+    "taskId": "project_task_05141c07-0f27-401a-a459-cdff5681ca1b",
+    "description": "Fix the status dot: it stays green after a failed run.\nSee the attached screenshot and notes.",
+    "status": "TODO",
+    "contextFiles": [
+      {
+        "storedFilename": "ctx_f8afb8c3bf7a__Screenshot_2026-10-08_at_10.15.32_AM.png",
+        "displayName": "Screenshot 2026-10-08 at 10.15.32 AM.png",
+        "mimeType": "image/png",
+        "sizeBytes": 70,
+        "locator": "/rest/projects/project_47a7a080-3cbe-487e-b478-8cb5bf2d250e/tasks/project_task_05141c07-0f27-401a-a459-cdff5681ca1b/context-files/ctx_f8afb8c3bf7a__Screenshot_2026-10-08_at_10.15.32_AM.png"
+      },
+      {
+        "storedFilename": "ctx_8a407b631c2e__repro-notes.md",
+        "displayName": "repro-notes.md",
+        "mimeType": "text/markdown",
+        "sizeBytes": 56,
+        "locator": "/rest/projects/project_47a7a080-3cbe-487e-b478-8cb5bf2d250e/tasks/project_task_05141c07-0f27-401a-a459-cdff5681ca1b/context-files/ctx_8a407b631c2e__repro-notes.md"
+      }
+    ]
+  },
+  "sourcesDeleted": true,
+  "toolReplyFrameSeen": true,
+  "taskPage": "http://127.0.0.1:60879/projects/project_47a7a080-3cbe-487e-b478-8cb5bf2d250e/tasks/project_task_05141c07-0f27-401a-a459-cdff5681ca1b",
+  "cleanup": {
+    "ownedRemoved": true,
+    "sourcesRemoved": true,
+    "groupsSignalled": [
+      41510,
+      41581,
+      41625
+    ],
+    "at": "2026-10-08T06:26:08.572Z"
+  }
+}

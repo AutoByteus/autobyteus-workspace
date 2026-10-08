@@ -1,0 +1,187 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-tool-context-files/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-tool-context-files/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/api/graphql/types/memory-view-member-resolver.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/api/graphql/types/memory-view-member-resolver.test.ts (3 tests) 173ms
+ ✓ tests/unit/api/graphql/types/projects.test.ts (6 tests) 5ms
+ ✓ tests/unit/api/graphql/studio-application-api-services.test.ts (14 tests) 6ms
+stdout | tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > maps a regular workspace's metadata with isTemp false
+Created metadata-only FileSystemWorkspace at /path/to/ws.
+
+stdout | tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > maps the temp workspace with its fixed id and isTemp true
+Created metadata-only FileSystemWorkspace at /path/to/temp.
+Initialized TempWorkspace at /path/to/temp with fixed ID 'temp_ws_default'
+
+ ✓ tests/unit/api/graphql/converters/workspace-converter.test.ts (2 tests) 3ms
+stdout | tests/unit/api/graphql/project-tasks-schema.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:17282) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/api/graphql/project-tasks-schema.test.ts (8 tests) 78ms
+stdout | tests/unit/api/graphql/types/agent-org-run-config.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:18712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/api/graphql/types/agent-org-run-config.test.ts (3 tests) 84ms
+stdout | tests/unit/api/graphql/projects-schema.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20093) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/api/graphql/projects-schema.test.ts (4 tests) 69ms
+stderr | tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 404 when workspace is missing
+Attempted to access non-existent workspace: missing
+
+stderr | tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 400 for workspace path violations
+Security error accessing path ../secret.txt in workspace ws1: Access denied: Path resolves outside the workspace boundary.
+
+ ✓ tests/unit/api/rest/workspaces.test.ts (4 tests) 35ms
+stdout | tests/unit/api/graphql/types/definition-catalog-refresh.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:21125) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/api/graphql/types/definition-catalog-refresh.test.ts (3 tests) 60ms
+ ✓ tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts (6 tests) 37ms
+ ✓ tests/unit/api/rest/run-file-changes.test.ts (6 tests) 42ms
+ ✓ tests/unit/api/rest/application-backends-prefix.test.ts (2 tests) 24ms
+ ✓ tests/unit/api/graphql/types/agent-team-run.test.ts (3 tests) 22ms
+stdout | tests/unit/api/graphql/types/app-data-migrations.test.ts > AppDataMigrationResolver > rebuilds compound current-package admission before a manual TeamRun migration Retry completes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-tool-context-files/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-tool-context-files/autobyteus-server-ts
+
+ ✓ tests/unit/api/graphql/types/app-data-migrations.test.ts (2 tests) 22ms
+ ✓ tests/unit/api/graphql/types/definition-admission.test.ts (1 test) 19ms
+stdout | tests/unit/api/graphql/types/llm-provider.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/api/graphql/types/llm-provider.test.ts (12 tests) 9ms
+ ✓ tests/unit/api/graphql/types/server-settings.test.ts (7 tests) 5ms
+stdout | tests/unit/api/websocket/file-explorer.test.ts > registerFileExplorerWebsocket > disconnects an established session on close
+File explorer websocket attached for workspace ws-1
+
+ ✓ tests/unit/api/websocket/file-explorer.test.ts (3 tests) 5ms
+ ✓ tests/unit/api/graphql/types/team-run-history.test.ts (4 tests) 5ms
+stdout | tests/unit/api/graphql/types/agent-run.test.ts > AgentRunResolver > routes tool approval through the live AgentRun subject
+Received tool invocation approval request for agent run 'run-native-1', invocation 'tool-1', approved: true
+
+stdout | tests/unit/api/graphql/types/agent-run.test.ts > AgentRunResolver > routes tool approval through the live AgentRun subject
+Successfully posted tool execution approval for agent run 'run-native-1', invocation 'tool-1'.
+
+ ✓ tests/unit/api/graphql/types/agent-run.test.ts (3 tests) 5ms
+ ✓ tests/unit/api/graphql/types/run-history.test.ts (1 test) 3ms
+ ✓ tests/unit/api/graphql/errors/skill-name-conflict-graphql-error.test.ts (2 tests) 3ms
+stdout | tests/unit/api/graphql/converters/tool-definition-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/api/graphql/converters/tool-definition-converter.test.ts (1 test) 3ms
+ ✓ tests/unit/api/graphql/types/memory-explorer-types.test.ts (3 tests) 2ms
+ ✓ tests/unit/api/graphql/converters/memory-view-converter.test.ts (1 test) 3ms
+stdout | tests/unit/api/graphql/types/memory-view-types.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/api/graphql/types/memory-view-types.test.ts (1 test) 2ms
+stdout | tests/unit/api/graphql/converters/user-input-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/api/graphql/converters/user-input-converter.test.ts (1 test) 2ms
+ ✓ tests/unit/api/pending-websocket-state.test.ts (1 test) 2ms
+
+ Test Files  28 passed (28)
+      Tests  107 passed (107)
+   Start at  08:32:59
+   Duration  20.37s (transform 4.59s, setup 142ms, import 16.12s, tests 725ms, environment 2ms)
+

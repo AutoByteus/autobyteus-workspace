@@ -74,6 +74,22 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(provider.getAdapters().find(a => a.definition.name === "create_or_update_project")!.configuredMcpCollisionPolicy).toBe("protect_static_adapter");
   });
 
+  it("documents one optional additive context_files string array on create_or_update_task, identical on native and MCP (AC-011)", async () => {
+    const native = CreateOrUpdateTaskTool.getArgumentSchema().toJsonSchema() as {properties: Record<string, any>, required?: string[]};
+    expect(native).toEqual(buildProjectTaskToolSchema("create_or_update_task").toJsonSchema());
+    expect(Object.keys(native.properties)).toEqual(["project_id", "task_id", "description", "status", "context_files"]);
+    expect(native.required ?? []).toEqual([]);
+    expect(native.properties.context_files).toMatchObject({type: "array", items: {type: "string"}});
+    expect(native.properties.context_files.description).toMatch(/Absolute local file paths.*appended on patch; never removes.*25 MiB/);
+    const listed = provider.getAdapters().find(a => a.definition.name === "create_or_update_task")!.definition;
+    expect(listed.description).toBe(CreateOrUpdateTaskTool.getDescription());
+    expect(listed.description).toMatch(/context_files.*patch appends and never removes.*not for a Task with no Project.*attachedContextFiles/);
+    expect(parseProjectTaskToolInput("create_or_update_task", {task_id: " t ", context_files: [" /tmp/a.png ", "/tmp/b.md"]}))
+      .toEqual({task_id: "t", context_files: ["/tmp/a.png", "/tmp/b.md"]});
+    expect(parseProjectTaskToolInput("create_or_update_task", {project_id: "p", description: "x", context_files: []}))
+      .toEqual({project_id: "p", description: "x", context_files: []});
+  });
+
   it("creates and patches compact saved Project results identically through native and MCP", async () => {
     const tool = new CreateOrUpdateProjectTool();
     const created = JSON.parse(await tool.execute(null, {name: " New project ", description: " Goal "}));
@@ -252,6 +268,19 @@ describe("Project data tools — actual native preparation/execute and selected 
     ["create_or_update_task", {project_id: "p", description: ""}, "TASK_DESCRIPTION_REQUIRED"],
     ["create_or_update_task", {project_id: "p", description: "x", status: "TODO"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
     ["create_or_update_task", {task_id: "t"}, "TASK_PATCH_REQUIRED"],
+    // context_files: one additive array of non-blank path strings in both modes (AC-004, AC-008).
+    ["create_or_update_task", {task_id: "t", context_files: []}, "TASK_PATCH_REQUIRED"],
+    ["create_or_update_task", {project_id: "p", description: "x", context_files: "/a.md"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {project_id: "p", description: "x", context_files: null}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {project_id: "p", description: "x", context_files: {path: "/a.md"}}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "t", context_files: [123]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "t", context_files: [null]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "t", context_files: [" "]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "t", context_files: Array(1)}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "t", context_files: [["/a.md"]]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {task_id: "t", remove_context_files: ["/a.md"]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["create_or_update_task", {project_id: "p", task_id: "t", context_files: ["/a.md"]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
+    ["list_project_tasks", {project_id: "p", context_files: ["/a.md"]}, "PROJECT_TOOL_ARGUMENT_INVALID"],
   ])("preserves domain errors before BaseTool coercion for %s", async (name, raw, code) => {
     const tool = name === "list_projects" ? new ListProjectsTool() : name === "list_project_tasks" ? new ListProjectTasksTool() : new CreateOrUpdateTaskTool();
     const thrown = await tool.execute(null, raw).then(() => null, (e) => JSON.parse(e.message));

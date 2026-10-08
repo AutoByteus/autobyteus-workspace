@@ -493,6 +493,31 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   permanent delete. `--ledger-file <abs path>` appends case results. `L01`/`L02` need
   `--runtime antigravity_cli` and are reported Not Applicable otherwise.
 
+Agent-attached Task context files (`create_or_update_task` `context_files`) have
+two ungated cases in `project-task-boundaries.e2e.test.ts` and a gated
+delegation suite:
+
+```bash
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts --no-watch
+env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS \
+  RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts --no-watch
+```
+
+- **CTX-E2E-001 / CTX-E2E-002** (boundaries suite, ungated). Create and patch
+  with `context_files` over MCP and the native tool: the copies are saved,
+  readable through GraphQL, REST and listing, and outlive their deleted
+  sources. Invalid entries fail naming the path and change nothing, including
+  no DONE closure.
+- **`project-task-context-files-delegation.e2e.test.ts`** (CTX-E2E-003, gated
+  like the sibling scripted-AGY suites; skips cleanly otherwise). Real
+  HTTP/WS/scoped MCP: the Manager attaches files by tool, `delegate_task({task_id})`
+  hands the saved copies to a live worker that reads them (the fixture CLI's
+  `READ_REFERENCE_FILES` route replies with each file's size and SHA-256), DONE
+  with a bad file keeps the worker's run open, and a Task with no Project
+  refuses files. `TASK_CONTEXT_FILES_E2E_EVIDENCE_DIR` keeps a JSON receipt.
+  Neither suite proves the packaged-app Task page; that is user verification.
+
 `projects-per-folder-v1` already uses its frozen `released-project-folder-v1.ts`
 for Project target classification/validation; never reconnect it to the current
 tolerant `readProjectFile`. It still imports current `ProjectsLayout` and

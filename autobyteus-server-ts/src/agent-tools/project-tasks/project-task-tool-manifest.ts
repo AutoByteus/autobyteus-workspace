@@ -2,6 +2,7 @@ import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
 import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput, TaskAcknowledgementView } from "../../projects/domain/models.js";
 import type { TaskAssignment } from "../../projects/domain/task-agent-resources.js";
+import type { ProjectTaskContextFile } from "../../projects/domain/project-task-context.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
 
@@ -13,8 +14,12 @@ const projectAcknowledgement = ({projectId, name, description, workspaces}: Proj
 /** Business read: current (open) assignments, or a marker when this Task's assignments can't be read. */
 type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles">
   & ({ assignments: TaskAssignment[] } | { assignmentsUnavailable: true });
-/** `projectId` is null for a Task with no Project. */
-const taskAcknowledgement = ({ projectId, taskId, status }: TaskAcknowledgementView): TaskAcknowledgementView => ({ projectId, taskId, status });
+/** `projectId` is null for a Task with no Project; `attachedContextFiles` only when this call attached files. */
+const taskAcknowledgement = ({ projectId, taskId, status }: Pick<TaskAcknowledgementView, "projectId" | "taskId" | "status">,
+  attached: readonly ProjectTaskContextFile[] = []) => ({
+  projectId, taskId, status,
+  ...(attached.length ? { attachedContextFiles: attached.map(({ storedFilename, displayName }) => ({ storedFilename, displayName })) } : {}),
+});
 const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles }: ProjectTaskView,
   assignments: TaskAssignment[] | "unavailable" | undefined): TaskBusinessRead => ({
   projectId, taskId, description, status, contextFiles,
@@ -65,13 +70,19 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
   }
   // The service may fail while producing its view AFTER the write. Neither a
   // fabricated acknowledgement nor a rollback claim is safe without its result.
+  const localContextFiles = (input.context_files as string[] | undefined) ?? [];
   try {
-    const task = Object.hasOwn(input, "task_id")
-      ? await getProjectTaskService().updateTaskById({ taskId: input.task_id as string,
+    if (Object.hasOwn(input, "task_id")) {
+      const ack = await getProjectTaskService().updateTaskById({ taskId: input.task_id as string,
         ...(Object.hasOwn(input, "description") ? { description: input.description as string } : {}),
-        ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}) })
-      : await getProjectTaskService().createTask({ projectId: input.project_id as string, description: input.description as string });
-    return { task: taskAcknowledgement(task) };
+        ...(Object.hasOwn(input, "status") ? { status: input.status as ProjectTaskStatus } : {}),
+        ...(localContextFiles.length ? { localContextFiles } : {}) });
+      return { task: taskAcknowledgement(ack, ack.attachedContextFiles) };
+    }
+    const created = await getProjectTaskService().createTaskWithLocalContextFiles({
+      projectId: input.project_id as string, description: input.description as string, localContextFiles });
+    // Every context file of a new Task was attached by this call.
+    return { task: taskAcknowledgement(created, created.contextFiles) };
   } catch (error) {
     if (error instanceof ProjectError) throw error;
     throw new ProjectMutationUnconfirmed("Task", error);
