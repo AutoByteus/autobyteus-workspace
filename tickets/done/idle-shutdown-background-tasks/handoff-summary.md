@@ -3,7 +3,7 @@
 ## State For User Verification
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks`
-- Ticket branch: `codex/idle-shutdown-background-tasks` (local only, not pushed yet)
+- Ticket branch: `codex/idle-shutdown-background-tasks` (pushed; merged into `personal`)
 - Base / finalization target: `origin/personal` @ `3a2496c95`. Re-fetched at delivery start; the base had not advanced, so the integration method was "Already current".
 - Verified candidate: the ticket branch HEAD that contains this file (delivery commit on top of `d08b6c5e9`)
 - Classification: `task_size=Medium`, `architectural_risk=High`. Route: reviewed (architecture review, source review, API/E2E, test-code review).
@@ -63,6 +63,9 @@ Hands-on, in the app built from this worktree:
 - Release/deployment report: `tickets/done/idle-shutdown-background-tasks/release-deployment-report.md`
 - Delivery revision record: `tickets/done/idle-shutdown-background-tasks/delivery-revision-record.md` (DR-001)
 
-## Awaiting
+## Outcome
 
-Explicit user verification. The user also decides on release: finalize only, or publish a new version with the repository's release helper.
+- User verification: "fialize and release a new beta" (`user-verification.md`)
+- Finalized: merge `57ae87cc4` on `origin/personal`
+- Released: `v1.4.99-beta.1` (release commit `1cd1a3abc`, all 4 workflows success, GitHub pre-release, Docker `:1.4.99-beta.1`/`:beta`)
+- Details: `release-deployment-report.md` (DR-002)
