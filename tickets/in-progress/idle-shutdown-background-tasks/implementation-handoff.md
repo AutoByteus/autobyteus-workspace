@@ -39,7 +39,7 @@ Commits on the branch since base `3a2496c95` (current state = base + `ba0437e00`
 - `ba0437e00` test(baseline): stale `prepareTaskAgent` call in `mixed-team-run-backend.integration.test.ts` (kept).
 - `28afa0884`, `62e4edf52`, `bf5889d03`: SR-002 removal and its ticket records (superseded).
 - `a1dc499e4` revert: undo SR-002 outside `tickets/`. Check: `git diff 3a2496c95 a1dc499e4 -- . ':!tickets'` = only `ba0437e00`'s test change plus the kept `claude-delegated-background-task.e2e.test.ts`.
-- The hybrid implementation commit follows `a1dc499e4` (message `feat(task-execution): keep delegated copies with running background tasks out of idle shutdown`).
+- `c304485d9` feat(task-execution): keep delegated copies with running background tasks out of idle shutdown (hybrid implementation, tests, docs, ticket records and hybrid evidence).
 
 ## Routing Classification (Mandatory)
 
