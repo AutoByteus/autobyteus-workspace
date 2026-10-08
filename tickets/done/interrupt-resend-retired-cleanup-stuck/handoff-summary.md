@@ -3,7 +3,7 @@
 ## State For User Verification
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/interrupt-resend-retired-cleanup-stuck`
-- Ticket branch: `codex/interrupt-resend-retired-cleanup-stuck` (local only; not pushed yet)
+- Ticket branch: `codex/interrupt-resend-retired-cleanup-stuck`
 - Base / finalization target: `origin/personal`. Bootstrap base `ace86bf1f`. At delivery start the base had advanced 9 commits to `efc2bfd0f` (archived-open-run-disappears and v1.4.99-beta.2). It was merged into the ticket branch as `2289067ce` with no conflicts. Those base changes are web-only plus run-history tests and do not overlap this ticket's files.
 - Verified candidate: the ticket branch HEAD that contains this file (delivery commit on top of `2289067ce`)
 - Classification: `task_size=Medium`, `architectural_risk=High`. Route: reviewed (ARCH-REV-001, CRR-001, API-REV-001, CRR-002 all Pass).
@@ -53,11 +53,11 @@ AC-007 (your existing stuck run `daily_assistant_feb311e7…`): this needs the f
 
 ## Delivery Artifacts
 
-- Docs sync: `tickets/in-progress/interrupt-resend-retired-cleanup-stuck/docs-sync-report.md`
-- Release notes: `tickets/in-progress/interrupt-resend-retired-cleanup-stuck/release-notes.md`
-- Release/deployment report: `tickets/in-progress/interrupt-resend-retired-cleanup-stuck/release-deployment-report.md`
-- Delivery revision record: `tickets/in-progress/interrupt-resend-retired-cleanup-stuck/delivery-revision-record.md` (DR-001)
+- Docs sync: `tickets/done/interrupt-resend-retired-cleanup-stuck/docs-sync-report.md`
+- Release notes: `tickets/done/interrupt-resend-retired-cleanup-stuck/release-notes.md`
+- Release/deployment report: `tickets/done/interrupt-resend-retired-cleanup-stuck/release-deployment-report.md`
+- Delivery revision record: `tickets/done/interrupt-resend-retired-cleanup-stuck/delivery-revision-record.md` (DR-001)
 
 ## Outcome
 
-- User verification: pending
+- User verification: "finaloize and release a new beta version" (`user-verification.md`)
