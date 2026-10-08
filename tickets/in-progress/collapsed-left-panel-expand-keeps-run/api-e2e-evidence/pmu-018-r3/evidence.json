@@ -1,0 +1,116 @@
+{
+  "startedAt": "2026-10-08T16:38:01.613Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-018": {
+      "result": "Fail",
+      "description": "Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates",
+      "durationMs": 33902,
+      "message": "Timed out: nested task Team member row",
+      "details": {
+        "squad": {
+          "kind": "team",
+          "recipientAddress": "/docs_review_team_pmustripmore_e9b6",
+          "ingressAgentRunId": "release_notes_writer_pmustripmore_e9b6_d0fe808e33a547778b29455d0779d38a",
+          "teamRunId": "docs_review_team_pmustripmore_e9b6_89c35a5c29504a52a66dcc9a0cb424e3",
+          "start": "started",
+          "closed": false,
+          "status": "idle",
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "delivery_team_pmustripmore_e9b6_98c0eb4f185d453ca644e974e0550a91"
+          }
+        },
+        "rows": [
+          {
+            "team": "delivery_team_pmustripmore_e9b6_98c0eb4f185d453ca644e974e0550a91",
+            "agent": null,
+            "address": "/docs_review_team_pmustripmore_e9b6",
+            "kind": "agent_team",
+            "depth": "0",
+            "expanded": "true",
+            "text": "docs review team pmustripmore e9b6Temporary task team · docs"
+          },
+          {
+            "team": "delivery_team_pmustripmore_e9b6_98c0eb4f185d453ca644e974e0550a91",
+            "agent": "release_notes_writer_pmustripmore_e9b6_d0fe808e33a547778b29455d0779d38a",
+            "address": "/docs_review_team_pmustripmore_e9b6/reviewer",
+            "kind": "agent",
+            "depth": "1",
+            "expanded": null,
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team"
+          },
+          {
+            "team": "delivery_team_pmustripmore_e9b6_98c0eb4f185d453ca644e974e0550a91",
+            "agent": "fact_checker_pmustripmore_e9b6_bf869921db2743ada9175fd4be5d9f43",
+            "address": "/docs_review_team_pmustripmore_e9b6/editor",
+            "kind": "agent",
+            "depth": "1",
+            "expanded": null,
+            "text": "EeditorTemporary task agent · editor · /docs_review_team_pmu"
+          }
+        ]
+      },
+      "pages": [
+        {
+          "url": "http://127.0.0.1:54594/workspace",
+          "center": "M\nmanager\nIdle\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/docs_review_team_pmustripmore_e9b6\",\"task_id\":\"project_task_9f827498-3c3e-4906-a338-e9710b7cfd34\"}}\nM\nmanager\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\\n \"target_agent_run_id\": \"release_notes_writer_pmustripmore_e9b6_d0fe808e33a547778b29455d0779d38a\",\\n \"target_kind\": \"team\"\\n}”}],“structuredContent”:{“target_agent_run_id”:“release_notes_writer_pmustripmore_e9b6_d0fe808e33a547778b29455d0779d38a”,“target_kind”:“team”}}\n\nContext Files (0)\n(drag, paste, or upload)",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:54593/ws/terminal/d4b00776-5251-46f1-8ca6-dbcc086eb883",
+            "log: [useTerminalSession] Connected",
+            "log: Team WebSocket transport connected",
+            "log: serverStore: Checking server health at /rest/health",
+            "log: Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+          ]
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 94917,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 94168,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-018",
+      "message": "Timed out: nested task Team member row"
+    }
+  ],
+  "feed": {
+    "total": 10,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 4,
+      "task_upserted": 3,
+      "task_worker_status": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:54593",
+    "frontendUrl": "http://127.0.0.1:54594",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-ha1vMC"
+  },
+  "browserVersion": "154.0.8037.98",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-08T16:38:55.525Z"
+}

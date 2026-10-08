@@ -1,0 +1,114 @@
+{
+  "startedAt": "2026-10-08T17:03:06.385Z",
+  "controlEndpoint": "http://127.0.0.1:58732",
+  "backendUrl": "http://127.0.0.1:58733",
+  "cases": {
+    "agent": {
+      "afterCollapse": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "workspace-left-strip-workspaces",
+        "hash": "#/chat?id=manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0"
+      },
+      "before": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/chat?id=manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0"
+      },
+      "sel": {
+        "hash": "#/chat?id=manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0",
+        "subject": "{\"kind\":\"agent_run\",\"runId\":\"manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0\"}",
+        "focusedRunId": null
+      },
+      "row": {
+        "agentRunId": "release_notes_writer_dsk_1af3_a0e6f29b4c7b4fcb88d3da1dadfd13c2",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "release_notes_writer_dsk_1af3_a0e6f29b4c7b4fcb88d3da1dadfd13c2",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      }
+    }
+  },
+  "errors": [],
+  "seed": {
+    "names": {
+      "manager": "Manager Dsk 1af3",
+      "worker": "Release Notes Writer Dsk 1af3",
+      "helper": "Fact Checker Dsk 1af3",
+      "squad": "Docs Review Team Dsk 1af3",
+      "team": "Delivery Team Dsk 1af3",
+      "org": "Delivery Org Dsk 1af3"
+    },
+    "ids": {
+      "manager": "manager-dsk-1af3",
+      "worker": "release-notes-writer-dsk-1af3",
+      "helper": "fact-checker-dsk-1af3",
+      "squad": "docs-review-team-dsk-1af3",
+      "team": "delivery-team-dsk-1af3"
+    },
+    "projectId": "project_0a2fcd64-f0c1-4fe2-b8ae-50df393a64da",
+    "agentTask": "project_task_2e12aa0b-b92b-42f1-9859-ca8449458db6",
+    "teamTask": "project_task_f7469082-001a-444f-bb64-cbcdb0091619",
+    "agentRoot": {
+      "kind": "agent",
+      "rootId": "manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0",
+      "managerRunId": "manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "rootId": "delivery_team_dsk_1af3_849f7b65e05141c096786b6ca059bea4",
+      "managerRunId": "manager_dsk_1af3_f7343460805e4f6cb9fabf7a7d0dbf6e"
+    },
+    "agentWorker": {
+      "kind": "agent",
+      "recipientAddress": "/release_notes_writer_dsk_1af3",
+      "ingressAgentRunId": "release_notes_writer_dsk_1af3_a0e6f29b4c7b4fcb88d3da1dadfd13c2",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0"
+      }
+    },
+    "teamWorker": {
+      "kind": "team",
+      "recipientAddress": "/docs_review_team_dsk_1af3",
+      "ingressAgentRunId": "release_notes_writer_dsk_1af3_977335c892d347c194840539a8e2f3e6",
+      "teamRunId": "docs_review_team_dsk_1af3_ac3a181ad6ad4797812d7f83086f7989",
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "delivery_team_dsk_1af3_849f7b65e05141c096786b6ca059bea4"
+      }
+    }
+  },
+  "window": {
+    "width": 1200,
+    "height": 768,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.99-beta.2 Chrome/1",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+  },
+  "result": "Fail",
+  "failure": {
+    "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-left-strip-workspaces\"]')\n"
+  },
+  "finishedAt": "2026-10-08T17:04:38.417Z"
+}

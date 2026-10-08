@@ -1,0 +1,180 @@
+{
+  "startedAt": "2026-10-08T17:06:14.524Z",
+  "controlEndpoint": "http://127.0.0.1:58732",
+  "backendUrl": "http://127.0.0.1:58733",
+  "cases": {
+    "agent": {
+      "afterCollapse": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "workspace-left-strip-workspaces",
+        "hash": "#/chat?id=manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484"
+      },
+      "before": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/chat?id=manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484"
+      },
+      "sel": {
+        "hash": "#/chat?id=manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484",
+        "subject": "{\"kind\":\"agent_run\",\"runId\":\"manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484\"}",
+        "focusedRunId": null
+      },
+      "row": {
+        "agentRunId": "release_notes_writer_dsk_cce6_1f139db37ea44e23a7fb1371bf3d8aca",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "release_notes_writer_dsk_cce6_1f139db37ea44e23a7fb1371bf3d8aca",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      }
+    },
+    "team": {
+      "afterCollapse": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "workspace-left-strip-workspaces",
+        "hash": "#/workspace"
+      },
+      "before": {
+        "strip": true,
+        "activation": "redock-panel",
+        "workspacesLit": true,
+        "workspacesIcon": true,
+        "workspacesLabel": "Workspaces",
+        "stripChatLit": false,
+        "focus": "BUTTON",
+        "hash": "#/workspace"
+      },
+      "sel": {
+        "hash": "#/workspace",
+        "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_dsk_cce6_dee6d528f3ed4793b126ff4db4d14120\"}",
+        "focusedRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333"
+      },
+      "row": {
+        "agentRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      },
+      "settled": {
+        "agentRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333",
+        "test": "workspace-team-transient-execution-row",
+        "visible": true,
+        "scrollTop": 0,
+        "focused": true,
+        "selectedRows": 1
+      }
+    }
+  },
+  "errors": [],
+  "seed": {
+    "names": {
+      "manager": "Manager Dsk cce6",
+      "worker": "Release Notes Writer Dsk cce6",
+      "helper": "Fact Checker Dsk cce6",
+      "squad": "Docs Review Team Dsk cce6",
+      "team": "Delivery Team Dsk cce6",
+      "org": "Delivery Org Dsk cce6"
+    },
+    "ids": {
+      "manager": "manager-dsk-cce6",
+      "worker": "release-notes-writer-dsk-cce6",
+      "helper": "fact-checker-dsk-cce6",
+      "squad": "docs-review-team-dsk-cce6",
+      "team": "delivery-team-dsk-cce6"
+    },
+    "projectId": "project_0971a513-8648-49ae-a42f-97bcf06207a3",
+    "agentTask": "project_task_9be97db8-193f-4b99-8132-f8be54c22ec7",
+    "teamTask": "project_task_15b48d4c-0afe-49e5-96f6-efc25abe1dc4",
+    "agentRoot": {
+      "kind": "agent",
+      "rootId": "manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484",
+      "managerRunId": "manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484"
+    },
+    "teamRoot": {
+      "kind": "team",
+      "rootId": "delivery_team_dsk_cce6_dee6d528f3ed4793b126ff4db4d14120",
+      "managerRunId": "manager_dsk_cce6_6312cb57ca1249079b23c55aea77f9b6"
+    },
+    "agentWorker": {
+      "kind": "agent",
+      "recipientAddress": "/release_notes_writer_dsk_cce6",
+      "ingressAgentRunId": "release_notes_writer_dsk_cce6_1f139db37ea44e23a7fb1371bf3d8aca",
+      "teamRunId": null,
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent",
+        "runId": "manager_dsk_cce6_0ea27c842edc41ff9606eddbd9734484"
+      }
+    },
+    "teamWorker": {
+      "kind": "team",
+      "recipientAddress": "/docs_review_team_dsk_cce6",
+      "ingressAgentRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333",
+      "teamRunId": "docs_review_team_dsk_cce6_6af05827eff04c688bc1693fe7c61389",
+      "start": "started",
+      "hostRoot": {
+        "kind": "agent_team",
+        "runId": "delivery_team_dsk_cce6_dee6d528f3ed4793b126ff4db4d14120"
+      }
+    }
+  },
+  "window": {
+    "width": 1512,
+    "height": 917,
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.99-beta.2 Chrome/1",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=manager_dsk_1af3_6c90d1c9e38c4cf59fb0dd976f772ad0"
+  },
+  "result": "Fail",
+  "failure": {
+    "message": "New chat: draft, route and selection kept; nothing selected",
+    "details": {
+      "newSel": {
+        "hash": "#/chat",
+        "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_dsk_cce6_dee6d528f3ed4793b126ff4db4d14120\"}",
+        "focusedRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333"
+      },
+      "newAfter": {
+        "sel": {
+          "hash": "#/chat",
+          "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_dsk_cce6_dee6d528f3ed4793b126ff4db4d14120\"}",
+          "focusedRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333"
+        },
+        "text": "Desktop draft text",
+        "row": {
+          "agentRunId": "release_notes_writer_dsk_cce6_b3dfb3ce790e4e9e98cccba450fc2333",
+          "test": "workspace-team-transient-execution-row",
+          "visible": true,
+          "scrollTop": 0,
+          "focused": true,
+          "selectedRows": 1
+        }
+      }
+    }
+  },
+  "finishedAt": "2026-10-08T17:06:22.154Z"
+}

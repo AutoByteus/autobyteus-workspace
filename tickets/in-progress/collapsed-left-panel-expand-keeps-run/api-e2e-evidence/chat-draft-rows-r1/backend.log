@@ -1,0 +1,240 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:57181
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:57181
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:54267) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-08T16:49:16.673Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 4 items.
+Populating agent definition cache for the first time...
+[2026-10-08T16:49:16.780Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-08T16:49:16.780Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 4 items.
+{"level":30,"time":1791478156786,"pid":54267,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57191"}
+{"level":30,"time":1791478156811,"pid":54267,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57181"}
+[2026-10-08T16:49:16.811Z] [INFO] [server.runtime] Server listening on 127.0.0.1:57181
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-10-08T16:49:17.303Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID probe-team.
+Agent Team Definition created successfully with ID: probe-team
+[CodexAppServerClient] stderr: [2m2026-10-08T16:49:34.352681Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_61363782d92b43959d2e3bf4a861905d
+Created agent session 320f16b9-eff1-4cbc-b63c-6f0776754e07 for run daily_assistant_61363782d92b43959d2e3bf4a861905d
+Agent WebSocket connected: session=320f16b9-eff1-4cbc-b63c-6f0776754e07, run=daily_assistant_61363782d92b43959d2e3bf4a861905d
+Resolved configured temp workspace root to TempWorkspace.
+[CodexAppServerClient] stderr: [2m2026-10-08T16:49:35.320365Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-08T16:49:35.615423Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/temp_workspace/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/temp_workspace as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-10-08T16:49:35.615470Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder.
+Created and registered workspace ID: agent_ws_7e1f6c277df61f4f7504d90b35110c0a70625510c4403ce6fa8c0f22dadad9bd
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder.
+Reusing registered workspace ID: agent_ws_7e1f6c277df61f4f7504d90b35110c0a70625510c4403ce6fa8c0f22dadad9bd
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory/agent_teams/probe_team_3d1ebb8b870b490d88c5c9e599d5bd52/probe_helper_09390981e9064a368d41fc6ae142dfad/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory/agent_teams/probe_team_3d1ebb8b870b490d88c5c9e599d5bd52/probe_writer_df82cf3abfce472493ea98a2ada89626/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Created agent session 43d93c7b-574c-4a23-b932-0c07604bfa9f for run probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Agent Team WebSocket connected: session=43d93c7b-574c-4a23-b932-0c07604bfa9f, run=probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory/agent_teams/probe_team_3d1ebb8b870b490d88c5c9e599d5bd52/probe_helper_09390981e9064a368d41fc6ae142dfad/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory/agent_teams/probe_team_3d1ebb8b870b490d88c5c9e599d5bd52/probe_helper_09390981e9064a368d41fc6ae142dfad/raw_traces_active.jsonl
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder.
+Reusing registered workspace ID: agent_ws_7e1f6c277df61f4f7504d90b35110c0a70625510c4403ce6fa8c0f22dadad9bd
+[CodexAppServerClient] stderr: [2m2026-10-08T16:52:15.173614Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-08T16:52:15.341799Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/team-folder as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-08T16:52:15.341844Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder.
+Created and registered workspace ID: agent_ws_048b7674e6fd449af118896fe4b8a9487a1096e2d5d5e068e465fdb188b6b5f8
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder.
+Reusing registered workspace ID: agent_ws_048b7674e6fd449af118896fe4b8a9487a1096e2d5d5e068e465fdb188b6b5f8
+Agent websocket attached for run probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Created agent session 4dc8fc19-2166-4939-9aa8-673b093d10a3 for run probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Agent WebSocket connected: session=4dc8fc19-2166-4939-9aa8-673b093d10a3, run=probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder.
+Reusing registered workspace ID: agent_ws_048b7674e6fd449af118896fe4b8a9487a1096e2d5d5e068e465fdb188b6b5f8
+[CodexAppServerClient] stderr: [2m2026-10-08T16:52:27.452708Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-10-08T16:52:27.620251Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder as a trusted project in /Users/normy/.codex/config.toml.
+
+[2m2026-10-08T16:52:27.620303Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/agent-folder.
+Reusing registered workspace ID: agent_ws_048b7674e6fd449af118896fe4b8a9487a1096e2d5d5e068e465fdb188b6b5f8
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Created agent session b3733189-c059-4b5f-9a53-e406447ba993 for run daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Agent WebSocket connected: session=b3733189-c059-4b5f-9a53-e406447ba993, run=daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session b3733189-c059-4b5f-9a53-e406447ba993
+Agent WebSocket disconnected: b3733189-c059-4b5f-9a53-e406447ba993
+Closed agent session 4dc8fc19-2166-4939-9aa8-673b093d10a3
+Agent WebSocket disconnected: 4dc8fc19-2166-4939-9aa8-673b093d10a3
+Closed agent session 43d93c7b-574c-4a23-b932-0c07604bfa9f
+Closed agent session 320f16b9-eff1-4cbc-b63c-6f0776754e07
+Agent WebSocket disconnected: 320f16b9-eff1-4cbc-b63c-6f0776754e07
+Agent websocket attached for run probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Created agent session 9d6c2f62-57c5-4ebb-898e-27bfe44c201b for run probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Agent WebSocket connected: session=9d6c2f62-57c5-4ebb-898e-27bfe44c201b, run=probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Agent websocket attached for run daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Created agent session 11bf5554-2ef1-44ca-8f7c-96bedc30d2c9 for run daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Agent WebSocket connected: session=11bf5554-2ef1-44ca-8f7c-96bedc30d2c9, run=daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory/agent_teams/probe_team_3d1ebb8b870b490d88c5c9e599d5bd52/probe_writer_df82cf3abfce472493ea98a2ada89626/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_61363782d92b43959d2e3bf4a861905d
+Created agent session 8f519d72-cf02-4cbf-8f26-160d04993fb0 for run daily_assistant_61363782d92b43959d2e3bf4a861905d
+Agent WebSocket connected: session=8f519d72-cf02-4cbf-8f26-160d04993fb0, run=daily_assistant_61363782d92b43959d2e3bf4a861905d
+Agent team websocket attached for team run probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Created agent session 9f77c3ed-7280-4066-a17a-1c4ab735563f for run probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Agent Team WebSocket connected: session=9f77c3ed-7280-4066-a17a-1c4ab735563f, run=probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+[CodexAppServerClient] stderr: [2m2026-10-08T16:53:00.719404Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Agent websocket attached for run probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Created agent session ac37dd4f-d337-40cb-98e4-60319b3b8227 for run probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Agent WebSocket connected: session=ac37dd4f-d337-40cb-98e4-60319b3b8227, run=probe_helper_ea139d0b1ab449cebd77cbf615e07df3
+Agent websocket attached for run daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Created agent session 5b6d41f0-efa8-41b0-8375-dcc52141f289 for run daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Agent WebSocket connected: session=5b6d41f0-efa8-41b0-8375-dcc52141f289, run=daily_assistant_5ead3922502943e19d82e57a08eb38b4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-draft-rows-live-jJrSGr/server-data/memory/agent_teams/probe_team_3d1ebb8b870b490d88c5c9e599d5bd52/probe_writer_df82cf3abfce472493ea98a2ada89626/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_61363782d92b43959d2e3bf4a861905d
+Created agent session fbc4ba4b-23b2-4eaf-b940-24cb6348fc5a for run daily_assistant_61363782d92b43959d2e3bf4a861905d
+Agent WebSocket connected: session=fbc4ba4b-23b2-4eaf-b940-24cb6348fc5a, run=daily_assistant_61363782d92b43959d2e3bf4a861905d
+Agent team websocket attached for team run probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Created agent session 42f95251-cc51-45de-af79-261cd65bd477 for run probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Agent Team WebSocket connected: session=42f95251-cc51-45de-af79-261cd65bd477, run=probe_team_3d1ebb8b870b490d88c5c9e599d5bd52
+Closed agent session fbc4ba4b-23b2-4eaf-b940-24cb6348fc5a
+Agent WebSocket disconnected: fbc4ba4b-23b2-4eaf-b940-24cb6348fc5a
+Closed agent session 42f95251-cc51-45de-af79-261cd65bd477
+Closed agent session ac37dd4f-d337-40cb-98e4-60319b3b8227
+Agent WebSocket disconnected: ac37dd4f-d337-40cb-98e4-60319b3b8227
+Closed agent session 5b6d41f0-efa8-41b0-8375-dcc52141f289
+Agent WebSocket disconnected: 5b6d41f0-efa8-41b0-8375-dcc52141f289
+Closed agent session 8f519d72-cf02-4cbf-8f26-160d04993fb0
+Agent WebSocket disconnected: 8f519d72-cf02-4cbf-8f26-160d04993fb0
+Closed agent session 11bf5554-2ef1-44ca-8f7c-96bedc30d2c9
+Agent WebSocket disconnected: 11bf5554-2ef1-44ca-8f7c-96bedc30d2c9
+Closed agent session 9d6c2f62-57c5-4ebb-898e-27bfe44c201b
+Agent WebSocket disconnected: 9d6c2f62-57c5-4ebb-898e-27bfe44c201b
+Closed agent session 9f77c3ed-7280-4066-a17a-1c4ab735563f
+[2026-10-08T16:53:02.970Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-08T16:53:03.015Z] [INFO] [server.runtime] Server closed cleanly.
