@@ -9,6 +9,11 @@ import {
   NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
 } from './noVncThirdPartyNotice'
 import { ISOLATED_LAUNCH_MARKER_EXTRA_RESOURCE } from './isolatedLaunchMarker'
+import {
+  PRODUCT_COPYRIGHT,
+  PRODUCT_LICENSE_EXTRA_RESOURCES,
+  PRODUCT_LICENSE_REQUIRED_FILES,
+} from './productLicensePackaging'
 
 // Load environment variables from .env.local (for Apple credentials)
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
@@ -217,6 +222,8 @@ console.log('Updater publish config:', JSON.stringify(updaterPublishConfig))
 const options: Configuration = {
   appId: 'com.autobyteus.app',
   productName: 'AutoByteus',
+  // macOS About panel (NSHumanReadableCopyright) and Windows LegalCopyright.
+  copyright: PRODUCT_COPYRIGHT,
   directories: {
     output: 'electron-dist'
   },
@@ -247,6 +254,8 @@ const options: Configuration = {
       to: "icons"
     },
     NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
+    // AutoByteus product licence files: <resources>/LICENSE, LICENSING.md, NOTICE.
+    ...PRODUCT_LICENSE_EXTRA_RESOURCES,
     // Capability marker read by `pnpm isolated-app` before launching this build isolated.
     ISOLATED_LAUNCH_MARKER_EXTRA_RESOURCE
   ],
@@ -428,6 +437,12 @@ async function main(): Promise<void> {
     for (const filePath of NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES) {
       if (!existsSync(filePath)) {
         throw new Error(`Missing required noVNC third-party notice for packaging: ${filePath}`)
+      }
+    }
+
+    for (const filePath of PRODUCT_LICENSE_REQUIRED_FILES) {
+      if (!existsSync(filePath)) {
+        throw new Error(`Missing required product license file for packaging: ${filePath}`)
       }
     }
 

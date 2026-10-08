@@ -2,7 +2,7 @@
 
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveWorkspacePackageRoot } from "../../scripts/workspace-package-roots.mjs";
@@ -30,6 +30,10 @@ const packageJsonPath = path.join(gatewayRoot, "package.json");
 const defaultOutputDir = path.join(gatewayRoot, "dist-runtime");
 const stageDir = path.join(gatewayRoot, ".runtime-package-stage");
 const localPackageDir = path.join(stageDir, "_local-packages");
+// AutoByteus product licence files shipped in the runtime package. `LICENSE` comes from the
+// gateway package itself (always packed by `pnpm deploy`); the others live at the workspace root.
+const PRODUCT_LICENSE_FILES = ["LICENSE", "LICENSING.md", "NOTICE"];
+const WORKSPACE_ROOT_LICENSE_FILES = ["LICENSING.md", "NOTICE"];
 const PRUNE_STAGE_PATHS = [
   "src",
   "tests",
@@ -215,6 +219,12 @@ async function deployGatewayPackageToStage() {
   await rm(path.join(stageDir, "node_modules"), { recursive: true, force: true });
 }
 
+async function copyProductLicenseFilesToStage() {
+  for (const fileName of WORKSPACE_ROOT_LICENSE_FILES) {
+    await copyFile(path.join(workspaceRoot, fileName), path.join(stageDir, fileName));
+  }
+}
+
 async function packWorkspaceDependencies(sourceManifest) {
   const dependencies = Object.entries(sourceManifest.dependencies ?? {});
   const workspaceDependencies = dependencies.filter(([, version]) => isWorkspaceDependency(version));
@@ -281,6 +291,15 @@ async function verifyRuntimeEntrypoint() {
   const entrypoint = path.join(stageDir, "dist", "index.js");
   if (!(await exists(entrypoint))) {
     throw new Error(`Runtime entrypoint was not found in staged package: ${entrypoint}`);
+  }
+}
+
+async function verifyLicenseFiles() {
+  for (const fileName of PRODUCT_LICENSE_FILES) {
+    const licenseFile = path.join(stageDir, fileName);
+    if (!(await exists(licenseFile))) {
+      throw new Error(`Product license file was not found in staged package: ${licenseFile}`);
+    }
   }
 }
 
@@ -384,11 +403,13 @@ async function run() {
   }
 
   await deployGatewayPackageToStage();
+  await copyProductLicenseFilesToStage();
   const localDependencySpecs = await packWorkspaceDependencies(sourceManifest);
   await rewriteStagePackageManifest(sourceManifest, localDependencySpecs);
   await installRuntimeDependencies();
   await pruneStageFiles();
   await verifyRuntimeEntrypoint();
+  await verifyLicenseFiles();
 
   const metadataSeedPath = path.join(stageDir, "runtime-artifact.json");
   await writeFile(

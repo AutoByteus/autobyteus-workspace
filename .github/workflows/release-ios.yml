@@ -80,6 +80,9 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Check licensing consistency
+        run: python3 scripts/check_licensing.py
+
       - name: Resolve release commit SHA
         id: sha
         shell: bash
