@@ -14,7 +14,10 @@ if (arg === "--version") {
 } else if (arg === "--help") {
   process.stdout.write("--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\n");
 } else if (arg === "models") {
-  process.stdout.write("gemini-3.8-flash-low\tGemini test\n");
+  // AGY_FAKE_EXTRA_MODELS (comma-separated ids) lists more models while it is set, so a test can retire a model
+  // after a run was configured with it (as a provider retiring a model does).
+  const extra = (process.env.AGY_FAKE_EXTRA_MODELS ?? "").split(",").filter(Boolean).map((id) => `${id}\tRetiring test model\n`);
+  process.stdout.write(["gemini-3.8-flash-low\tGemini test\n", ...extra].join(""));
 } else {
   // Optional launch log so a test can assert the exact argv the server used (one JSON line per launch).
   if (process.env.AGY_FAKE_ARGV_LOG) {

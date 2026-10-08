@@ -470,6 +470,39 @@ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fi
   `offline` on the root's view. `TASK_COPY_IDLE_LIFETIME_E2E_EVIDENCE_DIR`
   keeps a JSON receipt with the measured times.
 
+Delegated Team copies start only the members that work reaches. A gated
+server E2E covers this for all three roots (about 2 minutes, no model calls):
+
+```bash
+RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts --no-watch
+```
+
+- **`delegated-team-lazy-member-activation.e2e.test.ts`.** Real HTTP/WS/scoped
+  MCP, Task services, root lifecycle and the AGY backend, with the scripted AGY
+  actor. AGY starts one CLI process per activation, so the launch log
+  (`AGY_FAKE_ARGV_LOG`) counts provider sessions exactly. In the Agent, Team
+  and Org roots, a 4-member copy is delegated (by `task_id` in the Agent root,
+  by description in the others). The suite checks:
+  - only the coordinator launches; the other members have no process, a
+    `null` saved binding and `offline` in the root view's `agent_statuses`;
+  - a teammate message starts only its recipient;
+  - Agent and Team roots: a copy member delegating the Team creates a
+    Team-hosted copy, and only its coordinator starts;
+  - Org root: a member whose model was retired after the Org was configured
+    (`AGY_FAKE_EXTRA_MODELS` offers it only during creation) fails the sender's
+    delivery and shows `error`, while the coordinator keeps working;
+  - idle shutdown (grace stored at 60 s), Task DONE → reopen → reactivation,
+    and a stopped root whose saved tree has the pre-fix shape (an unused member
+    bound with no conversation) each resume only the lead (`--conversation`),
+    and that member's first work starts a fresh session;
+  - a coordinator that cannot start fails `delegate_task` and launches no
+    member.
+
+  `DELEGATED_TEAM_LAZY_E2E_EVIDENCE_DIR` keeps a JSON receipt. The sidebar
+  rendering of `offline` is not covered here; the desktop app check is user
+  verification.
+
 `@` delegation and ad-hoc Tasks (Tasks with no Project, created by a described
 `delegate_task` and closed by `create_or_update_task({task_id, status: "DONE"})`)
 have a gated server E2E beside the closure suite and a live browser probe:
