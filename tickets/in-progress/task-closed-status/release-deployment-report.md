@@ -1,0 +1,145 @@
+# Delivery / Release / Deployment Report
+
+## Release / Publication / Deployment Scope
+
+Ticket `task-closed-status` (SR-004, IR-001, API-REV-001). Direct route: `task_size=Medium`, `architectural_risk=Low`. Repository finalization into `origin/personal` is pending user verification. A release is optional and decided by the user at finalization; the precedent is the `scripts/desktop-release.sh beta` used for idle-shutdown-background-tasks.
+
+## Handoff Summary
+
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/handoff-summary.md`
+- Handoff summary status: `Updated`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/delivery-revision-record.md`
+- Current delivery revision ID: `DR-001`
+- Notes: awaiting user verification.
+
+## Initial Delivery Integration Refresh
+
+- Bootstrap base reference: `origin/personal` @ `3a2496c95b16b0f7e0cedc7afdf615ada00b2267`
+- Latest tracked remote base reference checked: `origin/personal` @ `ace86bf1fb2e5e533e6f7b706179726a2db3bf8f` (fetched 2026-10-08)
+- Base advanced since bootstrap or previous refresh: `Yes` (13 commits: idle-shutdown-background-tasks ticket and the `v1.4.99-beta.1` release commit)
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed`. `ee78e1e19` "test(projects): add API/E2E coverage for CLOSED Task status (API-REV-001)". Paths were staged explicitly, and the untracked SDK `dist/` folders were excluded.
+- Integration method: `Merge` (`19a85ba3c`)
+- Integration result: `Completed`. There were three content conflicts in one paragraph:
+  - `agent-team-collaboration-llm-contract.ts`
+  - `prompt_engineering.md`
+  - the hash pin in `agent-team-collaboration-llm-contract.test.ts`
+
+  They were resolved as a union: the base's "but not while it has a running background task" clause plus the ticket's "`DONE` or `CLOSED`" wording. The line breaks satisfy both tickets' exact-substring assertions without editing them. Only the pinned `collaborationPrompt` sha256 changed, to `04bc40a0…fd30`.
+
+  The auto-merged overlaps (`root-task-execution-lifecycle.ts`, `agent-org-run.ts`, `standalone-agent-run-root.ts`) are orthogonal: background-task re-arm versus terminal-status closure. Terminal closure still routes DONE and CLOSED through the same `closeAndWrite`.
+- Post-integration executable checks rerun: `Yes` (logs in `delivery-evidence/`):
+  - `pnpm -C autobyteus-server-ts prebuild && build` → exit 0 (`server-build.log`)
+  - `vitest run tests/unit/agent-team-execution/` → 35 files / 153 tests pass (during conflict resolution)
+  - `vitest run tests/unit` (full tree) → 647 files pass, 15 fail (43 tests). The failing set is identical to the base ticket's pre-existing full-unit failures (`tickets/done/idle-shutdown-background-tasks/evidence/api-e2e/r2-unit-full.log`). None of those files is in the ticket's scope. Logs: `server-unit-full.log` and `server-unit-full-preexisting-failures.txt`.
+  - Integration (`task-delegation-tool-lifecycle`, `native-root-termination`, `mixed-team-run-backend`) → 3 files / 20 tests pass (`server-integration.log`)
+  - `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=…/agy-failure-cli.mjs vitest run tests/e2e/projects` → 9/10 files, 47 tests pass, 1 skipped (live Claude) (`e2e-projects-gated.log`):
+    - The ticket cases CLS-API-001 and CLS-E2E-001/002 all pass.
+    - The one failure was the base's new `task-copy-idle-lifetime.e2e.test.ts` in the parallel run: "model not available" during model-list discovery, and team/org timings of 33–45 s against a 15 s bound under load.
+    - In an isolated rerun with the base ticket's recipe it passed 1/1 (`e2e-idle-lifetime-isolated.log`, `idle-lifetime/`). It was classified as contention, not a regression.
+  - `pnpm -C autobyteus-web test:nuxt components/projects localization/messages/__tests__ stores/__tests__ utils/projects scripts/__tests__/localizationLiteralAudit.spec.ts --run` → 102 files / 981 tests pass (`web-projects-specs.log`)
+  - `audit:localization-literals` and `guard:localization-boundary` → pass (`web-localization-guards.log`)
+  - `scripts/check_licensing.py` and `scripts/check_repository_artifact_hygiene.py` → pass
+- Post-integration verification result: `Passed`
+- No-rerun rationale: N/A
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes` (as of the 2026-10-08 fetch)
+- Blocker: none
+
+## User Verification
+
+- Initial explicit user completion/verification received: `No` (requested)
+- Initial verification / acceptance reference: pending
+- Renewed verification required after later re-integration: `No`
+- Renewed verification received: `Not needed`
+- Renewed verification / acceptance reference: N/A
+
+## Docs Sync Result
+
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/docs-sync-report.md`
+- Docs sync result: `Updated`
+- Docs updated:
+  - `autobyteus-server-ts/docs/modules/prompt_engineering.md` (merge resolution)
+  - `autobyteus-server-ts/docs/modules/agent_team_execution.md`
+  - `autobyteus-server-ts/docs/modules/projects.md`
+  - `autobyteus-web/components/projects/ProjectCard.vue` (comment)
+- No-impact rationale: N/A
+
+## Ticket State Transition
+
+- Ticket moved to `tickets/done/task-closed-status`: `No` (after verification)
+- Archived ticket path: pending
+
+## Version / Tag / Release Commit
+
+Pending the user's release decision.
+
+## Repository Finalization
+
+- Bootstrap context source: `investigation-notes.md` ("Finalization target remote / branch: `origin` / `personal`")
+- Ticket branch: `codex/task-closed-status`
+- Ticket branch commit result: local commits only (checkpoint, merge, delivery artifacts)
+- Ticket branch push result: pending verification
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: pending
+- Delivery-owned edits protected before re-integration: pending
+- Re-integration before final merge result: pending
+- Target branch update result: pending
+- Merge into target result: pending
+- Push target branch result: pending
+- Repository finalization status: `Blocked` (awaiting user verification; not a defect)
+- Blocker: user verification
+
+## Release / Publication / Deployment
+
+- Applicable: pending the user's decision
+- Method: `Release Script` (`scripts/desktop-release.sh`) if requested
+- Method reference / command: pending
+- Release/publication/deployment result: pending
+- Release notes handoff result: pending
+- Blocker: user decision
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status`
+- Worktree cleanup result: pending
+- Worktree prune result: pending
+- Local ticket branch cleanup result: pending
+- Remote branch cleanup result: pending
+- Blocker: none
+
+## Release Notes Summary
+
+- Release notes artifact created before verification / acceptance: `tickets/in-progress/task-closed-status/release-notes.md`
+- Archived release notes artifact used for release/publication: pending
+- Release notes status: `Updated`
+
+## Deployment Steps
+
+None until the release decision.
+
+## Environment Or Persisted-Data Transition Notes
+
+- Approved persisted-data decision: additive enum value in `task.json`. Existing Tasks load unchanged. The released migration reader is frozen at three statuses (`readReleasedTaskFileV1`).
+- Delivery action required: `None`
+- Result and evidence: the startup-migration E2E and CLS-API-001 stored-key-set checks pass on the integrated state.
+
+## Verification Checks
+
+See Initial Delivery Integration Refresh. The user verification steps are in `handoff-summary.md`.
+
+## Rollback Criteria
+
+If the desktop verification shows Closed Tasks rendered as Done, workers not stopping, or existing Tasks missing, do not finalize; route to `/software_engineering_team/implementation_engineer`. After finalization, rollback is a revert of the merge commit on `personal`. Tasks already stored as CLOSED would then be unreadable by the reverted app; they stay on disk and reappear on re-upgrade (approved non-goal).
+
+## Final Status
+
+- Explicit user testing/verification complete: `No`
+- Repository finalization complete: `No`
+- Applicable release/deployment/rollout complete or not required: `No`
+- Applicable safe cleanup complete or not required: `No`
+- Unresolved blocker: awaiting user verification and release decision
+- Successful terminal package eligible for return: `No`
+- Terminal package sent to `/solution_designer`: `No`
+- Terminal message/reference: N/A

@@ -274,12 +274,12 @@ match its folder. It puts its Task in the **damaged set**. The server starts
 normally and logs `TASK_AGENT_RESOURCES_UNAVAILABLE` once per damaged file.
 
 The rest of the app keeps working: Chat, the Projects screens, Task
-create/edit/delete, non-DONE status changes, and every Task whose file is
-readable.
+create/edit/delete, changes to an open status (TODO or IN_PROGRESS), and every
+Task whose file is readable.
 
 These operations fail with `TASK_AGENT_RESOURCES_UNAVAILABLE`, whose message
 names the file and says to fix or restore it and restart:
-- assign and DONE for the damaged Task;
+- assign, DONE and CLOSED for the damaged Task;
 - while the damaged set is non-empty, description-only `delegate_task` by a
   non-owned sender (rejected up front, before planning or resources);
 - while the damaged set is non-empty, waking, messaging or restoring a copy
