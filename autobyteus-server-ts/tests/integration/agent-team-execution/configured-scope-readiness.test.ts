@@ -20,6 +20,7 @@ import { TeamCommunicationV1Store } from '../../../src/services/team-communicati
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentNode, testTeamRunConfig } from '../../fixtures/current-team-run-fixtures.js';
+import { testActivationManager } from '../../fixtures/agent-run-preparation-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
 
 const dirs: string[] = [];
@@ -45,6 +46,7 @@ const fixture = () => {
     };
     const run = {
       runId, isActive: () => active.has(runId), getStatusSnapshot: () => ({ status: 'idle' }),
+      getInputStateSnapshot: () => null, bindExecutionAdmissionFence: vi.fn(),
       subscribeToEvents: (callback: (event: AgentRunEvent) => void) => { listener = callback; return () => { listener = undefined; }; },
       postUserMessage: async () => { acceptInput(); return { accepted: true }; },
       reserveUserMessage: async () => ({ reserved: true, reservation: {
@@ -62,7 +64,14 @@ const fixture = () => {
       }, abort: async () => ({ kind: 'aborted' }),
     });
   });
-  const dependencies = { agentRunManager: { prepareNewAgentRun } as never,
+  // The current activation contract (`beginActivation`) over this test's controlled candidates.
+  const stop = async (run: any) => { await run.terminate(); return { accepted: true }; };
+  const termination = (run: any) => ({ cancel: () => undefined, commit: () => ({ finish: () => stop(run) }) });
+  const agentRunManager = testActivationManager({ newPreparation: prepareNewAgentRun,
+    getActiveRun: (id: string) => active.get(id), releaseExactRun: stop,
+    tryPrepareAgentRunTerminationIfQuiescent: async (run: any) => termination(run),
+    prepareAgentRunTermination: async (run: any) => termination(run) });
+  const dependencies = { agentRunManager: agentRunManager as never,
     activityInspector: { inspect: () => ({ kind: 'none' }) } as never,
     memoryLocator: { getLocation: () => ({ memoryDir: dir }) } as never,
     workspaceManager: { ensureWorkspaceByRootPath: async () => ({ workspaceId: 'ws' }) } as never };
