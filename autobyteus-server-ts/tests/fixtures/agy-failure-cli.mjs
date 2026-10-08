@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createHash, randomUUID } from "node:crypto";
-import { appendFileSync, existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 
@@ -77,9 +77,29 @@ if (arg === "--version") {
       { requestInit: { headers: server.headers ?? {} } }));
     try { return await client.callTool({ name, arguments: args }); } finally { await client.close(); }
   };
+  // linked_skills: `BACKGROUND_STEP:{"seconds":N,"exitCode":C}` leaves one daemon run_command step open at turn end
+  // (a background task), then after N seconds writes the exit message AGY writes when such a command exits
+  // (`<HOME>/.gemini/antigravity-cli/brain/<conversation>/.system_generated/messages/<uuid>.json`). The exit is
+  // never written if this process stops first, as a real daemon dies with AGY.
+  const backgroundStepTurn = (spec) => {
+    const step_index = turns * 10 + 1;
+    const CommandLine = `sleep ${spec.seconds} # background step ${step_index}`;
+    emit({ event: "step_update", step_update: { conversation_id, step_index, step_type: "tool", state: "ACTIVE",
+      tool_name: "run_command", tool_info: { parameters: { CommandLine, IsDaemon: true } } } });
+    setTimeout(() => {
+      const dir = path.join(process.env.HOME ?? "", ".gemini", "antigravity-cli", "brain", conversation_id, ".system_generated", "messages");
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(path.join(dir, `${randomUUID()}.json`), JSON.stringify({ sourceMetadata: { tool: { stepIndex: step_index } },
+        content: `Background command '${CommandLine}' finished with result: Command exited with code ${spec.exitCode ?? 0}\nLog: (fixture)` }));
+    }, Number(spec.seconds) * 1_000);
+    reply(turns * 10 + 2, "STARTED");
+    emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "STARTED" } });
+  };
   const linkedSkillsTurn = async (line) => {
     let content = "";
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
+    const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
+    if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
     const requestedTool = /CALL_TOOL:(\{.*\})/s.exec(content);
     const delegation = /DELEGATE:(\{.*\})/s.exec(content);
     const call = requestedTool ? JSON.parse(requestedTool[1]) : null;

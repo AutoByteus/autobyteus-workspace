@@ -1,0 +1,10 @@
+task-reactivation-root-visibility EXIT=0
+      Tests  4 passed | 1 skipped (5)
+task-closure-root-visibility EXIT=0
+      Tests  3 passed (3)
+ad-hoc-task-delegation EXIT=0
+      Tests  3 passed (3)
+project-change-feed EXIT=0
+      Tests  7 passed (7)
+project-task-context-files-delegation EXIT=0
+      Tests  1 passed (1)

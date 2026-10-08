@@ -1,0 +1,95 @@
+{
+  "processTimes": {
+    "til_manager_c634b1_410b87420d0a445c9a31bc3e46ccd08b": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457952503
+    },
+    "til_manager_c634b1_2a3338eae7d64bf9a9c401d62a83b088": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457952503
+    },
+    "til_manager_c634b1_e1c46dfc9b38495691a7248410f8a876": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457952503
+    },
+    "til_worker_c634b1_2947372c65f24c28825a4c903fd4bb85": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_9286ae1577f6465eb8f22ea1cd8dcd0a": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_2b80be69f53149cca88bc31b9d4a7fe7": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_4fa5fb22a7534472b07b75d0c9b0c4a7": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_a72ad19fea544b18bf30d5f5e1c31423": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_2b48a79f0b094d27a0e00b5f2b96862c": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_9d3378cc734642739fa36a2c58f478f2": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_097aad17a4d544048d058ae9ad9a5839": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_0675ba0ec97c4399bd51572a74f36338": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457928390
+    },
+    "til_worker_c634b1_e312425ffb034f659575dc1a831bad3a": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_6ba0275b8c1c49b6b58426eadfd2c74b": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_df83a5268cae4ef9a67190a7e89d26b2": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_28352ab55ff043d9bf36e4ca128be643": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_7ea23f80fcf74a558cd7981e42a713db": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_9b339d79be1c4687b0ea93e1f4002798": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_4e70d213157e469990c832f074a42740": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_f89bedc6fc63422082c772bf96dc876a": {
+      "firstSeen": 1791457878200,
+      "lastSeen": 1791457930391
+    },
+    "til_worker_c634b1_dc94ea9b03c14e5aa38af43089fcb2dd": {
+      "firstSeen": 1791457896364,
+      "lastSeen": 1791457948501
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "errors": []
+  }
+}
