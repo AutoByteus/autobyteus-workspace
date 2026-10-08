@@ -8,6 +8,7 @@
 | SR-002 | Mixed | User approval + delegated decisions; architecture evidence | N/A | Ready for Approval | Approved | DEC-001–008, REQ-007 wording | Requirements approved; decisions resolved; REQ-007 Dockerfile list corrected (evidence-only) |
 | SR-003 | Mixed | User: contact email; "lets first work on the license file itself. because its urgent." | N/A | Approved | Approved; Slice 1 design Ready | DEC-004; slice split REQ-001–006, 009, 010 (manual), 011 → Slice 1; REQ-007, 008, 010 (automated) → Slice 2 | Slice 1 design complete, Small/Low |
 | SR-004 | Requirements | User delegation for remaining open choices | N/A | Approved | Approved | DEC-003 confirmed; REQ-008 enforcement form = manual CLA (Slice 2) | Delegated decisions recorded |
+| SR-005 | Requirements | Delivery DR-001 Blocked, Requirement Gap (release cutoff) | DR-001 | Approved | Ready for Approval | REQ-005, SCN-001 alternate, AC-004 | Proposed version-independent earlier-release wording; awaiting user approval |
 
 ## Revision Entries
 
@@ -72,3 +73,15 @@
 - Canonical sections changed: requirements REQ-008, AC-007, DEC-003, DEC-007
 - Slice 1 impact: None (Slice 1 already handed to Implementation Engineer; holder name and contact in its design are now user-confirmed)
 - Next action: Slice 2 design after Slice 1 completes
+
+### SR-005 — Earlier-release cutoff no longer v1.4.97
+
+- Phase and classification: Requirements, `Requirement Gap`
+- Triggering report: Delivery Engineer DR-001 (`delivery-revision-record.md`, `release-deployment-report.md`), 2026-10-08. `origin/personal` gained c413909e5 "bump workspace release version to 1.4.98-beta.1". Tag `v1.4.98-beta.1` was pushed 06:50Z, and its Desktop, Server Docker, Android and iOS release workflows were `in_progress` (verified by `gh run list`). That release is published from an Apache-2.0 tree, so "up to and including v1.4.97" becomes false.
+- Prior status: Requirements `Approved`; Slice 1 implemented, validated (API-REV-001 Pass) and integrated (e08be28fb) but not merged
+- Current status: Requirements `Ready for Approval` for the REQ-005 delta only; Slice 1 design `Needs Revision` (two sentences)
+- Proposed delta: replace the fixed cutoff with a rule. LICENSING.md "Earlier releases" says every release published before the switch to AGPL-3.0 remains under Apache-2.0, and each release's own LICENSE file shows which licence applies. The README sentence uses the same rule. Recommended over moving the cutoff to v1.4.98-beta.1 (option A), because further releases may ship before merge. Cancelling or deleting the beta (option C) is not recommended: it gains nothing, since copies already obtained stay Apache, and it disrupts the release.
+- Operational recommendation to the user: merge Slice 1 promptly and avoid new release tags from `origin/personal` until it lands. Every release cut before the merge is published under Apache-2.0.
+- Intended behavior changed: Wording of the approved earlier-release statement (preserved outcome unchanged: earlier releases stay Apache-2.0)
+- Approval impact: renewed user approval required before revision
+- Next action: Obtain user approval, then revise design-spec and route to Implementation Engineer
