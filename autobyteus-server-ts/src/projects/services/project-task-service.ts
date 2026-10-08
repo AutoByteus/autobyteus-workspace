@@ -7,7 +7,7 @@ import type {
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
-  CreateProjectTaskCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView,
+  CreateProjectTaskCommand, CreateTaskWithLocalContextFilesCommand, DeleteProjectTaskCommand, ProjectTask, ProjectTaskStatus, ProjectTaskView,
   TaskAcknowledgementView, TaskLocation, TaskRootStatus, TaskRootView, TaskWithoutProjectView, UpdateProjectTaskCommand, UpdateTaskByIdCommand,
 } from "../domain/models.js";
 import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js";
@@ -54,6 +54,9 @@ const compareTasks = (a: ProjectTask, b: ProjectTask): number => b.updatedAt.loc
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
   try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
 };
+const noContext = (): PreparedTaskContext => ({ files: [], consumed: [] });
+/** How one update changes saved context: removals (UI only), whether it rewrites the list, and its context step. */
+type ContextUpdate = { removals: string[]; writesContextList: boolean; prepare: () => Promise<PreparedTaskContext> };
 
 /**
  * The Task subject boundary: Project Task metadata and context (released semantics over the
@@ -92,21 +95,16 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   async currentAssignments(taskIds: readonly string[]): Promise<Map<string, TaskAssignment[] | "unavailable">> {
     return new Map(await Promise.all(taskIds.map(async (taskId) => [taskId, await this.resources.currentAssignments(taskId)] as const)));
   }
+  /** UI/GraphQL create: context comes from an upload draft. */
   async createTask(command: CreateProjectTaskCommand): Promise<ProjectTaskView> {
-    const description = normalizeDescription(command.description);
-    const taskId = this.deps.createId?.() ?? `project_task_${randomUUID()}`;
-    const timestamp = this.nowIso();
-    await this.assertOwner(command.projectId);
-    const prepared = command.contextDraft ? await this.context.prepare(command.projectId, taskId,
-      command.contextDraft.draftId, command.contextDraft.storedFilenames, false) : { files: [], consumed: [] };
-    // On any unproven failed outcome retain prepared bytes and draft, never infer rollback from catch.
-    const task = await this.store.createTask(command.projectId, taskId, async () => {
-      await this.validatePrepared(command.projectId, taskId, prepared);
-      return { taskId, description, status: "TODO", createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
-    });
-    await this.consume(command.projectId, prepared);
-    this.changes.taskChanged({ projectId: command.projectId, taskId });
-    return this.toView(command.projectId, task);
+    const draft = command.contextDraft;
+    return this.create(command.projectId, command.description, (taskId) => draft
+      ? this.context.prepare(command.projectId, taskId, draft.draftId, draft.storedFilenames, false) : Promise.resolve(noContext()));
+  }
+  /** Agent-tool create: context is copied from node-local files (may be none). Never reachable from GraphQL. */
+  async createTaskWithLocalContextFiles(command: CreateTaskWithLocalContextFilesCommand): Promise<ProjectTaskView> {
+    return this.create(command.projectId, command.description,
+      (taskId) => this.context.importLocalFiles(command.projectId, taskId, command.localContextFiles));
   }
   async updateTask(command: UpdateProjectTaskCommand): Promise<ProjectTaskView> {
     const hasDescription = Object.hasOwn(command, "description");
@@ -118,42 +116,32 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     const additions = changes?.addStoredFilenames ?? [];
     const removals = changes?.removeStoredFilenames ?? [];
     if (new Set(removals).size !== removals.length) throw new ProjectError("TASK_CONTEXT_INVALID", "Context removals must be unique.");
-    const existing = await this.assertOwner(command.projectId, command.taskId);
-    // Input errors are rejected before anything is written (DONE would otherwise already have closed its runs).
-    if (removals.some((name) => !(existing?.contextFiles ?? []).some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
-    const prepared = await this.prepareChanges(command.projectId, command.taskId, changes?.draftId, additions, Boolean(changes));
-    let removed: ProjectTaskContextFile[] = [];
-    const writeMetadata = () => this.store.updateTask(command.projectId, command.taskId, async (current) => {
-      const files = current.contextFiles ?? [];
-      if (removals.some((name) => !files.some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
-      await this.validatePrepared(command.projectId, command.taskId, prepared);
-      removed = files.filter((f) => removals.includes(f.storedFilename));
-      const meaningful = (description !== undefined && current.description !== description)
-        || (status !== undefined && current.status !== status) || additions.length > 0 || removals.length > 0;
-      return meaningful ? { ...current, ...(hasDescription ? { description } : {}), ...(hasStatus ? { status } : {}),
-        ...(changes ? { contextFiles: [...files.filter((f) => !removals.includes(f.storedFilename)), ...prepared.files] } : {}), updatedAt: this.nowIso() } as ProjectTask : current;
+    const { task } = await this.update(command.projectId, command.taskId, { description, status }, {
+      removals, writesContextList: Boolean(changes),
+      prepare: () => this.prepareChanges(command.projectId, command.taskId, changes?.draftId, additions, Boolean(changes)),
     });
-    const updated = status === "DONE"
-      ? await this.closeAndWrite({ projectId: command.projectId, taskId: command.taskId }, writeMetadata)
-      : await writeMetadata();
-    this.changes.taskChanged({ projectId: command.projectId, taskId: command.taskId });
-    await this.consume(command.projectId, prepared);
-    if (removed.length) await cleanup(() => this.context.cleanupRemoved(command.projectId, command.taskId, removed));
-    return this.toView(command.projectId, updated);
+    return this.toView(command.projectId, task);
   }
   /**
    * Patches any Task by its unique id: an ad-hoc Task (direct path read, no Projects gate) or else
-   * a Project Task (found across Projects). Description and status only; DONE closes its agent runs.
+   * a Project Task (found across Projects). Description and status; for Project Tasks also
+   * `localContextFiles`, copied in and appended (never removed). DONE closes its agent runs.
    */
   async updateTaskById(command: UpdateTaskByIdCommand): Promise<TaskAcknowledgementView> {
     const hasDescription = Object.hasOwn(command, "description");
     const hasStatus = Object.hasOwn(command, "status");
-    if (!hasDescription && !hasStatus) throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description and/or status to update a Task.");
+    const localContextFiles = command.localContextFiles ?? [];
+    if (!hasDescription && !hasStatus && !localContextFiles.length) {
+      throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description, status and/or context files to update a Task.");
+    }
     const description = hasDescription ? normalizeDescription(command.description) : undefined;
     const status = hasStatus ? validateTaskStatus(command.status) : undefined;
     if (typeof command.taskId !== "string" || !command.taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");
     const taskId = command.taskId;
     if (await this.adHocTasks.read(taskId)) {
+      if (localContextFiles.length) {
+        throw new ProjectError("TASK_CONTEXT_INVALID", "Context files can be attached only to Project Tasks; this Task has no Project.");
+      }
       const write = () => this.adHocTasks.update(taskId, (current): AdHocTask => {
         const meaningful = (description !== undefined && current.description !== description) || (status !== undefined && current.status !== status);
         return meaningful ? { ...current, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}), updatedAt: this.nowIso() } : current;
@@ -163,8 +151,11 @@ export class ProjectTaskService implements TaskAgentResourcePort {
       return { projectId: null, taskId, status: updated.status };
     }
     const { projectId } = await this.uniqueTask(taskId);
-    const updated = await this.updateTask({ projectId, taskId, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}) });
-    return { projectId, taskId, status: updated.status };
+    const { task, attached } = await this.update(projectId, taskId, { description, status }, {
+      removals: [], writesContextList: localContextFiles.length > 0,
+      prepare: () => this.context.importLocalFiles(projectId, taskId, localContextFiles),
+    });
+    return { projectId, taskId, status: task.status, ...(attached.length ? { attachedContextFiles: attached } : {}) };
   }
   /**
    * Permanent run delete: removes the ad-hoc Tasks whose agent runs that root hosted (from the view,
@@ -342,6 +333,52 @@ export class ProjectTaskService implements TaskAgentResourcePort {
         "This Task is DONE. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.");
     }
   }
+  /** Shared create body: input and owner checks, then the context step, then the in-lock commit that publishes it. */
+  private async create(projectId: string, rawDescription: string, prepareContext: (taskId: string) => Promise<PreparedTaskContext>): Promise<ProjectTaskView> {
+    const description = normalizeDescription(rawDescription);
+    const taskId = this.deps.createId?.() ?? `project_task_${randomUUID()}`;
+    const timestamp = this.nowIso();
+    await this.assertOwner(projectId);
+    const prepared = await prepareContext(taskId);
+    // On any unproven failed outcome retain prepared bytes and draft, never infer rollback from catch.
+    const task = await this.store.createTask(projectId, taskId, async () => {
+      await this.validatePrepared(projectId, taskId, prepared);
+      return { taskId, description, status: "TODO", createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
+    });
+    await this.consume(projectId, prepared);
+    this.changes.taskChanged({ projectId, taskId });
+    return this.toView(projectId, task);
+  }
+  /**
+   * Shared Project Task update body over a validated patch. The context step (draft prepare or local
+   * import) runs after every input check and before any write, so a failure changes nothing and DONE
+   * never closes runs first. Prepared files are appended to the current list under the Task lock.
+   */
+  private async update(projectId: string, taskId: string, patch: { description?: string; status?: ProjectTaskStatus }, context: ContextUpdate)
+    : Promise<{ task: ProjectTask; attached: ProjectTaskContextFile[] }> {
+    const { description, status } = patch;
+    const { removals } = context;
+    const existing = await this.assertOwner(projectId, taskId);
+    // Input errors are rejected before anything is written (DONE would otherwise already have closed its runs).
+    if (removals.some((name) => !(existing?.contextFiles ?? []).some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
+    const prepared = await context.prepare();
+    let removed: ProjectTaskContextFile[] = [];
+    const writeMetadata = () => this.store.updateTask(projectId, taskId, async (current) => {
+      const files = current.contextFiles ?? [];
+      if (removals.some((name) => !files.some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
+      await this.validatePrepared(projectId, taskId, prepared);
+      removed = files.filter((f) => removals.includes(f.storedFilename));
+      const meaningful = (description !== undefined && current.description !== description)
+        || (status !== undefined && current.status !== status) || prepared.files.length > 0 || removals.length > 0;
+      return meaningful ? { ...current, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}),
+        ...(context.writesContextList ? { contextFiles: [...files.filter((f) => !removals.includes(f.storedFilename)), ...prepared.files] } : {}), updatedAt: this.nowIso() } as ProjectTask : current;
+    });
+    const updated = status === "DONE" ? await this.closeAndWrite({ projectId, taskId }, writeMetadata) : await writeMetadata();
+    this.changes.taskChanged({ projectId, taskId });
+    await this.consume(projectId, prepared);
+    if (removed.length) await cleanup(() => this.context.cleanupRemoved(projectId, taskId, removed));
+    return { task: updated, attached: prepared.files };
+  }
   private async uniqueTask(taskId: string) {
     if (typeof taskId !== "string" || !taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");
     const matches = await this.store.findTask(taskId);
@@ -362,7 +399,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     await this.assertOwner(projectId, manifest.taskId);
   }
   private async prepareChanges(projectId: string, taskId: string, draftId: string | undefined, names: string[], hasChanges: boolean): Promise<PreparedTaskContext> {
-    if (!hasChanges) return { files: [], consumed: [] };
+    if (!hasChanges) return noContext();
     await this.reclaim(projectId, taskId);
     return this.context.prepare(projectId, taskId, draftId, names, true);
   }

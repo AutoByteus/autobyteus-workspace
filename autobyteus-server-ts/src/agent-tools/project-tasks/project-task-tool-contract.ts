@@ -11,8 +11,9 @@ export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string>
   create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
   list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns descriptions, saved context-file references and each Task's current assignments (the worker run to follow up with, whether it is an Agent or a Team, who assigned it, and whether the work was accepted); accepted work is not necessarily finished. A Task whose assignments can't be read is marked assignments unavailable.",
-  create_or_update_task: "Create a Project Task, or patch any Task by its ID. Create: supply project_id and a required description (omit task_id and status); the new Task is TODO. Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE status, and never project_id; task_id may name a Project Task or a Task that delegate_task created (it has no Project). DONE stops the Task's delegated copies and removes them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then (as the run that assigned it) message the run ID delegate_task returned: that reactivates the copy with its conversation. A status change alone starts nothing. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, not a work-completion assessment. Does not delegate work.",
+  create_or_update_task: "Create a Project Task, or patch any Task by its ID. Create: supply project_id and a required description (omit task_id and status); the new Task is TODO. Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE status, and never project_id; task_id may name a Project Task or a Task that delegate_task created (it has no Project). DONE stops the Task's delegated copies and removes them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then (as the run that assigned it) message the run ID delegate_task returned: that reactivates the copy with its conversation. A status change alone starts nothing. Optional context_files (create or patch): absolute local file paths copied into a Project Task as context files; patch appends and never removes. Same file types and 25 MiB limit as the app; not for a Task with no Project. Any invalid file fails the whole call with no change. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, plus attachedContextFiles [{storedFilename, displayName}] when the call attached files; not a work-completion assessment. Does not delegate work.",
 };
+const CONTEXT_FILES_DESCRIPTION = "Absolute local file paths on this node to copy into the Project Task's saved context (appended on patch; never removes). Same file types and 25 MiB limit as the app.";
 export function buildProjectTaskToolSchema(name: ProjectTaskToolName): ParameterSchema {
   const p = (name: string, description: string, required = false, enumValues?: string[]) => new ParameterDefinition({
     name, description, required, type: enumValues ? ParameterType.ENUM : ParameterType.STRING, ...(enumValues ? { enumValues } : {}),
@@ -35,6 +36,9 @@ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): Parameter
     p("task_id", "Known Task identity (with or without a Project) to patch; omit to create."),
     p("description", "Trimmed non-empty Task content; required for create."),
     p("status", "Explicit business status patch; forbidden during create.", false, statuses),
+    new ParameterDefinition({
+      name: "context_files", type: ParameterType.ARRAY, description: CONTEXT_FILES_DESCRIPTION, required: false, arrayItemSchema: { type: "string" },
+    }),
   ]);
   return new ParameterSchema(name === "list_projects" ? [] : [
     p("project_id", "Explicit Project identity on the current node.", true),
@@ -92,8 +96,9 @@ function parseProjectMutation(raw: unknown): Record<string, unknown> {
 
 /**
  * Presence matters: null/blank task_id is never a creation request. No coercion or hidden keys.
- * `create_or_update_task` has two strict modes: create `{project_id, description}` and patch
- * `{task_id, status?, description?}` (a Task ID is unique, so patch never takes project_id).
+ * `create_or_update_task` has two strict modes: create `{project_id, description, context_files?}` and
+ * patch `{task_id, status?, description?, context_files?}` (a Task ID is unique, so patch never takes
+ * project_id). context_files is shape-checked here only; the Task service owns file rules.
  */
 export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknown): Record<string, unknown> {
   if (name === "create_or_update_project") return parseProjectMutation(raw);
@@ -101,7 +106,7 @@ export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknow
   const input = raw as Record<string, unknown>;
   const hasTask = name === "create_or_update_task" && Object.hasOwn(input, "task_id");
   const allowed = name === "list_projects" ? [] : name === "list_project_tasks" ? ["project_id", "status"]
-    : hasTask ? ["task_id", "description", "status"] : ["project_id", "description", "status"];
+    : hasTask ? ["task_id", "description", "status", "context_files"] : ["project_id", "description", "status", "context_files"];
   if (Object.keys(input).some((key) => !allowed.includes(key))) invalid("Unsupported tool argument.");
   if (name === "list_projects") return {};
   const result: Record<string, unknown> = hasTask ? {task_id: id(input, "task_id")} : {project_id: id(input, "project_id")};
@@ -117,9 +122,20 @@ export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknow
     if (!(input.description as string).trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
     result.description = (input.description as string).trim();
   }
+  if (Object.hasOwn(input, "context_files")) {
+    if (!Array.isArray(input.context_files)) invalid("context_files must be an array of absolute file paths.");
+    // Array.from visits holes too; sparse entries must not bypass validation.
+    result.context_files = Array.from(input.context_files as unknown[], (entry) => {
+      if (typeof entry !== "string" || !entry.trim()) invalid("Each context_files entry must be a non-empty path string.");
+      return (entry as string).trim();
+    });
+  }
+  const hasContextFiles = ((result.context_files as string[] | undefined) ?? []).length > 0;
   if (!hasTask) {
     if (hasStatus) throw new ProjectError("TASK_CREATE_STATUS_UNSUPPORTED", "Omit status when creating a TODO Task.");
     if (!hasDescription) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
-  } else if (!hasStatus && !hasDescription) throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description and/or status to update a Task.");
+  } else if (!hasStatus && !hasDescription && !hasContextFiles) {
+    throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description, status and/or context_files to update a Task.");
+  }
   return result;
 }

@@ -293,7 +293,7 @@ Tools MCP share the parser, manifest, services and error projection.
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS or DONE | `{projectId, tasks: [...]}` |
 | `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
-| `create_or_update_task` | Two strict modes. Create: `{project_id, description}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
+| `create_or_update_task` | Two strict modes. Create: `{project_id, description, context_files?}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?, context_files?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
 
 `create_or_update_project` preserves omitted fields on patch. A blank Project
 description clears it; unknown IDs never create. Names are trimmed, nonblank
@@ -328,13 +328,42 @@ in the app's run views. Acceptance is not completion. The purpose is continuity
 across chats and Managers (follow-up via `send_message_to`) and avoiding
 duplicate work.
 
-`create_or_update_task` returns only `{task: {projectId, taskId, status}}`, with
-`projectId: null` for a Task with no Project. It is a recorded-business
+`create_or_update_task` returns `{task: {projectId, taskId, status}}`, with
+`projectId: null` for a Task with no Project. When the call attached context
+files, `task` also has `attachedContextFiles: [{storedFilename, displayName}]`:
+exactly the files this call attached, in argument order. Calls that attach no
+files return the three fields only. It is a recorded-business
 acknowledgement, not an assessment or proof of a stop. Update resolves the Task
 by ID through `ProjectTaskService.updateTaskById`: first a direct read of
 `ad-hoc-tasks/<taskId>/task.json` (no scan, no Projects gate), otherwise the
-Project Task found across Projects. The Projects page's
-`updateTask({projectId, taskId, ...})` stays the Project-only boundary.
+Project Task found across Projects. Create goes through
+`ProjectTaskService.createTaskWithLocalContextFiles`. The Projects page's
+`createTask` / `updateTask({projectId, taskId, ...})` stay the draft-based,
+Project-only boundary; local paths never travel on those GraphQL commands.
+
+`context_files` attaches context files to a Project Task (see
+[Task Context Bytes](#task-context-bytes)):
+- It is an optional array of absolute local file paths on the current node,
+  accepted in both modes. Each file is copied into the Task's saved context at
+  call time, with its file name as the display name. The Task never refers to
+  the source again, and the source is never changed or deleted.
+- It is **additive**: a patch appends the copies to the Task's existing files,
+  which are always kept. A patch may consist only of `context_files`. Agents
+  cannot remove or replace files; users do that in the app. Attaching the same
+  source again saves another copy.
+- Each path must be normalized and absolute, and name an existing, readable
+  regular file (symlinks to files are followed), as for
+  `delegate_task.reference_files`. Paths within one call must be unique.
+- The app's upload policy applies: the type, taken from the file extension,
+  must be on the app's allowlist (so `.ts`, `.js`, `.yaml`, `.sh`, `.py` and
+  files without an extension are rejected), and each file is at most 25 MiB.
+- All or nothing: if any entry is invalid, the call fails, naming the path, and
+  changes nothing (no Task created, no text/status change, no DONE closure, no
+  file added).
+- A Task with no Project cannot have context files; `context_files` on one
+  fails with `TASK_CONTEXT_INVALID`.
+- A later `delegate_task({task_id})` hands the saved copies to the worker as
+  reference files, like files attached in the app.
 
 Each listed context file exposes its saved metadata and a relative HTTP
 locator. `localPath` is included only when the Task authority validates the
@@ -349,9 +378,16 @@ Task input validation (Project rules are above):
   `project_id` fails the same way. Unknown Task IDs fail with `TASK_NOT_FOUND`.
 - An empty patch fails with `TASK_PATCH_REQUIRED`, an invalid status with
   `TASK_STATUS_INVALID`, and any status supplied on creation with
-  `TASK_CREATE_STATUS_UNSUPPORTED`.
-- There is no batch update, workspace discovery/registration, context upload/edit/delete tool,
-  or implicit Project binding.
+  `TASK_CREATE_STATUS_UNSUPPORTED`. A patch whose only change is
+  `context_files: []` is empty.
+- `context_files` that is not an array, or has a non-string or blank entry,
+  fails with `PROJECT_TOOL_ARGUMENT_INVALID`. A path that is not normalized and
+  absolute, is listed twice, has a type the app does not accept or is larger
+  than 25 MiB fails with `TASK_CONTEXT_INVALID`. A missing, non-regular or
+  unreadable file, or one that cannot be copied, fails with
+  `TASK_CONTEXT_FILE_UNAVAILABLE`.
+- There is no batch update, workspace discovery/registration, context
+  removal/edit tool, or implicit Project binding.
 
 Exposure:
 - The tool names are opt-in in both native and session MCP exposure, except
@@ -672,6 +708,16 @@ A successful Task metadata Save is the only publication boundary.
   status-only updates preserve the files.
 - New immutable copies are prepared and validated before the metadata commit.
   Old saved bytes are not deleted before a successful commit.
+
+Agent-attached files (`create_or_update_task` `context_files`) use the same
+publication boundary without a draft. `ProjectTaskContextStore.importLocalFiles`
+first validates every source (path, regular readable file, policy type by
+extension through `contextFileMimeTypeForPath`, size), writing nothing on
+failure. It then copies each source exclusively into the Task's `context/`
+directory under a generated name and records the copied size. If a copy fails,
+it removes the copies it made. Its result enters the same in-lock validation and
+metadata commit as a draft's copies, appended to the current list. For DONE the
+import runs before the Task's agent runs are closed.
 
 Unproven outcomes keep the prepared copies and drafts rather than assuming an
 exception means rollback. After proven success, consumed drafts and removed

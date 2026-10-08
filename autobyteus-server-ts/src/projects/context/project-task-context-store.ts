@@ -4,14 +4,31 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import { withFilePathLock } from "../../persistence/file/store-utils.js";
-import { buildStoredFilename, CONTEXT_FILE_DRAFT_TTL_MS } from "../../context-files/domain/context-file-upload-policy.js";
+import {
+  buildStoredFilename, CONTEXT_FILE_DRAFT_TTL_MS, CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath,
+} from "../../context-files/domain/context-file-upload-policy.js";
 import { writeContextFileUpload } from "../../context-files/services/context-file-upload-writer.js";
 import type { ProjectTaskContextFile, ProjectTaskDraftManifest } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { ProjectsLayout } from "../stores/projects-layout.js";
 
 export interface PreparedTaskContext { files: ProjectTaskContextFile[]; draftId?: string; consumed: string[] }
+interface LocalContextSource { sourcePath: string; displayName: string; mimeType: string }
 const missing = (): never => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Task context was not found."); };
+const invalidSource = (sourcePath: string, reason: string) => new ProjectError("TASK_CONTEXT_INVALID", `Context file '${sourcePath}' ${reason}`);
+const unavailableSource = (sourcePath: string, reason: string) => new ProjectError("TASK_CONTEXT_FILE_UNAVAILABLE", `Context file '${sourcePath}' ${reason}`);
+const tooLarge = (sourcePath: string) => invalidSource(sourcePath, `is larger than the ${CONTEXT_FILE_MAX_BYTES / (1024 * 1024)} MiB limit.`);
+/** Same rule as delegate_task reference files: a normalized absolute path naming an existing, readable regular file. */
+const localContextSource = async (sourcePath: string): Promise<LocalContextSource> => {
+  if (!path.isAbsolute(sourcePath) || path.normalize(sourcePath) !== sourcePath) throw invalidSource(sourcePath, "must be a normalized absolute path.");
+  const stat = await fs.stat(sourcePath).catch(() => { throw unavailableSource(sourcePath, "does not exist or cannot be accessed."); });
+  if (!stat.isFile()) throw unavailableSource(sourcePath, "is not a regular file.");
+  await fs.access(sourcePath, constants.R_OK).catch(() => { throw unavailableSource(sourcePath, "is not readable."); });
+  const mimeType = contextFileMimeTypeForPath(sourcePath);
+  if (!mimeType) throw invalidSource(sourcePath, "has a file type the app does not accept as context.");
+  if (stat.size > CONTEXT_FILE_MAX_BYTES) throw tooLarge(sourcePath);
+  return { sourcePath, displayName: path.basename(sourcePath), mimeType };
+};
 export class ProjectTaskContextStore {
   constructor(readonly layout = new ProjectsLayout()) {}
   async begin(projectId: string, taskId?: string): Promise<ProjectTaskDraftManifest> {
@@ -94,6 +111,47 @@ export class ProjectTaskContextStore {
       }
       return { files, draftId, consumed: filenames };
     });
+  }
+  /**
+   * Copies agent-named node-local files straight into the Task's context (no draft). Every source is
+   * validated before any byte is written; if a copy then fails, this call's copies are removed.
+   * Sources are only read, never changed. The result is published by the Task metadata save.
+   */
+  async importLocalFiles(projectId: string, taskId: string, sourcePaths: readonly string[]): Promise<PreparedTaskContext> {
+    if (!sourcePaths.length) return { files: [], consumed: [] };
+    const duplicate = sourcePaths.find((p, i) => sourcePaths.indexOf(p) !== i);
+    if (duplicate !== undefined) throw invalidSource(duplicate, "is listed more than once.");
+    const sources: LocalContextSource[] = [];
+    for (const sourcePath of sourcePaths) sources.push(await localContextSource(sourcePath));
+    const target = this.layout.contextDir(projectId, taskId);
+    await this.layout.directory(target, true);
+    const files: ProjectTaskContextFile[] = [], written: string[] = [];
+    let current = sources[0]!.sourcePath;
+    try {
+      for (const source of sources) {
+        current = source.sourcePath;
+        const storedFilename = buildStoredFilename(source.displayName, source.mimeType);
+        const targetPath = this.layout.file(target, storedFilename);
+        // Immutable exclusive copies are finished before metadata can reference them. A failed copy
+        // may leave a partial target; a name collision (EEXIST) is someone else's file.
+        await fs.copyFile(source.sourcePath, targetPath, constants.COPYFILE_EXCL).catch(async (e: NodeJS.ErrnoException) => {
+          if (e.code !== "EEXIST") await fs.unlink(targetPath).catch(() => undefined);
+          throw e;
+        });
+        written.push(targetPath);
+        await this.layout.regular(targetPath);
+        // The copied size is authoritative: a source may change between validation and copy.
+        const { size } = await fs.stat(targetPath);
+        if (size > CONTEXT_FILE_MAX_BYTES) throw tooLarge(source.sourcePath);
+        await fs.utimes(targetPath, new Date(), new Date());
+        files.push({ storedFilename, displayName: source.displayName, mimeType: source.mimeType, sizeBytes: size });
+      }
+    } catch (error) {
+      for (const filePath of written) await fs.unlink(filePath).catch(() => undefined);
+      if (error instanceof ProjectError) throw error;
+      throw unavailableSource(current, "could not be copied.");
+    }
+    return { files, consumed: [] };
   }
   async savedFile(projectId: string, taskId: string, file: ProjectTaskContextFile): Promise<string> {
     const filePath = this.layout.file(this.layout.contextDir(projectId, taskId), file.storedFilename);
