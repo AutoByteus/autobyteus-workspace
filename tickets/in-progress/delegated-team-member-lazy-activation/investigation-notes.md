@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal`
 - Bootstrap result: Pass — dedicated worktree created from freshly fetched `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md` (2026-10-08). Architecture gate: `references/architecture-design.md`, `design-principles.md`, repo `DESIGN.md` (2026-10-08)
 - Investigation status: Complete (requirements + architecture). Base refreshed to `origin/personal` `ace86bf1f` before architecture investigation.
 
@@ -160,6 +160,11 @@ N/A — not requested.
 | AINV-006 | `ConfiguredAgentActivationPlanner.resolvePlan` | restore + external + no conversation + prior binding → `replace_external_without_conversation` | Legacy eagerly bound copies need no migration |
 | AINV-007 | `FlatTeamAgentExecutionHandle.tryPrepareTerminationIfQuiescent` / `prepareTermination` | No handle → completed termination | Idle shutdown/DONE tolerate never-started members |
 | AINV-008 | `grep -rln "prepareConfiguredAgents\|beginRootTaskTeam\|beginTaskTeam" tests` | 10 test/fixture files touch the eager path or assert the option | Listed in design Guidance for update |
+| AINV-009 | `root-communication-engine.ts:54-57`; code review CRR-001 path trace | Teammate `send_message_to` reaches members via `reserveRecipientInput → … → ConfiguredAgentExecutionHandle.reserveInput`, not `postMessage`; engine maps `reserved:false` but not thrown errors | DS-002 corrected; failure must be a typed result on the reserve path |
+| AINV-010 | `grep -rn "readiness_failure" autobyteus-server-ts/src autobyteus-web` (2026-10-08, HEAD `d30c11204`) | Only producer (`configured-agent-execution-handle.ts:331`) and type (`collaboration-agent-execution-event.ts:30`); tests reference it | **Superseded by AINV-013 (wrong):** a string grep missed the implicit fall-through consumer |
+| AINV-011 | `grep -rn "COLLABORATION_AGENT_..." src`; `agent-collaboration-stream-handler.ts:157-164`; `agent-team-stream-handler.ts:215` | No production code branches on activation codes; stream handlers forward code+message for display; team handler branches only on `TARGET`/`RUN_NOT_FOUND` | Safe to unify the code as `AGENT_RUN_ACTIVATION_FAILED` with cause in message |
+| AINV-012 | `configured-agent-execution-handle.ts` `ensureReady` (first line runs `assertInputAllowed`) ; `root-task-agent-resource-scope.ts:59-69`; engine `assertDeliveryAllowed` | Input-fence rejection surfaces through `ensureReady`; upstream checks normally reject closed members first | Closed-input branch in DS-005 so a fence rejection is not reported as activation failure |
+| AINV-013 | Implementation DI-001 (`implementation-design-impact-ir-003.md`); verified by Solution Designer: `collaboration-agent-presentation-event-adapter.ts:86-97` (final fall-through), used by `standalone-agent-run-root.ts`, `agent-org-run.ts`, `team-flat-execution-callbacks.ts:41-70`; web `agentStreamMessageProjector.ts:198`, `agentStatusHandler.ts:122-161` | `readiness_failure` becomes an `ERROR` presentation event → a visible error card in the member's conversation, in every root, including UI-started Teams/Orgs | Keep the event as the conversation-card channel (SR-004); make the adapter branch explicit; method lesson: check event consumers by type/exhaustiveness, not by string grep |
 
 ## Requirement Implications
 

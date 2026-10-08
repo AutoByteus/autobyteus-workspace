@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004` (SR-003 design revision for CRR-002 / CR-FO-003, corrected by SR-004 for implementation DI-001; requirements basis unchanged)
 - Approved requirements baseline: `requirements-doc.md` SR-001 baseline (REQ-001..007, AC-001..007), with DEC-001 = **A** (not-started members use the existing gray "Offline" state). User approval 2026-10-08: "I think this is clear because in other places we almost start the worker lazily. We should do it here. There's no exception here. Go, I think it's approved." (reply to "Shall I take that as 'approved, A'…").
 - Behavior-defining supplements: None.
-- Design status: `Ready`
+- Design status: `Ready` (revised in SR-003 and SR-004; the "SR-003 Design Revision" and "SR-004 Correction" sections at the end are authoritative where they differ, SR-004 over SR-003)
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/investigation-notes.md`
 - Authorities read (2026-10-08): `references/architecture-design.md`, `design-principles.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/DESIGN.md`. `design-examples.md` not needed.
 - Project design-principle conflicts or discrepancies: None.
@@ -26,11 +26,12 @@ The eager task-Team policy is a remnant: `flat-agent-organization-model-follow-u
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- Task size: `Small`
-- Size rationale: One policy change at two call sites plus removal of the now-unused eager Team-preparation plumbing (one file deleted, three files simplified), and test updates. No new owner, API, contract, or persistence shape. Content inventory: none.
-- Architectural risk: `Low`
-- Risk rationale: The target path (lazy member activation inside a task Team, with late binding commit to the root tree) is already the production path for restored delegated copies in all three root kinds (BEH-004), and for every configured/collaborator Team. No change to `delegate_task` contract, persisted schema, security boundary, or ownership. Lifecycle timing of non-coordinator members moves from dispatch to first work, which is the same lifecycle those members already have after a restore. Coordinator activation moves into the seed delivery, which is the same `postMessage → ensureReady` path used for collaborator Teams.
-- Escalation trigger: If implementation finds that seed delivery to a not-yet-activated coordinator inside a just-committed task Team fails (e.g. tree/binding commit ordering, event-gate ordering, operation-gate re-entry), or that any root's binding mutator cannot see task-Team members, stop and return `Design Impact`.
+- Task size: `Small` (re-confirmed in SR-003)
+- Size rationale: SR-002: one policy change at two call sites plus removal of the eager Team-preparation plumbing. SR-003 adds a bounded refactor inside one owner (`ConfiguredAgentExecutionHandle`), one internal event variant removal, and one input-contract code. No new owner, no persistence change.
+- Architectural risk: **`High`** (raised in SR-003; was `Low` in SR-002)
+- SR-003 risk rationale: the refactor changes the shared member-activation failure path used by every Team, Org and collaborator member (not only delegated copies), changes the activation-failure code vocabulary that reaches clients through operation results (`AgentOperationResult.code`, `AgentRunInputRejectionCode`), and removes an internal event variant. Blast radius is every Team/Org member's first input. The SR-002 design also traced the wrong teammate-delivery path, so independent review of this revision is warranted (code reviewer recommendation, CRR-002).
+- SR-002 risk rationale (for the lazy-activation part; still valid): The target path (lazy member activation inside a task Team, with late binding commit to the root tree) is already the production path for restored delegated copies in all three root kinds (BEH-004), and for every configured/collaborator Team. No change to `delegate_task` contract, persisted schema, security boundary, or ownership. Lifecycle timing of non-coordinator members moves from dispatch to first work, which is the same lifecycle those members already have after a restore. Coordinator activation moves into the seed delivery, which is the same `postMessage → ensureReady` path used for collaborator Teams.
+- Escalation trigger: If implementation finds that seed delivery to a not-yet-activated coordinator inside a just-committed task Team fails (e.g. tree/binding commit ordering, event-gate ordering, operation-gate re-entry), or that any root's binding mutator cannot see task-Team members, stop and return `Design Impact`. SR-003: also return `Design Impact` if the shared start step cannot express a failure without changing callers above the handle (delivery services, engine, roots).
 
 ## Architecture Investigation Evidence
 
@@ -106,12 +107,12 @@ None.
 ## Primary Execution Spine(s)
 
 - DS-001: `delegate_task tool → Root (operation gate) → RootTaskExecutionLifecycle.delegate → dispatchTaskCopy → adapter.planActivation → RootTeamExecutionDirectory.beginRootTaskTeam | TaskTeamExecutionRegistry.beginPreparation (scope-only) → tree commit (members bindings null) → acceptSeed → TeamRun.postMessage(coordinator) → coordinator handle ensureReady (activate + commit binding) → coordinator runs`
-- DS-002: `sender send_message_to → Root delivery → task live lease → TeamRun.postMessage(member) → FlatTeamAgentExecutionHandle → ConfiguredAgentExecutionHandle.postMessage → ensureReady → root commitPlatformBindingChange → AgentRun publish → running`
+- DS-002 (corrected in SR-003; the SR-002 trace through `postMessage` was wrong, CR-FO-002): `sender send_message_to (MCP tool) → root delivery (task live lease, assertMessageScope) → RootCommunicationEngine.deliver (assertDeliveryAllowed) → adapter.reserveRecipientInput → <root>.delivery.reserveAgentInput → rootAgents.reserveInput | TeamRun.reserveDirectAgentInput → FlatTeamExecutionManager.reserveDirectAgentInput → FlatTeamAgentExecutionHandle.reserveInput → ConfiguredAgentExecutionHandle.reserveInput → startForInput (DS-005) → ensureReady → root commitPlatformBindingChange → AgentRun publish → AgentRun.reserveUserMessage → engine commitAppend → running`. `postMessage` serves operator/command input and the delegated seed (DS-001) only.
 
 ## Spine Narratives (Mandatory)
 
 - **DS-001**: Delegation validates and plans the copy as today. Preparation now builds the TeamRun and member contexts without creating any AgentRun. The task execution is committed to the root tree with `platformAgentRunId: null` for every member and the copy is published (task-execution-started event). Seed acceptance posts the work packet to the coordinator; the coordinator's handle publishes `initializing`, activates, commits its binding to the root tree, publishes the AgentRun, and runs. If the coordinator cannot start, seed acceptance fails and dispatch handles it exactly as a seed failure today (mark failed, release, `target_agent_run_id: null` or indeterminate error).
-- **DS-002**: Unchanged code; now also exercised for fresh copies. A member that cannot start returns a not-accepted delivery result to the sender and publishes an error status (existing `postMessage` catch path).
+- **DS-002** (corrected in SR-003): teammate delivery reserves input through `ConfiguredAgentExecutionHandle.reserveInput`. A member that cannot start returns `{ reserved: false, code: "AGENT_RUN_ACTIVATION_FAILED", message }` from the shared start step (DS-005); the engine maps it to a not-accepted delivery for the sender, and the member shows `error`.
 - **DS-003**: Unchanged code. Idle-shutdown, quiescence and termination already treat members without handles as offline/terminated (`tryPrepareTerminationIfQuiescent` → completed termination when no handle).
 - **DS-004**: Unchanged. Not-started members report `offline` → gray "Offline" (DEC-001 A).
 
@@ -287,3 +288,139 @@ Failure of an unused member surfaces at first work instead of at delegation (REQ
   - AC-004: non-coordinator activation failure → sender gets not-accepted result, member error status, coordinator unaffected; coordinator activation failure → `delegate_task` returns failure as today.
   - AC-005: idle shutdown + restore with never-started members; and a legacy tree where unused members have bindings but no conversation restores and keeps them offline.
 - Follow `TESTING.md`; run `tsc -p tsconfig.build.json --noEmit` and the affected unit/integration suites.
+
+
+---
+
+## SR-003 Design Revision — one member start-failure step (CRR-002 / CR-FO-003)
+
+Authoritative where it differs from the SR-002 sections above. Requirements are unchanged (REQ-005 / AC-004 already require this outcome); no renewed approval is needed. The user approved the refactor direction (relayed in CRR-002).
+
+### Trigger and evidence
+
+- API/E2E DTL-003 (AC-004, member branch) failed: a lead's `send_message_to` to a not-started writer that cannot start (`AGY_MODEL_UNAVAILABLE`) returned MCP `-32603`, and the writer stayed `offline`.
+- Root cause (code review CRR-001/CRR-002; verified in AINV-009..012): teammate delivery enters the handle through `reserveInput`, which had no start-failure handling. The same failure handling existed only in `postMessage`. One failure was reported through four channels: a thrown error, an unconsumed `readiness_failure` event, the status overlay, and two result shapes with different codes.
+- IR-002 (`d30c11204`, not reviewed) added a second copy of the `postMessage` handling to `reserveInput`. It is **superseded** by this revision; implementation replaces it, not extends it.
+
+### Design health (this revision)
+
+- Root cause classification: `Duplicated Policy Or Coordination` (activation-failure policy repeated per input entry point and drifted) plus `Shared Structure Looseness` (four failure channels, two code vocabularies).
+- Refactor needed now: `Yes`, bounded to `ConfiguredAgentExecutionHandle`, `collaboration-agent-execution-event.ts` and `agent-run-input-contract.ts`.
+- Deferred (separate cleanup ticket, user-agreed; residual risk accepted): `AgentRun.postUserMessage` reusing reserve-then-commit and the compaction-recovery difference; merging the three root delivery/communication adapters; auditing the handle's lifecycle states; duplicated checks in `AgentRunInputAdmissionState.admit()`; and the post-start input-rejection asymmetry (postMessage sets an `error` overlay when the started run rejects input; reserveInput does not). These do not affect REQ-005 because they concern started runs or layers above the handle.
+
+### DS-005 — Bounded local spine: `ConfiguredAgentExecutionHandle.startForInput()`
+
+One private step owns "start this member for an input, or report why it could not":
+
+```
+startForInput():
+  publish command status "initializing"            (no-op once a run exists, as today)
+  try   return { started: true, run: await ensureReady() }
+  catch (error)
+    if a run is active:                  rethrow                 (unexpected failure on a live run; unchanged rule)
+    if input is closed for this member:  return { started: false,
+           (input fence or root-shutdown fence rejects now)       code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
+                                                                   message: <fence message, e.g. Task DONE guidance> }
+                                         and clear the initializing overlay (no error status: the member is closed, not broken)
+    otherwise:                           publish "error" overlay with the cause
+                                         return { started: false, code: "AGENT_RUN_ACTIVATION_FAILED",
+                                                  message: <cause> }
+```
+
+- `<cause>` names the underlying failure: its code when it carries one (e.g. `AGY_MODEL_UNAVAILABLE`, `COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING`) followed by its message, without duplicating the code if the message already starts with it.
+- Why the closed-input branch (refinement of CR-FO-003 item 1): `ensureReady()` first runs the input fence. Without this branch, a Task-DONE or root-shutdown rejection would be reported as an activation failure and turn the member red. Upstream checks (`assertMessageScope`, `assertDeliveryAllowed`, live lease) normally reject closed members before the handle, so this branch covers only the race, but it must not mislabel it.
+- Retry semantics are unchanged: `initializeReady` keeps deciding retry-safety; no new retry behavior.
+
+Callers:
+
+- `reserveInput(message, options)`: `startForInput()`; on `started: false` return `{ reserved: false, code, message }`; otherwise `assertInputAllowed()` then `run.reserveUserMessage(...)` as today.
+- `postMessage(message)`: `startForInput()`; on `started: false` return `{ accepted: false, code, message, agentRunId, displayName }`; otherwise post as today (including the existing `error` overlay when the started run rejects the input, and `member_input` on acceptance). Neither method keeps its own readiness try/catch.
+
+### Contract decisions
+
+| Item | Decision |
+| --- | --- |
+| `AgentRunInputRejectionCode` | Keep `AGENT_RUN_ACTIVATION_FAILED` (added in IR-002) as the single activation-failure code; `AGENT_RUN_NOT_ACCEPTING_INPUT` (existing) for the closed-input branch |
+| `AgentOperationResult.code` from `postMessage` readiness failure | Changes from the underlying code (e.g. `COLLABORATION_AGENT_CONTINUATION_BINDING_MISSING`) to `AGENT_RUN_ACTIVATION_FAILED`; the underlying code moves into `message`. Evidence: no production code branches on these codes (AINV-011); `agent-collaboration-stream-handler.ts:157-164` only forwards code+message for display |
+| `readiness_failure` event | Remove the variant from `CollaborationAgentExecutionEvent` and its emission in `initializeReady` (no consumer, AINV-010). The status overlay is the only member-facing failure channel |
+| `readinessFailureCode()` | Remove (replaced by the cause formatting in `startForInput`) |
+
+### Files (SR-003 delta)
+
+| File | Change |
+| --- | --- |
+| `autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | Add private `startForInput()`; `reserveInput` and `postMessage` use it; remove IR-002's duplicated catch, `readinessFailureCode`, and the `readiness_failure` emission in `initializeReady` |
+| `autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts` | Remove `readiness_failure` variant; fix any exhaustive switches |
+| `autobyteus-server-ts/src/agent-execution/input/agent-run-input-contract.ts` | Keep `AGENT_RUN_ACTIVATION_FAILED`; doc comment covers both result shapes |
+| Tests | See below |
+
+No change to delivery services, roots, engine, frontend or persisted data.
+
+### Tests (SR-003)
+
+- Handle-level unit cases, both entry points (`postMessage`, `reserveInput`): activation failure → typed failure with `AGENT_RUN_ACTIVATION_FAILED`, message containing the underlying code, member `error` overlay; closed input during activation → `AGENT_RUN_NOT_ACCEPTING_INPUT`, no `error` overlay; failure while a run is active → rethrow.
+- Keep IR-002's reservation-path cases per root kind (standalone, Team, Org).
+- Update tests that asserted specific activation codes on `code` (`configured-root-first-work.test.ts:118-119,143-144`) to assert `AGENT_RUN_ACTIVATION_FAILED` and the underlying code in `message`; update tests that expected `readiness_failure` events (`flat-team-member-release-independence.test.ts:71`, `task-agent-execution-registry-memory.test.ts:35`) to assert the status overlay instead, keeping their release-safety intent.
+- DTL-003 (durable E2E) needs no change. Existing AC-006 suites must pass.
+
+### Residual risks
+
+- CAND-005 (accepted): UI-started Team/Org members that cannot start on a teammate message now return the approved not-accepted result and `error` status instead of JSON-RPC `-32603`. This is the REQ-005 intent ("same as UI-started Teams").
+- Operator-facing code for a member start failure becomes `AGENT_RUN_ACTIVATION_FAILED` (cause kept in the message).
+
+### Change sequence
+
+1. Revert IR-002's `reserveInput` catch while introducing `startForInput()` (one commit; no intermediate duplicate).
+2. Remove `readiness_failure` and `readinessFailureCode`.
+3. Update/add tests; run focused unit/integration suites, `tsc`, then the gated DTL suite.
+4. Independent source review, then API/E2E rerun.
+
+
+---
+
+## SR-004 Correction — keep `readiness_failure` as the member's conversation error card (implementation DI-001)
+
+Authoritative over the SR-003 section where they differ. Requirements unchanged; this correction **restores** approved behavior (BEH-002 / REQ-007) that SR-003 would have removed by mistake.
+
+### Evidence (AINV-013, corrects AINV-010)
+
+- `collaboration-agent-presentation-event-adapter.ts:86-97`: after the `agent_run`, `member_input` and `status_overlay` branches, the final un-named fall-through turns `readiness_failure` into an `ERROR` presentation event (`errorScope: runtime`, `errorEffect: terminal`).
+- All three roots publish member events through this adapter: `standalone-agent-run-root.ts`, `agent-org-run.ts`, `team-flat-execution-callbacks.ts:41-70`.
+- Frontend: `agentStreamMessageProjector.ts:198` → `agentStatusHandler.ts:122-161` `handleError` adds an error card with code and cause to the member's conversation and marks the conversation complete.
+- So today every member start failure shows an error card in that member's conversation, for UI-started Teams/Orgs too. AINV-010 (and CRR CAND-002) searched for the string and missed the implicit branch. SR-003 item "remove `readiness_failure`" would silently drop the card and change REQ-007 behavior without approval.
+
+### Decision (implementation option A)
+
+Each member start failure has exactly one owner per audience. None of them duplicates another:
+
+| Audience | Channel | Owner |
+| --- | --- | --- |
+| Sender of the input | typed result (`AGENT_RUN_ACTIVATION_FAILED` / `AGENT_RUN_NOT_ACCEPTING_INPUT`) | `startForInput()` |
+| Member status dot/header | `error` status overlay | `startForInput()` |
+| Member conversation | `readiness_failure` → `ERROR` card | `initializeReady()`, emitted once per failed start attempt (as today) |
+
+The only removals are the duplicated per-entry-point readiness handling, plus IR-002's copy of it.
+
+Changes to the SR-003 section:
+
+1. **Keep** the `readiness_failure` variant in `CollaborationAgentExecutionEvent` and its single emission in `initializeReady`. Strike SR-003's "remove `readiness_failure`" item and its test updates for `flat-team-member-release-independence.test.ts:71` / `task-agent-execution-registry-memory.test.ts:35`; those assertions stay.
+2. **Make the adapter branch explicit**: in `CollaborationAgentPresentationEventAdapter.adapt`, handle `rawEvent.kind === "readiness_failure"` by name, and end with an exhaustive `never` check. A future variant then cannot fall through into an error card unnoticed. The output is unchanged.
+3. **Closed input is not a failure card either.** `initializeReady` must not emit `readiness_failure` when the failure is the input fence, i.e. the member is closed for input at failure time. Use the same private "input closed now" predicate as `startForInput` (AR-NB-002). This matches the approved closed-input branch, which is reported as not accepting input with no `error` status, and it can occur only in the PREM-001 Task DONE race. Every other start failure keeps emitting the card exactly as today.
+4. Everything else in SR-003 stands:
+   - `startForInput()` is shared by `reserveInput` and `postMessage`;
+   - one activation-failure code on both result shapes, with the cause in the message;
+   - AR-NB-001: one cause helper, also used by the indeterminate wrapper;
+   - AR-NB-002: re-check closed input, and clear only our own `initializing`;
+   - AR-NB-003: `postMessage` after a successful start is unchanged;
+   - DS-002 corrected.
+
+### Tests (SR-004 additions)
+
+- Both entry points (`postMessage`, `reserveInput`): a start failure produces exactly one `readiness_failure` event → one `ERROR` presentation event for the member, plus the `error` overlay and the typed result.
+- Closed-input race: no `readiness_failure`, no `error` overlay, and `AGENT_RUN_NOT_ACCEPTING_INPUT`.
+- Adapter: `readiness_failure` maps to the same `ERROR` event as before (an explicit-branch regression test).
+- Existing `readiness_failure` assertions remain. DTL-003 is unchanged.
+
+### Classification
+
+Unchanged: `task_size=Small`, `architectural_risk=High` (same shared path; the correction narrows the change surface). The design changed after ARCH-REV-001, so it goes back to independent architecture review before implementation resumes.

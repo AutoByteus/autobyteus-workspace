@@ -1,0 +1,282 @@
+{
+  "agent": {
+    "delegation": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0",
+        "target_kind": "team"
+      },
+      "teamRunId": "dtl_squad_a6afc2_ad6aba10c0be46c49a4dfee7468b9917",
+      "members": {
+        "lead": {
+          "address": "/dtl_squad_a6afc2/lead",
+          "agentRunId": "dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0"
+        },
+        "reviewer": {
+          "address": "/dtl_squad_a6afc2/reviewer",
+          "agentRunId": "dtl_worker_a6afc2_9f3390ee6c924833bfb6ce04fa96a08f"
+        },
+        "writer": {
+          "address": "/dtl_squad_a6afc2/writer",
+          "agentRunId": "dtl_worker_a6afc2_ccb7bcf20b504ed4afb42a6c3f95c2f9"
+        },
+        "tester": {
+          "address": "/dtl_squad_a6afc2/tester",
+          "agentRunId": "dtl_worker_a6afc2_55ec1ec738494815b00a2964ca0e63d4"
+        }
+      },
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agents/dtl_manager_a6afc2_2d79b16202f14da0bd31e6715dc33c91/collaboration/dtl_squad_a6afc2_ad6aba10c0be46c49a4dfee7468b9917/dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0/agy-project",
+          "resumed": false,
+          "conversation": null
+        }
+      ],
+      "bindings": {
+        "lead": "6d6bec8c-a70a-4acf-9eb6-50586ef97aff",
+        "reviewer": null,
+        "writer": null,
+        "tester": null
+      }
+    },
+    "handoff": {
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /dtl_squad_a6afc2/reviewer.",
+        "target_agent_run_id": "dtl_worker_a6afc2_9f3390ee6c924833bfb6ce04fa96a08f"
+      },
+      "reviewerStatuses": [
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "bindings": {
+        "lead": "6d6bec8c-a70a-4acf-9eb6-50586ef97aff",
+        "reviewer": "3519313e-9b31-4728-bea0-a5a8f351eb0c",
+        "writer": null,
+        "tester": null
+      }
+    },
+    "nestedCopy": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_a6afc2_3fadc53bd9194a949ce856cf7836676a",
+        "target_kind": "team"
+      },
+      "teamRunId": "dtl_squad_a6afc2_edc66b3afb2f4accb57254dfbcfe6159"
+    },
+    "idleRestore": {
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agents/dtl_manager_a6afc2_2d79b16202f14da0bd31e6715dc33c91/collaboration/dtl_squad_a6afc2_ad6aba10c0be46c49a4dfee7468b9917/dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0/agy-project",
+          "resumed": true,
+          "conversation": "6d6bec8c-a70a-4acf-9eb6-50586ef97aff"
+        }
+      ]
+    },
+    "reactivation": {
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agents/dtl_manager_a6afc2_2d79b16202f14da0bd31e6715dc33c91/collaboration/dtl_squad_a6afc2_ad6aba10c0be46c49a4dfee7468b9917/dtl_worker_a6afc2_864bc7666be748feb8555fb9d8c105b0/agy-project",
+          "resumed": true,
+          "conversation": "6d6bec8c-a70a-4acf-9eb6-50586ef97aff"
+        }
+      ]
+    },
+    "legacyRestore": {
+      "legacyBinding": "legacy-unused-219dcc49-9803-464d-8aa0-a2584f8ba33d",
+      "finalBindings": {
+        "lead": "6d6bec8c-a70a-4acf-9eb6-50586ef97aff",
+        "reviewer": "3519313e-9b31-4728-bea0-a5a8f351eb0c",
+        "writer": null,
+        "tester": "67078b09-11d1-4e1f-a6f4-34c18d918f5c"
+      }
+    }
+  },
+  "team": {
+    "delegation": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e",
+        "target_kind": "team",
+        "task_id": "ad_hoc_task_8f7e279e-88d0-4e50-8492-786842cd878c"
+      },
+      "teamRunId": "dtl_squad_a6afc2_d95e4f1f307247f9b2690a5e73ea4f73",
+      "members": {
+        "lead": {
+          "address": "/dtl_squad_a6afc2/lead",
+          "agentRunId": "dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e"
+        },
+        "reviewer": {
+          "address": "/dtl_squad_a6afc2/reviewer",
+          "agentRunId": "dtl_worker_a6afc2_a8c7969f2e104d6b89c78169585ff0e6"
+        },
+        "writer": {
+          "address": "/dtl_squad_a6afc2/writer",
+          "agentRunId": "dtl_worker_a6afc2_fb5369312644492aacfa706ff6db3206"
+        },
+        "tester": {
+          "address": "/dtl_squad_a6afc2/tester",
+          "agentRunId": "dtl_worker_a6afc2_28640ac3fafa4e70938aeae90d530bd8"
+        }
+      },
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agent_teams/dtl_team_a6afc2_0929f642a53741dcbe9bf8c9df0a986a/dtl_squad_a6afc2_d95e4f1f307247f9b2690a5e73ea4f73/dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e/agy-project",
+          "resumed": false,
+          "conversation": null
+        }
+      ],
+      "bindings": {
+        "lead": "83bf9657-b972-426b-9d6b-8f6acdcc3c4e",
+        "reviewer": null,
+        "writer": null,
+        "tester": null
+      }
+    },
+    "handoff": {
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /dtl_squad_a6afc2/reviewer.",
+        "target_agent_run_id": "dtl_worker_a6afc2_a8c7969f2e104d6b89c78169585ff0e6"
+      },
+      "reviewerStatuses": [
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "bindings": {
+        "lead": "83bf9657-b972-426b-9d6b-8f6acdcc3c4e",
+        "reviewer": "bbb658f8-efc5-4798-a760-4bdd831e53cc",
+        "writer": null,
+        "tester": null
+      }
+    },
+    "nestedCopy": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_a6afc2_265154bddc8f4a62bd94352dd9176703",
+        "target_kind": "team"
+      },
+      "teamRunId": "dtl_squad_a6afc2_5371c480385a4a95ab97dabfc8cf1c63"
+    },
+    "idleRestore": {
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agent_teams/dtl_team_a6afc2_0929f642a53741dcbe9bf8c9df0a986a/dtl_squad_a6afc2_d95e4f1f307247f9b2690a5e73ea4f73/dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e/agy-project",
+          "resumed": true,
+          "conversation": "83bf9657-b972-426b-9d6b-8f6acdcc3c4e"
+        }
+      ]
+    },
+    "reactivation": {
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agent_teams/dtl_team_a6afc2_0929f642a53741dcbe9bf8c9df0a986a/dtl_squad_a6afc2_d95e4f1f307247f9b2690a5e73ea4f73/dtl_worker_a6afc2_c00ad52537344c65ba4b9eb2b17c484e/agy-project",
+          "resumed": true,
+          "conversation": "83bf9657-b972-426b-9d6b-8f6acdcc3c4e"
+        }
+      ]
+    },
+    "legacyRestore": {
+      "legacyBinding": "legacy-unused-dc9a8fc9-5fd2-4cb7-aa7e-7509b2773fb2",
+      "finalBindings": {
+        "lead": "83bf9657-b972-426b-9d6b-8f6acdcc3c4e",
+        "reviewer": "bbb658f8-efc5-4798-a760-4bdd831e53cc",
+        "writer": null,
+        "tester": "2724d380-cebc-4ec3-bb20-53d2ae05a8ee"
+      }
+    }
+  },
+  "org": {
+    "delegation": {
+      "result": {
+        "target_agent_run_id": "dtl_worker_a6afc2_d42ebb4558e743c2937674384dbd02d1",
+        "target_kind": "team",
+        "task_id": "ad_hoc_task_bce6a788-45e8-41cc-a630-09ba252aa38d"
+      },
+      "teamRunId": "dtl_squad_a6afc2_5ebfdfa1188648f79ba2f817d5a2d82a",
+      "members": {
+        "lead": {
+          "address": "/squad/lead",
+          "agentRunId": "dtl_worker_a6afc2_d42ebb4558e743c2937674384dbd02d1"
+        },
+        "reviewer": {
+          "address": "/squad/reviewer",
+          "agentRunId": "dtl_worker_a6afc2_f12c8dec060a42eea1e2a1799be7740b"
+        },
+        "writer": {
+          "address": "/squad/writer",
+          "agentRunId": "dtl_worker_a6afc2_4fbf38ead3bb4bf0b8871238c7748463"
+        },
+        "tester": {
+          "address": "/squad/tester",
+          "agentRunId": "dtl_worker_a6afc2_ac7fd615c70a48699c4442e124ba3f38"
+        }
+      },
+      "launches": [
+        {
+          "runId": "dtl_worker_a6afc2_d42ebb4558e743c2937674384dbd02d1",
+          "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-lazy-e2e-f9KcI3/memory/agent_orgs/dtl_org_a6afc2_4f089e4a5186496c87bfef8faebb0c18/dtl_squad_a6afc2_5ebfdfa1188648f79ba2f817d5a2d82a/dtl_worker_a6afc2_d42ebb4558e743c2937674384dbd02d1/agy-project",
+          "resumed": false,
+          "conversation": null
+        }
+      ],
+      "bindings": {
+        "lead": "da320ee1-d733-4144-b6e3-2bf8d1438ba9",
+        "reviewer": null,
+        "writer": null,
+        "tester": null
+      }
+    },
+    "handoff": {
+      "result": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Delivered message to /squad/reviewer.",
+        "target_agent_run_id": "dtl_worker_a6afc2_f12c8dec060a42eea1e2a1799be7740b"
+      },
+      "reviewerStatuses": [
+        "initializing",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "idle"
+      ],
+      "bindings": {
+        "lead": "da320ee1-d733-4144-b6e3-2bf8d1438ba9",
+        "reviewer": "712d86f8-8c3e-473e-8898-2cb46b7c6669",
+        "writer": null,
+        "tester": null
+      }
+    }
+  },
+  "orgCoordinatorFailure": {
+    "result": {
+      "target_agent_run_id": null,
+      "message": "AGY_MODEL_UNAVAILABLE: dtl-retiring-model"
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "leftoverProcesses": [],
+    "errors": []
+  }
+}
