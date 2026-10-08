@@ -36,9 +36,10 @@ describe("application platform runtime isolation", () => {
   });
 
   it("builds isolated services without starting an agent or team run", async () => {
-    const prepareNewAgentRun = vi.spyOn(
+    // beginActivation is the AgentRunManager entrypoint that creates or restores an Agent run.
+    const beginAgentRunActivation = vi.spyOn(
       AgentRunManager.prototype,
-      "prepareNewAgentRun",
+      "beginActivation",
     );
     const createTeamRun = vi.spyOn(
       AgentTeamRunManager.prototype,
@@ -132,7 +133,7 @@ describe("application platform runtime isolation", () => {
     const runtimeA = await buildRuntime("app-a");
     const runtimeB = await buildRuntime("app-b");
 
-    expect(prepareNewAgentRun).not.toHaveBeenCalled();
+    expect(beginAgentRunActivation).not.toHaveBeenCalled();
     expect(createTeamRun).not.toHaveBeenCalled();
 
     expect(Object.keys(runtimeA).sort()).toEqual([
