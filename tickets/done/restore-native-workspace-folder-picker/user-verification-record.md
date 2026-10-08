@@ -17,3 +17,10 @@ The new base changes Project path associations and their historical reader, plus
 
 ## Cleanup
 User verification instance iso-64199-6f3f stopped through exact CLI ID: forced=false, owned data removed, both ports released. Only receipt-owned fixture /private/tmp/autobyteus-folder-verify-d5xft_ay removed. Receipts delivery-evidence/dr-002/user-instance-stop.json and fixture-cleanup.json. Refreshed probe iso-65137-e5c3 similarly cleaned all owned runtime/data/fixtures. No default or unrelated app/data action. Safe repository cleanup is recorded in release-deployment-report.md.
+
+## UREL-001 — Subsequent Stable Release Authorization (2026-10-08 context)
+- User: **“could you please release another stable version?”**
+- Clarification: **“if the current latest is already the latest code from original personal, then no need, but i remember recently we merged two ticket or something”**.
+- Fresh GitHub release/remote-ref comparison: stable v1.4.96 predates the two accepted native-picker/Project-path tickets on origin/personal44619c2d2037b21df37fdc769025b32e089835bf. Condition for no release does not apply. Next stable patch1.4.97 authorized; previously completed UV-001 and repository finalization are not repeated. The user's earlier no-release instruction remains history, superseded for this requested follow-up.
+- No runtime/source changes beyond release metadata/curated notes; no new behavior verification required. Both included tickets have explicit user acceptance; picker latest full validation covers integrated Project changes.
+- Standard tag workflows publish Desktop/Android/server images and iOS TestFlight upload; public App Store release remains external. Prior incident/data uncertainty and evidence limitations remain unchanged.

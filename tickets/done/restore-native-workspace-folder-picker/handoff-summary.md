@@ -1,5 +1,7 @@
 # Final Handoff — Restore Native Workspace Folder Picker
 
+> **Latest continuation: stable v1.4.97 release IN PROGRESS (DR-003).** User requested another stable release and clarified it is unnecessary only if stable already matches origin/personal. Comparison confirms v1.4.96 lacks the two accepted tickets (native folder picker and Project workspace paths). UREL-001 supersedes the prior no-release instruction for this follow-up only. No completed commits/merges are replayed. Publication/verification pending; DR-002 below remains the completed repository-finalization history.
+
 **Delivery Completed — DR-002, 2026-10-07.** task_size **Small**; architectural_risk **Low**; **direct validated route**. R3/UREQ-001, Product UCONF-001, SR-007, IR-001, API-REV-001, UV-001; DR-001 initial hold retained. Independent architecture/source/test-code review artifacts/revisions **N/A — not applicable**.
 
 ## User-Verified Result

@@ -1,0 +1,23 @@
+44619c2d2 docs(delivery): record completed native folder picker finalization
+f34dec632 Merge verified native workspace folder picker
+59f949591 docs(delivery): record accepted refreshed folder picker validation
+92c96ce11 Merge remote-tracking branch 'origin/personal' into codex/restore-native-workspace-folder-picker
+93a45f69c chore(delivery): archive user-verified folder picker before final refresh
+665d8e0cd docs(delivery): record completed project workspace paths finalization
+e87093f09 chore(delivery): archive user-accepted project workspace paths
+44b03b9f3 Merge remote-tracking branch 'origin/personal' into codex/restore-native-workspace-folder-picker
+bd495bdeb test(workspace): prove native folder picker across isolated callers
+8448cd18a Merge remote-tracking branch 'origin/personal' into codex/project-workspace-path
+cd6034617 docs(project-workspace-path): record CRR-002 delivery handoff receipt
+fca742325 docs(project-workspace-path): pass proportional API E2E test review CRR-002
+a0daf2def docs(project-workspace-path): record API-REV-001 validation evidence and confidence
+27088e87c test(projects): cover path-only associations across API and browser boundaries
+af50bdd40 docs(delivery): record stable 1.4.96 publication receipt
+f8eff6e07 Record approved folder-picker package and IR-001 implementation handoff
+39d0e9962 Restore native workspace folder browsing in shared menu
+ed8897135 docs(project-workspace-path): record API E2E review handoff receipt
+f4fedcd38 docs(project-workspace-path): record CRR-001 source review pass
+7b69893c3 docs(project-workspace-path): record IR-001 implementation handoff and evidence
+9dad89bae feat(projects): use absolute path-only workspace associations
+512a83115 test(workspaces): baseline fix for uninitialized run managers
+6cc26a9e9 refactor(projects): freeze released folder migration target reader

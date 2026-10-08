@@ -1,5 +1,7 @@
 # Delivery / Release / Deployment Report — DR-002
 
+> **Latest continuation: stable v1.4.97 release IN PROGRESS (DR-003).** User requested another stable release and clarified it is unnecessary only if stable already matches origin/personal. Comparison confirms v1.4.96 lacks the two accepted tickets (native folder picker and Project workspace paths). UREL-001 supersedes the prior no-release instruction for this follow-up only. No completed commits/merges are replayed. Publication/verification pending; DR-002 below remains the completed repository-finalization history.
+
 ## Authoritative Result
 **Delivery Completed — 2026-10-07.** Package restore-native-workspace-folder-picker; **Small / Low, direct validated route**. User verified, target finalized/pushed, and applicable safe cleanup completed. **No release** per user instruction. DR-001 is the retained initial verification-hold baseline, not current status.
 
