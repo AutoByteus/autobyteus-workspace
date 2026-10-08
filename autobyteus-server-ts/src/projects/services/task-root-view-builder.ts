@@ -18,7 +18,7 @@ export const latestAssignedEntry = (file: TaskAgentResourceFile | null): TaskAge
 };
 
 /**
- * The worker's live status (DEC-006): `offline` when closed (DONE), failed to start, or its hosting
+ * The worker's live status (DEC-006): `offline` when closed (Task DONE or CLOSED), failed to start, or its hosting
  * root is not active; else the hosting root's answer. A root still `starting` in an active host has
  * no live run yet and reads `initializing` (design: "Initializing while starting"); a start left
  * behind by a stopped host reads `offline`, never a permanent Initializing.

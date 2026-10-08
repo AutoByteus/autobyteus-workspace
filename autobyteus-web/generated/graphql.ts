@@ -2140,6 +2140,7 @@ export type ProjectTaskContextFile = {
 };
 
 export enum ProjectTaskStatus {
+  Closed = 'CLOSED',
   Done = 'DONE',
   InProgress = 'IN_PROGRESS',
   Todo = 'TODO'

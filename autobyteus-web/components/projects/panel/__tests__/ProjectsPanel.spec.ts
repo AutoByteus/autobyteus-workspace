@@ -80,6 +80,12 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' }, task: projectTask('t1', 'Write the notes\nAll of them', 'IN_PROGRESS') })
     await flushPromises()
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('In Progress')
+    // An agent closes it (dropped as not needed): labelled Closed, styled apart from Done.
+    useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' }, task: projectTask('t1', 'Write the notes\nAll of them', 'CLOSED') })
+    await flushPromises()
+    expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Closed')
+    expect(wrapper.get('[data-testid="projects-panel-task-status"]').classes()).toContain('text-slate-500')
+    expect(wrapper.get('[data-testid="projects-panel-task-status"]').classes()).not.toContain('bg-emerald-50')
 
     await wrapper.get('[data-testid="projects-panel-task-back"]').trigger('click')
     expect(wrapper.find('[data-testid="projects-panel-task"]').exists()).toBe(false)
@@ -93,6 +99,9 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     expect(wrapper.get('[data-testid="projects-panel-task-reference-files"]').text()).toContain('/work/brief.md')
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Open')
     expect(wrapper.get('[data-testid="projects-panel-task-open-page"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/temp-tasks/tasks/x1')
+    useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { ...tempTask('x1', 'Check links'), status: 'CLOSED', updatedAt: '2026-10-06T00:00:00.000Z' } })
+    await flushPromises()
+    expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Closed')
   })
 
   it('says when an open Task is gone', async () => {

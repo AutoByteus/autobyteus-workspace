@@ -1,4 +1,5 @@
 import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskContextDraft, ProjectTaskContextChanges } from "./project-task-context.js";
+import type { ProjectTaskStatus } from "./task-status.js";
 
 /** A workspace link as persisted inside a Project record. */
 export interface ProjectWorkspaceLink {
@@ -7,7 +8,7 @@ export interface ProjectWorkspaceLink {
   description: string;
 }
 
-export type ProjectTaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
+export type { ProjectTaskStatus } from "./task-status.js";
 
 /** A Task as persisted in `<projectId>/tasks/<taskId>/task.json` (which also records its `projectId`). It has no title; the description is the content. */
 export interface ProjectTask {
@@ -51,7 +52,7 @@ export interface ProjectWorkspaceView extends ProjectWorkspaceLink {
 
 export interface ProjectView extends Omit<Project, "workspaces"> {
   workspaces: ProjectWorkspaceView[];
-  /** Number of Tasks whose status is not `DONE`; computed at read time. */
+  /** Number of open Tasks (status not `DONE` or `CLOSED`); computed at read time. */
   openTaskCount: number;
   taskCount: number;
 }
@@ -61,7 +62,7 @@ export type TaskRootStatus = "running" | "initializing" | "idle" | "error" | "of
 
 /**
  * A Task's root: its latest `assigned` entry, i.e. the one agent or team the Task was handed to.
- * `status` is the worker's own live status; it is `offline` when the assignment is closed (DONE),
+ * `status` is the worker's own live status; it is `offline` when the assignment is closed (Task DONE or CLOSED),
  * failed to start, or its hosting run is not active.
  */
 export interface TaskRootView {

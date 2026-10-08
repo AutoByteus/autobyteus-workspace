@@ -215,7 +215,7 @@ export class AgentTeamRunManager {
     return this.getManagedTeamRun(rootTeamRunIdInput) !== null;
   }
 
-  /** Closed (Task DONE) task executions of the given (stored) tree of this root Team. */
+  /** Closed (Task DONE or CLOSED) task executions of the given (stored) tree of this root Team. */
   closedTaskExecutionsFor(rootTeamRunIdInput: string, tree: TeamRunExecutionTreeSnapshot): readonly TaskExecutionReference[] {
     const index = new TeamExecutionIndex(tree);
     return listClosedTaskExecutions({ port: this.taskAgentResources, root: createTeamRootExecutionIdentity(required(rootTeamRunIdInput, "rootTeamRunId")),

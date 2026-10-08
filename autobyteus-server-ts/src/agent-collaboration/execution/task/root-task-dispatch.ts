@@ -16,7 +16,7 @@ export type TaskAgentResourceJoin =
 
 /**
  * One staged dispatch on the root lifecycle's queue. A Task copy is linked after identity planning
- * and before registration, so DONE always reaches it; every await is followed by an open check.
+ * and before registration, so DONE or CLOSED always reaches it; every await is followed by an open check.
  * The accepted result carries `task_id` only when the join created a Task with no Project.
  */
 export async function dispatchTaskCopy<T>(input: {
@@ -32,7 +32,7 @@ export async function dispatchTaskCopy<T>(input: {
   const assertOpen = () => {
     input.assertAdmitting();
     if (linked && !input.resources.isOpen(plan!.target.execution)) {
-      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task was marked DONE; its new work was not started.");
+      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task was marked DONE or CLOSED; its new work was not started.");
     }
   };
   try {

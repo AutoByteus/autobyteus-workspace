@@ -21,7 +21,7 @@ export interface TeamRunResumeConfig {
   teamRunId: string;
   isActive: boolean;
   executionTree: TeamRunExecutionTreeSnapshot;
-  /** Task executions of `executionTree` whose Task is DONE. */
+  /** Task executions of `executionTree` whose Task is DONE or CLOSED. */
   closedTaskExecutions: readonly TaskExecutionReference[];
   modelConfigEditability: RunModelConfigEditability;
 }

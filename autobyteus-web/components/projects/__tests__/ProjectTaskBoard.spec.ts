@@ -119,6 +119,73 @@ describe('ProjectTaskBoard', () => {
     expect(column(wrapper, 'TODO').findAll('button')).toHaveLength(0)
   })
 
+  it('hides Closed Tasks by default; "Closed (N)" beside Refresh shows them in a full-width lane after Done and hides them again (AC-008, QR-001)', async () => {
+    seed([
+      task('t4', 'Dropped release note', '2026-09-27T04:00:00.000Z', 'CLOSED'),
+      task('t3', 'Doing it', '2026-09-27T03:00:00.000Z', 'IN_PROGRESS'),
+      task('t2', 'Dropped spike', '2026-09-27T02:00:00.000Z', 'CLOSED'),
+      task('t1', 'Finished', '2026-09-27T01:00:00.000Z', 'DONE'),
+    ])
+    const wrapper = mountBoard()
+    await flushPromises()
+
+    const sections = () => wrapper.findAll('section').map((section) => section.attributes('data-testid'))
+    expect(sections()).toEqual(['project-task-column-TODO', 'project-task-column-IN_PROGRESS', 'project-task-column-DONE'])
+    expect(cardIds(wrapper, 'DONE')).toEqual(['t1'])
+    expect(wrapper.find('[data-testid="project-task-row-t4"]').exists()).toBe(false)
+    const toggle = wrapper.get('[data-testid="project-tasks-closed-toggle"]')
+    expect(toggle.element.tagName).toBe('BUTTON')
+    expect(toggle.text()).toBe('Closed (2)')
+    expect(toggle.attributes('aria-pressed')).toBe('false')
+    // The toggle sits immediately before Refresh, and takes over pushing the pair to the right.
+    expect(toggle.element.nextElementSibling).toBe(wrapper.get('[data-testid="project-tasks-refresh"]').element)
+    expect(toggle.classes()).toContain('ml-auto')
+    expect(wrapper.get('[data-testid="project-tasks-refresh"]').classes()).not.toContain('ml-auto')
+
+    await toggle.trigger('click')
+    expect(toggle.attributes('aria-pressed')).toBe('true')
+    expect(sections()).toEqual(['project-task-column-TODO', 'project-task-column-IN_PROGRESS', 'project-task-column-DONE', 'project-task-column-CLOSED'])
+    expect(column(wrapper, 'CLOSED').classes()).toContain('project-task-board__closed-lane')
+    expect(heading(wrapper, 'CLOSED')).toBe('Closed 2')
+    expect(cardIds(wrapper, 'CLOSED')).toEqual(['t4', 't2'])
+    expect(cardIds(wrapper, 'DONE')).toEqual(['t1'])
+
+    await toggle.trigger('click')
+    expect(toggle.attributes('aria-pressed')).toBe('false')
+    expect(wrapper.find('[data-testid="project-task-column-CLOSED"]').exists()).toBe(false)
+  })
+
+  it('omits the Closed toggle with no Closed Task, and searches only what is shown (AC-008)', async () => {
+    seed([task('t1', 'Ship release', '2026-09-27T01:00:00.000Z', 'TODO')])
+    const plain = mountBoard()
+    await flushPromises()
+    expect(plain.find('[data-testid="project-tasks-closed-toggle"]').exists()).toBe(false)
+    expect(plain.get('[data-testid="project-tasks-refresh"]').classes()).toContain('ml-auto')
+    plain.unmount()
+
+    setActivePinia(createPinia())
+    store = useProjectTaskStore()
+    seed([task('t2', 'Dropped release', '2026-09-27T02:00:00.000Z', 'CLOSED'), task('t1', 'Write docs', '2026-09-27T01:00:00.000Z', 'TODO')])
+    const wrapper = mountBoard()
+    await flushPromises()
+    await wrapper.get('[data-testid="project-tasks-search-input"]').setValue('release')
+    // The only match is hidden: no match, with the toggle still offered beside the search.
+    expect(wrapper.find('[data-testid="project-tasks-no-match"]').exists()).toBe(true)
+    await wrapper.get('[data-testid="project-tasks-closed-toggle"]').trigger('click')
+    expect(wrapper.find('[data-testid="project-tasks-no-match"]').exists()).toBe(false)
+    expect(cardIds(wrapper, 'CLOSED')).toEqual(['t2'])
+    expect(heading(wrapper, 'TODO')).toBe('To Do 0')
+  })
+
+  it('a compact board (right panel) has the same Closed toggle and lane', async () => {
+    seed([task('t2', 'Dropped', '2026-09-27T02:00:00.000Z', 'CLOSED')])
+    const wrapper = mount(ProjectTaskBoard, { props: { projectId: 'p1', compact: true }, global: { stubs: { NuxtLink: RouterLinkStub } } })
+    await flushPromises()
+    expect(wrapper.find('[data-testid="project-task-column-CLOSED"]').exists()).toBe(false)
+    await wrapper.get('[data-testid="project-tasks-closed-toggle"]').trigger('click')
+    expect(cardIds(wrapper as any, 'CLOSED')).toEqual(['t2'])
+  })
+
   it('uses a board-width container query, not viewport breakpoints, for the three-column switch', async () => {
     seed([])
     const wrapper = mountBoard()

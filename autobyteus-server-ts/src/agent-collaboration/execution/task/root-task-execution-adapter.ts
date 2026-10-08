@@ -110,7 +110,7 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   taskExecutionWithIngress(agentRunId: string): TaskExecutionReference | null;
   /** The reference is a task execution node of this root's current tree (at any depth). */
   containsTaskExecution(reference: TaskExecutionReference): boolean;
-  /** Publishes the root's sequenced "task executions closed" event (Task DONE) into its publisher. */
+  /** Publishes the root's sequenced "task executions closed" event (Task DONE or CLOSED) into its publisher. */
   publishTaskExecutionsClosed(references: readonly TaskExecutionReference[]): void;
   /** Publishes the root's sequenced "task executions reopened" event (reactivation) into its publisher. */
   publishTaskExecutionsReopened(references: readonly TaskExecutionReference[]): void;

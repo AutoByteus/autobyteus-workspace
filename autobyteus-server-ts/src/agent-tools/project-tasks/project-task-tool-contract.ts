@@ -1,17 +1,18 @@
 import { ParameterSchema, ParameterDefinition, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
+import { PROJECT_TASK_STATUSES, validateTaskStatus } from "../../projects/domain/task-status.js";
 export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "create_or_update_project", "create_or_update_task"] as const);
 export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "create_or_update_project" | "create_or_update_task";
 export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName =>
   PROJECT_TASK_TOOL_NAMES.has(name as ProjectTaskToolName);
-/** Automatic wherever `delegate_task` is: it closes the Task a delegation created (status DONE). */
+/** Automatic wherever `delegate_task` is: it closes the Task a delegation created (status DONE or CLOSED). */
 export const CREATE_OR_UPDATE_TASK_TOOL_NAME = "create_or_update_task" satisfies ProjectTaskToolName;
-const statuses = ["TODO", "IN_PROGRESS", "DONE"];
+const statuses: string[] = [...PROJECT_TASK_STATUSES];
 export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string> = {
   create_or_update_project: "Create a required-name Project or patch a known project_id on the current node. Omitted fields are preserved; blank description clears. Optional workspaces reference absolute node-local folder paths: a supplied list replaces ALL links, [] unlinks only. Retained links preserve omitted descriptions. Returns saved metadata and links; does not register/delete workspaces or delegate work.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
-  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS or DONE status. Returns descriptions, saved context-file references and each Task's current assignments (the worker run to follow up with, whether it is an Agent or a Team, who assigned it, and whether the work was accepted); accepted work is not necessarily finished. A Task whose assignments can't be read is marked assignments unavailable.",
-  create_or_update_task: "Create a Project Task, or patch any Task by its ID. Create: supply project_id and a required description (omit task_id and status); the new Task is TODO. Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE status, and never project_id; task_id may name a Project Task or a Task that delegate_task created (it has no Project). DONE stops the Task's delegated copies and removes them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then (as the run that assigned it) message the run ID delegate_task returned: that reactivates the copy with its conversation. A status change alone starts nothing. Optional context_files (create or patch): absolute local file paths copied into a Project Task as context files; patch appends and never removes. Same file types and 25 MiB limit as the app; not for a Task with no Project. Any invalid file fails the whole call with no change. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, plus attachedContextFiles [{storedFilename, displayName}] when the call attached files; not a work-completion assessment. Does not delegate work.",
+  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CLOSED status (CLOSED = dropped as not needed). Returns descriptions, saved context-file references and each Task's current assignments (the worker run to follow up with, whether it is an Agent or a Team, who assigned it, and whether the work was accepted); accepted work is not necessarily finished. A Task whose assignments can't be read is marked assignments unavailable.",
+  create_or_update_task: "Create a Project Task, or patch any Task by its ID. Create: supply project_id and a required description (omit task_id and status); the new Task is TODO. Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE/CLOSED status, and never project_id; task_id may name a Project Task or a Task that delegate_task created (it has no Project). DONE means the work is finished; CLOSED means the Task was dropped as not needed (not completed). Both stop the Task's delegated copies and remove them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then (as the run that assigned it) message the run ID delegate_task returned: that reactivates the copy with its conversation. A status change alone starts nothing. Optional context_files (create or patch): absolute local file paths copied into a Project Task as context files; patch appends and never removes. Same file types and 25 MiB limit as the app; not for a Task with no Project. Any invalid file fails the whole call with no change. Unknown IDs fail; omitted fields and saved context are preserved. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, plus attachedContextFiles [{storedFilename, displayName}] when the call attached files; not a work-completion assessment. Does not delegate work.",
 };
 const CONTEXT_FILES_DESCRIPTION = "Absolute local file paths on this node to copy into the Project Task's saved context (appended on patch; never removes). Same file types and 25 MiB limit as the app.";
 export function buildProjectTaskToolSchema(name: ProjectTaskToolName): ParameterSchema {
@@ -112,8 +113,7 @@ export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknow
   const result: Record<string, unknown> = hasTask ? {task_id: id(input, "task_id")} : {project_id: id(input, "project_id")};
   const hasStatus = Object.hasOwn(input, "status");
   if (hasStatus) {
-    if (typeof input.status !== "string" || !statuses.includes(input.status)) throw new ProjectError("TASK_STATUS_INVALID", "Task status must be TODO, IN_PROGRESS or DONE.");
-    result.status = input.status;
+    result.status = validateTaskStatus(input.status);
   }
   if (name === "list_project_tasks") return result;
   const hasDescription = Object.hasOwn(input, "description");
