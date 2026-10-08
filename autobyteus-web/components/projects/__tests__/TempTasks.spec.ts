@@ -95,7 +95,7 @@ describe('Temp tasks (Tasks with no Project)', () => {
     expect(wrapper.find('[data-testid="temp-tasks-link-count"]').exists()).toBe(false)
   })
 
-  it('a Closed Temp task is neither Open nor Done: hidden until "Closed (N)" shows its full-width lane (AC-009)', async () => {
+  it('a Closed Temp task is neither Open nor Done: hidden until "Closed (N)" shows it as the last column (AC-009, SR-005)', async () => {
     seed([temp('o1', 10), temp('d1', 20, 'DONE'), temp('c1', 30, 'CLOSED'), temp('c2', 40, 'CLOSED')])
     const wrapper = mount(TempTaskBoard, { global })
     await flushPromises()
@@ -109,11 +109,12 @@ describe('Temp tasks (Tasks with no Project)', () => {
     expect(toggle.element.nextElementSibling).toBe(wrapper.get('[data-testid="temp-tasks-refresh"]').element)
     await toggle.trigger('click')
     expect(lanes()).toEqual(['temp-task-lane-open', 'temp-task-lane-done', 'temp-task-lane-closed'])
-    expect(wrapper.get('[data-testid="temp-task-lane-closed"]').classes()).toContain('temp-board__closed-lane')
+    expect(wrapper.get('[data-testid="temp-task-lanes"]').classes()).toContain('temp-board__lanes--with-closed')
     expect(wrapper.get('[data-testid="temp-task-lane-closed"] h2').text()).toBe('Closed2')
     expect(laneIds(wrapper, 'closed')).toEqual(['c2', 'c1'])
     await toggle.trigger('click')
     expect(wrapper.find('[data-testid="temp-task-lane-closed"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="temp-task-lanes"]').classes()).not.toContain('temp-board__lanes--with-closed')
   })
 
   it('without Closed Temp tasks there is no toggle; the page labels a Closed one "Closed"; the header count excludes it (AC-009)', async () => {

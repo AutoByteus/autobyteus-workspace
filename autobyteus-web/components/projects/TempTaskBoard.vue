@@ -2,7 +2,7 @@
   <!-- project-manager-ux round 2: Tasks with no Project, in the Project board's style. Two lanes
        (Open, Done) because agents rarely set IN_PROGRESS on them; the root line says what is
        happening. Closed ones (dropped as not needed) stay hidden until the "Closed (N)" toggle
-       shows them in a full-width lane. Read only: agents create and change them. -->
+       shows them as the last column, after Done. Read only: agents create and change them. -->
   <div :class="compact ? 'w-full' : 'w-full px-4 py-5 sm:px-6 lg:px-8'" data-testid="temp-task-board-page">
     <NuxtLink
       v-if="!compact"
@@ -35,8 +35,8 @@
       <div v-if="list?.error" class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert" data-testid="temp-tasks-error"><p class="font-semibold">{{ t(list?.hasLoaded ? 'projects.ui.refreshFailed' : 'projects.components.projects.ProjectTaskBoard.loadFailed') }}</p><p class="mt-1">{{ list?.error?.message }}</p><button type="button" class="mt-3 rounded-md border border-red-300 bg-white px-3 py-2 text-sm" @click="load">{{ t('projects.common.retry') }}</button></div>
       <div v-if="list?.hasLoaded && isNoMatch" class="mt-4 rounded-xl border border-slate-200 bg-white py-12 text-center" role="status" data-testid="temp-tasks-no-match"><Icon icon="heroicons:magnifying-glass" class="mx-auto h-6 w-6 text-slate-300" aria-hidden="true" /><p class="mt-3 text-sm font-medium text-slate-700">{{ t('projects.ui.noMatch') }}</p><p class="mt-1 text-xs text-slate-500">{{ t('projects.ui.trySearch') }}</p><button type="button" class="mt-4 min-h-10 rounded-md px-3 text-sm font-medium text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="clearSearch">{{ t('projects.ui.clearSearch') }}</button></div>
 
-      <div v-if="list?.hasLoaded && !isNoMatch" class="temp-board__lanes mt-6" data-testid="temp-task-lanes">
-        <section v-for="lane in shownLanes" :key="lane" class="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" :class="lane === 'closed' ? 'temp-board__closed-lane' : ''" :aria-labelledby="`${uid}-${lane}`" :data-testid="`temp-task-lane-${lane}`">
+      <div v-if="list?.hasLoaded && !isNoMatch" class="temp-board__lanes mt-6" :class="showClosed ? 'temp-board__lanes--with-closed' : ''" data-testid="temp-task-lanes">
+        <section v-for="lane in shownLanes" :key="lane" class="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" :aria-labelledby="`${uid}-${lane}`" :data-testid="`temp-task-lane-${lane}`">
           <h2 :id="`${uid}-${lane}`" class="flex min-h-12 items-center gap-2 border-b border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-700">{{ t(TEMP_LANE_LABEL_KEYS[lane]) }}<span class="text-xs font-normal text-slate-500" data-testid="temp-task-lane-count">{{ lanes[lane].length }}</span></h2>
           <p v-if="lanes[lane].length === 0" class="px-4 py-7 text-center text-xs text-slate-500">{{ t('projects.components.projects.ProjectTaskBoard.noTasks') }}</p>
           <ul v-else class="divide-y divide-slate-100"><li v-for="task in shown(lane)" :key="task.taskId"><ProjectTaskRow :task="task" :activation="compact ? 'select' : 'route'" @select="emit('select-task', $event)" /></li></ul>
@@ -114,6 +114,8 @@ watch(() => node.bindingRevision, load)
 .temp-board__search { flex: 1 0 100%; min-width: 0; }
 @container temp-board (min-width: 480px) { .temp-board__search { flex: 1 1 0%; } }
 .temp-board__lanes { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
-@container temp-board (min-width: 752px) { .temp-board__lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.temp-board__closed-lane { grid-column: 1 / -1; }
+@container temp-board (min-width: 752px) {
+  .temp-board__lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .temp-board__lanes--with-closed { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 </style>

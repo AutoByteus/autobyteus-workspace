@@ -18,10 +18,10 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (SR-005 design revision; initial baseline IR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-004`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-004`, `SR-005`
 - Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
 
@@ -37,7 +37,7 @@ On the web, `utils/projects/taskStatusPresentation.ts` (renamed from `taskStatus
 - the open predicate;
 - the Project and Temp lanes.
 
-Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)" beside Refresh, absent at 0) that reveals a full-width Closed lane. Task page, Temp page and right-panel detail show a muted "Closed" pill. en/zh-CN strings and the generated enum value are added. Docs are synced.
+Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)" beside Refresh, absent at 0) that reveals a Closed column as the last column, after Done (SR-005; four equal columns at ≥752px on the Project board, three on the Temp board, stacked below 752px). Task page, Temp page and right-panel detail show a muted "Closed" pill. en/zh-CN strings and the generated enum value are added. Docs are synced.
 
 ## Routing Classification (Mandatory)
 
@@ -56,7 +56,7 @@ Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)"
 | --- | --- | --- | --- |
 | BEH-001 | CLOSED closes and stops workers exactly like DONE; reopen writes only | `project-task-tool-contract.ts` (parse via `validateTaskStatus`) → `ProjectTaskService.updateTaskById` / `update` → `isTerminalTaskStatus` → `closeAndWrite` (unchanged) | Done. Repeated CLOSED re-requests stop with no file change; DONE↔CLOSED = repeated DONE |
 | BEH-002 | App stays display-only | No GraphQL input change; no new control (toggle only shows/hides) | Preserved |
-| BEH-003 | Closed out of open lanes, hidden by default, toggle beside Refresh, full-width lane | `ProjectTaskBoard.vue`, `ClosedTasksToggle.vue`, `taskStatusPresentation.ts` (`BOARD_OPEN_LANES`) | Done, incl. compact/right-panel board |
+| BEH-003 | Closed out of open lanes, hidden by default, toggle beside Refresh, Closed as last column after Done (SR-005) | `ProjectTaskBoard.vue` (`project-task-board__columns--with-closed` → `repeat(4, …)`), `ClosedTasksToggle.vue`, `taskStatusPresentation.ts` (`BOARD_OPEN_LANES`) | Done, incl. compact/right-panel board |
 | BEH-004 | Temp: Closed neither Open nor Done; hidden + toggle; header count excludes | `TempTaskBoard.vue`, `TempTaskDetail.vue`, `TempTasksLink.vue`, `tempTaskLaneOf` | Done |
 | BEH-005 | `list_project_tasks` filters CLOSED | Tool enum from `PROJECT_TASK_STATUSES`; `listTasks` validation | Done |
 | BEH-006 | Terminal refuses assignment/reactivation naming status; reopen → assigner reactivation | `resolveAssignment`, `linkAgentRun`, `assertTaskNotTerminal` (renamed from `assertTaskNotDone`) | Done. Messages: "The Task is CLOSED; move it to TODO or IN_PROGRESS before assigning new work." / "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." |
@@ -160,12 +160,14 @@ Tests:
 ## Frontend Rendered-Result Check (When Applicable)
 
 - Affected surfaces / journeys: Project board (Tasks tab), Closed toggle, Task page pill; Temp board/page/header and right-panel board/detail via component tests.
-- Approved references: requirements REQ-008/009/010, QR-001; design Concrete Examples (toolbar, full-width row).
+- Approved references: requirements REQ-008/009/010, QR-001; design Concrete Examples (toolbar; Closed as fourth column, SR-005).
 - Existing design system reviewed: existing Refresh button style (toggle matches: `min-h-11`, slate border, `rounded-lg`), lane section markup (reused), pill palette.
 - Surface used: `pnpm dev` (worktree-local `.autobyteus/development` state), backend `127.0.0.1:8000`, frontend `127.0.0.1:3000`, driven through the browser tool. Stopped afterwards.
 - States inspected:
   - Board at narrow width (stacked lanes): Closed hidden, "Closed (2)" immediately before Refresh, unpressed.
-  - Board at wide width (3 lanes): toggle pressed (`bg-slate-100`); full-width "Closed 2" lane under To Do / In Progress / Done, which are unchanged.
+  - Board at wide width, toggle off: To Do / In Progress / Done, three equal columns, unchanged.
+  - Board at wide width, toggle on (IR-002, SR-005): four equal columns on one row (`[To Do][In Progress][Done][Closed 2]`, each 195 CSS px at a 0.6 zoom, same top), toggle pressed (`bg-slate-100`). The SR-004 full-width row is gone.
+  - Board below 752px, toggle on: four stacked lanes, Closed last.
   - Task page for a Closed Task: muted outlined "Closed" pill, distinct from Done green.
 - Issues found / corrected: none needed.
 - Limitations:
@@ -174,6 +176,8 @@ Tests:
   - No packaged desktop / isolated-app run.
 
 ## Downstream Coverage Hints / Suggested Scenarios
+
+- **IR-002 / SR-005: browser probe PMU-017 needs updating (API/E2E-owned, not changed by me).** `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` L1210–1218 asserts "Closed lane is a full-width row beneath the three open lanes". Under SR-005 it should assert that all four lanes share one row (same top) with equal widths and Closed last, at 1440px. The Temp lane assertions near L1280 (`tempLanes`) and the `laneBoxes` doc comment (L1148) also need the same change: three equal columns, Closed last. `TESTING.md` L445 says "full-width Closed lane after Done" and should say "Closed column after Done". The PMU-017 evidence under `api-e2e-evidence/` predates SR-005.
 
 - An agent (scripted AGY) closes a delegated Project Task with `create_or_update_task {task_id, status:"CLOSED"}`:
   - `task_executions_closed` is published before the stop;

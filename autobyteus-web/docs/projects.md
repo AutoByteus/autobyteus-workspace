@@ -114,8 +114,8 @@ have explicit text/Clear search; status labels are not mutation controls.
 
 Closed Tasks stay out of those three lanes and are hidden by default. When the
 Project has any, a small **Closed (N)** button (`ClosedTasksToggle`, an
-`aria-pressed` toggle) sits immediately before Refresh; it shows a full-width
-**Closed** lane under the other lanes and hides it again. It is absent at 0,
+`aria-pressed` toggle) sits immediately before Refresh; it shows a **Closed**
+lane as the last column, after Done, and hides it again. It is absent at 0,
 every visit starts hidden, and search and no-match apply only to the Tasks
 shown. The right-panel board behaves the same. Labels, pill colours, lanes and
 the open count come from `utils/projects/taskStatusPresentation.ts`: the Task
@@ -199,7 +199,7 @@ Tasks with no Project (made by a description-only `delegate_task`) appear under
 **Temp tasks**: a header button beside New project (with the number of open
 ones, neither Done nor Closed; hidden at 0), a board with **Open** and **Done**
 lanes (Done shows its 10 latest until Show all; search shows every match) plus
-the same **Closed (N)** toggle and full-width Closed lane, and a read-only Task
+the same **Closed (N)** toggle and a Closed column after Done, and a read-only Task
 page (Open, Done or Closed pill) with the
 description, reference file paths and Assigned to. Only agents create or change
 them; there is no edit, delete or status control.
@@ -234,7 +234,8 @@ run as well, so the conversation opens from any page (for example Projects),
 also when the run is already the selected run.
 
 Board layout responds to its CSS container, not viewport: one stacked lane
-below 752px and three minimum-240px lanes at/above it (16px gaps). Below 480px
+below 752px and three minimum-240px lanes at/above it (16px gaps); while
+Closed is shown, four equal columns (Temp tasks: two, or three with Closed). Below 480px
 search takes its own toolbar row; Refresh remains beside New task. Narrow
 layouts preserve wrapping/actions rather than certifying phone deployment.
 

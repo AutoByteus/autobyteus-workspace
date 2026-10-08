@@ -119,7 +119,7 @@ describe('ProjectTaskBoard', () => {
     expect(column(wrapper, 'TODO').findAll('button')).toHaveLength(0)
   })
 
-  it('hides Closed Tasks by default; "Closed (N)" beside Refresh shows them in a full-width lane after Done and hides them again (AC-008, QR-001)', async () => {
+  it('hides Closed Tasks by default; "Closed (N)" beside Refresh shows them as the last column after Done and hides them again (AC-008, QR-001, SR-005)', async () => {
     seed([
       task('t4', 'Dropped release note', '2026-09-27T04:00:00.000Z', 'CLOSED'),
       task('t3', 'Doing it', '2026-09-27T03:00:00.000Z', 'IN_PROGRESS'),
@@ -145,7 +145,9 @@ describe('ProjectTaskBoard', () => {
     await toggle.trigger('click')
     expect(toggle.attributes('aria-pressed')).toBe('true')
     expect(sections()).toEqual(['project-task-column-TODO', 'project-task-column-IN_PROGRESS', 'project-task-column-DONE', 'project-task-column-CLOSED'])
-    expect(column(wrapper, 'CLOSED').classes()).toContain('project-task-board__closed-lane')
+    // A fourth equal column in the same grid, not a full-width row (SR-005).
+    expect(wrapper.get('[data-testid="project-task-columns"]').classes()).toContain('project-task-board__columns--with-closed')
+    expect(column(wrapper, 'CLOSED').attributes('class')).not.toMatch(/col-span|closed-lane/)
     expect(heading(wrapper, 'CLOSED')).toBe('Closed 2')
     expect(cardIds(wrapper, 'CLOSED')).toEqual(['t4', 't2'])
     expect(cardIds(wrapper, 'DONE')).toEqual(['t1'])
@@ -153,6 +155,7 @@ describe('ProjectTaskBoard', () => {
     await toggle.trigger('click')
     expect(toggle.attributes('aria-pressed')).toBe('false')
     expect(wrapper.find('[data-testid="project-task-column-CLOSED"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="project-task-columns"]').classes()).not.toContain('project-task-board__columns--with-closed')
   })
 
   it('omits the Closed toggle with no Closed Task, and searches only what is shown (AC-008)', async () => {
