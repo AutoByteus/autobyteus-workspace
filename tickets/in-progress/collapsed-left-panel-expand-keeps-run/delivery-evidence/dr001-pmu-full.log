@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.99-beta.5 test:e2e:project-manager-ux /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/autobyteus-web
+> node tests/e2e/project-manager-ux-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-evidence/dr001-pmu-full
+
+Project manager UX probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-evidence/dr001-pmu-full/evidence.json
+EXIT=0
