@@ -1,0 +1,9 @@
+{
+  "trackedDirtyContentHashes": "identical",
+  "statusOutsideConcurrentTutorialVideoFolder": "identical",
+  "wholeStatusIdentical": false,
+  "beforeCount": 701,
+  "afterCount": 744,
+  "merge": "b70f1016fae6e8768bc78c3e5281b334ccb723d4",
+  "note": "Initial strict whole-status assertion failed before target push: concurrent untracked tutorial-video output replaced .run.mp4.*.tmp with run.mp4 and added files. No tutorial path is changed in this merge or Delivery writes. No unrelated file restored/deleted/staged; scoped preservation check passed. Exact delta retained."
+}

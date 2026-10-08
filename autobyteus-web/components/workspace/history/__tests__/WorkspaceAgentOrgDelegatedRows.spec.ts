@@ -62,7 +62,7 @@ describe('Org history delegated rows', () => {
     expect(teamRow.attributes('aria-label')).not.toMatch(/Task:/);
   });
 
-  it('draws delegated rows in the clean row style: focus ring, and a slate-500 bolt with a semibold name for a Team (delegated-row-clean-style AC-001)', () => {
+  it('draws delegated rows in the clean row style: focus ring, and a slate-500 people-group with a semibold name for a Team (delegated-row-clean-style AC-001)', () => {
     const wrapper = mountOrg(false);
     const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
     const teamRow = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
@@ -72,10 +72,30 @@ describe('Org history delegated rows', () => {
       expect(row.classes()).not.toContain('bg-indigo-50/40');
     }
     const icon = teamRow.get('[data-team-icon="temporary-task-team"]');
-    expect(icon.attributes('data-icon')).toBe('heroicons:bolt-20-solid');
+    expect(icon.attributes('data-icon')).toBe('heroicons:user-group-20-solid');
     expect(icon.classes()).toEqual(expect.arrayContaining(['h-4', 'w-4', 'text-slate-500']));
-    expect(teamRow.find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(false);
+    expect(teamRow.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="agent-org-team-row-team-configured"] [data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
     expect(teamRow.get('.font-semibold').text()).toContain('team');
+  });
+
+  it('uses the same group for a brought-in collaborator, a delegated copy and a configured Team (restore-team-group-icon AC-001)', () => {
+    const wrapper = mountOrg(false, (tree) => {
+      tree.rootOrg.collaborators = [{
+        kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
+        coordinatorAddress: '/product_team/lead',
+        members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', agentRunId: 'product-lead', platformAgentRunId: null }],
+        handoffs: [], defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration,
+        taskExecutions: [], addedAt: tree.createdAt, addedViaAgentRunId: 'agent-director',
+      }];
+      return tree;
+    });
+    for (const testId of ['agent-org-task-team-row-product-run', 'agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
+      const team = wrapper.get(`[data-test="${testId}"]`);
+      expect(team.findAll('[data-icon="heroicons:user-group-20-solid"]')).toHaveLength(1);
+      expect(team.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
+      expect(team.attributes('aria-expanded')).toBe('true');
+    }
   });
 
   it('gives task-Team members no spawner line because the Team row carries it', () => {

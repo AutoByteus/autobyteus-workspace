@@ -1,0 +1,39 @@
+diff --git a/TESTING.md b/TESTING.md
+index a93336b5a..1231199e2 100644
+--- a/TESTING.md
++++ b/TESTING.md
+@@ -734,3 +734,22 @@ exact instance and removes only its own data/fixtures. Device metrics emulate
+ renderer widths, not OS window resizing or physical mobile. Error/empty response
+ and browser/remote/mobile gating use the colocated native-folder and gate tests;
+ this probe does not induce OS permission failures or certify other platforms.
++
++### Team identity glyph regression
++
++From the workspace root, build dependencies with `pnpm --filter 'autobyteus^...' build`,
++then `pnpm -C autobyteus-web exec nuxt prepare` and
++`pnpm -C autobyteus-web test:e2e:team-group-icon --output-dir <fresh-dir>`.
++Serialize builds/tests/dev within the worktree. Chrome is required; override discovery
++with `PLAYWRIGHT_CHROME_EXECUTABLE_PATH`. Relative output paths resolve from the web
++package. Optional `--ledger-file <initialized-absolute-path>` appends each case immediately.
++
++The probe owns free-port Nuxt, a temporary page and fresh headless Chrome. It checks
++actual Iconify SVG paths/sizes, Agent context/store and Team tree rows, real Org
++projection, compact/detail Task worker states and Memory configured/task/nested groups,
++with keyboard/pointer/disclosure/focus and 1440/768px renderer widths. Bootstrap HTTP
++and public Team-row inputs are controlled; parent source projections and avatar
++preservation have colocated coverage. No real backend/model, full worker/page navigation,
++Electron shell, physical mobile or explicit user acceptance is certified. Inspect
++`result.json`, screenshots and cleanup receipts; route, exact child group, browser
++and ports must be released, without touching the user app/data.
+diff --git a/autobyteus-web/package.json b/autobyteus-web/package.json
+index 4c67ea9f2..62b7faabb 100644
+--- a/autobyteus-web/package.json
++++ b/autobyteus-web/package.json
+@@ -47,6 +47,7 @@
+     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
+     "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
+     "test:e2e:nested-team-aggregate-status": "node tests/e2e/nested-team-aggregate-status-probe.mjs",
++    "test:e2e:team-group-icon": "node tests/e2e/team-group-icon-probe.mjs",
+     "test:e2e:nested-team-hierarchy": "node tests/e2e/nested-team-hierarchy-probe.mjs",
+     "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
+     "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",

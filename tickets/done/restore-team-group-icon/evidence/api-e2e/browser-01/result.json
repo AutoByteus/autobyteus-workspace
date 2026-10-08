@@ -1,0 +1,43 @@
+{
+  "startedAt": "2026-10-08T05:07:44.611Z",
+  "layer": "Renderer browser integration",
+  "source": "f0e9135079ee846ef3508d21ab196250c68d2fb1",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cases": {
+    "B01": {
+      "description": "Shared + Agent/Team parent icons, pointer/keyboard/disclosure/focus at normal/constrained widths",
+      "startedAt": "2026-10-08T05:08:03.274Z",
+      "result": "Fail",
+      "error": "locator.click: Error: strict mode violation: locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]') resolved to 2 elements:\n    1) <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-0a39d3e0=\"\" data-tree-depth=\"0\" aria-expanded=\"true\" aria-selected=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-team-run-id=\"preview-host\" data-member-address=\"/preview_0\" data-row-kind=\"transient_execution\" data-test=\"workspace-team-transient-execution-row\" title=\"Temporary task team · Delegated Team · /preview_0\" aria-label=\"Temporary task team, Delegated Team, level 1, offline, Started by manag…>…</div> aka locator('[data-test=\"workspace-team-execution-tree\"]').getByRole('treeitem', { name: 'Temporary task team, Delegated Team, level 1, offline, Started by manager, /' })\n    2) <button type=\"button\" data-v-2746c134=\"\" aria-expanded=\"true\" data-team-run-id=\"preview-host\" title=\"Collapse Delegated Team\" data-member-address=\"/preview_0\" aria-label=\"Collapse Delegated Team\" data-test=\"workspace-team-transient-disclosure\" class=\"ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500\">…</button> aka getByRole('button', { name: 'Collapse Delegated Team' })\n\nCall log:\n\u001b[2m  - waiting for locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:150:20\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:126:3"
+    }
+  },
+  "events": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExited": {
+      "pid": 88135,
+      "exitCode": 0,
+      "signal": null
+    },
+    "routeRemoved": true,
+    "portsReleased": true
+  },
+  "sourceFiles": {
+    "tests/e2e/team-group-icon-probe.mjs": "002e79c0e4b55fe08b1215a0c101f89095ffeb0d3342262b7a4488cce8628d47",
+    "tests/e2e/fixtures/team-group-icon.page.vue": "a473b3ca16fa20a3f5c1cbdcfc607b7065b5c85a7b9df5bdbb1e2940b6c616ea",
+    "components/workspace/history/WorkspaceTransientExecutionRow.vue": "296b03a5ddcd7b76ff10391d97ebabf3a0d43ef1794fe11ece5d330098670379",
+    "components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue": "fbcf2a155feeb9dfb0efa62df2cb149a3e456ee5ac09af6a1ae3a4dd8f5cc4d4",
+    "components/projects/ProjectTaskWorkers.vue": "83a752369c41a6f5e3232561fe02418e8968d980f7853c36c5a402b51e184726",
+    "components/memory/CollaborationMemoryDetail.vue": "ca77320d9c9742059c1f0d4a59bdf8d1112e62f8e4afe649abb1efe474798472"
+  },
+  "ports": {
+    "port": 55818,
+    "backendPort": 55819
+  },
+  "nuxtPid": 88135,
+  "browser": "154.0.8037.98",
+  "result": "Fail",
+  "error": "locator.click: Error: strict mode violation: locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]') resolved to 2 elements:\n    1) <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-0a39d3e0=\"\" data-tree-depth=\"0\" aria-expanded=\"true\" aria-selected=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-team-run-id=\"preview-host\" data-member-address=\"/preview_0\" data-row-kind=\"transient_execution\" data-test=\"workspace-team-transient-execution-row\" title=\"Temporary task team · Delegated Team · /preview_0\" aria-label=\"Temporary task team, Delegated Team, level 1, offline, Started by manag…>…</div> aka locator('[data-test=\"workspace-team-execution-tree\"]').getByRole('treeitem', { name: 'Temporary task team, Delegated Team, level 1, offline, Started by manager, /' })\n    2) <button type=\"button\" data-v-2746c134=\"\" aria-expanded=\"true\" data-team-run-id=\"preview-host\" title=\"Collapse Delegated Team\" data-member-address=\"/preview_0\" aria-label=\"Collapse Delegated Team\" data-test=\"workspace-team-transient-disclosure\" class=\"ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500\">…</button> aka getByRole('button', { name: 'Collapse Delegated Team' })\n\nCall log:\n\u001b[2m  - waiting for locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:150:20\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:126:3",
+  "finishedAt": "2026-10-08T05:08:05.140Z"
+}

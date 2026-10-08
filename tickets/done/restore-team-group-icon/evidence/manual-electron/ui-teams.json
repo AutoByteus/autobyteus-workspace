@@ -1,0 +1,334 @@
+{
+  "mode": "teams",
+  "instanceId": "iso-57073-e937",
+  "timestamp": "2026-10-08T05:29:50.383Z",
+  "requests": [
+    {
+      "status": 200,
+      "operation": "ListWorkspaceRunHistory"
+    },
+    {
+      "status": 200,
+      "operation": "ListCollaborationRootHistory"
+    },
+    {
+      "status": 200,
+      "operation": "GetServerSettings"
+    }
+  ],
+  "errors": [],
+  "title": "",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agent-teams?view=team-list",
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Team\nAW\nArticle Writing Team\n\nA two-specialist article team for investigation-led understanding, style-aware drafting, critical review, and revision until publication-ready quality.\n\nwriting-and-editing\nRun\nView Details\n→\nA\narticle_writer\nA\narticle_reviewer\n\nCoordinator\n\narticle_writer\n\nMembers\n\n2\n\nCS\nClassroom Simulation Team\n\nA teacher-student classroom simulation for demonstrating agent-to-agent communication with required reply behavior.\n\neducation-simulation\nRun\nView Details\n→\nP\nprofessor\nS\nstudent\n\nCoordinator\n\nprofessor\n\nMembers\n\n2\n\nES\nEvent Scouting Team\n\nFinds events worth attending (for example AI builder and founder events, or investor events) on Luma and other event sites, shortlists them against the user's event profile, and registers the user for the events they approve through the Computer Use Operator.\n\nevents-and-networking\nRun\nView Details\n→\nE\nevent_scout\nC\ncomputer_use_operator\n\nCoordinator\n\nevent_scout\n\nMembers\n\n2\n\nED\nEvidence-Driven Delivery Team\n\nA canonical example of incremental investigation, planning, micro-task execution, validation, and result-based iteration.\n\nexample\nRun\nView Details\n→\nI\ninvestigator\nP\nplanner\nI\nimplementer\nV\nvalidator\n\nCoordinator\n\nplanner\n\nMembers\n\n4\n\nKC\nKids Coloring Story Team\n\nA child-friendly creative production team for multi-page A4 printable coloring stories, coloring bookmarks, activity sheets, and short line-art picture sequences.\n\ncreative-media\nRun\nView Details\n→\nS\nstory_activity_designer\nC\ncoloring_page_illustrator\nC\nchild_experience_reviewer\nP\nprintable_pack_producer\n\nCoordinator\n\nstory_activity_designer\n\nMembers\n\n4\n\nKP\nKids Picture Story Team\n\nA child-friendly creative production team for illustrated picture books with approved text composed into each text-bearing page image.\n\ncreative-media\nRun\nView Details\n→\nS\nstory_picture_book_author\nP\npicture_book_illustrator\nP\npicture_book_reviewer\nB\nbook_production_editor\n\nCoordinator\n\nstory_picture_book_author\n\nMembers\n\n4\n\nMV\nManga Video Studio Team\n\nA story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.\n\ncreative-media\nRun\nView Details\n→\nM\nmanga_showrunner\nS\nstoryboard_director\nM\nmanga_illustrator\nV\nvoice_video_producer\n\nCoordinator\n\nmanga_showrunner\n\nMembers\n\n4\n\nMT\nMarketing Team\n\nCreates channel-native marketing content with the user, publishes approved content on any website through the Computer Use Operator, and improves results over time through a data-driven build-measure-learn loop.\n\nmarketing-and-publishing\nRun\nView Details\n→\nM\nmarketing_content_creator\nM\nmarketing_performance_analyst\nC\ncomputer_use_operator\n\nCoordinator\n\nmarketing_content_creator\n\nMembers\n\n3\n\nNP\nNarrated Presentation Video Team\n\nA slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.\n\ncreative-media\nRun\nView Details\n→\nP\npresentation_director\nN\nnarration_script_reviewer\nS\nslide_video_producer\n\nCoordinator\n\npresentation_director\n\nMembers\n\n3\n\nPT\nProduct Team\n\nAn independent product team that uses code-first UI/UX design to explore requirements visually, evolve user experiences, and deliver approved UI/UX specifications backed by runnable UI references.\n\nproduct-development\nRun\nView Details\n→\nP\nproduct_ui_ux_designer\nU\nui_baseline_bootstrapper\n\nCoordinator\n\nproduct_ui_ux_designer\n\nMembers\n\n2\n\nRT\nResearch To Deck Team\n\nA three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.\n\ncontent-and-presentations\nRun\nView Details\n→\nD\ndeep_researcher\nI\ninfographic_powerpoint_designer\nD\ndeck_reviewer\n\nCoordinator\n\ndeep_researcher\n\nMembers\n\n3\n\nSE\nSoftware Engineering Team\n\nA Solution Designer-led team that investigates requests, engineers approved requirements, produces proportionate architecture designs, then implements, reviews, validates and delivers the solution.\n\nsoftware-engineering\nRun\nView Details\n→\nS\nsolution_designer\nA\narchitecture_reviewer\nI\nimplementation_engineer\nC\ncode_reviewer\n+2 more\n\nCoordinator\n\nsolution_designer\n\nMembers\n\n6\n\nSP\nSoftware Product Promo Video Team\n\nA product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services.\n\ncreative-media\nRun\nView Details\n→\nP\npromo_director\nV\nvisual_director\nV\nvisual_reviewer\nP\npromo_video_producer\n\nCoordinator\n\npromo_director\n\nMembers\n\n4\n\nST\nSTORM Team\n\nA Stanford STORM-inspired knowledge curation team for researching a topic, mining perspectives, asking retrieval-grounded questions, synthesizing an outline, and writing a cited article.\n\nresearch-writing\nRun\nView Details\n→\nT\ntopic_research_coordinator\nP\nperspective_miner\nE\nexpert_interviewer\nO\noutline_architect\n+2 more\n\nCoordinator\n\ntopic_research_coordinator\n\nMembers\n\n6",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "Chat",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "New chat",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agents",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent Teams",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent Orgs",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Projects",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Skills",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Memory",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Nodes",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Temp Workspace",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Settings",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Reload",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Create Team",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Run",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "View Details→",
+      "label": null,
+      "testid": null,
+      "href": null
+    }
+  ],
+  "result": "Pass"
+}

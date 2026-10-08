@@ -1,0 +1,5 @@
+autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue: exact glyph/comment-only delta; 212 nonempty lines
+autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue: exact glyph/comment-only delta; 238 nonempty lines
+autobyteus-web/components/projects/ProjectTaskWorkers.vue: exact glyph/comment-only delta; 68 nonempty lines
+autobyteus-web/components/memory/CollaborationMemoryDetail.vue: exact glyph/comment-only delta; 127 nonempty lines
+autobyteus-web/utils/runSettings/modelOptions.ts: unchanged; service_tier heroicons:bolt retained

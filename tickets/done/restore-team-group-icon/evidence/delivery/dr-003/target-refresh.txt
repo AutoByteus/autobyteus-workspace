@@ -1,0 +1,8 @@
+Post-UV-002 git fetch origin personal succeeded.
+Remote target84d679c332042b8aad7d9f97122d51943e161385 advanced from4a51482a5.
+84d679c33 docs(delivery): record completed workspace history group archive finalization
+423a883d7 Merge verified workspace history group archive
+abac35eb2 docs(workspace-history): sync group-archive docs and archive verified ticket
+dc70e7f44 test: baseline fix — repair stale tests that also fail on the base
+85d2ec346 test(workspace-history): GraphQL E2E for archiveStoredAgentRunGroup
+9faa6bc75 feat(workspace-history): archive all runs from a group header

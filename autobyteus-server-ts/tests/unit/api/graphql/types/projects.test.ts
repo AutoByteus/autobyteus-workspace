@@ -27,14 +27,13 @@ const projectView = {
   createdAt: "2026-09-26T00:00:00.000Z",
   updatedAt: "2026-09-26T00:00:00.000Z",
   workspaces: [{
-    workspaceId: "agent_ws_a",
     workspaceRootPath: "/work/a",
     displayName: "a",
     description: "UI",
-    addedAt: "2026-09-26T00:00:00.000Z",
     availability: "UNREGISTERED",
   }],
   openTaskCount: 3,
+  taskCount: 5,
 };
 
 describe("ProjectResolver", () => {

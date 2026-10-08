@@ -1,0 +1,6 @@
+{
+  "result": "Delivery Completed",
+  "selectedRule": "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required.",
+  "recipient_address": "/software_engineering_team/solution_designer",
+  "otherRulesMatched": false
+}

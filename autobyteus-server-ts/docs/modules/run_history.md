@@ -55,6 +55,9 @@ Workspace + agent operations:
 - `agentRunModelOptions(agentRunId)`
 - `updateStoppedAgentRunModelConfig(input)`
 - `archiveStoredRun`
+- `archiveStoredAgentRunGroup(workspaceRootPath, agentDefinitionId)`, which
+  archives one standalone agent group in one workspace (see
+  [group archive](#group-archive-from-a-history-header))
 - `deleteStoredRun`
 
 Team operations:
@@ -236,6 +239,32 @@ Archive is a non-destructive visibility action:
   lifecycle lane, so a stale stopped client cannot race a restore.
 - Existing standalone, Team, or AgentOrg catalog rows with no `archivedAt` are
   visible by default.
+
+### Group Archive From A History Header
+
+`AgentRunHistoryService.archiveStoredAgentRunGroup({ workspaceRootPath,
+agentDefinitionId })` backs the `archiveStoredAgentRunGroup` mutation. It
+selects every unarchived standalone catalog row of that `agentDefinitionId`
+whose canonicalized workspace root matches the canonicalized input. This
+includes runs beyond the `limitPerAgent` listing cap, which the client never
+sees. The server, not the client, owns that selection.
+
+- Blank `workspaceRootPath` or `agentDefinitionId` is an error; nothing is
+  written.
+- All or nothing for running runs: if any selected run is active according to
+  the catalog status projection, the call archives nothing and returns those
+  ids in `activeRunIds`.
+- Otherwise each run is archived in turn through the same per-run
+  `catalogService.archiveRun`, so the per-run archive semantics above apply. A
+  run that fails, for example because it became active after the check, is
+  returned in `failedRunIds`; the others are still archived.
+- The result is `{ archivedRunIds, activeRunIds, failedRunIds }`. Archived rows
+  and run folders stay on disk. A repeated call on an already archived group
+  is a no-op.
+
+Team and AgentOrg listings are not capped, so their group archive needs no
+server mutation. The web client archives the listed root ids one at a time
+through `archiveStoredTeamRun` / `archiveStoredAgentOrgRun`.
 
 Permanent delete remains a separate destructive action. `deleteStoredRun` and
 `deleteStoredTeamRun` remove the persisted run/team storage and corresponding

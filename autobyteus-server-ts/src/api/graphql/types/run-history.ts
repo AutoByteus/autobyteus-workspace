@@ -242,6 +242,18 @@ class ArchiveStoredRunMutationResult {
   message!: string;
 }
 
+@ObjectType()
+class ArchiveStoredAgentRunGroupMutationResult {
+  @Field(() => [String])
+  archivedRunIds!: string[];
+
+  @Field(() => [String], { description: "Non-empty means the group had running runs and nothing was archived." })
+  activeRunIds!: string[];
+
+  @Field(() => [String])
+  failedRunIds!: string[];
+}
+
 @Resolver()
 export class RunHistoryResolver {
   private agentRunHistoryService = getAgentRunHistoryService();
@@ -306,6 +318,14 @@ export class RunHistoryResolver {
         message: String(error),
       };
     }
+  }
+
+  @Mutation(() => ArchiveStoredAgentRunGroupMutationResult)
+  async archiveStoredAgentRunGroup(
+    @Arg("workspaceRootPath", () => String) workspaceRootPath: string,
+    @Arg("agentDefinitionId", () => String) agentDefinitionId: string,
+  ): Promise<ArchiveStoredAgentRunGroupMutationResult> {
+    return this.agentRunHistoryService.archiveStoredAgentRunGroup({ workspaceRootPath, agentDefinitionId });
   }
 
   @Mutation(() => ArchiveStoredRunMutationResult)

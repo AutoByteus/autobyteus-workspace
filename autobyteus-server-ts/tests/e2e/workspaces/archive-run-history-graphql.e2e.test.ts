@@ -44,6 +44,18 @@ const harness = vi.hoisted(() => ({
   },
 }));
 
+// TypeGraphQL keeps one resolver instance per class, and resolvers capture their service in a field
+// initializer. Hand them a stable delegate that reaches the current test's service.
+const currentService = vi.hoisted(() => (key: "agentRunHistoryService" | "teamRunHistoryService" | "workspaceRunHistoryService") =>
+  new Proxy({}, {
+    get: (_target, property) => {
+      const service = harness.services[key] as Record<PropertyKey, unknown> | null;
+      if (!service) throw new Error(`${key} is not configured for this test.`);
+      const value = service[property];
+      return typeof value === "function" ? value.bind(service) : value;
+    },
+  }));
+
 vi.mock("../../../src/agent-execution/services/agent-run-manager.js", () => ({
   AgentRunManager: {
     getInstance: () => harness.agentRunManager,
@@ -74,7 +86,7 @@ vi.mock("../../../src/run-history/services/agent-run-history-service.js", async 
 
   return {
     ...actual,
-    getAgentRunHistoryService: () => harness.services.agentRunHistoryService,
+    getAgentRunHistoryService: () => currentService("agentRunHistoryService"),
   };
 });
 
@@ -85,7 +97,7 @@ vi.mock("../../../src/run-history/services/team-run-history-service.js", async (
 
   return {
     ...actual,
-    getTeamRunHistoryService: () => harness.services.teamRunHistoryService,
+    getTeamRunHistoryService: () => currentService("teamRunHistoryService"),
   };
 });
 
@@ -96,7 +108,7 @@ vi.mock("../../../src/run-history/services/workspace-run-history-service.js", as
 
   return {
     ...actual,
-    getWorkspaceRunHistoryService: () => harness.services.workspaceRunHistoryService,
+    getWorkspaceRunHistoryService: () => currentService("workspaceRunHistoryService"),
   };
 });
 
@@ -216,6 +228,9 @@ describe("Archive run history GraphQL e2e", () => {
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+    // Build once: TypeGraphQL appends argument metadata on every build, which shifts the
+    // arguments of multi-argument resolvers from the second build in the same process on.
+    schema = await buildGraphqlSchema();
   });
 
   afterAll(() => closeStudioServices?.());
@@ -298,7 +313,6 @@ describe("Archive run history GraphQL e2e", () => {
     });
 
     await seedHistoryFiles();
-    schema = await buildGraphqlSchema();
   });
 
   afterEach(async () => {
@@ -664,5 +678,201 @@ describe("Archive run history GraphQL e2e", () => {
       expect(teamResult.archiveStoredTeamRun.success).toBe(false);
       expect(await listRelativeFiles(memoryDir)).toEqual(treeBefore);
     }
+  });
+
+  describe("archiveStoredAgentRunGroup (group-header Archive all)", () => {
+    const GROUP_AGENT = "agent-def-group";
+    const OTHER_WORKSPACE_ROOT = "/tmp/autobyteus-archive-e2e-other-workspace";
+    // Eight stored runs: the history listing (6 per agent) hides the two oldest.
+    const GROUP_RUN_IDS = Array.from({ length: 8 }, (_, index) => `run-group-0${index + 1}`);
+    const OTHER_WORKSPACE_RUN = "run-group-other-workspace";
+    const PRE_ARCHIVED_GROUP_RUN = "run-group-pre-archived";
+    const PRE_ARCHIVED_AT = "2026-05-02T09:00:00.000Z";
+
+    const ARCHIVE_GROUP_MUTATION = `
+      mutation ArchiveStoredAgentRunGroup($workspaceRootPath: String!, $agentDefinitionId: String!) {
+        archiveStoredAgentRunGroup(workspaceRootPath: $workspaceRootPath, agentDefinitionId: $agentDefinitionId) {
+          archivedRunIds
+          activeRunIds
+          failedRunIds
+        }
+      }
+    `;
+
+    type GroupResult = { archivedRunIds: string[]; activeRunIds: string[]; failedRunIds: string[] };
+
+    const archiveGroup = async (workspaceRootPath: string, agentDefinitionId = GROUP_AGENT): Promise<GroupResult> =>
+      (await execGraphql<{ archiveStoredAgentRunGroup: GroupResult }>(
+        ARCHIVE_GROUP_MUTATION,
+        { workspaceRootPath, agentDefinitionId },
+      )).archiveStoredAgentRunGroup;
+
+    const indexPath = () => path.join(memoryDir, "run_history_index.json");
+    const readAgentIndex = async (): Promise<any[]> => JSON.parse(await fs.readFile(indexPath(), "utf-8"));
+    const indexRow = (rows: any[], runId: string) => rows.find((row) => row.runId === runId);
+
+    /** Listing exactly as the sidebar requests it (6 newest unarchived runs per agent per workspace). */
+    const listAgentGroups = async (): Promise<Record<string, Record<string, string[]>>> => {
+      const result = await execGraphql<{ listWorkspaceRunHistory: any[] }>(
+        `
+          query GroupArchiveListing {
+            listWorkspaceRunHistory(limitPerAgent: 6) {
+              workspaceRootPath
+              agentDefinitions { agentDefinitionId runs { runId } }
+            }
+          }
+        `,
+      );
+      return Object.fromEntries(result.listWorkspaceRunHistory.map((workspace: any) => [
+        workspace.workspaceRootPath,
+        Object.fromEntries(workspace.agentDefinitions.map((agent: any) => [
+          agent.agentDefinitionId,
+          agent.runs.map((run: any) => run.runId).sort(),
+        ])),
+      ]));
+    };
+
+    /** Runs a live runtime owns; `startedAfterCheck` runs become live only by the time the per-run guard looks. */
+    const setLiveRuns = (live: string[], startedAfterCheck: string[] = []): void => {
+      const active = new Set(["run-agent-active", ...live]);
+      const guardActive = new Set([...active, ...startedAfterCheck]);
+      harness.agentRunManager.hasActiveRun.mockImplementation((runId: string) => guardActive.has(runId));
+      harness.agentRunManager.getActiveRun.mockImplementation((runId: string) => active.has(runId)
+        ? { getStatusSnapshot: () => ({ status: "running", can_interrupt: false }) }
+        : null);
+      harness.agentRunManager.listActiveRuns.mockReturnValue([...active]);
+    };
+
+    /** Adds the group to the shared seed before any GraphQL call reads the catalog. */
+    const seedAgentGroup = async (): Promise<void> => {
+      const groupRows = [
+        ...GROUP_RUN_IDS.map((runId, index) => ({
+          runId,
+          // One row stored with a trailing separator, as older rows may be; it is still part of the group.
+          workspaceRootPath: index === 2 ? `${WORKSPACE_ROOT}/` : WORKSPACE_ROOT,
+          createdAt: `2026-05-02T08:0${index}:00.000Z`,
+          archivedAt: null as string | null,
+        })),
+        { runId: OTHER_WORKSPACE_RUN, workspaceRootPath: OTHER_WORKSPACE_ROOT, createdAt: "2026-05-02T08:30:00.000Z", archivedAt: null },
+        { runId: PRE_ARCHIVED_GROUP_RUN, workspaceRootPath: WORKSPACE_ROOT, createdAt: "2026-05-01T07:00:00.000Z", archivedAt: PRE_ARCHIVED_AT },
+      ];
+      for (const row of groupRows) {
+        await seedRunFile(path.join(memoryDir, "agents", row.runId), `group run ${row.runId}`);
+        await agentMetadataStore.writeMetadata(row.runId, buildAgentMetadata(row.runId, memoryDir, {
+          agentDefinitionId: GROUP_AGENT,
+          workspaceRootPath: row.workspaceRootPath,
+        }));
+      }
+      await new AgentRunHistoryIndexStore(memoryDir).writeIndex([
+        ...await readAgentIndex(),
+        ...groupRows.map((row) => ({
+          runId: row.runId,
+          agentDefinitionId: GROUP_AGENT,
+          agentName: "Group Agent",
+          workspaceRootPath: row.workspaceRootPath,
+          summary: `group run ${row.runId}`,
+          createdAt: row.createdAt,
+          archivedAt: row.archivedAt,
+          terminatedAt: null,
+        })),
+      ]);
+    };
+
+    beforeEach(async () => {
+      await seedAgentGroup();
+    });
+
+    it("archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else", async () => {
+      const before = await listAgentGroups();
+      expect(before[WORKSPACE_ROOT]?.[GROUP_AGENT]).toHaveLength(6);
+      expect(before[WORKSPACE_ROOT]?.[GROUP_AGENT]).not.toContain("run-group-01");
+      const otherAgentRows = (rows: any[]) => rows
+        .filter((row) => row.agentDefinitionId !== GROUP_AGENT)
+        .sort((a, b) => a.runId.localeCompare(b.runId));
+      const otherAgentRowsBefore = otherAgentRows(await readAgentIndex());
+      const otherAgentListedBefore = before[WORKSPACE_ROOT]?.["agent-def-e2e"];
+
+      // The client may send the root with a trailing separator; it must still match canonically.
+      const result = await archiveGroup(`${WORKSPACE_ROOT}/`);
+
+      expect([...result.archivedRunIds].sort()).toEqual(GROUP_RUN_IDS);
+      expect(result.activeRunIds).toEqual([]);
+      expect(result.failedRunIds).toEqual([]);
+
+      const index = await readAgentIndex();
+      for (const runId of GROUP_RUN_IDS) {
+        expect(indexRow(index, runId)?.archivedAt).toEqual(expect.any(String));
+        await expect(fs.stat(path.join(memoryDir, "agents", runId, "raw_traces_active.jsonl"))).resolves.toBeTruthy();
+        await expect(fs.stat(path.join(memoryDir, "agents", runId, "run_metadata.json"))).resolves.toBeTruthy();
+      }
+      expect(indexRow(index, OTHER_WORKSPACE_RUN)?.archivedAt).toBeNull();
+      expect(indexRow(index, PRE_ARCHIVED_GROUP_RUN)?.archivedAt).toBe(PRE_ARCHIVED_AT);
+      expect(otherAgentRows(index)).toEqual(otherAgentRowsBefore);
+
+      const after = await listAgentGroups();
+      expect(after[WORKSPACE_ROOT]?.[GROUP_AGENT]).toBeUndefined();
+      expect(after[OTHER_WORKSPACE_ROOT]?.[GROUP_AGENT]).toEqual([OTHER_WORKSPACE_RUN]);
+      expect(after[WORKSPACE_ROOT]?.["agent-def-e2e"]).toEqual(otherAgentListedBefore);
+      expect(otherAgentListedBefore).toEqual(["run-agent-active", "run-agent-archive", "run-agent-visible"]);
+
+      // A repeated request for a group that is already gone archives nothing and is not an error.
+      expect(await archiveGroup(WORKSPACE_ROOT)).toEqual({ archivedRunIds: [], activeRunIds: [], failedRunIds: [] });
+    });
+
+    it("archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop", async () => {
+      setLiveRuns(["run-group-01", "run-group-08"]);
+      const indexBefore = await fs.readFile(indexPath(), "utf-8");
+
+      const blocked = await archiveGroup(WORKSPACE_ROOT);
+
+      expect(blocked.archivedRunIds).toEqual([]);
+      expect(blocked.failedRunIds).toEqual([]);
+      expect([...blocked.activeRunIds].sort()).toEqual(["run-group-01", "run-group-08"]);
+      expect(await fs.readFile(indexPath(), "utf-8")).toBe(indexBefore);
+      expect((await listAgentGroups())[WORKSPACE_ROOT]?.[GROUP_AGENT]).toHaveLength(6);
+
+      // Only the run hidden by the cap is still live: the server still refuses the whole group.
+      setLiveRuns(["run-group-01"]);
+      expect(await archiveGroup(WORKSPACE_ROOT)).toEqual({
+        archivedRunIds: [], activeRunIds: ["run-group-01"], failedRunIds: [],
+      });
+      expect(await fs.readFile(indexPath(), "utf-8")).toBe(indexBefore);
+
+      setLiveRuns([]);
+      const archived = await archiveGroup(WORKSPACE_ROOT);
+      expect([...archived.archivedRunIds].sort()).toEqual(GROUP_RUN_IDS);
+      expect(archived.activeRunIds).toEqual([]);
+      expect(archived.failedRunIds).toEqual([]);
+      expect((await listAgentGroups())[WORKSPACE_ROOT]?.[GROUP_AGENT]).toBeUndefined();
+    });
+
+    it("reports a run that started after the running-run check as failed and archives the rest (AC-010)", async () => {
+      setLiveRuns([], ["run-group-04"]);
+
+      const result = await archiveGroup(WORKSPACE_ROOT);
+
+      expect(result.activeRunIds).toEqual([]);
+      expect(result.failedRunIds).toEqual(["run-group-04"]);
+      expect([...result.archivedRunIds].sort()).toEqual(GROUP_RUN_IDS.filter((runId) => runId !== "run-group-04"));
+      expect(indexRow(await readAgentIndex(), "run-group-04")?.archivedAt).toBeNull();
+      expect((await listAgentGroups())[WORKSPACE_ROOT]?.[GROUP_AGENT]).toEqual(["run-group-04"]);
+    });
+
+    it("rejects an empty workspace root or agent definition id as a GraphQL error without writing anything", async () => {
+      const treeBefore = await listRelativeFiles(memoryDir);
+      const indexBefore = await fs.readFile(indexPath(), "utf-8");
+      for (const variables of [
+        { workspaceRootPath: "", agentDefinitionId: GROUP_AGENT },
+        { workspaceRootPath: "   ", agentDefinitionId: GROUP_AGENT },
+        { workspaceRootPath: WORKSPACE_ROOT, agentDefinitionId: "" },
+        { workspaceRootPath: WORKSPACE_ROOT, agentDefinitionId: "  " },
+      ]) {
+        const result = await graphql({ schema, source: ARCHIVE_GROUP_MUTATION, variableValues: variables });
+        expect(result.data).toBeNull();
+        expect(result.errors?.[0]?.message).toBe("workspaceRootPath and agentDefinitionId are required.");
+      }
+      expect(await listRelativeFiles(memoryDir)).toEqual(treeBefore);
+      expect(await fs.readFile(indexPath(), "utf-8")).toBe(indexBefore);
+    });
   });
 });

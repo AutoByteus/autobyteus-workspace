@@ -69,6 +69,12 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
     };
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-mcp" }));
+    // The segment lifecycle stage admits content only after its segment start.
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
+      id: "reasoning-before-mcp-tool",
+      turn_id: "turn-mcp",
+      segment_type: "reasoning",
+    }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "reasoning-before-mcp-tool",
       turn_id: "turn-mcp",

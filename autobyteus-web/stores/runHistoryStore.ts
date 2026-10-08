@@ -30,12 +30,9 @@ import {
   type RunHistorySelectionMode,
 } from '~/stores/runHistoryLoadActions';
 import {
-  archiveAgentOrgRunInHistoryStore,
-  archiveRunInHistoryStore,
-  archiveTeamRunInHistoryStore,
-  deleteAgentOrgRunFromHistoryStore,
-  deleteRunFromHistoryStore,
-  deleteTeamRunFromHistoryStore,
+  archiveAgentOrgRunInHistoryStore, archiveAgentOrgRunsInHistoryStore, archiveAgentRunGroupInHistoryStore,
+  archiveRunInHistoryStore, archiveTeamRunInHistoryStore, archiveTeamRunsInHistoryStore,
+  deleteAgentOrgRunFromHistoryStore, deleteRunFromHistoryStore, deleteTeamRunFromHistoryStore,
 } from '~/stores/runHistoryMutationActions';
 import { fetchWorkspaceHistoryForStore, pruneWorkspaceHistoryForStore } from '~/stores/runHistoryWorkspaceHistoryActions';
 import {
@@ -420,6 +417,12 @@ export const useRunHistoryStore = defineStore('runHistory', {
       if (changed) this.refreshRunNavigationTopology('agent-org-archive');
       return changed;
     },
+
+    archiveAgentRunGroup(workspaceRootPath: string, agentDefinitionId: string) {
+      return archiveAgentRunGroupInHistoryStore(this, workspaceRootPath, agentDefinitionId);
+    },
+    archiveTeamRuns(teamRunIds: string[]) { return archiveTeamRunsInHistoryStore(this, teamRunIds); },
+    archiveAgentOrgRuns(orgRunIds: string[]) { return archiveAgentOrgRunsInHistoryStore(this, orgRunIds); },
 
     async refreshTreeQuietly(limitPerAgent = 6): Promise<void> {
       try {

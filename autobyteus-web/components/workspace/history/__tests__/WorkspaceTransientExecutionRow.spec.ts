@@ -39,12 +39,14 @@ describe('WorkspaceTransientExecutionRow clean delegated-row style', () => {
     expect(element.attributes('aria-selected')).toBe('true');
   });
 
-  it('marks a delegated Team only by a 16px slate-500 bolt with a semibold name', () => {
-    const element = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true, expanded: true } });
+  // restore-team-group-icon AC-001/003: role never changes Team identity.
+  it.each([false, true])('keeps a 16px slate people-group for Teams (collaborator opensOnAppear=%s)', (opensOnAppear) => {
+    const element = mount(WorkspaceTransientExecutionRow, { props: { row: { ...teamRow(), opensOnAppear }, hasChildren: true, expanded: true } });
     const icon = element.get('[data-team-icon="temporary-task-team"]');
     expect(icon.classes()).toEqual(['inline-flex', 'h-4', 'w-4', 'items-center', 'justify-center', 'text-slate-500']);
-    const bolt = icon.get('[data-icon="heroicons:bolt-20-solid"]');
-    expect(bolt.classes()).toEqual(['h-4', 'w-4']);
+    const group = icon.get('[data-icon="heroicons:user-group-20-solid"]');
+    expect(element.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
+    expect(group.classes()).toEqual(['h-4', 'w-4']);
     expect(element.find('[data-test="workspace-transient-status-dot"]').exists()).toBe(false);
     expect(element.find('.font-semibold').text()).toContain('docs review team');
   });

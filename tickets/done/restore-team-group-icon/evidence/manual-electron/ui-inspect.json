@@ -1,0 +1,167 @@
+{
+  "mode": "inspect",
+  "instanceId": "iso-57073-e937",
+  "timestamp": "2026-10-08T05:29:09.928Z",
+  "requests": [],
+  "errors": [],
+  "title": "",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "Chat",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "New chat",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agents",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent Teams",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent Orgs",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Projects",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Skills",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Memory",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Nodes",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Temp Workspace",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Settings",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Daily Assistant",
+      "label": "Choose what to run (now Daily Assistant)",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Upload files",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Temp workspace",
+      "label": "Workspace: Temp workspace. Change workspace",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Auto-approve",
+      "label": "Auto-approve tools is on. Tools run without asking. Turn off to ask first.",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "claude-fable-5AutoByteus",
+      "label": "Model: claude-fable-5 on AutoByteus. Change model",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Off",
+      "label": "Thinking: Off. Change",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Send message",
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": "Show tools",
+      "testid": null,
+      "href": null
+    }
+  ],
+  "result": "Pass"
+}

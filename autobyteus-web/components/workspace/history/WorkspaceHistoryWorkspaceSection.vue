@@ -58,7 +58,7 @@
         class="rounded-md"
       >
         <div
-          class="flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+          class="group/agent-header flex items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50"
         >
           <button
             type="button"
@@ -90,14 +90,28 @@
             <span class="ml-1 text-xs text-gray-400">({{ agentNode.runs.length }})</span>
           </button>
 
+          <div class="ml-2 flex flex-shrink-0 items-center gap-1">
+          <button
+            v-if="actions.onArchiveAgentGroup && canArchiveAgentGroup(agentNode)"
+            type="button"
+            :data-test="`workspace-agent-group-archive-${agentNode.agentDefinitionId}`"
+            class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 focus:opacity-100 md:opacity-0 md:group-hover/agent-header:opacity-100 md:group-focus-within/agent-header:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+            :title="$t('workspace.history.groupArchive.archiveAll')"
+            :aria-label="$t('workspace.history.groupArchive.archiveAll')"
+            :disabled="isGroupArchiving(agentGroupArchiveKey(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId))"
+            @click.stop="actions.onArchiveAgentGroup(workspaceNode, agentNode)"
+          >
+            <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+          </button>
           <button
             type="button"
-            class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+            class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
             :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.new_run_with_this_agent')"
             @click="actions.onCreateRun(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
           >
             <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
           </button>
+          </div>
         </div>
 
         <div
@@ -194,9 +208,10 @@
           :key="group.key"
           class="rounded-md"
         >
+          <div class="group/team-header flex items-center rounded-md px-2 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-50">
           <button
             type="button"
-            class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            class="flex min-w-0 flex-1 items-center text-left"
             :data-test="`workspace-team-definition-row-${group.key}`"
             :aria-expanded="state.isTeamDefinitionExpanded(workspacePresentationId, group.key)"
             @click="state.toggleTeamDefinition(workspacePresentationId, group.key)"
@@ -229,6 +244,19 @@
             <span class="truncate font-medium">{{ group.teamDefinitionName }}</span>
             <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
           </button>
+          <button
+            v-if="actions.onArchiveTeamGroup"
+            type="button"
+            :data-test="`workspace-team-group-archive-${group.key}`"
+            class="ml-2 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 focus:opacity-100 md:opacity-0 md:group-hover/team-header:opacity-100 md:group-focus-within/team-header:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+            :title="$t('workspace.history.groupArchive.archiveAll')"
+            :aria-label="$t('workspace.history.groupArchive.archiveAll')"
+            :disabled="isGroupArchiving(teamGroupArchiveKey(workspacePresentationId, group.key))"
+            @click.stop="actions.onArchiveTeamGroup(workspacePresentationId, group)"
+          >
+            <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+          </button>
+          </div>
 
           <div v-if="state.isTeamDefinitionExpanded(workspacePresentationId, group.key)" class="ml-3 mt-0.5 space-y-0.5">
             <div
@@ -356,6 +384,11 @@ import type {
 import type { WorkspaceHistoryWorkspaceNode } from '~/stores/runHistoryTypes';
 import { NO_WORKSPACE_HISTORY_ROOT } from '~/utils/runTreeProjection';
 import { useLocalization } from '~/composables/useLocalization';
+import {
+  agentGroupArchiveKey,
+  canArchiveAgentGroup,
+  teamGroupArchiveKey,
+} from '~/composables/useWorkspaceHistoryGroupArchive';
 
 const props = defineProps<{
   workspaceNode: WorkspaceHistoryWorkspaceNode;
@@ -376,6 +409,7 @@ const workspacePresentationId = computed(() => props.workspaceNode.stableKey);
 const workspaceDisplayName = computed(() => props.workspaceNode.workspaceRootPath === NO_WORKSPACE_HISTORY_ROOT
   ? t('workspace.agentOrg.history.noWorkspace')
   : props.workspaceNode.workspaceName);
+const isGroupArchiving = (groupKey: string): boolean => props.state.isGroupArchiving?.(groupKey) ?? false;
 
 const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGroup[]>(() =>
   buildWorkspaceTeamDefinitionDisplayGroups(
