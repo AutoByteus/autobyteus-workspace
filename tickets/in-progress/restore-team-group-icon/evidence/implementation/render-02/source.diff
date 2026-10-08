@@ -1,0 +1,210 @@
+Evidence transcript: trailing whitespace normalized; substantive source/test delta unchanged. Not an applyable patch.
+
+diff --git a/autobyteus-web/components/memory/CollaborationMemoryDetail.vue b/autobyteus-web/components/memory/CollaborationMemoryDetail.vue
+index 6a3eb83f2..db1f96fbc 100644
+--- a/autobyteus-web/components/memory/CollaborationMemoryDetail.vue
++++ b/autobyteus-web/components/memory/CollaborationMemoryDetail.vue
+@@ -51,7 +51,7 @@
+                       v-if="block.group.kind === 'TASK_TEAM'"
+                       class="inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
+                       aria-hidden="true"
+-                    ><Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" /></span>
++                    ><Icon icon="heroicons:user-group-20-solid" class="h-3 w-3" /></span>
+                     <Icon v-else icon="heroicons:user-group-20-solid" class="h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
+                     <span class="break-all font-semibold">{{ block.group.displayName }}</span>
+                     <span v-if="block.group.kind === 'TASK_TEAM'" class="shrink-0 text-indigo-500">· {{ taskTeamLabel(block.group.startedAt) }}</span>
+diff --git a/autobyteus-web/components/memory/__tests__/CollaborationMemoryDetail.spec.ts b/autobyteus-web/components/memory/__tests__/CollaborationMemoryDetail.spec.ts
+index 70a358e2d..8ad34febc 100644
+--- a/autobyteus-web/components/memory/__tests__/CollaborationMemoryDetail.spec.ts
++++ b/autobyteus-web/components/memory/__tests__/CollaborationMemoryDetail.spec.ts
+@@ -1,8 +1,10 @@
+-import { describe, it, expect } from 'vitest';
++import { describe, it, expect, vi } from 'vitest';
+ import { mount } from '@vue/test-utils';
+ import CollaborationMemoryDetail from '../CollaborationMemoryDetail.vue';
+ import type { CollaborationMemberMemoryTargetSummary, CollaborationMemoryGroup, CollaborationRunMemoryRow } from '~/types/memory';
+
++vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
++
+ const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+
+ const member = (overrides: Partial<CollaborationMemberMemoryTargetSummary> & Pick<CollaborationMemberMemoryTargetSummary, 'agentRunId' | 'displayName'>): CollaborationMemberMemoryTargetSummary => ({
+@@ -86,6 +88,22 @@ describe('CollaborationMemoryDetail', () => {
+     expect(wrapper.findAll('article button').map((button) => button.attributes('data-execution-kind'))).toEqual(['CONFIGURED', 'CONFIGURED']);
+   });
+
++  it('keeps people-group identity for configured, task and nested Teams with existing role decorations (restore-team-group-icon AC-002/003)', () => {
++    const wrapper = mountDetail({ rows: [orgRow()] });
++    const headers = wrapper.findAll('[data-test="memory-member-group-header"]');
++    expect(headers).toHaveLength(3);
++    for (const [index, header] of headers.entries()) {
++      const group = header.get('[data-icon="heroicons:user-group-20-solid"]');
++      expect(group.classes()).toEqual(index === 0 ? ['h-4', 'w-4', 'flex-shrink-0', 'text-gray-500'] : ['h-3', 'w-3']);
++      if (index > 0) {
++        expect(group.element.parentElement?.classList.contains('border-dashed')).toBe(true);
++        expect(group.element.parentElement?.classList.contains('text-indigo-600')).toBe(true);
++        expect(header.text()).toContain('Task team');
++      }
++    }
++    expect(wrapper.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
++  });
++
+   it('renders the execution structure grouped by team run, never by address (REQ-012, AC-014)', async () => {
+     const wrapper = mountDetail({ rows: [orgRow()] });
+
+diff --git a/autobyteus-web/components/projects/ProjectTaskWorkers.vue b/autobyteus-web/components/projects/ProjectTaskWorkers.vue
+index f9f5f4a01..eca8bcdf7 100644
+--- a/autobyteus-web/components/projects/ProjectTaskWorkers.vue
++++ b/autobyteus-web/components/projects/ProjectTaskWorkers.vue
+@@ -23,7 +23,7 @@
+           class="inline-flex flex-shrink-0 items-center justify-center text-slate-500"
+           :class="density === 'detail' ? 'h-5 w-5' : 'h-4 w-4'"
+           aria-hidden="true"
+-        ><Icon icon="heroicons:bolt-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
++        ><Icon icon="heroicons:user-group-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
+         <span
+           v-else
+           class="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-600"
+diff --git a/autobyteus-web/components/projects/__tests__/ProjectTaskWorkers.spec.ts b/autobyteus-web/components/projects/__tests__/ProjectTaskWorkers.spec.ts
+index eba12178e..4cbbc2665 100644
+--- a/autobyteus-web/components/projects/__tests__/ProjectTaskWorkers.spec.ts
++++ b/autobyteus-web/components/projects/__tests__/ProjectTaskWorkers.spec.ts
+@@ -6,6 +6,8 @@ const { open, history } = vi.hoisted(() => ({ open: vi.fn(), history: { workspac
+ vi.mock('~/composables/projects/useTaskRootNavigation', () => ({ useTaskRootNavigation: () => ({ open }) }))
+ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => history }))
+
++vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
++
+ import ProjectTaskWorkers from '../ProjectTaskWorkers.vue'
+ import TaskRootSection from '../TaskRootSection.vue'
+ import type { TaskRootView } from '~/types/project'
+@@ -19,6 +21,23 @@ const listHost = () => { history.workspaceGroups = [{ agentDefinitions: [{ runs:
+ describe('ProjectTaskWorkers (the Task root line)', () => {
+   beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); history.workspaceGroups = []; history.agentOrgHistory = [] })
+
++  // restore-team-group-icon AC-002/003: both densities and openability retain Team identity.
++  it.each(['row', 'detail'] as const)('renders the group at the existing %s density in every worker state', (density) => {
++    listHost()
++    for (const overrides of [{}, { start: 'starting' }, { closed: true }, { start: 'failed', startError: { code: 'NO_MODEL', message: 'No model.' } }] as Partial<TaskRootView>[]) {
++      const wrapper = mount(ProjectTaskWorkers, { props: { density, root: root({ kind: 'team', ...overrides }) } })
++      const icon = wrapper.get('[data-icon="heroicons:user-group-20-solid"]')
++      expect(icon.classes()).toEqual(density === 'detail' ? ['h-4', 'w-4'] : ['h-3.5', 'w-3.5'])
++      expect(icon.element.parentElement?.classList.contains(density === 'detail' ? 'h-5' : 'h-4')).toBe(true)
++      expect(wrapper.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false)
++      expect(wrapper.find('[data-icon="heroicons:chevron-right-20-solid"]').exists()).toBe(Object.keys(overrides).length === 0)
++      expect(wrapper.find('[data-icon="heroicons:exclamation-circle-20-solid"]').exists()).toBe(overrides.start === 'failed')
++    }
++    const agent = mount(ProjectTaskWorkers, { props: { density, root: root() } })
++    expect(agent.find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(false)
++    expect(agent.get('[aria-hidden="true"]').text()).toBe('RW')
++  })
++
+   it('an openable root is a labelled button with a chevron that opens the worker', async () => {
+     listHost()
+     const wrapper = mount(ProjectTaskWorkers, { props: { root: root() } })
+diff --git a/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue b/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+index f359359df..1269ce9e4 100644
+--- a/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
++++ b/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+@@ -146,8 +146,8 @@
+                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
+                 <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
+                 <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+-                <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
+-                <Icon icon="heroicons:bolt-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
++                <!-- Teams share the people-group identity, in the tree's slate. -->
++                <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
+                 <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
+               </button>
+             </template>
+diff --git a/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue b/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+index 5bbf2a68a..aebf7564d 100644
+--- a/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
++++ b/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+@@ -68,13 +68,13 @@
+         />
+       </span>
+       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
+-        <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
++        <!-- Teams share the people-group identity, in the tree's slate. -->
+         <span
+           v-if="row.memberKind === 'agent_team'"
+           class="inline-flex h-4 w-4 items-center justify-center text-slate-500"
+           data-team-icon="temporary-task-team"
+         >
+-          <Icon icon="heroicons:bolt-20-solid" class="h-4 w-4" />
++          <Icon icon="heroicons:user-group-20-solid" class="h-4 w-4" />
+         </span>
+         <!-- A task Agent shows the same solid status dot and initials as a member. -->
+         <span
+diff --git a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts
+index ab3917e0c..44441a35b 100644
+--- a/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts
++++ b/autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts
+@@ -62,7 +62,7 @@ describe('Org history delegated rows', () => {
+     expect(teamRow.attributes('aria-label')).not.toMatch(/Task:/);
+   });
+
+-  it('draws delegated rows in the clean row style: focus ring, and a slate-500 bolt with a semibold name for a Team (delegated-row-clean-style AC-001)', () => {
++  it('draws delegated rows in the clean row style: focus ring, and a slate-500 people-group with a semibold name for a Team (delegated-row-clean-style AC-001)', () => {
+     const wrapper = mountOrg(false);
+     const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
+     const teamRow = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
+@@ -72,12 +72,32 @@ describe('Org history delegated rows', () => {
+       expect(row.classes()).not.toContain('bg-indigo-50/40');
+     }
+     const icon = teamRow.get('[data-team-icon="temporary-task-team"]');
+-    expect(icon.attributes('data-icon')).toBe('heroicons:bolt-20-solid');
++    expect(icon.attributes('data-icon')).toBe('heroicons:user-group-20-solid');
+     expect(icon.classes()).toEqual(expect.arrayContaining(['h-4', 'w-4', 'text-slate-500']));
+-    expect(teamRow.find('[data-icon="heroicons:user-group-20-solid"]').exists()).toBe(false);
++    expect(teamRow.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
++    expect(wrapper.get('[data-test="agent-org-team-row-team-configured"] [data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
+     expect(teamRow.get('.font-semibold').text()).toContain('team');
+   });
+
++  it('uses the same group for a brought-in collaborator, a delegated copy and a configured Team (restore-team-group-icon AC-001)', () => {
++    const wrapper = mountOrg(false, (tree) => {
++      tree.rootOrg.collaborators = [{
++        kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
++        coordinatorAddress: '/product_team/lead',
++        members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', agentRunId: 'product-lead', platformAgentRunId: null }],
++        handoffs: [], defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration,
++        taskExecutions: [], addedAt: tree.createdAt, addedViaAgentRunId: 'agent-director',
++      }];
++      return tree;
++    });
++    for (const testId of ['agent-org-task-team-row-product-run', 'agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
++      const team = wrapper.get(`[data-test="${testId}"]`);
++      expect(team.findAll('[data-icon="heroicons:user-group-20-solid"]')).toHaveLength(1);
++      expect(team.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
++      expect(team.attributes('aria-expanded')).toBe('true');
++    }
++  });
++
+   it('gives task-Team members no spawner line because the Team row carries it', () => {
+     const wrapper = mountOrg(false);
+     for (const member of ['agent-task-lead', 'agent-task-worker']) {
+diff --git a/autobyteus-web/components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts b/autobyteus-web/components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
+index 04a8b7e77..ea7e384ed 100644
+--- a/autobyteus-web/components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
++++ b/autobyteus-web/components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
+@@ -39,12 +39,14 @@ describe('WorkspaceTransientExecutionRow clean delegated-row style', () => {
+     expect(element.attributes('aria-selected')).toBe('true');
+   });
+
+-  it('marks a delegated Team only by a 16px slate-500 bolt with a semibold name', () => {
+-    const element = mount(WorkspaceTransientExecutionRow, { props: { row: teamRow(), hasChildren: true, expanded: true } });
++  // restore-team-group-icon AC-001/003: role never changes Team identity.
++  it.each([false, true])('keeps a 16px slate people-group for Teams (collaborator opensOnAppear=%s)', (opensOnAppear) => {
++    const element = mount(WorkspaceTransientExecutionRow, { props: { row: { ...teamRow(), opensOnAppear }, hasChildren: true, expanded: true } });
+     const icon = element.get('[data-team-icon="temporary-task-team"]');
+     expect(icon.classes()).toEqual(['inline-flex', 'h-4', 'w-4', 'items-center', 'justify-center', 'text-slate-500']);
+-    const bolt = icon.get('[data-icon="heroicons:bolt-20-solid"]');
+-    expect(bolt.classes()).toEqual(['h-4', 'w-4']);
++    const group = icon.get('[data-icon="heroicons:user-group-20-solid"]');
++    expect(element.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
++    expect(group.classes()).toEqual(['h-4', 'w-4']);
+     expect(element.find('[data-test="workspace-transient-status-dot"]').exists()).toBe(false);
+     expect(element.find('.font-semibold').text()).toContain('docs review team');
+   });

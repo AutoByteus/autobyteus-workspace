@@ -1,0 +1,57 @@
+
+> autobyteus@1.4.97 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/projects/__tests__/ProjectTaskWorkers.spec.ts components/memory/__tests__/CollaborationMemoryDetail.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskWorkers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/CollaborationMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskWorkers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/CollaborationMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/CollaborationMemoryDetail.spec.ts (6 tests) 50ms
+ ✓ components/projects/__tests__/ProjectTaskWorkers.spec.ts (8 tests) 39ms
+ ✓ components/workspace/history/__tests__/WorkspaceTransientExecutionRow.spec.ts (6 tests) 31ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts (10 tests) 99ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (12 tests) 137ms
+
+ Test Files  5 passed (5)
+      Tests  42 passed (42)
+   Start at  06:56:03
+   Duration  8.22s (transform 3.92s, setup 34.67s, collect 1.76s, tests 357ms, environment 1.36s, prepare 796ms)
