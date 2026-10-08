@@ -56,9 +56,9 @@ Ticket `task-closed-status`: SR-004 + SR-005 (Cancelled as the last column) + SR
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (requested)
-- Initial verification / acceptance reference: pending
-- Renewed verification required after later re-integration: `No`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: `user-verification.md`. The user wrote "finalize and no need to release" (2026-10-08) on the DR-002 state `c68cf040c`. No in-app result was reported.
+- Renewed verification required after later re-integration: `No`. The post-verification merge of `origin/personal` @ `23ca52e7a` (standalone-run restore fix and `v1.4.99-beta.3`) changes no Task-status or Projects UI behavior.
 - Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: N/A
 
@@ -75,8 +75,8 @@ Ticket `task-closed-status`: SR-004 + SR-005 (Cancelled as the last column) + SR
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/task-closed-status`: `No` (after verification)
-- Archived ticket path: pending
+- Ticket moved to `tickets/done/task-closed-status`: `Yes`
+- Archived ticket path: `tickets/done/task-closed-status/`
 
 ## Version / Tag / Release Commit
 
@@ -90,9 +90,9 @@ Pending the user's release decision.
 - Ticket branch push result: pending verification
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
+- Target advanced after verification / acceptance: `Yes`. `efc2bfd0f` → `23ca52e7a`, 8 commits: interrupt-resend-retired-cleanup-stuck (server standalone-run restore, `agy-failure-cli.mjs` fixture, `TESTING.md`, `agent_execution.md`) and `v1.4.99-beta.3`.
+- Delivery-owned edits protected before re-integration: `Completed` (all already committed at `c68cf040c`)
+- Re-integration before final merge result: `Completed`. Clean merge `a206578e9`. Rechecks (`delivery-evidence/finalization/`): server build pass; server focused unit (projects, agent-collaboration, agent-tools project-tasks/task-delegation, migration, api, agent-team-execution, agent-execution, standalone-agent-run-root) 231 files / 2177 tests pass; integration 2/17 pass; gated E2E `project-task-boundaries`, `task-reactivation-root-visibility`, `task-closure-root-visibility` and `project-change-feed` 4 files / 27 tests pass (1 skipped, live Claude); web Projects specs 102/984 pass.
 - Target branch update result: pending
 - Merge into target result: pending
 - Push target branch result: pending
@@ -101,12 +101,12 @@ Pending the user's release decision.
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Method: `Release Script` (`scripts/desktop-release.sh`) if requested
-- Method reference / command: pending
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
-- Blocker: user decision
+- Applicable: `No` (user: "no need to release")
+- Method: N/A
+- Method reference / command: N/A
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required`. `tickets/done/task-closed-status/release-notes.md` stays for the next release that includes this change.
+- Blocker: none
 
 ## Post-Finalization Cleanup
 

@@ -1,0 +1,1835 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentRuntimeState initialized for agent_id 'recovery_tester_9058'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_9058': No tools provided in config.
+Agent 'recovery_tester_9058': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_9058'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_9058' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_9058'.
+Registered AgentContext for agent_id 'recovery_tester_9058'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_9058'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_9058'.
+Agent 'recovery_tester_9058' created and stored successfully.
+Agent 'recovery_tester_9058' requesting runtime to start.
+AgentRuntime for 'recovery_tester_9058': Starting worker.
+AgentWorker 'recovery_tester_9058': Starting...
+AgentWorker 'recovery_tester_9058' asyncRun(): Starting.
+Agent 'recovery_tester_9058': Runtime init completed (event store initialized).
+Agent 'recovery_tester_9058': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_9058': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_9058': Runtime init completed (AgentEventScheduler initialized).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_9058': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_9058': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_9058': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_9058': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_9058': Final processed system prompt configured and captured. Trace ID: rt_1791475715132_e647750a-e468-49b3-b481-cc36d343aa54. Final length: 28.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentWorker 'recovery_tester_9058' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentEventStream (ID: 42659d62-cb26-4cb1-b5f5-71b40a2deac2) initialized for agent_id 'recovery_tester_9058'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9058'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9058'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9058'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'recovery_tester_9058'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdwpx_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mcompaction_failed {
+  agent_id: [32m'recovery_tester_9058'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdwpx_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [execution_failure]: controlled recovery'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058' requesting runtime interrupt.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgent 'recovery_tester_9058' requesting runtime to stop (timeout: 2s).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentWorker 'recovery_tester_9058': Stop requested.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 10235d1b-72d4-4465-a5eb-7e6bb8dcc768, AgentID: recovery_tester_9058) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_9058' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_9058': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentWorker 'recovery_tester_9058': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_9058': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mUnregistered AgentContext for agent_id 'recovery_tester_9058'.
+AgentRuntime for 'recovery_tester_9058': Context unregistered.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentRuntime for 'recovery_tester_9058' stop() method completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentEventStream (ID: 42659d62-cb26-4cb1-b5f5-71b40a2deac2) for 'recovery_tester_9058': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: success
+[22m[39mAgentEventStream (ID: 42659d62-cb26-4cb1-b5f5-71b40a2deac2) for 'recovery_tester_9058': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentRuntimeState initialized for agent_id 'recovery_tester_4744'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_4744': No tools provided in config.
+Agent 'recovery_tester_4744': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_4744'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_4744' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_4744'.
+Registered AgentContext for agent_id 'recovery_tester_4744'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_4744'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_4744'.
+Agent 'recovery_tester_4744' created and stored successfully.
+Agent 'recovery_tester_4744' requesting runtime to start.
+AgentRuntime for 'recovery_tester_4744': Starting worker.
+AgentWorker 'recovery_tester_4744': Starting...
+AgentWorker 'recovery_tester_4744' asyncRun(): Starting.
+Agent 'recovery_tester_4744': Runtime init completed (event store initialized).
+Agent 'recovery_tester_4744': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_4744': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_4744': Runtime init completed (AgentEventScheduler initialized).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_4744': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_4744': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_4744': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_4744': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_4744': Final processed system prompt configured and captured. Trace ID: rt_1791475715370_f53cc1e4-b80f-4130-886e-be25543553ae. Final length: 28.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentWorker 'recovery_tester_4744' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentEventStream (ID: ba8cbf6a-c33e-4d61-a0c3-063ddb28b6c6) initialized for agent_id 'recovery_tester_4744'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_4744'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_4744'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_4744'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'recovery_tester_4744'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdwul_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mcompaction_failed {
+  agent_id: [32m'recovery_tester_4744'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdwul_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [execution_failure]: controlled recovery'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744' requesting runtime interrupt.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgent 'recovery_tester_4744' requesting runtime to stop (timeout: 2s).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentWorker 'recovery_tester_4744': Stop requested.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e13cef1a-8a9e-4f35-a313-09d5117fdcb5, AgentID: recovery_tester_4744) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_4744' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_4744': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentWorker 'recovery_tester_4744': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_4744': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mUnregistered AgentContext for agent_id 'recovery_tester_4744'.
+AgentRuntime for 'recovery_tester_4744': Context unregistered.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentRuntime for 'recovery_tester_4744' stop() method completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentEventStream (ID: ba8cbf6a-c33e-4d61-a0c3-063ddb28b6c6) for 'recovery_tester_4744': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: child-finish-failure
+[22m[39mAgentEventStream (ID: ba8cbf6a-c33e-4d61-a0c3-063ddb28b6c6) for 'recovery_tester_4744': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentRuntimeState initialized for agent_id 'recovery_tester_5573'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_5573': No tools provided in config.
+Agent 'recovery_tester_5573': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_5573'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_5573' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_5573'.
+Registered AgentContext for agent_id 'recovery_tester_5573'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_5573'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_5573'.
+Agent 'recovery_tester_5573' created and stored successfully.
+Agent 'recovery_tester_5573' requesting runtime to start.
+AgentRuntime for 'recovery_tester_5573': Starting worker.
+AgentWorker 'recovery_tester_5573': Starting...
+AgentWorker 'recovery_tester_5573' asyncRun(): Starting.
+Agent 'recovery_tester_5573': Runtime init completed (event store initialized).
+Agent 'recovery_tester_5573': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_5573': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_5573': Runtime init completed (AgentEventScheduler initialized).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_5573': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_5573': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_5573': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_5573': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_5573': Final processed system prompt configured and captured. Trace ID: rt_1791475715515_e744991d-0f96-44ac-89ec-a03c94a4d75c. Final length: 28.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentWorker 'recovery_tester_5573' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentEventStream (ID: c2402ec9-7e0e-4b27-a70c-ef8f4d7ef6a6) initialized for agent_id 'recovery_tester_5573'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_5573'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_5573'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_5573'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'recovery_tester_5573'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdwys_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mcompaction_failed {
+  agent_id: [32m'recovery_tester_5573'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdwys_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [execution_failure]: controlled recovery'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573' requesting runtime interrupt.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgent 'recovery_tester_5573' requesting runtime to stop (timeout: 2s).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentWorker 'recovery_tester_5573': Stop requested.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4d22babe-7204-4ffe-b8a2-4b259db024bb, AgentID: recovery_tester_5573) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_5573' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_5573': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentWorker 'recovery_tester_5573': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_5573': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mUnregistered AgentContext for agent_id 'recovery_tester_5573'.
+AgentRuntime for 'recovery_tester_5573': Context unregistered.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentRuntime for 'recovery_tester_5573' stop() method completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentEventStream (ID: c2402ec9-7e0e-4b27-a70c-ef8f4d7ef6a6) for 'recovery_tester_5573': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent: later-host-failure
+[22m[39mAgentEventStream (ID: c2402ec9-7e0e-4b27-a70c-ef8f4d7ef6a6) for 'recovery_tester_5573': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentRuntimeState initialized for agent_id 'recovery_tester_9342'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_9342': No tools provided in config.
+Agent 'recovery_tester_9342': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_9342'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_9342' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_9342'.
+Registered AgentContext for agent_id 'recovery_tester_9342'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_9342'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_9342'.
+Agent 'recovery_tester_9342' created and stored successfully.
+Agent 'recovery_tester_9342' requesting runtime to start.
+AgentRuntime for 'recovery_tester_9342': Starting worker.
+AgentWorker 'recovery_tester_9342': Starting...
+AgentWorker 'recovery_tester_9342' asyncRun(): Starting.
+Agent 'recovery_tester_9342': Runtime init completed (event store initialized).
+Agent 'recovery_tester_9342': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_9342': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_9342': Runtime init completed (AgentEventScheduler initialized).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_9342': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_9342': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_9342': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_9342': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_9342': Final processed system prompt configured and captured. Trace ID: rt_1791475715663_540a5758-eacf-42e4-87b7-a54fb822afb2. Final length: 28.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentWorker 'recovery_tester_9342' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentEventStream (ID: 7d27fa14-15be-4a1c-bf45-1f7487861c7a) initialized for agent_id 'recovery_tester_9342'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9342'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9342'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9342'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'recovery_tester_9342'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdx2r_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mcompaction_failed {
+  agent_id: [32m'recovery_tester_9342'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdx2r_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [execution_failure]: controlled recovery'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342' requesting runtime interrupt.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgent 'recovery_tester_9342' requesting runtime to stop (timeout: 2s).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentWorker 'recovery_tester_9342': Stop requested.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 189a48d4-14c3-4ecd-8ca1-1d4ceee41010, AgentID: recovery_tester_9342) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_9342' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_9342': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentWorker 'recovery_tester_9342': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_9342': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mUnregistered AgentContext for agent_id 'recovery_tester_9342'.
+AgentRuntime for 'recovery_tester_9342': Context unregistered.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentRuntime for 'recovery_tester_9342' stop() method completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentEventStream (ID: 7d27fa14-15be-4a1c-bf45-1f7487861c7a) for 'recovery_tester_9342': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: success
+[22m[39mAgentEventStream (ID: 7d27fa14-15be-4a1c-bf45-1f7487861c7a) for 'recovery_tester_9342': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentRuntimeState initialized for agent_id 'recovery_tester_4182'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_4182': No tools provided in config.
+Agent 'recovery_tester_4182': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_4182'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_4182' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_4182'.
+Registered AgentContext for agent_id 'recovery_tester_4182'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_4182'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_4182'.
+Agent 'recovery_tester_4182' created and stored successfully.
+Agent 'recovery_tester_4182' requesting runtime to start.
+AgentRuntime for 'recovery_tester_4182': Starting worker.
+AgentWorker 'recovery_tester_4182': Starting...
+AgentWorker 'recovery_tester_4182' asyncRun(): Starting.
+Agent 'recovery_tester_4182': Runtime init completed (event store initialized).
+Agent 'recovery_tester_4182': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_4182': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_4182': Runtime init completed (AgentEventScheduler initialized).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_4182': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_4182': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_4182': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_4182': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_4182': Final processed system prompt configured and captured. Trace ID: rt_1791475715804_c40cc6d0-de35-462f-9762-ad2f6c03e4bf. Final length: 28.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentWorker 'recovery_tester_4182' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentEventStream (ID: b6af400e-8c7d-49e7-95a1-d3704f7b3d0a) initialized for agent_id 'recovery_tester_4182'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_4182'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_4182'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_4182'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'recovery_tester_4182'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdx6g_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mcompaction_failed {
+  agent_id: [32m'recovery_tester_4182'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdx6g_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [execution_failure]: controlled recovery'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182' requesting runtime interrupt.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgent 'recovery_tester_4182' requesting runtime to stop (timeout: 2s).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentWorker 'recovery_tester_4182': Stop requested.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 76955780-4f76-4f30-a1e8-435fcd0e6faf, AgentID: recovery_tester_4182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_4182' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_4182': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentWorker 'recovery_tester_4182': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_4182': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mUnregistered AgentContext for agent_id 'recovery_tester_4182'.
+AgentRuntime for 'recovery_tester_4182': Context unregistered.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentRuntime for 'recovery_tester_4182' stop() method completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentEventStream (ID: b6af400e-8c7d-49e7-95a1-d3704f7b3d0a) for 'recovery_tester_4182': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: child-finish-failure
+[22m[39mAgentEventStream (ID: b6af400e-8c7d-49e7-95a1-d3704f7b3d0a) for 'recovery_tester_4182': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentRuntimeState initialized for agent_id 'recovery_tester_9991'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_9991': No tools provided in config.
+Agent 'recovery_tester_9991': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_9991'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_9991' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_9991'.
+Registered AgentContext for agent_id 'recovery_tester_9991'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_9991'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_9991'.
+Agent 'recovery_tester_9991' created and stored successfully.
+Agent 'recovery_tester_9991' requesting runtime to start.
+AgentRuntime for 'recovery_tester_9991': Starting worker.
+AgentWorker 'recovery_tester_9991': Starting...
+AgentWorker 'recovery_tester_9991' asyncRun(): Starting.
+Agent 'recovery_tester_9991': Runtime init completed (event store initialized).
+Agent 'recovery_tester_9991': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_9991': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_9991': Runtime init completed (AgentEventScheduler initialized).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_9991': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_9991': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_9991': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_9991': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_9991': Final processed system prompt configured and captured. Trace ID: rt_1791475715938_6f1c1303-0826-44cd-bab1-909234ee2834. Final length: 28.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentWorker 'recovery_tester_9991' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentEventStream (ID: 2860daf4-458e-47f7-b52e-5b91dc74a21c) initialized for agent_id 'recovery_tester_9991'. Subscribed to notifier.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9991'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9991'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'recovery_tester_9991'[39m,
+  prompt_tokens: [33m200[39m,
+  effective_total_context_tokens: [33m12000[39m,
+  context_derived_input_cap_tokens: [33m11800[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m11800[39m,
+  reserved_output_tokens: [33m200[39m,
+  safety_margin_tokens: [33m10[39m,
+  input_budget_tokens: [33m11790[39m,
+  compaction_ratio: [33m0.5[39m,
+  trigger_threshold_tokens: [33m5895[39m,
+  trigger_headroom_tokens: [33m590[39m,
+  quality_retention_cap_tokens: [33m4126[39m,
+  post_compaction_target_tokens: [33m4126[39m,
+  budget_key: [32m'11790:5895:4126:590:4126'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: [32m'recovery_tester_9991'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdxa3_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'started'[39m
+}
+AgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstderr[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mcompaction_failed {
+  agent_id: [32m'recovery_tester_9991'[39m,
+  turn_id: [32m'turn_0004'[39m,
+  compaction_operation_id: [32m'compaction_operation_muzqdxa3_1'[39m,
+  requested_turn_id: [32m'request'[39m,
+  execution_turn_id: [32m'turn_0004'[39m,
+  selected_block_count: [33m3[39m,
+  raw_trace_count: [33m3[39m,
+  phase: [32m'failed'[39m,
+  error_message: [32m'Memory compaction failed before dispatch [execution_failure]: controlled recovery'[39m
+}
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991' requesting runtime interrupt.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgent 'recovery_tester_9991' requesting runtime to stop (timeout: 2s).
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentWorker 'recovery_tester_9991': Stop requested.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5f1434b1-026b-4a49-af4d-8e183494b8e5, AgentID: recovery_tester_9991) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_9991' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_9991': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentWorker 'recovery_tester_9991': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_9991': Shutdown sequence completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mUnregistered AgentContext for agent_id 'recovery_tester_9991'.
+AgentRuntime for 'recovery_tester_9991': Context unregistered.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentRuntime for 'recovery_tester_9991' stop() method completed.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentEventStream (ID: 2860daf4-458e-47f7-b52e-5b91dc74a21c) for 'recovery_tester_9991': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts[2m > [22m[2mwhole-host termination result is later than actual child-root inactivity[2m > [22m[2magent_team: later-host-failure
+[22m[39mAgentEventStream (ID: 2860daf4-458e-47f7-b52e-5b91dc74a21c) for 'recovery_tester_9991': close() called. Unsubscribing all listeners and signaling.
+
+ [32m✓[39m tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 942[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts[2m > [22m[2mcurrent delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message)[2m > [22m[2mkeeps two Task address bring-ins independent at /scope_helper, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/autobyteus-server-ts
+
+ [32m✓[39m tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 1056[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps two Task address bring-ins independent at /scope_helper, reuses only their own helper and never adopts a borrowed member (AC-009/010/012/013) [33m 318[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m17 passed[39m[22m[90m (17)[39m
+[2m   Start at [22m 18:08:30
+[2m   Duration [22m 7.40s[2m (transform 2.97s, setup 24ms, import 4.79s, tests 2.00s, environment 0ms)[22m
+
