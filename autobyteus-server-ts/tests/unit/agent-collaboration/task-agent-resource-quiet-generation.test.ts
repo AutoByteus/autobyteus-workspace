@@ -37,7 +37,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     expect(await f.getManaged('A-team')!.releaseDirectTaskExecution({ agentRunId: 'never-owned' })).toEqual({ accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' });
     // A new root/startup host has no runtime-local terminal receipts: history/absence alone proves nothing.
     const fresh = await f.factory.beginMaterialization({ physicalScope: current.context.physicalScope, teamNode: current.context.teamNode,
-      callbacks: f.callbacks, handoffs: [], activationMode: 'restore', prepareConfiguredAgents: false }).prepare();
+      callbacks: f.callbacks, handoffs: [], activationMode: 'restore' }).prepare();
     fresh.commitAfterDurability();
     expect(await fresh.teamRun.releaseOwnedRuntime()).toMatchObject({ accepted: true });
     expect(await fresh.teamRun.releaseDirectTaskExecution({ agentRunId: 'A-child' })).toEqual({ accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' });
@@ -45,7 +45,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
       .toThrow('exact verified terminal Team placement');
     const wrongRoot = await f.factory.beginMaterialization({ physicalScope: createRootExecutionPhysicalScope({
       root: { rootSubjectKind: kind === 'agent' ? 'agent_org' : 'agent', rootRunId: 'root' }, ancestorTeamRunIds: ['A-team'] }),
-      teamNode: current.context.teamNode, callbacks: f.callbacks, handoffs: [], activationMode: 'restore', prepareConfiguredAgents: false }).prepare();
+      teamNode: current.context.teamNode, callbacks: f.callbacks, handoffs: [], activationMode: 'restore' }).prepare();
     wrongRoot.commitAfterDurability();
     expect(() => wrongRoot.teamRun.inheritReleasedTaskExecutionProof(f.oldTeam)).toThrow('exact verified terminal Team placement');
     expect(await wrongRoot.teamRun.releaseOwnedRuntime()).toMatchObject({ accepted: true });

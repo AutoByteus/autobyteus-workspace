@@ -93,7 +93,7 @@ export class RootTeamExecutionDirectory {
     this.reserveIds([input.teamNode.teamRunId]);
     let prepared: PreparedFlatTeamExecution;
     try {
-      prepared = await this.factory.beginMaterialization({ ...input, prepareConfiguredAgents: false }).prepare();
+      prepared = await this.factory.beginMaterialization(input).prepare();
     } catch (error) {
       this.releaseIds([input.teamNode.teamRunId]);
       throw error;
@@ -152,7 +152,6 @@ export class RootTeamExecutionDirectory {
       applicationBinding: null,
       activationMode: "fresh",
       callbacks,
-      prepareConfiguredAgents: true,
     });
     const operation = createTaskExecutionPreparation({
       cancel: () => factoryControl.cancel(),
@@ -180,7 +179,8 @@ export class RootTeamExecutionDirectory {
         coordinatorAgentRunId: coordinator.agentRunId,
       }),
       preparedTeamRuns: Object.freeze([prepared.teamRun]),
-      stagedPlatformBindings: prepared.stagedPlatformBindings,
+      // Members bind on first work (the coordinator through the seed), never at preparation.
+      stagedPlatformBindings: Object.freeze([]),
       sealForCommit: () => {
         if (state !== "preparing") throw new Error(`Task TeamRun '${input.task.teamRunId}' cannot be sealed.`);
         state = "sealed";
@@ -253,7 +253,7 @@ export class RootTeamExecutionDirectory {
     const id = input.teamNode.teamRunId;
     const operation = this.factory.beginMaterialization({
       physicalScope: input.physicalScope, teamNode: input.teamNode, handoffs: input.handoffs,
-      applicationBinding: null, activationMode: "restore", callbacks: input.callbacks, prepareConfiguredAgents: false,
+      applicationBinding: null, activationMode: "restore", callbacks: input.callbacks,
     });
     this.restorations.set(id, operation);
     try {

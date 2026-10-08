@@ -34,7 +34,12 @@ export type AgentRunBackendInputDispatchResult = Readonly<{
 
 export type AgentRunInputRejectionCode =
   | "AGENT_RUN_INPUT_INVALID"
-  | "AGENT_RUN_NOT_ACCEPTING_INPUT";
+  | "AGENT_RUN_NOT_ACCEPTING_INPUT"
+  /**
+   * A not-yet-started configured Agent could not start for this input. Used for both the rejected
+   * reservation and the not-accepted `postMessage` result; the message names the underlying cause.
+   */
+  | "AGENT_RUN_ACTIVATION_FAILED";
 
 export type AgentRunInputLifecycle =
   | Readonly<{ kind: "admitted" }>

@@ -91,6 +91,11 @@ describe("agent-initiated collaborators in a Team root", () => {
     })));
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toEqual([]);
     expect((await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!.rootTeam.taskExecutions).toEqual(copies);
+    // Only each copy's lead starts (with the delegated work); its designer stays unstarted.
+    for (const copy of copies) {
+      expect(f.handles.get(memberOf(copy, "/product_team/lead"))!.handle.postMessage).toHaveBeenCalledOnce();
+      expect(f.handles.has(memberOf(copy, "/product_team/designer"))).toBe(false);
+    }
 
     // Each copy's lead hands off to its own designer; the copies never cross.
     for (const copy of copies.slice(0, 2)) {
@@ -98,7 +103,7 @@ describe("agent-initiated collaborators in a Team root", () => {
       await expect(f.message(lead, "/product_team/designer", "UI please")).resolves.toMatchObject({ accepted: true });
       expect(f.handles.get(memberOf(copy, "/product_team/designer"))!.handle.reserveInput).toHaveBeenCalledOnce();
     }
-    expect(f.handles.get(memberOf(copies[2]!, "/product_team/designer"))!.handle.reserveInput).not.toHaveBeenCalled();
+    expect(f.handles.has(memberOf(copies[2]!, "/product_team/designer"))).toBe(false);
     // AR-003: an address inside the copy without a member is not found, never run-wide or catalog.
     await expect(f.message(f.identity("/product_team/lead", memberOf(copies[0]!, "/product_team/lead")), "/product_team/nobody", "x"))
       .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });

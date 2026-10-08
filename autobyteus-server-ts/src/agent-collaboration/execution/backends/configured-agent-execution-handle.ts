@@ -6,6 +6,7 @@ import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { isAgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
 import type {
   AgentRunInputOptions,
+  AgentRunInputRejectionCode,
   AgentRunInputReservationResult,
 } from "../../../agent-execution/input/agent-run-input-contract.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
@@ -117,33 +118,59 @@ export class ConfiguredAgentExecutionHandle {
   }
   getOrCreateAgentRun(): Promise<AgentRun> { return this.ensureReady(); }
 
+  /** Teammate delivery (input reservation). Starts the member on its first input; see `startForInput`. */
   async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
-    const run = await this.ensureReady();
+    const start = await this.startForInput();
+    if (!start.started) return { reserved: false, code: start.code, message: start.message };
     this.assertInputAllowed();
-    return run.reserveUserMessage(message, options);
+    return start.run.reserveUserMessage(message, options);
   }
 
+  /** Direct input (delegated seed, user or application input). Starts the member on its first input; see `startForInput`. */
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
-    this.publishCommandStatus("initializing");
-    try {
-      const run = await this.ensureReady();
-      this.assertInputAllowed();
-      const result = await run.postUserMessage(message);
-      if (result.accepted) {
-        this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
-      } else this.publishCommandStatus("error", result.message ?? null);
-      return { ...result, agentRunId: run.runId, displayName: this.displayName };
-    } catch (error) {
-      this.publishCommandStatus("error", error instanceof Error ? error.message : String(error));
-      if (!this.agentRun?.isActive()) return {
-        accepted: false,
-        code: this.readinessFailureCode(error),
-        message: error instanceof Error ? error.message : String(error),
-        agentRunId: this.identity.agentRunId,
-        displayName: this.displayName,
-      };
-      throw error;
+    const start = await this.startForInput();
+    if (!start.started) {
+      return { accepted: false, code: start.code, message: start.message, agentRunId: this.identity.agentRunId, displayName: this.displayName };
     }
+    const run = start.run;
+    this.assertInputAllowed();
+    const result = await run.postUserMessage(message);
+    if (result.accepted) {
+      this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
+    } else this.publishCommandStatus("error", result.message ?? null);
+    return { ...result, agentRunId: run.runId, displayName: this.displayName };
+  }
+
+  /**
+   * The one step that starts this member for an input or reports why it could not. A failure on a
+   * live run is unexpected and rethrown. Input closed for this member (Task DONE, root shutdown) is
+   * not-accepting, without an error status. Any other failure is an activation failure: the member
+   * shows `error` and the caller gets the cause.
+   */
+  private async startForInput(): Promise<
+    | Readonly<{ started: true; run: AgentRun }>
+    | Readonly<{ started: false; code: AgentRunInputRejectionCode; message: string }>
+  > {
+    const initializing = this.publishCommandStatus("initializing");
+    try {
+      return { started: true, run: await this.ensureReady() };
+    } catch (error) {
+      if (this.agentRun?.isActive()) throw error;
+      const closed = this.inputClosedReason();
+      if (closed !== null) {
+        // Withdraw only our own `initializing`; never an existing `error`.
+        if (initializing && this.getStatusSnapshot().details.status === "initializing") this.overlay.clear();
+        return { started: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: closed };
+      }
+      const cause = describeActivationFailure(error).description;
+      this.publishCommandStatus("error", cause);
+      return { started: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: cause };
+    }
+  }
+
+  private inputClosedReason(): string | null {
+    try { this.assertInputAllowed(); return null; }
+    catch (error) { return error instanceof Error ? error.message : String(error); }
   }
 
   async approveToolInvocation(invocationId: string, approved: boolean, reason: string | null = null): Promise<AgentOperationResult> {
@@ -311,10 +338,11 @@ export class ConfiguredAgentExecutionHandle {
       return run;
     } catch (error) {
       let cleanupConfirmed = prepared === null;
+      const cause = describeActivationFailure(error);
       let failure = durabilityCommitted
         ? new CollaborationAgentActivationError(
-            this.readinessFailureCode(error),
-            "Provider binding committed durably but Agent readiness publication failed.",
+            cause.code ?? "COLLABORATION_AGENT_ACTIVATION_FAILED",
+            `Provider binding committed durably but Agent readiness publication failed: ${cause.message}`,
             { cause: error, indeterminate: true },
           )
         : error;
@@ -323,11 +351,16 @@ export class ConfiguredAgentExecutionHandle {
         catch (error) { cleanupConfirmed = false; failure = this.cleanupError(this.identity.agentRunId, error instanceof Error ? error : new Error(String(error))); }
       }
       if (cleanupConfirmed && this.planner.isRetrySafe(failure) && !durabilityCommitted) markRetrySafe();
-      this.options.callbacks.publishAgentEvent(this.identity, {
-        kind: "readiness_failure",
-        code: this.readinessFailureCode(failure),
-        message: failure instanceof Error ? failure.message : String(failure),
-      });
+      // The member's conversation error card, once per failed start. Input closed for this member
+      // (Task DONE, root shutdown) is not a failure: `startForInput` reports it as not accepting input.
+      if (this.inputClosedReason() === null) {
+        const card = describeActivationFailure(failure);
+        this.options.callbacks.publishAgentEvent(this.identity, {
+          kind: "readiness_failure",
+          code: card.code ?? "COLLABORATION_AGENT_ACTIVATION_FAILED",
+          message: card.message,
+        });
+      }
       throw failure;
     }
   }
@@ -391,9 +424,10 @@ export class ConfiguredAgentExecutionHandle {
     });
   }
 
-  private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
-    if (this.agentRun) return;
-    this.overlay.set(status, this.getStatusSnapshot().details.status, errorMessage);
+  /** Returns whether the overlay was set (it is not once a run exists, nor `initializing` over `error`). */
+  private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): boolean {
+    if (this.agentRun) return false;
+    return this.overlay.set(status, this.getStatusSnapshot().details.status, errorMessage);
   }
   private get manager(): AgentRunManager { return this.options.agentRunManager ?? AgentRunManager.getInstance(); }
 
@@ -437,11 +471,6 @@ export class ConfiguredAgentExecutionHandle {
     });
   }
   private get displayName(): string { return this.identity.memberAddress.split("/").at(-1) ?? this.identity.agentRunId; }
-  private readinessFailureCode(error: unknown): string {
-    return error instanceof CollaborationAgentActivationError || error instanceof Error && "code" in error
-      ? String((error as { code?: unknown }).code ?? "COLLABORATION_AGENT_ACTIVATION_FAILED")
-      : "COLLABORATION_AGENT_ACTIVATION_FAILED";
-  }
   private cleanupError(runId: string, cause: Error): CollaborationAgentActivationError {
     return new CollaborationAgentActivationError(
       "AGENT_RUN_ACTIVATION_CLEANUP_FAILED",
@@ -450,6 +479,17 @@ export class ConfiguredAgentExecutionHandle {
     );
   }
 }
+
+/**
+ * The cause of an activation failure: its own code when it carries one, its message, and the
+ * `<code>: <message>` description callers receive (the code is not repeated if the message starts with it).
+ */
+const describeActivationFailure = (error: unknown): Readonly<{ code: string | null; message: string; description: string }> => {
+  const message = error instanceof Error ? error.message : String(error);
+  const raw = error instanceof Error && "code" in error ? (error as { code?: unknown }).code : undefined;
+  const code = typeof raw === "string" && raw.trim() ? raw : null;
+  return { code, message, description: code && !message.startsWith(code) ? `${code}: ${message}` : message };
+};
 
 const completedLocalTermination = (
   finish: () => void,

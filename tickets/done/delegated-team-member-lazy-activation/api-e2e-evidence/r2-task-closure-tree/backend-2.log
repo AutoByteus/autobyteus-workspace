@@ -1,0 +1,172 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58316
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58316
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/db/development.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:10759) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-08T17:01:23.426Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 14 items.
+Populating agent definition cache for the first time...
+[2026-10-08T17:01:23.899Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-08T17:01:23.909Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 6 items.
+Agent definition cache populated with 14 items.
+{"level":30,"time":1791478883921,"pid":10759,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58580"}
+{"level":30,"time":1791478883961,"pid":10759,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58316"}
+[2026-10-08T17:01:23.961Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58316
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace.
+Created terminal session 93e62bfd-0810-4f8e-ae1e-42db285fafad using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 93e62bfd-0810-4f8e-ae1e-42db285fafad
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agents/manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d/collaboration/docs_review_team_raagent_a0d7_552973954f0c4dafae55e12d2f31e521/fact_checker_raagent_a0d7_984c110643434424b6511bdb7bcda916/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agents/manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d/collaboration/docs_review_team_raagent_a0d7_552973954f0c4dafae55e12d2f31e521/fact_checker_raagent_a0d7_984c110643434424b6511bdb7bcda916/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agents/manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d/collaboration/docs_review_team_raagent_a0d7_552973954f0c4dafae55e12d2f31e521/fact_checker_raagent_a0d7_984c110643434424b6511bdb7bcda916/raw_traces_active.jsonl
+Closed PTY session 93e62bfd-0810-4f8e-ae1e-42db285fafad
+Terminal WebSocket disconnected: 93e62bfd-0810-4f8e-ae1e-42db285fafad
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace.
+Created terminal session 12e67e32-4e04-4664-805d-0550566e4564 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 12e67e32-4e04-4664-805d-0550566e4564
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_teams/delivery_team_rateam_e8bb_6cf863cc6efe401f9c5babf74ab84131/release_notes_writer_rateam_e8bb_a331386506d84d1092ecd8f6600fe5ac/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_teams/delivery_team_rateam_e8bb_6cf863cc6efe401f9c5babf74ab84131/fact_checker_rateam_e8bb_1b750150888c4f2b94c1588ec552e53f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_teams/delivery_team_rateam_e8bb_6cf863cc6efe401f9c5babf74ab84131/docs_review_team_rateam_e8bb_8a212a83166f4153866334cc25580971/fact_checker_rateam_e8bb_73ae137308cf49c18b4e89d83f7189ae/raw_traces_active.jsonl
+Closed PTY session 12e67e32-4e04-4664-805d-0550566e4564
+Terminal WebSocket disconnected: 12e67e32-4e04-4664-805d-0550566e4564
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace.
+Created terminal session 7589fbb8-ffa9-4e3c-bc92-12338e3e36cf using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 7589fbb8-ffa9-4e3c-bc92-12338e3e36cf
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_orgs/delivery_org_raorg_5127_62daa5b6f9a64a4ca0341e758f710f83/release_notes_writer_raorg_5127_3ec3079cfd314ba5b7162b615b77284f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_orgs/delivery_org_raorg_5127_62daa5b6f9a64a4ca0341e758f710f83/fact_checker_raorg_5127_1d433a7cc6204629b50889faf9b937e7/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_orgs/delivery_org_raorg_5127_62daa5b6f9a64a4ca0341e758f710f83/docs_review_team_raorg_5127_443b4cf3748f4bf48ed4a4074ac0d456/release_notes_writer_raorg_5127_4b99c738d6ce404796354ab81b3f7e5a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_orgs/delivery_org_raorg_5127_62daa5b6f9a64a4ca0341e758f710f83/docs_review_team_raorg_5127_443b4cf3748f4bf48ed4a4074ac0d456/fact_checker_raorg_5127_813aff20fa9b46308f79092890f83d56/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/memory/agent_orgs/delivery_org_raorg_5127_62daa5b6f9a64a4ca0341e758f710f83/docs_review_team_raorg_5127_99eb7abc3f404ccd9039c13d9ae108f7/fact_checker_raorg_5127_1e1089cd823c485cb4f961a69b0ff9a6/raw_traces_active.jsonl
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace.
+Created and registered workspace ID: agent_ws_569e868b3bac071827395e062e766d4012f3c1adc09d19d5f12cb76baf4bc128
+Closed PTY session 7589fbb8-ffa9-4e3c-bc92-12338e3e36cf
+Terminal WebSocket disconnected: 7589fbb8-ffa9-4e3c-bc92-12338e3e36cf
+AGY compaction detection off for run manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d
+Created agent session ee1c18be-cd75-4bb9-b24b-0571af7d8659 for run manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d
+Agent WebSocket connected: session=ee1c18be-cd75-4bb9-b24b-0571af7d8659, run=manager_raagent_a0d7_27b23c810d154bdc85d9f625a947d76d
+{"level":40,"time":1791478895546,"pid":10759,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_CB9-2YuAIextQrtSvKyLZrTBLXV6TeziOhH9rzVVK6o","statusCode":405,"elapsedMs":0.2352920025587082,"msg":"http request completed"}
+Closed agent session ee1c18be-cd75-4bb9-b24b-0571af7d8659
+Agent WebSocket disconnected: ee1c18be-cd75-4bb9-b24b-0571af7d8659
+Agent team websocket attached for team run delivery_team_rateam_e8bb_6cf863cc6efe401f9c5babf74ab84131
+Created agent session e6b21b7a-691d-4d81-a372-63a9eb30d43e for run delivery_team_rateam_e8bb_6cf863cc6efe401f9c5babf74ab84131
+Agent Team WebSocket connected: session=e6b21b7a-691d-4d81-a372-63a9eb30d43e, run=delivery_team_rateam_e8bb_6cf863cc6efe401f9c5babf74ab84131
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace.
+Reusing registered workspace ID: agent_ws_569e868b3bac071827395e062e766d4012f3c1adc09d19d5f12cb76baf4bc128
+AGY compaction detection off for run manager_rateam_e8bb_7b44a37980784787a2bd8fff77b38afe: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791478895875,"pid":10759,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_P3kjnhOMLievtLC24sXu2K1ZDoYTE7Ir-yanVEAkblA","statusCode":405,"elapsedMs":0.1464579999446869,"msg":"http request completed"}
+Closed agent session e6b21b7a-691d-4d81-a372-63a9eb30d43e
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-ovtmsj/workspace.
+Reusing registered workspace ID: agent_ws_569e868b3bac071827395e062e766d4012f3c1adc09d19d5f12cb76baf4bc128
+AGY compaction detection off for run manager_raorg_5127_d0ecb201a01842d5b80e1ec5426440ba: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791478896231,"pid":10759,"hostname":"MacBookPro","reqId":"req-b","method":"GET","url":"/mcp/agent-tools/agtrun_h2CekgLiLVlUIci44WddGvG4rltvACzXV7veDzQkDcs","statusCode":405,"elapsedMs":0.1593340039253235,"msg":"http request completed"}
+[2026-10-08T17:01:36.293Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-08T17:01:36.356Z] [INFO] [server.runtime] Server closed cleanly.

@@ -20,6 +20,7 @@ import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaborati
 import { createAgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
+import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import {
   testAgentNode,
   testMemberExecutionContext,
@@ -132,7 +133,8 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       });
       const createBackends: AgentRunBackend[] = [];
       const restoreBackends: AgentRunBackend[] = [];
-      const agentBackendFactory: AgentRunBackendFactory = {
+      // The current `beginPreparation` factory contract over this test's controlled backends.
+      const backendDefinitions = {
         createBackend: vi.fn(async () => {
           const backend = createBackends.shift();
           if (!backend) throw new Error("Missing fresh AgentRun backend fixture.");
@@ -144,6 +146,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
           return backend;
         }),
       };
+      const agentBackendFactory = testBackendFactory(backendDefinitions) as unknown as AgentRunBackendFactory;
       const agentRunManager = new AgentRunManager({
         autoByteusBackendFactory: agentBackendFactory,
         codexBackendFactory: agentBackendFactory,
@@ -280,8 +283,8 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
       ).resolves.toBe(true);
       expect(agentRunManager.getActiveRun(memberNode.agentRunId)).toBeNull();
       await expectMcpStatus(restoredServerUrl, 404);
-      expect(agentBackendFactory.createBackend).toHaveBeenCalledTimes(1);
-      expect(agentBackendFactory.restoreBackend).toHaveBeenCalledTimes(1);
+      expect(backendDefinitions.createBackend).toHaveBeenCalledTimes(1);
+      expect(backendDefinitions.restoreBackend).toHaveBeenCalledTimes(1);
     } finally {
       await host.close();
     }
