@@ -332,7 +332,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
 
   enterPersistenceFailStop(): void { this.enterFailStop(); }
-  enterLifecycleFailStop(): void { this.enterFailStop(); }
 
   /** Explicit Stop, history delete or archive: every child ends first, then the host. Throws when the children cannot finish. */
   async stop(): Promise<StandaloneHostTerminationResult> {

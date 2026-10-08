@@ -12,21 +12,21 @@ Package: `idle-shutdown-background-tasks` — worktree `/Users/normy/autobyteus_
 - Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/problem-report.md` (evidence only); `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/handoff-architecture-design-complete.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-review-report.md` (Pass; AR-N-001, AR-N-002 applied; AR-N-003 is Solution Designer-only)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: N/A (initial implementation). AC-001 live evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/evidence/`
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/code-review-report.md` and `code-review-revision-record.md` (CRR-001, CR-001). AC-001 live evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/evidence/`
 
 ## Current Implementation Summary
 
 Idle shutdown of delegated copies is removed end to end (DEC-004). A delegated copy now stays live until its Task is DONE, its root stops or fail-stops, or the server stops. Restore on message after a restart or a DONE reactivation is unchanged, now via `RootTaskExecutionLifecycle.withLiveChain` (renamed from `withLiveLease`, no lease counting). The grace setting, the schedule, the `shutdown` queue command, the quiet-termination chain (adapters → registries → team manager/backend/run → handles → `AgentRunManager` → `AgentRun` → `AgentRunTermination` → input admission state), `TaskExecutionTeardownIndeterminateError`, Org teardown-event retirement, and the idle option plumbing are deleted. The LLM collaboration contract and server/web docs describe the new lifetime.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 Local Fix for CR-001 on top of the IR-001 baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (applied non-blocking notes AR-N-001, AR-N-002)
+- Triggering finding IDs: CR-001 (IR-002); AR-N-001, AR-N-002 applied in IR-001
 
 Commits on the branch (base `3a2496c95`):
 - `ba0437e00` test(baseline): mixed backend facade test used the removed `prepareTaskAgent` API (TESTING.md rule 9 baseline fix, separate commit).
@@ -62,7 +62,7 @@ Paths relative to `autobyteus-server-ts/src/`.
 - Lifecycle: `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` (schedule, leases, shutdown removed; `withLiveChain`; `onAgentStatus(agentRunId)`; doc comments updated), `root-task-execution-command-queue.ts` (kinds `activate | wake | reopen`), `root-task-execution-adapter.ts` (`tryShutDownIfQuiet` and `isLive` removed from the interface; chain doc "for restore and status"), `task-delegation-command.ts` (teardown error removed), `task-execution-running-work.ts` (comment).
 - Deleted: `agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.ts`, `config/task-execution-idle-shutdown-setting.ts`, `agent-org-execution/services/agent-org-task-event-retirement.ts`.
 - Adapters: `agent-team-execution/task-delegation/team-task-execution-adapter.ts`, `agent-org-execution/services/agent-org-task-execution-adapter.ts`, `standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts` (quiet shutdown, offline publishing, teardown catch removed; `isLive` private; option types lose `publishAgentOffline`, `enterLifecycleFailStop`, `beginTaskExecutionEventRetirement`).
-- Roots and delivery: `agent-team-execution/domain/root-team-run.ts`, `task-delegation/team-task-execution-service.ts` (+ `-contract.ts`, `acquireLiveLease` removed), `services/team-run-message-delivery.ts`, `agent-org-execution/domain/agent-org-run.ts` (+ `-options.ts`), `services/agent-org-run-message-delivery.ts`, `standalone-agent-run-root/domain/standalone-agent-run-root.ts`, `services/standalone-root-message-delivery.ts`.
+- Roots and delivery (IR-002: the standalone root's now-uncalled `enterLifecycleFailStop()` is deleted; Team/Org keep theirs, which have real callers): `agent-team-execution/domain/root-team-run.ts`, `task-delegation/team-task-execution-service.ts` (+ `-contract.ts`, `acquireLiveLease` removed), `services/team-run-message-delivery.ts`, `agent-org-execution/domain/agent-org-run.ts` (+ `-options.ts`), `services/agent-org-run-message-delivery.ts`, `standalone-agent-run-root/domain/standalone-agent-run-root.ts`, `services/standalone-root-message-delivery.ts`.
 - Quiet chain: `agent-collaboration/execution/backends/root-agent-execution-registry.ts`, `root-team-execution-directory.ts`, `configured-agent-execution-handle.ts`; `agent-team-execution/local/registries/task-agent-execution-registry.ts`, `task-team-execution-registry.ts`, `flat-team-execution-manager.ts` (the `quiescing` state stays for normal termination), `flat-team-run-backend.ts`, `flat-team-agent-execution-handle.ts`, `backends/team-run-backend.ts`, `domain/team-run.ts`, `services/team-run-resolver.ts`; `agent-execution/services/agent-run-manager.ts` (also its `quiescentTerminationAttempts` branch in `prepareAgentRunTermination`), `domain/agent-run.ts`, `domain/agent-run-termination.ts` (`tryingQuiescent` branch in `prepare()`), `input/agent-run-input-admission-state.ts`.
 - Settings / contract: `services/server-settings-service.ts`, `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`.
 - Tests: new `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts` (AC-001b); rewritten lifecycle, generation (renamed `task-agent-resource-release-generation.test.ts`), status, reactivation, tree-scope, liveness, parity/golden, agent-run(-manager), routing, integration lifecycle tests, `tests/fixtures/task-release-generation-fixtures.ts`, `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; deleted the two Org idle-shutdown tests; new AC-004 settings test.

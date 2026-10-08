@@ -38,8 +38,9 @@ type AgentRunTerminationOptions = Readonly<{
 }>;
 
 /**
- * AgentRun's internal owner of the run's termination lifecycle (prepare, commit/finish, cancel) and of its root-shutdown fence attempts (SR-006 F-1–F-4 selection and
- * evaluation). It reaches AgentRun state only through its options; callers use AgentRun.
+ * AgentRun's internal owner of the run's termination lifecycle (prepare, commit/finish, cancel)
+ * and of its root-shutdown fence attempts (SR-006 F-1–F-4 selection and evaluation). It reaches
+ * AgentRun state only through its options; callers use AgentRun.
  */
 export class AgentRunTermination {
   private recoveryShutdownFenced = false;
