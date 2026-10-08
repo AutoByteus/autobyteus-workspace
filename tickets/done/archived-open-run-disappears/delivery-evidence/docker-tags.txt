@@ -1,0 +1,5 @@
+1.4.99-beta.2 Digest:    sha256:f8fde617ba036f86129d135595686d2d70842825f54e86384b30db3ea495d244
+beta Digest:    sha256:f8fde617ba036f86129d135595686d2d70842825f54e86384b30db3ea495d244
+latest Digest:    sha256:8aa17b2307ac834408d4f7b691cf4d2bb9f4904ccc6aff25ffc3bb46cb375187
+  Platform:  linux/amd64
+  Platform:  linux/arm64

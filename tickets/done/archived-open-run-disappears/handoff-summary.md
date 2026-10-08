@@ -60,4 +60,7 @@ Hands-on, in the app built from this worktree (`pnpm --silent isolated-app start
 
 ## Outcome
 
-- User verification: pending
+- User verification: "finalize and release a new beta" (`user-verification.md`)
+- Finalized: merge `a904f5705` on `origin/personal`. Ticket branch `codex/archived-open-run-disappears` pushed.
+- Released: `v1.4.99-beta.2` (release commit `b5e0da508`, all 4 workflows success with Docker on a re-run after a transient upstream installer download failure, GitHub pre-release, Docker `:1.4.99-beta.2`/`:beta`)
+- Details: `release-deployment-report.md` (DR-002)
