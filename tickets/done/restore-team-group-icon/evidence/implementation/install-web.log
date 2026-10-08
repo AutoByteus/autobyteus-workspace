@@ -1,0 +1,10 @@
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        |    +1480 ++++++++++++++++++++++++++++
+Progress: resolved 1480, reused 1479, downloaded 0, added 53
+Progress: resolved 1480, reused 1479, downloaded 0, added 307
+Progress: resolved 1480, reused 1479, downloaded 0, added 672
+Progress: resolved 1480, reused 1479, downloaded 0, added 1116
+Progress: resolved 1480, reused 1479, downloaded 0, added 1479
+Progress: resolved 1480, reused 1479, downloaded 0, added 1480, done
+Done in 6.6s using pnpm v10.28.2

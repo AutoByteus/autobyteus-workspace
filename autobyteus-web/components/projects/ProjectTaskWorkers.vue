@@ -23,7 +23,7 @@
           class="inline-flex flex-shrink-0 items-center justify-center text-slate-500"
           :class="density === 'detail' ? 'h-5 w-5' : 'h-4 w-4'"
           aria-hidden="true"
-        ><Icon icon="heroicons:bolt-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
+        ><Icon icon="heroicons:user-group-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
         <span
           v-else
           class="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-600"

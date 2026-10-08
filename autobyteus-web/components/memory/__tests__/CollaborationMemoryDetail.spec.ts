@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CollaborationMemoryDetail from '../CollaborationMemoryDetail.vue';
 import type { CollaborationMemberMemoryTargetSummary, CollaborationMemoryGroup, CollaborationRunMemoryRow } from '~/types/memory';
+
+vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
 const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
 
@@ -84,6 +86,22 @@ describe('CollaborationMemoryDetail', () => {
     expect(wrapper.findAll('[data-test="memory-member-group-header"]')).toHaveLength(0);
     expect(wrapper.findAll('article [data-group-run-id]')).toHaveLength(0);
     expect(wrapper.findAll('article button').map((button) => button.attributes('data-execution-kind'))).toEqual(['CONFIGURED', 'CONFIGURED']);
+  });
+
+  it('keeps people-group identity for configured, task and nested Teams with existing role decorations (restore-team-group-icon AC-002/003)', () => {
+    const wrapper = mountDetail({ rows: [orgRow()] });
+    const headers = wrapper.findAll('[data-test="memory-member-group-header"]');
+    expect(headers).toHaveLength(3);
+    for (const [index, header] of headers.entries()) {
+      const group = header.get('[data-icon="heroicons:user-group-20-solid"]');
+      expect(group.classes()).toEqual(index === 0 ? ['h-4', 'w-4', 'flex-shrink-0', 'text-gray-500'] : ['h-3', 'w-3']);
+      if (index > 0) {
+        expect(group.element.parentElement?.classList.contains('border-dashed')).toBe(true);
+        expect(group.element.parentElement?.classList.contains('text-indigo-600')).toBe(true);
+        expect(header.text()).toContain('Task team');
+      }
+    }
+    expect(wrapper.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
   });
 
   it('renders the execution structure grouped by team run, never by address (REQ-012, AC-014)', async () => {

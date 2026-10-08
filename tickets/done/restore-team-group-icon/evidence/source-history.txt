@@ -1,0 +1,596 @@
+Evidence transcript: trailing whitespace normalized for repository hygiene; commit IDs and substantive diffs unchanged. Not an applyable patch.
+
+BASE
+4a51482a5ef8c678d69a3ffc995d6876fd170a2f
+
+SOURCE AUDIT
+autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue:71:        <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
+autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue:77:          <Icon icon="heroicons:bolt-20-solid" class="h-4 w-4" />
+autobyteus-web/utils/runSettings/modelOptions.ts:32:const ICONS: Record<string, string> = { service_tier: 'heroicons:bolt' }
+autobyteus-web/components/workspace/history/WorkspaceStableExecutionRow.vue:78:          <Icon icon="heroicons:user-group-20-solid" class="h-4 w-4" />
+autobyteus-web/components/projects/ProjectTaskWorkers.vue:26:        ><Icon icon="heroicons:bolt-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
+autobyteus-web/components/memory/CollaborationMemoryDetail.vue:54:                    ><Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" /></span>
+autobyteus-web/components/memory/CollaborationMemoryDetail.vue:55:                    <Icon v-else icon="heroicons:user-group-20-solid" class="h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
+autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:227:              <Icon v-else icon="heroicons:user-group-20-solid" class="h-3.5 w-3.5" />
+autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue:133:                <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
+autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue:149:                <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
+autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue:150:                <Icon icon="heroicons:bolt-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
+
+HISTORICAL COMMITS
+commit d64560aee9f828853c75a0abff7347ec4fbaf54b
+Author:     AutoByteus Delivery Engineer <delivery-engineer@autobyteus.local>
+AuthorDate: Sun Aug 30 11:28:38 2026 +0000
+Commit:     AutoByteus Delivery Engineer <delivery-engineer@autobyteus.local>
+CommitDate: Sun Aug 30 11:28:38 2026 +0000
+
+    feat(web): clarify nested team history hierarchy
+
+commit c21d312c0ae952165535c51d6f6de676f6a30b59
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Tue Oct 6 06:46:51 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Tue Oct 6 06:46:51 2026 +0200
+
+    feat(web): clean delegated-row style in the Workspaces tree
+
+    Delegated Agent, Team and member rows under Agent, Team and Org roots read
+    like other tree rows: no dashed indigo box or tint, gray-50 hover, 2px
+    indigo-500 focus ring, and a delegated Team marked only by a slate-500 bolt
+    with a semibold name (delegated-row-clean-style REQ-001).
+
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+commit 7c2553f486f0a45ecc22d4903753af4de59e0050
+Merge: bd8450984 6f7b5e371
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Fri Sep 25 15:07:54 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Fri Sep 25 15:08:21 2026 +0200
+
+    Merge origin/personal into memory-team-view-slow-load; apply SR-004
+
+    Merge origin/personal (6f7b5e371) and apply the SR-004 revision of the memory explorer:
+
+    - Delta 3 (integration): keep this branch's catalog structure; drop the upstream
+      TeamMemoryMemberTargetBuilder, listTeamMemberLocationsFromTree and listAgentsInTree;
+      keep the upstream one-read/no-writes explorer test; the stored-only history managers
+      implement withInactiveHistoryMutation; the org source reads the org history owner's
+      pure listCatalogRows(); add the root/tree-ID mismatch test; apply the scoped codegen delta.
+    - Delta 1 (REQ-012): list every agent run with memory in its execution structure
+      (executionKind, startedAt, groupPath; configuredOnly removed), depth-first with
+      contiguous groups; render the member tree grouped by teamRunId.
+    - Delta 2 (REQ-011): the store owns the sources list (list-only, deduped loadSources,
+      hasSource); the route sync never awaits sources on detail/inspector navigation and
+      refreshes them in the background on the home view.
+
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+commit 4d469b0c5b8efe10a40dae00a7046680928bcaca
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Wed Oct 7 12:02:31 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Wed Oct 7 12:02:31 2026 +0200
+
+    feat(projects): live Projects pages, Task roots with worker status, Temp tasks
+
+    - Server: per-node /ws/projects change feed. ProjectChangePublisher implements
+      the AR-001 contract: mark-only triggers, setImmediate flush, builds serialized
+      and coalesced per subject, removal first, failures never fail the write.
+      Writes from ProjectService, ProjectTaskService and committed
+      TaskAgentResourceService swaps publish; load() never does.
+    - Task roots: the latest assigned entry, now recording an optional
+      recipientAddress (Directly Usable, no migration). TaskRoot on
+      ProjectTask, plus the new tasksWithoutProject query.
+    - Live worker status through ActiveRootMessageBoundary.taskExecutionStatus
+      (agent snapshot, or the team fold moved into
+      @autobyteus/collaboration-stream-contracts). Root lifecycles forward status
+      changes to the Task side. Closed, failed or inactive roots are offline; a
+      starting root in an active host is initializing.
+    - Web: feed service and composable; scope-keyed task store with
+      queue-and-replay and re-read on reconnect; arrived/moved highlights; root
+      line with the AR-002 openable rule and agent/team/org navigation; Temp tasks
+      button, board and read-only page; F-006 fix in AgentRunTaskRows; en/zh-CN.
+    - Tests, browser probe (PMU-001..007), regenerated GraphQL types, docs.
+
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DIFFS
+commit d64560aee9f828853c75a0abff7347ec4fbaf54b
+Author: AutoByteus Delivery Engineer <delivery-engineer@autobyteus.local>
+Date:   Sun Aug 30 11:28:38 2026 +0000
+
+    feat(web): clarify nested team history hierarchy
+
+diff --git a/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue b/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+index 0996dce5b..1d3f60cf5 100644
+--- a/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
++++ b/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+@@ -1,22 +1,33 @@
+ <template>
+   <div
+-    class="flex w-full cursor-pointer items-center rounded-md bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300"
+-    :class="isSelected ? 'text-indigo-900 ring-1 ring-indigo-200' : 'text-gray-600'"
++    class="transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300"
++    :class="rowClasses"
+     :style="rowStyle"
+     data-test="workspace-team-transient-execution-row"
+     data-row-kind="transient_execution"
++    :data-node-kind="row.memberKind"
+     :data-transient-kind="row.transientKind"
+     :data-team-run-id="row.teamRunId"
+     :data-member-address="row.memberAddress"
+-    :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title')"
+-    :aria-label="ariaLabel"
++    :data-tree-depth="row.depth"
++    :title="identityLabel"
++    :aria-label="accessibleLabel"
+     :aria-current="isSelected ? 'true' : undefined"
+-    role="button"
++    :aria-selected="isSelected"
++    :aria-level="row.depth + 1"
++    :aria-expanded="hasChildren ? expanded : undefined"
++    role="treeitem"
+     tabindex="0"
+     @click="activateRow"
+     @keydown.enter="activateRow"
+     @keydown.space.prevent="activateRow"
+   >
++    <WorkspaceHierarchyBranches
++      :depth="row.depth"
++      :continuing-ancestor-depths="continuingAncestorDepths"
++      :has-following-sibling="hasFollowingSibling"
++    />
++
+     <button
+       v-if="hasChildren"
+       type="button"
+@@ -25,6 +36,8 @@
+       :data-team-run-id="row.teamRunId"
+       :data-member-address="row.memberAddress"
+       :aria-expanded="expanded"
++      :aria-label="disclosureLabel"
++      :title="disclosureLabel"
+       @click.stop="$emit('toggle', row)"
+       @keydown.enter.stop
+       @keydown.space.stop
+@@ -43,15 +56,31 @@
+     />
+
+     <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
+-      <StatusDot
+-        v-if="row.memberKind === 'agent'"
+-        class="mr-1.5"
+-        data-test="workspace-transient-status-dot"
+-        :status="row.currentStatus"
+-        variant="transient"
+-      />
+-      <span class="truncate">{{ row.displayName }}</span>
++      <span class="member-status inline-flex flex-shrink-0 items-center">
++        <StatusDot
++          v-if="row.memberKind === 'agent'"
++          class="mr-1.5"
++          data-test="workspace-transient-status-dot"
++          :status="row.currentStatus"
++          variant="transient"
++        />
++      </span>
++      <span
++        v-if="row.memberKind === 'agent_team'"
++        class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
++        data-team-icon="temporary-task-team"
++        aria-hidden="true"
++      >
++        <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
++      </span>
++      <span class="min-w-0 flex-1 truncate" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
++        {{ row.displayName }}
++      </span>
+     </div>
++    <span
++      class="hierarchy-identity-tooltip pointer-events-none absolute left-2 right-2 top-full z-50 hidden break-words rounded-md bg-slate-900 px-2 py-1.5 text-left text-[0.6875rem] font-medium leading-4 text-white shadow-lg"
++      role="tooltip"
++    >{{ identityLabel }}</span>
+   </div>
+ </template>
+
+@@ -59,6 +88,9 @@
+ import { computed } from 'vue';
+ import { Icon } from '@iconify/vue';
+ import StatusDot from '~/components/workspace/common/StatusDot.vue';
++import WorkspaceHierarchyBranches from '~/components/workspace/history/WorkspaceHierarchyBranches.vue';
++import { useLocalization } from '~/composables/useLocalization';
++import { AgentStatus } from '~/types/agent/AgentStatus';
+ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes';
+
+ const props = withDefaults(defineProps<{
+@@ -66,10 +98,14 @@ const props = withDefaults(defineProps<{
+   isSelected?: boolean;
+   hasChildren?: boolean;
+   expanded?: boolean;
++  continuingAncestorDepths?: number[];
++  hasFollowingSibling?: boolean;
+ }>(), {
+   isSelected: false,
+   hasChildren: false,
+   expanded: false,
++  continuingAncestorDepths: () => [],
++  hasFollowingSibling: false,
+ });
+
+ const emit = defineEmits<{
+@@ -77,16 +113,81 @@ const emit = defineEmits<{
+   (e: 'toggle', row: RunHistoryTransientExecutionRow): void;
+ }>();
+
++const { t } = useLocalization();
++
++const roleLabel = computed(() => t(
++  props.row.memberKind === 'agent_team'
++    ? 'workspace.history.hierarchy.role.temporary_task_team'
++    : 'workspace.history.hierarchy.role.temporary_task_agent',
++));
++
++const status = computed(() => props.row.currentStatus || AgentStatus.Offline);
++const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
++
++const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
++  role: roleLabel.value,
++  name: props.row.displayName,
++  address: props.row.memberAddress,
++}));
++
++const accessibleLabel = computed(() => t('workspace.history.hierarchy.tree_item', {
++  role: roleLabel.value,
++  name: props.row.displayName,
++  address: props.row.memberAddress,
++  level: props.row.depth + 1,
++  status: statusLabel.value,
++}));
++
++const disclosureLabel = computed(() => t(
++  props.expanded
++    ? 'workspace.history.hierarchy.collapse'
++    : 'workspace.history.hierarchy.expand',
++  { name: props.row.displayName },
++));
++
+ const rowStyle = computed(() => ({
+-  marginLeft: `${props.row.depth * 12}px`,
++  paddingLeft: `calc((${props.row.depth} + 1) * 0.875rem)`,
+ }));
+
+-const ariaLabel = computed(() => `${props.row.displayName}. ${props.row.memberAddress}`);
++const rowClasses = computed(() => ({
++  'is-selected text-indigo-900': props.isSelected,
++  'text-gray-600': !props.isSelected,
++}));
+
+ const activateRow = (): void => {
+-  if (props.hasChildren) {
+-    emit('toggle', props.row);
+-  }
++  if (props.hasChildren) emit('toggle', props.row);
+   emit('select', props.row);
+ };
+ </script>
++
++<style scoped>
++.transient-execution-row {
++  isolation: isolate;
++}
++
++.transient-execution-row > :not(.hierarchy-identity-tooltip):not(.hierarchy-branches) {
++  position: relative;
++  z-index: 2;
++}
++
++.transient-execution-row.is-selected {
++  border-radius: 0;
++  background-color: #eef2ff;
++  box-shadow: inset 2px 0 #6366f1;
++}
++
++.transient-execution-row:focus-visible > .hierarchy-identity-tooltip {
++  display: block;
++}
++
++.transient-execution-row:focus-visible {
++  z-index: 60;
++}
++
++@media (prefers-reduced-motion: reduce) {
++  .transient-execution-row,
++  .transient-execution-row * {
++    transition-duration: 0.01ms !important;
++  }
++}
++</style>
+commit c21d312c0ae952165535c51d6f6de676f6a30b59
+Author: normy <normy@macbookpro.speedport.ip>
+Date:   Tue Oct 6 06:46:51 2026 +0200
+
+    feat(web): clean delegated-row style in the Workspaces tree
+
+    Delegated Agent, Team and member rows under Agent, Team and Org roots read
+    like other tree rows: no dashed indigo box or tint, gray-50 hover, 2px
+    indigo-500 focus ring, and a delegated Team marked only by a slate-500 bolt
+    with a semibold name (delegated-row-clean-style REQ-001).
+
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue b/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+index 312ea96b4..cc4247c6d 100644
+--- a/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
++++ b/autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue
+@@ -132,7 +132,7 @@
+                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
+                 <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
+               </button>
+-              <button type="button" v-else-if="display.row.kind === 'task_agent'" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
++              <button type="button" v-else-if="display.row.kind === 'task_agent'" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
+                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
+                 <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+                 <!-- A task Agent shows the same solid status dot and initials as a member; no visible
+@@ -141,12 +141,13 @@
+                 <span class="mr-1.5 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600" data-test="agent-org-task-agent-avatar">{{ initials(display.row.address) }}</span>
+                 <span class="truncate">{{ label(display.row.address) }}</span>
+               </button>
+-              <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
++              <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
+                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
+                 <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
+                 <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+-                <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-3.5 w-3.5 flex-none text-indigo-600" />
+-                <span class="truncate">{{ label(display.row.address) }}</span>
++                <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
++                <Icon icon="heroicons:bolt-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
++                <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
+               </button>
+             </template>
+           </div>
+diff --git a/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue b/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+index d18c3efaa..5bbf2a68a 100644
+--- a/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
++++ b/autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue
+@@ -1,6 +1,6 @@
+ <template>
+   <div
+-    class="transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md border border-dashed border-indigo-200 bg-indigo-50/40 text-sm transition-colors hover:bg-indigo-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-300"
++    class="transient-execution-row relative flex min-h-7 w-full cursor-pointer items-center rounded-md text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+     :class="rowClasses"
+     :style="rowStyle"
+     data-test="workspace-team-transient-execution-row"
+@@ -68,12 +68,13 @@
+         />
+       </span>
+       <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
++        <!-- A delegated Team is marked by its bolt alone, in the tree's slate. -->
+         <span
+           v-if="row.memberKind === 'agent_team'"
+-          class="inline-flex h-4 w-4 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
++          class="inline-flex h-4 w-4 items-center justify-center text-slate-500"
+           data-team-icon="temporary-task-team"
+         >
+-          <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
++          <Icon icon="heroicons:bolt-20-solid" class="h-4 w-4" />
+         </span>
+         <!-- A task Agent shows the same solid status dot and initials as a member. -->
+         <span
+@@ -189,7 +190,7 @@ const rowStyle = computed(() => ({
+
+ const rowClasses = computed(() => ({
+   'is-selected text-indigo-900': props.isSelected,
+-  'text-gray-600': !props.isSelected,
++  'text-gray-600 hover:bg-gray-50': !props.isSelected,
+ }));
+
+ const activateRow = (): void => {
+@@ -203,12 +204,6 @@ const activateRow = (): void => {
+   isolation: isolate;
+ }
+
+-/* The row has a 1px border; draw the branch lines from the border edge so they continue the
+-   lines of the rows above and below exactly. */
+-.transient-execution-row > .hierarchy-branches {
+-  inset: -1px;
+-}
+-
+ .transient-execution-row > :not(.hierarchy-identity-tooltip):not(.hierarchy-branches) {
+   position: relative;
+   z-index: 2;
+diff --git a/autobyteus-web/components/memory/CollaborationMemoryDetail.vue b/autobyteus-web/components/memory/CollaborationMemoryDetail.vue
+index 415e17c21..6a3eb83f2 100644
+--- a/autobyteus-web/components/memory/CollaborationMemoryDetail.vue
++++ b/autobyteus-web/components/memory/CollaborationMemoryDetail.vue
+@@ -32,11 +32,45 @@
+             <MemoryBadges class="mt-3" :memory="row.memory" />
+             <div class="mt-4 border-t border-gray-100 pt-3">
+               <h4 class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('memory.components.memory.CollaborationMemoryDetail.members') }}</h4>
+-              <div class="flex flex-wrap gap-2">
+-                <button v-for="member in row.memberTargets" :key="`${row.runId}:${member.agentRunId}`" class="max-w-full rounded-lg border border-gray-200 px-3 py-2 text-left text-xs hover:border-blue-300 hover:bg-blue-50" @click="$emit('inspectMember', row.runId, member)">
+-                  <span class="block break-all font-semibold text-gray-800">{{ member.displayName }}</span>
+-                  <span class="block break-all font-mono text-gray-500">{{ member.agentRunId }}</span>
+-                </button>
++              <div class="space-y-2">
++                <div
++                  v-for="block in memberBlocks(row)"
++                  :key="`${row.runId}:${block.key}`"
++                  :class="block.depth > 0 ? ['border-l pl-3', block.group?.kind === 'TASK_TEAM' ? 'border-dashed border-indigo-300' : 'border-slate-300'] : []"
++                  :style="block.depth > 1 ? { marginLeft: `${(block.depth - 1) * 1}rem` } : undefined"
++                  :data-group-run-id="block.group?.teamRunId"
++                  :data-group-kind="block.group?.kind"
++                >
++                  <div
++                    v-if="block.group"
++                    class="mb-2 flex min-w-0 items-center gap-1.5 text-xs"
++                    :class="block.group.kind === 'TASK_TEAM' ? 'text-indigo-700' : 'text-gray-700'"
++                    data-test="memory-member-group-header"
++                  >
++                    <span
++                      v-if="block.group.kind === 'TASK_TEAM'"
++                      class="inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
++                      aria-hidden="true"
++                    ><Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" /></span>
++                    <Icon v-else icon="heroicons:user-group-20-solid" class="h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
++                    <span class="break-all font-semibold">{{ block.group.displayName }}</span>
++                    <span v-if="block.group.kind === 'TASK_TEAM'" class="shrink-0 text-indigo-500">· {{ taskTeamLabel(block.group.startedAt) }}</span>
++                  </div>
++                  <div v-if="block.members.length" class="flex flex-wrap gap-2">
++                    <button
++                      v-for="{ member, label } in block.members"
++                      :key="`${row.runId}:${member.agentRunId}`"
++                      class="max-w-full rounded-lg border px-3 py-2 text-left text-xs"
++                      :class="isTaskMember(member) ? 'border-dashed border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
++                      :data-execution-kind="member.executionKind"
++                      @click="$emit('inspectMember', row.runId, member)"
++                    >
++                      <span class="block break-all font-semibold text-gray-800">{{ label }}</span>
++                      <span v-if="member.executionKind === 'TASK_AGENT'" class="block text-indigo-600">{{ taskAgentLabel(member.startedAt) }}</span>
++                      <span class="block break-all font-mono text-gray-500">{{ member.agentRunId }}</span>
++                    </button>
++                  </div>
++                </div>
+               </div>
+             </div>
+           </article>
+@@ -54,8 +88,11 @@
+
+ <script setup lang="ts">
+ import { ref, watch } from 'vue';
++import { Icon } from '@iconify/vue';
++import { useLocalization } from '~/composables/useLocalization';
+ import type { CollaborationMemberMemoryTargetSummary, CollaborationRunMemoryRow } from '~/types/memory';
+ import MemoryBadges from './MemoryBadges.vue';
++import { buildCollaborationMemberBlocks, isTaskMember } from './collaborationMemberTree';
+
+ /** Presentational run list with members for one team or org definition; the page owns data and actions. */
+ const props = defineProps<{
+@@ -76,12 +113,24 @@ const emit = defineEmits<{
+   inspectMember: [runId: string, member: CollaborationMemberMemoryTargetSummary];
+ }>();
+
++const { t } = useLocalization();
+ const searchInput = ref(props.search);
+
+ watch(() => props.search, (value) => { searchInput.value = value; });
+
+ const applySearch = () => emit('search', searchInput.value.trim());
+
++/** Each run's members as blocks: its own agents, then configured and task teams (REQ-012). */
++const memberBlocks = (row: CollaborationRunMemoryRow) => buildCollaborationMemberBlocks(row.memberTargets);
++
++const taskAgentLabel = (startedAt?: string | null) => startedAt
++  ? t('memory.components.memory.CollaborationMemoryDetail.task_started', { timestamp: formatTimestamp(startedAt) })
++  : t('memory.components.memory.CollaborationMemoryDetail.task');
++
++const taskTeamLabel = (startedAt?: string | null) => startedAt
++  ? t('memory.components.memory.CollaborationMemoryDetail.task_team_started', { timestamp: formatTimestamp(startedAt) })
++  : t('memory.components.memory.CollaborationMemoryDetail.task_team');
++
+ const formatTimestamp = (value?: string | null) => {
+   if (!value) return '—';
+   const date = new Date(value);
+commit 4d469b0c5b8efe10a40dae00a7046680928bcaca
+Author: normy <normy@macbookpro.speedport.ip>
+Date:   Wed Oct 7 12:02:31 2026 +0200
+
+    feat(projects): live Projects pages, Task roots with worker status, Temp tasks
+
+    - Server: per-node /ws/projects change feed. ProjectChangePublisher implements
+      the AR-001 contract: mark-only triggers, setImmediate flush, builds serialized
+      and coalesced per subject, removal first, failures never fail the write.
+      Writes from ProjectService, ProjectTaskService and committed
+      TaskAgentResourceService swaps publish; load() never does.
+    - Task roots: the latest assigned entry, now recording an optional
+      recipientAddress (Directly Usable, no migration). TaskRoot on
+      ProjectTask, plus the new tasksWithoutProject query.
+    - Live worker status through ActiveRootMessageBoundary.taskExecutionStatus
+      (agent snapshot, or the team fold moved into
+      @autobyteus/collaboration-stream-contracts). Root lifecycles forward status
+      changes to the Task side. Closed, failed or inactive roots are offline; a
+      starting root in an active host is initializing.
+    - Web: feed service and composable; scope-keyed task store with
+      queue-and-replay and re-read on reconnect; arrived/moved highlights; root
+      line with the AR-002 openable rule and agent/team/org navigation; Temp tasks
+      button, board and read-only page; F-006 fix in AgentRunTaskRows; en/zh-CN.
+    - Tests, browser probe (PMU-001..007), regenerated GraphQL types, docs.
+
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/autobyteus-web/components/projects/ProjectTaskWorkers.vue b/autobyteus-web/components/projects/ProjectTaskWorkers.vue
+new file mode 100644
+index 000000000..e03e9b22e
+--- /dev/null
++++ b/autobyteus-web/components/projects/ProjectTaskWorkers.vue
+@@ -0,0 +1,71 @@
++<template>
++  <!-- project-manager-ux: the Task's root, the one agent or team it was handed to, with the worker's
++       own status (the left panel's dot and word). It opens the worker when that worker is listed in
++       the left panel; otherwise it has no chevron and is not focusable. -->
++  <ul class="space-y-0.5" :class="density === 'row' ? 'mt-2' : ''" :aria-label="t('projects.root.listLabel')" data-testid="project-task-root">
++    <li>
++      <component
++        :is="presentation.openable ? 'button' : 'div'"
++        :type="presentation.openable ? 'button' : undefined"
++        class="group/root flex w-full min-w-0 items-center gap-1.5 rounded-md text-left"
++        :class="[
++          density === 'detail' ? 'min-h-10 px-3 py-2 text-sm' : '-mx-1.5 min-h-7 px-1.5 py-1 text-xs',
++          presentation.openable ? 'hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500' : '',
++        ]"
++        :aria-label="presentation.openable ? t('projects.root.open', { name: displayName }) : undefined"
++        :title="presentation.error ?? undefined"
++        :data-testid="`project-task-root-${presentation.state}`"
++        :data-openable="presentation.openable ? 'true' : 'false'"
++        @click.stop.prevent="presentation.openable && navigation.open(root)"
++      >
++        <span
++          v-if="root.kind === 'team'"
++          class="inline-flex flex-shrink-0 items-center justify-center text-slate-500"
++          :class="density === 'detail' ? 'h-5 w-5' : 'h-4 w-4'"
++          aria-hidden="true"
++        ><Icon icon="heroicons:bolt-20-solid" :class="density === 'detail' ? 'h-4 w-4' : 'h-3.5 w-3.5'" /></span>
++        <span
++          v-else
++          class="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-600"
++          :class="density === 'detail' ? 'h-5 w-5 text-[0.5625rem]' : 'h-4 w-4 text-[0.5rem]'"
++          aria-hidden="true"
++        >{{ initials }}</span>
++        <span class="min-w-0 truncate" :class="[root.kind === 'team' ? 'font-semibold' : 'font-medium', presentation.muted ? 'text-slate-400' : 'text-slate-700']" data-testid="project-task-root-name">{{ displayName }}</span>
++        <span class="ml-auto inline-flex flex-shrink-0 items-center gap-1.5 pl-2" :class="presentation.state === 'failed' ? 'font-medium text-red-600' : 'text-slate-500'" data-testid="project-task-root-status">
++          <Icon v-if="presentation.state === 'failed'" icon="heroicons:exclamation-circle-20-solid" class="h-3.5 w-3.5" aria-hidden="true" />
++          <StatusDot v-else :status="presentation.state as AgentStatus" />
++          {{ t(`projects.root.status.${presentation.state}`) }}
++        </span>
++        <Icon v-if="presentation.openable" icon="heroicons:chevron-right-20-solid" class="h-3.5 w-3.5 flex-shrink-0 text-slate-300 group-hover/root:text-slate-500" aria-hidden="true" />
++        <!-- A root that cannot be opened keeps the chevron's space, so every status lines up. -->
++        <span v-else class="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
++      </component>
++      <p v-if="density === 'detail' && presentation.error" class="px-3 pb-1 text-xs leading-5 text-red-600" data-testid="project-task-root-error">{{ presentation.error }}</p>
++    </li>
++  </ul>
++</template>
++
++<script setup lang="ts">
++import { computed } from 'vue'
++import { Icon } from '@iconify/vue'
++import StatusDot from '~/components/workspace/common/StatusDot.vue'
++import { useLocalization } from '~/composables/useLocalization'
++import { useTaskRootNavigation } from '~/composables/projects/useTaskRootNavigation'
++import { useRunHistoryStore } from '~/stores/runHistoryStore'
++import type { AgentStatus } from '~/types/agent/AgentStatus'
++import type { TaskRootView } from '~/types/project'
++import { isTaskRootHostListed, presentTaskRoot } from '~/utils/projects/taskRootPresentation'
++
++const props = withDefaults(defineProps<{
++  root: TaskRootView
++  /** `row`: inside a board row; `detail`: the Task page's "Assigned to" section. */
++  density?: 'row' | 'detail'
++}>(), { density: 'row' })
++
++const { t } = useLocalization()
++const history = useRunHistoryStore()
++const navigation = useTaskRootNavigation()
++const presentation = computed(() => presentTaskRoot(props.root, isTaskRootHostListed(history, props.root.hostRoot)))
++const displayName = computed(() => presentation.value.name ?? t(`projects.root.kind.${props.root.kind}`))
++const initials = computed(() => displayName.value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI')
++</script>

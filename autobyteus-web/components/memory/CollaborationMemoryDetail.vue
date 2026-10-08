@@ -51,7 +51,7 @@
                       v-if="block.group.kind === 'TASK_TEAM'"
                       class="inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
                       aria-hidden="true"
-                    ><Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" /></span>
+                    ><Icon icon="heroicons:user-group-20-solid" class="h-3 w-3" /></span>
                     <Icon v-else icon="heroicons:user-group-20-solid" class="h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
                     <span class="break-all font-semibold">{{ block.group.displayName }}</span>
                     <span v-if="block.group.kind === 'TASK_TEAM'" class="shrink-0 text-indigo-500">· {{ taskTeamLabel(block.group.startedAt) }}</span>

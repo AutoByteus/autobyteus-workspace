@@ -1,0 +1,27 @@
+{
+  "source": "a852dfc701d7d990b7c15898415d1cb8fb648a7c",
+  "sourceFiles": {
+    "tests/e2e/team-group-icon-probe.mjs": "3e8d829ca1f43c0b12be2334f77fec486218cd6bfc13fa107f9ec3da1dddf120",
+    "tests/e2e/fixtures/team-group-icon.page.vue": "a473b3ca16fa20a3f5c1cbdcfc607b7065b5c85a7b9df5bdbb1e2940b6c616ea",
+    "components/workspace/history/WorkspaceTransientExecutionRow.vue": "296b03a5ddcd7b76ff10391d97ebabf3a0d43ef1794fe11ece5d330098670379",
+    "components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue": "d4cdc1c6ae355cee71cad319933aef239a37ead999ffd69b9fd5b0b1392a6435",
+    "components/projects/ProjectTaskWorkers.vue": "83a752369c41a6f5e3232561fe02418e8968d980f7853c36c5a402b51e184726",
+    "components/memory/CollaborationMemoryDetail.vue": "ca77320d9c9742059c1f0d4a59bdf8d1112e62f8e4afe649abb1efe474798472"
+  },
+  "events": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExited": {
+      "pid": 88500,
+      "exitCode": 0,
+      "signal": null
+    },
+    "routeRemoved": true,
+    "portsReleased": true
+  },
+  "ports": {
+    "port": 58940,
+    "backendPort": 58941
+  },
+  "verdict": "Pass: six files match committed integrated source"
+}

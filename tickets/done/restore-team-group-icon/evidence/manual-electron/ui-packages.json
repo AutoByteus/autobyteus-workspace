@@ -1,0 +1,116 @@
+{
+  "mode": "packages",
+  "instanceId": "iso-57073-e937",
+  "timestamp": "2026-10-08T05:29:20.522Z",
+  "requests": [
+    {
+      "status": 200,
+      "operation": "GetAgentPackages"
+    }
+  ],
+  "errors": [],
+  "title": "",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+  "text": "Back to Workspace\nAPI Keys\nToken Statistics\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAgent Packages\n\nLink a local package path or paste a public GitHub repository URL. GitHub packages are installed into app-managed storage, while local paths remain in place.\n\nBuilt-in Storage\nBuilt-in | Shared Agents: 2 | Team-local Agents: 0 | Teams: 0 | Applications: 0\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-xQ51lb/server-data\nBuilt-in package is platform managed.\nDefault\nPackage Path Or GitHub URL\nImport Package",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "Back to Workspace",
+      "label": "Back to workspace",
+      "testid": "settings-nav-back",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "API Keys",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Token Statistics",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Display",
+      "label": null,
+      "testid": "settings-nav-display",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Language",
+      "label": null,
+      "testid": "settings-nav-language",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Local Tools",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "MCP Servers",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Application Packages",
+      "label": null,
+      "testid": "settings-nav-application-packages",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent Packages",
+      "label": null,
+      "testid": "settings-nav-agent-packages",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Server Settings",
+      "label": null,
+      "testid": "settings-nav-server-settings",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Extensions",
+      "label": null,
+      "testid": "settings-nav-extensions",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Updates",
+      "label": null,
+      "testid": "settings-nav-updates",
+      "href": null
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "testid": "agent-package-source-input",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Import Package",
+      "label": null,
+      "testid": "agent-package-import-button",
+      "href": null
+    }
+  ],
+  "result": "Pass"
+}

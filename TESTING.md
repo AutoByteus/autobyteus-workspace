@@ -734,3 +734,22 @@ exact instance and removes only its own data/fixtures. Device metrics emulate
 renderer widths, not OS window resizing or physical mobile. Error/empty response
 and browser/remote/mobile gating use the colocated native-folder and gate tests;
 this probe does not induce OS permission failures or certify other platforms.
+
+### Team identity glyph regression
+
+From the workspace root, build dependencies with `pnpm --filter 'autobyteus^...' build`,
+then `pnpm -C autobyteus-web exec nuxt prepare` and
+`pnpm -C autobyteus-web test:e2e:team-group-icon --output-dir <fresh-dir>`.
+Serialize builds/tests/dev within the worktree. Chrome is required; override discovery
+with `PLAYWRIGHT_CHROME_EXECUTABLE_PATH`. Relative output paths resolve from the web
+package. Optional `--ledger-file <initialized-absolute-path>` appends each case immediately.
+
+The probe owns free-port Nuxt, a temporary page and fresh headless Chrome. It checks
+actual Iconify SVG paths/sizes, Agent context/store and Team tree rows, real Org
+projection, compact/detail Task worker states and Memory configured/task/nested groups,
+with keyboard/pointer/disclosure/focus and 1440/768px renderer widths. Bootstrap HTTP
+and public Team-row inputs are controlled; parent source projections and avatar
+preservation have colocated coverage. No real backend/model, full worker/page navigation,
+Electron shell, physical mobile or explicit user acceptance is certified. Inspect
+`result.json`, screenshots and cleanup receipts; route, exact child group, browser
+and ports must be released, without touching the user app/data.

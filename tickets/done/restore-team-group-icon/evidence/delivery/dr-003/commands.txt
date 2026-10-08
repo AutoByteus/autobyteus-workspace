@@ -1,0 +1,6 @@
+pnpm --filter 'autobyteus^...' build
+pnpm -C autobyteus-web exec nuxt prepare
+pnpm -C autobyteus-web test:nuxt components/workspace/history components/projects components/memory stores/__tests__/runHistoryTeamExecutionRows.spec.ts stores/__tests__/runHistoryTeamExecutionRowsClosure.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts stores/__tests__/agentRunCollaborationStore.spec.ts stores/__tests__/agentRunCollaborationStoreClosure.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts services/collaborators/__tests__/agentSourceSelectors.spec.ts composables/__tests__/useWorkspaceHistoryGroupArchive.spec.ts stores/__tests__/runHistoryStore.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts --run
+pnpm -C autobyteus-web build
+pnpm -C autobyteus-web test:e2e:team-group-icon --output-dir "$E/browser-01" --ledger-file "$E/ledger.md"
+git diff --check

@@ -1,0 +1,221 @@
+{
+  "mode": "settings",
+  "instanceId": "iso-57073-e937",
+  "timestamp": "2026-10-08T05:29:13.307Z",
+  "requests": [
+    {
+      "status": 200,
+      "operation": "GetProviderCredentialSettings"
+    }
+  ],
+  "errors": [],
+  "title": "",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "text": "Back to Workspace\nAPI Keys\nToken Statistics\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAPI Key Management\n\nManage provider keys and provider-specific model discovery\n\nLoading provider credentials...",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "text": "Back to Workspace",
+      "label": "Back to workspace",
+      "testid": "settings-nav-back",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "API Keys",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Token Statistics",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Display",
+      "label": null,
+      "testid": "settings-nav-display",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Language",
+      "label": null,
+      "testid": "settings-nav-language",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Local Tools",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "MCP Servers",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Application Packages",
+      "label": null,
+      "testid": "settings-nav-application-packages",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Agent Packages",
+      "label": null,
+      "testid": "settings-nav-agent-packages",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Server Settings",
+      "label": null,
+      "testid": "settings-nav-server-settings",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Extensions",
+      "label": null,
+      "testid": "settings-nav-extensions",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Updates",
+      "label": null,
+      "testid": "settings-nav-updates",
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Anthropic8",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "AutoByteus—",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "DeepSeek2",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Gemini10",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "GLM1",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Grok1",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Kimi1",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "LM Studio—",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "MiniMax1",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Mistral2",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Ollama—",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "OpenAI12",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Qwen6",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "New Provider—",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "INPUT",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "label": null,
+      "testid": null,
+      "href": null
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Save Key",
+      "label": null,
+      "testid": null,
+      "href": null
+    }
+  ],
+  "result": "Pass"
+}
