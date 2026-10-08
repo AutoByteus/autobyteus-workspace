@@ -1,0 +1,27 @@
+
+> autobyteus@1.4.97 test:e2e:team-group-icon /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web
+> node tests/e2e/team-group-icon-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/tickets/in-progress/restore-team-group-icon/evidence/api-e2e/browser-01 --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/tickets/in-progress/restore-team-group-icon/api-e2e-test-case-ledger.md
+
+{
+  "result": "Fail",
+  "error": "locator.click: Error: strict mode violation: locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]') resolved to 2 elements:\n    1) <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-0a39d3e0=\"\" data-tree-depth=\"0\" aria-expanded=\"true\" aria-selected=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-team-run-id=\"preview-host\" data-member-address=\"/preview_0\" data-row-kind=\"transient_execution\" data-test=\"workspace-team-transient-execution-row\" title=\"Temporary task team · Delegated Team · /preview_0\" aria-label=\"Temporary task team, Delegated Team, level 1, offline, Started by manag…>…</div> aka locator('[data-test=\"workspace-team-execution-tree\"]').getByRole('treeitem', { name: 'Temporary task team, Delegated Team, level 1, offline, Started by manager, /' })\n    2) <button type=\"button\" data-v-2746c134=\"\" aria-expanded=\"true\" data-team-run-id=\"preview-host\" title=\"Collapse Delegated Team\" data-member-address=\"/preview_0\" aria-label=\"Collapse Delegated Team\" data-test=\"workspace-team-transient-disclosure\" class=\"ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500\">…</button> aka getByRole('button', { name: 'Collapse Delegated Team' })\n\nCall log:\n\u001b[2m  - waiting for locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:150:20\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:126:3",
+  "cases": {
+    "B01": {
+      "description": "Shared + Agent/Team parent icons, pointer/keyboard/disclosure/focus at normal/constrained widths",
+      "startedAt": "2026-10-08T05:08:03.274Z",
+      "result": "Fail",
+      "error": "locator.click: Error: strict mode violation: locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]') resolved to 2 elements:\n    1) <div tabindex=\"0\" aria-level=\"1\" role=\"treeitem\" data-v-2746c134=\"\" data-v-0a39d3e0=\"\" data-tree-depth=\"0\" aria-expanded=\"true\" aria-selected=\"false\" data-node-kind=\"agent_team\" data-transient-kind=\"task_team\" data-team-run-id=\"preview-host\" data-member-address=\"/preview_0\" data-row-kind=\"transient_execution\" data-test=\"workspace-team-transient-execution-row\" title=\"Temporary task team · Delegated Team · /preview_0\" aria-label=\"Temporary task team, Delegated Team, level 1, offline, Started by manag…>…</div> aka locator('[data-test=\"workspace-team-execution-tree\"]').getByRole('treeitem', { name: 'Temporary task team, Delegated Team, level 1, offline, Started by manager, /' })\n    2) <button type=\"button\" data-v-2746c134=\"\" aria-expanded=\"true\" data-team-run-id=\"preview-host\" title=\"Collapse Delegated Team\" data-member-address=\"/preview_0\" aria-label=\"Collapse Delegated Team\" data-test=\"workspace-team-transient-disclosure\" class=\"ml-2 mr-1 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500\">…</button> aka getByRole('button', { name: 'Collapse Delegated Team' })\n\nCall log:\n\u001b[2m  - waiting for locator('[data-preview=\"team-parent\"] [data-member-address=\"/preview_0\"]')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:150:20\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:68:27)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/restore-team-group-icon/autobyteus-web/tests/e2e/team-group-icon-probe.mjs:126:3"
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "nuxtExited": {
+      "pid": 88135,
+      "exitCode": 0,
+      "signal": null
+    },
+    "routeRemoved": true,
+    "portsReleased": true
+  }
+}
+ ELIFECYCLE  Command failed with exit code 1.
