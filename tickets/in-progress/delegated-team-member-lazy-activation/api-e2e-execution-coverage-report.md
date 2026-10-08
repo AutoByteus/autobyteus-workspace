@@ -2,206 +2,209 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/investigation-notes.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/solution-revision-record.md` (SR-002)
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/design-spec.md`
-- Architecture design handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/handoff-architecture-design-complete.md`
-- Supplemental Task Artifacts: None
-- Design Review Report: `N/A — not applicable`
-- Architecture Review Revision Record: `N/A — not applicable`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/implementation-revision-record.md` (IR-001)
-- Code Review Report: `N/A — not applicable` (direct route)
-- Code Review Revision Record: `N/A — not applicable`
-- Delivery Revision Record: N/A
-- Relevant Delivery Revision IDs: N/A
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/api-e2e-coverage-investigation.md`
-- API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/api-e2e-test-case-ledger.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
-- Trigger: Implementation Complete (IR-001, commit `203eb29e1`)
-- Prior Round Reviewed: None
-- Latest Authoritative Round: 1
+All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/`.
 
-Evidence paths below are relative to `tickets/in-progress/delegated-team-member-lazy-activation/api-e2e-evidence/`. They are retained locally and not committed (large raw logs).
+- Requirements Doc: `requirements-doc.md` (Approved; REQ-001..007, AC-001..007, DEC-001 = A)
+- Investigation Notes: `investigation-notes.md`
+- Solution Revision Record: `solution-revision-record.md` (SR-004 current)
+- Design Spec: `design-spec.md` (incl. "SR-003 Design Revision" and the SR-004 correction)
+- Supplemental Task Artifacts: `handoff-sr-003-design-revision.md`, `handoff-sr-004-design-correction.md`, `handoff-architecture-design-complete.md`
+- Design Review Report: `design-review-report.md` (ARCH-REV-002 Pass)
+- Architecture Review Revision Record: `architecture-review-revision-record.md`
+- Implementation Handoff: `implementation-handoff.md`
+- Implementation Revision Record: `implementation-revision-record.md` (IR-003 current; IR-002 superseded)
+- Code Review Report: `code-review-report.md` (CRR-003 Pass)
+- Code Review Revision Record: `code-review-revision-record.md`
+- Delivery Revision Record: N/A
+- Coverage Investigation: `api-e2e-coverage-investigation.md`
+- API/E2E Test-Case Ledger: `api-e2e-test-case-ledger.md`
+- API/E2E Revision Record: `api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2
+- Trigger: Code Reviewer CRR-003 Pass on IR-003 (`b3b28d47b`), which supersedes IR-002
+- Prior Round Reviewed: Round 1 (API-REV-001, Fail on DTL-003)
+- Latest Authoritative Round: 2
+
+Evidence paths below are relative to `api-e2e-evidence/`. They are retained locally and not committed.
 
 ## Routing Classification
 
 - Task size: `Small`
-- Architectural risk: `Low`
-- Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery`
-- Proportional test-code review decision: `Not Required — direct low-risk route` (not reached: result is `Fail`)
+- Architectural risk: `High` (raised by SR-003)
+- Input route: `Reviewed`
+- Successful-output route: `Code Review` (proportional test-code review)
+- Proportional test-code review decision: `Required` (reviewed High route)
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: see above
+- Coverage investigation artifact: see above (round-2 delta recorded there)
 - Investigation completed before durable coverage changes or final execution: `Yes`
-- Investigation plan followed: `Yes`. Deviations: (1) Team definitions are flat (no nested Team members), so the Team root delegates a catalog copy and member-specific start failures exist only for Org placements. (2) Org run creation validates models, so the not-startable member is modelled as a model retired after the Org was configured (`AGY_FAKE_EXTRA_MODELS`).
-- Existing coverage decisions revised during execution: four integration files and one Org E2E were classified `Needs Update` (stale doubles/assertions, identical failures on base) and fixed as baseline fixes.
-- Reroute required: `Yes` (AC-004 member branch)
+- Investigation plan followed: `Yes`, with these deviations:
+  - **Real Claude case added.** A gated real-Claude case (DTL-009) and a rendered-tree check in the existing browser probe were added to close the confidence gaps.
+  - **IR-002 not validated on its own.** Round 2 started on IR-002. The Solution Designer then put validation on HOLD, and IR-003 replaced it.
+- Existing coverage decisions revised during execution: the durable suite's test helpers were hardened after timed probes on a loaded host (see Durable Coverage).
+- Reroute required: `No`
 
 ## Test-Case Ledger Reconciliation
 
 - Ledger path: see above
-- Ledger initialized before execution: `Yes` (planned cases written before the E2E runs; events recorded as cases completed)
+- Ledger initialized before execution: `Yes`
 - Every completed case recorded immediately: `Yes`
-- Long-running case checkpoints recorded when needed: `Yes`
+- Long-running case checkpoints recorded when needed: `Yes` (including the HOLD checkpoint)
 - Ledger reconciled into this report: `Yes`
-- Last durably recorded event: REG-E2E completion and reruns
+- Last durably recorded event: round-2 completion
 - Cases still running, interrupted, or not started: None
-- Interruption, context-compression, or rerun note: on rerun start with DTL-003
 
 | Case ID | Final Result | Last Event | Evidence / Artifact Path | Reconciled Result / Follow-Up |
 | --- | --- | --- | --- | --- |
-| R-01 | Pass | Completed | `r01-tsc.log` | — |
-| R-02 | Pass | Completed | `r02-unit.log` | 99 files / 837 tests |
-| R-03 | Pass (after baseline fixes) | Completed | `r03-integration.log`, `r03-integration-after-baseline-fix.log` | 12 files / 95 tests |
-| R-04 | Pass (baseline confirmed) | Completed | `r04-integration-base.log` | — |
-| DTL-001 | Pass (Agent, Team, Org) | Completed | `dtl-e2e-run3.log`, `dtl-e2e-run3/` | — |
-| DTL-002 | Pass (Agent, Team, Org) | Completed | same | — |
-| DTL-003 | **Fail** (Org) | Completed | `dtl-e2e-run3.log`, `dtl-org-probe.log`, `dtl-org-probe2.log`, `dtl-org-member-failure-probe.log` | Reroute |
-| DTL-004 | Pass (Agent, Team) | Completed | `dtl-e2e-run3/` | — |
-| DTL-005 | Pass (Agent, Team; Org via DTL-P02) | Completed | `dtl-e2e-run3/`, `dtl-org-rest-probe/` | Org rerun after fix |
-| DTL-006 | Pass (Agent, Team; Org via DTL-P02) | Completed | same | Org rerun after fix |
-| DTL-007 | Pass (Agent, Team; Org via DTL-P02) | Completed | same | Org rerun after fix |
-| DTL-008 | Pass (Org) | Completed | `dtl-e2e-run3.log` | — |
-| DTL-B01 | Pass (discriminates) | Completed | `dtl-e2e-base.log` | — |
-| REG-E2E | Pass (after baseline fix + isolated rerun) | Completed | `e2e-regression.log`, `org-publication-*.log`, `idle-lifetime-rerun.log` | See below |
+| R-01 tsc | Pass | Completed | `r2-tsc.log` | — |
+| R-02 unit | Pass (99 files / 853 tests) | Completed | `r2-unit.log` | — |
+| R-03 integration | Pass (12 files / 95 tests) | Completed | `r2-integration.log` | — |
+| DTL-001 | Pass ×6 runs, all roots | Completed | `r2-ir3-dtl-1..3/`, `r2-ir3-dtl-final/`, `r2-final-with-claude/`, `r2-final-default/` | — |
+| DTL-002 | Pass ×6, all roots | Completed | same | — |
+| DTL-003 | **Pass** ×6 (Org) — prior failure resolved | Completed | same; receipt `org.memberStartFailure` | — |
+| DTL-004 | Pass ×6 (Agent, Team) | Completed | same | — |
+| DTL-005 | Pass ×6, all roots | Completed | same | — |
+| DTL-006 | Pass ×6, all roots | Completed | same | — |
+| DTL-007 | Pass ×6, all roots | Completed | same | — |
+| DTL-008 | Pass ×6 (Org) | Completed | same | — |
+| DTL-009 (new, `RUN_CLAUDE_E2E`) | Pass (real Claude haiku) | Completed | `r2-final-with-claude/` (`liveClaude`) | — |
+| BR-008..BR-011 (+ lazy-member render check) | Pass | Completed | `r2-task-closure-tree/evidence.json`, screenshots | — |
+| REG-E2E | Pass (9 files; 33 passed, 1 Claude-gated skip) | Completed | `r2-e2e-regression.log` | — |
 
 ## Compatibility / Legacy Scope Check
 
 - Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
-- Compatibility-only or legacy-retention behavior observed in implementation: `No` (grep: no `prepareConfiguredAgents`, `prepareConfiguredActivation` on the flat manager, or staged-binding fields left in `src`; no flag restores eager copies)
+- Compatibility-only or legacy-retention behavior observed in implementation: `No`. The eager path is removed, and the removed `readinessFailureCode` has no shim.
 - Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes`
-- Durable coverage added or retained only for compatibility-only behavior: `No`. The DTL-007 legacy-tree case proves the approved `Directly Usable` reader policy, not a compatibility branch.
-- Reroute classification for compatibility issues: N/A
-- Upstream recipient notified: N/A
+- Durable coverage added or retained only for compatibility-only behavior: `No`. DTL-007 proves the approved `Directly Usable` reader policy.
 
 ## Changed Boundary And Evidence Matrix
 
 | Case ID | Behavior / REQ / AC | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| DTL-001 | BEH-001; REQ-001/003/004; AC-001, AC-003, QR-001 | Task Team preparation + seed activation in all roots | Real Studio HTTP/WS, scoped MCP `delegate_task`, AGY backend (scripted CLI) | Durable | Pass ×3 | One launch (the lead, no `--conversation`) per copy; reviewer/writer/tester no process, `null` in every saved record of the copy, `offline` in a fresh view's `agent_statuses`, no non-offline status frames |
-| DTL-002 | BEH-005; REQ-002/003; AC-002 | First-work activation via teammate `send_message_to` | Live API | Durable | Pass ×3 | Lead's tool result `DELIVERED`; exactly one new launch (reviewer); reviewer statuses `initializing → running… → idle`; binding saved; writer/tester untouched |
-| DTL-003 | REQ-005; AC-004 (member) | Teammate delivery to a member that cannot start | Live API (Org; retired model) | Durable + temporary probe | **Fail** | Sender: `MCP error -32603: Internal error` (no not-accepted delivery result; `AGY_MODEL_UNAVAILABLE` cause hidden). Writer: `offline`, no status events (expected `error`). No launch for the writer; lead/reviewer unaffected |
-| DTL-004 | REQ-004; AC-003 | Team-hosted copy delegated by a copy member | Live API (Agent, Team) | Durable | Pass ×2 | Nested copy: one launch (its lead); others `null`/`offline` |
-| DTL-005 | REQ-006; AC-005 | Idle shutdown with never-started members; restore by Manager message | Live API + process observation (grace 60 s) | Durable | Pass ×3 | All copy processes gone; one relaunch (lead) with `--conversation <saved lead binding>`; bindings unchanged; others `offline` |
-| DTL-006 | REQ-006; AC-005 | Task DONE → TODO → reactivation | Live API | Durable | Pass ×3 | Copy stopped at DONE; reactivation relaunches only the lead with its conversation |
-| DTL-007 | REQ-006; AC-005; persisted data | Root stop + saved tree with pre-fix shape + restore; legacy-bound member's first work | Live API + persisted reader | Durable | Pass ×3 | Edited legacy binding is read back; only the lead resumes; the tester's first work launches fresh (no `--conversation`) and its binding is replaced |
-| DTL-008 | REQ-005; AC-004 (coordinator) | Coordinator start failure at delegation | Live API (Org) | Durable | Pass | `delegate_task` → `target_agent_run_id: null`, `AGY_MODEL_UNAVAILABLE: dtl-retiring-model`; no member launch |
-| DTL-B01 | Discrimination | — | Same suite on base `ace86bf1f` | Temporary | Pass | Base: Agent/Team copies launch all 4 members at delegation; Org delegation fails because the eager writer start hits the retired model |
-| REG-E2E | REQ-007; AC-006, AC-005 | Existing delegation/lifecycle/feed/closure/Org publication journeys | Live API (serial) | Durable (existing) | Pass | See next table |
+| DTL-001 | BEH-001; REQ-001/003/004; AC-001, AC-003, QR-001 | Task Team preparation + seed activation | Real Studio HTTP/WS, scoped MCP, AGY backend (scripted CLI) | Durable | Pass | One launch per copy (the lead); others have no process, a `null` binding in every saved tree record, and `offline` in a fresh view's `agent_statuses` |
+| DTL-002 | BEH-005; AC-002 | Teammate delivery → first-work activation | Live API | Durable | Pass | Only the recipient launches; `initializing → … → idle`; binding saved |
+| DTL-003 | REQ-005; AC-004 member | `reserveInput` → `startForInput` | Live API (Org; retired model) | Durable | Pass | Sender `{accepted:false, code:"AGENT_RUN_ACTIVATION_FAILED", message:"AGY_MODEL_UNAVAILABLE: dtl-retiring-model"}`; writer `error`; exactly 1 conversation error card (`COLLABORATION_AGENT_ACTIVATION_FAILED`, cause in message); no writer launch; lead/reviewer keep working |
+| DTL-004 | REQ-004; AC-003 | Team-hosted nested copy | Live API (Agent, Team) | Durable | Pass | Only the nested coordinator launches |
+| DTL-005 | REQ-006; AC-005 | Idle shutdown (incl. Org copy with an errored never-started member) + restore | Live API + processes | Durable | Pass | Copy processes gone; only the lead relaunches with `--conversation <saved>` |
+| DTL-006 | REQ-006; AC-005 | DONE → TODO → reactivation | Live API | Durable | Pass | Only the lead resumes |
+| DTL-007 | REQ-006; AC-005; persisted data | Root stop + pre-fix saved tree + restore | Live API + persisted reader | Durable | Pass | Legacy-bound member stays `offline`; its first work starts fresh and replaces the binding |
+| DTL-008 | REQ-005; AC-004 coordinator | Seed failure → dispatch failure | Live API (Org) | Durable | Pass | `delegate_task` → `target_agent_run_id: null`, message `AGY_MODEL_UNAVAILABLE: dtl-retiring-model`; no member launch |
+| DTL-009 | QR-001 on the user's runtime | Claude Agent SDK activation | Live API, real Claude haiku | Durable (gated) | Pass | Bindings `{lead: <Claude session id>, reviewer: null, writer: null, tester: null}`; others `offline` with no live statuses |
+| BR-008..010 render check | REQ-003; AC-001 (web-equivalent of AC-007) | Rendered Workspaces tree | Built backend + Nuxt dev + headless Chrome | Durable (browser probe) | Pass | Agent, Team, Org: coordinator row `idle` (green), unused member row `offline` (gray); screenshots `*-task-team-lazy-members.png` |
+| BR-011 | AC-005 (cold restart) | Real backend process restarts | Same probe | Durable | Pass | Reactivated Task Team copy (new null-binding data shape) survives two real backend restarts; conversation continues |
+| REG-E2E | REQ-007; AC-006 | Existing journeys | Live API (serial) | Durable (existing) | Pass | See Additional Repository Coverage |
 
 ## Additional Repository Coverage Execution
 
+All commands run from the worktree root with `env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs` unless noted.
+
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| E-01 | `env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs DELEGATED_TEAM_LAZY_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts --no-watch` | worktree root | DTL-001..008 | Fail (DTL-003 only) | `dtl-e2e-run3.log`, `dtl-e2e-run3/delegated-team-lazy-member-activation.json` |
-| E-02 | Same env; `vitest run` the serial set: `task-copy-idle-lifetime`, `task-reactivation-root-visibility`, `ad-hoc-task-delegation`, `task-closure-root-visibility`, `project-change-feed`, `project-task-context-files-delegation`, `project-task-boundaries`, `agent-org-runs/controlled-org-publication-http`, `agent-team-runs/task-delegation-api-surface` with `--no-file-parallelism` | worktree root | AC-006 regressions | 7 files pass; 2 fail (below) | `e2e-regression.log`, `e2e-regression-receipts/` |
-| E-03 | `controlled-org-publication-http.e2e.test.ts` on base and worktree | base + worktree | Baseline comparison | Identical failure on both (stale `@`-adds-collaborator assertion) | `org-publication-base.log`, `org-publication-worktree.log` |
-| E-04 | Same after baseline fix | worktree | Org publication chain | Pass | `org-publication-worktree-fixed.log` |
-| E-05 | `task-copy-idle-lifetime.e2e.test.ts` alone | worktree | Idle lifetime incl. Team copy with a never-addressed member (`mate`) | Pass | `idle-lifetime-rerun.log`, `idle-lifetime-rerun/` |
-
-E-02 `task-copy-idle-lifetime` failure, classified as environmental: Agent `delegate_task` failed with `Antigravity model discovery timed out; check the CLI and retry.`, a quiet-copy shutdown came 58.8 s after idle against a 59 s lower bound, and an Org idle wait timed out. All three hit Agent copies and timing that this change does not touch. The suite passes alone (E-05). Another worktree (`interrupt-resend-retired-cleanup-stuck`, not owned by this run) was running scripted-AGY E2E batches on the same host at the time, which explains the load.
+| E-01 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts --no-watch` | ×5 default (disposable HOME); host load average 7–30 | DTL-001..008 | Pass ×5 (3 before + 1 after the final helper edit + 1 final default) | `r2-ir3-dtl-*.log`, `r2-final-default.log` |
+| E-02 | Same + `RUN_CLAUDE_E2E=1` | Real HOME (Claude login) | DTL-001..009 | Pass | `r2-final-with-claude.log` |
+| E-03 | `tsc -p tsconfig.build.json --noEmit`; unit layer; integration layer (round-1 commands) | worktree | Regression | Pass | `r2-tsc.log`, `r2-unit.log`, `r2-integration.log` |
+| E-04 | Serial REG-E2E set (round-1 E-02 file list, `--no-file-parallelism`) | worktree | AC-006/AC-005 regressions | Pass (9/9 files) | `r2-e2e-regression.log`, `r2-regression-receipts/` |
+| E-05 | `pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build`; `pnpm -C autobyteus-web exec nuxt prepare`; `pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,BR-011 --output-dir <evidence>/r2-task-closure-tree` | current worktree dist; probe-owned backend, Nuxt, Chrome, data root | Rendered lazy-member status; real backend restarts | Pass | `r2-task-closure-tree/evidence.json`, `backend-1..3.log`, screenshots |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 50% | −25 (defect found) | AC-001/002/003/005 and AC-004 coordinator proven at the real boundary in every applicable root; AC-006 regressions pass | AC-004 member branch (critical, REQ-005) fails on the real teammate path |
-| Changed-boundary execution directness | 75% | 95% | +20 | Real `delegate_task`/`send_message_to` over scoped MCP, dispatch, seed, AGY process per activation, saved trees, root views | — |
-| Cross-boundary integration realism and mock gap | 70% | 90% | +20 | Only the external CLI/model is scripted | Real Claude/Codex sessions not run this round (shared activation path) |
-| Environment, configuration, identity, and fixture fidelity | 75% | 90% | +15 | Real launch configs, Org overrides, Project/ad-hoc Tasks, persisted trees | Root stop/restore stands in for a whole-process restart |
-| Failure, edge-case, lifecycle, and recovery evidence | 75% | 50% | −25 | Idle shutdown, DONE/reopen, stop/restore, legacy tree and coordinator failure pass | Member start failure path broken (DTL-003) |
-| User-surface, browser, and desktop-shell confidence | 75% | 90% | +15 | Root-view `agent_statuses` and status frames (the sidebar/header inputs) asserted per member | Rendering not exercised (frontend unchanged); AC-007 is user verification |
-| Durable regression coverage quality and relevance | 90% | 95% | +5 | New gated E2E (discriminates on base) + 5 baseline fixes restoring 24 failing tests | — |
+| Requirement and acceptance-criteria proof | 80% | 95% | +15 | AC-001..006 and QR-001 proven directly in every applicable root; DTL-003 fixed and asserted on the new contract | AC-007 is the user's own desktop check (by design) |
+| Changed-boundary execution directness | 80% | 95% | +15 | Real `delegate_task`/teammate delivery, `startForInput`, AGY process per activation, saved trees, view snapshots | — |
+| Cross-boundary integration realism and mock gap | 75% | 95% | +20 | Real Claude Agent SDK session (DTL-009); built backend + real browser; the scripted CLI is used only for determinism | Codex runtime not run (shares the handle path) |
+| Environment, configuration, identity, and fixture fidelity | 80% | 95% | +15 | Real launch configs and Org overrides, real Claude login, built dist, two real backend restarts | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 80% | 95% | +15 | Member/coordinator start failure, errored never-started member through idle shutdown, DONE/reopen, cold restart, legacy tree, all repeated 6× | PREM-001 (input closed during a start) is a timing race covered by the reviewer's handle unit tests, not E2E |
+| User-surface, browser, and desktop-shell confidence | 75% | 95% | +20 | Rendered tree in a real browser: coordinator Idle, unused member Offline, in all three roots | Packaged Electron shell unchanged; AC-007 user check |
+| Durable regression coverage quality and relevance | 90% | 95% | +5 | Durable E2E (gated, discriminates on base), browser-probe render check, gated live-Claude case, hardened helpers | — |
 
-- Overall post-repository confidence: 76%
-- Overall final confidence: 80% (simple average of 50, 95, 90, 90, 50, 90, 95)
-- Calculation method: simple average
-- Confidence change produced by broader validation: real-boundary proof for AC-001/002/003/005; one critical defect found
-- Every critical acceptance criterion directly proven: `No` — AC-004 member branch fails
-- Any final applicable category below `90%`: `Yes` — requirement proof (50%), failure/lifecycle (50%)
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: DTL-003 defect; no whole-process restart; no real-provider run
+- Overall post-repository confidence (round 2, repository suites only): 80%
+- Overall final confidence: **95%** (simple average)
+- Calculation method: simple average of the seven categories
+- Confidence change produced by broader validation: +15
+- Every critical acceptance criterion directly proven: `Yes` (AC-007 is explicit user verification)
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks:
+  - PREM-001 race is covered by unit tests only.
+  - The Codex runtime was not exercised.
+  - One `accepted:false` on an Org reactivation was seen once on superseded IR-002, with the code not captured. It has not recurred in 6 IR-003 runs plus the reactivation suite. Assertion messages now include the result JSON.
 
 ## Broader Validation Decision And Execution
 
-- Decision and selected execution mode: `Required`; Live API + lifecycle through the gated scripted-AGY server E2E layer (TESTING.md)
-- Material deviation: Team roots are flat (see Investigation basis)
-- Confidence gap addressed: real dispatch, teammate delivery, process lifecycle, persisted reader
-- Startup order, commands, readiness: in-process Studio server per suite on a free port (`startStudioE2eRuntimeServer`), readiness by GraphQL and WS `CONNECTED`/view snapshot
-- Environment choices: idle grace `.env` 60 s; disposable `HOME`; `AGY_FAKE_CASE=linked_skills`; `AGY_FAKE_ARGV_LOG`; `AGY_FAKE_EXTRA_MODELS` only while the Org is created
-- Seed data: GraphQL definitions (Manager, Worker, 4-member Squad, Team root, Org with `/squad` and `/broken`), Project + Task (Agent root), saved-tree edit on a stopped root
+- Decision and mode: `Required`. Live API and lifecycle (gated scripted-AGY server E2E), a real-provider case (Claude), and a browser plus real backend restart (`task-closure-tree` probe).
+- Confidence gaps addressed:
+  - AC-004 member branch (fixed);
+  - QR-001 on the user's runtime;
+  - cold restart with the new data shape;
+  - rendered status.
+- Environment choices:
+  - idle grace 60 s;
+  - disposable HOME except the live-Claude run;
+  - `AGY_FAKE_EXTRA_MODELS` only during Org creation;
+  - the probe owns ports, data root, processes and Chrome.
+- Host conditions: other worktrees ran E2E batches concurrently (load average up to ~100 during round 2). The durable helpers were hardened for this; see below.
 
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Org: lead → `send_message_to` writer (model retired) | Not-accepted delivery result to the lead naming the cause; writer `error`; lead and reviewer unaffected | Lead's MCP call throws `MCP error -32603: Internal error`; writer `offline` with no status events; lead/reviewer `idle` | `dtl-org-member-failure-probe.log` (`PROBE_OUTCOME`, `PROBE_WRITER_STATUS`, `PROBE_WRITER_SIGNALS`) | Fail |
-| All other DTL steps | As in the matrix | As expected | `dtl-e2e-run3/`, `dtl-org-rest-probe/` | Pass |
+| Org: lead → `send_message_to` writer (model retired) | Not-accepted naming cause; writer `error`; one card; others unaffected | `AGENT_RUN_ACTIVATION_FAILED` / `AGY_MODEL_UNAVAILABLE: dtl-retiring-model`; writer `error`; 1 card; lead/reviewer continue | receipt `org.memberStartFailure` | Pass |
+| Org: real Claude Team copy | Only coordinator has a Claude session | `{lead: "d5b86d6b-…", reviewer: null, writer: null, tester: null}` | `r2-final-with-claude/` | Pass |
+| Browser: delegated Task Team rows | Coordinator Idle, unused member Offline | Coordinator `idle`, unused member `offline`, in all 3 roots | `r2-task-closure-tree/evidence.json`, `*-task-team-lazy-members.png` | Pass |
+| Browser: two real backend restarts | Reactivated Team copy and conversation survive | BR-011 Pass | `backend-1..3.log`, `*-after-*restart.png` | Pass |
 
 ## Platform / Runtime Targets
 
-- Operating system / platform: macOS (Darwin 25.5.0, arm64)
-- Runtime: Node (workspace pnpm toolchain), Vitest 4.0.18; AGY scripted CLI fixture (`agy version 1.2.11` default)
-- Browser: N/A
+- macOS (Darwin 25.5.0, arm64)
+- Node (workspace pnpm), Vitest 4.0.18
+- AGY scripted CLI; Claude Code CLI 2.1.283 (haiku)
+- Headless Chrome (probe)
 
 ## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
 - Approved persisted-data decision: `Directly Usable — No Migration`
-- Representative existing data exercised: a stopped root's saved tree in which the never-started tester was given a binding with no conversation, i.e. the pre-fix shape (DTL-007, all three roots). New copies save `null` for never-started members (DTL-001).
-- Direct-use result: restore reads it; the tester stays `offline` and is not launched; its first work launches fresh and replaces the binding; the lead resumes its own conversation.
+- Representative existing data exercised: pre-fix saved tree shape (DTL-007, all roots). New copies save `null` bindings for unused members, read back after two real backend restarts (BR-011).
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`
-- Residual untested persisted-data risk: a cold whole-process restart was not run this round (same reader)
+- Residual untested persisted-data risk: none material
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes`
+Changes since round 1 (round-1 changes are in commits `fecc0c047`, `c95ad4b92`):
 
 | Path / Test | Change | Requirement / Boundary | Execution Result |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts` | Added | DTL-001..008 (AC-001..005, QR-001, REQ-004) | Fails only at DTL-003 (product defect); discriminates on base |
-| `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs` | Updated | `models` lists `AGY_FAKE_EXTRA_MODELS` while set | Default output unchanged; sibling suites pass |
-| `TESTING.md` | Updated | Map entry for the new suite | Doc |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/configured-scope-readiness.test.ts` | Updated (baseline fix) | BEH-002 lazy UI-started Team/Org; double → `testActivationManager` | 8/8 (base 2/8) |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` | Updated (baseline fix) | Team root manager; double → `beginMaterialization`, callback keys | 14/14 (base 0/14) |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts` | Updated (baseline fix) | Team MCP lifecycle; double → `testBackendFactory` | 1/1 (base 0/1) |
-| `autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts` | Updated (baseline fix) | Exact targets incl. task-Team members; snapshot double fields | 3/3 (base 1/3) |
-| `autobyteus-server-ts/tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts` | Updated (baseline fix) | Org publication; collaborator brought in by `send_message_to` (documented current behavior) | 1/1 (base 0/1) |
+| `autobyteus-server-ts/tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts` | Updated | DTL-003 now asserts `AGENT_RUN_ACTIVATION_FAILED` plus exactly one writer error card; added gated DTL-009 (real Claude); see the hardening list below | Pass ×6 |
+| `autobyteus-web/tests/e2e/task-closure-tree-probe.mjs` | Updated | BR-008..010: after delegation, the Task Team coordinator row renders Idle and the unused member row renders Offline (REQ-003, AC-001 rendered) | Pass |
+| `TESTING.md` | Updated | Suite description (new contract, live-Claude option, HOME note, grace tolerance) and probe render check | Doc |
 
-- Added or updated paths attached for review: `Yes` (attached to the handoff)
+Hardening of the durable suite:
+- The saved-tree helper reads only the three root tree files. Reading every `.json` under a busy data dir once took ~60 s.
+- Status checks accept an expected-`idle` member that was shut down by the 60 s grace before the check. This happened 0 times in round 2 and is recorded in the receipt when it does.
+- `accepted:true` assertions report the result JSON.
+- The disposable HOME is skipped when `RUN_CLAUDE_E2E=1`.
+
+- Added or updated paths attached for proportional test-code review: `Yes`
 - Removed paths: None
-
-## Other Execution Artifacts
-
-| Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
-| --- | --- | --- | --- |
-| `api-e2e-evidence/*.log` | Command output | Retained (local, untracked) | Raw ANSI logs |
-| `api-e2e-evidence/dtl-e2e-run3/`, `dtl-org-rest-probe/`, `dtl-e2e-base/`, `idle-lifetime-rerun/`, `e2e-regression-receipts/` | JSON receipts (launches, bindings, statuses, cleanup) | Retained (local, untracked) | — |
 
 ## Temporary Execution Methods / Scaffolding
 
 | Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| `tests/e2e/projects/tmp-dtl-org-probe.e2e.test.ts`, `tmp-dtl-org-rest.e2e.test.ts` (generated copies) | DTL-P01/P02 diagnostics | See matrix | Deleted after each run |
-| `tests/integration/agent-team-execution/tmp-dtl-ws-probe.integration.test.ts` | Read the WS error frame of the stale double | `TEAM_STREAM_UNAVAILABLE` (missing snapshot fields) | Deleted |
-| Base worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/dtl-api-e2e-base` (detached `ace86bf1f`) | Base comparisons (R-04, DTL-B01, E-03) | See tables | Removed after the round |
+| `tmp-dtl-*-probe.e2e.test.ts` (generated copies) | Timed diagnostics of the intermittent status failure; Claude login diagnosis | Slow step = saved-tree walk (59.6 s); legit grace shutdown; Claude "Not logged in" under disposable HOME | Deleted after each run |
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| AGY CLI / model | Repository scripted CLI (`agy-failure-cli.mjs`, `linked_skills`) | Deterministic, no paid inference (TESTING.md layer) | Provider-specific session creation for Claude/Codex not run; activation path is shared |
-| Model retirement | `AGY_FAKE_EXTRA_MODELS` offered only during Org creation | Org creation refuses an unavailable model | Models the real "model retired after configuration" event |
+| AGY CLI / model | Repository scripted CLI | Deterministic, no paid inference | Covered by the real-Claude case for a real provider |
+| Model retirement | `AGY_FAKE_EXTRA_MODELS` during Org creation | Org creation refuses unavailable models | Models a real provider event |
 
 ## Result Summary
 
 | Result | Case IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | R-01..R-04, DTL-001, DTL-002, DTL-004..DTL-008, DTL-B01, REG-E2E | Lazy activation, first-work start, lifecycle and legacy restore proven at the real boundary |
-| Fail | DTL-003 | AC-004 / REQ-005 member branch: sender gets an opaque MCP internal error; member never shows `error` |
+| Pass | R-01..R-03, DTL-001..DTL-009, BR-008..BR-011, REG-E2E | All approved behavior proven at the real boundaries |
 | Not Tested | AC-007 | User verification in the desktop app |
 | Out Of Scope | `mixed-task-delegation.e2e.test.ts` | Needs LM Studio + Codex + Claude together |
 
@@ -209,34 +212,23 @@ E-02 `task-copy-idle-lifetime` failure, classified as environmental: Agent `dele
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| In-process servers, AGY processes, temp data dirs/HOMEs | Owned by each suite run | Suite `afterAll` (terminate roots, close server, leftover-process check, remove dirs) | Receipts: `dataRemoved: true`, `homeRemoved: true`, `serverClosed: true`, `errors: []` |
+| Suite servers, AGY/Claude processes, temp data/HOME | Owned per run | Suite `afterAll` | Receipts: data/HOME removed, server closed, 0 leftover processes, `errors: []` |
+| Probe backend, Nuxt, Chrome, data root | Probe-owned | Probe `finally` | `browser: closed`, backend/frontend terminated, `dataRootRemoved: true` |
 | Temporary probe test files | Mine | Deleted | Done |
-| Base comparison worktree | Mine | `git worktree remove --force` | Done |
-| Unrelated isolated app instance `iso-63369-6c20` (another worktree) | Not mine | Left untouched | — |
-
-## Preliminary Classification
-
-- `Local Fix` — Implementation Engineer (pending failure-origin review).
-- Cause:
-  - Teammate delivery reaches the not-started member through `ConfiguredAgentExecutionHandle.reserveInput` (`configured-agent-execution-handle.ts:120-124`). The route is `standalone-root-message-delivery.reserveAgentInput` / `agent-org-run-message-delivery.reserveAgentInput` / `reserveDirectAgentInput` → `FlatTeamExecutionManager.reserveInput` → `FlatTeamAgentExecutionHandle.reserveInput`.
-  - `reserveInput` awaits `ensureReady()` with no failure handling. A start failure therefore propagates as an exception: the MCP tool returns `-32603 Internal error`, and no `error` status is published.
-  - Only `postMessage` (lines 126-147, the operator/command path) converts a start failure into a not-accepted result plus an `error` status.
-- Why the defect went unnoticed:
-  - Design DS-002 assumed teammate delivery uses the `postMessage` path.
-  - The new unit case drives `TeamRun.postMessage`, not teammate delivery.
-- The fix stays inside the designated sole activation owner and changes no requirement. Solution Designer may want to correct DS-002's wording.
-- Scope: the same path serves configured members of UI-started Teams/Orgs. The gap is pre-existing there; this ticket makes it reachable for every unused delegated-copy member.
+| Built `autobyteus-server-ts/dist`, SDK `dist/`, `.nuxt` | Build output (untracked) | Left as untracked build output | — |
+| Other worktrees' processes | Not mine | Untouched | — |
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Final validation confidence: 80%
-- Default `95%` confidence target met: `No`
-- Any final applicable confidence category below `90%`: `Yes` — requirement and acceptance-criteria proof (50%), failure/lifecycle evidence (50%)
-- Broader validation decision: `Required` — executed (Live API + lifecycle)
-- Critical acceptance criteria lacking direct proof: AC-004 member branch (fails)
-- Preliminary classification and recommended owner: `Local Fix` — Implementation Engineer, subject to failure-origin review
-- Next recipient from `get_handoff_rules`: see revision record / handoff message
-- Notes:
-  - On rerun, start with DTL-003. The durable E2E needs no change: it asserts the approved behavior, sender not-accepted naming `AGY_MODEL_UNAVAILABLE` plus writer `error`.
-  - Then run the full suite and REG-E2E. Optionally add a whole-process restart and a real Claude delegated-Team check.
+- Result: **`Pass`**
+- Final validation confidence: 95%
+- Default `95%` confidence target met: `Yes`
+- Any final applicable confidence category below `90%`: `No`
+- Broader validation decision: `Required` and executed
+- Critical acceptance criteria lacking direct proof: None (AC-007 is user verification)
+- Test-review decision: proportional test-code review `Required` (Small/High reviewed route)
+- Next recipient from `get_handoff_rules`: Code Reviewer
+- Notes for Delivery:
+  - `autobyteus-server-ts/docs/modules/agent_team_execution.md:247-248` still names the removed option.
+  - Optionally document the `AGENT_RUN_ACTIVATION_FAILED` contract.
+  - `pnpm -C autobyteus-server-ts typecheck` fails with TS6059 on base too.

@@ -36,7 +36,9 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 // Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
 //   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts --no-watch
 const { home, priorHome } = await vi.hoisted(async () => {
-  if (process.env["RUN_AGY_FAILURE_E2E"] !== "1") return { home: "", priorHome: process.env["HOME"] };
+  // A disposable HOME keeps the scripted AGY actor's files out of the user's home. The optional real-Claude case needs the
+  // logged-in `claude` CLI, which reads its login from the real HOME (as the sibling live Task reactivation case does).
+  if (process.env["RUN_AGY_FAILURE_E2E"] !== "1" || process.env["RUN_CLAUDE_E2E"] === "1") return { home: "", priorHome: process.env["HOME"] };
   const nodeFs = await import("node:fs");
   const nodeOs = await import("node:os");
   const nodePath = await import("node:path");
@@ -49,6 +51,8 @@ const cli = process.env.ANTIGRAVITY_CLI_COMMAND ?? "";
 const enabled = process.env.RUN_AGY_FAILURE_E2E === "1"
   && spawnSync(cli, ["--version"], { stdio: "ignore" }).status === 0;
 const suite = enabled ? describe : describe.skip;
+/** Optional real-model case (Claude Agent SDK members); needs a logged-in `claude`. */
+const liveClaude = enabled && process.env.RUN_CLAUDE_E2E === "1" && spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
 
 const GRACE_KEY = "AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS";
 const GRACE_MS = 60_000;
@@ -56,6 +60,8 @@ const MODEL = "gemini-3.8-flash-low";
 /** Offered by the scripted CLI only while AGY_FAKE_EXTRA_MODELS lists it: the Org is configured with it, then it is retired. */
 const RETIRING_MODEL = "dtl-retiring-model";
 const MEMBERS = ["lead", "reviewer", "writer", "tester"] as const;
+/** The saved root trees of the Agent, Team and Org roots. */
+const TREE_FILES = new Set(["collaboration_tree.json", "team_run_execution_tree.json", "agent_org_run_execution_tree.json"]);
 type Member = typeof MEMBERS[number];
 type Kind = "agent" | "team" | "org";
 type Frame = { type: string; payload: Record<string, any>; at: number };
@@ -150,14 +156,17 @@ suite("Delegated Team copies start only the members that work reaches, in every 
         conversation: index >= 0 ? entry.argv[index + 1] ?? null : null };
     });
   const launchesFor = async (runIds: readonly string[], from = 0) => (await launches()).slice(from).filter((entry) => runIds.includes(entry.runId));
-  /** Saved collaboration/execution-tree records of a Team copy (every JSON file under the data dir that holds it). */
+  /**
+   * Saved execution-tree records of a Team copy: every root tree file under the data dir that holds it. Only the root
+   * tree files are read (reading every JSON file under a busy data dir can take longer than the idle grace period).
+   */
   const savedCopyRecords = async (teamRunId: string) => {
     const found: Array<{ file: string; members: Record<string, string | null> }> = [];
     const visit = async (dir: string): Promise<void> => {
       for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
         const file = path.join(dir, entry.name);
         if (entry.isDirectory()) { if (entry.name !== "agy-project" && entry.name !== ".agents") await visit(file); continue; }
-        if (!entry.name.endsWith(".json")) continue;
+        if (!entry.isFile() || !TREE_FILES.has(entry.name)) continue;
         const text = await fs.readFile(file, "utf8").catch(() => "");
         if (!text.includes(teamRunId)) continue;
         let parsed: unknown; try { parsed = JSON.parse(text); } catch { continue; }
@@ -248,7 +257,11 @@ suite("Delegated Team copies start only the members that work reaches, in every 
   }, 120_000);
 
   /** A root of one kind with its Manager, a live view, and readers of its tree and conversations. */
-  const startRoot = async (kind: Kind) => {
+  /** Org placements: by default the retiring-model writer and broken coordinator; a live case replaces them. */
+  const defaultOrgOverrides = () => [
+    { address: "/squad/writer", configuration: { llmModelIdentifier: RETIRING_MODEL } },
+    { address: "/broken/lead", configuration: { llmModelIdentifier: RETIRING_MODEL } }];
+  const startRoot = async (kind: Kind, orgOverrides: unknown[] = defaultOrgOverrides()) => {
     let rootId: string, managerRunId: string;
     if (kind === "agent") {
       const created = (await graphql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
@@ -268,9 +281,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       // The retiring model is offered while the Org is configured, then retired before any member starts.
       process.env["AGY_FAKE_EXTRA_MODELS"] = RETIRING_MODEL;
       const created = await graphql(`mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}`,
-        { input: { agentOrgDefinitionId: ids.org, rootConfiguration: config(), teamOverrides: [], agentOverrides: [
-          { address: "/squad/writer", configuration: { llmModelIdentifier: RETIRING_MODEL } },
-          { address: "/broken/lead", configuration: { llmModelIdentifier: RETIRING_MODEL } }] } })
+        { input: { agentOrgDefinitionId: ids.org, rootConfiguration: config(), teamOverrides: [], agentOverrides: orgOverrides } })
         .then((data) => data.createAgentOrgRun).finally(() => { delete process.env["AGY_FAKE_EXTRA_MODELS"]; });
       expect(created.success, created.message).toBe(true);
       rootId = created.agentOrgRunId;
@@ -338,6 +349,9 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     };
     const managerCalls = (content: string) => callsFrom(managerRunId, managerAddress, () => sendToManager(content));
     const signals = () => seen.flatMap(signalsIn);
+    /** Conversation error cards (`ERROR` agent messages) published for one agent on this root's views. */
+    const errorCards = (agentRunId: string) => seen.flat().flatMap((frame) => frame.type === "ERROR" && frame.payload.agent_run_id === agentRunId ? [frame.payload]
+      : objectsIn(frame.payload).filter((record) => record.agent_run_id === agentRunId && record.message?.type === "ERROR").map((record) => record.message.payload));
     const signal = async (label: string, match: (entry: Signal) => boolean, ms = 60_000) => {
       let found: Signal | undefined;
       await until(() => Boolean(found = signals().find(match)), `${kind}: ${label}`, ms);
@@ -347,7 +361,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const text = JSON.stringify(await conversationOf(agentRunId, address));
       return text.includes(marker) && text.lastIndexOf("OK") > text.indexOf(marker);
     }, `${kind}: ${address} answered ${marker}`, 60_000);
-    return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered,
+    return { kind, rootId, managerRunId, liveTree, conversationOf, callsFrom, managerCalls, signals, signal, answered, errorCards,
       freshStatuses, reconnect, closeChannels };
   };
   type Root = Awaited<ReturnType<typeof startRoot>>;
@@ -376,10 +390,29 @@ suite("Delegated Team copies start only the members that work reaches, in every 
   const memberCalls = (root: Root, copy: Copy, member: Member, content: string) => root.callsFrom(copy.members[member].agentRunId,
     copy.members[member].address, async () => {
       const sent = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copy.members[member].agentRunId, content }));
-      expect(sent, `${root.kind}: Manager → ${member}`).toMatchObject({ accepted: true });
+      expect(sent, `${root.kind}: Manager → ${member} ${JSON.stringify(sent)}`).toMatchObject({ accepted: true });
     });
   const statusesOf = (statuses: Record<string, string>, copy: Copy) =>
     Object.fromEntries(MEMBERS.map((name) => [name, statuses[copy.members[name].agentRunId] ?? "absent"]));
+  /**
+   * Asserts a fresh view's statuses of the copy's members. A member this step expects `idle` that went idle and was then
+   * shut down by the idle grace period before the view was opened (a slow step on a loaded host) is accepted as `idle`:
+   * it was started and went idle, and its shutdown is the designed lifecycle. Every other expectation is exact.
+   */
+  const expectStatuses = async (root: Root, copy: Copy, expected: Record<Member, string>) => {
+    const statuses = statusesOf(await root.freshStatuses(), copy);
+    const now = Date.now();
+    for (const name of MEMBERS) {
+      if (expected[name] !== "idle" || statuses[name] !== "offline") continue;
+      const runId = copy.members[name].agentRunId;
+      const last = root.signals().filter((e) => e.agentRunId === runId && e.status !== "offline").at(-1);
+      if (last?.status === "idle" && now - last.at >= GRACE_MS - 2_000 && !processLive(runId)) {
+        statuses[name] = "idle";
+        ((evidence.graceShutdownAccepted ??= []) as unknown[]).push({ root: root.kind, teamRunId: copy.teamRunId, member: name, idleMs: now - last.at });
+      }
+    }
+    expect(statuses, `${root.kind} statuses of ${copy.teamRunId}`).toEqual(expected);
+  };
   const offline = (copy: Copy, names: readonly Member[]) => names.every((name) => !processLive(copy.members[name].agentRunId));
 
   const rootScenario = async (kind: Kind) => {
@@ -413,7 +446,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       [["lead", true], ["reviewer", false], ["writer", false], ["tester", false]]);
     const firstBindings = await savedBindings(copy.teamRunId);
     expect(firstBindings).toEqual({ lead: expect.any(String), reviewer: null, writer: null, tester: null });
-    expect(statusesOf(await root.freshStatuses(), copy)).toEqual({ lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
+    await expectStatuses(root, copy, { lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
     for (const name of ["reviewer", "writer", "tester"] as const) {
       expect(root.signals().filter((e) => e.agentRunId === copy.members[name].agentRunId && e.status !== "offline"), `${kind} ${name} live statuses`).toEqual([]);
     }
@@ -423,7 +456,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     const handoffFrom = (await launches()).length;
     const handoff = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.reviewer.address,
       content: "Please review. Marker REVIEW-FIRST." }));
-    expect(handoff, `${kind} lead → reviewer`).toMatchObject({ accepted: true });
+    expect(handoff, `${kind} lead → reviewer ${JSON.stringify(handoff)}`).toMatchObject({ accepted: true });
     await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-FIRST");
     const reviewerIdle = await root.signal("reviewer idle", (e) => e.agentRunId === copy.members.reviewer.agentRunId && e.status === "idle");
     const reviewerStatuses = root.signals().filter((e) => e.agentRunId === copy.members.reviewer.agentRunId && e.at <= reviewerIdle.at).map((e) => e.status);
@@ -433,7 +466,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       .toEqual([[copy.members.reviewer.agentRunId, false]]);
     const handoffBindings = await savedBindings(copy.teamRunId);
     expect(handoffBindings).toEqual({ lead: firstBindings.lead, reviewer: expect.any(String), writer: null, tester: null });
-    expect(statusesOf(await root.freshStatuses(), copy)).toEqual({ lead: "idle", reviewer: "idle", writer: "offline", tester: "offline" });
+    await expectStatuses(root, copy, { lead: "idle", reviewer: "idle", writer: "offline", tester: "offline" });
     record.handoff = { result: handoff, reviewerStatuses, bindings: handoffBindings };
 
     if (brokenWriter) {
@@ -441,17 +474,23 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       const failedFrom = (await launches()).length;
       const failed = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.writer.address,
         content: "Please write. Marker WRITE-FIRST." }));
-      expect(failed.accepted, `${kind} lead → writer ${JSON.stringify(failed)}`).not.toBe(true);
-      expect(JSON.stringify(failed)).toMatch(/AGY_MODEL_UNAVAILABLE/);
+      expect(failed, `${kind} lead → writer ${JSON.stringify(failed)}`).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED" });
+      expect(failed.message).toMatch(/AGY_MODEL_UNAVAILABLE/);
       await root.signal("writer error", (e) => e.agentRunId === copy.members.writer.agentRunId && e.status === "error");
+      // The writer's conversation shows the failure once (SR-004: one error card per failed start).
+      await until(() => root.errorCards(copy.members.writer.agentRunId).length > 0, `${kind}: writer error card`, 15_000);
+      await wait(1_000);
+      const cards = root.errorCards(copy.members.writer.agentRunId);
+      expect(cards, JSON.stringify(cards)).toHaveLength(1);
+      expect(JSON.stringify(cards[0])).toMatch(/AGY_MODEL_UNAVAILABLE/);
       expect(await launchesFor(runIdsOf(copy), failedFrom)).toEqual([]);
-      expect(statusesOf(await root.freshStatuses(), copy)).toEqual({ lead: "idle", reviewer: "idle", writer: "error", tester: "offline" });
+      await expectStatuses(root, copy, { lead: "idle", reviewer: "idle", writer: "error", tester: "offline" });
       expect((await savedBindings(copy.teamRunId)).writer).toBeNull();
       const stillWorks = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.reviewer.address,
         content: "Second review. Marker REVIEW-SECOND." }));
-      expect(stillWorks).toMatchObject({ accepted: true });
+      expect(stillWorks, JSON.stringify(stillWorks)).toMatchObject({ accepted: true });
       await root.answered(copy.members.reviewer.agentRunId, copy.members.reviewer.address, "REVIEW-SECOND");
-      record.memberStartFailure = { result: failed };
+      record.memberStartFailure = { result: failed, errorCard: cards[0] };
     } else {
       // DTL-004 (AC-003, REQ-004): a copy member delegates the Team (a Team-hosted copy); only its coordinator starts.
       const nestedFrom = (await launches()).length;
@@ -463,7 +502,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
       expect((await launchesFor(runIdsOf(nested), nestedFrom)).map((entry) => [entry.runId, entry.resumed]))
         .toEqual([[nested.members.lead.agentRunId, false]]);
       expect(await savedBindings(nested.teamRunId)).toEqual({ lead: expect.any(String), reviewer: null, writer: null, tester: null });
-      expect(statusesOf(await root.freshStatuses(), nested)).toEqual({ lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
+      await expectStatuses(root, nested, { lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
       record.nestedCopy = { result: nestedResult, teamRunId: nested.teamRunId };
     }
 
@@ -472,14 +511,14 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     await root.signal("lead offline", (e) => e.agentRunId === copy.members.lead.agentRunId && e.status === "offline", 15_000);
     const wakeFrom = (await launches()).length;
     const woken = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copy.members.lead.agentRunId, content: "Wake up. Marker LEAD-WAKE." }));
-    expect(woken).toMatchObject({ accepted: true });
+    expect(woken, JSON.stringify(woken)).toMatchObject({ accepted: true });
     await root.answered(copy.members.lead.agentRunId, copy.members.lead.address, "LEAD-WAKE");
     await wait(2_000);
     const wakeLaunches = await launchesFor(runIdsOf(copy), wakeFrom);
     expect(wakeLaunches.map((entry) => [entry.runId, entry.resumed, entry.conversation]))
       .toEqual([[copy.members.lead.agentRunId, true, firstBindings.lead]]);
     expect(await savedBindings(copy.teamRunId)).toEqual({ ...handoffBindings });
-    expect(statusesOf(await root.freshStatuses(), copy)).toEqual({ lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
+    await expectStatuses(root, copy, { lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
     record.idleRestore = { launches: wakeLaunches };
 
     // DTL-006 (AC-005): Task DONE stops the copy; reopen and the Manager's message resume only the lead.
@@ -488,7 +527,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     await root.managerCalls(callTool("create_or_update_task", { task_id: taskId!, status: "TODO" }));
     const reopenFrom = (await launches()).length;
     const reopened = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copy.members.lead.agentRunId, content: "Reopened. Marker LEAD-REOPEN." }));
-    expect(reopened).toMatchObject({ accepted: true });
+    expect(reopened, JSON.stringify(reopened)).toMatchObject({ accepted: true });
     await root.answered(copy.members.lead.agentRunId, copy.members.lead.address, "LEAD-REOPEN");
     await wait(2_000);
     const reopenLaunches = await launchesFor(runIdsOf(copy), reopenFrom);
@@ -516,16 +555,16 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     await root.reconnect();
     const restartFrom = (await launches()).length;
     const restarted = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: copy.members.lead.agentRunId, content: "After restart. Marker LEAD-RESTART." }));
-    expect(restarted).toMatchObject({ accepted: true });
+    expect(restarted, JSON.stringify(restarted)).toMatchObject({ accepted: true });
     await root.answered(copy.members.lead.agentRunId, copy.members.lead.address, "LEAD-RESTART");
     await wait(2_000);
     expect((await launchesFor(runIdsOf(copy), restartFrom)).map((entry) => [entry.runId, entry.resumed, entry.conversation]))
       .toEqual([[copy.members.lead.agentRunId, true, firstBindings.lead]]);
-    expect(statusesOf(await root.freshStatuses(), copy)).toEqual({ lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
+    await expectStatuses(root, copy, { lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
     const testerFrom = (await launches()).length;
     const toTester = await memberCalls(root, copy, "lead", callTool("send_message_to", { recipient_address: copy.members.tester.address,
       content: "Please test. Marker TEST-FIRST." }));
-    expect(toTester).toMatchObject({ accepted: true });
+    expect(toTester, JSON.stringify(toTester)).toMatchObject({ accepted: true });
     await root.answered(copy.members.tester.agentRunId, copy.members.tester.address, "TEST-FIRST");
     await wait(2_000);
     expect((await launchesFor(runIdsOf(copy), testerFrom)).map((entry) => [entry.runId, entry.resumed]))
@@ -533,7 +572,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     const finalBindings = await savedBindings(copy.teamRunId);
     expect(finalBindings).toEqual({ lead: firstBindings.lead, reviewer: handoffBindings.reviewer, writer: null, tester: expect.any(String) });
     expect(finalBindings.tester).not.toBe(legacyBinding);
-    expect(statusesOf(await root.freshStatuses(), copy)).toEqual({ lead: "idle", reviewer: "offline", writer: "offline", tester: "idle" });
+    await expectStatuses(root, copy, { lead: "idle", reviewer: "offline", writer: "offline", tester: "idle" });
     record.legacyRestore = { legacyBinding, finalBindings };
     root.closeChannels();
     await terminate(kind, root.rootId);
@@ -560,4 +599,27 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     root.closeChannels();
     await terminate(kind, root.rootId);
   }, 120_000);
+
+  // DTL-009 (AC-001, QR-001 on the Claude Agent SDK runtime): the scripted Manager delegates a Team whose members run on a
+  // real Claude model; only the coordinator gets a Claude session (its saved binding); the others have none and are Offline.
+  (liveClaude ? it : it.skip)("Org root, real Claude Agent SDK members: delegation starts only the coordinator's Claude session (QR-001)", async () => {
+    const claude = { workspaceRootPath: workspace, llmModelIdentifier: "haiku", llmConfig: null, autoExecuteTools: true, runtimeKind: "claude_agent_sdk" };
+    const root = await startRoot("org", MEMBERS.map((member) => ({ address: `/squad/${member}`, configuration: claude })));
+    const { result, ...copy } = await delegateCopy(root, "/squad", { description: "Do not use any tools. Reply with only the word READY." });
+    const replied = async () => ((await root.conversationOf(copy.members.lead.agentRunId, copy.members.lead.address)) as any[] ?? [])
+      .some((entry) => entry.role === "assistant" && /READY/.test(String(entry.content)));
+    await until(replied, "live Claude lead replied READY", 180_000);
+    await root.signal("live lead idle", (e) => e.agentRunId === copy.members.lead.agentRunId && e.status === "idle", 60_000);
+    await wait(2_000);
+    const bindings = await savedBindings(copy.teamRunId);
+    expect(bindings).toEqual({ lead: expect.any(String), reviewer: null, writer: null, tester: null });
+    await expectStatuses(root, copy, { lead: "idle", reviewer: "offline", writer: "offline", tester: "offline" });
+    for (const name of ["reviewer", "writer", "tester"] as const) {
+      expect(root.signals().filter((e) => e.agentRunId === copy.members[name].agentRunId && e.status !== "offline"), `live ${name}`).toEqual([]);
+    }
+    // The scripted AGY actor only answers "OK" or "CALLED:…": READY comes from the real model.
+    evidence.liveClaude = { result, teamRunId: copy.teamRunId, bindings };
+    root.closeChannels();
+    await terminate("org", root.rootId);
+  }, 420_000);
 });

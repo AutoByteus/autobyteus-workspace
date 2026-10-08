@@ -49,13 +49,22 @@ Evidence paths are relative to `tickets/in-progress/delegated-team-member-lazy-a
 | 13 | REG-E2E | 2026-10-08 16:58 | Completed | same after baseline fix | pass | 1/1 | Pass | `org-publication-worktree-fixed.log` | — |
 | 14 | REG-E2E | 2026-10-08 17:02 | Completed | `task-copy-idle-lifetime` alone | pass | 1/1 | Pass | `idle-lifetime-rerun.log` | Batch failure environmental |
 | 15 | R-03 | 2026-10-08 17:04 | Completed | integration layer after baseline fixes | all pass | 12 files / 95 tests | Pass | `r03-integration-after-baseline-fix.log` | — |
+| 16 | DTL-003 | 2026-10-08 17:20 | Checkpoint | Round 2 on IR-002 `d30c11204` (later superseded) | not-accepted naming cause; writer `error` | Org: `{accepted:false, code:"AGENT_RUN_ACTIVATION_FAILED", message:"AGY_MODEL_UNAVAILABLE: dtl-retiring-model"}`; writer `error`; the copy with an errored never-started writer still idle-shuts-down; DTL-005..007 pass in Org | Not final (IR-002 superseded) | `r2-dtl-e2e*.log`, `r2-dtl-e2e-final-1/` | Re-run on the SR-003 package |
+| 17 | DTL-001..007 | 2026-10-08 17:45 | Checkpoint | Repeated full-suite runs on a heavily loaded host (load avg 20–100; other worktrees' E2E batches) | stable pass | Intermittent test-side failures diagnosed by timed probes: (a) `savedCopyRecords` read every `.json` under the data dir, which took ~60 s once, so legitimately idle-shut-down members (after the 60 s grace) read `offline`; (b) one Org reactivation `send_message_to` returned `accepted:false` once (code not captured) | Not final | `r2-*-probe*.log`, `r2-dtl-e2e-final-2.log` | Test fixes pending validation (below) |
+| 18 | — | 2026-10-08 17:50 | Checkpoint | HOLD from Solution Designer: SR-003 supersedes IR-002; await the new implementation package after source review | — | Uncommitted durable-test edits in `delegated-team-lazy-member-activation.e2e.test.ts`: tree-file-only saved-record walk (`TREE_FILES`), grace-aware `expectStatuses` for expected-`idle` members only, result JSON in `accepted:true` assertion messages. Not yet validated by a full run | Not Tested | — | On resume: run the suite on the SR-003 package (DTL-003 first), loop 3×; capture the code if the Org reactivation rejection recurs; then REG-E2E + unit/integration |
+| 19 | DTL-001..008 | 2026-10-08 18:40 | Completed | IR-003 `b3b28d47b`, with the round-2 test edits; 3 runs (load 8–30) | pass | Pass ×3; DTL-003: `AGENT_RUN_ACTIVATION_FAILED` / `AGY_MODEL_UNAVAILABLE`, writer `error`, 1 error card | Pass | `r2-ir3-dtl-1..3/` | — |
+| 20 | R-01..R-03 | 2026-10-08 18:43 | Completed | tsc, unit, integration | pass | tsc 0; 853/853; 95/95 | Pass | `r2-tsc.log`, `r2-unit.log`, `r2-integration.log` | — |
+| 21 | REG-E2E | 2026-10-08 18:46 | Completed | serial 9-file set | pass | 9/9 files; 33 passed, 1 Claude-gated skip | Pass | `r2-e2e-regression.log` | — |
+| 22 | DTL-001..008 | 2026-10-08 18:47 | Completed | after the grace-evidence edit | pass | Pass; `graceShutdownAccepted` none | Pass | `r2-ir3-dtl-final/` | — |
+| 23 | DTL-009 | 2026-10-08 18:57 | Completed | `RUN_CLAUDE_E2E=1`, real HOME; earlier attempts: "Not logged in" under disposable HOME (fixed: real HOME for the live case); prompt-echo false positive (fixed: assistant reply required) | only the coordinator has a Claude session | `{lead: <session>, others: null}`; full suite 3/3 in that run; default run 2 passed + 1 skipped | Pass | `r2-final-with-claude/`, `r2-final-default/` | — |
+| 24 | BR-008..BR-011 | 2026-10-08 19:10 | Completed | built dist + Nuxt + Chrome; new render check | coordinator Idle, unused Offline; restarts | all Pass; `lazyStatuses` `{coordinator: idle, unused: offline}` in all roots; 2 real backend restarts | Pass | `r2-task-closure-tree/` | — |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 15
-- Last completed case and result: R-03 rerun Pass
+- Last durably recorded event: 24
+- Last completed case and result: BR-008..BR-011 Pass; round 2 complete (API-REV-002 Pass)
 - Cases still running, interrupted, or not started: None
-- Next case or recovery action: after the DTL-003 fix, rerun DTL-003 first
+- Next case or recovery action: none (handoff for test-code review)
 - Interruption, context-compression, or rerun note: on rerun after the fix, start with DTL-003 (prior failure), then the full new suite and REG-E2E
-- Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md`, Test-Case Ledger Reconciliation
+- Reconciled into execution coverage report: `Yes` — round 2, `api-e2e-execution-coverage-report.md`, Test-Case Ledger Reconciliation
 - Reconciliation note for any case missing a terminal result: —

@@ -17,9 +17,9 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 1
+- Current Investigation Round: 2
 - Trigger: Implementation Complete from `/software_engineering_team/implementation_engineer`, commit `203eb29e1`
 - Prior Investigation Reviewed: None (first round)
 - Latest Authoritative Investigation: this file
@@ -236,3 +236,22 @@ None.
 - Reroute Required Before Validation Execution: `No` (reroute after execution: AC-004 member branch)
 - Recommended Owner If Reroute Required: Implementation Engineer (preliminary `Local Fix`)
 - Notes: Final result and confidence are in the execution coverage report.
+
+## Round 2 Delta (API-REV-002)
+
+- Basis: SR-003 + SR-004 (design revision, `architectural_risk=High`), ARCH-REV-002 Pass, IR-003 (`b3b28d47b`; IR-002 superseded), CRR-003 Pass. Requirements unchanged.
+- Routing: `Small` / `High`. Reviewed route; on Pass, proportional test-code review is `Required`.
+- Changed boundary: `ConfiguredAgentExecutionHandle.startForInput()`, shared by `reserveInput` (teammate delivery) and `postMessage`. Effects:
+  - one activation-failure code, `AGENT_RUN_ACTIVATION_FAILED`;
+  - a closed-input branch (`AGENT_RUN_NOT_ACCEPTING_INPUT`);
+  - one `readiness_failure` error card per failed start.
+- Coverage decisions:
+  - DTL-003 stays valid. It is strengthened to assert the code and exactly one error card.
+  - DTL-008 already asserts that the cause is named.
+  - PREM-001 (input closed during a start) is a timing race. Its outcome is unit-covered by the reviewed handle tests and is not reproducible deterministically through the real trigger, so it is not added as E2E.
+- Gap-closing additions:
+  - Gated DTL-009: real Claude Agent SDK members, for QR-001 on the user's runtime.
+  - Rendered status check in `task-closure-tree` BR-008..010 (REQ-003, web-equivalent of AC-007).
+  - BR-011 cold backend restarts with the new data shape.
+- Test-validity revision: intermittent failures on a loaded host traced to the test's saved-tree walk, not the product. Helpers hardened (see report).
+- Post-repository confidence (round 2): 80%. Broader validation `Required`, executed. Final: 95% (report).

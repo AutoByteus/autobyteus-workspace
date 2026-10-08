@@ -491,7 +491,8 @@ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fi
     Team-hosted copy, and only its coordinator starts;
   - Org root: a member whose model was retired after the Org was configured
     (`AGY_FAKE_EXTRA_MODELS` offers it only during creation) fails the sender's
-    delivery and shows `error`, while the coordinator keeps working;
+    delivery with `AGENT_RUN_ACTIVATION_FAILED` naming the cause, shows `error`
+    and one conversation error card, while the coordinator keeps working;
   - idle shutdown (grace stored at 60 s), Task DONE → reopen → reactivation,
     and a stopped root whose saved tree has the pre-fix shape (an unused member
     bound with no conversation) each resume only the lead (`--conversation`),
@@ -499,9 +500,17 @@ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fi
   - a coordinator that cannot start fails `delegate_task` and launches no
     member.
 
-  `DELEGATED_TEAM_LAZY_E2E_EVIDENCE_DIR` keeps a JSON receipt. The sidebar
-  rendering of `offline` is not covered here; the desktop app check is user
-  verification.
+  `DELEGATED_TEAM_LAZY_E2E_EVIDENCE_DIR` keeps a JSON receipt. With
+  `RUN_CLAUDE_E2E=1` and a logged-in `claude`, one more case delegates an Org
+  Team whose members run on real Claude (haiku): only the coordinator gets a
+  Claude session. That case uses your real `HOME` (the CLI reads its login
+  there); otherwise the suite runs under a disposable `HOME`. Status checks
+  accept a member that went idle and was then shut down by the 60 s grace
+  before the check (a slow step on a loaded host); the receipt lists each such
+  case under `graceShutdownAccepted`.
+  The rendered tree is covered by `test:e2e:task-closure-tree` BR-008..BR-010:
+  right after delegation, the Task Team's coordinator row renders Idle and the
+  member no work has reached renders Offline.
 
 `@` delegation and ad-hoc Tasks (Tasks with no Project, created by a described
 `delegate_task` and closed by `create_or_update_task({task_id, status: "DONE"})`)
