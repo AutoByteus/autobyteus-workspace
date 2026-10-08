@@ -84,16 +84,20 @@ export class CollaborationAgentPresentationEventAdapter {
         statusHint: rawEvent.snapshot.statusHint,
       }));
     }
-    return publish(Object.freeze({
-      eventType: "ERROR",
-      details: Object.freeze({
-        code: rawEvent.code,
-        message: rawEvent.message,
-        errorScope: "runtime",
-        errorEffect: "terminal",
-        turnId: null,
-      }),
-      statusHint: "ERROR",
-    }));
+    if (rawEvent.kind === "readiness_failure") {
+      return publish(Object.freeze({
+        eventType: "ERROR",
+        details: Object.freeze({
+          code: rawEvent.code,
+          message: rawEvent.message,
+          errorScope: "runtime",
+          errorEffect: "terminal",
+          turnId: null,
+        }),
+        statusHint: "ERROR",
+      }));
+    }
+    const unhandled: never = rawEvent;
+    throw new Error(`Unhandled collaboration agent event kind '${(unhandled as { kind: string }).kind}'.`);
   }
 }

@@ -27,6 +27,7 @@ export type CollaborationAgentExecutionEvent =
   | Readonly<{ kind: "agent_run"; event: AgentRunEvent }>
   | Readonly<{ kind: "member_input"; message: AgentInputUserMessage; receivedAt?: string | null }>
   | Readonly<{ kind: "status_overlay"; snapshot: CollaborationAgentStatusSnapshot }>
+  /** A member could not start; shown as an error card in that member's conversation. */
   | Readonly<{ kind: "readiness_failure"; code: string; message: string }>;
 
 export const createCollaborationAgentStatusSnapshot = (input: {

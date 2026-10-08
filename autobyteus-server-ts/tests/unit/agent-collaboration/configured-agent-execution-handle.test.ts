@@ -24,7 +24,10 @@ const taskCommands = (root: ReturnType<typeof createTeamRootExecutionIdentity>) 
   reviewTaskResult: vi.fn(),
 });
 
-const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOBYTEUS, mode: "fresh" | "restore" = "fresh") => {
+const build = (
+  kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOBYTEUS, mode: "fresh" | "restore" = "fresh",
+  assertInputAllowed?: () => void,
+) => {
   const root = kind === "agent_team"
     ? createTeamRootExecutionIdentity("root-run")
     : createAgentOrgRootExecutionIdentity("root-run");
@@ -113,6 +116,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
       }),
     } as never,
     activityInspector: { inspect: () => activity } as never,
+    ...(assertInputAllowed ? { assertInputAllowed } : {}),
   });
   return {
     activity, commitPlatformBindingChange, prepareRestoreAgentRunFromPlatformState, prepareRestoreAgentRun, handle, root,
@@ -193,6 +197,85 @@ describe("accepted task-system input presentation", () => {
   });
 });
 
+
+describe("member start failure: one step for both input entry points", () => {
+  type Fixture = ReturnType<typeof build>;
+  type Outcome = Readonly<{ ok: boolean; code?: string; message?: string }>;
+  const work = () => new AgentInputUserMessage("First work");
+  const entryPoints: Record<"postMessage" | "reserveInput", (f: Fixture) => Promise<Outcome>> = {
+    postMessage: async (f) => {
+      const result = await f.handle.postMessage(work());
+      return result.accepted ? { ok: true } : { ok: false, code: result.code, message: result.message };
+    },
+    reserveInput: async (f) => {
+      const result = await f.handle.reserveInput(work());
+      return result.reserved ? { ok: true } : { ok: false, code: result.code, message: result.message };
+    },
+  };
+  const entries = Object.keys(entryPoints) as (keyof typeof entryPoints)[];
+  const cards = (f: Fixture) => f.publishAgentEvent.mock.calls.filter(([, event]) => event.kind === "readiness_failure");
+  const providerFailure = () => Object.assign(new Error("model retired"), { code: "AGY_MODEL_UNAVAILABLE" });
+  const closable = () => {
+    const gate = { closed: null as string | null };
+    const f = build("agent_team", RuntimeKind.AUTOBYTEUS, "fresh", () => { if (gate.closed) throw new Error(gate.closed); });
+    return { gate, f };
+  };
+
+  it.each(entries)("%s: a start failure returns AGENT_RUN_ACTIVATION_FAILED naming the cause, shows error and emits exactly one conversation card", async (entry) => {
+    const f = build("agent_team");
+    f.fakeRun.postUserMessage.mockResolvedValue({ accepted: true });
+    f.fakeRun.reserveUserMessage.mockResolvedValue({ reserved: true, reservation: { agentRunId: f.identity.agentRunId, cancel: vi.fn(), commit: vi.fn() } });
+    f.prepareNewAgentRun.mockRejectedValueOnce(providerFailure());
+    expect(await entryPoints[entry](f)).toEqual({ ok: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: "AGY_MODEL_UNAVAILABLE: model retired" });
+    expect(f.handle.getStatusSnapshot().details).toMatchObject({ status: "error", errorMessage: "AGY_MODEL_UNAVAILABLE: model retired" });
+    expect(cards(f)).toEqual([[f.identity, { kind: "readiness_failure", code: "AGY_MODEL_UNAVAILABLE", message: "model retired" }]]);
+    // The member starts on a later input once it can.
+    expect(await entryPoints[entry](f)).toEqual({ ok: true });
+    expect(cards(f)).toHaveLength(1);
+  });
+
+  it.each(entries)("%s: input closed during the start is not accepting input, with no error status and no card", async (entry) => {
+    const { gate, f } = closable();
+    f.prepareNewAgentRun.mockImplementationOnce(async () => { gate.closed = "The Task was marked DONE."; throw new Error("start interrupted"); });
+    expect(await entryPoints[entry](f)).toEqual({ ok: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "The Task was marked DONE." });
+    expect(f.handle.getStatusSnapshot().details.status).toBe("offline");
+    expect(cards(f)).toEqual([]);
+  });
+
+  it.each(entries)("%s: a closed-input outcome never withdraws an existing error status", async (entry) => {
+    const { gate, f } = closable();
+    f.prepareNewAgentRun.mockRejectedValueOnce(providerFailure());
+    await entryPoints[entry](f);
+    gate.closed = "The Task was marked DONE.";
+    expect(await entryPoints[entry](f)).toEqual({ ok: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: "The Task was marked DONE." });
+    expect(f.handle.getStatusSnapshot().details.status).toBe("error");
+    expect(cards(f)).toHaveLength(1);
+  });
+
+  it.each(entries)("%s: a failure while the run is live is rethrown", async (entry) => {
+    const { gate, f } = closable();
+    await f.handle.getOrCreateAgentRun();
+    gate.closed = "The root is shutting down.";
+    await expect(entryPoints[entry](f)).rejects.toThrow("The root is shutting down.");
+    expect(cards(f)).toEqual([]);
+  });
+
+  it("names the underlying cause when a start fails after its binding was committed durably", async () => {
+    const f = build("agent_org", RuntimeKind.CODEX_APP_SERVER);
+    f.fakeRun.subscribeToEvents.mockImplementation(() => { throw Object.assign(new Error("publication failed"), { code: "PUBLICATION_FAILED" }); });
+    expect(await f.handle.postMessage(work())).toMatchObject({ accepted: false, code: "AGENT_RUN_ACTIVATION_FAILED",
+      message: "PUBLICATION_FAILED: Provider binding committed durably but Agent readiness publication failed: publication failed" });
+  });
+
+  it("presents readiness_failure as the member's runtime ERROR card through an explicit adapter branch", () => {
+    const f = build("agent_team");
+    const adapter = new CollaborationAgentPresentationEventAdapter(() => f.identity);
+    expect(adapter.adapt(f.identity, { kind: "readiness_failure", code: "AGY_MODEL_UNAVAILABLE", message: "model retired" })).toMatchObject({
+      kind: "publish",
+      message: { type: "ERROR", payload: { code: "AGY_MODEL_UNAVAILABLE", message: "model retired", error_scope: "runtime", error_effect: "terminal" } },
+    });
+  });
+});
 
 describe("on-demand binding readiness", () => {
   it("plans later readiness from the committed binding, not the constructor's null binding", async () => {

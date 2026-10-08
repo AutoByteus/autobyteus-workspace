@@ -8,44 +8,53 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Solution Designer classified `Small` / `Low` and routed directly to implementation. Independent architecture review was not selected.
+- Upstream review applicability and handoff-rule result: SR-002 was routed directly (Small/Low). SR-003/SR-004 reclassified the package as `Small` / `High` and passed independent architecture review (ARCH-REV-001 on SR-003, ARCH-REV-002 on SR-004).
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/requirements-doc.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/solution-revision-record.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/design-spec.md`
 - Architecture design handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/handoff-architecture-design-complete.md`
 - Supplemental task artifacts: None
-- Design review report: `N/A — not applicable`
-- Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/code-review-report.md` and `code-review-revision-record.md` (CRR-001, CR-FO-001); `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` (API-REV-001, DTL-003); evidence `api-e2e-evidence/dtl-org-member-failure-probe.log`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/architecture-review-revision-record.md`
+- Triggering rework report, revision record, or evidence (IR-003): SR-003/SR-004 sections of `design-spec.md`, `handoff-sr-004-design-correction.md`, ARCH-REV-002, CRR-002 (`code-review-report.md`), and DI-001 (`implementation-design-impact-ir-003.md`, now resolved). Earlier (IR-002): `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/code-review-report.md` and `code-review-revision-record.md` (CRR-001, CR-FO-001); `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` (API-REV-001, DTL-003); evidence `api-e2e-evidence/dtl-org-member-failure-probe.log`
 
 ## Current Implementation Summary
 
 Delegated Team copies are now prepared like every other Team: scope only. Preparation builds the TeamRun and its member contexts but creates no AgentRun and no provider session. The task execution is committed to the root tree with `platformAgentRunId: null` for every member. The coordinator then starts through the delegated seed (`TeamRun.postMessage` → `ConfiguredAgentExecutionHandle.ensureReady`), which also commits its provider binding to the root tree. Every other member starts only when a message, handoff or user input reaches it, through the same existing path. A member that has not started reports `offline` (gray "Offline", DEC-001 = A).
 
-Teammate delivery (`send_message_to` or a handoff to a teammate) reaches members through input reservation (`ConfiguredAgentExecutionHandle.reserveInput`), not `postMessage`. Since IR-002 it handles a start failure the same way: the member shows `error` and the sender gets `{ reserved: false, code: "AGENT_RUN_ACTIVATION_FAILED", message: <cause> }`, which the communication engine returns as a not-accepted result naming the cause.
+Members receive input through two entry points of `ConfiguredAgentExecutionHandle`:
+- `reserveInput` for teammate delivery (`send_message_to` or a handoff);
+- `postMessage` for the delegated seed and for user or application input.
+
+Since IR-003, both use one private step, `startForInput()`, which starts the member or reports why it could not:
+- **Start failure:** the member shows `error`; the sender gets `AGENT_RUN_ACTIVATION_FAILED`, with `message` = `<code>: <message>` of the underlying cause (for example `AGY_MODEL_UNAVAILABLE: …`). This is the typed result on both shapes, and the communication engine returns it as a not-accepted result.
+- **Input closed during the start (Task DONE or root-shutdown race):** `AGENT_RUN_NOT_ACCEPTING_INPUT`, with no `error` status.
+- **Failure on a live run:** rethrown.
+
+The member's conversation error card is the `readiness_failure` event. `initializeReady` emits it once per failed start, but not when input is closed. The presentation adapter now handles it by name, with an exhaustive check.
 
 The eager path is removed, not just disabled. The `prepareConfiguredAgents` option, the eager branch in `beginFlatTeamPreparation`, `FlatTeamExecutionManager.prepareConfiguredActivation`, `prepare-flat-team-configured-activation.ts`, and the `stagedPlatformBindings` / `stagedNoConversationBindingReplacements` fields of `PreparedFlatTeamExecution` are all gone. Flat Team preparation now has one lifecycle.
 
-- Implementation cycle: `Rework` (Local Fix, IR-002)
+- Implementation cycle: `Rework` (design revision SR-003 + SR-004, IR-003; supersedes IR-002)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-member-lazy-activation/tickets/in-progress/delegated-team-member-lazy-activation/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-002`
-- Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `CRR-001`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-002`, `SR-003`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`
 - Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-FO-001` (fixed). `CR-FO-002` is a design-spec trace note for Solution Designer/Delivery.
+- Triggering finding IDs: CR-FO-001/002/003 (CRR-002); AR-NB-001..003 (ARCH-REV-001, applied); DI-001 (resolved by SR-004 option A).
 
 ## Routing Classification (Mandatory)
 
 - Task size: `Small`
-- Architecture risk: `Low`
+- Architecture risk: `High` (raised by Solution Designer in SR-003: shared member-input path across all roots)
 - Design classification section / evidence reference: design-spec.md "Task Size And Architectural Risk (Mandatory)"
-- Classification confirmed or changed: `Confirmed`
+- Classification confirmed or changed: `Confirmed` (Small/High as carried from SR-003/SR-004)
 - Evidence and rationale for confirmation or change: The source change is subtractive: 7 files modified, 1 deleted, +14/−39 lines. There is no new owner, API, contract or persisted shape. The design's escalation trigger did not fire. Seed delivery to a not-yet-started coordinator in a just-committed task Team works. Late binding commit works in all three root kinds (standalone Agent, Team-hosted, Org root) through each root's real binding mutator, proven by `delegated-team-lazy-member-activation.test.ts`. This resolves U-001.
-- Selected route: `Direct API/E2E` (subject to `get_handoff_rules`)
-- Lightweight implementation self-review completed for the direct route: `Yes` (see Self-Review below)
+- Selected route: `Code Review` (Small/High, per `get_handoff_rules`), then API/E2E rerun
+- Lightweight implementation self-review completed for the direct route: `Not Applicable` for IR-003 (independent code review applies). The IR-001 self-review below remains for the SR-002 base.
 - New design impact or escalation trigger: `None`
 
 ## Reviewed Behavior Implementation Trace
@@ -54,8 +63,9 @@ The eager path is removed, not just disabled. The `prepareConfiguredAgents` opti
 | --- | --- | --- | --- |
 | BEH-001 | Only the coordinator starts, through the seed; others stay not started | `root-team-execution-directory.ts` `beginRootTaskTeam` and `task-team-execution-registry.ts` `beginPreparation` no longer request member activation and return `stagedPlatformBindings: []`. `flat-team-execution-factory.ts` `beginFlatTeamPreparation` is scope-only. The seed's `postMessage` → `ensureReady` starts the coordinator | Done. Tested for all 3 root kinds: 0 AgentRuns at preparation, exactly 1 (the coordinator) after the seed, others `offline` with `null` saved binding |
 | BEH-005 | A not-started member starts on its first message or handoff | Unchanged `ConfiguredAgentExecutionHandle.postMessage/reserveInput → ensureReady → commitPlatformBindingChange → publish`, now reached by fresh copies | Done. Tested: status `initializing` → `idle`, binding adopted into the root tree, untouched members stay `offline` |
-| BEH-005 / REQ-005 | An unused member's start failure is reported at first work; delegation fails only if the coordinator cannot start | Direct input: the existing `postMessage` catch path. Teammate delivery: `ConfiguredAgentExecutionHandle.reserveInput` (IR-002) returns `AGENT_RUN_ACTIVATION_FAILED` with the cause and sets the `error` overlay; `RootCommunicationEngine` maps it to not-accepted. A coordinator seed that is not accepted makes `dispatchTaskCopy` throw → release → `target_agent_run_id: null` | Done. Tested on both paths and for the coordinator case; DTL-003 passes in a local E2E run |
+| BEH-005 / REQ-005 | An unused member's start failure is reported at first work; delegation fails only if the coordinator cannot start | One step, `ConfiguredAgentExecutionHandle.startForInput()` (IR-003), used by `reserveInput` (teammate delivery) and `postMessage` (seed, user input). On failure: `error` overlay, `AGENT_RUN_ACTIVATION_FAILED` with the cause, and one `readiness_failure` conversation card; closed input gives `AGENT_RUN_NOT_ACCEPTING_INPUT` with no error. `RootCommunicationEngine` maps a rejected reservation to not-accepted. A coordinator seed that is not accepted makes `dispatchTaskCopy` throw → release → `target_agent_run_id: null` | Done. Tested on both paths and for the coordinator case; DTL-003 passes in a local E2E run |
 | BEH-004 | Idle shutdown, restore and legacy copies keep working | Unchanged quiet shutdown (`tryPrepareTerminationIfQuiescent` treats a member with no handle as terminated) and lazy restore planner | Done. Tested: shutdown and restore of a copy with never-started members; legacy copy (all members bound, unused without conversation) restores lazily (`replace_external_without_conversation` on first work; the untouched legacy binding is kept) |
+| BEH-002 (conversation card) | A member start failure still shows its error card in the member's conversation | `readiness_failure` is kept; it is emitted once in `initializeReady`, and the adapter branch is now explicit (IR-003) | Preserved; regression test added |
 | BEH-002/003/006 | UI-started Team, `send_message_to` a Team, single-Agent delegation unchanged | Those call sites only drop the removed option (`team-root-materializer.ts`, `collaborator-team-execution-registry.ts`, `RootTeamExecutionDirectory.prepareConfigured` / `restoreRootTaskTeam`, `TaskTeamExecutionRegistry.restore`). Single-Agent task preparation (`task-agent-execution-registry.ts`, `root-agent-execution-registry.ts`) is untouched | Preserved. Their existing suites pass, apart from failures that also fail on base (see Local Checks) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -68,8 +78,15 @@ Source (`autobyteus-server-ts/src`):
 - `agent-team-execution/local/task-team-execution-factory.ts`: removed the option from both inputs and the pass-through.
 - `agent-team-execution/local/flat-team-execution-manager.ts`: removed `prepareConfiguredActivation()` and its import.
 - `agent-team-execution/local/prepare-flat-team-configured-activation.ts`: **deleted**.
-- `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (IR-002): `reserveInput` handles a start failure like `postMessage` does.
-- `agent-execution/input/agent-run-input-contract.ts` (IR-002): added the `AGENT_RUN_ACTIVATION_FAILED` rejection code.
+- `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (IR-003):
+  - private `startForInput()`, used by `reserveInput` and `postMessage`;
+  - private `inputClosedReason()`;
+  - module-private `describeActivationFailure()`, which replaces `readinessFailureCode()`;
+  - `publishCommandStatus` returns whether it set the overlay;
+  - `initializeReady` emits `readiness_failure` unless input is closed.
+- `agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.ts` (IR-003): explicit `readiness_failure` branch plus an exhaustive `never` check; output unchanged.
+- `agent-collaboration/execution/domain/collaboration-agent-execution-event.ts` (IR-003): doc comment on the kept `readiness_failure` variant.
+- `agent-execution/input/agent-run-input-contract.ts`: the `AGENT_RUN_ACTIVATION_FAILED` rejection code (added in IR-002, kept); the doc covers both result shapes.
 - `agent-collaboration/execution/backends/root-team-execution-directory.ts`: dropped the option at three sites. The task Team returns `stagedPlatformBindings: Object.freeze([])`.
 - `agent-team-execution/local/registries/task-team-execution-registry.ts`: dropped the option at two sites. Staged bindings are empty.
 - `agent-team-execution/local/registries/collaborator-team-execution-registry.ts`, `agent-team-execution/services/team-root-materializer.ts`: dropped the option.
@@ -91,6 +108,12 @@ Tests (`autobyteus-server-ts/tests`):
 
 - R-001 (accepted): an unused member's start failure appears when work first reaches it, not at delegation.
 - R-002 (accepted, out of scope): copies that are already live keep their eagerly started members until idle shutdown or restart.
+- IR-003 residuals:
+  - The closed-input predicate is evaluated in two catches a few awaits apart. In the Task DONE / reactivation race, the card and the result could disagree once. The reviewer accepted this as designed; the optional single-evaluation refinement was not taken because rejections at the top of `ensureReady` never reach `initializeReady`.
+  - Pre-existing: a failed start's cleanup (`dispose()`) clears the status overlay locally without publishing.
+  - Withdrawing our own `initializing` in the closed-input branch is local only.
+  - Pre-existing (ARCH-REV-002): a throw before the configured handle exists (`FlatTeamAgentExecutionHandle.getHandle()`) still escapes `reserveInput`.
+  - The `postMessage` failure `code` changes from the underlying code to `AGENT_RUN_ACTIVATION_FAILED`, with the underlying code moved into `message`. No consumer branches on the old codes (AINV-011, ARCH-REV).
 - IR-002 residual (accepted by the reviewer): configured members of UI-started Teams and Orgs now also report a teammate-delivery start failure as not-accepted plus `error`, instead of an internal error. A fenced or closed member likewise returns a rejected reservation, matching `postMessage`.
 - Observation, non-blocking: `FlatTeamExecutionManager.cancelPrivateActivation/releasePrivateActivation` are kept per the design's removal plan. No production path now creates a configured member handle before a Team is published, so in practice they release an empty set. They remain the correct release owner for an unpublished Team. Whether to fold them away is a possible later cleanup, not done here because the design keeps them explicitly.
 
@@ -138,7 +161,14 @@ Tests (`autobyteus-server-ts/tests`):
   - `tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts`: 18/18
 - Full `vitest run tests/unit tests/integration` (1629 files, 5451 tests), compared failure by failure with the same run on base `ace86bf1f`: **0 new failures**. After the change: 155 failed of 5451. On base: 172 failed of 5452. All 155 remaining failures also fail on base. They are in unrelated areas (file explorer/watcher, logging, media storage, application backend/platform, agent-run manager/service, websocket integrations, memory location) plus the two pre-existing readiness/run-manager suites below. 17 tests now pass that fail on base: 16 cases of the new lazy-activation file, which encode the new behavior (on base the coordinator is not the only member started), and the Org-owned Team test, whose stale mock was fixed. Base has one more test because the Team variant of "closes the publisher when preparation rejects" was removed: Team preparation no longer activates a provider. JSON reports: `/tmp/dtl-full-after.json`, `/tmp/dtl-full-before.json` (local, not retained).
 - Pre-existing base failures in the touched areas, not caused by this change: `tests/integration/agent-team-execution/{configured-scope-readiness,agent-team-run-manager}.test.ts`. Their `agentRunManager` mocks lack `beginActivation` (`this.manager.beginActivation is not a function`). They fail identically on base.
-- IR-002 (Local Fix for CR-FO-001):
+- IR-003 (SR-003 + SR-004):
+  - `tsc -p tsconfig.build.json --noEmit` passes.
+  - `configured-agent-execution-handle.test.ts`: 31/31, including 10 new start-failure, closed-input, live-run, indeterminate-cause and adapter cases.
+  - `configured-root-first-work.test.ts`: 48/48 after updating the code assertions.
+  - Affected suites (2737 tests) against HEAD `d30c11204`: 0 new failures. 33 fail in both runs, all pre-existing and unrelated.
+  - Local durable E2E (E-01): 2/2, including DTL-003. This is a local check, not API/E2E sign-off.
+  - Details are in `implementation-revision-record.md` IR-003.
+- IR-002 (Local Fix for CR-FO-001; superseded by IR-003):
   - `tsc -p tsconfig.build.json --noEmit` passes.
   - `delegated-team-lazy-member-activation.test.ts`: 24/24. The new reservation-failure case fails in all 3 roots without the fix.
   - Affected suites on HEAD `09cc6d5cc`, with and without the fix (2374 tests): 0 new failures. The remaining 25 are pre-existing in `tests/integration/agent-execution/*`.
