@@ -18,6 +18,8 @@ package's script from its own directory.
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | All web tests | Both of the above | `pnpm -C autobyteus-web test` |
 | Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
+| Server unit / integration baseline | The green server `tests/unit` and `tests/integration` suites (see [Server unit and integration baseline](#server-unit-and-integration-baseline)) | `pnpm -C autobyteus-server-ts test:unit`; `pnpm -C autobyteus-server-ts test:integration:prepare` once, then `pnpm -C autobyteus-server-ts test:integration` |
+| Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
 | Core library tests | `autobyteus-ts` agent runtime, tools, LLM layer | `pnpm -C autobyteus-ts test` |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
@@ -72,6 +74,56 @@ Notes:
   (`autobyteus_mcps/browser-automation`), using
   `CHROME_REMOTE_DEBUGGING_PORT=<controlPort>` (as reported by `start`) and
   `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
+
+### Server unit and integration baseline
+
+The server `tests/unit` and `tests/integration` suites and the `typecheck`
+script are expected to pass on the base branch. A failure there is caused by
+your change, or it is a new base failure to fix under Rule 9. From the
+repository root, after `pnpm install`:
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts test:unit
+pnpm -C autobyteus-server-ts test:integration:prepare   # once per worktree, and after changing server or SDK source
+pnpm -C autobyteus-server-ts test:integration
+pnpm -C autobyteus-server-ts typecheck
+```
+
+- **Integration prerequisites.** Some integration tests load build outputs: the
+  server `dist` watcher runtime, the application SDK and devkit `dist`, and the
+  Brief Studio importable package. `test:integration` checks them first. If any
+  is missing, it names the missing files and the prepare command, and exits
+  before running the suite. `test:integration:prepare` builds them in order.
+  It packs Brief Studio with the devkit CLI directly, so no re-install is
+  needed for the `autobyteus-app` bin. The SDK and Brief Studio `dist/`
+  folders are untracked build output; stage paths explicitly.
+- **Environment isolation.** Agent shells inherit the live app's variables
+  (data, memory and database paths, package/skill roots, settings, provider
+  modes and keys). For every file under `tests/unit/` and `tests/integration/`,
+  `tests/setup/test-environment-isolation.ts` removes every variable except
+  system essentials and test-owned knobs before the file imports anything. The
+  knobs are opt-in gates and fake-CLI or fixture inputs such as `RUN_*`,
+  `TEST_*`, `FAKE_*`, `AGY_*` and `ANTIGRAVITY_CLI_COMMAND`. The same commands
+  therefore give the same results in any shell and never resolve to
+  `~/.autobyteus`. Tests that need an app variable set and restore it
+  themselves. When you add an opt-in gate variable to a unit or integration
+  test, add its name to `TEST_ENVIRONMENT_ALLOWLIST`. E2E and the other test
+  folders keep the inherited environment.
+- **Opt-in gates.** Live tests stay skipped unless their gate is set, for
+  example `RUN_CODEX_E2E`, `RUN_CLAUDE_E2E`, `RUN_LMSTUDIO_E2E`, `AGY_LIVE`,
+  `RUN_GITHUB_AGENT_PACKAGE_E2E` and the Google MCP credentials. Platform-gated
+  tests (Windows/WSL) skip elsewhere. A skip is not a pass for that capability.
+- **Typecheck scope.** `typecheck` runs `tsc -p tsconfig.build.json --noEmit`,
+  the production compilation unit that `pnpm build` compiles, with semantic
+  checking on. Test files are not type-checked yet; their existing type errors
+  are a separate follow-up.
+- **Known exception.** Two cases in
+  `tests/integration/agent/agent-status-websocket.integration.test.ts` (the
+  content-cadence window cases) fail because of a reported product defect: an
+  `AGENT_INPUT_STATE` frame published after every event batch flushes the
+  content cadence buffer early. They are not skipped. Remove this note when
+  that defect is fixed.
 
 ### Event Monitor Native File Preview Regression
 
