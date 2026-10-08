@@ -50,6 +50,7 @@
   - `origin/personal` was re-fetched and is still at `b5e0da508`; the branch is 0 behind. No integration was needed, and API/E2E round 2 had already run on the integrated state.
   - Docs sync delta: corrected `agent_communication.md` (DONE or CANCELLED triggers and re-publishes `task_executions_closed`). Verified the implementation's SR-005/SR-006 doc text. Rewrote `release-notes.md` to use the verb "cancel" and the last-column layout.
   - Delta checks: the collaboration contract and member-instruction parity tests pass (2 files / 8 tests); licensing and artifact hygiene pass.
+  - After the delivery commit `0b25348e8`, `origin/personal` advanced to `efc2bfd0f`, a records-only commit for another ticket. It was merged cleanly with no executable change and no rerun.
   - Fresh isolated desktop instance built from the branch for user verification. The stale pre-SR-005 instance `iso-54394-19b5` was no longer running; its record and data root were removed with `isolated-app stop`.
 - Record note: the implementation commit `7f7b2c8fb` mechanically renamed CLOSED → CANCELLED inside the DR-001 text and the delivery reports. Those DR-001 statements described the then-current CLOSED wording; the facts (conflict union, hash re-pin, closure path) are unchanged. The pinned prompt hash now reflects the CANCELLED wording.
 - Known non-ticket test flakiness (from API-REV-002, consistent with DR-001):

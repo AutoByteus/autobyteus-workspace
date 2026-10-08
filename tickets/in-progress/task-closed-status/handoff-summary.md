@@ -27,7 +27,7 @@ A fourth Task status, **CANCELLED** ("Cancelled" / "已取消"), meaning the Tas
   - `7f7b2c8fb` SR-006 CANCELLED rename
   - `2dc190601` API/E2E r2 checkpoint
   - the DR-002 delivery commit (docs sync and artifacts)
-- Current with `origin/personal` @ `b5e0da508` (re-fetched at DR-002 start; 0 behind).
+- Current with `origin/personal` @ `efc2bfd0f` (0 behind). The final base commit changed only another ticket's archived delivery records and was merged cleanly with no executable change.
 - DR-001 resolved one integration conflict, in the collaboration-prompt paragraph, as a union of both tickets' wording. See `release-deployment-report.md`.
 
 ## Verification Evidence
