@@ -1,0 +1,991 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/unit/run-history/services/agent-run-history-catalog-service.test.ts[2m > [22m[2mAgentRunHistoryCatalogService[2m > [22m[2mrefuses to cancel a run after the serialized catalog start mutation
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/run-history/services/agent-run-history-catalog-service.test.ts[2m > [22m[2mAgentRunHistoryCatalogService[2m > [22m[2ma run whose host is down but whose Agent root lingers (CR-001/CR-002)[2m > [22m[2mrefuses delete and archive, keeping every file, when the root cannot be ended
+[22m[39mAgent root of run 'run-1' could not be ended before a history change: Error: a child did not stop
+    at Object.<anonymous> [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/[39mtests/unit/run-history/services/agent-run-history-catalog-service.test.ts:345:37[90m)[39m
+
+[90mstderr[2m | tests/unit/run-history/services/agent-run-history-catalog-service.test.ts[2m > [22m[2mAgentRunHistoryCatalogService[2m > [22m[2ma run whose host is down but whose Agent root lingers (CR-001/CR-002)[2m > [22m[2mrefuses delete and archive, keeping every file, when the root cannot be ended
+[22m[39mAgent root of run 'run-1' could not be ended before a history change: Error: a child did not stop
+    at Object.<anonymous> [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/[39mtests/unit/run-history/services/agent-run-history-catalog-service.test.ts:345:37[90m)[39m
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-catalog-service.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 4839[2mms[22m[39m
+     [33m[2m✓[22m[39m records prepared metadata and one V2 catalog row through one boundary [33m 397[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses to cancel a run after the serialized catalog start mutation [33m 4240[2mms[22m[39m
+[90mstdout[2m | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:43992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts[2m > [22m[2mArchive run history GraphQL e2e
+[22m[39m[2026-10-08T05:22:11.373Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts[2m > [22m[2mArchive run history GraphQL e2e[2m > [22m[2marchives inactive agent and team runs and hides them from default history without deleting disk or index data
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 2223[2mms[22m[39m
+       [33m[2m✓[22m[39m archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else [33m 406[2mms[22m[39m
+       [33m[2m✓[22m[39m archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop [33m 399[2mms[22m[39m
+       [33m[2m✓[22m[39m reports a run that started after the running-run check as failed and archives the rest (AC-010) [33m 425[2mms[22m[39m
+       [33m[2m✓[22m[39m rejects an empty workspace root or agent definition id as a GraphQL error without writing anything [33m 485[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 913[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/root-run-package-readiness-index.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 808[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/team-run-history-catalog-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/team-run-history-catalog-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 610[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/projects-schema.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:50471) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/projects-schema.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-index-repair.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 194[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/collaboration-root-history-readiness.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/collaboration-root-history-readiness.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 217[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/project-tasks-schema.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:51640) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/project-tasks-schema.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 157[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/removed-skill-access-mode-record-tolerance.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 311[2mms[22m[39m
+[90mstdout[2m | tests/integration/run-history/memory-layout-and-projection.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/integration/run-history/memory-layout-and-projection.integration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 232[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/run-file-change-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/run-history/services/run-file-change-projection-service.test.ts[2m > [22m[2mRunFileChangeProjectionService current run identity[2m > [22m[2mreads an active standalone run from the runtime owner
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/run-history/services/run-file-change-projection-service.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 106[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/memory-view-member-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 559[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/team-run-package-catalog.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 151[2mms[22m[39m
+[90mstdout[2m | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:58034) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts[2m > [22m[2mWorkspace run history GraphQL e2e
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-08T05:22:41.747Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts[2m > [22m[2mWorkspace run history GraphQL e2e[2m > [22m[2mreturns grouped agent and team definitions for workspace history
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 154[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/definition-catalog-refresh.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:59588) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/types/definition-catalog-refresh.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 86[2mms[22m[39m
+(node:59613) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts[2m > [22m[2mApplication-owned Studio run-model configuration integration[2m > [22m[2mkeeps a normally launched Application AGENT locked through startup-ready reentry, then releases it after termination
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-studio-ownership-76yAb6
+
+[90mstdout[2m | tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts[2m > [22m[2mApplication-owned Studio run-model configuration integration[2m > [22m[2mkeeps a normally launched Application TEAM locked through startup-ready reentry, then releases it after termination
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-studio-ownership-ddsulr
+
+[90mstdout[2m | tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts[2m > [22m[2mApplication-owned Studio run-model configuration integration[2m > [22m[2mfails a stopped update closed when Application startup ownership recovery fails
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-studio-ownership-lc4laH
+
+ [32m✓[39m tests/integration/run-history/application-owned-studio-run-model-config.integration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 201[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/agent-org-run-config.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:61212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ [32m✓[39m tests/unit/api/graphql/types/agent-org-run-config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-index-service.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 37[2mms[22m[39m
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:62661) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mCreated and registered workspace ID: agent_ws_43d48e3bfd841e5c86bd42a7211ee9a852abd017dff8614c05d399cb68ce098f
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mCreating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mClosing FileSystemWorkspace agent_ws_43d48e3bfd841e5c86bd42a7211ee9a852abd017dff8614c05d399cb68ce098f
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists workspaces
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mCreated and registered workspace ID: agent_ws_84bdddbd5c6087720eafa218f461dadeba99a2e83a9c092efe3e6afcf725a84a
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mClosing FileSystemWorkspace agent_ws_84bdddbd5c6087720eafa218f461dadeba99a2e83a9c092efe3e6afcf725a84a
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mCreating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mCreated and registered workspace ID: agent_ws_84bdddbd5c6087720eafa218f461dadeba99a2e83a9c092efe3e6afcf725a84a
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mremoves a registered workspace from visibility, preserves files, and re-adds the same root
+[22m[39mClosing FileSystemWorkspace agent_ws_84bdddbd5c6087720eafa218f461dadeba99a2e83a9c092efe3e6afcf725a84a
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-QadX89/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-QadX89/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mCreated and registered workspace ID: agent_ws_72f4ea7c6b20decac769711f7e4cd8e7d435c02383efab4d243b29dc950406d8
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mCreating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mClosing FileSystemWorkspace agent_ws_72f4ea7c6b20decac769711f7e4cd8e7d435c02383efab4d243b29dc950406d8
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mkeeps a workspace registered when removeWorkspace is blocked by an active standalone run
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mreturns workspace metadata from createWorkspace without acquiring file explorer
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MevQ9A/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MevQ9A/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mreturns workspace metadata from createWorkspace without acquiring file explorer
+[22m[39mCreated and registered workspace ID: agent_ws_e2d947aed4f397470515d11e8cfbd5eedf661d24b0162cd91bdadd8106b44453
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mreturns workspace metadata from createWorkspace without acquiring file explorer
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-QadX89/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mreturns workspace metadata from createWorkspace without acquiring file explorer
+[22m[39mClosing FileSystemWorkspace agent_ws_e2d947aed4f397470515d11e8cfbd5eedf661d24b0162cd91bdadd8106b44453
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves deterministic workspace metadata without initializing the workspace
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qZ2ytY/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qZ2ytY/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves deterministic workspace metadata without initializing the workspace
+[22m[39mCreated and registered workspace ID: agent_ws_29986943978b9c4cf95930098dcd7a81a7cc48bc69365521c90690f80f874d85
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves deterministic workspace metadata without initializing the workspace
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MevQ9A/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-QadX89/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves deterministic workspace metadata without initializing the workspace
+[22m[39mClosing FileSystemWorkspace agent_ws_29986943978b9c4cf95930098dcd7a81a7cc48bc69365521c90690f80f874d85
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists the temp workspace with the backend-selected app-data-relative path
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Jop1CB/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Jop1CB/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Jop1CB/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists the temp workspace with the backend-selected app-data-relative path
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mlists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+[22m[39mRemoved 1 persisted filesystem registry entry for the configured temp workspace root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mlists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-5NItb6/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-5NItb6/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-5NItb6/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mlists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-5NItb6/regular_ws.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mlists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-5NItb6/regular_ws.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mlists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TeZXa2/server-data/temp_workspace/.
+Resolved configured temp workspace root to TempWorkspace.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TeZXa2/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TeZXa2/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TeZXa2/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mresolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mGraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/created-during-list
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/created-during-list.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mCreated and registered workspace ID: agent_ws_e6f383ba1fe99e4fca2115c27b869b4c42c508b4d2a953a2356415ddf69d3c32
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/existing-c.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qQHrP2/existing-c.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mClosing FileSystemWorkspace agent_ws_e6f383ba1fe99e4fca2115c27b869b4c42c508b4d2a953a2356415ddf69d3c32
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mpreserves a seeded registry when GraphQL workspace listing and creation overlap
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mrejects removing the default temp workspace
+[22m[39mGraphQL mutation to remove registered workspace
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mrejects removing the default temp workspace
+[22m[39mCreated metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-0mU4mr/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1LbiyJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-34WCKL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-3nqoIw/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-7gIUNf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9cW39K/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9YPqYS/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-9Yq2FI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aYYAUh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Bq7x4V/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cyk77U/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-dMFYjf/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DnJJqq/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-EByflL/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ecx33i/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Eflag4/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-gA1w72/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-ICN2Ap/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IJHkjn/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-J6nrkK/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JNvxh1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-kt5kN1/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-lAqT3S/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Lz1zhl/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MevQ9A/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-mFw3sj/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MKD8Bu/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-o39H6f/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-P9UMtE/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PCTiTU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-q4ILCR/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-QadX89/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-qZ2ytY/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rUe23W/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-Ruzwcs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sqTqP0/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-umff5h/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-vt8jrs/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WPA7e2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-WXCEki/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-YQyjPg/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-yXxQve/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-z4kUmi/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zGyQqJ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-zsHuGN/test_ws_root.
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists the temp workspace using the configured relative override under app data dir
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aLWLyO/server-data
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aLWLyO/server-data/.env
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists the temp workspace using the configured relative override under app data dir
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aLWLyO/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aLWLyO/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-aLWLyO/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts[2m > [22m[2mWorkspaces GraphQL e2e[2m > [22m[2mcreates and lists the temp workspace using the configured relative override under app data dir
+[22m[39mClosing FileSystemWorkspace temp_ws_default
+
+ [32m✓[39m tests/e2e/workspaces/workspaces-graphql.e2e.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 262[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/agent-run-metadata-store.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 91[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts[2m > [22m[2mAgentRunViewProjectionService[2m > [22m[2mkeeps Codex projection empty when local replay history is missing
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-service-Fj6rF3/agents/run-codex-missing-local/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts[2m > [22m[2mAgentRunViewProjectionService[2m > [22m[2mreturns deterministic empty projection when the local replay provider fails
+[22m[39m[AgentRunViewProjectionService] local replay projection failed for run 'run-local-provider-fails' (autobyteus): Error: local replay failed
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-view-projection-service.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 128[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/atomic-json-file-writer.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 86[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-catalog-core.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+[90mstderr[2m | tests/unit/run-history/store/agent-run-history-index-store.test.ts[2m > [22m[2mAgentRunHistoryIndexStore[2m > [22m[2mdoes not treat legacy V1 status rows as a normal source catalog
+[22m[39mInvalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-kDPrMQ/run_history_index.json
+
+[90mstderr[2m | tests/unit/run-history/store/agent-run-history-index-store.test.ts[2m > [22m[2mAgentRunHistoryIndexStore[2m > [22m[2mdoes not treat a file-level version wrapper as the standalone source catalog
+[22m[39mInvalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-kpbMX4/run_history_index.json
+
+[90mstderr[2m | tests/unit/run-history/store/agent-run-history-index-store.test.ts[2m > [22m[2mAgentRunHistoryIndexStore[2m > [22m[2mrejects plain V2 rows that the catalog cannot normalize
+[22m[39mInvalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-cqpX46/run_history_index.json
+
+ [32m✓[39m tests/unit/run-history/store/agent-run-history-index-store.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/definition-admission.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 29[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/collaboration-run-history-existing-index.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-existing-index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 99[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-run-current-package-schema.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 92[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/atomic-run-package-file-commit-writer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 86[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-run-file-commit-writer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 108[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 58[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/published-artifact-projection-service.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/team-run-history-index-store.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-member-run-view-projection-service.import.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/agent-org-run-execution-tree-tolerance.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/agent-team-run.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/app-data-migrations.test.ts[2m > [22m[2mAppDataMigrationResolver[2m > [22m[2mrebuilds compound current-package admission before a manual TeamRun migration Retry completes
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/api/graphql/types/app-data-migrations.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/projection/user-file-attachment-projection.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/projection/user-file-attachment-projection.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/run-history.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/collaborator-tree-records.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts[2m > [22m[2mCodex MCP tool arguments memory/projection integration[2m > [22m[2mpersists an early MCP call plus minimal result and projects both UI surfaces
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-mcp-projection-rVKM12/working_context_snapshot.json
+
+ [32m✓[39m tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/studio-run-model-config-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-root-history-scoped.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/llm-provider.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/llm-provider.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/agent-run-history-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/team-member-run-view-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/run-history/team-member-run-view-projection-service.test.ts[2m > [22m[2mTeamMemberRunViewProjectionService exact AgentRun identity[2m > [22m[2mresolves and projects a member by root TeamRun plus concrete AgentRun ID
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-history-group-archive/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/run-history/team-member-run-view-projection-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/team-run-history-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/team-run-history-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/workspace-run-history-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-org-run-history-summary-writer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/errors/skill-name-conflict-graphql-error.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-model-selection-commit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/current-execution-tree-runtime-admission.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/server-settings.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/team-run-history.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/studio-application-api-services.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/projects.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/recent-run-projection-policy.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/agent-run.test.ts[2m > [22m[2mAgentRunResolver[2m > [22m[2mroutes tool approval through the live AgentRun subject
+[22m[39mReceived tool invocation approval request for agent run 'run-native-1', invocation 'tool-1', approved: true
+
+[90mstdout[2m | tests/unit/api/graphql/types/agent-run.test.ts[2m > [22m[2mAgentRunResolver[2m > [22m[2mroutes tool approval through the live AgentRun subject
+[22m[39mSuccessfully posted tool execution approval for agent run 'run-native-1', invocation 'tool-1'.
+
+ [32m✓[39m tests/unit/api/graphql/types/agent-run.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/task-execution-source-schema.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/active-trace-event-page-policy.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/types/memory-explorer-types.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/agent-run-metadata-service.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22m[2mWorkspaceConverter[2m > [22m[2mmaps a regular workspace's metadata with isTemp false
+[22m[39mCreated metadata-only FileSystemWorkspace at /path/to/ws.
+
+[90mstdout[2m | tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22m[2mWorkspaceConverter[2m > [22m[2mmaps the temp workspace with its fixed id and isTemp true
+[22m[39mCreated metadata-only FileSystemWorkspace at /path/to/temp.
+Initialized TempWorkspace at /path/to/temp with fixed ID 'temp_ws_default'
+
+ [32m✓[39m tests/unit/api/graphql/converters/workspace-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/tool-definition-converter.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/converters/tool-definition-converter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/api/graphql/converters/memory-view-converter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-identity.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/converters/user-input-converter.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/converters/user-input-converter.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/memory-view-types.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/api/graphql/types/memory-view-types.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m73 passed[39m[22m[90m (73)[39m
+[2m      Tests [22m [1m[32m343 passed[39m[22m[90m (343)[39m
+[2m   Start at [22m 07:22:01
+[2m   Duration [22m 94.60s[2m (transform 7.86s, setup 846ms, import 69.37s, tests 13.55s, environment 9ms)[22m
+
+exit 0

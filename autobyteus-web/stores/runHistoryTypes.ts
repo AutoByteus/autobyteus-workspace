@@ -297,3 +297,18 @@ export interface ArchiveStoredAgentOrgRunMutationData {
     orgRunId: string | null;
   };
 }
+
+/** Result of archiving the runs of one sidebar group. */
+export interface RunGroupArchiveOutcome {
+  archivedRunIds: string[];
+  failedRunIds: string[];
+}
+
+/** Standalone agent group result; non-empty `activeRunIds` means the server archived nothing. */
+export interface AgentRunGroupArchiveOutcome extends RunGroupArchiveOutcome {
+  activeRunIds: string[];
+}
+
+export interface ArchiveStoredAgentRunGroupMutationData {
+  archiveStoredAgentRunGroup: AgentRunGroupArchiveOutcome;
+}

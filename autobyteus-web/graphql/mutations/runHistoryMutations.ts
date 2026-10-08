@@ -18,6 +18,16 @@ export const ArchiveStoredRun = gql`
   }
 `;
 
+export const ArchiveStoredAgentRunGroup = gql`
+  mutation ArchiveStoredAgentRunGroup($workspaceRootPath: String!, $agentDefinitionId: String!) {
+    archiveStoredAgentRunGroup(workspaceRootPath: $workspaceRootPath, agentDefinitionId: $agentDefinitionId) {
+      archivedRunIds
+      activeRunIds
+      failedRunIds
+    }
+  }
+`;
+
 export const DeleteStoredTeamRun = gql`
   mutation DeleteStoredTeamRun($teamRunId: String!) {
     deleteStoredTeamRun(teamRunId: $teamRunId) {

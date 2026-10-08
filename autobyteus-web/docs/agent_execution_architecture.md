@@ -988,6 +988,35 @@ affordance remains separate and continues to use the existing permanent-delete
 confirmation path for users who intend to remove stored memory. There is
 currently no archived-history browser or unarchive UI in this frontend slice.
 
+#### Archive All From A Group Header
+
+Every agent, agent team and Agent Org group header in the Workspaces sidebar
+has an **Archive all runs** icon when the group has saved runs. Drafts and
+unsaved local runs do not count. `composables/useWorkspaceHistoryGroupArchive.ts`
+owns the UI policy:
+
+- If any run in the group is running, nothing is archived. The user sees one
+  warning toast, "Stop running runs first.", and no dialog.
+- Otherwise a confirmation dialog opens. Agent groups say "all runs", because
+  runs beyond the 6-run listing cap are included. Team and Org groups show the
+  run count.
+- While the group is being archived its header is pending, and a second
+  request is ignored.
+- One summary toast reports the result: "Archived N runs.", "Archived N runs.
+  M failed.", or "Archive failed. Try again.".
+
+The composable dispatches by group kind to `runHistoryStore`:
+
+- `archiveAgentRunGroup(workspaceRootPath, agentDefinitionId)` calls the
+  server `archiveStoredAgentRunGroup` mutation, which selects the runs itself.
+  If the server returns `activeRunIds`, the UI shows the same blocked toast.
+- `archiveTeamRuns(teamRunIds)` and `archiveAgentOrgRuns(orgRunIds)` reuse the
+  per-run archive cores (mutation and local cleanup) for each listed root.
+  After a successful Org archive, the open Org route is left.
+
+Each path refreshes history and run-navigation topology once per group, not
+once per run. The per-run row Archive action keeps its own behaviour.
+
 ## Recorded Non-Media Attachment Lifetime
 
 Core `RawTraceItem.file_attachments` retains immutable non-media URI/type/name

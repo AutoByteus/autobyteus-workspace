@@ -275,4 +275,64 @@ describe("AgentRunHistoryService", () => {
     expect(catalogService.archiveRun).toHaveBeenCalledWith("run-1");
     expect(catalogService.deleteRun).toHaveBeenCalledWith("run-1");
   });
+  describe("archiveStoredAgentRunGroup", () => {
+    const groupRows = [
+      ...Array.from({ length: 8 }, (_, index) => buildRow({
+        runId: `run-a-${index}`,
+        workspaceRootPath: index % 2 === 0 ? "/tmp/workspace-a" : "/tmp/workspace-a/",
+        createdAt: `2026-03-2${index}T10:00:00.000Z`,
+      })),
+      buildRow({ runId: "run-archived", workspaceRootPath: "/tmp/workspace-a", archivedAt: "2026-03-01T00:00:00.000Z" }),
+      buildRow({ runId: "run-other-workspace", workspaceRootPath: "/tmp/workspace-b" }),
+      buildRow({ runId: "run-other-agent", workspaceRootPath: "/tmp/workspace-a", agentDefinitionId: "agent-def-2" }),
+    ];
+    const groupRunIds = Array.from({ length: 8 }, (_, index) => `run-a-${index}`);
+
+    it("archives every unarchived stored run of the agent in that workspace, beyond the listing cap", async () => {
+      const { service, catalogService } = buildService({ rows: groupRows });
+
+      await expect(service.archiveStoredAgentRunGroup({
+        workspaceRootPath: "/tmp/workspace-a/",
+        agentDefinitionId: "agent-def-1",
+      })).resolves.toEqual({ archivedRunIds: groupRunIds, activeRunIds: [], failedRunIds: [] });
+
+      expect(catalogService.archiveRun.mock.calls.map(([runId]) => runId)).toEqual(groupRunIds);
+    });
+
+    it("archives nothing and reports active runs when any run of the group is running", async () => {
+      const { service, catalogService } = buildService({
+        rows: groupRows,
+        projectionByRunId: { "run-a-7": { isActive: true, status: "running" } },
+      });
+
+      await expect(service.archiveStoredAgentRunGroup({
+        workspaceRootPath: "/tmp/workspace-a",
+        agentDefinitionId: "agent-def-1",
+      })).resolves.toEqual({ archivedRunIds: [], activeRunIds: ["run-a-7"], failedRunIds: [] });
+
+      expect(catalogService.archiveRun).not.toHaveBeenCalled();
+    });
+
+    it("reports runs the catalog refuses as failed and keeps the other archives", async () => {
+      const { service, catalogService } = buildService({ rows: groupRows.slice(0, 3) });
+      catalogService.archiveRun.mockImplementation(async (runId: string) => runId === "run-a-1"
+        ? { success: false, message: "Run is active. Terminate it before archiving history." }
+        : { success: true, message: "archived" });
+
+      await expect(service.archiveStoredAgentRunGroup({
+        workspaceRootPath: "/tmp/workspace-a",
+        agentDefinitionId: "agent-def-1",
+      })).resolves.toEqual({ archivedRunIds: ["run-a-0", "run-a-2"], activeRunIds: [], failedRunIds: ["run-a-1"] });
+    });
+
+    it("rejects an empty workspace root or agent definition id", async () => {
+      const { service, catalogService } = buildService({ rows: groupRows });
+
+      await expect(service.archiveStoredAgentRunGroup({ workspaceRootPath: " ", agentDefinitionId: "agent-def-1" }))
+        .rejects.toThrow("workspaceRootPath and agentDefinitionId are required.");
+      await expect(service.archiveStoredAgentRunGroup({ workspaceRootPath: "/tmp/workspace-a", agentDefinitionId: "" }))
+        .rejects.toThrow("workspaceRootPath and agentDefinitionId are required.");
+      expect(catalogService.listCatalogRows).not.toHaveBeenCalled();
+    });
+  });
 });

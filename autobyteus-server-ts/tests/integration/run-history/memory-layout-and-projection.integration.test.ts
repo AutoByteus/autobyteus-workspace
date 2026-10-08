@@ -60,21 +60,24 @@ describe("memory layout and projection integration", () => {
       const workspaceRootPath = `/tmp/${runtimeKind}-workspace`;
       const allocatedRunId = `projection_agent_${runtimeKind}_${"1".repeat(32)}`;
       const agentRunManager = {
-        prepareNewAgentRun: vi.fn().mockImplementation(({ config, runId }: {
+        beginActivation: vi.fn().mockImplementation(({ config, runId }: {
+          kind: "new";
           config: AgentRunConfig;
           runId: string;
-        }) => Promise.resolve(new AgentRunActivationCandidate({
-          runId,
-          runtimeKind,
-          platformAgentRunId,
-          publish: () => createActiveRun({
+        }) => ({
+          prepare: () => Promise.resolve(new AgentRunActivationCandidate({
             runId,
             runtimeKind,
             platformAgentRunId,
-            memoryDir: config.memoryDir,
-          }) as never,
-          abort: async () => ({ kind: "aborted" }),
-        }))),
+            publish: () => createActiveRun({
+              runId,
+              runtimeKind,
+              platformAgentRunId,
+              memoryDir: config.memoryDir,
+            }) as never,
+            abort: async () => ({ kind: "aborted" }),
+          })),
+        })),
         getActiveRun: vi.fn().mockReturnValue(null),
         restoreAgentRun: vi.fn(),
         hasActiveRun: vi.fn().mockReturnValue(false),

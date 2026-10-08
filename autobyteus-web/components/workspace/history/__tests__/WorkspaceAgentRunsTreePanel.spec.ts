@@ -297,6 +297,9 @@ const {
       archiveTeamRun: vi.fn().mockResolvedValue(true),
       deleteAgentOrgRun: vi.fn().mockResolvedValue(true),
       archiveAgentOrgRun: vi.fn().mockResolvedValue(true),
+      archiveAgentRunGroup: vi.fn().mockResolvedValue({ archivedRunIds: ['run-1', 'run-2'], activeRunIds: [], failedRunIds: [] }),
+      archiveTeamRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] })),
+      archiveAgentOrgRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] })),
     },
     workspaceStoreMock: {
       workspaces: {
@@ -2324,6 +2327,68 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.deleteAgentOrgRun).toHaveBeenCalledExactlyOnceWith("org-stopped");
     expect(routerHarness.replace).not.toHaveBeenCalled();
     expect(addToastMock).toHaveBeenCalledWith("Agent Org history deleted permanently.", "success");
+    wrapper.unmount();
+  });
+
+  it('blocks group Archive all while a run of the agent group is running, without a dialog', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    await wrapper.get('[data-test="workspace-agent-group-archive-agent-def-1"]').trigger('click');
+    await flushPromises();
+
+    expect((wrapper.vm as any).showGroupArchiveConfirmation).toBe(false);
+    expect(addToastMock).toHaveBeenCalledExactlyOnceWith('Stop running runs first.', 'info');
+    expect(runHistoryStoreMock.archiveAgentRunGroup).not.toHaveBeenCalled();
+  });
+
+  it('archives a stopped agent group through the header, confirmation and one store call', async () => {
+    runHistoryState.nodes[0].agents[0].runs.forEach((run: any) => { run.isActive = false; });
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    await wrapper.get('[data-test="workspace-agent-group-archive-agent-def-1"]').trigger('click');
+    await nextTick();
+    expect((wrapper.vm as any).showGroupArchiveConfirmation).toBe(true);
+    expect((wrapper.vm as any).groupArchiveConfirmationMessage).toBe('SuperAgent — all runs will be hidden from history.');
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveAgentRunGroup).toHaveBeenCalledExactlyOnceWith('/ws/a', 'agent-def-1');
+    expect(runHistoryStoreMock.archiveRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Archived 2 runs.', 'success');
+  });
+
+  it('archives a stopped Org group and leaves the open archived Org route', async () => {
+    const launch = { runtimeKind: "codex_app_server", llmModelIdentifier: "model", llmConfig: null,
+      autoExecuteTools: false, workspaceRootPath: "/ws/a" };
+    const orgRun = (rootRunId: string) => ({
+      stableKey: `org-run:${rootRunId}`, rootSubjectKind: "agent_org", rootRunId,
+      createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: rootRunId,
+      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: "/", orgDefinitionId: "org-def",
+          orgDefinitionName: "Org", orgRunId: rootRunId, defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+    });
+    runHistoryState.nodes[0].agentOrgDefinitions = [{
+      stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun("org-a"), orgRun("org-b")],
+    }];
+    routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-b", mode: "history" };
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    await wrapper.get('[data-test="agent-org-group-archive-org-def"]').trigger('click');
+    await nextTick();
+    expect((wrapper.vm as any).groupArchiveConfirmationMessage).toBe('Org · 2 runs will be hidden from history.');
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveAgentOrgRuns).toHaveBeenCalledExactlyOnceWith(["org-a", "org-b"]);
+    expect(runHistoryStoreMock.archiveAgentOrgRun).not.toHaveBeenCalled();
+    expect(routerHarness.replace).toHaveBeenCalledExactlyOnceWith({ path: "/workspace" });
+    expect(addToastMock).toHaveBeenCalledWith('Archived 2 runs.', 'success');
     wrapper.unmount();
   });
 
