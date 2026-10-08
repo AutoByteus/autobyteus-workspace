@@ -61,3 +61,9 @@ AC-007 (your existing stuck run `daily_assistant_feb311e7…`): this needs the f
 ## Outcome
 
 - User verification: "finaloize and release a new beta version" (`user-verification.md`)
+- Finalized: merge `c731b0d3b` on `origin/personal`. Ticket branch `codex/interrupt-resend-retired-cleanup-stuck` pushed.
+- Released:
+  - `v1.4.99-beta.3` (`23ca52e7a`): desktop and mobile published. Its Docker build failed on the external Antigravity installer download.
+  - At the user's request, it was superseded by **`v1.4.99-beta.4`** (`fa04d1290`, cut from the `personal` tip, which also contains task-closed-status). All 4 workflows succeeded. GitHub pre-release; Docker `:1.4.99-beta.4`/`:beta`.
+- AC-007: the user checks the existing stuck run after installing beta.4.
+- Details: `release-deployment-report.md` (DR-002)
