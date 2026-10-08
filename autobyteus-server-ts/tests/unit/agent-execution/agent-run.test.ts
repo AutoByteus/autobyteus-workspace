@@ -40,6 +40,7 @@ const createHarness = (options: {
   commandObserver?: { onUserMessageForwarded: ReturnType<typeof vi.fn> };
   interrupt?: ReturnType<typeof vi.fn>;
   terminate?: ReturnType<typeof vi.fn>;
+  runningBackgroundTasks?: boolean;
 } = {}) => {
   const runId = options.runId ?? "agent-run-1";
   const context = new AgentRunContext({
@@ -71,6 +72,7 @@ const createHarness = (options: {
     getPlatformAgentRunId: () => "platform-run-1",
     isActive: () => snapshot.availability === "active",
     getLifecycleSnapshot: () => snapshot,
+    hasRunningBackgroundTasks: vi.fn(() => options.runningBackgroundTasks ?? false),
     subscribeToSourceEventBatches: vi.fn().mockImplementation(
       (next: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
         sourceListener = next;
@@ -893,6 +895,38 @@ describe("AgentRun input admission", () => {
 
     providerInterrupt.resolve({ accepted: true, turnId: "turn-terminal-first" });
     await expect(fence).resolves.toEqual({ accepted: true });
+  });
+
+  it("is not quiescent for idle shutdown while the runtime reports a running background task, and admission stays open", async () => {
+    const harness = createHarness({ runningBackgroundTasks: true });
+
+    await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
+    expect(harness.backend.hasRunningBackgroundTasks).toHaveBeenCalled();
+    await expect(harness.run.postUserMessage(new AgentInputUserMessage("background task finished")))
+      .resolves.toMatchObject({ accepted: true });
+    expect(harness.backend.terminate).not.toHaveBeenCalled();
+  });
+
+  it("prepares an idle run once its background task has ended", async () => {
+    let running = true;
+    const harness = createHarness({ runningBackgroundTasks: true });
+    harness.backend.hasRunningBackgroundTasks.mockImplementation(() => running);
+    await expect(harness.run.tryPrepareTerminationIfQuiescent()).resolves.toBeNull();
+    running = false;
+    const prepared = await harness.run.tryPrepareTerminationIfQuiescent();
+    expect(prepared).not.toBeNull();
+    prepared!.cancel();
+  });
+
+  it("explicit termination and the root-shutdown fence never wait for a running background task (AC-007)", async () => {
+    const stopped = createHarness({ runningBackgroundTasks: true });
+    await expect(stopped.run.terminate()).resolves.toEqual({ accepted: true });
+    expect(stopped.backend.terminate).toHaveBeenCalledOnce();
+    expect(stopped.backend.hasRunningBackgroundTasks).not.toHaveBeenCalled();
+
+    const fenced = createHarness({ runningBackgroundTasks: true });
+    await expect(fenced.run.fenceInputAndInterruptForRootShutdown()).resolves.toEqual({ accepted: true });
+    expect(fenced.backend.hasRunningBackgroundTasks).not.toHaveBeenCalled();
   });
 
   it("does not reopen root-fenced admission when an earlier prepared termination is cancelled", async () => {

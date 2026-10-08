@@ -23,6 +23,8 @@ import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/e
 import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles } from "./helpers/task-publication-handles.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
 
 const directories: string[] = [];
 afterEach(async () => { vi.restoreAllMocks(); await Promise.all(directories.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
@@ -235,6 +237,44 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
     // Configured members keep their own predicate: an errored configured member is still open work.
     f.handles.get("configured-worker")!.emit("error");
     expect(f.owner.hasOpenExecutionWork()).toBe(true);
+  });
+
+  it.each(["agent", "team"] as const)("keeps a delegated %s with a running background task past the grace period; the task's end re-arms it (AC-002/003/004)", async (kind) => {
+    const f = await buildOrg(kind);
+    const director = { identity: f.handles.get("director")!.input.identity };
+    await f.owner.delegateTask(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Start the dev server" });
+    await f.drain();
+    const childId = kind === "agent" ? "task-agent-1" : "task-team-1-lead";
+    const child = f.handles.get(childId)!;
+    const backgroundTask = (status: AgentBackgroundTaskStatus) => child.input.callbacks.publishAgentEvent(child.input.identity, {
+      kind: "agent_run", event: { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId: childId, statusHint: null,
+        payload: buildBackgroundTaskUpdatedPayload({ taskId: "bg-1", kind: "shell", description: "python3 -m http.server",
+          command: "python3 -m http.server", status, summary: null, startedAt: "2026-10-08T07:41:00.000Z" }) },
+    });
+    // While the task runs, the runtime's quiet check refuses (AgentRunTermination with hasRunningBackgroundTasks()).
+    let backgroundRunning = true;
+    const quietWhenIdle = child.handle.tryPrepareTerminationIfQuiescent.getMockImplementation()!;
+    child.handle.tryPrepareTerminationIfQuiescent.mockImplementation(async () => backgroundRunning ? null : quietWhenIdle());
+
+    backgroundTask("running");
+    child.emit("idle");
+    expect(f.clock.pendingCount()).toBe(1);
+    f.clock.fireAll();
+    await f.drain();
+    // Not shut down, and no timer: no time limit while the task runs; a "running" update arms nothing.
+    expect(child.finish).not.toHaveBeenCalled();
+    expect(f.clock.pendingCount()).toBe(0);
+    backgroundTask("running");
+    expect(f.clock.pendingCount()).toBe(0);
+
+    // The task ends without a following turn: the grace period starts again and the quiet copy is shut down.
+    backgroundRunning = false;
+    backgroundTask("completed");
+    expect(f.clock.delays()).toEqual([600_000]);
+    f.clock.fireAll();
+    await f.drain();
+    expect(child.finish).toHaveBeenCalledOnce();
+    expect(f.owner.getAgentStatusSnapshots().find((entry) => entry.execution.agentRunId === childId)!.details.status).toBe("offline");
   });
 
   it("disposes pending idle timers when the root terminates", async () => {

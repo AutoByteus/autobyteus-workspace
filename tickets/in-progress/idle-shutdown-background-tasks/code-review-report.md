@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-001
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: Implementation complete from `/software_engineering_team/implementation_engineer` (IR-001), commits `ba0437e00`, `28afa0884`, `62e4edf52` on `codex/idle-shutdown-background-tasks` over base `3a2496c95`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): Commit `bf5889d03` changes only two source lines in the CR-001 area: deletes `StandaloneAgentRunRoot.enterLifecycleFailStop()` and rewraps the `AgentRunTermination` class doc comment (the optional C-07 note). No spine, interface, or data-shape change; no files beyond the prior finding. Round-1 evidence carries forward for all other checks.
+- Trigger: CR-001 Local Fix from `/software_engineering_team/implementation_engineer` (IR-002), commit `bf5889d03` (round 1 reviewed `ba0437e00`, `28afa0884`, `62e4edf52` over base `3a2496c95`)
+- Prior Review Round Reviewed: 1 (CRR-001, Fail — Local Fix)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
@@ -46,7 +46,7 @@
 
 - Approved requirements basis understood: DEC-004 — delegated copies are never shut down for being idle; release only via Task DONE, root stop/fail-stop, server stop; setting removed; idle-only code deleted.
 - Design-spec behavior map verified against the implementation: Yes.
-- Design review report and round confirmed: ARCH-REV-001, Pass; AR-N-001 applied (grep clean, parity test and `prompt_engineering.md` updated); AR-N-002 applied for interface `isLive` and the three adapter options, but one root-side orphan remains (CR-001).
+- Design review report and round confirmed: ARCH-REV-001, Pass; AR-N-001 applied (grep clean, parity test and `prompt_engineering.md` updated); AR-N-002 fully applied (interface `isLive`, three adapter options, and the orphaned Standalone root method, removed in round 2 per CR-001).
 - Behavior-basis status: `Confirmed`
 - Changed or newly discovered behavior: None.
 - Remaining material ambiguity: None.
@@ -104,11 +104,11 @@
 | Naming quality and naming-to-responsibility alignment | Pass | `withLiveChain`, `restoreChainAtHead`; docs updated | — |
 | No unjustified duplication | Pass | — | — |
 | Patch-on-patch complexity control | Pass | Clean deletion | — |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | `StandaloneAgentRunRoot.enterLifecycleFailStop()` orphaned (CR-001) | Remove |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | CR-001 resolved in `bf5889d03`; no standalone `enterLifecycleFailStop` in src/tests | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | AC-001 (integration + live E2E), AC-002 (unit + integration), AC-004, release-generation via DONE + reactivation | — |
 | Test fixtures/helpers reusable and coherent | Pass | `task-release-generation-fixtures.ts` simplified | — |
 | No stale, duplicated, or compatibility-only tests retained | Pass | Two Org idle tests deleted; parity golden updated | — |
-| API/E2E readiness for the next workflow stage | Pass | Behavior complete; CR-001 has no runtime effect | — |
+| API/E2E readiness for the next workflow stage | Pass | Behavior complete; build typecheck and focused suites green | — |
 
 ## Source File Size And Structure Audit
 
@@ -118,7 +118,7 @@
 | `agent-team-execution/domain/root-team-run.ts` | 456 | Pass | Pass (shrank) | Pass | Pass | OK | — |
 | `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | 416 | Pass | Pass (shrank) | Pass | Pass | OK | — |
 | `agent-team-execution/local/flat-team-execution-manager.ts` | 407 | Pass | Pass (−55) | Pass | Pass | OK | — |
-| `standalone-agent-run-root/domain/standalone-agent-run-root.ts` | 395 | Pass | Pass (shrank) | Pass | Pass | OK (CR-001 inside) | Remove orphan |
+| `standalone-agent-run-root/domain/standalone-agent-run-root.ts` | 395 | Pass | Pass (shrank) | Pass | Pass | OK | — |
 | All other changed source files | < 395 | Pass | Pass (all shrank) | Pass | Pass | OK | — |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -127,16 +127,14 @@
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | No alias, flag or infinite grace |
 | No legacy old-behavior retention in changed scope | Pass | — |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | CR-001 |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | CR-001 resolved (round 2) |
 | Approved persisted-data transition decision followed without unnecessary migration | Pass | `Directly Usable — No Migration`; generic custom-setting reader |
 | No version-specific dual reads/writes or old-shape fallback | Pass | — |
 | Approved transition mechanics match the reviewed design | Pass | — |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
-| --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/standalone-agent-run-root/domain/standalone-agent-run-root.ts:335` `enterLifecycleFailStop(): void { this.enterFailStop(); }` | DeadCode | Only caller at base was the removed `StandaloneRootTaskExecutionAdapterOptions.enterLifecycleFailStop` wiring (base l.152); no caller in `src` or `tests` at HEAD | REQ-004/AC-005 (no dormant idle-only path); AR-N-002 ("and their wiring") | Delete the method; confirm by grep + `tsc -p tsconfig.build.json` |
+None remaining. The round-1 item (`standalone-agent-run-root.ts` `enterLifecycleFailStop()`, CR-001) was deleted in `bf5889d03`.
 
 ## Docs-Impact Verdict
 
@@ -152,40 +150,39 @@ None recorded upstream (design review: "None"). No new or reclassified premise.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
-- Overall score (`/100`): 93
-- Score calculation note: simple average; not the decision rule.
+- Overall score (`/10`): 9.4
+- Overall score (`/100`): 94
+- Score calculation note: simple average; not the decision rule. Round 2 re-scores only the categories CR-001 and C-07 affected; the others carry forward from round 1.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | DS-001..005 preserved; idle spine removed cleanly | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Lifecycle is sole restore/release owner; `isLive` private per adapter | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.5 | Truthful `withLiveChain`, `onAgentStatus(agentRunId)`; same error codes | — | — |
-| 4 | Separation of Concerns and File Placement | 9.5 | Pure deletions; all files shrank | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Lifecycle is the only owner of restore and release; each adapter keeps `isLive` private | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Accurate names `withLiveChain` and `onAgentStatus(agentRunId)`; same error codes | — | — |
+| 4 | Separation of Concerns and File Placement | 9.5 | Only deletions; every changed file shrank | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.5 | Option types and adapter interface tightened | — | — |
-| 6 | Naming Quality and Local Readability | 9.2 | Renames and doc comments updated consistently | One merged 168-char doc line in `agent-run-termination.ts` | Optional rewrap |
+| 6 | Naming Quality and Local Readability | 9.4 | Renames and doc comments consistent; the long doc line is rewrapped | — | — |
 | 7 | API/E2E Readiness | 9.3 | AC-001 live before/after evidence; AC-002/004 tests; focused suites green | `mixed-task-delegation.e2e` and AGY not run (environment) | API/E2E stage to cover |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | `withLiveChain` keeps exact pre/post-restore semantics; no remaining idle terminator | — | — |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.0 | No alias/flag/dormant shutdown | Orphaned root fail-stop entry left dormant (CR-001) | Remove |
-| 10 | Cleanup Completeness | 8.5 | Large, thorough removal incl. helpers only removed paths used | CR-001: `StandaloneAgentRunRoot.enterLifecycleFailStop()` has no caller (REQ-004 Must) | Delete method |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | `withLiveChain` keeps the exact semantics before and after restore; nothing left stops an idle copy | — | — |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | No alias, flag, or dormant shutdown/fail-stop entry remains | — | — |
+| 10 | Cleanup Completeness | 9.4 | Thorough removal, including helpers and root entries only the removed paths used | — | — |
 
 ## Findings
 
-### CR-001 — Orphaned `StandaloneAgentRunRoot.enterLifecycleFailStop()` (Low, blocking under REQ-004)
+### CR-001 — Orphaned `StandaloneAgentRunRoot.enterLifecycleFailStop()` — Resolved (round 2)
 
-- Contract: REQ-004 / AC-005 ("code that exists only for idle shutdown must be removed, not left dormant"); design Removal Plan rule "when no other use remains"; AR-N-002 ("drop `enterLifecycleFailStop` from the three adapter option types and their wiring"). Candidate C-01.
-- Evidence: base `standalone-agent-run-root.ts:152` passed `enterLifecycleFailStop: () => this.enterLifecycleFailStop()` into the adapter options, used only by the quiet-shutdown `TaskExecutionTeardownIndeterminateError` catch. That wiring is removed; the public method at HEAD l.335 now has no caller in `src` or `tests`. AR-N-002's note that "the root classes' own methods remain used" holds for Team (`team-root-materializer.ts:132`, `team-agent-platform-binding-committer.ts`) and Org (`agent-org-execution-scope-builder.ts:202`), not for Standalone.
-- Consequence: dead public fail-stop entrypoint on the standalone root that suggests an external lifecycle fail-stop authority which no longer exists.
-- Required action (implementation): delete the method; re-run the step-8 grep, `tsc -p tsconfig.build.json --noEmit`, and `tests/unit/standalone-agent-run-root`. Optional: rewrap the `AgentRunTermination` class doc comment (l.41).
-- Proportionate: one-line deletion; re-review will be a targeted delta.
+- Round 1: Low, blocking under REQ-004/AC-005 (candidate C-01). The method's only caller was the removed adapter-option wiring.
+- Resolution: `bf5889d03` deletes the method. The reviewer confirmed the grep finds no standalone `enterLifecycleFailStop` in `src`/`tests`. The Team/Org methods remain and still have real callers. `tsc -p tsconfig.build.json --noEmit` passes. `tests/unit/standalone-agent-run-root` + `agent-run.test.ts`: 3 files, 59 tests passed. The step-8 grep finds only the AC-004 settings test.
+
+No open findings.
 
 ## Classification
 
-- `Local Fix` — bounded implementation cleanup; no design or requirement change.
+N/A — Pass.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/implementation_engineer`
+- `/software_engineering_team/api_e2e_engineer` (primary); informational notice to `/software_engineering_team/implementation_engineer`.
 
 ## Residual Risks
 
@@ -194,11 +191,11 @@ None recorded upstream (design review: "None"). No new or reclassified premise.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.3/10; Cleanup Completeness 8.5 (CR-001), all other categories ≥ 9.0
+- Score Summary: 9.4/10; every category ≥ 9.3
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/implementation_engineer` (Local Fix)
-- Notes: Otherwise a clean, faithful implementation of DEC-004. After CR-001 is removed, a targeted delta review should pass quickly.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
+- Notes: Faithful clean-cut implementation of DEC-004. API/E2E should cover AC-001..AC-004 across Team, Org, and standalone roots, `mixed-task-delegation.e2e` if the environment allows, and AGY background-step lifetime (BEH-002).

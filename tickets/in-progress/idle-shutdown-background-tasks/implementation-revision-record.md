@@ -7,7 +7,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / design-review-report.md / round 1 (Pass) | N/A (applied AR-N-001, AR-N-002) | `Initial Baseline` | SR-002, ARCH-REV-001 | Idle shutdown removed; ready for code review |
-| IR-002 | code_reviewer / code-review-report.md / CRR-001 round 1 (Fail, Local Fix) | CR-001 (+ optional doc rewrap) | `Local Fix` | SR-002, ARCH-REV-001, CRR-001 | Dead standalone `enterLifecycleFailStop` deleted; ready for delta review |
+| IR-002 | code_reviewer / code-review-report.md / CRR-001 round 1 (Fail, Local Fix) | CR-001 (+ optional doc rewrap) | `Local Fix` | SR-002, ARCH-REV-001, CRR-001 | Dead standalone `enterLifecycleFailStop` deleted; passed delta review CRR-002 (superseded by IR-003) |
+| IR-003 | architecture_reviewer / design-review-report.md / ARCH-REV-002 (Pass) for SR-003 | N/A (applied AR-N-001 of ARCH-REV-002) | `Requirement Gap` (user-approved requirement change: hybrid) | SR-003, ARCH-REV-002, CRR-001/CRR-002 (superseded code) | SR-002 reverted outside tickets; hybrid idle shutdown implemented; ready for code review |
 
 ## Revision Entries
 
@@ -50,3 +51,32 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: grep for standalone `enterLifecycleFailStop` finds nothing; `tsc -p tsconfig.build.json --noEmit` pass; test typecheck clean (only the existing TS6059 notices); `vitest run tests/unit/standalone-agent-run-root tests/integration/standalone-agent-run-root tests/unit/agent-execution/agent-run.test.ts` 6 files, 80 tests passed; step-8 grep returns only the AC-004 settings test; AR-N-001 grep returns nothing
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (targeted delta review)
 - Remaining limitations or risks: unchanged from IR-001
+
+### IR-003 — Undo the removal and implement hybrid idle shutdown (SR-003)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-review-report.md`, ARCH-REV-002 (Pass) for SR-003
+- Triggering finding IDs: N/A (applied ARCH-REV-002 note AR-N-001: also update `prompt_engineering.md`, `agent_tools.md` and the parity test)
+- Classification: `Requirement Gap` — the user reversed DEC-004 and approved a hybrid (SR-003); not an implementation defect
+- Prior authoritative result: IR-002 — idle shutdown removed entirely (SR-002), code review passed (CRR-002)
+- Current authoritative result: base idle shutdown restored; a copy with a running background task (Claude, AGY) is not idle-shut-down, and a task's end re-arms the grace period. Ready for code review.
+- Related solution revision IDs: SR-003 (supersedes SR-002)
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-001, CRR-002 (apply to the superseded SR-002 code only)
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this baseline or implementation revision is recorded: the approved requirements changed (SR-003)
+- Approved behavior or requirement IDs affected: REQ-001..REQ-006; AC-001..AC-008; BEH-001..BEH-004, BEH-006..BEH-008
+- Implementation delta:
+  1. Revert commit `a1dc499e4` restores every non-ticket path changed by `28afa0884`/`bf5889d03` to `ba0437e00`. It keeps `ba0437e00` and the live E2E file.
+  2. Implementation commit: adds required `AgentRunBackend.hasRunningBackgroundTasks()`. Claude implements it through the registry and session; AGY through the monitor; Codex, AutoByteus and ACP return `false`.
+  3. Adds the background term in `AgentRunTermination.tryPrepareIfQuiescent` only.
+  4. Adds `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded` (→ `armLive`) and terminal-update forwards in the Team, Org and Standalone roots.
+  5. Updates the LLM contract sentence and the docs (server and web), and adds tests.
+- Changed files or areas: see implementation-handoff.md "Key Files Or Areas" (33 files, +423/−33 after the revert)
+- Local validation and result:
+  - The revert diff check is clean; base suites are green after the revert.
+  - Build and test typechecks pass.
+  - All new and changed test files pass. The focused suite set's failing-test list is identical to base (56 base failures; 0 new).
+  - The live Claude E2E with grace 60 s passes. The fire at 60 s was skipped; the task completed at 88.3 s; the report arrived at 91.0 s; the copy went offline 60.3 s after its post-report idle.
+- Next recipient or routing: `/software_engineering_team/code_reviewer`
+- Remaining limitations or risks: AGY not exercised against a real or scripted CLI; `mixed-task-delegation.e2e.test.ts` not run; QR-002 (a task end that is never reported keeps the copy live until DONE/root/server stop) is accepted; base failures listed in the handoff

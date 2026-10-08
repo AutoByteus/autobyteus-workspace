@@ -2,242 +2,225 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline: `requirements-doc.md` at SR-002, approved by the user 2026-10-08 ("yes. i think we should remove it. lets go", DEC-004)
+- Current solution revision ID: `SR-003` (replaces the SR-002 removal design; that version is in git at commit `28afa0884` and indexed in `solution-revision-record.md`)
+- Approved requirements baseline: `requirements-doc.md` at SR-003, approved by the user 2026-10-08 ("i think hybrid is better", "lets use hybrid approach")
 - Behavior-defining supplements: none
 - Design status: `Ready`
-- Canonical investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/investigation-notes.md` (findings AF-01..AF-18)
-- Authorities read (2026-10-08): `references/architecture-design.md`, `design-principles.md`, `DESIGN.md` (repo root), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §1–2. `design-examples.md` not used.
+- Canonical investigation notes: `investigation-notes.md` in this folder (HF-01..HF-08; AF-01..AF-18 as idle-shutdown code map)
+- Authorities read (2026-10-08, this conversation): `references/architecture-design.md`, `design-principles.md`, repo-root `DESIGN.md`. No closer `DESIGN*.md`. No persisted data changes, so the migration guideline does not apply.
 - Project design-principle conflicts: none.
 
 ## Current-State Read
 
-Delegated copies (task executions: a delegated Agent or Team, including brought-in helpers) are owned per root by `RootTaskExecutionLifecycle` (`agent-collaboration/execution/task/`). It serializes activate / wake / shutdown / reopen through `RootTaskExecutionCommandQueue` and talks to one subject adapter per root kind (`TeamTaskExecutionAdapter`, `AgentOrgTaskExecutionAdapter`, `StandaloneRootTaskExecutionAdapter`).
+Base behavior (`3a2496c95`): `RootTaskExecutionLifecycle` arms a grace timer per delegated copy when an agent in it reports `idle/offline/error`. On fire it queues a `shutdown` command that calls `adapter.tryShutDownIfQuiet`, which descends to `AgentRun.tryPrepareTerminationIfQuiescent` → `AgentRunTermination.tryPrepareIfQuiescent`. "Quiet" = no input dispatch, interrupt reservation, active turn, pending command or queued input. Runtime background tasks are not considered (root cause). A non-quiet fire does nothing; only a later status change or lease release re-arms (HF-07).
 
-Idle shutdown is a separate mechanism inside that owner: agent status `idle/offline/error` arms `TaskExecutionIdleShutdownSchedule`; on fire the lifecycle queues `shutdown`, which calls `adapter.tryShutDownIfQuiet`. That descends through registries and team managers to `AgentRun.tryPrepareTerminationIfQuiescent`, whose quiet test ignores runtime background tasks (root cause of BEH-001/002). A lease counter (`withLiveLease`/`acquireLiveLease`) keeps a chain from being shut down during a delivery; the same call also restores a non-live chain at the queue head before delivery.
+Runtime background state already exists: `ClaudeBackgroundTaskRegistry` (owned by `ClaudeSession`) and `AgyBackgroundTaskMonitor` (owned by `AgyAgentRunBackend`) track running tasks and emit `BACKGROUND_TASK_UPDATED` (HF-01, HF-02). All three root kinds receive that event but forward only `AGENT_STATUS` to the lifecycle (HF-04).
 
-Everything else — Task DONE release (`releaseTaskAgentResources`), reactivation (`reopen` + restore), root stop / fail-stop, restore after a server restart (`assertRestorableChain`, `restoreChain`), liveness (`isLive`) and status forwarding to the Task side — is independent of idle shutdown (AF-02, AF-16).
+Branch state: the SR-002 removal is committed on `codex/idle-shutdown-background-tasks` (`28afa0884`, `bf5889d03`) and must be undone (HF-08, REQ-006).
 
 ## Task Size And Architectural Risk (Mandatory)
 
 - Task size: `Medium`
-- Size rationale: Removal-dominated change in `autobyteus-server-ts`: ~25 source files touched (one file and one class deleted outright, the setting file deleted, the rest are method/field deletions and pass-through removals), one LLM-facing text change, ~15 test files rewritten or deleted, ~8 docs. No new owner, API or persistence. Spans collaboration task lifecycle, team execution, org execution, standalone root, agent-execution termination and settings (AF-01..AF-18).
+- Size rationale: undo of two commits outside `tickets/` (mechanical), then a focused addition: one backend-contract method with five implementations, two runtime accessors, one quiet-check term, one lifecycle hook, three root event forwards, one LLM-contract sentence, docs and tests.
 - Architectural risk: `High`
-- Risk rationale: Removes a lifecycle/concurrency authority (idle shutdown, quiet-termination chain, lease counting) that is interleaved with the serialized task-execution queue, restore, DONE release and Org event suppression; changes an LLM-facing collaboration contract; changes operational resource behavior (copies stay live until DONE/root stop). Blast radius covers all three root kinds.
-- Escalation trigger: if implementation finds a non-idle caller of any item in the Removal Plan, or a supported path that needs a copy to become non-live other than DONE, root stop, fail-stop or server stop, stop and return a Design Impact.
+- Risk rationale: changes the shared `AgentRunBackend` contract and the idle quiet predicate used by every runtime and all three root kinds (lifecycle/concurrency surface); changes LLM-facing text; plus a large revert on an already-reviewed branch.
+- Escalation trigger: if the background signal is needed anywhere other than idle shutdown (e.g. root stop or DONE), or a runtime cannot answer synchronously, return a Design Impact.
 
 ## Architecture Investigation Evidence
 
-| Source | Reference | Observation | Design Decision Supported | Remaining Uncertainty |
-| --- | --- | --- | --- | --- |
-| Code grep | AF-01..AF-12 | Every quiet-shutdown method, schedule, event retirement, teardown error and option is reached only from the idle timer | Remove them all (clean cut) | None found |
-| Code | AF-02 | `leases` is read only by `shutdownAtHead`; restore at queue head is used by 13 delivery callers | Keep restore-at-queue-head, drop lease counting; rename the entrypoint | — |
-| Code | AF-16 | Non-live copies still arise after restart and DONE | Keep `isLive`, restore, wake command | — |
-| Code | AF-15 | Stale settings key becomes a custom setting with no reader | Directly usable, no migration | — |
-| Code | AF-13 | LLM contract promises quiet shutdown | Change the sentence | — |
-| History | Investigation "Is Idle Shutdown Still Needed?" | DONE releases every new copy since 2026-10-06 | Removal is safe for supported scenarios | Legacy pre-2026-10-06 copies: released only by root/server stop (accepted, out of scope) |
+| Source | Reference | Observation | Decision |
+| --- | --- | --- | --- |
+| Code | HF-01, HF-02 | Claude/AGY know running tasks synchronously | Backend accessor reads them |
+| Code | HF-03 | Five backends implement `AgentRunBackend` | Required method; non-reporting runtimes return `false` |
+| Code | HF-05 | Only idle shutdown uses `tryPrepareIfQuiescent` | Put the term there only |
+| Code | HF-06 | Team quiet = all members quiet | Teams covered without team code |
+| Code | HF-04, HF-07 | Non-quiet fire doesn't re-arm; roots see background updates | Forward terminal updates to a lifecycle re-arm hook |
+| Measurement | Investigation "Server Cost" | Idle Claude CLI ≈ 260–480 MB | Reason for keeping idle shutdown |
 
 ## Intended Change
 
-Delete idle shutdown entirely. Delegated copies stay live until Task DONE, root stop/fail-stop or server stop. Delivery to a non-live copy still restores its chain first. The grace setting, the quiet-termination chain and Org teardown-event suppression are removed. The LLM contract and docs describe the new lifetime.
+1. Undo the SR-002 removal outside `tickets/`.
+2. A delegated copy is not quiet while any of its agents' runtimes reports a running background task, so the existing fire-time check skips shutdown.
+3. When a background task ends, the copy's grace timer is re-armed, so it is shut down one grace period later if quiet.
+4. Agent-facing text and docs state the rule.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
-| Behavior ID | Kind | Requirement / AC | Trigger / Contract | Existing Behavior | Approved Change / Preserved Outcome | Target Path / Spine |
+| Behavior ID | Kind | Req / AC | Trigger | Existing | Change / Preserved | Target Path / Spine |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | REQ-001; AC-001 | Delegated Claude agent ends its turn with a running background task | Shut down after grace; task killed | No timer exists; agent stays live; CLI completion starts a turn; agent reports to delegator | DS-001 |
-| BEH-002 | System | REQ-001; AC-001 | Same for AGY / any long wait | Same | Same | DS-001 |
-| BEH-004 | System | REQ-001; AC-002 | Delegator messages a quiet copy | Restore after shutdown | Delivered to the live run directly (restore step is a no-op) | DS-002 |
-| BEH-007 | Operational | REQ-003; AC-004 | Server settings | Grace setting predefined | Removed; stale value harmless | DS-004 |
-| BEH-008 | System | REQ-002; AC-003 | DONE, reactivation, root stop, restart + message | As documented | Unchanged | DS-002, DS-003 |
+| BEH-001 | System | REQ-001; AC-001, AC-003 | Claude copy idle with running `run_in_background` task; grace fires | Shut down, task killed | Quiet check fails on running task → no shutdown | DS-001 |
+| BEH-002 | System | REQ-001; AC-002 | AGY copy idle with running step | Same | Same | DS-001 |
+| BEH-003 | System | REQ-002; AC-004, AC-005 | Last task ends | No re-arm (AGY) | Terminal update re-arms grace; Claude also re-arms via its CLI turn's idle | DS-002 |
+| BEH-004/006/007 | System/Operational | REQ-003; AC-006 | Quiet copy, any runtime | Shut down after grace | Unchanged (accessor returns false when nothing runs or runtime doesn't report) | DS-001 |
+| BEH-008 | System | REQ-004; AC-007 | DONE / root stop / server stop | Stop | Unchanged — those paths never call `tryPrepareIfQuiescent` | — |
 
 ## Relevant Supplemental Task Artifacts
 
-| Artifact Path | Purpose | Related | Relationship | Status |
+| Artifact | Purpose | Related | Relationship | Status |
 | --- | --- | --- | --- | --- |
-| `problem-report.md` | Original evidence | BEH-001, AC-001 | Reproduction basis | Evidence only |
+| `problem-report.md` | Evidence | BEH-001 | Reproduction basis | Evidence only |
+| `evidence/baseline-before*` | Base run: copy shut down at 60 s grace, task stopped | AC-001 | Valid "before" receipt | Historical evidence |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Behavior Change` (with removal-driven cleanup)
+- Change posture: `Bug Fix`
 - Current design issue found: `Yes`
-- Structural triggers that fire:
-  - Legacy-cleanup trigger: idle shutdown was a stopgap from before Task ownership (investigation notes); keeping it dormant or behind a flag would retain a second release authority.
-  - Empty indirection trigger (after removal): `TeamRun`/`FlatTeamRunBackend`/registry pass-throughs exist only to reach `tryPrepareTerminationIfQuiescent`; they go with it.
-  - Ruled out: Authoritative-boundary trigger (no caller bypasses the lifecycle for restore; delivery uses the lifecycle entrypoint), Shared-structure trigger (no shared type changes beyond removing optional option fields).
-- Root cause classification: `Legacy Or Compatibility Pressure` — release responsibility moved to Task DONE, but the earlier idle release authority remained and its quiet test does not know about runtime background work.
-- Refactor needed now: `Yes` (removal)
-- Evidence: AF-01..AF-12, AF-16
-- Design response: remove the idle authority end to end; keep the single remaining release authorities (DONE, root stop/fail-stop, server stop) and the restore path.
-- Refactor rationale: patching the quiet test with a background-task term would keep a now-unneeded authority and spread runtime-specific signals into termination; deletion is smaller and removes the failure class for every runtime.
-- Deferrals / residual risk: copies whose delegator never marks DONE hold their runtime process until root/server stop (QR-002, accepted). Pre-2026-10-06 unowned copies: same.
+- Structural triggers: Missing-invariant (the quiet predicate omits runtime-owned work). Ruled out: Authoritative-boundary bypass (the lifecycle reaches runtime state only through `AgentRun` → backend), Repeated-coordination (one quiet predicate shared by all paths), Shared-structure looseness (a dedicated method instead of an optional field on `AgentRuntimeLifecycleSnapshot`, which is the turn/phase status snapshot used for status projection).
+- Root cause classification: `Missing Invariant` — the right owner (`AgentRunTermination` quiet check) exists but does not include runtime background work.
+- Refactor needed now: `No` (beyond undoing SR-002)
+- Evidence: HF-01..HF-07
+- Design response: add the invariant at its owner, expose the signal through the backend contract, add a re-arm trigger at the lifecycle.
+- Residual risk: a task whose end the runtime never reports keeps the copy live until DONE/root/server stop (QR-002, accepted).
 
 ## Terminology
 
-- *Task execution / copy*: a delegated Agent or Team (including brought-in helpers) inside a root.
-- *Live*: the copy's runtime is registered and active (`adapter.isLive`).
-- *Restore*: rebuilding a non-live copy's runtime with its conversation before delivery.
+- *Running background task*: a task the runtime currently shows as `running` in its Background Tasks view (Claude registry, AGY monitor).
+- *Copy*: a delegated Agent or Team (task execution).
 
 ## Legacy Removal Policy (Mandatory)
 
-- Policy: `No backward compatibility; remove legacy code paths.`
-- No flag, no "disabled" schedule, no grace value of infinity, no dormant `tryShutDownIfQuiet`. See Removal Plan.
+- Policy: `No backward compatibility; remove legacy code paths.` The SR-002 removal is undone completely (no partial keep of renames such as `withLiveChain`, no setting removal). No flag selects "old" vs "hybrid".
 
 ## Persisted Data / State Transition Decision
 
-- Stored subject: server settings store (`appConfigProvider` config data / `.env`-backed); possibly one key `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` with a numeric string.
-- Change: the key is no longer predefined or read.
-- Reader behavior (AF-15): unknown keys are listed as custom settings (editable, deletable); nothing reads this key.
-- Decision: `Directly Usable — No Migration`.
-- Rationale: the stale value has no effect and causes no error; the user can delete it in Settings. Rewriting settings for cosmetics is not justified. Data migration guideline §2 checklist: (1) no migration needed — tolerant reader; (2) availability unaffected; (3) source: one optional string key; (4) disposition: retained as inert custom setting; (5–8) N/A; (9) AC-004 unit test with the stale key present; (10) no migrations consulted, none added.
-- Supports: AC-004.
+`Not Affected` — background state is runtime-only and unpersisted; the grace setting is unchanged.
 
 ## Data-Flow Spine Inventory
 
-| Spine ID | Scope | Behaviors | Start | End | Governing Owner | Why It Matters |
+| Spine | Scope | Behaviors | Start | End | Owner | Why |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001, BEH-002 | Delegated agent ends turn with background work | Result delivered to delegator | Runtime backend (Claude/AGY) + `RootTaskExecutionLifecycle` (now: no shutdown) | The failing scenario |
-| DS-002 | Primary End-to-End | BEH-004, BEH-008 | `send_message_to(run ID)` / operator message | Copy handles input | `RootTaskExecutionLifecycle.withLiveChain` | Delivery and restore stay correct without leases |
-| DS-003 | Primary End-to-End | BEH-008 | Task DONE / root stop | Copy stopped | Task resource scope / root termination | Remaining release authorities |
-| DS-004 | Primary End-to-End | BEH-007 | Settings page/API | Settings list/update | `ServerSettingsService` | Setting removal |
-| DS-005 | Bounded Local | BEH-004 | Command submitted | Executed at queue head | `RootTaskExecutionCommandQueue` | Kinds become activate / wake / reopen |
+| DS-001 | Primary | BEH-001/002/004 | Grace timer fires | Shutdown or skip | `RootTaskExecutionLifecycle` → `AgentRunTermination` | The fixed decision |
+| DS-002 | Return-Event | BEH-003 | Runtime reports task end | Grace re-armed | Root → `RootTaskExecutionLifecycle` | Release after work ends |
+| DS-003 | Bounded Local | BEH-001 | CLI frame / exit file | Registry/monitor state | `ClaudeBackgroundTaskRegistry` / `AgyBackgroundTaskMonitor` | Source of truth |
 
 ## Primary Execution Spine(s)
 
-- DS-001: `Delegated agent turn ends -> AgentRun status idle -> RootTaskExecutionLifecycle.onAgentStatus (forwards status to Task side only) -> runtime keeps background task -> completion -> CLI/agent turn -> send_message_to delegator`
-- DS-002: `send_message_to / composer -> Root (Team/Org/Standalone) delivery -> RootTaskExecutionLifecycle.withLiveChain -> queue "wake" -> adapter.restoreChain (only when not live) -> deliver -> AgentRun input`
-- DS-003: `create_or_update_task DONE -> Task resource service -> RootTaskExecutionLifecycle.releaseTaskAgentResources -> adapter.releaseOwnedExecution -> runtime terminated` (unchanged); root stop: `closeExternalAdmission -> frozen termination scope` (unchanged minus timer disposal)
-- DS-004: `Settings UI/GraphQL -> ServerSettingsService.getAvailableSettings/updateSetting -> appConfigProvider` (grace entry no longer predefined)
+- DS-001: `Grace timer -> RootTaskExecutionLifecycle.shutdownAtHead -> adapter.tryShutDownIfQuiet -> registry / team manager -> AgentRun.tryPrepareTerminationIfQuiescent -> AgentRunTermination.tryPrepareIfQuiescent [+ backend.hasRunningBackgroundTasks()] -> null (skip) | prepared termination (shut down)`
+- DS-002: `Runtime registry/monitor -> BACKGROUND_TASK_UPDATED (status completed|failed|stopped) -> root event handler (Team: TeamTaskExecutionService.onRootEvent; Org: AgentOrgRun.onAgentExecutionEvent; Standalone: StandaloneAgentRunRoot.onAgentExecutionEvent) -> RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded(agentRunId) -> armLive(chain)`
 
 ## Spine Narratives (Mandatory)
 
 | Spine | Narrative | Main Nodes | Owner | Off-Spine |
 | --- | --- | --- | --- | --- |
-| DS-001 | Idle status only updates the copy's status for the Task side; no timer, no shutdown. The runtime keeps its process and background tasks; the completion produces a turn and the agent reports back | AgentRun, lifecycle, runtime backend | Lifecycle (status), backend (background work) | Task-side status notification |
-| DS-002 | Delivery asks the lifecycle to run the operation with the target's chain live. At the queue head it checks input is allowed, restores only non-live executions (after restart or reactivation), then runs the delivery. No lease is taken because nothing shuts copies down concurrently | Root delivery, lifecycle, queue, adapter | Lifecycle | Restore precheck |
-| DS-003 | Unchanged | — | Task resources / root | — |
-| DS-004 | Grace setting disappears from predefined settings | Settings service | Settings service | — |
+| DS-001 | When the grace timer fires, the existing quiet check also asks the backend whether it has a running background task. If yes the copy is not quiet: nothing is shut down and no timer is set. Teams are covered because each member is checked | Lifecycle, adapter, AgentRun, termination, backend | `AgentRunTermination` decides quiet | — |
+| DS-002 | A terminal background-task update re-arms the grace timer of every live copy containing that agent. If the agent is busy or still has another running task, the fire-time check skips again and a later idle or terminal update re-arms. Claude also re-arms through its idle after the completion turn; AGY relies on this hook | Root, lifecycle | Lifecycle | — |
 
 ## Spine Actors / Main-Line Nodes
 
-Root delivery services, `RootTaskExecutionLifecycle`, `RootTaskExecutionCommandQueue`, subject adapters, AgentRun / runtime backends, `ServerSettingsService`.
+`RootTaskExecutionLifecycle`, subject adapters (unchanged), `AgentRun`/`AgentRunTermination`, `AgentRunBackend` implementations, `ClaudeSession`/`ClaudeBackgroundTaskRegistry`, `AgyBackgroundTaskMonitor`, the three root event handlers.
 
 ## Ownership Map
 
-- `RootTaskExecutionLifecycle`: delegation admission, serialized activate/wake/reopen, restore-before-delivery, DONE release and reactivation, status forwarding. No longer owns idle scheduling or leases.
-- Subject adapters: trees, indexes, restore, exact release. No longer own quiet shutdown or post-shutdown offline publishing.
-- `AgentRunTermination`: prepare/commit/finish, root-shutdown fence, force terminate. No longer owns try-if-quiescent.
-- `FlatTeamExecutionManager`: team termination preparation (the `quiescing` state remains for normal termination). No longer owns quiet preparation.
+- `ClaudeBackgroundTaskRegistry` / `AgyBackgroundTaskMonitor`: own whether a task is running (new read-only query `hasRunningTasks()`).
+- `AgentRunBackend` implementations: expose it as `hasRunningBackgroundTasks()`; Codex, AutoByteus, ACP return `false`.
+- `AgentRunTermination.tryPrepareIfQuiescent`: owns the quiet decision, now including the background term.
+- `RootTaskExecutionLifecycle`: owns grace scheduling; new hook `onAgentBackgroundTaskEnded`.
+- Root event handlers: classify events and call the lifecycle (thin).
 
 ## Thin Entry Facades / Public Wrappers
 
 | Facade | Owner Behind It | Why | Must Not Own |
 | --- | --- | --- | --- |
-| `TeamTaskExecutionService` | `RootTaskExecutionLifecycle` | Team root entry | Lease or idle logic (remove `acquireLiveLease`) |
+| `TeamTaskExecutionService.onRootEvent` | Lifecycle | Team root event entry | Scheduling decisions |
 
 ## Removal / Decommission Plan (Mandatory)
 
-All `In This Change`. Paths relative to `autobyteus-server-ts/src/`.
-
-| Item | Why Unnecessary | Replaced By |
-| --- | --- | --- |
-| `agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.ts` (file, `TaskExecutionIdleShutdownSchedule`, `TaskExecutionIdleTimers`) | No idle shutdown | — |
-| `config/task-execution-idle-shutdown-setting.ts` (file) and its registration/import in `services/server-settings-service.ts` | Setting removed | — |
-| `RootTaskExecutionLifecycle`: `schedule`, `gracePeriodMs`/`timers` options, `onGraceElapsed`, `shutdownAtHead`, `armLive`, `leases`, `TaskExecutionLiveLease`, `acquireLiveLease`, the arm/cancel branch of `onAgentStatus`, `schedule.dispose()` calls | Idle-only | `withLiveChain` (restore-then-run), `onAgentStatus` forwards status only |
-| `RootTaskExecutionCommandKind` `"shutdown"` | No shutdown command | — |
-| `RootTaskExecutionAdapter.tryShutDownIfQuiet` and implementations in `team-task-execution-adapter.ts`, `agent-org-task-execution-adapter.ts`, `standalone-root-task-execution-adapter.ts` (with their `publishAgentOffline`, `beginTaskExecutionEventRetirement` options when no other use remains) | Idle-only | — |
-| `agent-org-execution/services/agent-org-task-event-retirement.ts` (file) and its wiring/check in `agent-org-run.ts` | Only suppressed quiet-shutdown teardown events | — |
-| `RootAgentExecutionRegistry.tryShutDownTaskIfQuiet` + `shuttingDown`; `RootTeamExecutionDirectory.tryShutDownRootTaskTeamIfQuiet` + `shuttingDown` + `unregisterTerminated`; `TeamRunResolver.unregisterTerminated` | Idle-only | Reactivation keeps `retireTerminated` |
-| `TaskAgentExecutionRegistry.tryShutDownIfQuiet` + `shuttingDown`; `TaskTeamExecutionRegistry.tryShutDownIfQuiet` + `shuttingDown`; `FlatTeamExecutionManager.tryShutDownDirectTaskExecutionIfQuiet`, `tryPrepareTerminationIfQuiescent`, `cancelDeferredPreparation`; `TeamRunBackend`/`FlatTeamRunBackend`/`TeamRun` `tryShutDownDirectTaskExecutionIfQuiet` and `tryPrepareTerminationIfQuiescent` | Idle-only | — |
-| `ConfiguredAgentExecutionHandle.tryPrepareTerminationIfQuiescent`; `FlatTeamAgentExecutionHandle.tryPrepareTerminationIfQuiescent`; `AgentRunManager.tryPrepareAgentRunTerminationIfQuiescent`; `AgentRun.tryPrepareTerminationIfQuiescent`; `AgentRunTermination.tryPrepareIfQuiescent` + `tryingQuiescent` (and its branch in `prepare()`); `AgentRunInputAdmissionState.tryQuiesceIfAlreadyQuiescent` | Only callers were the quiet paths | — |
-| `TaskExecutionTeardownIndeterminateError` (`task-delegation-command.ts`) and its catches | Thrown only by quiet paths | — |
-| Option plumbing `idleShutdown` / `taskExecutionIdleShutdown` in `team-task-execution-service-contract.ts`, `team-task-execution-service.ts`, `root-team-run.ts`, `agent-org-run-options.ts`, `agent-org-run.ts`, `standalone-agent-run-root.ts` (and any composition that passes it) | Idle-only | — |
-| Tests: `tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts`, `agent-org-task-shutdown-event-retirement.test.ts`; idle cases in the other AF-17 files | Behavior removed | New AC-001/002 tests |
-
-Before deleting each item, the implementer confirms by grep that no non-idle caller exists (escalation trigger above).
+| Item | Why | Replaced By | Scope |
+| --- | --- | --- | --- |
+| All changes of commits `28afa0884` and `bf5889d03` outside `tickets/` (setting removal, lifecycle/lease removal and `withLiveChain` rename, adapter/registry/termination deletions, Org event retirement deletion, contract text, docs, test rewrites/deletions) | SR-002 behavior reversed | Base code + this design | In This Change |
+| Keep: `ba0437e00` (unrelated baseline test fix) | Still valid | — | — |
+| Keep and adapt: `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts` (added in `28afa0884`) | AC-001 live test | Set grace to 60 s and assert the copy survives the grace with a running task | In This Change |
+| Untracked API/E2E files from the stopped round (`tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts`, `tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts`, API/E2E ticket files) | Written for SR-002 | API/E2E Engineer decides reuse at its next round; implementer must not commit them | Follow-up (API/E2E) |
 
 ## Return Or Event Spine(s)
 
-- Status: `AgentRun AGENT_STATUS -> root -> lifecycle.onAgentStatus -> resourceScope.taskExecutionsStatusChanged -> Task side status feed` (kept). Offline status for copies is published by DONE/root-stop paths as today; the idle-shutdown offline publication is removed with its path.
+DS-002 above.
 
 ## Bounded Local / Internal Spines
 
-- DS-005, parent `RootTaskExecutionLifecycle`: `submit(kind ∈ {activate, wake, reopen}) -> FIFO -> executeAtQueueHead -> resolve/reject`. Fail-stop and close-admission semantics unchanged.
+DS-003: Claude: `CLI frame -> observeTaskFrame -> view upsert (running/terminal) -> publish`; AGY: `turn end -> track(steps) -> poll exit files -> finish`. Unchanged except the new read-only query.
 
 ## Off-Spine Concerns Around The Spine
 
 | Concern | Spine | Serves | Responsibility | Why | Risk If Misplaced |
 | --- | --- | --- | --- | --- | --- |
-| Task-side status notification | DS-001 | Lifecycle | Tell Task side a copy's status changed | Projects UI worker status | None (unchanged) |
-| Restore precheck (`assertRestorableChain`) | DS-002 | Lifecycle | Reject wake without readable context | Unchanged | — |
+| Terminal-status classification | DS-002 | Root handlers | Recognize `completed/failed/stopped` | Only ends re-arm | Re-arming on `running` is harmless but noisy |
 
 ## Ownership Boundaries
 
-Root delivery code calls only the lifecycle (`withLiveChain`, `deliverToExactTarget`); it never calls adapters' restore directly. The lifecycle is the only caller of adapter restore/release.
+The lifecycle never reads runtime registries; it learns about background work only through the quiet check (via `AgentRun`) and the event hook. Root handlers do not decide scheduling.
 
 ## Boundary Encapsulation Map
 
-| Boundary | Encapsulates | Callers | Forbidden Bypass | Fix If Too Thin |
+| Boundary | Encapsulates | Callers | Forbidden Bypass | Fix |
 | --- | --- | --- | --- | --- |
-| `RootTaskExecutionLifecycle` | queue, restore, release, admission | Team/Org/Standalone roots, delivery services, `TeamTaskExecutionService` | Calling `adapter.restoreChain` or the queue from delivery code | Extend lifecycle API |
+| `AgentRunBackend.hasRunningBackgroundTasks()` | Claude registry / AGY monitor | `AgentRunTermination` (via its `backend` option) | Lifecycle or adapters reading `ClaudeSession`/monitor directly | Extend backend contract |
+| `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded` | Grace schedule | Root event handlers | Roots touching the schedule | — |
 
 ## Dependency Rules
 
-- Allowed: roots/delivery → lifecycle → adapter → registries/handles → AgentRun.
-- Forbidden: any new timer- or status-driven termination of task executions; any reference to the removed setting.
+- Allowed: `AgentRunTermination` → backend (existing `Pick<AgentRunBackend, ...>` option gains `hasRunningBackgroundTasks`).
+- Forbidden: background term in `isRootShutdownQuiescent`, `prepare()` (DONE/terminate) or the root-shutdown fence (REQ-004).
 
 ## Interface Boundary Mapping
 
 | Interface | Subject | Responsibility | Identity | Notes |
 | --- | --- | --- | --- | --- |
-| `RootTaskExecutionLifecycle.withLiveChain(agentRunId, operation)` (renamed from `withLiveLease`) | Task-execution chain containing an agent | Check input allowed, restore non-live executions of the chain at the queue head, run the operation | `agentRunId` | Same error codes as today (`ROOT_RUN_NOT_ACTIVE`, `TASK_EXECUTION_CONTEXT_UNAVAILABLE`, `TASK_EXECUTION_RESTORE_FAILED`, closed-Task codes). Re-check `assertOpen()` before the operation as today |
-| `RootTaskExecutionLifecycle.onAgentStatus(agentRunId, status)` | Copy status | Forward to Task side | `agentRunId` | No scheduling |
-| `RootTaskExecutionAdapter` | Root subject | Unchanged minus `tryShutDownIfQuiet`; update `taskExecutionChainFor` doc to "for restore and status" | — | — |
+| `AgentRunBackend.hasRunningBackgroundTasks(): boolean` | One run's runtime | True while any of its background tasks is `running` | the backend instance | Required on all five backends and test fakes |
+| `ClaudeBackgroundTaskRegistry.hasRunningTasks(): boolean`; `AgyBackgroundTaskMonitor.hasRunningTasks(): boolean` | Runtime task view | Read-only | — | Claude: any `view` entry with `status === "running"`; AGY: `running.size > 0` |
+| `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded(agentRunId)` | Copies containing the agent | `armLive(chain)` when accepting | `agentRunId` | No-op when the agent is in no copy |
 
 ## Interface Boundary Check
 
 | Interface | Singular | Explicit Identity | Ambiguity | Action |
 | --- | --- | --- | --- | --- |
-| `withLiveChain` | Yes | Yes | Low | Rename all callers (team, org, standalone deliveries; `TeamTaskExecutionService`; `root-team-run.ts`) |
+| all three above | Yes | Yes | Low | — |
 
 ## Main Domain Subject Naming Check
 
-| Subject | Name | Natural | Drift | Action |
-| --- | --- | --- | --- | --- |
-| Restore-then-run entry | `withLiveLease` → `withLiveChain` | Yes | "Lease" implies a hold against shutdown that no longer exists | Rename |
-| Queue | `RootTaskExecutionCommandQueue` doc "Activation, wake, idle shutdown and…" | — | Stale | Update doc comment |
+| Subject | Name | Natural | Action |
+| --- | --- | --- | --- |
+| Backend query | `hasRunningBackgroundTasks` | Yes | — |
+| Lifecycle hook | `onAgentBackgroundTaskEnded` | Yes | — |
 
 ## Existing Capability / Subsystem Reuse Check
 
 | Need | Existing | Decision | Why |
 | --- | --- | --- | --- |
-| Release of copies | Task DONE release, root stop | Reuse | Already authoritative |
-| Restore after restart | `restoreChain` wake path | Reuse | Unchanged |
+| Running-task knowledge | Claude registry, AGY monitor | Extend (read-only query) | Already authoritative for the UI |
+| Shutdown decision | `tryPrepareIfQuiescent` | Extend | Single quiet authority |
+| Re-arm | `armLive` | Reuse | — |
 
 ## Subsystem / Capability-Area Allocation
 
-| Subsystem | Concerns | Spines | Decision |
-| --- | --- | --- | --- |
-| `agent-collaboration/execution/task` | Lifecycle, queue, adapter interface | DS-001, DS-002, DS-005 | Modify (removals, rename) |
-| `agent-team-execution`, `agent-org-execution`, `standalone-agent-run-root`, `agent-collaboration/execution/backends` | Adapters, registries, team manager | DS-002 | Modify (removals) |
-| `agent-execution` | Termination | — | Modify (removals) |
-| `config`, `services/server-settings-service.ts` | Setting | DS-004 | Remove/modify |
-| `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | LLM contract | DS-002 | Modify text |
+| Subsystem | Concern | Decision |
+| --- | --- | --- |
+| `agent-execution/backends` (+ claude, antigravity, codex, autobyteus, acp) | Background query | Extend |
+| `agent-execution/domain/agent-run-termination.ts` | Quiet term | Extend |
+| `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` | Re-arm hook | Extend |
+| Roots: `agent-team-execution/task-delegation/team-task-execution-service.ts`, `agent-org-execution/domain/agent-org-run.ts`, `standalone-agent-run-root/domain/standalone-agent-run-root.ts` | Event forward | Extend |
+| `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | Text | Modify |
 
-## Draft File Responsibility Mapping / Final File Responsibility Mapping
+## Final File Responsibility Mapping
 
-No new files. Responsibilities of every remaining file stay as today minus the removed concerns (Removal Plan). The only behavior-bearing edits:
+No new files. Edits (paths under `autobyteus-server-ts/src/`, after the undo):
 
 | File | Change |
 | --- | --- |
-| `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` | Remove schedule/lease/shutdown; `withLiveChain` = queue `wake` → (assert input allowed; if chain non-empty: `assertRestorableChain`, `restoreChain`, re-assert) → run operation. On restore failure keep today's coded errors (no re-arm). `onAgentStatus` → status forwarding only. `closeExternalAdmission`/`enterRootFailStop` lose `schedule.dispose()` |
-| `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | Replace "A copy that stays quiet is shut down after a while; a message to its run ID restores it with its conversation." with: "A copy stays running until its Task is `DONE` or the run stops. If the copy is not running (for example after a restart), a message to its run ID restores it with its conversation." Keep other text. Update any golden/snapshot test of this text |
-| `agent-collaboration/execution/task/task-execution-running-work.ts` | Comment: drop "nor avoids shutdown" |
-| `services/server-settings-service.ts` | Drop the predefined grace setting |
-
-## Reusable Owned Structures Check / Shared Structure Tightness Check
-
-N/A — no shared structure is added; option types lose the idle fields.
+| `agent-execution/backends/agent-run-backend.ts` | Add `hasRunningBackgroundTasks(): boolean` (doc: "true while the runtime reports a running background task; runtimes without background reporting return false") |
+| `backends/claude/session/claude-background-task-registry.ts` | `hasRunningTasks()` |
+| `backends/claude/session/claude-session.ts` | Expose `hasRunningBackgroundTasks()` from `taskRegistry` |
+| `backends/claude/backend/claude-agent-run-backend.ts` | Implement via session |
+| `backends/antigravity/stream/agy-background-task-monitor.ts` | `hasRunningTasks()` |
+| `backends/antigravity/backend/agy-agent-run-backend.ts` | Implement via monitor |
+| `backends/codex/backend/codex-agent-run-backend.ts`, `backends/autobyteus/autobyteus-agent-run-backend.ts`, `backends/acp/backend/acp-agent-run-backend.ts` | Return `false` |
+| `agent-execution/domain/agent-run-termination.ts` | `backend` option Pick adds `hasRunningBackgroundTasks`; `tryPrepareIfQuiescent` returns `null` when it is true (inside the dispatch-queue callback, next to the other terms) |
+| `agent-execution/domain/agent-run.ts` | Pass the backend method into the termination options if the Pick wiring requires it |
+| `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` | `onAgentBackgroundTaskEnded(agentRunId)`: if accepting and chain non-empty, `armLive(chain)`; update the `onAgentStatus` doc ("fire-time quiescence check, including running background tasks, is the only safety guard") |
+| `agent-team-execution/task-delegation/team-task-execution-service.ts` `onRootEvent` | Also handle `payload.eventType === "BACKGROUND_TASK_UPDATED"` with `details.status !== "running"` → hook |
+| `agent-org-execution/domain/agent-org-run.ts`, `standalone-agent-run-root/domain/standalone-agent-run-root.ts` `onAgentExecutionEvent` | `event.kind === "agent_run" && eventType === BACKGROUND_TASK_UPDATED` with terminal `payload.status` (parse with `parseBackgroundTaskUpdatedPayload`) → hook |
+| `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | Sentence becomes: "A copy that stays quiet is shut down after a while, but not while it has a running background task; a message to its run ID restores it with its conversation." Update its golden test |
+| Docs | `docs/modules/agent_team_execution.md` (Idle shutdown: quiet includes "no running background task"; re-arm on background-task end), `agent_execution.md` (Claude background section: running tasks keep a delegated copy alive), `antigravity_cli_runtime.md` (same), web `docs/agent_teams.md` l.182 |
 
 ## Applied Patterns
 
@@ -245,61 +228,52 @@ None new.
 
 ## Target Subsystem / Folder / File Mapping
 
-Deletions: `src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.ts`, `src/config/task-execution-idle-shutdown-setting.ts`, `src/agent-org-execution/services/agent-org-task-event-retirement.ts`, `tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts`, `tests/unit/agent-org-execution/agent-org-task-shutdown-event-retirement.test.ts`. All other changes are edits in place (Removal Plan, table above).
+Edits in place only; no new folders or files.
 
 ## Folder Boundary Check
 
-N/A — no folder changes.
+N/A.
 
 ## Concrete Examples / Shape Guidance
 
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
-| Fix shape | Delete idle shutdown; DONE/root stop are the release authorities | Add `hasRunningBackgroundTasks` to the quiet test, or set grace to 24 h | Removes the failure class for all runtimes instead of patching one signal |
-| Delivery | `withLiveChain(id, () => deliver())` restores only if non-live | Keeping a lease counter "just in case" | No concurrent terminator remains |
+| Quiet check | `if (... \|\| backend.hasRunningBackgroundTasks()) return null;` inside `tryPrepareIfQuiescent` | Adding the term to `isRootShutdownQuiescent` | Root stop must not wait for background tasks |
+| Signal shape | Dedicated backend method | Optional `runningBackgroundTaskCount?` on `AgentRuntimeLifecycleSnapshot` | Keeps the status snapshot single-purpose and the contract required |
+| Re-arm | Hook on terminal update | A per-task timer or polling | QR-001 |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
 | Candidate | Why Considered | Decision | Replacement |
 | --- | --- | --- | --- |
-| Keep the setting with "0 = disabled" | Operators might want idle shutdown | Rejected | Removed (DEC-004) |
-| Keep `tryShutDownIfQuiet` dormant | Possible future use | Rejected | Deleted |
-| Keep `withLiveLease` name as alias | Fewer caller edits | Rejected | Rename all callers |
-| Migrate/delete the stale settings key | Cleanliness | Rejected | Inert custom setting |
-
-## Derived Layering
-
-N/A.
+| Keep parts of the SR-002 removal (e.g. `withLiveChain` rename) | Less churn | Rejected | Full undo |
+| Optional backend method | Fewer edits | Rejected | Required method, explicit `false` |
 
 ## Change / Refactor Sequence
 
-1. Baseline reproduction (before any edit, on the task branch): run the new gated live E2E (Guidance) against current code with `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000`; record that the copy is shut down and the background task stopped (AC-001 "before" evidence).
-2. Lifecycle: remove schedule/lease/shutdown, rename to `withLiveChain`, simplify `onAgentStatus`; remove `"shutdown"` kind; remove `tryShutDownIfQuiet` from the adapter interface.
-3. Adapters (team/org/standalone) and their options; Org event retirement.
-4. Registries, team manager, team backend/run, handles, AgentRunManager, AgentRun, AgentRunTermination, input admission state; teardown error.
-5. Setting file and settings registration; option plumbing in root constructors and compositions.
-6. LLM contract text; comments.
-7. Tests (delete/rewrite; add AC tests); docs (AF-18).
-8. Final grep: `IDLE_SHUTDOWN|IdleShutdown|IfQuiescent|IfQuiet|LiveLease|EventRetirement|TeardownIndeterminate|unregisterTerminated` returns nothing in `src`, `tests`, `docs` (except ticket history).
+1. Undo `bf5889d03` and `28afa0884` for every path outside `tickets/` (e.g. `git revert --no-commit` then restore `tickets/` from HEAD, or equivalent). Keep `ba0437e00`. Keep `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts`. Verify: `git diff 3a2496c95 -- . ':!tickets'` shows only `ba0437e00`'s test change and the kept E2E file. Run the base test suites touched by the revert to confirm green. Commit.
+2. Backend contract and five implementations; Claude/AGY queries.
+3. `AgentRunTermination` term.
+4. Lifecycle hook and the three root forwards.
+5. LLM contract sentence, docs.
+6. Tests (below). Do not commit the untracked API/E2E files of the stopped round.
 
 ## Key Tradeoffs
 
-- Simplicity and correctness for all runtimes vs. idle resource use until DONE/root stop (accepted by the user, QR-002).
-- Renaming `withLiveLease` costs ~15 mechanical edits but keeps names truthful.
+- Memory bounded for copies with nothing running (keeps idle shutdown) vs. some complexity kept.
+- No time limit: a never-ending AGY daemon or a missed terminal frame keeps one copy live until DONE/root/server stop (accepted, DEC-005).
 
 ## Risks
 
-- R-1: Hidden reliance on idle shutdown in tests/fixtures to create non-live copies (AF-17). Mitigation: create non-live state through supported paths (root reopen/restart restore, DONE + reactivation) or existing release APIs in unit fixtures.
-- R-2: Org UI relied on retirement to avoid flicker of teardown statuses during quiet shutdown; with no quiet shutdown there is no such teardown. DONE release status behavior is unchanged.
-- R-3: Memory growth when many Tasks stay open. Accepted; documented.
+- R-1: Revert conflicts with files touched by both `ba0437e00` and `28afa0884` (`mixed-team-run-backend.integration.test.ts`). Resolve keeping `ba0437e00`.
+- R-2: Test fakes implementing `AgentRunBackend` need the new method.
+- R-3: Claude `clear()` on process close publishes `stopped` for a run being terminated: the hook arms only live copies (`armLive` checks `isLive`), so harmless.
 
 ## Guidance For Implementation
 
-- Tests required:
-  - AC-001: (a) Unit/integration with a fake backend reporting `idle` and a running `BACKGROUND_TASK_UPDATED`, fake timers advanced ≥ 2 h: the copy stays live, nothing is terminated, and a later completion turn's `send_message_to` reaches the delegator. (b) Gated live E2E (`RUN_CLAUDE_E2E=1`, extend or add next to `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`): a delegated Claude agent runs `run_in_background` `sleep 90 && echo done > <marker>` (longer than the old 60 s minimum grace), ends its turn, then reports to the delegator; assert marker exists, no `[killed]`, delegator receives the result. Record step-1 "before" evidence.
-  - AC-002: delegated Agent and Team stay live past a long fake-time advance; same-root message is delivered without calling restore.
-  - AC-003: keep/adjust DONE release, reactivation, root stop, restart-restore tests; they must pass with non-live state created via supported paths.
-  - AC-004: settings list without the predefined key; `getAvailableSettings` works with the stale key stored.
-  - AC-005: final grep (sequence step 8).
-- Docs (AC-006): AF-18 list; `agent_team_execution.md` replaces "Idle shutdown"/"Grace period" with a "Lifetime" rule (live until DONE, root stop/fail-stop, server stop; restore on message after restart or reactivation) and drops the setting file from its file list; update `codex_integration.md` E2E instructions (no grace env).
-- Do not add any background-task-aware logic; it is unnecessary after removal.
+- AC-001: adapt `claude-delegated-background-task.e2e.test.ts` (gated `RUN_CLAUDE_E2E=1`): grace 60 s; delegated Claude agent runs `run_in_background` `sleep 90 && echo done > <marker>`; assert the copy is still live after 60 s + tolerance, marker exists, no `[killed]`, delegator receives the result. "Before" evidence already exists in `evidence/baseline-before*`.
+- AC-002/003/004: unit tests with fake timers: (a) `AgentRunTermination.tryPrepareIfQuiescent` returns `null` when the backend reports running tasks; (b) lifecycle: fire with non-quiet → no shutdown; `onAgentBackgroundTaskEnded` → re-armed → shutdown after grace; (c) Team copy with one member reporting running tasks is not shut down; (d) AGY monitor/Claude registry `hasRunningTasks` transitions.
+- AC-005: lifecycle test where idle after the completion turn re-arms (existing path).
+- AC-006: restored base idle-shutdown tests stay green.
+- AC-007: unit case: root stop / DONE release with `hasRunningBackgroundTasks() === true` still terminates.
+- AC-008: LLM contract golden test; docs review; the revert diff check in step 1.

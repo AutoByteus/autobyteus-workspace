@@ -6,6 +6,7 @@ import { collectStandaloneRootInputSnapshots } from "../services/standalone-root
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+import { parseBackgroundTaskUpdatedPayload } from "../../agent-execution/domain/agent-background-task.js";
 import type {
   StandaloneHostTerminationResult,
   StandaloneRunPostInput,
@@ -321,6 +322,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       this.taskExecutions.onAgentStatus(identity.agentRunId, event.snapshot.details.status);
     } else if (event.kind === "agent_run" && event.event.eventType === "AGENT_STATUS") {
       this.taskExecutions.onAgentStatus(identity.agentRunId, normalizeAgentApiStatus(event.event.payload.status));
+    } else if (event.kind === "agent_run" && event.event.eventType === "BACKGROUND_TASK_UPDATED"
+      && parseBackgroundTaskUpdatedPayload(event.event.payload).status !== "running") {
+      this.taskExecutions.onAgentBackgroundTaskEnded(identity.agentRunId);
     }
   }
 

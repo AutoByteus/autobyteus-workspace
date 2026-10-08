@@ -54,6 +54,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   getContext(): AgyRunContext { return this.context; }
   isActive(): boolean { return this.active && this.processAlive; }
   getPlatformAgentRunId(): string { return this.context.runtimeContext.conversationId; }
+  hasRunningBackgroundTasks(): boolean { return this.backgroundTasks.hasRunningTasks(); }
   getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
     return { availability: this.isActive() ? "active" : "offline", phase: this.phase,
       currentTurn: this.turnId ? { kind: "IDENTIFIED", turnId: this.turnId } : { kind: "NONE" } };

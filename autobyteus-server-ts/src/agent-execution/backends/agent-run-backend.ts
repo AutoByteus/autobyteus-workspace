@@ -34,6 +34,12 @@ export interface AgentRunBackend {
   isActive(): boolean;
   getPlatformAgentRunId(): string | null;
   getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot;
+  /**
+   * True while the runtime reports a running background task (work that outlives its turn and
+   * reports separately). Runtimes without background-task reporting return false. Read only by
+   * the idle-shutdown quiet check.
+   */
+  hasRunningBackgroundTasks(): boolean;
   subscribeToSourceEventBatches(
     listener: AgentRunSourceEventBatchListener,
   ): AgentRunSourceEventBatchUnsubscribe;

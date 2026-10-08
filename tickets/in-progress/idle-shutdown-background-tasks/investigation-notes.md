@@ -11,9 +11,9 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: Worktree and branch created from refreshed `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate): `references/requirements-engineering.md` (2026-10-08)
-- Investigation status: Requirements and architecture investigation complete (SR-002)
+- Investigation status: Complete for SR-003 (hybrid). SR-002 sections are kept as history and marked
 
 ## Initial Request And Clarifications
 
@@ -122,12 +122,12 @@ A shortened-grace automated reproduction is required by the Task (AC-001) and be
 
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| UNK-001 | Unknown | Whether a Claude `monitor` task (Monitor tool) is reachable in AutoByteus sessions (docs say Monitor is not enabled) | Scope of "background task" kinds | Architecture | Open |
-| RSK-001 | Risk | Without a bound, a stuck or never-ending background task (AGY dev-server daemon, an infinite loop) keeps a delegated copy and its CLI process alive until Task DONE, root stop or server stop | Resource use | DEC-002 (user) | Open |
-| RSK-002 | Risk | AGY daemon exit does not start a turn, so the idle timer must be re-armed when the last background task ends | Otherwise the copy never shuts down after its work ends | Architecture | Open |
-| UNK-002 | Unknown | Exact CLI text the agent sees on resume after a kill | Wording of REQ-003 notice | Architecture/validation | Open |
+| UNK-001 | Unknown | Whether a Claude `monitor` task (Monitor tool) is reachable in AutoByteus sessions (docs say Monitor is not enabled) | Scope of "background task" kinds | SR-003: irrelevant — the hybrid counts every task the registry shows as running, whatever its kind | Closed |
+| RSK-001 | Risk | Without a bound, a stuck or never-ending background task (AGY dev-server daemon, an infinite loop) keeps a delegated copy and its CLI process alive until Task DONE, root stop or server stop | Resource use | Accepted under DEC-005 (no limit) | Accepted |
+| RSK-002 | Risk | AGY daemon exit does not start a turn, so the idle timer must be re-armed when the last background task ends | Otherwise the copy never shuts down after its work ends | SR-003 design: re-arm on terminal `BACKGROUND_TASK_UPDATED` (HF-04) | Designed |
+| UNK-002 | Unknown | Exact CLI text the agent sees on resume after a kill | Wording of a kill notice | Notice is out of scope (DEC-003) | Closed |
 
-## Is Idle Shutdown Still Needed? (user question 2026-10-08)
+## Is Idle Shutdown Still Needed? (user question 2026-10-08; history — SR-002 removal later reversed in SR-003)
 
 User: "do you know what is the reason of having this idle there? do we still need it? earlier we design it because we do not know how to release the resource … now people manage via task. when task is done, the resources are released. please check"
 
@@ -152,7 +152,7 @@ Things that must stay even without idle shutdown: the wake/restore path (needed 
 
 Touch points if idle shutdown is removed (`grep -rln "IDLE_SHUTDOWN_GRACE|idleShutdown|tryShutDown.*IfQuiet|TaskExecutionIdleShutdownSchedule"`): `task-execution-idle-shutdown-schedule.ts`, `root-task-execution-lifecycle.ts`, the three root adapters (team, org, standalone), task agent/team registries, `flat-team-execution-manager.ts`, `team-run*.ts`, `root-agent-execution-registry.ts`, `root-team-execution-directory.ts`, `config/task-execution-idle-shutdown-setting.ts`, `services/server-settings-service.ts`, docs (`agent_team_execution.md`, `codex_integration.md`), ~10 unit/integration/E2E tests.
 
-## Architecture Investigation Findings
+## Architecture Investigation Findings (SR-002 removal design; history — still accurate as a map of idle-shutdown code)
 
 Authorities read (design reading gate, 2026-10-08): `references/architecture-design.md`, `design-principles.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` §1–2 (settings value only). No closer `DESIGN*.md` applies.
 
@@ -179,14 +179,41 @@ Command: `grep -rn "IfQuiescent|IfQuiet|tryQuiesceIfAlreadyQuiescent|TaskExecuti
 | AF-17 | Tests touching idle shutdown: `tests/unit/agent-collaboration/{root-task-execution-lifecycle,root-task-reactivation,task-agent-resource-dispatch,task-agent-resource-quiet-generation,task-execution-status,task-reactivation-backends}.test.ts`, `tests/unit/agent-org-execution/{agent-org-task-idle-shutdown,agent-org-task-shutdown-event-retirement}.test.ts`, `tests/unit/agent-team-execution/{task-agent-execution-registry-liveness,team-run}.test.ts`, `tests/integration/agent-team-execution/{mixed-team-run-backend,task-delegation-tool-lifecycle}.integration.test.ts`, `tests/fixtures/task-release-generation-fixtures.ts`, `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` (uses `GRACE_MS = 60_000`) | Rewrite/delete |
 | AF-18 | Docs: server `docs/modules/agent_team_execution.md` (Liveness, Idle shutdown, Grace period, Wake-on-message, Open work, Root stop, file list l.830), `agent_orgs.md` l.292/409/415, `agent_tools.md` l.314, `codex_integration.md` l.633–642; web `docs/agent_teams.md` l.124/182, `docs/agent_orgs.md`, `docs/settings.md` l.518/609 | Docs sync |
 
+## Server Cost Of Live Copies (2026-10-08, SR-003)
+
+Command: `ps -axo pid,rss,%cpu,etime,command | grep -E "claude|codex|agy"` on the user's machine.
+
+| Runtime | Observation | Implication |
+| --- | --- | --- |
+| Claude | One `claude --output-format stream-json` process per AgentRun; 9 running, RSS 263–483 MB each (~3.3 GB total), CPU ≈ 0–1 % when idle | Memory is the real cost of never shutting down |
+| Codex | One shared `codex app-server` daemon (195 MB) for all runs | An extra idle Codex copy is cheap |
+| Native AutoByteus | In-process | Cheap |
+| AGY | One process per run (not measured) | — |
+
+Led the user to the hybrid (keep idle shutdown, skip it only while background tasks run).
+
+## Hybrid Feasibility And Design Findings (SR-003)
+
+Base code read at `3a2496c95` (before the SR-002 removal commits `28afa0884`, `bf5889d03`).
+
+| ID | Source | Finding | Design Implication |
+| --- | --- | --- | --- |
+| HF-01 | `backends/claude/session/claude-background-task-registry.ts` | Registry keeps a `view` of every background task with `running/completed/failed/stopped`, fed by CLI frames; `clear()` marks running → stopped on process close. Owned by `ClaudeSession` (`taskRegistry`, l.87) | Can answer "has a running background task" |
+| HF-02 | `backends/antigravity/stream/agy-background-task-monitor.ts`; `agy-agent-run-backend.ts` l.22/35 | Monitor keeps `running` map; finishes on exit-message files; `stopAll()` on stop | Same |
+| HF-03 | `backends/agent-run-backend.ts`; implementers: Claude, Codex, AutoByteus, AGY, ACP (+ test fakes) | No background accessor on the backend contract | Add one accessor; non-reporting runtimes return false |
+| HF-04 | Root event routing: `agent-org-run.ts` `onAgentExecutionEvent` (l.268–284), `standalone-agent-run-root.ts` (l.310–325), `team-task-execution-service.ts` `onRootEvent` (l.41–44) | Each root already sees every agent event, incl. `BACKGROUND_TASK_UPDATED` (`agent_run` event / `TeamRunEvent` with `details.status`), but forwards only `AGENT_STATUS` to the lifecycle | Forward terminal background-task updates as a re-arm trigger |
+| HF-05 | `agent-run-termination.ts` `tryPrepareIfQuiescent` (l.70–86) vs `isRootShutdownQuiescent` / `prepare` | Idle shutdown alone uses `tryPrepareIfQuiescent`; root shutdown and DONE use other paths | Add the background term only to `tryPrepareIfQuiescent`; explicit stops unaffected |
+| HF-06 | `flat-team-execution-manager.ts` `tryPrepareTerminationIfQuiescent` | Team copy is quiet only if every member's `tryPrepareTerminationIfQuiescent` succeeds | Team copies inherit the rule (AC-003) |
+| HF-07 | `root-task-execution-lifecycle.ts` `shutdownAtHead` | A non-quiet fire does not re-arm; only status changes or lease release re-arm | Without HF-04 an AGY copy would never be re-armed after its daemon ends |
+| HF-08 | Branch state: commits `28afa0884` (removal), `bf5889d03` (CR-001 fix), `ba0437e00` (unrelated baseline test fix), `62e4edf52` (docs). New useful file from the removal commit: `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts`; evidence `evidence/baseline-before*` (copy killed at 60 s grace on base) | Undo the removal outside `tickets/`; keep `ba0437e00`; adapt the Claude E2E |
+
 ## Requirement Implications
 
-- Root cause is confirmed: the quiet predicate ignores live runtime background tasks; Claude and AGY are affected; Codex/native/ACP have no notification promise and no tracked background tasks.
-- "Survive shutdown and restore" is not feasible for Claude (tasks are CLI children; resume cannot reattach), so it is recorded as rejected.
-- The user's direction makes "do not shut down while background work runs" the primary requirement; the notice on kill remains for any shutdown that still stops background tasks (bound, if approved; root stop and Task DONE are explicit actions and unchanged).
+- SR-001: root cause confirmed; Claude and AGY affected; Codex/native/ACP have no notification promise.
+- SR-002 (history): removal approved, then reversed after the server-cost measurement.
+- SR-003: hybrid — the quiet check also requires "no running background task"; terminal background-task updates re-arm the grace timer; non-reporting runtimes are treated as having none; no time limit.
 
 ## Notes For Architecture Design
 
-- Map SCN-001..SCN-004. Keep the single liveness/quiet authority; add the background-task condition there rather than in a parallel timer.
-- Verify Team copies inherit the behavior through member quiet checks.
-- Test hook: `RootTaskExecutionLifecycle` already accepts `gracePeriodMs` and `timers` options.
+- Map SCN-001..SCN-005 (SR-003). Keep the existing idle authority (schedule + fire-time quiet check); add the background term in `AgentRunTermination.tryPrepareIfQuiescent` only (HF-05) and a re-arm hook (HF-04, HF-07).
+- Undo SR-002 code changes first (HF-08).

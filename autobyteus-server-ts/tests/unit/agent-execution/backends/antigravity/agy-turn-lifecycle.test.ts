@@ -193,9 +193,12 @@ describe("AGY daemon background tasks (REQ-011)", () => {
 
   it("delivers stopped snapshots before terminate resolves (AR-REC-003, AC-013c)", async () => {
     const run = await startDaemonTurn();
+    // The open daemon keeps the run from being idle-quiet (hybrid idle shutdown).
+    expect(run.backend.hasRunningBackgroundTasks()).toBe(true);
 
     await run.backend.terminate();
 
+    expect(run.backend.hasRunningBackgroundTasks()).toBe(false);
     expect(taskUpdates(run.events)).toEqual([
       [`${conversationId}/task-2`, "shell", "running", null],
       [`${conversationId}/task-2`, "shell", "stopped", null],

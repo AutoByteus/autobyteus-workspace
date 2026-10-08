@@ -2,35 +2,44 @@
 
 Package: `idle-shutdown-background-tasks` — worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks`, branch `codex/idle-shutdown-background-tasks`, base `origin/personal` @ `3a2496c95`.
 
+This handoff describes the current SR-003 (hybrid) implementation, `IR-003`. The SR-002 removal (IR-001/IR-002, commits `28afa0884`, `bf5889d03`) is superseded and fully undone outside `tickets/` (revert commit `a1dc499e4`).
+
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review selected (Medium/High) and passed (`ARCH-REV-001`, round 1). Handoff rule after implementation: source review by `/software_engineering_team/code_reviewer` (architectural_risk=High).
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/requirements-doc.md` (Approved, SR-002)
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/investigation-notes.md`
+- Upstream review applicability and handoff-rule result: Independent architecture review selected (Medium/High) and passed: `ARCH-REV-002` for SR-003. After implementation, the handoff rule routes to source review by `/software_engineering_team/code_reviewer` (architectural_risk=High).
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/requirements-doc.md` (SR-003, hybrid)
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/investigation-notes.md` (HF-01..HF-08)
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/solution-revision-record.md`
-- Design spec (required on every route): `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-spec.md` (Ready, SR-002)
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/problem-report.md` (evidence only); `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/handoff-architecture-design-complete.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-review-report.md` (Pass; AR-N-001, AR-N-002 applied; AR-N-003 is Solution Designer-only)
+- Design spec (required on every route): `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-spec.md` (SR-003, Ready)
+- Supplemental task artifacts: `problem-report.md` (evidence only); `handoff-architecture-design-complete.md`; historical evidence `evidence/baseline-before*` (base behavior, still the valid "before" receipt) and `evidence/after*` (SR-002, historical)
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-review-report.md` (ARCH-REV-002 Pass; AR-N-001 applied)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/code-review-report.md` and `code-review-revision-record.md` (CRR-001, CR-001). AC-001 live evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/evidence/`
+- Triggering rework report, revision record, or evidence: SR-003 / ARCH-REV-002 (requirement change approved by the user: hybrid instead of removal). Earlier code review CRR-001/CRR-002 applied to the superseded SR-002 code.
 
 ## Current Implementation Summary
 
-Idle shutdown of delegated copies is removed end to end (DEC-004). A delegated copy now stays live until its Task is DONE, its root stops or fail-stops, or the server stops. Restore on message after a restart or a DONE reactivation is unchanged, now via `RootTaskExecutionLifecycle.withLiveChain` (renamed from `withLiveLease`, no lease counting). The grace setting, the schedule, the `shutdown` queue command, the quiet-termination chain (adapters → registries → team manager/backend/run → handles → `AgentRunManager` → `AgentRun` → `AgentRunTermination` → input admission state), `TaskExecutionTeardownIndeterminateError`, Org teardown-event retirement, and the idle option plumbing are deleted. The LLM collaboration contract and server/web docs describe the new lifetime.
+A delegated copy is not idle-shut-down while any of its agents' runtime reports a running background task (Claude registry, AGY monitor), with no time limit. Every other copy keeps the existing idle shutdown, grace setting and wake-on-message. When a background task ends, the copy's grace timer is re-armed. DONE, root stop/fail-stop and server stop are unchanged and do not consult background tasks.
 
-- Implementation cycle: `Rework` (IR-002 Local Fix for CR-001 on top of the IR-001 baseline)
+- `AgentRunBackend.hasRunningBackgroundTasks(): boolean` is required on all five backends. Claude reads `ClaudeBackgroundTaskRegistry.hasRunningTasks()` through `ClaudeSession`. AGY reads `AgyBackgroundTaskMonitor.hasRunningTasks()`. Codex, AutoByteus and ACP return `false`.
+- `AgentRunTermination.tryPrepareIfQuiescent` returns `null` while the backend reports a running task. The term sits before `tryQuiesceIfAlreadyQuiescent`, which closes admission as a side effect. `prepare()`, `isRootShutdownQuiescent` and the root fence are untouched. Team copies are covered because a Team is quiet only when every member's `AgentRun` is.
+- `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded(agentRunId)` calls `armLive(chain)` while the root accepts. The Team (`TeamTaskExecutionService.onRootEvent`), Org and Standalone (`onAgentExecutionEvent`) roots forward `BACKGROUND_TASK_UPDATED` events whose status is not `running`.
+- LLM contract sentence: "A copy that stays quiet is shut down after a while, but not while it has a running background task; a message to its run ID restores it with its conversation."
+
+- Implementation cycle: `Rework` (requirement change SR-003)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-001`, `SR-002`
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `CRR-001`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-003` (supersedes SR-002)
+- Related architecture-review revision IDs: `ARCH-REV-002` (supersedes ARCH-REV-001)
+- Related code-review revision IDs: `CRR-001`, `CRR-002` (reviewed the superseded SR-002 code; N/A to the current code)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: CR-001 (IR-002); AR-N-001, AR-N-002 applied in IR-001
+- Triggering finding IDs: N/A (applied ARCH-REV-002 note AR-N-001)
 
-Commits on the branch (base `3a2496c95`):
-- `ba0437e00` test(baseline): mixed backend facade test used the removed `prepareTaskAgent` API (TESTING.md rule 9 baseline fix, separate commit).
-- `28afa0884` refactor(task-execution): remove idle shutdown of delegated copies (implementation, tests, docs, ticket package and evidence).
+Commits on the branch since base `3a2496c95` (current state = base + `ba0437e00` + the hybrid change):
+- `ba0437e00` test(baseline): stale `prepareTaskAgent` call in `mixed-team-run-backend.integration.test.ts` (kept).
+- `28afa0884`, `62e4edf52`, `bf5889d03`: SR-002 removal and its ticket records (superseded).
+- `a1dc499e4` revert: undo SR-002 outside `tickets/`. Check: `git diff 3a2496c95 a1dc499e4 -- . ':!tickets'` = only `ba0437e00`'s test change plus the kept `claude-delegated-background-task.e2e.test.ts`.
+- The hybrid implementation commit follows `a1dc499e4` (message `feat(task-execution): keep delegated copies with running background tasks out of idle shutdown`).
 
 ## Routing Classification (Mandatory)
 
@@ -38,112 +47,140 @@ Commits on the branch (base `3a2496c95`):
 - Architecture risk (`Low`/`High`): `High`
 - Design classification section / evidence reference: design-spec.md "Task Size And Architectural Risk"
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale for confirmation or change: Diff is removal-dominated (38 source files, +90/−811 in `src`; 3 source files deleted) and spans task lifecycle, Team/Org/standalone adapters, team execution, agent-execution termination, settings and the LLM contract, which is the blast radius the design described. No new owner, API or persistence.
+- Evidence and rationale for confirmation or change: Shared `AgentRunBackend` contract (five implementations) and the idle quiet predicate used by every runtime and all three root kinds; LLM-facing text; plus a full revert on the branch. Diff after the revert: 33 files, +423/−33.
 - Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None`. Every removal target was grep-checked before deletion; no non-idle caller was found, and no supported path needed a copy to become non-live other than DONE, root stop/fail-stop or server stop.
+- New design impact or escalation trigger: `None`. The background signal is used only by `tryPrepareIfQuiescent`. Both runtimes answer synchronously from in-memory state: the Claude registry view and the AGY monitor's `running` map.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | No idle shutdown; Claude background task completes; agent reports to delegator | `RootTaskExecutionLifecycle.onAgentStatus(agentRunId)` only forwards status to the Task side (`root-task-execution-lifecycle.ts`); schedule file, `onGraceElapsed`/`shutdownAtHead`/`armLive`, `shutdown` kind, adapter `tryShutDownIfQuiet` deleted | Live E2E before: background task `stopped` 60 012 ms after idle, no marker, no report. After: report 91 462 ms after idle, task `completed`, marker `done`, no `offline` (evidence dir). |
-| BEH-002 | Same for AGY / any long wait | Same runtime-neutral removal; no runtime-specific code | Covered by the same lifecycle path; not exercised live for AGY |
-| BEH-004 | Quiet copy stays live; same-root message delivered without restore | `withLiveChain` → queue `wake` → `restoreChainAtHead` → adapter `restoreChain`, which skips live executions | Unit (lifecycle, 2-day fake time, Agent + Team) and integration (`task-delegation-tool-lifecycle`: 2-day fake time, delivered, `inspect` and restore never called) |
-| BEH-007 | Grace setting removed; stored value inert | `server-settings-service.ts` predefined registration removed; `config/task-execution-idle-shutdown-setting.ts` deleted | Unit test: not offered; stored value lists as editable/deletable custom setting. After live E2E ran with the stale env value 60000 set: no effect. |
-| BEH-008 | DONE, reactivation, root stop, restart + message unchanged | DONE release, `reactivateClosedTarget`, `closeExternalAdmission`/`enterRootFailStop` (minus `schedule.dispose()`), `assertRestorableChain`/`restoreChain` unchanged | Existing reactivation/status/release suites green; release-generation test now produces old generations through DONE + reactivation instead of quiet shutdown |
+| BEH-001 | Claude copy idle with a running `run_in_background` task is not shut down; task completes; agent reports | `ClaudeBackgroundTaskRegistry.hasRunningTasks` → `ClaudeSession.hasRunningBackgroundTasks` → `ClaudeAgentRunBackend.hasRunningBackgroundTasks` → `AgentRunTermination.tryPrepareIfQuiescent` returns `null` | Live E2E (grace 60 s): fire at 60 s skipped, task `completed` 88.3 s, report 91.0 s, marker `done`. Unit: registry transitions, backend delegation, AgentRun quiet check |
+| BEH-002 | Same for AGY background steps | `AgyBackgroundTaskMonitor.hasRunningTasks` → `AgyAgentRunBackend.hasRunningBackgroundTasks` | Unit: monitor transitions (track → exit → none; stopAll); backend true with open daemon, false after terminate. Not run live |
+| BEH-003 | Last task ends → grace re-armed → shut down one grace later, with or without a following turn | Roots forward terminal `BACKGROUND_TASK_UPDATED` → `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded` → `armLive` (`schedule.arm` replaces any pending timer) | Unit (lifecycle, fake timers), Org unit through real `AgentOrgRun` (Agent + Team copy), Team integration, Standalone forward unit. Live: offline 60.3 s after the post-report idle (Claude, AC-005) |
+| BEH-004/006/007 | Copies without running tasks keep idle shutdown, grace setting, wake-on-message; Codex/AutoByteus/ACP report none | Base code restored by `a1dc499e4`; three backends return `false` | Restored base idle-shutdown tests green |
+| BEH-008 | DONE / root stop / server stop unchanged | No change to `prepare()`, `isRootShutdownQuiescent`, the root fence, release paths | AgentRun unit: `terminate()` and the root fence succeed with a running task and never ask `hasRunningBackgroundTasks` |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
 ## Key Files Or Areas
 
-Paths relative to `autobyteus-server-ts/src/`.
+Paths under `autobyteus-server-ts/src/`.
 
-- Lifecycle: `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` (schedule, leases, shutdown removed; `withLiveChain`; `onAgentStatus(agentRunId)`; doc comments updated), `root-task-execution-command-queue.ts` (kinds `activate | wake | reopen`), `root-task-execution-adapter.ts` (`tryShutDownIfQuiet` and `isLive` removed from the interface; chain doc "for restore and status"), `task-delegation-command.ts` (teardown error removed), `task-execution-running-work.ts` (comment).
-- Deleted: `agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.ts`, `config/task-execution-idle-shutdown-setting.ts`, `agent-org-execution/services/agent-org-task-event-retirement.ts`.
-- Adapters: `agent-team-execution/task-delegation/team-task-execution-adapter.ts`, `agent-org-execution/services/agent-org-task-execution-adapter.ts`, `standalone-agent-run-root/services/standalone-root-task-execution-adapter.ts` (quiet shutdown, offline publishing, teardown catch removed; `isLive` private; option types lose `publishAgentOffline`, `enterLifecycleFailStop`, `beginTaskExecutionEventRetirement`).
-- Roots and delivery (IR-002: the standalone root's now-uncalled `enterLifecycleFailStop()` is deleted; Team/Org keep theirs, which have real callers): `agent-team-execution/domain/root-team-run.ts`, `task-delegation/team-task-execution-service.ts` (+ `-contract.ts`, `acquireLiveLease` removed), `services/team-run-message-delivery.ts`, `agent-org-execution/domain/agent-org-run.ts` (+ `-options.ts`), `services/agent-org-run-message-delivery.ts`, `standalone-agent-run-root/domain/standalone-agent-run-root.ts`, `services/standalone-root-message-delivery.ts`.
-- Quiet chain: `agent-collaboration/execution/backends/root-agent-execution-registry.ts`, `root-team-execution-directory.ts`, `configured-agent-execution-handle.ts`; `agent-team-execution/local/registries/task-agent-execution-registry.ts`, `task-team-execution-registry.ts`, `flat-team-execution-manager.ts` (the `quiescing` state stays for normal termination), `flat-team-run-backend.ts`, `flat-team-agent-execution-handle.ts`, `backends/team-run-backend.ts`, `domain/team-run.ts`, `services/team-run-resolver.ts`; `agent-execution/services/agent-run-manager.ts` (also its `quiescentTerminationAttempts` branch in `prepareAgentRunTermination`), `domain/agent-run.ts`, `domain/agent-run-termination.ts` (`tryingQuiescent` branch in `prepare()`), `input/agent-run-input-admission-state.ts`.
-- Settings / contract: `services/server-settings-service.ts`, `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`.
-- Tests: new `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts` (AC-001b); rewritten lifecycle, generation (renamed `task-agent-resource-release-generation.test.ts`), status, reactivation, tree-scope, liveness, parity/golden, agent-run(-manager), routing, integration lifecycle tests, `tests/fixtures/task-release-generation-fixtures.ts`, `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; deleted the two Org idle-shutdown tests; new AC-004 settings test.
-- Docs: server `agent_team_execution.md` (Lifetime rule replaces Idle shutdown / Grace period; file list), `agent_orgs.md`, `agent_tools.md`, `prompt_engineering.md` (mirrors contract), `codex_integration.md` (no grace env; new E2E), `agent_execution.md`, `agent_communication.md`, `features/task_agent_identity_future_improvements.md`; web `docs/agent_teams.md`, `agent_orgs.md`, `settings.md`, `agent_execution_architecture.md`; root `TESTING.md` (new live E2E row). Web test titles/fixture comment reworded (no behavior change).
+- Backend contract: `agent-execution/backends/agent-run-backend.ts`.
+- Claude: `backends/claude/session/claude-background-task-registry.ts`, `backends/claude/session/claude-session.ts`, `backends/claude/backend/claude-agent-run-backend.ts`.
+- AGY: `backends/antigravity/stream/agy-background-task-monitor.ts`, `backends/antigravity/backend/agy-agent-run-backend.ts`.
+- `false` backends: `backends/codex/backend/codex-agent-run-backend.ts`, `backends/autobyteus/autobyteus-agent-run-backend.ts`, `backends/acp/backend/acp-agent-run-backend.ts`.
+- Quiet term: `agent-execution/domain/agent-run-termination.ts`. The backend `Pick` gains `hasRunningBackgroundTasks`; `AgentRun` already passes its whole backend, so it needs no change.
+- Re-arm: `agent-collaboration/execution/task/root-task-execution-lifecycle.ts` (`onAgentBackgroundTaskEnded`; `onAgentStatus` doc).
+- Forwards: `agent-team-execution/task-delegation/team-task-execution-service.ts`, `agent-org-execution/domain/agent-org-run.ts`, `standalone-agent-run-root/domain/standalone-agent-run-root.ts` (the last two parse the payload with `parseBackgroundTaskUpdatedPayload`).
+- LLM contract: `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`. Lines are reflowed so the rest of the paragraph stays byte-identical.
+- Docs:
+  - server `docs/modules/agent_team_execution.md`: Idle shutdown section and the contract summary.
+  - `agent_execution.md`: Claude section.
+  - `antigravity_cli_runtime.md`: monitor section.
+  - `prompt_engineering.md`: exact mirror and summary (AR-N-001).
+  - `agent_tools.md`: AR-N-001.
+  - web `docs/agent_teams.md`.
+- Tests:
+  - `tests/unit/agent-collaboration/root-task-execution-lifecycle.test.ts`: 4 new cases.
+  - `tests/unit/agent-execution/agent-run.test.ts`: 3 new cases; the harness fake gains the method.
+  - Claude registry, Claude backend, AGY monitor and AGY backend tests.
+  - `tests/unit/agent-org-execution/agent-org-task-idle-shutdown.test.ts`: Agent and Team cases.
+  - `tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts`.
+  - `tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`: the double gains a set of agents with running background tasks.
+  - The LLM contract golden hash plus the REQ-009 assertion, and the parity assertion (AR-N-001).
+  - `tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts`: grace 60 s via `vi.stubEnv`, plus the AC-005 phase.
 
 ## Important Assumptions
 
-- `onAgentStatus` drops its now-unused `status` parameter (`onAgentStatus(agentRunId)`); the design listed `(agentRunId, status)`. Keeping a dead parameter would contradict the clean-cut rule; the root callers simplified accordingly.
-- `withLiveChain` keeps today's error semantics exactly: coded `TaskDelegationError`s before/at the queued restore return a rejected result; the post-restore `assertInputAllowed` re-check before the operation throws, as the old `lease.assertOpen()` did.
-- The old restore-failure "re-arm" step has no replacement (nothing to arm); executions restored before a failure simply stay live.
-- `AgentRunManager.prepareAgentRunTermination` lost its `quiescentTerminationAttempts` branch: it is the manager-level counterpart of `AgentRunTermination.prepare()`'s `tryingQuiescent` branch and was only populated by the removed try-if-quiescent method.
+- A Team copy is covered through its members' `AgentRun` quiet checks, so there is no team-level code. This is per HF-06, which the reviewer verified at base.
+- Re-arming on every terminal update is harmless when another task still runs or the agent is busy: the fire-time check skips again, and a later idle or terminal update re-arms (design DS-002).
+- Claude `clear()` on process close publishes `stopped` for a run being terminated. The hook goes through `armLive`, which arms only live executions (R-3).
 
 ## Known Risks
 
-- QR-002 / R-3 (accepted by user): an open Task's copy keeps its runtime process until DONE, root stop or server stop; pre-2026-10-06 unowned copies until root/server stop.
-- R-2: Org teardown-event retirement is gone. DONE release status publication is unchanged; no quiet teardown remains to suppress.
-- `mixed-task-delegation.e2e.test.ts` was rewritten (copies stay live; the cross-root probe LIVE-004 moved into LIVE-005, after a reopen, because a live copy in another root is reachable by contract) but could not be run here (needs LM Studio + Codex + Claude). It typechecks.
+- QR-002 (accepted, DEC-005): a task whose end the runtime never reports (a never-ending AGY daemon, a missed terminal frame, an unreadable AGY exit-message format) keeps that copy live until DONE, root stop or server stop.
+- Org teardown-event retirement is unchanged. A terminal `stopped` update published during a quiet shutdown goes to `onAgentBackgroundTaskEnded`, whose `armLive` finds the copy non-live afterwards and does nothing.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Behavior Change with removal-driven cleanup
-- Reviewed root-cause classification: Legacy Or Compatibility Pressure
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` (removal)
+- Reviewed change posture: Bug Fix
+- Reviewed root-cause classification: Missing Invariant (quiet predicate omitted runtime-owned work)
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No Refactor Needed` (beyond undoing SR-002)
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: All Removal Plan items deleted; AR-N-002 (`isLive` off the interface, `enterLifecycleFailStop` off adapter options) applied and confirmed by grep + `tsc -p tsconfig.build.json`.
+- Evidence / notes: The invariant was added at its owner (`AgentRunTermination`) and exposed through the backend contract. The lifecycle never reads runtime registries.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` (also the helpers only the removed paths used: `completedLocalTermination`, `assertCurrentPublishedRun`, `cancelDeferredPreparation`, `runIdOf` in two adapters, `shuttingDown` sets, `TaskExecutionLiveLease`, `TaskExecutionAgentStatus`)
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
+- Backward-compatibility mechanisms introduced: `None` (required method, explicit `false`; no optional field, no flag)
+- Legacy old-behavior retained in scope: `No`. SR-002 is fully reverted outside `tickets/`, and no partial keep such as `withLiveChain`.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`. The signal is a dedicated method, not a field on `AgentRuntimeLifecycleSnapshot`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes` (every changed source file shrank or stayed the same size)
-- Notes: Step-8 grep (`IDLE_SHUTDOWN|IdleShutdown|IfQuiescent|IfQuiet|LiveLease|EventRetirement|TeardownIndeterminate|unregisterTerminated` over src/tests/docs, all packages) returns only the AC-004 settings test, which must name the stale key. AR-N-001 grep (`stays quiet|grace period`, case-insensitive, docs + tests) returns nothing. Unused imports that `--noUnusedLocals` reports in touched files all predate this change (verified against base) and were left alone.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. Additions are 1–12 lines per source file.
+- Notes: Untracked API/E2E files from the stopped round (`tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts`, `tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts`, `api-e2e-*.md`, `evidence/api-e2e/`) were not touched and not committed.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`
+- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Not Affected`
 - Design-spec decision reference: design-spec.md "Persisted Data / State Transition Decision"
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: `server-settings-service.test.ts` new case: the key is not offered; a stored value lists as `Custom user-defined setting`, editable and deletable. The after live E2E ran with `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000` set and passed.
+- Direct-use evidence or discard/rebuild result, when applicable: N/A. Background state is runtime-only, and the grace setting is restored unchanged.
 - Migration implementation and focused checks, only when `Migration Required`: N/A
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
-- The worktree had no dependencies installed; ran `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts prebuild`, and `pnpm -C autobyteus-web exec nuxt prepare`. Untracked build output (`autobyteus-application-*/dist`) is not staged.
-- Live E2E used the local Claude login (`claude` 2.1.283, PATH candidate) with model `haiku`.
-- Baseline failures unrelated to this change (identical on base `3a2496c95`, verified with the change stashed); reported as a separate item, not fixed here:
-  - Unit: 43 tests in 15 files — stale test doubles (for example `FileExplorer is not a constructor`, `AgentRunManager requires all execution-family dependencies`, agent-memory location returning `null`) and environment-dependent cases (Prisma ESM loader `@prisma/client` default export under `~/.hermes/node`; the streaming interval read `300`, not `500`, likely from an inherited env value).
-  - Integration `tests/integration/agent-team-execution`: 23 tests in 4 files (`agent-team-run-manager`, `configured-scope-readiness`, `team-agent-tools-mcp-lifecycle`, `team-conversation-target-websocket`). Cause: test backend factory doubles lack `beginPreparation` / `beginMaterialization` after an earlier activation refactor (for example `COLLABORATION_AGENT_ACTIVATION_FAILED: factory.beginPreparation is not a function`).
-  - One base failure that is in this change's own touched test file (`mixed-team-run-backend.integration.test.ts`, removed `prepareTaskAgent` API) was fixed in its own baseline commit `ba0437e00`.
+- Dependencies were installed earlier in this worktree (`pnpm install --frozen-lockfile`, server `prebuild`). Untracked `autobyteus-application-*/dist` is build output and not staged.
+- Live E2E used the local Claude login (CLI 2.1.283, PATH candidate), model `haiku`.
+- Pre-existing failures, identical on base, unrelated to this change, not fixed here. They were reported earlier and still need a separate item:
+  - 56 tests in the focused suite set below, all in `tests/integration/agent-team-execution` (4 files), `tests/integration/agent-execution`, `tests/integration/agent`, and `tests/unit/services/media-storage-service.test.ts`.
+  - The causes are stale backend/factory test doubles (`factory.beginPreparation` / `beginMaterialization is not a function`, `AgentRunManager requires all execution-family dependencies`) and environment-dependent cases.
+  - Verified by running the identical suite set with the change stashed: same 56, none new, none fixed.
 
 ## Local Implementation Checks Run
 
-- `npx tsc -p tsconfig.build.json --noEmit` (production source): pass.
-- `npx tsc -p tsconfig.json --noEmit` (source + tests): no errors other than the existing TS6059 rootDir notices.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/agent-execution tests/unit/standalone-agent-run-root tests/unit/services tests/unit/projects tests/unit/agent-tools tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts tests/integration/standalone-agent-run-root --no-watch`: 2627 passed, 5 skipped, 1 failed (`media-storage-service`, a listed base failure).
-- Full `tests/unit`: 4947 passed, 43 failed — exactly the base failures above.
-- `pnpm -C autobyteus-web exec vitest run services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts`: 12 passed (titles reworded only).
-- AC-001(b) gated live Claude E2E (`RUN_CLAUDE_E2E=1 … claude-delegated-background-task.e2e.test.ts`), run as implementation evidence for the "before"/"after" pair that design step 1 required:
-  - Before (unchanged code, grace 60000): FAIL as expected — `BACKGROUND_TASK_UPDATED stopped` at 60 012 ms after idle, `markerContent: null`. Receipts: `evidence/baseline-before/ac-001-64ff1474.json`, `evidence/baseline-before.log`.
-  - After (this change, stale grace env 60000 still set): PASS — `TEAM_COMMUNICATION_MESSAGE` at 91 462 ms after idle, task `completed` at 88 728 ms, `markerContent: "done"`, no `offline`. Receipts: `evidence/after/ac-001-9e77509f.json`, `evidence/after.log`.
-- Step-8 greps as recorded above.
+- Revert verification:
+  - `git diff 3a2496c95 a1dc499e4 -- . ':!tickets'` shows only the two kept files.
+  - After the revert, the focused base suites were green apart from the known `media-storage-service` failure (2642 passed).
+  - The web spec `agentOrgContextHydration.spec.ts` passed (12).
+- `npx tsc -p tsconfig.build.json --noEmit`: pass.
+- `npx tsc -p tsconfig.json --noEmit`: no errors other than the existing TS6059 rootDir notices.
+- New/changed test files, run individually, all pass:
+  - root-task-execution-lifecycle: 21
+  - agent-run: 42
+  - Claude registry and AGY monitor: 46
+  - Claude backend and AGY turn lifecycle: 15
+  - agent-org-task-idle-shutdown: 8
+  - standalone-agent-run-root: 19
+  - task-delegation-tool-lifecycle integration: 11
+- Focused suite set: `vitest run tests/unit/agent-collaboration tests/unit/agent-team-execution tests/unit/agent-org-execution tests/unit/agent-execution tests/unit/standalone-agent-run-root tests/unit/services tests/unit/agent-memory/agent-run-memory-recorder.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts tests/integration/standalone-agent-run-root tests/integration/agent-execution tests/integration/agent`. Its failing-test list is identical to base (56 base failures; 0 new, 0 fixed).
+- AC-001/AC-005 gated live Claude E2E: `RUN_CLAUDE_E2E=1 DELEGATED_BACKGROUND_E2E_EVIDENCE_DIR=… pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts --no-watch`. PASS with grace 60 s. Timeline from idle:
+  - The grace fire at 60 s was skipped (no `offline`).
+  - The task `completed` at 88.3 s; the marker reads `done`.
+  - The report reached the delegator at 91.0 s.
+  - The copy was idle after the report turn at 92.8 s.
+  - The copy went `offline` at 153.1 s, 60.3 s after going quiet (`quietToOfflineMs` 60 271).
+  - Receipts: `evidence/hybrid/ac-001-2e190584.json`, `evidence/hybrid.log`. The base "before" receipt stays `evidence/baseline-before/ac-001-64ff1474.json` (task stopped at 60 012 ms).
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-Not Applicable — backend-only behavior change. The setting disappears from the server settings list automatically. Web changes are docs, one spec's test titles and one probe fixture comment; no rendered surface changed.
+Not Applicable — backend-only behavior change. The web change is one docs sentence.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- AC-001: rerun the Claude live E2E; optionally an AGY background step (BEH-002) with a scripted or live AGY delegated copy that waits longer than 60 s.
-- AC-002: Team, Org and standalone roots — delegated Agent and Team copies idle for a long time, then a same-root `send_message_to(run ID)` is accepted with no restore (no `initializing` status, provider session unchanged).
-- AC-003: DONE release, DONE → reopen → message reactivation, root stop, server restart + message (`task-reactivation-root-visibility.e2e.test.ts`, `task-closure-root-visibility.e2e.test.ts`, `ad-hoc-task-delegation.e2e.test.ts` with the scripted AGY CLI).
-- AC-004: Settings page/API with a stored `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` value: startup succeeds, the value is listed as a custom setting and can be deleted.
-- `mixed-task-delegation.e2e.test.ts` (LM Studio + Codex + Claude) if the environment is available.
+- AC-001: rerun the Claude live E2E (it also covers AC-005).
+- AC-002: AGY delegated copy with a daemon `run_command` step past the grace (scripted `agy-failure-cli.mjs` or live AGY). The copy should stay live while the step is open, then shut down one grace after the exit message.
+- AC-003: delegated Team copy (Org root) where one member has a running background task. The Team should stay live, then shut down one grace after the task ends.
+- AC-004: background task ends with no following turn (AGY). Expect shutdown one grace later.
+- AC-006: quiet copies on Codex, AutoByteus and ACP are still shut down after the grace and wake on message (existing `mixed-task-delegation.e2e.test.ts` LIVE-001..005 restored unchanged).
+- AC-007: DONE and root stop while a background task runs. The copy and its task stop (`stopped` snapshot), with no waiting.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-- Independent API/E2E validation of AC-001..AC-004 across Team, Org and standalone roots (owned by `api_e2e_engineer` after code review).
-- `mixed-task-delegation.e2e.test.ts` has not been executed after the rewrite.
-- AGY background-step lifetime (BEH-002) has not been exercised live.
+- Independent API/E2E validation of AC-001..AC-008 across Team, Org and Standalone roots, owned by `api_e2e_engineer` after code review. It can decide whether to reuse the untracked files from the stopped round.
+- AGY (AC-002/AC-004) has not been exercised against a real or scripted AGY CLI.
+- `mixed-task-delegation.e2e.test.ts` (restored to base) has not been run (it needs LM Studio + Codex + Claude).

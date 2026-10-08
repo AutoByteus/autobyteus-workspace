@@ -7,6 +7,7 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY } from "../../../src/config/task-execution-idle-shutdown-setting.js";
 import { resolveClaudeCliExecutableCandidates } from "../../helpers/claude-cli-executable-candidates.js";
 import { useStandaloneClaudeCli } from "../helpers/claude-live-agent-harness.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
@@ -14,18 +15,22 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 import { E2E_TEAM_RUN_RESUME_CONFIG_DOCUMENT } from "../helpers/team-run-graphql-documents.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
-// A delegated Claude agent starts a background Bash task that outlives its turn by more than the
-// old one-minute minimum idle-shutdown delay, ends its turn, and is still live when the task
-// completes: the CLI starts a turn with the completion and the agent reports to its delegator.
+// Hybrid idle shutdown with the grace period set to its 60 s minimum: a delegated Claude agent
+// starts a background Bash task that outlives its turn by more than the grace period, ends its turn,
+// and is not shut down while the task runs. The CLI starts a turn with the completion, the agent
+// reports to its delegator, and once it is quiet again the copy is shut down one grace period later.
 // Opt-in; uses the local Claude login. Optional CLAUDE_E2E_TOOL_MODEL (default haiku) and
 // DELEGATED_BACKGROUND_E2E_EVIDENCE_DIR (keeps a JSON receipt).
 // Run: RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts --no-watch
 const cliCandidates = resolveClaudeCliExecutableCandidates();
 const suite = process.env.RUN_CLAUDE_E2E === "1" && cliCandidates.length > 0 ? describe : describe.skip;
 const MODEL = process.env.CLAUDE_E2E_TOOL_MODEL?.trim() || "haiku";
-/** Longer than the old minimum idle-shutdown delay (60 s). */
+/** The shortest supported idle-shutdown grace period. */
+const GRACE_MS = 60_000;
+/** Allowance for status-event delivery latency when checking "not before the grace period". */
+const GRACE_TOLERANCE_MS = 2_000;
+/** Longer than the grace period. */
 const BACKGROUND_SLEEP_SECONDS = 90;
-const OLD_MINIMUM_GRACE_MS = 60_000;
 type Wire = { type: string; payload: Record<string, unknown>; receivedAt: number };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const asRecord = (value: unknown): Record<string, unknown> | null =>
@@ -43,7 +48,7 @@ const WORKER_INSTRUCTIONS = [
   "Do not explore the environment or run diagnostics. Keep text replies to one word.",
 ].join("\n");
 
-suite("Delegated Claude agent background task outlives the old idle-shutdown delay (live E2E)", () => {
+suite("Delegated Claude agent background task outlives the idle-shutdown grace period (live E2E)", () => {
   let appDataDir = "";
   let app: FastifyInstance;
   let url: URL;
@@ -63,6 +68,7 @@ suite("Delegated Claude agent background task outlives the old idle-shutdown del
 
   beforeAll(async () => {
     useStandaloneClaudeCli(cliCandidates[0]!);
+    vi.stubEnv(TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY, String(GRACE_MS));
     appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "claude-delegated-background-live-"));
     await fs.writeFile(path.join(appDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
@@ -82,7 +88,7 @@ suite("Delegated Claude agent background task outlives the old idle-shutdown del
     vi.unstubAllEnvs();
   });
 
-  it("AC-001: the copy stays live, its background task completes, and it reports to its delegator", async () => {
+  it("AC-001/AC-005: the copy stays live while its task runs, reports to its delegator, then is shut down one grace period after it is quiet", async () => {
     const unique = randomUUID().slice(0, 8);
     const workspaceRootPath = await fs.mkdtemp(path.join(appDataDir, "workspace-"));
     const markerPath = path.join(workspaceRootPath, `background-marker-${unique}.txt`);
@@ -162,7 +168,7 @@ suite("Delegated Claude agent background task outlives the old idle-shutdown del
     const idle = await until(() => childStatuses().find((m) => m.receivedAt >= running.receivedAt && m.payload.status === "idle"),
       "delegated copy idle after ending its turn");
 
-    // Either the report arrives (expected) or the copy is shut down / its task stopped (the old behavior).
+    // Either the report arrives (expected) or the copy is shut down / its task stopped (the base behavior).
     const outcome = await until(() => messages.find((m) => {
       if (m.receivedAt < idle.receivedAt) return false;
       if (m.type === "AGENT_STATUS" && m.payload.agent_run_id === childRunId && m.payload.status === "offline") return true;
@@ -173,9 +179,23 @@ suite("Delegated Claude agent background task outlives the old idle-shutdown del
     }), "report, shutdown or stopped task", (BACKGROUND_SLEEP_SECONDS + 150) * 1_000);
 
     const markerContent = await fs.readFile(markerPath, "utf8").catch(() => null);
+    const reportedOffline = childStatuses().filter((m) => m.payload.status === "offline");
+    const reportedStopped = childTasks().some((m) => m.payload.status === "stopped");
+
+    // AC-005: after the report turn the copy is quiet; it is shut down, and not before one grace period.
+    let quietToOfflineMs: number | null = null;
+    if (outcome.type === "TEAM_COMMUNICATION_MESSAGE") {
+      const offline = await until(() => childStatuses().find((m) => m.receivedAt > outcome.receivedAt && m.payload.status === "offline"),
+        "copy shut down after it is quiet again", GRACE_MS + 180_000);
+      const beforeOffline = childStatuses().filter((m) => m.receivedAt <= offline.receivedAt && m !== offline);
+      const lastBusy = beforeOffline.map((m) => String(m.payload.status)).findLastIndex((status) => status === "running" || status === "initializing");
+      const quietStart = beforeOffline.slice(lastBusy + 1).find((m) => m.payload.status === "idle");
+      quietToOfflineMs = quietStart ? offline.receivedAt - quietStart.receivedAt : null;
+    }
     const evidence = {
-      childRunId, taskId, outcome: outcome.type, outcomeStatus: outcome.payload.status ?? null,
+      childRunId, taskId, graceMs: GRACE_MS, outcome: outcome.type, outcomeStatus: outcome.payload.status ?? null,
       idleToOutcomeMs: outcome.receivedAt - idle.receivedAt,
+      quietToOfflineMs,
       statuses: childStatuses().map((m) => `${String(m.payload.status)}@${m.receivedAt - idle.receivedAt}`),
       backgroundTask: childTasks().map((m) => `${String(m.payload.status)}@${m.receivedAt - idle.receivedAt}`),
       markerContent,
@@ -187,10 +207,12 @@ suite("Delegated Claude agent background task outlives the old idle-shutdown del
     }
 
     expect(outcome.type, `copy was shut down or its task stopped: ${JSON.stringify(evidence)}`).toBe("TEAM_COMMUNICATION_MESSAGE");
-    expect(evidence.idleToOutcomeMs).toBeGreaterThanOrEqual(OLD_MINIMUM_GRACE_MS);
-    expect(childStatuses().filter((m) => m.payload.status === "offline")).toEqual([]);
+    expect(evidence.idleToOutcomeMs).toBeGreaterThanOrEqual(GRACE_MS);
+    expect(reportedOffline).toEqual([]);
     expect(childTasks().some((m) => m.payload.task_id === taskId && m.payload.status === "completed")).toBe(true);
-    expect(childTasks().some((m) => m.payload.status === "stopped")).toBe(false);
+    expect(reportedStopped).toBe(false);
     expect(markerContent?.trim()).toBe("done");
-  }, 600_000);
+    expect(quietToOfflineMs, JSON.stringify(evidence)).not.toBeNull();
+    expect(quietToOfflineMs!).toBeGreaterThanOrEqual(GRACE_MS - GRACE_TOLERANCE_MS);
+  }, 900_000);
 });

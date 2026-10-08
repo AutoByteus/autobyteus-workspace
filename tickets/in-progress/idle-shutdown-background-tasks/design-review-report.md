@@ -2,107 +2,109 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/requirements-doc.md` (Approved, SR-002)
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/investigation-notes.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/requirements-doc.md` (Approved, SR-003)
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/investigation-notes.md` (HF-01..HF-08; AF-01..AF-18 as code map)
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-spec.md` (Ready, SR-002)
-- Supplemental Task Artifacts Reviewed: `problem-report.md` (evidence only); `handoff-architecture-design-complete.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/design-spec.md` (Ready, SR-003)
+- Supplemental Task Artifacts Reviewed: `problem-report.md`, `evidence/baseline-before*` (evidence only); `handoff-architecture-design-complete.md` (SR-003)
+- Relevant Solution Revision IDs: `SR-003` (supersedes `SR-002`); `SR-001` history
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/idle-shutdown-background-tasks/tickets/in-progress/idle-shutdown-background-tasks/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: `1`
-- Trigger: Architecture Design Complete (SR-002) from `/software_engineering_team/solution_designer`, 2026-10-08
-- Prior Review Round Reviewed: N/A (first review)
-- Latest Authoritative Round: `1`
-- Current-State Evidence Basis: worktree `codex/idle-shutdown-background-tasks` @ `3a2496c95` (base `origin/personal`). Read: `root-task-execution-lifecycle.ts`, `root-task-execution-command-queue.ts`, `root-task-execution-adapter.ts`, `agent-run-termination.ts`, `agent-run-input-admission-state.ts` (`tryQuiesceIfAlreadyQuiescent`), `flat-team-execution-manager.ts` (quiet path, `quiescing`), `team-task-execution-adapter.ts`, `agent-org-task-execution-adapter.ts`, `agent-org-task-event-retirement.ts`, `server-settings-service.ts`, `task-execution-idle-shutdown-setting.ts`, `agent-team-collaboration-llm-contract.ts`; whole-worktree grep for `IDLE_SHUTDOWN|IdleShutdown|idleShutdown|IfQuiescent|IfQuiet|LiveLease|EventRetirement|TeardownIndeterminate|unregisterTerminated|stays quiet|tryQuiesceIfAlreadyQuiescent` plus usage greps for `shuttingDown`, `publishAgentOffline`, `enterLifecycleFailStop`, `cancelDeferredPreparation`, `isLive`. Root `DESIGN.md` read.
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: `2`
+- Trigger: Revised Architecture Design Complete (SR-003, hybrid) from `/software_engineering_team/solution_designer`, 2026-10-08, after the user reversed the SR-002 removal
+- Prior Review Round Reviewed: `1` (ARCH-REV-001, Pass on SR-002 — superseded basis)
+- Latest Authoritative Round: `2`
+- Current-State Evidence Basis: base `3a2496c95` read via `git show`: `claude-background-task-registry.ts`, `agy-background-task-monitor.ts`, `agy-agent-run-backend.ts`, `task-execution-idle-shutdown-schedule.ts` (arm replaces any pending timer), `team-task-execution-service.ts` `onRootEvent`, `root-team-run.ts` (publisher subscription), `agent-org-run.ts` / `standalone-agent-run-root.ts` `onAgentExecutionEvent`, `root-agent-execution-registry.ts`, `task-agent-execution-registry.ts`, `root-team-execution-directory.ts`, `flat-team-execution-manager.ts`; `git grep` at base for every `tryPrepare*IfQuiescent` implementation/caller, `AgentRunBackend`/`TeamRunBackend` implementers, and `BACKGROUND_TASK_UPDATED` routing; `git show --stat` of `ba0437e00`, `28afa0884`, `62e4edf52`, `bf5889d03`. Round-1 reads of `root-task-execution-lifecycle.ts`, `agent-run-termination.ts` still apply (base unchanged).
 
 ## Routing Classification Review
 
 - Task size: `Medium`
 - Architectural risk: `High`
-- Classification rationale reviewed: removal-dominated (~25 src files, ~15 tests, ~8 docs), no new owner/API/persistence → Medium is accurate. It removes a lifecycle/concurrency authority (idle timer, quiet-termination chain, lease counting, Org teardown-event suppression) across Team, Org and standalone roots and changes LLM-facing contract text → High is accurate.
+- Classification rationale reviewed: a mechanical two-commit undo plus a focused addition (one required backend method ×5, two runtime queries, one quiet term, one lifecycle hook, three root forwards, one LLM sentence) → Medium. Changes the shared `AgentRunBackend` contract and the idle quiet predicate for every runtime and root kind, LLM-facing text, and a large revert on a reviewed branch → High.
 - Independent Architecture Review required by the classification: `Yes`
 - Classification evidence or correction required: None.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Yes. DEC-004 (user, 2026-10-08): remove idle shutdown of delegated copies entirely; copies stay live until Task DONE, root stop/fail-stop or server stop; grace setting removed; restore-on-message after restart/reactivation unchanged.
-- Relevant existing behavior and evidence confirmed: Yes. `onAgentStatus` arms grace timers on `idle/offline/error`; `onGraceElapsed → queue "shutdown" → shutdownAtHead → adapter.tryShutDownIfQuiet → … → AgentRunTermination.tryPrepareIfQuiescent`, whose predicate has no background-task term (verified, `agent-run-termination.ts`). Root cause confirmed.
-- Scope guardrail confirmed: Yes — In-scope UC-001..003; out of scope: kill notice (DEC-003), background-task survival, changes to DONE/reactivation/root stop/restore, replacement timeouts, legacy unowned copies, standalone/root members; preserved boundary BEH-008, delivery/lease semantics, idle status reporting, root termination/fail-stop.
+- Approved requirements / intended behavior understood: Yes. Hybrid (user, 2026-10-08): no idle shutdown while any agent of a delegated copy has a running background task (Claude, AGY), no time limit (DEC-005); otherwise the 10-minute idle shutdown and grace setting stay; re-arm when the last task ends; non-reporting runtimes count as none (DEC-006); DONE/root stop/server stop unchanged; SR-002 removal fully undone outside `tickets/` (REQ-006).
+- Relevant existing behavior and evidence confirmed: Yes. At base, the grace fire runs `shutdownAtHead → adapter.tryShutDownIfQuiet`; every quiet path (root agent registry, task agent registry, root team directory, task team registry → `FlatTeamExecutionManager` → member handles) reaches `AgentRunTermination.tryPrepareIfQuiescent`, which has no background term. A non-quiet fire does not re-arm (HF-07). Claude registry `view` and AGY monitor `running` map hold running tasks synchronously.
+- Scope guardrail confirmed: Yes. Out of scope: the kill notice (DEC-003), Codex/native/ACP reporting, a time limit, task survival, changes to the grace setting/DONE/reactivation/root stop/restore.
 - Approved change, preserved behavior, and outside scope understood: Yes.
-- Every prospective blocking `Design Impact` finding is traceable: `Yes` (no blocking findings).
+- Every prospective blocking `Design Impact` finding is traceable: `Yes` (none raised).
 - Remaining material ambiguity: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | Pass | Pass — Claude `run_in_background` + turn end → idle → grace timer → quiet termination closes CLI process (verified path) | Pass — DS-001: no timer exists; `onAgentStatus` forwards status only; CLI completion starts a turn | Confirmed | None |
-| BEH-002 | System | Pass | Pass — same timer path; AGY `terminate` stops background groups (investigation) | Pass — DS-001 | Confirmed | None |
-| BEH-004 | System | Pass | Pass — `withLiveLease` → queue `wake` → `acquireAtHead` → `restoreChain` | Pass — DS-002: `withLiveChain`; adapter restore skips live executions (`if (this.isLive(...)) continue` in all three adapters) so delivery to a live copy performs no restore | Confirmed | None |
-| BEH-007 | Operational | Pass | Pass — predefined registration in `server-settings-service.ts`; non-predefined keys fall to `CUSTOM_SETTING_DESCRIPTION` | Pass — DS-004 | Confirmed | None |
-| BEH-008 | System | Pass | Pass — DONE release (`releaseTaskAgentResources`), reactivation (`reactivateClosedTarget` → `reopen`), root stop (`closeExternalAdmission`), fail-stop do not read `leases`, the schedule or the quiet chain | Pass — DS-002/DS-003 unchanged except `schedule.dispose()` removal | Confirmed | None |
+| BEH-001 | System | Pass | Pass — Claude `run_in_background` → registry `view` entry `running`; grace fire → quiet check | Pass — DS-001: `hasRunningBackgroundTasks()` true → `tryPrepareIfQuiescent` returns `null` → skip | Confirmed | None |
+| BEH-002 | System | Pass | Pass — AGY `track(steps)` at turn end → `running` map | Pass — DS-001 | Confirmed | None |
+| BEH-003 | System | Pass | Pass — terminal `BACKGROUND_TASK_UPDATED` already reaches all three root handlers (Team `TeamRunEvent` via `root-team-run.ts` subscription; Org/Standalone `agent_run` events); only `AGENT_STATUS` is forwarded today | Pass — DS-002: hook → `armLive(chain)`; `schedule.arm` replaces any pending timer with now + grace, so AC-004 "one grace period after the end" holds; Claude also re-arms via idle after its completion turn | Confirmed | None |
+| BEH-004/006/007 | System/Operational | Pass | Pass — Codex/AutoByteus/ACP return `false`; grace setting untouched after undo | Pass | Confirmed | None |
+| BEH-008 | System | Pass | Pass — root stop uses `fenceForRootShutdown`/`isRootShutdownQuiescent`; DONE uses `forceTerminate`/`prepare`; neither calls `tryPrepareIfQuiescent` | Pass — design forbids the term in those paths | Confirmed | None |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `problem-report.md` | Pass | Pass (requirements, investigation inventory, design) | Pass | Pass | Pass (evidence only) | None |
+| `problem-report.md` | Pass | Pass | Pass | Pass | Pass (evidence only) | None |
+| `evidence/baseline-before*` | Pass | Pass (AC-001, design) | Pass | Pass (base run killed at 60 s grace; base idle code equals the restored code) | Pass (historical evidence) | None |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Behavior Change with removal-driven cleanup | None |
-| Root-cause classification is explicit and evidence-backed | Pass | `Legacy Or Compatibility Pressure`: idle shutdown was introduced 2026-09-29 to prevent leaked children; Task DONE release (and since 2026-10-06 Task ownership of every new copy) superseded it; quiet predicate verified to ignore background work | None |
-| Refactor decision is explicit | Pass | Refactor (removal) needed now | None |
-| Refactor decision is supported by concrete design sections | Pass | Removal Plan, file mapping, sequence, rejection log; patch-the-predicate alternative explicitly rejected with rationale | None |
+| Assessment is present for the current task posture | Pass | Bug Fix | None |
+| Root-cause classification is explicit and evidence-backed | Pass | `Missing Invariant`: the quiet owner exists and is shared by all idle paths, but omits runtime-owned work (verified) | None |
+| Refactor decision is explicit | Pass | No refactor beyond the undo | None |
+| Refactor decision is supported by concrete design sections | Pass | Term at the existing owner, required backend query, reuse of `armLive`; alternatives (snapshot field, per-task timer, term in root-shutdown check) rejected with reasons | None |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Background wait → report to delegator | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-002 | Delivery with restore-if-non-live | Pass | Pass | Pass (`TeamTaskExecutionService` facade → lifecycle) | Pass | Pass | Pass | Pass |
-| DS-003 | DONE / root stop release | Pass | Pass (unchanged) | N/A | Pass | Pass | Pass | Pass |
-| DS-004 | Settings list/update | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-005 | Bounded queue (activate/wake/reopen) | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-001 | Grace fire → skip/shutdown | Pass | Pass | Pass | Pass | Pass (`AgentRunTermination` decides quiet) | Pass | Pass |
+| DS-002 | Task end → re-arm | Pass | Pass | Pass (`TeamTaskExecutionService.onRootEvent` thin) | Pass | Pass (lifecycle owns scheduling) | Pass | Pass |
+| DS-003 | Runtime task state | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `RootTaskExecutionLifecycle` | Pass (`withLiveChain`, `deliverToExactTarget`, `releaseTaskAgentResources`, `onAgentStatus`) | Pass | Pass — `acquireLiveLease` (externally exposed via `TeamTaskExecutionService`, no production caller) is removed, leaving one entry | Pass | — |
-| `AgentRun` / `AgentRunTermination` | Pass (`prepare`/`terminate`/`forceTerminate`/root-shutdown fence) | Pass | Pass | Pass | Removing `tryingQuiescent` simplifies `prepare()` without changing other paths |
+| `AgentRunBackend.hasRunningBackgroundTasks()` | Pass | Pass (registry/monitor stay behind the backend) | Pass (lifecycle/adapters forbidden from reading runtime state) | Pass | — |
+| `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded` | Pass | Pass (schedule stays internal) | Pass | Pass | — |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Roots/delivery → lifecycle → adapter → registries/handles → AgentRun | Pass | Pass (no timer/status-driven termination; no reference to removed setting) | Pass | Pass | — |
+| `AgentRunTermination` → backend `Pick` | Pass | Pass (no term in `isRootShutdownQuiescent`, `prepare`, root fence) | Pass | Pass | — |
+| Roots → lifecycle hook | Pass | Pass (roots never touch the schedule) | Pass | Pass | — |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `RootTaskExecutionLifecycle.withLiveChain(agentRunId, operation)` | Pass | Pass | Pass | Low | Pass |
-| `RootTaskExecutionLifecycle.onAgentStatus(agentRunId, status)` | Pass | Pass (status forwarding only) | Pass | Low | Pass |
-| `RootTaskExecutionAdapter` (minus `tryShutDownIfQuiet`) | Pass | Pass | Pass | Low | Pass (see AR-N-002 for an orphaned member) |
+| `AgentRunBackend.hasRunningBackgroundTasks(): boolean` (required) | Pass | Pass | Pass (backend instance) | Low | Pass |
+| `ClaudeBackgroundTaskRegistry.hasRunningTasks()` / `AgyBackgroundTaskMonitor.hasRunningTasks()` | Pass | Pass | Pass | Low | Pass |
+| `RootTaskExecutionLifecycle.onAgentBackgroundTaskEnded(agentRunId)` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Release of copies | Pass | Pass (Task DONE, root stop) | N/A | Pass | — |
-| Restore of non-live copies | Pass | Pass (`assertRestorableChain`/`restoreChain`/wake) | N/A | Pass | — |
+| Running-task knowledge | Pass | Pass (extend registry/monitor) | N/A | Pass | — |
+| Quiet decision | Pass | Pass (extend single quiet owner) | N/A | Pass | — |
+| Re-arm | Pass | Pass (reuse `armLive`, which checks `isLive`) | N/A | Pass | — |
+| Event intake | Pass | Pass (extend existing root handlers) | N/A | Pass | — |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent-collaboration/execution/task` | Pass | Pass | Pass | Pass | — |
-| Team / Org / Standalone root execution | Pass | Pass | Pass | Pass | — |
-| `agent-execution` termination | Pass | Pass | Pass | Pass | — |
-| `config` + settings service | Pass | Pass | Pass | Pass | — |
+| `agent-execution/backends/*` | Pass | Pass | Pass | Pass | — |
+| `agent-execution/domain/agent-run-termination.ts` | Pass | Pass | Pass | Pass | — |
+| `agent-collaboration/execution/task` lifecycle | Pass | Pass | Pass | Pass | — |
+| Team/Org/Standalone root handlers | Pass | Pass | Pass | Pass | — |
 
 ## Reusable Owned Structures Verdict
 
@@ -112,66 +114,60 @@ N/A — no structure added or extracted.
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Root option types (`idleShutdown`/`taskExecutionIdleShutdown`), adapter option types | Pass | Pass, with AR-N-002 (`enterLifecycleFailStop` option in three adapter option types becomes unused) | Pass | N/A | Pass | — |
+| `AgentRuntimeLifecycleSnapshot` (deliberately not extended) | Pass | Pass | Pass | N/A | Pass | Dedicated method keeps the status snapshot single-purpose |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Re-Tightened After Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `root-task-execution-lifecycle.ts` | Pass | Pass | N/A | Pass | Class doc comment ("idle-shutdown scheduling and live leases") and `deliverToExactTarget` doc ("under the sender's live lease") need updating with the code |
-| `agent-team-collaboration-llm-contract.ts` | Pass | Pass | N/A | Pass | Replacement sentence is accurate and keeps the true "shut-down delegated agent" phrases (l.29/42/103) |
-| `server-settings-service.ts` | Pass | Pass | N/A | Pass | — |
-| Remaining edited files | Pass | Pass | N/A | Pass | Pure deletions |
+| Backend files (5), registry, monitor, session | Pass | Pass | N/A | Pass | — |
+| `agent-run-termination.ts` | Pass | Pass | N/A | Pass | Term inside the dispatch-queue callback next to the other terms |
+| `root-task-execution-lifecycle.ts` | Pass | Pass | N/A | Pass | — |
+| Root handlers (3) | Pass | Pass | N/A | Pass | — |
+| `agent-team-collaboration-llm-contract.ts` + docs | Pass | Pass | N/A | Pass with note | AR-N-001: `prompt_engineering.md` mirror not listed |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| No new files; three source files deleted | Pass | Pass | Low | Pass | — |
+| Edits in place; no new files | Pass | Pass | Low | Pass | — |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Idle schedule, `shutdown` command kind, leases, `onGraceElapsed`/`shutdownAtHead`/`armLive` | Pass | Pass | Pass | Pass | Verified: `leases` read only by `shutdownAtHead` |
-| Quiet-termination chain (adapters → registries → team manager → handles → AgentRunManager → AgentRun → `AgentRunTermination` → admission state) | Pass | N/A | Pass | Pass | Verified every listed member is reached only from the idle path; `quiescing` state correctly retained for `prepareTerminationOnce` |
-| `TaskExecutionTeardownIndeterminateError` | Pass | N/A | Pass | Pass | Thrown only by the four quiet paths, caught only by the three adapter quiet paths |
-| Org event retirement | Pass | N/A | Pass | Pass | `begin` only from the Org quiet path |
-| `unregisterTerminated`, `shuttingDown` sets | Pass | Pass (`retireTerminated` for reactivation) | Pass | Pass | — |
-| Setting file + registration | Pass | N/A | Pass | Pass | — |
-| Adapter-interface `isLive`, adapter option `enterLifecycleFailStop` | Fail (not named) | N/A | Partially (covered only by the "when no other use remains" rule) | Pass with note | AR-N-002 |
-| Tests and docs inventory (AF-17/AF-18) | Partially | N/A | Pass via step-8 grep for most items | Pass with note | AR-N-001 |
+| SR-002 removal (`28afa0884`, `bf5889d03`) outside `tickets/` | Pass | Pass (base code + hybrid) | Pass — revert, restore `tickets/`, keep `ba0437e00` and the Claude E2E file, verify with `git diff 3a2496c95 -- . ':!tickets'` | Pass | `28afa0884` also touched `autobyteus-web` (`task-agent-monitor-visibility.page.vue`, `agentOrgContextHydration.spec.ts`, web docs) and renamed `task-agent-resource-quiet-generation.test.ts`; the full revert covers them and the diff check proves it. `62e4edf52` is tickets-only |
+| Untracked stopped-round API/E2E files | Pass | N/A | Pass (not committed by implementation) | Pass | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Idle shutdown | No | Pass (no flag, no infinite grace, no dormant method, no `withLiveLease` alias) | Pass | — |
-| Stale settings key | No (generic custom-setting reader is not compatibility code) | Pass | Pass | — |
+| SR-002 residue | No (full undo; no kept `withLiveChain` rename, no flag) | Pass | Pass | — |
+| Backend method | No (required, explicit `false`) | Pass | Pass | — |
 
 ## Persisted-Data Transition Verdict
 
-| Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| Server settings key `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` | `Directly Usable — No Migration` | Pass — verified `getSettingDescription` falls back to an editable/deletable custom description; no reader remains | Pass | N/A | Pass | AC-004 test covers it |
+N/A — `Not Affected`: background state is runtime-only; the grace setting is restored unchanged.
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Steps 1–8 (baseline repro → lifecycle → adapters → chain → settings/options → contract → tests/docs → grep) | Pass | Pass (none needed) | Pass | Pass |
-| Concurrency after lease removal | Pass — delivery still runs the restore inside the serialized queue and re-runs `assertInputAllowed` before the operation; the only reader of leases (idle shutdown) is gone, and DONE release/root stop never consulted leases, so no ordering changes (QR-001) | Pass | Pass | Pass |
+| Undo first, verify base-green, then hybrid steps 2–6 | Pass | Pass (none) | Pass | Pass |
+| Concurrency | Pass — the term is read synchronously inside the run's dispatch queue with the other quiet terms; a background task starts only within a turn (already non-quiet); `arm` replaces pending timers; the hook arms only live copies and is a no-op once admission closes (root stop), so Claude `clear()` → `stopped` during DONE/root stop is harmless (R-3); idle shutdown itself proceeds only with no running task, so its own `clear()` publishes nothing | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Fix shape (delete vs patch predicate) | Yes | Pass | Pass | Pass | — |
-| Delivery without lease | Yes | Pass | Pass | Pass | — |
+| Quiet term placement | Yes | Pass | Pass | Pass | — |
+| Signal shape | Yes | Pass | Pass | Pass | — |
+| Re-arm | Yes | Pass | Pass | Pass | — |
 
 ## Material Premise Validation (Only When Needed)
 
-None. The review raised no premise outside the established behavior basis. (Resource growth from open Tasks, R-3/QR-002, is an accepted user decision, not a review premise.)
+None. Missed terminal frames and never-ending AGY daemons are accepted residual behavior under QR-002/DEC-005, not review premises, and the design adds no machinery for them.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -183,29 +179,16 @@ None.
 
 ## Findings
 
-No blocking findings. Three non-blocking implementation notes (no change to approved behavior, `Within Approved Scope`, no upstream rework required; the implementer applies them):
+No blocking findings.
 
-### AR-N-001 — Test and doc inventory incomplete; one stale phrase escapes the final grep (Low)
+### AR-N-001 — LLM-contract mirror doc and golden tests (Low; carried over, re-scoped to SR-003)
 
-- Protects: REQ-004/AC-005, REQ-005/AC-006.
-- Evidence: whole-worktree grep finds files not listed in AF-17/AF-18:
-  - Tests: `tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts`, `tests/unit/agent-collaboration/task-agent-resource-tree-scope.test.ts` (`unregisterTerminated`), `tests/unit/agent-org-execution/helpers/task-publication-handles.ts`, `tests/unit/agent-team-execution/flat-team-execution-manager-routing.test.ts`, `tests/unit/agent-execution/agent-run.test.ts`, `tests/unit/agent-execution/agent-run-manager.test.ts`, `tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts` (asserts "A copy that stays quiet is shut\ndown after a while").
-  - Docs: `autobyteus-server-ts/docs/modules/prompt_engineering.md` l.250 (mirrors the LLM contract text), `autobyteus-server-ts/docs/modules/agent_execution.md` l.238 (`tryPrepareTerminationIfQuiescent`).
-  - The step-8 grep pattern catches all of these except the "stays quiet" text in `prompt_engineering.md` and the parity test.
-- Required update (implementation): include these files; add `stays quiet|grace period` (case-insensitive) to the step-8 grep over `docs` and `tests`; update the parity assertion to the new contract sentence.
-- Proportionate: mechanical inventory completion; prevents a stale LLM-contract doc.
+- Protects: REQ-005 / AC-008.
+- Evidence: `git grep "stays quiet" 3a2496c95` finds the rule in two server docs that are not in the SR-003 doc list: `autobyteus-server-ts/docs/modules/prompt_engineering.md` l.250, which mirrors the contract sentence exactly, and `autobyteus-server-ts/docs/modules/agent_tools.md` l.313–314 ("A child that stays quiet is shut down after the grace period …"). The test that pins the text is `tests/unit/agent-team-execution/member-collaboration-instruction-provider-parity.test.ts`, which asserts "A copy that stays quiet is shut\ndown after a while". The new sentence's line wrap may break that assertion.
+- Required update (implementation): mirror the new sentence in `prompt_engineering.md` and add the background-task exception to `agent_tools.md`. Update the parity assertion, and any contract golden test, to the new wording.
+- Proportionate: keeps the agent-facing contract and its documentation identical.
 
-### AR-N-002 — Interface/option members orphaned by the removal (Low)
-
-- Protects: REQ-004/AC-005 (no idle-only dead path).
-- Evidence: `RootTaskExecutionAdapter.isLive` is called through the interface only by `armLive` and `shutdownAtHead` (both removed); adapters use their own `isLive` internally (status, restore skip). `enterLifecycleFailStop` in the Team/Org/Standalone adapter option types is used by the adapters only in the quiet-shutdown catch (the root classes' own `enterLifecycleFailStop` methods remain used by materializers/binding committer).
-- Required update (implementation): drop `isLive` from the `RootTaskExecutionAdapter` interface (keep it as an adapter-internal method) and drop `enterLifecycleFailStop` from the three adapter option types and their wiring, per the design's "when no other use remains" rule. Confirm by grep/typecheck.
-- Proportionate: keeps the adapter contract truthful; no behavior effect.
-
-### AR-N-003 — Stale upstream text (Low, documentation only)
-
-- Evidence: investigation notes "Investigation Meta" still says current revision `SR-001`; "Requirement Implications" and "Notes For Architecture Design" describe the superseded SR-001 approach ("add the background-task condition there"); RSK-002/UNK-001/UNK-002 still `Open` though moot under DEC-004. Requirements doc approval line cites "AC-001..008" while the table has AC-001..006.
-- Required update: Solution Designer may mark those sections superseded at the next revision. Not blocking: the design spec and the approved requirements tables are internally consistent and authoritative.
+AR-N-002 — Obsolete (SR-002 removal reverted). AR-N-003 — Resolved (investigation Meta at SR-003, SR-002 sections marked history, requirements cite AC-001..008 which now exist).
 
 ## Classification
 
@@ -213,16 +196,16 @@ N/A — Pass.
 
 ## Recommended Recipient
 
-`/software_engineering_team/implementation_engineer` (per handoff rules); informational notice to `/software_engineering_team/solution_designer`.
+`/software_engineering_team/implementation_engineer`; informational notice to `/software_engineering_team/solution_designer`.
 
 ## Residual Risks
 
-- R-1: tests that produced non-live copies via idle shutdown must create non-live state through supported paths (restart/reopen, DONE + reactivation) or existing release APIs.
-- R-3 / QR-002 (accepted by user): an open Task's copy holds its runtime process until DONE, root stop or server stop; pre-2026-10-06 unowned copies until root/server stop.
-- The gated live Claude E2E (AC-001 b) needs a ≥90 s background task and a pre-change baseline run (step 1); environment limits must be recorded per TESTING.md if it cannot run.
+- A runtime that never reports a task's end, or a never-ending AGY daemon, keeps the copy and its process live until DONE, root stop or server stop (QR-002, DEC-005, accepted).
+- Large revert on a reviewed branch: the `git diff 3a2496c95 -- . ':!tickets'` check plus restored base tests are the safety net; the downstream code review should check the diff against base, not against HEAD.
+- AC-001 live Claude E2E needs a ≥ 90 s background task with grace at 60 s; record environment limits per TESTING.md if it cannot run.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: Design is a clean-cut removal consistent with DEC-004 and DESIGN.md rules 4–5. Every removal target verified idle-only in current code. Implementation should apply AR-N-001 and AR-N-002.
+- Notes: The hybrid adds the missing invariant at the single quiet owner that every idle path already passes through; explicit stops are untouched. Apply AR-N-001 during implementation.

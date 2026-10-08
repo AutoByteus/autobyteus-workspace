@@ -607,9 +607,12 @@ streaming input mode. Each Claude AgentRun keeps one Claude CLI process for its
 whole life: `ClaudeSdkClient.openStreamingSession` opens one
 `query({ prompt: AsyncIterable, options })` lazily on the first input (new or
 restored run), and `ClaudeSessionProcess` owns that process, its single frame
-pump, and exit detection. There is no idle timer. Run terminate/close (standalone
-or team) and server shutdown close the process, which stops its background
-tasks. An unexpected exit fails the active turn with a turn-terminal `ERROR`
+pump, and exit detection. There is no idle timer in the session itself. Run
+terminate/close (standalone or team) and server shutdown close the process,
+which stops its background tasks. A delegated copy is not idle-shut-down while
+`ClaudeBackgroundTaskRegistry` shows a running background task
+(`hasRunningBackgroundTasks()`), so the task can finish and the agent can report
+back; see [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle). An unexpected exit fails the active turn with a turn-terminal `ERROR`
 carrying stderr diagnostics, and the next input reopens the session with
 `resume`. Claude CLI defaults apply: AutoByteus sets no background-task or Bash
 timeout environment variables. An operator's own environment still passes through

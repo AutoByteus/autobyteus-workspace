@@ -3,41 +3,42 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `idle-shutdown-background-tasks`
 - Request / ticket: Project Task from `/project_task_manager` (2026-10-08), source report `problem-report.md`
 - Requirements owner: solution_designer
 - Date: 2026-10-08
-- Approval state and reference: Approved by the user on 2026-10-08 in the Solution Designer conversation. Direction: "the agent shouldn't stop working just because being idle for a long time"; question "do we still need it? … now people manage via task. when task is done, the resources are released"; decision "yes. i think we should remove it. lets go" (DEC-004 = remove idle shutdown)
-- Exact approved requirements baseline / solution revision: this document at SR-002 (REQ-001..005, AC-001..008, SCN-001..004, DEC-004 decided, DEC-001/002 superseded, DEC-003 deferred)
+- Approval state and reference: Approved by the user on 2026-10-08 in the Solution Designer conversation, superseding the SR-002 removal. Sequence: user asked about server cost of never shutting down, and proposed "if [the] agent has a background task, then we don't shut down it … for other ones, it still follows 10 minutes"; after the feasibility check: "thats fine for other agent. if they do not send, then they do not create lets assume that. i think hybrid is better"; "lets use hybrid approach". No time limit: the hybrid was presented with "no limit" as the recommended default; the user did not ask for one (recorded in DEC-005; the user can still ask for a cap)
+- Exact approved requirements baseline / solution revision: this document at SR-003 (REQ-001..006, AC-001..008, SCN-001..005)
 - Behavior-defining supplements: none (`problem-report.md` is evidence only)
 
 ## Problem And Desired Outcome
 
-- Problem: A delegated agent that starts a background task (for example a release monitor or a long build) and ends its turn is reported `idle`. After the idle-shutdown grace period (default 10 min) the server shuts the delegated run down, because its quiet check ignores running background tasks. Shutdown kills the background task. The completion notification never arrives, so the agent can neither continue its work nor report back to its delegator. Root cause confirmed in code (investigation notes, Source Log).
-- Why removal: idle shutdown was introduced on 2026-09-29 only to prevent leaked delegated children while nothing else could release them. Since 2026-10-06 every new delegated copy is owned by a Task (Project or no-Project), and Task DONE releases it. Root stop and server stop release everything else (investigation notes, "Is Idle Shutdown Still Needed?").
-- Affected actors or systems: delegated Agents and delegated Teams (and their members, and brought-in helpers) in Agent Team, Agent Org and standalone roots, on every runtime; their delegators; the user; operators who set the grace setting.
-- Desired outcome: A delegated copy is never shut down because it is idle. It stays live until its Task is DONE, its root stops or the server stops. A background task therefore runs to completion, and the agent continues and reports back.
-- Observable definition of success: A delegated Claude agent whose background task runs longer than the old grace period stays live, receives the completion and sends its result to its delegator. The grace setting no longer exists.
+- Problem: A delegated agent that starts a background task and ends its turn is reported `idle`. After the idle-shutdown grace period (default 10 min) the server shuts the delegated run down, because its quiet check ignores running background tasks. Shutdown kills the background task. The completion notification never arrives, so the agent can neither continue nor report back to its delegator. Root cause confirmed in code (investigation notes).
+- Why not remove idle shutdown (SR-002): an idle Claude CLI process holds about 260–480 MB (measured 2026-10-08), so delegated copies that stay open until Task DONE would hold several GB. Idle shutdown stays for copies with nothing running.
+- Affected actors or systems: delegated Agents and delegated Teams (and their members and brought-in helpers) in Agent Team, Agent Org and standalone roots on the Claude and Antigravity runtimes; their delegators; the user; operators.
+- Desired outcome: A delegated copy is not idle-shut-down while any of its agents has a running background task. All other copies keep the existing 10-minute idle shutdown. When the last background task ends, the normal grace period starts again.
+- Observable definition of success: With a shortened grace period (60 s), a delegated Claude agent whose background task runs longer than the grace period stays live, receives the completion and sends its result to its delegator; a delegated agent without a background task is still shut down after the grace period.
 
 ## Relevant Current And Desired Behavior
 
 | Behavior ID | Kind | Scenarios | Current Behavior | Desired Behavior | Preserved Behavior | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | SCN-001 | Claude delegated run with a running background task is shut down after the grace period; the task is killed (`[killed]`), no notification | No idle shutdown: the task completes; the agent receives its notification, continues and reports back | Background completion → CLI-started turn → agent continues | Report; `agent-run-termination.ts` |
-| BEH-002 | System | SCN-001 | Same for AGY background steps, and for any long wait of any runtime | Same as BEH-001 | — | `agy-agent-run-backend.ts` |
-| BEH-004 | System | SCN-002 | Quiet delegated copy is shut down after the grace period; a same-root message restores it | Quiet delegated copy stays live; a same-root message is delivered to the live run without restore | Message delivery and lease semantics | `agent_team_execution.md` |
-| BEH-007 | Operational | SCN-003 | Server setting `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` (default 600 000) controls the grace period | Setting removed; a value left in an existing settings store has no effect and causes no error | Other server settings | `server-settings-service.ts` l.180–187 |
-| BEH-008 | System | SCN-004 | Task DONE stops the Task's copies; root stop stops all; after a server restart children start shut down and a message wakes (restores) them; DONE reactivation restores a copy | Unchanged | Yes | Docs; prior tickets |
+| BEH-001 | System | SCN-001 | Claude delegated run with a running background task is shut down after the grace period; the task is killed (`[killed]`), no notification | Not idle-shut-down while the task is running; the task completes; the agent receives its notification, continues and reports back | Background completion → CLI-started turn → agent continues | Report; `agent-run-termination.ts` |
+| BEH-002 | System | SCN-002 | Same for AGY background steps | Same as BEH-001 | AGY Stop/Terminate still stops background groups | `agy-agent-run-backend.ts` |
+| BEH-003 | System | SCN-003 | — (no background-aware rule) | When the last running background task of the copy ends and the copy is otherwise quiet, the grace period starts again and the copy is shut down when it elapses, including when the task ends without starting a turn (AGY) | — | Investigation |
+| BEH-004 | System | SCN-004 | Quiet delegated copy without running background tasks is shut down after the grace period; a same-root message restores it | Unchanged | Yes | `agent_team_execution.md` |
+| BEH-006 | System | SCN-005 | Codex, native AutoByteus and ACP runtimes report no background tasks | Treated as having none (user: "if they do not send, then they do not create"); idle shutdown unchanged for them | Yes | Code |
+| BEH-007 | Operational | — | Grace setting `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` (default 600 000) | Unchanged | Yes | `server-settings-service.ts` |
+| BEH-008 | System | — | Task DONE, root stop/fail-stop, server stop, restart restore, DONE reactivation | Unchanged; they still stop a copy even while background tasks run | Yes | Docs; prior tickets |
 
 ## Stakeholders, Actors, And Outcomes
 
 | Actor | Goal | Required Outcome | Constraint |
 | --- | --- | --- | --- |
-| Delegated agent | Finish long work and report back | Its run is never stopped for being idle | — |
-| Delegator agent | Receive the result | Gets the result instead of silence | Marks DONE to release (existing contract) |
-| User | Trust delegated work | No silent stalls | — |
-| Operator | Resource use | Resources released by DONE, root stop, server stop | Accepted: an open Task's copy holds its runtime process until one of these happens |
+| Delegated agent | Finish long background work and report back | Not idle-shut-down while its background task runs | — |
+| Delegator agent | Receive the result | Gets the result | — |
+| User / operator | Bounded memory | Copies with nothing running are still released after the grace period | Grace setting unchanged |
 
 ## Scope Guardrail (Mandatory)
 
@@ -45,26 +46,25 @@
 
 | Use-Case ID | Use Case | Scenarios |
 | --- | --- | --- |
-| UC-001 | A delegated agent (or a member of a delegated Team) waits on its own background task or any long wait, then continues and reports back | SCN-001 |
-| UC-002 | A quiet delegated copy stays live and receives follow-up messages directly | SCN-002 |
-| UC-003 | Operators no longer have or need the idle grace setting | SCN-003 |
+| UC-001 | A delegated agent (or member of a delegated Team) on Claude or AGY waits on its own background task longer than the grace period, then continues and reports back | SCN-001, SCN-002 |
+| UC-002 | Idle shutdown releases delegated copies once nothing is running, including after background work ends | SCN-003, SCN-004 |
 
 ### Out Of Scope
 
-- Telling an agent that a run end (root stop, server restart, Task DONE) stopped its background tasks (former REQ-004 / DEC-003). Separate-ticket candidate.
+- Telling an agent that a run end stopped its background tasks (separate-ticket candidate).
+- Background-task reporting for Codex, native AutoByteus and ACP runtimes.
+- A time limit on how long a running background task keeps a copy alive (DEC-005).
 - Making background tasks survive a run end or server restart.
-- Changing Task DONE release, reactivation, root stop, server-restart restore or wake-on-message restore of shut-down copies.
-- Any replacement automatic release (timeouts, caps, watchdogs) or automatic DONE.
-- Releasing legacy delegated copies created before 2026-10-06 without a Task; they are released by root stop or server stop.
+- Changing the grace setting, DONE release, reactivation, root stop or restore.
 - Standalone (non-delegated) runs and root members: they never had idle shutdown.
 
 ### Non-Goals
 
-- Measuring or reducing the resource cost of idle live copies.
+- Measuring or reducing memory of live copies beyond keeping today's idle shutdown.
 
 ### Preserved Behavior Boundary
 
-BEH-008; message delivery and live-lease semantics; status reporting of delegated copies (idle stays `idle`, not `offline`); root termination and fail-stop.
+BEH-004, BEH-006, BEH-007, BEH-008; root-shutdown fence (root stop is not deferred by background tasks); message delivery and live-lease semantics; status reporting.
 
 ### Review Authority
 
@@ -74,93 +74,100 @@ Blocking findings must cite REQ/AC/BEH IDs here. Scope-changing proposals are Re
 
 | Requirement ID | Requirement | Behaviors | Priority | Rationale | Source |
 | --- | --- | --- | --- | --- | --- |
-| REQ-001 | A delegated copy (Agent or Team, including members and brought-in helpers) must never be shut down because it is idle or quiet, on any runtime and in any root kind | BEH-001, BEH-002, BEH-004 | Must | Idle shutdown kills background work and is no longer needed for release | DEC-004 |
-| REQ-002 | Delegated copies must still be released by Task DONE, root stop/fail-stop and server stop; restore of non-live copies (after a server restart, DONE reactivation) must keep working | BEH-008 | Must | Remaining release and restore authorities | DEC-004; prior tickets |
-| REQ-003 | The `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS` setting must be removed. A stored value must be ignored without error | BEH-007 | Must | No idle shutdown to configure | DEC-004 |
-| REQ-004 | Code that exists only for idle shutdown (grace schedule, shutdown-if-quiet paths) must be removed, not left dormant | BEH-004, BEH-007 | Must | Clean removal; no dead path | DEC-004; DESIGN.md |
-| REQ-005 | Server documentation must describe the new lifetime rule (live until DONE, root stop or server stop) and drop the grace setting | All | Must | Contract for operators and agents | — |
+| REQ-001 | A delegated copy (Agent or Team, including members and brought-in helpers) must not be idle-shut-down while any of its agents has a running background task reported by its runtime (Claude, Antigravity), with no time limit | BEH-001, BEH-002 | Must | The agent is still working | User 2026-10-08 (hybrid) |
+| REQ-002 | When a copy's last running background task ends (completed, failed or stopped) and the copy is otherwise quiet, the grace period must start again and the copy must be shut down when it elapses, whether or not the end starts a turn | BEH-003 | Must | Memory is still released after the work ends | Hybrid; AGY behavior |
+| REQ-003 | Copies with no running background task must keep today's idle shutdown, grace setting and wake-on-message behavior; runtimes that report no background tasks are treated as having none | BEH-004, BEH-006, BEH-007 | Must | Preserved | User 2026-10-08 |
+| REQ-004 | Task DONE, root stop/fail-stop and server stop must still stop a copy and its background tasks | BEH-008 | Must | Explicit stops stay authoritative | Preserved |
+| REQ-005 | The agent-facing collaboration text and server docs must state that a quiet copy is shut down after the grace period except while it has a running background task | All | Must | Agents can rely on background waits | — |
+| REQ-006 | The SR-002 removal already on the task branch must be fully undone outside the ticket folder, so the result has no leftover removal changes (setting, lifecycle, contract, docs) | BEH-004, BEH-007 | Must | Approved behavior keeps idle shutdown | SR-003 |
 
 ## Acceptance Criteria
 
 | AC ID | Requirements | Scenarios | Trigger | Expected Outcome | Alternate / Failure | Verification |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-001 | REQ-001 | SCN-001 | Reproduction of the 10-minute case: a delegated Claude agent starts a background task that runs longer than the old grace period (shortened to a test value, e.g. 60 s worth of controllable time) and ends its turn | The run is still live after that time; the task completes; the agent receives the completion and sends its result to the delegator | Before the fix the same test shows the run shut down and the task stopped | Automated lifecycle test with a controllable clock, plus a gated live Claude E2E |
-| AC-002 | REQ-001 | SCN-002 | Delegated Agent and delegated Team go quiet; time advances far beyond the old grace period | Both stay live (`idle`); a same-root message is delivered without restore | — | Unit/integration tests |
-| AC-003 | REQ-002 | SCN-004 | Task DONE, root stop, server restart then message, DONE reactivation | Same outcomes as before this change | — | Existing tests stay green (adjusted only where they relied on idle shutdown) |
-| AC-004 | REQ-003 | SCN-003 | Server settings listed/updated; a settings store still contains the old key | The setting is not offered; startup and settings reads succeed with the stale key present | — | Unit test |
-| AC-005 | REQ-004 | — | Code search | No grace schedule, grace setting or idle shutdown-if-quiet path remains | — | Review + grep |
-| AC-006 | REQ-005 | — | Docs review | `agent_team_execution.md`, `agent_orgs.md`, `agent_tools.md`, `codex_integration.md` and related docs describe the new rule; no grace setting mention remains | — | Review |
+| AC-001 | REQ-001 | SCN-001 | Reproduction of the 10-minute case with grace set to 60 s: a delegated Claude agent starts a `run_in_background` task that runs longer than 60 s (e.g. `sleep 90`) and ends its turn | The copy is still live after the grace period; the task completes (no `[killed]`); the agent receives the completion and sends its result to the delegator | On the base the same test shows the copy shut down and the task stopped (existing `evidence/baseline-before*`) | Gated live Claude E2E |
+| AC-002 | REQ-001 | SCN-002 | AGY copy with a running background step, grace elapsed | Copy not shut down | — | Unit/integration (live AGY optional) |
+| AC-003 | REQ-001 | SCN-001 | A member of a delegated Team has a running background task; grace elapsed; Team otherwise quiet | Team copy not shut down | — | Unit/integration |
+| AC-004 | REQ-002 | SCN-003 | Background task ends (completed, failed, stopped) with no following turn; copy quiet | Shut down one grace period after the end | — | Unit with fake timers |
+| AC-005 | REQ-002 | SCN-003 | Claude task completes; CLI turn runs; agent goes idle | Shut down one grace period after that idle | — | Unit/integration |
+| AC-006 | REQ-003 | SCN-004, SCN-005 | Quiet copy without background tasks (any runtime) | Shut down after the grace period; message restores it | — | Existing tests restored and green |
+| AC-007 | REQ-004 | — | DONE, root stop, server stop while a background task runs | Copy and task stop as today | — | Existing tests + one unit case for root stop with a running task |
+| AC-008 | REQ-005, REQ-006 | — | Review | LLM contract and docs describe the rule; no SR-002 removal residue outside `tickets/` (diff against base shows only the hybrid change) | — | Review + `git diff 3a2496c95 -- . ':!tickets'` |
 
 ## Relevant Scenarios And Journeys
 
 | Scenario ID | Kind | Actor | Goal / Event | Trigger | Start | Steps | Expected Outcome | Alternate | Validity | Evidence | Related |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-001 | System | Delegated agent | Wait on long work, then report | `run_in_background` task (Claude), background step (AGY), or other long wait; turn ends | Delegated copy live | Turn ends → idle → work runs as long as needed → completion → agent continues → `send_message_to` delegator | Result reaches the delegator | Task fails → agent reports the failure | Supported Normal Scenario | Report (observed twice 2026-10-08) | REQ-001, AC-001 |
-| SCN-002 | System | Delegator | Follow up with a quiet copy | `send_message_to(run ID)` | Copy idle for a long time | Message delivered to the live run | Copy handles it, no restore | — | Supported Normal Scenario | Docs | REQ-001, AC-002 |
-| SCN-003 | Operational | Operator | Server settings | Settings page / API | Old key may be stored | Setting absent; stale value ignored | No error | — | Supported Normal Scenario | Settings service | REQ-003, AC-004 |
-| SCN-004 | System | Delegator / user / server | Release and restore | DONE, root stop, server restart then message, reactivation | — | As today | As today | — | Supported Normal Scenario | Prior tickets | REQ-002, AC-003 |
+| SCN-001 | System | Delegated Claude agent | Wait on long background work, then report | `run_in_background` task, turn ends | Copy live | Idle → task runs > grace → completes → CLI turn → agent reports to delegator | Result reaches delegator | Task fails → agent reports failure | Supported Normal Scenario | Report (observed twice 2026-10-08) | REQ-001, AC-001, AC-003 |
+| SCN-002 | System | Delegated AGY agent | Same with an AGY background step | Step open at turn end | Copy live | As SCN-001 | Copy stays live | — | Supported Normal Scenario | AGY docs | REQ-001, AC-002 |
+| SCN-003 | System | Idle shutdown | Release after work ends | Last background task ends | Copy otherwise quiet | Task ends → grace → shutdown | Memory released | — | Supported Normal Scenario | Hybrid decision | REQ-002, AC-004, AC-005 |
+| SCN-004 | System | Idle shutdown | Release quiet copies | Turn ends, nothing running | Copy live | Grace → shutdown → message wakes it | Unchanged | — | Supported Normal Scenario | Docs | REQ-003, AC-006 |
+| SCN-005 | System | Codex/native/ACP copy | Same as SCN-004 | Turn ends | Copy live | As SCN-004 | Unchanged | — | Supported Normal Scenario | User assumption 2026-10-08 | REQ-003, AC-006 |
 
 ## UI, Interaction, And Experience Requirements
 
-- Applicable: `No`. The setting disappears from the server settings list automatically (predefined setting removed). N/A — not applicable for Product design fields.
+- Applicable: `No`. N/A — not applicable for Product design fields.
 
 ## Quality And Non-Functional Requirements
 
 | Quality ID | Related | Area | Requirement | Conditions | Verification |
 | --- | --- | --- | --- | --- | --- |
-| QR-001 | REQ-002 | Reliability | Removing idle shutdown must not change ordering or safety of DONE release, reactivation, root stop or restore | Serialized task-execution command queue | Existing tests |
-| QR-002 | REQ-001 | Operability (accepted) | An open Task's delegated copy keeps its runtime process until DONE, root stop or server stop | User decision DEC-004 | Documented |
+| QR-001 | REQ-001, REQ-002 | Reliability | No new timer per background task; the existing grace schedule and serialized shutdown path stay the single idle authority | Idle shutdown | Review |
+| QR-002 | REQ-001 | Reliability | If a runtime fails to report a task's end, the copy stays live (never killed by mistake); it is still stopped by DONE/root/server stop | Missed terminal frame | Review |
+| QR-003 | REQ-003 | Operability | Memory of copies with nothing running is released as today | — | Existing tests |
 
 ## Data Continuity And Acceptable Loss
 
-- Persisted or external data affected: `Yes` (minor) — a stored value of the removed setting may exist in server settings.
-- Must be preserved: all other settings; startup must succeed.
-- Acceptable: the stale value is ignored (left in place or dropped; architecture decides).
+- Persisted or external data affected: `No`. The grace setting stays; background task state is runtime-only.
 
 ## External Contracts And Dependencies
 
 | Contract | Constraint | Evidence | Risk |
 | --- | --- | --- | --- |
-| Claude CLI background tasks | Live as long as the CLI process | `agent_execution.md` | None |
-| Gated E2E `mixed-task-delegation.e2e.test.ts` | Uses the grace setting today | `codex_integration.md` l.633–642 | Must be updated |
+| Claude CLI task frames | `background_tasks_changed`, `task_started`/`task_updated` (`is_backgrounded`, terminal status), `task_notification` | `claude-background-task-registry.ts`, `agent_execution.md` | Missed terminal frame keeps the copy live (QR-002) |
+| AGY exit-message files | Exit → completed/failed; unreadable → stays running until AGY stops | `agy-background-task-monitor.ts`, AGY docs | Never-ending daemon keeps the copy live until DONE/root stop (accepted, DEC-005) |
 
 ## Supplemental Artifacts
 
 | Artifact Path | Purpose | Related | Status | Approval |
 | --- | --- | --- | --- | --- |
 | `problem-report.md` | Original report | BEH-001 | Final | Evidence only |
+| `evidence/baseline-before*`, `evidence/after*` | AC-001 receipts from the SR-002 implementation; the "before" receipt stays valid | AC-001 | Historical | Evidence only |
 
 ## Assumptions
 
 | ID | Assumption | Why | Validation | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | Delegators mark Tasks DONE in normal use, so idle copies do not accumulate without bound | QR-002 | Project Task Manager role contract (prior ticket REQ-006) | Accepted by user decision |
+| ASM-001 | Codex, native and ACP runtimes do not create background tasks that the agent waits on for a notification | REQ-003 | User decision 2026-10-08 | Accepted |
+| ASM-002 | Claude starts a turn after each background completion; AGY does not | REQ-002 re-arm trigger | Docs; architecture | Accepted |
 
 ## Open Decisions And Questions
 
 | ID | Question | Options / Evidence | Owner | Status |
 | --- | --- | --- | --- | --- |
-| DEC-001 | Skip idle shutdown only while background tasks run, or remove it? | — | User | Superseded by DEC-004 |
-| DEC-002 | Upper bound for background deferral? | — | User | Superseded by DEC-004 (no idle shutdown) |
-| DEC-003 | Notice to the agent when a run end stopped its background tasks | Not answered by the user; kept out of this ticket to keep scope to the approved removal | User | Deferred — separate-ticket candidate |
-| DEC-004 | Is idle shutdown still needed now that every delegated copy belongs to a Task and DONE releases it? | Investigation notes "Is Idle Shutdown Still Needed?" | User | **Decided 2026-10-08: remove it** ("yes. i think we should remove it. lets go") |
+| DEC-001 | Skip only while background tasks run, or remove idle shutdown? | — | User | Decided 2026-10-08: skip only while background tasks run (hybrid) |
+| DEC-002 | Upper bound for background deferral? | — | User | Superseded by DEC-005 |
+| DEC-003 | Notice to the agent when a run end stopped its background tasks | — | User | Deferred — separate-ticket candidate |
+| DEC-004 | Remove idle shutdown? | — | User | Decided "remove" in SR-002; **reversed 2026-10-08** in favor of the hybrid |
+| DEC-005 | Time limit on a running background task keeping a copy alive | Recommended: none (DONE, root stop and server stop still end it) | User | Adopted as presented with the hybrid; user may still request a cap |
+| DEC-006 | Runtimes without background reporting | "if they do not send, then they do not create" | User | Decided 2026-10-08: treated as none |
 
 ## Traceability
 
 | Requirement | Use Cases | Behaviors | ACs | Scenarios |
 | --- | --- | --- | --- | --- |
-| REQ-001 | UC-001, UC-002 | BEH-001, BEH-002, BEH-004 | AC-001, AC-002 | SCN-001, SCN-002 |
-| REQ-002 | UC-002 | BEH-008 | AC-003 | SCN-004 |
-| REQ-003 | UC-003 | BEH-007 | AC-004 | SCN-003 |
-| REQ-004 | UC-003 | BEH-004, BEH-007 | AC-005 | — |
-| REQ-005 | UC-001..003 | All | AC-006 | — |
+| REQ-001 | UC-001 | BEH-001, BEH-002 | AC-001, AC-002, AC-003 | SCN-001, SCN-002 |
+| REQ-002 | UC-002 | BEH-003 | AC-004, AC-005 | SCN-003 |
+| REQ-003 | UC-002 | BEH-004, BEH-006, BEH-007 | AC-006 | SCN-004, SCN-005 |
+| REQ-004 | UC-001 | BEH-008 | AC-007 | — |
+| REQ-005 | UC-001, UC-002 | All | AC-008 | — |
+| REQ-006 | UC-002 | BEH-004, BEH-007 | AC-008 | — |
 
 ## Architecture Phase Input
 
-- Approved scenarios: SCN-001..SCN-004.
-- Constraints: keep the serialized task-execution queue, live leases (if still needed), restore path, DONE release, reactivation, root stop/fail-stop.
-- Deferred to architecture: what remains of liveness/lease concepts without idle shutdown; whether `tryPrepareTerminationIfQuiescent` has other callers; stale setting handling; test rewrites.
-- Technical facts to verify: all callers of the removed paths; whether the "live lease" still has a purpose (it protected against shutdown during delivery).
+- Approved scenarios: SCN-001..SCN-005.
+- Constraints: one idle authority (existing schedule and quiet check); root-shutdown fence and explicit stops not deferred; grace setting unchanged.
+- Deferred to architecture: where the running-background-task signal lives; re-arm trigger on background-task end; how the SR-002 commits are undone.
 
 ## Readiness Check
 
@@ -179,7 +186,7 @@ Blocking findings must cite REQ/AC/BEH IDs here. Scope-changing proposals are Re
 
 ### Approved Basis Ready For Design
 
-- User approval received: `Yes` (2026-10-08)
+- User approval received: `Yes` (2026-10-08, hybrid)
 - Exact requirements and supplement approval basis recorded: `Yes`
 - Approved requirements package ready for architecture design: `Yes`
 - Remaining blocker: None
