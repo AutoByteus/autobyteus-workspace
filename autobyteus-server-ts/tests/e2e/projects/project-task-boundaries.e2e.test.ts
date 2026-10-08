@@ -429,4 +429,197 @@ describe("Project Task production HTTP boundaries", () => {
       ["projectId", "name", "description", "createdAt", "updatedAt", "workspaces"].sort());
   });
 
+  // project-task-tool-context-files: agent-named node-local files copied into a Project Task's saved context
+  // through create_or_update_task.context_files, over the selected MCP session and the native tool.
+  const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+  const taskCall = async (args: Record<string, unknown>) => {
+    const result = await call("create_or_update_task", args);
+    expect(result.isError, JSON.stringify(result.structuredContent)).not.toBe(true);
+    expect(JSON.parse(result.content[0].text)).toEqual(result.structuredContent);
+    return result.structuredContent.task as { projectId: string; taskId: string; status: string; attachedContextFiles?: Array<{ storedFilename: string; displayName: string }> };
+  };
+  const nativeTaskCall = async (args: Record<string, unknown>) => JSON.parse(await new CreateOrUpdateTaskTool().execute(null, args)).task;
+  const taskJson = async (projectId: string, taskId: string) => JSON.parse(await fs.readFile(path.join(root, "projects", projectId, "tasks", taskId, "task.json"), "utf8"));
+  const readOne = async (projectId: string, taskId: string) => (await list(projectId)).find(t => t.taskId === taskId)!;
+  const ownedSources = async (name: string) => { const dir = path.join(root, "sources", name); await fs.mkdir(dir, { recursive: true }); return dir; };
+  const attached = (displayName: string) => ({ storedFilename: expect.stringMatching(/\S/), displayName });
+
+  it("CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011)", async () => {
+    // AC-011: one optional additive string array on the existing tool; no new tool.
+    const tools = (await rpc(mcpUrl, "tools/list")).body.result.tools as Array<{ name: string; description: string; inputSchema: { properties: Record<string, any>; required?: string[] } }>;
+    expect(tools.map(t => t.name)).toEqual(names);
+    const taskTool = tools.find(t => t.name === "create_or_update_task")!;
+    expect(taskTool.inputSchema.properties.context_files).toMatchObject({ type: "array", items: { type: "string" } });
+    expect(taskTool.inputSchema.properties.context_files.description).toMatch(/Absolute local file paths/);
+    expect(taskTool.inputSchema.required ?? []).not.toContain("context_files");
+    expect(taskTool.description).toContain("context_files");
+    expect(taskTool.description).toContain("attachedContextFiles");
+    expect(Object.keys(taskTool.inputSchema.properties).sort()).toEqual(["context_files", "description", "project_id", "status", "task_id"]);
+
+    // RU-001: a pasted macOS screenshot under /private/tmp (real name: spaces and U+202F before AM).
+    const tmpBase = await fs.stat("/private/tmp").then(() => "/private/tmp", () => os.tmpdir());
+    const pasted = await fs.mkdtemp(path.join(tmpBase, "ctx-files-e2e-"));
+    try {
+      const shot = path.join(pasted, "Screenshot 2026-10-08 at 10.15.32 AM.png");
+      const sources = await ownedSources("create");
+      const notes = path.join(sources, "notes.md"), log = path.join(sources, "run log.txt"), more = path.join(sources, "more.md"), done = path.join(sources, "final.png");
+      await fs.writeFile(shot, PNG); await fs.writeFile(notes, "# Notes\nGreen status is wrong.\n");
+      await fs.writeFile(log, "log bytes\n"); await fs.writeFile(more, "more context\n"); await fs.writeFile(done, PNG);
+      const projectId = await createProject("Context files");
+
+      // AC-001: create with [png, md] through the selected MCP session.
+      const created = await taskCall({ project_id: projectId, description: " Fix the green status ", context_files: [shot, notes] });
+      expect(created).toEqual({ projectId, taskId: expect.stringMatching(/^project_task_/), status: "TODO",
+        attachedContextFiles: [attached(path.basename(shot)), attached("notes.md")] });
+      const taskId = created.taskId;
+      let task = await readOne(projectId, taskId);
+      expect(task).toMatchObject({ description: "Fix the green status", status: "TODO" });
+      expect(task.contextFiles).toEqual([
+        { storedFilename: created.attachedContextFiles![0]!.storedFilename, displayName: path.basename(shot), mimeType: "image/png", sizeBytes: PNG.length, locator: expect.any(String) },
+        { storedFilename: created.attachedContextFiles![1]!.storedFilename, displayName: "notes.md", mimeType: "text/markdown", sizeBytes: 31, locator: expect.any(String) },
+      ]);
+      // Persisted in the existing record shape (Persisted data: Not Affected).
+      expect((await taskJson(projectId, taskId)).contextFiles).toEqual(task.contextFiles.map(({ locator: _locator, ...file }) => file));
+      // App preview/download: image inline with its MIME, markdown as an attachment; exact bytes.
+      const image = await fetch(`${origin}${task.contextFiles[0]!.locator}`);
+      expect(image.status).toBe(200); expect(image.headers.get("content-type")).toContain("image/png");
+      expect(image.headers.get("content-disposition")).toBe(`inline; filename*=UTF-8''${encodeURIComponent(path.basename(shot))}`);
+      expect(Buffer.from(await image.arrayBuffer())).toEqual(PNG);
+      const markdown = await fetch(`${origin}${task.contextFiles[1]!.locator}`);
+      expect(markdown.headers.get("content-disposition")).toContain("attachment");
+      expect(await markdown.text()).toBe("# Notes\nGreen status is wrong.\n");
+
+      // AC-006: sources are only read; deleting them leaves the saved copies and their app reads intact.
+      expect(await fs.readFile(shot)).toEqual(PNG);
+      await fs.rm(pasted, { recursive: true, force: true }); await fs.rm(notes);
+      reset();
+      expect(Buffer.from(await (await fetch(`${origin}${task.contextFiles[0]!.locator}`)).arrayBuffer())).toEqual(PNG);
+      const business = (await call("list_project_tasks", { project_id: projectId })).structuredContent.tasks[0];
+      expect(business.contextFiles.map((f: { displayName: string }) => f.displayName)).toEqual([path.basename(shot), "notes.md"]);
+      expect(await fs.readFile(business.contextFiles[0].localPath)).toEqual(PNG);
+      expect(await fs.readFile(business.contextFiles[1].localPath, "utf8")).toBe("# Notes\nGreen status is wrong.\n");
+
+      // AC-002: files-only patch appends, keeps text/status/earlier files, returns only this call's file.
+      const before = task;
+      const appended = await taskCall({ task_id: taskId, context_files: [log] });
+      expect(appended).toEqual({ projectId, taskId, status: "TODO", attachedContextFiles: [attached("run log.txt")] });
+      task = await readOne(projectId, taskId);
+      expect(task).toMatchObject({ description: before.description, status: "TODO", createdAt: before.createdAt });
+      expect(task.contextFiles.slice(0, 2)).toEqual(before.contextFiles);
+      expect(task.contextFiles[2]).toMatchObject({ storedFilename: appended.attachedContextFiles![0]!.storedFilename, displayName: "run log.txt", mimeType: "text/plain", sizeBytes: 10 });
+      expect(Date.parse(task.updatedAt)).toBeGreaterThanOrEqual(Date.parse(before.updatedAt));
+      // AC-002 alternate, native surface: the same source again is another saved copy.
+      const again = await nativeTaskCall({ task_id: taskId, context_files: [log] });
+      expect(again).toEqual({ projectId, taskId, status: "TODO", attachedContextFiles: [attached("run log.txt")] });
+      expect(again.attachedContextFiles[0].storedFilename).not.toBe(appended.attachedContextFiles![0]!.storedFilename);
+      expect((await readOne(projectId, taskId)).contextFiles).toHaveLength(4);
+
+      // AC-003: description + status + files in one call; then DONE + files.
+      const combined = await taskCall({ task_id: taskId, description: "Edited by agent", status: "IN_PROGRESS", context_files: [more] });
+      expect(combined).toEqual({ projectId, taskId, status: "IN_PROGRESS", attachedContextFiles: [attached("more.md")] });
+      expect(await readOne(projectId, taskId)).toMatchObject({ description: "Edited by agent", status: "IN_PROGRESS" });
+      const closed = await taskCall({ task_id: taskId, status: "DONE", context_files: [done] });
+      expect(closed).toEqual({ projectId, taskId, status: "DONE", attachedContextFiles: [attached("final.png")] });
+      task = await readOne(projectId, taskId);
+      expect(task.status).toBe("DONE");
+      expect(task.contextFiles.map(f => f.displayName)).toEqual([path.basename(shot), "notes.md", "run log.txt", "run log.txt", "more.md", "final.png"]);
+      for (const file of task.contextFiles) expect((await fetch(`${origin}${file.locator}`)).status).toBe(200);
+
+      // AC-004 / AC-009: an empty list on create is a plain create; plain patches keep the plain return.
+      const plain = await nativeTaskCall({ project_id: projectId, description: "No files", context_files: [] });
+      expect(plain).toEqual({ projectId, taskId: expect.any(String), status: "TODO" });
+      expect((await readOne(projectId, plain.taskId)).contextFiles).toEqual([]);
+      await expect(fs.stat(path.join(root, "projects", projectId, "tasks", plain.taskId, "context"))).rejects.toMatchObject({ code: "ENOENT" });
+      expect(await taskCall({ task_id: plain.taskId, description: "Still no files" })).toEqual({ projectId, taskId: plain.taskId, status: "TODO" });
+
+      // RU-002: a Task with an app-uploaded file; the agent appends; the user removes the agent's file in the app.
+      const d = await draft(projectId);
+      const uiFile = await (await upload(projectId, d.draftId, "ui uploaded bytes", "text/plain", "ui.txt")).json() as FileRef;
+      const uiTask = (await gql<{ createProjectTask: Task }>(`mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){${TASK}}}`,
+        { i: { projectId, description: "UI task", contextDraft: { draftId: d.draftId, storedFilenames: [uiFile.storedFilename] } } })).createProjectTask;
+      const uiRecord = (await taskJson(projectId, uiTask.taskId)).contextFiles[0];
+      const agentAdd = await taskCall({ task_id: uiTask.taskId, context_files: [more] });
+      expect(agentAdd.attachedContextFiles).toEqual([attached("more.md")]);
+      expect((await taskJson(projectId, uiTask.taskId)).contextFiles).toEqual([uiRecord, expect.objectContaining({ displayName: "more.md" })]);
+      const removed = (await gql<{ updateProjectTask: Task }>(`mutation($i:UpdateProjectTaskInput!){updateProjectTask(input:$i){${TASK}}}`,
+        // As the app's Save sends it (useProjectTaskDraft): the current text plus the removal, no draft.
+        { i: { projectId, taskId: uiTask.taskId, description: "UI task", contextChanges: { addStoredFilenames: [], removeStoredFilenames: [agentAdd.attachedContextFiles![0]!.storedFilename] } } })).updateProjectTask;
+      expect(removed.contextFiles).toEqual([uiTask.contextFiles[0]]);
+      expect((await fetch(`${origin}${uiTask.contextFiles[0]!.locator}`)).status).toBe(200);
+      expect(await fs.readdir(path.join(root, "projects", projectId, "tasks", uiTask.taskId, "context"))).toEqual([uiRecord.storedFilename]);
+      expect(await fs.readFile(more, "utf8")).toBe("more context\n");
+    } finally {
+      await fs.rm(pasted, { recursive: true, force: true });
+    }
+  }, 60000);
+
+  it("CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)", async () => {
+    const sources = await ownedSources("errors");
+    const valid = path.join(sources, "valid.png"); await fs.writeFile(valid, PNG);
+    const folder = path.join(sources, "folder"); await fs.mkdir(folder);
+    const unreadable = path.join(sources, "secret.txt"); await fs.writeFile(unreadable, "secret"); await fs.chmod(unreadable, 0o000);
+    const script = path.join(sources, "script.ts"); await fs.writeFile(script, "export {};\n");
+    const extensionless = path.join(sources, "Makefile"); await fs.writeFile(extensionless, "all:\n");
+    const exe = path.join(sources, "tool.exe"); await fs.writeFile(exe, "MZ");
+    const limit = 25 * 1024 * 1024;
+    const huge = path.join(sources, "huge.txt"); await fs.writeFile(huge, ""); await fs.truncate(huge, limit + 1);
+    const exact = path.join(sources, "exact.txt"); await fs.writeFile(exact, ""); await fs.truncate(exact, limit);
+    const projectId = await createProject("Context file errors");
+    const existing = await taskCall({ project_id: projectId, description: "Existing", context_files: [valid] });
+    // A current-format open run resource: DONE + an invalid file must not close it.
+    const resources = path.join(root, "projects", projectId, "tasks", existing.taskId, "agent_run_resources.json");
+    await fs.writeFile(resources, JSON.stringify({ taskId: existing.taskId, agentRunResources: [{ role: "assigned", assignedBy: "fixture-manager",
+      hostRoot: { kind: "agent", runId: "fixture-root" }, agentRun: { kind: "agent", agentRunId: "fixture-worker" },
+      linkedAt: new Date().toISOString(), start: "started", closedAt: null }] }, null, 2));
+    const expectTaskError = async (args: Record<string, unknown>, code: string, named?: string) => {
+      const before = await snapshot(path.join(root, "projects"));
+      const native = await new CreateOrUpdateTaskTool().execute(null, args).then(
+        (value) => { throw new Error(`Expected native rejection, got ${value}`); }, (error: Error) => JSON.parse(error.message));
+      expect(native.error.code, JSON.stringify({ args, native })).toBe(code);
+      if (named) expect(native.error.message).toContain(named);
+      const result = await call("create_or_update_task", args);
+      expect(result.isError).toBe(true); expect(result.structuredContent).toEqual(native);
+      expect(JSON.parse(result.content[0].text)).toEqual(native);
+      expect(await snapshot(path.join(root, "projects"))).toEqual(before);
+    };
+    const fileCases: Array<[string, string, string]> = [
+      ["relative", "relative/note.txt", "TASK_CONTEXT_INVALID"],
+      ["non-normalized", `${sources}/sub/../valid.png`, "TASK_CONTEXT_INVALID"],
+      ["missing", path.join(sources, "missing.png"), "TASK_CONTEXT_FILE_UNAVAILABLE"],
+      ["directory", folder, "TASK_CONTEXT_FILE_UNAVAILABLE"],
+      ...(process.getuid?.() === 0 ? [] : [["unreadable", unreadable, "TASK_CONTEXT_FILE_UNAVAILABLE"] as [string, string, string]]),
+      ["unsupported .ts", script, "TASK_CONTEXT_INVALID"],
+      ["unsupported .exe", exe, "TASK_CONTEXT_INVALID"],
+      ["extensionless", extensionless, "TASK_CONTEXT_INVALID"],
+      ["over 25 MiB", huge, "TASK_CONTEXT_INVALID"],
+    ];
+    for (const [, bad, code] of fileCases) {
+      await expectTaskError({ project_id: projectId, description: "Must not be created", context_files: [valid, bad] }, code, bad);
+      await expectTaskError({ task_id: existing.taskId, description: "Must not change", status: "DONE", context_files: [valid, bad] }, code, bad);
+    }
+    await expectTaskError({ project_id: projectId, description: "Duplicate", context_files: [valid, exact, valid] }, "TASK_CONTEXT_INVALID", valid);
+    await expectTaskError({ task_id: existing.taskId, status: "DONE", context_files: [valid, valid] }, "TASK_CONTEXT_INVALID", valid);
+    // AC-008: argument shape and strict modes.
+    for (const context_files of ["/abs/file.png", null, {}, [12], [" "], [null], [[valid]]]) {
+      await expectTaskError({ project_id: projectId, description: "Bad shape", context_files }, "PROJECT_TOOL_ARGUMENT_INVALID");
+      await expectTaskError({ task_id: existing.taskId, context_files }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    }
+    await expectTaskError({ task_id: existing.taskId, remove_context_files: [valid] }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    await expectTaskError({ project_id: projectId, task_id: existing.taskId, context_files: [valid] }, "PROJECT_TOOL_ARGUMENT_INVALID");
+    await expectTaskError({ project_id: projectId, context_files: [valid] }, "TASK_DESCRIPTION_REQUIRED");
+    await expectTaskError({ project_id: projectId, description: "x", status: "TODO", context_files: [valid] }, "TASK_CREATE_STATUS_UNSUPPORTED");
+    await expectTaskError({ task_id: "project_task_unknown", context_files: [valid] }, "TASK_NOT_FOUND");
+    // AC-004: an empty list alone is not a change.
+    await expectTaskError({ task_id: existing.taskId, context_files: [] }, "TASK_PATCH_REQUIRED");
+    // Nothing above changed the Task, its files or its open run.
+    expect(await readOne(projectId, existing.taskId)).toMatchObject({ description: "Existing", status: "TODO" });
+    expect((await list(projectId)).map(t => t.taskId)).toEqual([existing.taskId]);
+    expect(JSON.parse(await fs.readFile(resources, "utf8")).agentRunResources[0].closedAt).toBeNull();
+    // RU-005: exactly 25 MiB is accepted.
+    const atLimit = await nativeTaskCall({ task_id: existing.taskId, context_files: [exact] });
+    expect(atLimit.attachedContextFiles).toEqual([attached("exact.txt")]);
+    expect((await readOne(projectId, existing.taskId)).contextFiles[1]).toMatchObject({ displayName: "exact.txt", sizeBytes: limit, mimeType: "text/plain" });
+    await fs.chmod(unreadable, 0o600);
+  }, 120000);
+
 });
