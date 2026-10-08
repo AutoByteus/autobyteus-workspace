@@ -53,10 +53,10 @@ Hands-on, in the app built from this worktree (`pnpm --silent isolated-app start
 
 ## Delivery Artifacts
 
-- Docs sync: `tickets/in-progress/archived-open-run-disappears/docs-sync-report.md`
-- Release notes: `tickets/in-progress/archived-open-run-disappears/release-notes.md`
-- Release/deployment report: `tickets/in-progress/archived-open-run-disappears/release-deployment-report.md`
-- Delivery revision record: `tickets/in-progress/archived-open-run-disappears/delivery-revision-record.md` (DR-001)
+- Docs sync: `tickets/done/archived-open-run-disappears/docs-sync-report.md`
+- Release notes: `tickets/done/archived-open-run-disappears/release-notes.md`
+- Release/deployment report: `tickets/done/archived-open-run-disappears/release-deployment-report.md`
+- Delivery revision record: `tickets/done/archived-open-run-disappears/delivery-revision-record.md` (DR-001)
 
 ## Outcome
 

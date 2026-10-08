@@ -6,9 +6,9 @@ Client-only web fix in `autobyteus-web` (4 source files) plus server and web tes
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/tickets/in-progress/archived-open-run-disappears/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/tickets/done/archived-open-run-disappears/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/tickets/in-progress/archived-open-run-disappears/delivery-revision-record.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/tickets/done/archived-open-run-disappears/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: holding for explicit user verification.
 
@@ -25,7 +25,7 @@ Client-only web fix in `autobyteus-web` (4 source files) plus server and web tes
   - `pnpm -C autobyteus-web exec vitest run pages/__tests__/chat.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts stores/__tests__/agentContextsStore.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/runHistoryOpenRunRemoval.integration.spec.ts` → 5 files, 48 tests passed
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history --no-watch` → 46 files, 227 tests passed
   - `pnpm -C autobyteus-web guard:web-boundary` → Passed
-  - Logs: `tickets/in-progress/archived-open-run-disappears/delivery-evidence/`
+  - Logs: `tickets/done/archived-open-run-disappears/delivery-evidence/`
 - Post-integration verification result: `Passed`
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes` (as of `ace86bf1f`)
@@ -41,7 +41,7 @@ Client-only web fix in `autobyteus-web` (4 source files) plus server and web tes
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/tickets/in-progress/archived-open-run-disappears/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archived-open-run-disappears/tickets/done/archived-open-run-disappears/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/chat.md`
 
@@ -71,7 +71,7 @@ Pending user decision at verification.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/archived-open-run-disappears/release-notes.md`
+- Release notes artifact created before verification / acceptance: `tickets/done/archived-open-run-disappears/release-notes.md`
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
