@@ -3,6 +3,8 @@ import { createBackendPreparation } from "../../src/agent-execution/backends/age
 
 /** Current opaque Manager fake. Construction callbacks are observations, not obsolete public APIs. */
 export const testActivationManager = (definitions: Record<string, any>) => ({
+  /** No previous runtime owes its release unless a test supplies its own. */
+  releaseRetiredRun: vi.fn(async (_runId: string) => undefined),
   ...definitions,
   beginActivation: vi.fn((request: any) => {
     let started = false, settled = false, cancelled = false;

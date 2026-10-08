@@ -1,0 +1,22 @@
+{
+  "case": "LIVE-TEAM-INT",
+  "model": "gemini-3.8-flash-high",
+  "teamRunId": "agy_recovery_pair_384c435d_5d2d_4947_a572_54eaf8_09789de8ec0f43e58921b52720a13318",
+  "alpha": "agy_recovery_alpha_384c435d_5d2d_4947_a572_54eaf_dad0498bf17b48f59652f6aad28cdc22",
+  "previousAliveAtImmediateSend": true,
+  "previous": [
+    {
+      "pid": 28472,
+      "command": "agy --new-project --agent autobyteus-f06016409d2b0e9b --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "resumed": [
+    {
+      "pid": 45789,
+      "command": "agy --conversation b70b4c1a-6efb-40cd-a94b-3df712b2f69a --agent autobyteus-f06016409d2b0e9b --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-tUR7uA/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "failures": [],
+  "recallText": "CODE-TI-af2f3215",
+  "result": "Pass"
+}

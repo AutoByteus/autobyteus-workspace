@@ -1,0 +1,59 @@
+{
+  "case": "LIVE-CODEX-EXIT",
+  "model": "gpt-5.6-luna",
+  "runId": "codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5",
+  "crashed": [
+    {
+      "pid": 70405,
+      "command": "codex app-server -c agents.enabled=false"
+    }
+  ],
+  "framesAfterCrash": [
+    {
+      "type": "ERROR",
+      "payload": {
+        "code": "CODEX_APP_SERVER_CLOSED",
+        "message": "Codex app server process closed unexpectedly (SIGKILL).",
+        "error_scope": "runtime",
+        "error_effect": "terminal",
+        "turn_id": null
+      }
+    },
+    {
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "error",
+        "recoverableBlock": null,
+        "agent_id": "codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5"
+      }
+    },
+    {
+      "type": "AGENT_INPUT_STATE",
+      "payload": {
+        "run_instance_id": "b006f23b-a6b6-40ca-9d99-7de4b7c1daf1",
+        "revision": 4,
+        "entries": [],
+        "recoverableBlock": null
+      }
+    }
+  ],
+  "recallAck": {
+    "command_type": "SEND_MESSAGE",
+    "run_id": "codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5",
+    "message_id": "e2e-1310a501-5304-416a-9c23-dfa58f842ff9",
+    "dedupe_key": "agent_run_input:e2e:e2e-1310a501-5304-416a-9c23-dfa58f842ff9",
+    "state": "failed",
+    "accepted": false,
+    "duplicate": false,
+    "code": "ACTIVATION_FAILED",
+    "message": "Agent run 'codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5' still owns retired cleanup.",
+    "status": {
+      "status": "error",
+      "recoverableBlock": null,
+      "agent_id": "codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5",
+      "error_message": "Agent run 'codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5' still owns retired cleanup."
+    }
+  },
+  "result": "Fail",
+  "error": "AssertionError: {\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5\",\"message_id\":\"e2e-1310a501-5304-416a-9c23-dfa58f842ff9\",\"dedupe_key\":\"agent_run_input:e2e:e2e-1310a501-5304-416a-9c23-dfa58f842ff9\",\"state\":\"failed\",\"accepted\":false,\"duplicate\":false,\"code\":\"ACTIVATION_FAILED\",\"message\":\"Agent run 'codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5' still owns retired cleanup.\",\"status\":{\"status\":\"error\",\"recoverableBlock\":null,\"agent_id\":\"codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5\",\"error_message\":\"Agent run 'codex_exit_resend_477edec7_491c_4ad1_b1ff_1ed27e_340acf5aede943878ed9104d6d471fd5' still owns retired cleanup.\"}}: expected { command_type: 'SEND_MESSAGE', …(9) } to match object { accepted: true }\n(13 matching properties omitted from actual)"
+}
