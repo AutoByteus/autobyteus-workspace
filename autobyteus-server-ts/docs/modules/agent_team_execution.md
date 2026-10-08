@@ -244,17 +244,54 @@ terminal status has already been projected.
 
 ## Root And Agent Lifecycle
 
-Fresh and restored standalone Teams and Org-mounted Teams pass
-`prepareConfiguredAgents: false`. The full configured topology is available,
-but configured Agents remain unstarted and Offline until required by work.
+Flat Team preparation is always scope-only: it builds the TeamRun and its
+member contexts but never starts a member. This holds for every Team kind with
+no option to opt out: fresh and restored standalone Teams, Org-mounted Teams,
+collaborator Teams, and delegated Team copies (task Teams), whether hosted at
+the root (`RootTeamExecutionDirectory.beginRootTaskTeam`) or inside a Team
+(`TaskTeamExecutionRegistry`). The full configured topology is available, but
+configured Agents remain unstarted and Offline until required by work.
 Restore retains its mode, member identity, history and saved provider binding;
 Offline does not mean that a retained member has no history or binding.
 The first supported input or peer delivery activates only its exact receiver;
 selecting a row or publishing the root is not worker startup. Concurrent first
 inputs for the same member share one readiness attempt. Different members
 prepare independently and serialize only their root persistence mutations.
-This is an execution policy, not a UI color/status override. Work-bearing task
-preparation still stages identity before durable task publication and release.
+This is an execution policy, not a UI color/status override.
+
+A delegated Team copy therefore starts only its coordinator, when the work
+packet is delivered to it (the seed). Every other member has no AgentRun, no
+provider session and a `null` saved `platformAgentRunId` in the execution
+tree, and shows Offline, until work reaches it; its binding is adopted into the
+tree when it starts. Work-bearing task preparation still stages identity before
+durable task publication and release, but a task Team stages no provider
+bindings. If the coordinator cannot start, the seed fails and `delegate_task`
+fails as for any seed failure. Copies delegated before this behavior keep their
+already-started members until normal idle shutdown; they restore lazily like
+any other copy, with no migration.
+
+A member's start for an input (`ConfiguredAgentExecutionHandle.startForInput`)
+is one step shared by both input entry points: teammate delivery
+(`reserveInput`, used by `send_message_to` and handoffs) and direct input
+(`postMessage`, used by the delegated seed and user or application input). If
+the member cannot start, each audience gets one outcome:
+
+- the sender gets a not-accepted result with code `AGENT_RUN_ACTIVATION_FAILED`
+  (`{reserved: false}` for a reservation, `{accepted: false}` for a post). The
+  message carries the cause as `<underlying code>: <message>`, for example
+  `AGY_MODEL_UNAVAILABLE: …`; the underlying code is not the result code;
+- the member's status shows `error` with the cause; and
+- the member's conversation gets one error card (the `readiness_failure` event,
+  emitted once per failed start attempt and adapted to an `ERROR` presentation
+  event).
+
+Input closed for the member at that moment (Task DONE, root shutdown) is not a
+start failure: the sender gets `AGENT_RUN_NOT_ACCEPTING_INPUT` with the closure
+reason, with no `error` status and no error card. A failure while the member's
+run is already active is unexpected and is thrown, not reported this way. This
+contract is the same for UI-started Teams and Orgs, collaborator Teams and
+delegated copies.
+
 An uncertain commit or post-durability local/publication failure is nonretryable
 until safe root reopen; a definite failed write can retry after confirmed cleanup.
 Reopening is a safety/reconciliation boundary, not permission to replay an old
@@ -455,7 +492,9 @@ record `source` on their task execution and restore from it.
 
 A successful Agent target creates one task Agent at the logical member's
 address. A successful AgentTeam target creates one task-scoped TeamRun and sends
-the work packet through that Team's exact configured coordinator ingress. The
+the work packet through that Team's exact configured coordinator ingress; only
+the coordinator starts, and the other members start when work reaches them (see
+[Root And Agent Lifecycle](#root-and-agent-lifecycle)). The
 work packet is the child's first message: the delegator's address and AgentRun
 ID, the description, and any reference files. The result is a strict union:
 

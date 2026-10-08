@@ -251,6 +251,9 @@ queue.
   Project Task ownership is recorded only in each Task's
   `agent_run_resources.json` (see the
   [Task agent run resources contract](projects.md#saved-id-delegation-and-agent-run-resources)).
+  A delegated Team copy starts only its coordinator; its other members stay
+  Offline, with no AgentRun and a `null` saved binding, until work reaches them
+  (see [Root And Agent Lifecycle](./agent_team_execution.md#root-and-agent-lifecycle)).
 - Collaborators: a shared Agent or Agent Team the user brought into the Org run
   with `@` (see [Agent Communication](./agent_communication.md#collaborators)).
   Each is one hosted instance recorded as a `rootOrg.collaborators` entry with

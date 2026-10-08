@@ -512,8 +512,9 @@ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fi
   `DELEGATED_TEAM_LAZY_E2E_EVIDENCE_DIR` keeps a JSON receipt. With
   `RUN_CLAUDE_E2E=1` and a logged-in `claude`, one more case delegates an Org
   Team whose members run on real Claude (haiku): only the coordinator gets a
-  Claude session. That case uses your real `HOME` (the CLI reads its login
-  there); otherwise the suite runs under a disposable `HOME`. Status checks
+  Claude session. With `RUN_CLAUDE_E2E=1` the whole suite, not only that case,
+  runs under your real `HOME` (the CLI reads its login there); otherwise the
+  suite runs under a disposable `HOME`. Status checks
   accept a member that went idle and was then shut down by the 60 s grace
   before the check (a slow step on a loaded host); the receipt lists each such
   case under `graceShutdownAccepted`.
