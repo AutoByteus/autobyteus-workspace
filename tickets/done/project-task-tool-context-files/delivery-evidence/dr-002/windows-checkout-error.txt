@@ -1,0 +1,2 @@
+##[error]error: invalid path 'tickets/done/workspace-history-group-archive/api-e2e-evidence/guard-audit:localization-literals.log'
+##[error]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 128
