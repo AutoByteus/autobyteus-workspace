@@ -1,0 +1,2 @@
+{"transitions": [{"ms": 0, "s": "#/chat|EMPTY"}, {"ms": 27, "s": "#/chat|MISSING"}], "finalHash": "#/chat?id=open_agent_25175d32bb874407bd9d0a7938a1323c"}
+{"hash": "#/chat?id=open_agent_25175d32bb874407bd9d0a7938a1323c", "emptyState": false, "chatMissing": true, "selection": {"type": null, "id": null}, "agentContexts": ["live_agent_045b1ade16914d28bd452e1502fd23b0", "keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec", "live_agent_8dd87a0ac51f49168d95833431138ff9"], "localBadges": 0}

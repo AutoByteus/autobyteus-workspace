@@ -47,6 +47,13 @@ const buildIndexRow = (
   ...overrides,
 });
 
+// Without this, a history mutation resolves the process root manager by a dynamic import of its
+// whole module graph, which can exceed the test timeout and leave later tests a half-loaded module.
+const noCollaborationRoots = () => ({
+  hasRoot: vi.fn().mockReturnValue(false),
+  endRoot: vi.fn(async () => undefined),
+});
+
 const cloneIndex = (
   index: AgentRunHistoryIndexFileRecord,
 ): AgentRunHistoryIndexFileRecord => index.map((row) => ({ ...row }));
@@ -73,6 +80,7 @@ describe("AgentRunHistoryCatalogService", () => {
       agentRunManager: {
         hasActiveRun: vi.fn().mockReturnValue(false),
       } as never,
+      collaborationRoots: noCollaborationRoots(),
     });
   };
 
@@ -107,6 +115,7 @@ describe("AgentRunHistoryCatalogService", () => {
       agentRunManager: {
         hasActiveRun: vi.fn().mockReturnValue(false),
       } as never,
+      collaborationRoots: noCollaborationRoots(),
     });
     return {
       service,

@@ -66,9 +66,9 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       this.teams = next;
       useRunHistoryStore().refreshRunNavigationTopology('team-context-remove');
       const selection = useAgentSelectionStore();
+      // A removed team is never replaced by another loaded team; its view falls to the empty state.
       if (selection.selectedType === 'team' && selection.selectedRunId === rootTeamRunId) {
-        const nextRunId = this.teams.keys().next().value as string | undefined;
-        nextRunId ? selection.selectRun(nextRunId, 'team') : selection.clearSelection();
+        selection.clearSelection();
       }
     },
     focusMember(rootTeamRunId: string, agentRunId: string): void {

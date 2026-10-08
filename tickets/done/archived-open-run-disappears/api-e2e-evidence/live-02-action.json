@@ -1,0 +1,1 @@
+{"c1": "ok", "confirm": {"waited": true, "dialogText": "Archive all runs? Open Agent \u2014 all runs will be hidden from history. Cancel Archive all", "clicked": "ok"}, "toast": "Archived 2 runs.", "transitions": [{"ms": 0, "s": "#/workspace|EMPTY"}], "finalHash": "#/workspace"}

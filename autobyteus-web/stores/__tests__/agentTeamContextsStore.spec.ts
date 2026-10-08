@@ -137,4 +137,31 @@ describe('agentTeamContextsStore current Team execution view', () => {
     expect(store.getTeamContextById('team-1')).toBeUndefined();
     expect(resetRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(2);
   });
+
+  it('clears the selection instead of selecting another loaded team when the selected team is removed', () => {
+    const store = useAgentTeamContextsStore();
+    const selection = useAgentSelectionStore();
+    store.addTeamContext(buildTestTeamContext({ teamRunId: 'team-other', rootChildren: [testAgentNode('/coordinator')] }));
+    store.addTeamContext(buildTestTeamContext({ teamRunId: 'team-open', rootChildren: [testAgentNode('/coordinator')] }));
+    selection.selectRun('team-open', 'team');
+
+    store.removeTeamContext('team-open');
+
+    expect(store.getTeamContextById('team-other')).toBeDefined();
+    expect(selection.selectedRunId).toBeNull();
+    expect(selection.selectedType).toBeNull();
+  });
+
+  it('keeps the selected team when a different team is removed', () => {
+    const store = useAgentTeamContextsStore();
+    const selection = useAgentSelectionStore();
+    store.addTeamContext(buildTestTeamContext({ teamRunId: 'team-other', rootChildren: [testAgentNode('/coordinator')] }));
+    store.addTeamContext(buildTestTeamContext({ teamRunId: 'team-open', rootChildren: [testAgentNode('/coordinator')] }));
+    selection.selectRun('team-open', 'team');
+
+    store.removeTeamContext('team-other');
+
+    expect(selection.selectedRunId).toBe('team-open');
+    expect(selection.selectedType).toBe('team');
+  });
 });

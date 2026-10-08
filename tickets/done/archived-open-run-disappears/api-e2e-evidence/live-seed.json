@@ -1,0 +1,43 @@
+{
+  "workspaceRoot": "/tmp/aord-api-live-ws",
+  "workspace": {
+    "workspaceId": "agent_ws_dacaf9c9cddcc21ed17880ce5d2e83e7766a51715ed5072ce06fcffbeea46f4f"
+  },
+  "openAgent": "open-agent",
+  "keeperAgent": "keeper-agent",
+  "liveAgent": "live-agent",
+  "member": "bridge-lead",
+  "bridgeTeam": "bridge-team",
+  "otherTeam": "other-team",
+  "liveTeam": "live-team",
+  "deliveryOrg": "delivery-org",
+  "liveOrg": "live-org",
+  "openAgentStopped": [
+    "open_agent_c8082b99984844bdbc28e2f7246019ad",
+    "open_agent_33f954a150c84eee9c8d6c95306258d8",
+    "open_agent_25175d32bb874407bd9d0a7938a1323c",
+    "open_agent_ad7875436eb648ac9f0ce1e32a824333",
+    "open_agent_cad405463b3640e48c65056ab947d4fa"
+  ],
+  "keeperStopped": [
+    "keeper_agent_ccfb475dcffe4474a3c793a68c90e6ec"
+  ],
+  "liveAgentRun": "live_agent_045b1ade16914d28bd452e1502fd23b0",
+  "bridgeTeamStopped": [
+    "bridge_team_eaec9e703c4c4ec3939111dc3d61bf6e",
+    "bridge_team_08353e7cb35344e282087e7314c2398a",
+    "bridge_team_3a81d5cad63747539a07b3f402c9f4f6",
+    "bridge_team_53b9d0638ad742539bb9763910384d5d",
+    "bridge_team_2b7789a4c7474c9b80005d5b62c8f30a"
+  ],
+  "otherTeamStopped": [
+    "other_team_9924fa62808c4bfaaf0d06cd5aad9afd"
+  ],
+  "liveTeamRun": "live_team_68bd12fc86c943eb84cc408993ff1535",
+  "deliveryOrgStopped": [
+    "delivery_org_b971adb48b484eddb77e9c063caedab4",
+    "delivery_org_7414e7158c5a41eab7115f3532660208",
+    "delivery_org_92ed3986794746288fad07c018c01745"
+  ],
+  "liveOrgRun": "live_org_1dbf30a62fdf4997a4cac7fd1d4e96d8"
+}
