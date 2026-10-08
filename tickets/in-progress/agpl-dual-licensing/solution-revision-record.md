@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline | N/A | N/A | Ready for Approval | BEH-001–007, REQ-001–012, AC-001–011, DEC-001–008 | Presented to user for approval |
 | SR-002 | Mixed | User approval + delegated decisions; architecture evidence | N/A | Ready for Approval | Approved | DEC-001–008, REQ-007 wording | Requirements approved; decisions resolved; REQ-007 Dockerfile list corrected (evidence-only) |
 | SR-003 | Mixed | User: contact email; "lets first work on the license file itself. because its urgent." | N/A | Approved | Approved; Slice 1 design Ready | DEC-004; slice split REQ-001–006, 009, 010 (manual), 011 → Slice 1; REQ-007, 008, 010 (automated) → Slice 2 | Slice 1 design complete, Small/Low |
+| SR-004 | Requirements | User delegation for remaining open choices | N/A | Approved | Approved | DEC-003 confirmed; REQ-008 enforcement form = manual CLA (Slice 2) | Delegated decisions recorded |
 
 ## Revision Entries
 
@@ -60,3 +61,14 @@
 - Design impact: `design-spec.md` created for Slice 1
 - Applied handoff-rule outcome: Small/Low direct route → `/software_engineering_team/implementation_engineer`; result file `solution-handoff.md`
 - Next action: Implementation of Slice 1; Slice 2 design after Slice 1 and user confirmation of CLA form
+
+### SR-004 — Delegated confirmation of holder name and CLA enforcement form
+
+- Phase and classification: Requirements, `Refinement`
+- Triggering input: User 2026-10-08: "Yeah, I trust that you have the best knowledge … because that's kind of urgent. I'm afraid that people take our code and then they hide it and they build their product on top of it and then they close source it and then they want to sell it … This is not gonna work."
+- Prior status: Requirements `Approved`; two open confirmations (holder name; CLA enforcement form)
+- Current status: Requirements `Approved`. DEC-003 `Yu Zheng (AutoByteus)` is **explicitly confirmed** by the user ("yes, the name is Yu Zheng for my personal email address thats right you did good job"). REQ-008 for Slice 2 is amended by delegation: CONTRIBUTING + CLA text with **manual** acceptance (the contributor confirms in the PR; the owner does not merge without it) instead of an automated CI bot. A bot remains a possible later addition.
+- Intended behavior changed: Yes for REQ-008 (enforcement mechanism), approved by explicit user delegation to the Solution Designer
+- Canonical sections changed: requirements REQ-008, AC-007, DEC-003, DEC-007
+- Slice 1 impact: None (Slice 1 already handed to Implementation Engineer; holder name and contact in its design are now user-confirmed)
+- Next action: Slice 2 design after Slice 1 completes
