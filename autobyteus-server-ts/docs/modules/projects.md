@@ -22,10 +22,10 @@ execution helpers, not Project work, and are never listed under a Project (see
 
 The Task service owns business status and the agent run resource records. The
 shared root lifecycle and runtime owners perform dispatch, admission and exact
-release. A Task's status is `TODO`, `IN_PROGRESS`, `DONE` or `CLOSED`
-(`projects/domain/task-status.ts`). `DONE` means the work is finished; `CLOSED`
+release. A Task's status is `TODO`, `IN_PROGRESS`, `DONE` or `CANCELLED`
+(`projects/domain/task-status.ts`). `DONE` means the work is finished; `CANCELLED`
 means the Task was dropped as not needed, not completed. Both are terminal:
-an explicit `DONE` or `CLOSED` closes every open agent run resource of the Task,
+an explicit `DONE` or `CANCELLED` closes every open agent run resource of the Task,
 then asks the runtime to stop exactly those runs. Neither is engineering
 acceptance nor proof that the stop succeeded. Other status writes do not start
 work, and any explicit status may follow any other. Only agents change a Task's
@@ -279,7 +279,7 @@ Task whose file is readable.
 
 These operations fail with `TASK_AGENT_RESOURCES_UNAVAILABLE`, whose message
 names the file and says to fix or restore it and restart:
-- assign, DONE and CLOSED for the damaged Task;
+- assign, DONE and CANCELLED for the damaged Task;
 - while the damaged set is non-empty, description-only `delegate_task` by a
   non-owned sender (rejected up front, before planning or resources);
 - while the damaged set is non-empty, waking, messaging or restoring a copy
@@ -296,7 +296,7 @@ Tools MCP share the parser, manifest, services and error projection.
 | Tool | Exact input / behavior | Result object |
 | --- | --- | --- |
 | `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
-| `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CLOSED | `{projectId, tasks: [...]}` |
+| `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}` |
 | `create_or_update_project` | Omit `project_id` to create with required `name`; supply known `project_id` to patch `name?`, `description?`, `workspaces?` | `{project: {projectId, name, description, workspaces: [{workspaceRootPath, description}]}}` |
 | `create_or_update_task` | Two strict modes. Create: `{project_id, description, context_files?}` (**omit status**, no `task_id`). Update: `{task_id, description?, status?, context_files?}` with **no `project_id`**; the Task ID alone identifies a Project Task or a Task with no Project | `{task: {...}}` |
 
@@ -428,7 +428,7 @@ See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and acces
 - Linked saved work: `{recipient_address, task_id}` only, for **Project Tasks**
   only (an ad-hoc Task ID is `TASK_NOT_FOUND`). No `project_id`, description or
   reference_files override is accepted. Blank, unknown or ambiguous Task IDs,
-  DONE or CLOSED Tasks and unavailable saved files fail without spawning anything as a
+  DONE or CANCELLED Tasks and unavailable saved files fail without spawning anything as a
   fallback. The result is exactly `{target_agent_run_id}`.
 
 Linked dispatch resolves the unique current node-local Task and copies its saved
@@ -446,8 +446,8 @@ identity remain distinct. Follow-up uses the exact returned
   `started` or `failed`.
 - **Re-read under serialization.** Inside the Task's serialization,
   `ProjectTaskService` re-reads the Task, which must exist and not be DONE or
-  CLOSED (refused with `TASK_AGENT_RESOURCE_CLOSED`, naming the status). A
-  concurrent DONE or CLOSED is therefore either entirely before the link (and the link is
+  CANCELLED (refused with `TASK_AGENT_RESOURCE_CLOSED`, naming the status). A
+  concurrent DONE or CANCELLED is therefore either entirely before the link (and the link is
   rejected) or entirely after it (and the link is closed).
 - **Indeterminate dispatch.** A dispatch that may already have been accepted
   is reported as indeterminate. Inspect it rather than repeating blindly. A run
@@ -474,10 +474,10 @@ identity remain distinct. Follow-up uses the exact returned
   (`TASK_AGENT_RESOURCE_CONFLICT`). Definition or address equality is not
   ownership.
 
-### DONE and CLOSED
+### DONE and CANCELLED
 
-`CLOSED` runs exactly the same closure as `DONE`; this section says DONE for
-both. DONE → CLOSED and CLOSED → DONE behave as a repeated DONE.
+`CANCELLED` runs exactly the same closure as `DONE`; this section says DONE for
+both. DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE.
 
 1. Explicit DONE commits `closedAt` on every open entry of the Task's
    `agent_run_resources.json`, then writes the status to `task.json`.
@@ -501,9 +501,9 @@ Stop failures and retries:
   requested. The caller gets the existing "could not be confirmed" error, and
   repeating DONE completes it.
 
-### Reopen and what DONE or CLOSED never touches
+### Reopen and what DONE or CANCELLED never touches
 
-Reopening to TODO or IN_PROGRESS (from DONE or CLOSED) starts nothing and does not reopen old runs. A
+Reopening to TODO or IN_PROGRESS (from DONE or CANCELLED) starts nothing and does not reopen old runs. A
 later deliberate delegation adds a new open `assigned` entry. DONE never
 deletes outputs, conversations, workspaces, Git worktrees or uploaded
 originals. It never stops the Manager, the root, another Task's runs or
@@ -512,7 +512,7 @@ borrowed runs.
 ### Reactivation
 
 Task status is the agent's responsibility; the software never changes it. To
-continue with the same worker after DONE or CLOSED:
+continue with the same worker after DONE or CANCELLED:
 
 1. The agent moves the Task back to TODO or IN_PROGRESS with
    `create_or_update_task` (this alone reopens and starts nothing).
@@ -524,13 +524,13 @@ The sender's root reactivates exactly that `assigned` entry
 (`RootTaskExecutionLifecycle.deliverToExactTarget`):
 - **Eligibility** (`ProjectTaskService.assertReopenable`): the target is an
   assignment's ingress, the sender is its assigner, the assignment `started`,
-  and the Task exists and is not DONE or CLOSED.
+  and the Task exists and is not DONE or CANCELLED.
 - **Runtime step** (on the root's serialized queue): the previous exact release
   is settled (re-invoked, idempotent) and the released handle or TeamRun is
   discarded, so restore builds a fresh one; the saved conversation must exist.
   If another reactivation already reopened the entry, this step is skipped.
 - **Commit** (`ProjectTaskService.reopenAssignment`): under the Task's
-  serialization with DONE or CLOSED, every condition is re-checked and `closedAt` of that
+  serialization with DONE or CANCELLED, every condition is re-checked and `closedAt` of that
   one entry returns to `null`. `task.json` is never written.
 - The root publishes "task executions reopened" (`task_executions_reopened`,
   `TASK_EXECUTIONS_REOPENED`); clients list the copy again. Snapshots and stored
@@ -543,7 +543,7 @@ closed; the reactivated worker may start new helpers. Refusals change nothing:
 
 | Case | Code | Message says |
 | --- | --- | --- |
-| Task still DONE or CLOSED | `TASK_AGENT_RESOURCE_CLOSED` | This Task is DONE/CLOSED (its actual status); move it to TODO or IN_PROGRESS first, then message the run ID again |
+| Task still DONE or CANCELLED | `TASK_AGENT_RESOURCE_CLOSED` | This Task is DONE/CANCELLED (its actual status); move it to TODO or IN_PROGRESS first, then message the run ID again |
 | Not the assigner; a helper | `TASK_AGENT_RESOURCE_CLOSED` | Only the assigning run can reactivate, after reopening the Task, by messaging the run ID `delegate_task` returned |
 | A Team member that is not the coordinator | `TASK_AGENT_RESOURCE_CLOSED` | Message the run ID `delegate_task` returned (for a Team, its coordinator) |
 | Task deleted | `TASK_NOT_FOUND` | The Task was deleted; its work cannot be reactivated |
@@ -553,7 +553,7 @@ closed; the reactivated worker may start new helpers. Refusals change nothing:
 
 If restore fails after the commit, the entry stays open (like any open, offline
 copy whose wake failed) and the rejection says the copy was reactivated but did
-not receive the message. A later DONE or CLOSED closes, stops and hides the reactivated
+not receive the message. A later DONE or CANCELLED closes, stops and hides the reactivated
 copy again; the cycle can repeat. Existing closed entries are directly usable:
 the file shape is unchanged (no migration).
 
@@ -580,8 +580,8 @@ A Task with no Project makes a description-only delegation closable. The user's
 2. **Owned like Project Task work.** The copy, its Team members and its
    `delegated`/`broughtIn` sub-work belong to that Task (the message-scope rules
    above apply). Every entry has the delegator's host root.
-3. **DONE or CLOSED.** `create_or_update_task({task_id, status: "DONE"})` (or
-   `"CLOSED"`, when the work turned out not to be needed) runs the same
+3. **DONE or CANCELLED.** `create_or_update_task({task_id, status: "DONE"})` (or
+   `"CANCELLED"`, when the work turned out not to be needed) runs the same
    closure as a Project Task: close every open entry, write the status, ask the
    host root to stop exactly those runs; the run tree hides them live and after
    reopen or restart, and conversations are kept. Description and status can
@@ -644,7 +644,7 @@ Task was handed to. Each Task view has `root` (null when never assigned):
 
 `status` is the worker's own status (offline, idle, error, initializing,
 running), the one the left panel shows:
-- A closed (Task DONE or CLOSED) or `failed` root is `offline` without asking anything.
+- A closed (Task DONE or CANCELLED) or `failed` root is `offline` without asking anything.
 - Otherwise the hosting root answers through
   `ActiveRootMessageBoundary.taskExecutionStatus`: the agent's status snapshot,
   or for a team the shared fold of its members

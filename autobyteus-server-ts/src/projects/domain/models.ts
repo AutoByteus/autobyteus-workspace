@@ -52,7 +52,7 @@ export interface ProjectWorkspaceView extends ProjectWorkspaceLink {
 
 export interface ProjectView extends Omit<Project, "workspaces"> {
   workspaces: ProjectWorkspaceView[];
-  /** Number of open Tasks (status not `DONE` or `CLOSED`); computed at read time. */
+  /** Number of open Tasks (status not `DONE` or `CANCELLED`); computed at read time. */
   openTaskCount: number;
   taskCount: number;
 }
@@ -62,7 +62,7 @@ export type TaskRootStatus = "running" | "initializing" | "idle" | "error" | "of
 
 /**
  * A Task's root: its latest `assigned` entry, i.e. the one agent or team the Task was handed to.
- * `status` is the worker's own live status; it is `offline` when the assignment is closed (Task DONE or CLOSED),
+ * `status` is the worker's own live status; it is `offline` when the assignment is closed (Task DONE or CANCELLED),
  * failed to start, or its hosting run is not active.
  */
 export interface TaskRootView {

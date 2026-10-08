@@ -8,10 +8,10 @@ business status and optional saved context files. Users create/edit/delete;
 selected agent tools can create or change text/status. Project Tasks remain
 business records, distinct from execution children. Saved-ID delegation starts
 fresh copies for a Task, and the server records them as the Task's agent run
-resources. Status is TODO, IN_PROGRESS, DONE or CLOSED; only agents change it
+resources. Status is TODO, IN_PROGRESS, DONE or CANCELLED; only agents change it
 (through `create_or_update_task`), and the app only displays it. DONE means the
-work is finished; CLOSED means the Task was dropped as not needed, not
-completed. Explicit DONE or CLOSED closes those runs and asks the platform to
+work is finished; CANCELLED means the Task was dropped as not needed, not
+completed. Explicit DONE or CANCELLED closes those runs and asks the platform to
 stop only them. Other status writes do not start work. Neither is engineering
 acceptance nor proof that the stop has finished.
 
@@ -112,14 +112,14 @@ summary and matching count; there are no floating cards. Ordering is server
 updatedAt descending then taskId. Empty lanes and whole-board no-match states
 have explicit text/Clear search; status labels are not mutation controls.
 
-Closed Tasks stay out of those three lanes and are hidden by default. When the
-Project has any, a small **Closed (N)** button (`ClosedTasksToggle`, an
-`aria-pressed` toggle) sits immediately before Refresh; it shows a **Closed**
+Cancelled Tasks stay out of those three lanes and are hidden by default. When the
+Project has any, a small **Cancelled (N)** button (`CancelledTasksToggle`, an
+`aria-pressed` toggle) sits immediately before Refresh; it shows a **Cancelled**
 lane as the last column, after Done, and hides it again. It is absent at 0,
 every visit starts hidden, and search and no-match apply only to the Tasks
 shown. The right-panel board behaves the same. Labels, pill colours, lanes and
 the open count come from `utils/projects/taskStatusPresentation.ts`: the Task
-page and right-panel detail show a muted outlined **Closed** pill, distinct
+page and right-panel detail show a muted outlined **Cancelled** pill, distinct
 from Done's green, and the open count is TODO + IN_PROGRESS.
 
 Cards stay compact however long the description is (task-card-compact-summary).
@@ -181,7 +181,7 @@ or team it was handed to, named from the delegated address (`release writer` for
 `/release_writer`; older assignments show "Agent" or "Team"), with the worker's
 own status, the left panel's dot and word: Running, Initializing, Idle, Error,
 Offline. A root that could not start shows **Couldn't start** with its error. A
-closed root (Task DONE or CLOSED) is Offline with a muted name. There is no "Stopped".
+closed root (Task DONE or CANCELLED) is Offline with a muted name. There is no "Stopped".
 
 The one rule (`presentTaskRoot`, AR-002): a root is **openable** only when it
 started, is not closed, and its hosting run is listed in the left panel's run
@@ -197,10 +197,10 @@ its left-panel row does:
 
 Tasks with no Project (made by a description-only `delegate_task`) appear under
 **Temp tasks**: a header button beside New project (with the number of open
-ones, neither Done nor Closed; hidden at 0), a board with **Open** and **Done**
+ones, neither Done nor Cancelled; hidden at 0), a board with **Open** and **Done**
 lanes (Done shows its 10 latest until Show all; search shows every match) plus
-the same **Closed (N)** toggle and a Closed column after Done, and a read-only Task
-page (Open, Done or Closed pill) with the
+the same **Cancelled (N)** toggle and a Cancelled column after Done, and a read-only Task
+page (Open, Done or Cancelled pill) with the
 description, reference file paths and Assigned to. Only agents create or change
 them; there is no edit, delete or status control.
 
@@ -235,7 +235,7 @@ also when the run is already the selected run.
 
 Board layout responds to its CSS container, not viewport: one stacked lane
 below 752px and three minimum-240px lanes at/above it (16px gaps); while
-Closed is shown, four equal columns (Temp tasks: two, or three with Closed). Below 480px
+Cancelled is shown, four equal columns (Temp tasks: two, or three with Cancelled). Below 480px
 search takes its own toolbar row; Refresh remains beside New task. Narrow
 layouts preserve wrapping/actions rather than certifying phone deployment.
 
@@ -340,7 +340,7 @@ sources. Patches append and never remove; any invalid entry fails the whole call
 with no change (including no DONE closure); Tasks with no Project refuse files.
 A description-only `delegate_task` creates a Task with no Project for its copy; such
 Tasks are on no Project board and not in `list_project_tasks` (the Projects page
-lists them read only as Temp tasks), and marking one DONE or CLOSED by its ID removes the
+lists them read only as Temp tasks), and marking one DONE or CANCELLED by its ID removes the
 copy from the run tree. Full text and saved context references
 are available from listing. Each Task also carries its current (open)
 assignments `{targetAgentRunId, kind, assignedBy, outcome}` for follow-up, or

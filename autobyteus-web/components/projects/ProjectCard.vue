@@ -31,7 +31,7 @@ const props = defineProps<{ project: Project }>()
 
 const { t } = useLocalization()
 
-// Open Tasks are those To Do or In Progress (`openTaskCount`); Done and Closed Tasks are not open.
+// Open Tasks are those To Do or In Progress (`openTaskCount`); Done and Cancelled Tasks are not open.
 const openTasksLabel = computed(() => {
   const count = props.project.openTaskCount
   if (count === 0) {

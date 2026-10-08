@@ -15,13 +15,13 @@ export interface Project {
   createdAt: string
   updatedAt: string
   workspaces: ProjectWorkspace[]
-  /** Number of this Project's open Tasks (status not DONE or CLOSED). */
+  /** Number of this Project's open Tasks (status not DONE or CANCELLED). */
   taskCount: number
   openTaskCount: number
 }
 
-/** CLOSED: dropped as not needed, not completed. DONE and CLOSED end the Task's work; only agents set status. */
-export type ProjectTaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CLOSED'
+/** CANCELLED: dropped as not needed, not completed. DONE and CANCELLED end the Task's work; only agents set status. */
+export type ProjectTaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'
 
 /** A Project Task. It has no title: the description is its content, and its first line is its summary. */
 export interface ProjectTaskContextFile { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator?: string }

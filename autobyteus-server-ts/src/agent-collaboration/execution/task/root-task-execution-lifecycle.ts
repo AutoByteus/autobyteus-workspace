@@ -111,7 +111,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       join = { role: "assigned", taskId, assignedBy: context.identity.agentRunId };
     } else {
-      if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CLOSED).");
+      if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
       // An unowned copy could not be told apart from an unreadable Task's work: reject before any planning.
       if (!owner) this.resourceScope.assertResourceDataReadable();
       description = requireTaskString(input.description, "description");
@@ -138,14 +138,14 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   releaseTaskAgentResources(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
     return this.resourceScope.releaseTaskAgentResources(agentRuns);
   }
-  /** Closed (Task DONE or CLOSED) task executions of the root's current tree, for its package snapshot. */
+  /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
 
   /** One seedless brought-in copy per Task/address among the Task's open helpers. */
   async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<DelegateTaskResult> {
     const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
     if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
-    if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CLOSED).");
+    if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
     const existing = this.helperPlacement(owner.taskId, address);
     if (existing) return { target_agent_run_id: existing.receiver.agentRunId, target_kind: existing.kind === "agent" ? "agent" : "team" };
     const key = `${owner.taskId}:${address}`;
@@ -182,7 +182,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   /**
    * `send_message_to(run ID)` from a sender in this root. A target in closed Task work is first
    * reactivated when it is an assignment's ingress, the sender is its assigner and the Task is not
-   * DONE or CLOSED; any other closed target is refused with guidance and nothing changes. The delivery then
+   * DONE or CANCELLED; any other closed target is refused with guidance and nothing changes. The delivery then
    * follows the normal wake / restore path under the sender's live lease.
    */
   async deliverToExactTarget(senderAgentRunId: string, targetAgentRunId: string,

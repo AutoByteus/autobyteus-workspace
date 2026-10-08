@@ -99,7 +99,7 @@ export class RootTaskAgentResourceScope<T> {
 
   /**
    * Reactivation of one closed copy: settles its previous stop by invoking every exact release
-   * authority the root still holds (idempotent, as a repeated DONE or CLOSED does), then drops that released
+   * authority the root still holds (idempotent, as a repeated DONE or CANCELLED does), then drops that released
    * authority so restore builds a fresh copy. While a release is unconfirmed nothing is dropped and
    * it rejects TASK_REACTIVATION_STOP_PENDING.
    */
@@ -127,11 +127,11 @@ export class RootTaskAgentResourceScope<T> {
     const refused = settled.flatMap(value => value.status === "fulfilled" ? [value.value] : [])
       .find(result => !result.accepted && result.code !== NO_AUTHORITY);
     return refused ? { agentRun, stopped: false, error: { code: refused.code ?? "TASK_RELEASE_PENDING",
-      message: refused.message ?? "Exact release was not confirmed; repeat DONE or CLOSED." } } : { agentRun, stopped: true };
+      message: refused.message ?? "Exact release was not confirmed; repeat DONE or CANCELLED." } } : { agentRun, stopped: true };
   }
 }
 
-const closed = () => new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CLOSED).");
+const closed = () => new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
 const isClosed = (port: TaskAgentResourcePort, agentRun: TaskExecutionReference): boolean => {
   try { return port.ownerOf([agentRun])?.open === false; } catch { return false; }
 };

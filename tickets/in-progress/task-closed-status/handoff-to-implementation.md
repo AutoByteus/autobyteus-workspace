@@ -13,12 +13,12 @@ User, 2026-10-08, via `/project_task_manager` (run `project_task_manager_7c8dce0
 
 ## Approved Intent (summary; the requirements doc is authoritative)
 
-- New terminal status **`CLOSED`** ("Closed" / "已关闭"), meaning dropped as not needed, not completed, for Project and Temp Tasks.
+- New terminal status **`CANCELLED`** ("Cancelled" / "已取消"), meaning dropped as not needed, not completed, for Project and Temp Tasks.
 - **Agents are the only status writers** (user, SR-002). Closing and reopening happen only through `create_or_update_task`. The app stays display-only: no Close/Reopen button and no GraphQL status write.
-- CLOSED stops and removes workers **exactly like DONE**, and refuses `delegate_task {task_id}` and worker reactivation like DONE. Reopen to TODO/IN_PROGRESS works as after DONE.
-- `list_project_tasks` filters by CLOSED. Tool, LLM-contract and refusal texts explain CLOSED.
-- **Clean board** (user, SR-003): To Do / In Progress / Done as today. Closed Tasks are hidden by default. A small **"Closed (N)"** toggle beside Refresh (absent when N=0) shows a full-width Closed lane under the lanes. The same applies to the right-panel board and the Temp tasks board. Pills and labels read "Closed", distinct from Done.
-- Open counts exclude CLOSED. Existing data keeps working with no migration.
+- CANCELLED stops and removes workers **exactly like DONE**, and refuses `delegate_task {task_id}` and worker reactivation like DONE. Reopen to TODO/IN_PROGRESS works as after DONE.
+- `list_project_tasks` filters by CANCELLED. Tool, LLM-contract and refusal texts explain CANCELLED.
+- **Clean board** (user, SR-003): To Do / In Progress / Done as today. Cancelled Tasks are hidden by default. A small **"Cancelled (N)"** toggle beside Refresh (absent when N=0) shows a full-width Cancelled lane under the lanes. The same applies to the right-panel board and the Temp tasks board. Pills and labels read "Cancelled", distinct from Done.
+- Open counts exclude CANCELLED. Existing data keeps working with no migration.
 
 ## Approval Basis
 
@@ -49,15 +49,15 @@ User, 2026-10-08, via `/project_task_manager` (run `project_task_manager_7c8dce0
 1. Server `projects/domain/task-status.ts` owns the 4-value tuple, `validateTaskStatus` and `isTerminalTaskStatus`. Stores, service, project-service, change messages and the tool contract use it; the duplicated sets and `=== "DONE"` checks are removed.
 2. `ProjectTaskService`: a terminal status → `closeAndWrite` (unchanged mechanics). Assignment and reactivation are refused for terminal Tasks, with messages naming the actual status.
 3. **Repoint the released `projects-per-folder-v1` migration** to a frozen copy of `readTaskFile` (in `released-project-folder-v1.ts`) **before** widening the current reader (Data Migration Guideline §3/§4).
-4. Add `CLOSED` to the GraphQL enum only; no status input.
+4. Add `CANCELLED` to the GraphQL enum only; no status input.
 5. Wording updates in the tool descriptions, the LLM collaboration contract and the runtime refusal texts (exact intent in design › Concrete Examples).
-6. Web `utils/projects/taskStatusPresentation.ts` (renamed from `taskStatusLabelKey.ts`, no shim) owns labels, pill classes, temp lanes and the open predicate. New `ClosedTasksToggle.vue`. Both boards get the hidden-by-default full-width Closed lane. en/zh-CN strings. Update the generated enum.
+6. Web `utils/projects/taskStatusPresentation.ts` (renamed from `taskStatusLabelKey.ts`, no shim) owns labels, pill classes, temp lanes and the open predicate. New `CancelledTasksToggle.vue`. Both boards get the hidden-by-default full-width Cancelled lane. en/zh-CN strings. Update the generated enum.
 7. Tests, desktop verification steps and the docs list are in design › Guidance For Implementation.
 
 ## Open Risks
 
 - R-001: "closed" also names agent-run closure; mitigated by definitions in the tool text and docs.
-- R-002: the external Project Task Manager skill (separate `autobyteus-agents` repo) doesn't know CLOSED; follow-up candidate, out of scope.
+- R-002: the external Project Task Manager skill (separate `autobyteus-agents` repo) doesn't know CANCELLED; follow-up candidate, out of scope.
 - LLM-contract string tests may need updated expected text.
 
 ## Escalation
@@ -72,11 +72,20 @@ Implementation per the design, implementation-scoped checks, and `implementation
 
 - Rules consulted 2026-10-08 via `get_handoff_rules`. Matching rule: "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer`.
 
-## Revision SR-005 (2026-10-08) — Closed lane becomes the last column
+## Revision SR-005 (2026-10-08) — Cancelled lane becomes the last column
 
-The user reviewed the implemented full-width Closed row and asked for a column instead. Change the board layout as follows:
-- **Project board:** toggle off → `[To Do][In Progress][Done]` exactly as before. Toggle on → `[To Do][In Progress][Done][Closed n]` as four equal columns at ≥752px (`repeat(4, minmax(0, 1fr))`, for example via a `--with-closed` modifier class); stacked one column below 752px, as today. Remove `grid-column: 1 / -1` / the full-width row.
-- **Temp board:** the same pattern, `[Open][Done][Closed n]`, three columns at ≥752px while toggled.
+The user reviewed the implemented full-width Cancelled row and asked for a column instead. Change the board layout as follows:
+- **Project board:** toggle off → `[To Do][In Progress][Done]` exactly as before. Toggle on → `[To Do][In Progress][Done][Cancelled n]` as four equal columns at ≥752px (`repeat(4, minmax(0, 1fr))`, for example via a `--with-cancelled` modifier class); stacked one column below 752px, as today. Remove `grid-column: 1 / -1` / the full-width row.
+- **Temp board:** the same pattern, `[Open][Done][Cancelled n]`, three columns at ≥752px while toggled.
 - The compact right-panel board stacks as today.
 - Everything else is unchanged: the toggle, hidden by default, counts, labels, and the server side.
 See design-spec.md (SR-005) › Final File Responsibility Mapping, Concrete Examples and Key Tradeoffs.
+
+## Revision SR-006 (2026-10-08) — Rename CLOSED → CANCELLED
+
+The user decided that "Closed" is ambiguous: models and people read it as "finished", and the system already says DONE "closes" a Task's workers. The status is now **`CANCELLED`**, shown as **"Cancelled"** (zh-CN **"已取消"**). This is a mechanical rename over the committed SR-004/SR-005 code (through `814e41a26`), tests and docs. Semantics, layout (Cancelled column after Done, hidden behind a "Cancelled (N)" toggle) and structure are unchanged.
+
+- The full checklist is in design-spec.md › "SR-006 Rename Delta": the value, labels, identifiers (`CancelledTasksToggle.vue`, `showCancelled`, `cancelledCount`, the temp lane `'cancelled'`, i18n keys, test IDs, CSS modifier), the agent-facing wording, and the verification grep.
+- No alias or compatibility for `CLOSED`. It was never released, so nothing reads or maps it. `CANCELED` (US spelling) stays invalid.
+- Keep the internal resource terms (`closeTask`, `closedAt`, `closeAndWrite`, `TASK_AGENT_RESOURCE_CLOSED`, root `closed`). Never describe the CANCELLED status as "closed" in agent-facing text.
+- Update tests (including the CLS-* API/E2E cases' expectations) and docs mentioning CANCELLED or Cancelled.

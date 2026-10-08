@@ -74,7 +74,7 @@ const client = computed(() => props.choice.kind === 'project' ? createProjectTas
 const pageRoute = computed(() => props.choice.kind === 'project'
   ? `/projects/${props.choice.projectId}/tasks/${props.taskId}`
   : `/projects/temp-tasks/tasks/${props.taskId}`)
-// A Project Task shows its status; a Temp task Open, Done or Closed.
+// A Project Task shows its status; a Temp task Open, Done or Cancelled.
 const statusLabel = computed(() => {
   if (!task.value) return ''
   if (props.choice.kind === 'project') return t(TASK_STATUS_LABEL_KEYS[task.value.status])

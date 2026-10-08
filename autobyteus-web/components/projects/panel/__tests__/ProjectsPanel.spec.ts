@@ -80,10 +80,10 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' }, task: projectTask('t1', 'Write the notes\nAll of them', 'IN_PROGRESS') })
     await flushPromises()
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('In Progress')
-    // An agent closes it (dropped as not needed): labelled Closed, styled apart from Done.
-    useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' }, task: projectTask('t1', 'Write the notes\nAll of them', 'CLOSED') })
+    // An agent closes it (dropped as not needed): labelled Cancelled, styled apart from Done.
+    useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' }, task: projectTask('t1', 'Write the notes\nAll of them', 'CANCELLED') })
     await flushPromises()
-    expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Closed')
+    expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Cancelled')
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').classes()).toContain('text-slate-500')
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').classes()).not.toContain('bg-emerald-50')
 
@@ -99,9 +99,9 @@ describe('ProjectsPanel (projects-always-on SR-003)', () => {
     expect(wrapper.get('[data-testid="projects-panel-task-reference-files"]').text()).toContain('/work/brief.md')
     expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Open')
     expect(wrapper.get('[data-testid="projects-panel-task-open-page"]').findComponent(RouterLinkStub).props('to')).toBe('/projects/temp-tasks/tasks/x1')
-    useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { ...tempTask('x1', 'Check links'), status: 'CLOSED', updatedAt: '2026-10-06T00:00:00.000Z' } })
+    useProjectTaskStore().applyChange({ type: 'task_upserted', scope: { kind: 'no_project' }, task: { ...tempTask('x1', 'Check links'), status: 'CANCELLED', updatedAt: '2026-10-06T00:00:00.000Z' } })
     await flushPromises()
-    expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Closed')
+    expect(wrapper.get('[data-testid="projects-panel-task-status"]').text()).toBe('Cancelled')
   })
 
   it('says when an open Task is gone', async () => {

@@ -1,6 +1,6 @@
 <template>
   <!-- project-manager-ux round 2: the entry to Temp tasks (Tasks with no Project), beside "New project",
-       with the number of open Temp tasks (not Done or Closed; hidden at 0). It follows live. -->
+       with the number of open Temp tasks (not Done or Cancelled; hidden at 0). It follows live. -->
   <NuxtLink
     to="/projects/temp-tasks"
     class="inline-flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-md border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

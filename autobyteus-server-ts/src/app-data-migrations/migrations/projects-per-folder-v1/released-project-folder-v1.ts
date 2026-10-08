@@ -43,7 +43,7 @@ export const readReleasedProjectFolderV1 = (raw: unknown, projectId: string): Re
 
 /*
  * Frozen Task target reader from project-store.ts (`readTaskFile`), domain/models.ts and
- * domain/project-task-context.ts at 3a2496c95b16b0f7e0cedc7afdf615ada00b2267 (before the CLOSED
+ * domain/project-task-context.ts at 3a2496c95b16b0f7e0cedc7afdf615ada00b2267 (before the CANCELLED
  * status). Keeps the Task CURRENT/CONFLICT classification and post-write validation stable.
  */
 /** A saved Task context file as persisted inside a released Task record. */

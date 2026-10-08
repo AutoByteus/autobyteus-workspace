@@ -1,7 +1,7 @@
 <template>
   <!-- project-manager-ux round 2: Tasks with no Project, in the Project board's style. Two lanes
        (Open, Done) because agents rarely set IN_PROGRESS on them; the root line says what is
-       happening. Closed ones (dropped as not needed) stay hidden until the "Closed (N)" toggle
+       happening. Cancelled ones (dropped as not needed) stay hidden until the "Cancelled (N)" toggle
        shows them as the last column, after Done. Read only: agents create and change them. -->
   <div :class="compact ? 'w-full' : 'w-full px-4 py-5 sm:px-6 lg:px-8'" data-testid="temp-task-board-page">
     <NuxtLink
@@ -27,15 +27,15 @@
           <Icon icon="heroicons:magnifying-glass" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
           <input :id="searchId" v-model="searchQuery" type="search" class="block min-h-11 w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" :placeholder="t('projects.components.projects.ProjectTaskBoard.searchPlaceholder')" data-testid="temp-tasks-search-input" />
         </div>
-        <ClosedTasksToggle v-if="closedCount > 0" class="ml-auto" :count="closedCount" :pressed="showClosed" data-testid="temp-tasks-closed-toggle" @toggle="showClosed = !showClosed" />
-        <button type="button" :disabled="list?.initialPending || list?.refreshPending" :aria-busy="list?.refreshPending || undefined" :class="closedCount > 0 ? '' : 'ml-auto'" class="inline-flex min-h-11 flex-shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60" data-testid="temp-tasks-refresh" @click="refresh"><Icon icon="heroicons:arrow-path" class="h-4 w-4" :class="list?.refreshPending ? 'animate-spin motion-reduce:animate-none' : ''" aria-hidden="true" />{{ t(list?.refreshPending ? 'projects.ui.refreshing' : 'projects.ui.refresh') }}</button>
+        <CancelledTasksToggle v-if="cancelledCount > 0" class="ml-auto" :count="cancelledCount" :pressed="showCancelled" data-testid="temp-tasks-cancelled-toggle" @toggle="showCancelled = !showCancelled" />
+        <button type="button" :disabled="list?.initialPending || list?.refreshPending" :aria-busy="list?.refreshPending || undefined" :class="cancelledCount > 0 ? '' : 'ml-auto'" class="inline-flex min-h-11 flex-shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60" data-testid="temp-tasks-refresh" @click="refresh"><Icon icon="heroicons:arrow-path" class="h-4 w-4" :class="list?.refreshPending ? 'animate-spin motion-reduce:animate-none' : ''" aria-hidden="true" />{{ t(list?.refreshPending ? 'projects.ui.refreshing' : 'projects.ui.refresh') }}</button>
       </div>
 
       <p v-if="!list?.hasLoaded && list?.initialPending" class="mt-4 rounded-xl border border-slate-200 bg-white py-12 text-center text-sm text-slate-500" role="status" data-testid="temp-tasks-loading">{{ t('projects.components.projects.ProjectTaskBoard.loading') }}</p>
       <div v-if="list?.error" class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert" data-testid="temp-tasks-error"><p class="font-semibold">{{ t(list?.hasLoaded ? 'projects.ui.refreshFailed' : 'projects.components.projects.ProjectTaskBoard.loadFailed') }}</p><p class="mt-1">{{ list?.error?.message }}</p><button type="button" class="mt-3 rounded-md border border-red-300 bg-white px-3 py-2 text-sm" @click="load">{{ t('projects.common.retry') }}</button></div>
       <div v-if="list?.hasLoaded && isNoMatch" class="mt-4 rounded-xl border border-slate-200 bg-white py-12 text-center" role="status" data-testid="temp-tasks-no-match"><Icon icon="heroicons:magnifying-glass" class="mx-auto h-6 w-6 text-slate-300" aria-hidden="true" /><p class="mt-3 text-sm font-medium text-slate-700">{{ t('projects.ui.noMatch') }}</p><p class="mt-1 text-xs text-slate-500">{{ t('projects.ui.trySearch') }}</p><button type="button" class="mt-4 min-h-10 rounded-md px-3 text-sm font-medium text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" @click="clearSearch">{{ t('projects.ui.clearSearch') }}</button></div>
 
-      <div v-if="list?.hasLoaded && !isNoMatch" class="temp-board__lanes mt-6" :class="showClosed ? 'temp-board__lanes--with-closed' : ''" data-testid="temp-task-lanes">
+      <div v-if="list?.hasLoaded && !isNoMatch" class="temp-board__lanes mt-6" :class="showCancelled ? 'temp-board__lanes--with-cancelled' : ''" data-testid="temp-task-lanes">
         <section v-for="lane in shownLanes" :key="lane" class="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" :aria-labelledby="`${uid}-${lane}`" :data-testid="`temp-task-lane-${lane}`">
           <h2 :id="`${uid}-${lane}`" class="flex min-h-12 items-center gap-2 border-b border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-700">{{ t(TEMP_LANE_LABEL_KEYS[lane]) }}<span class="text-xs font-normal text-slate-500" data-testid="temp-task-lane-count">{{ lanes[lane].length }}</span></h2>
           <p v-if="lanes[lane].length === 0" class="px-4 py-7 text-center text-xs text-slate-500">{{ t('projects.components.projects.ProjectTaskBoard.noTasks') }}</p>
@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
-import ClosedTasksToggle from './ClosedTasksToggle.vue'
+import CancelledTasksToggle from './CancelledTasksToggle.vue'
 import ProjectTaskRow from './ProjectTaskRow.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectChangeFeed } from '~/composables/projects/useProjectChangeFeed'
@@ -86,14 +86,14 @@ const searchQuery = computed({ get: () => store.searchByProjectId[TEMP_TASKS_LIS
 const searching = computed(() => Boolean(searchQuery.value.trim()))
 const list = computed(() => store.getTempList())
 const tasks = computed(() => list.value?.tasks ?? [])
-const closedCount = computed(() => tasks.value.filter((task) => task.status === 'CLOSED').length)
-const showClosed = ref(false)
-watch(closedCount, (count) => { if (count === 0) showClosed.value = false })
-const shownLanes = computed<readonly TempLane[]>(() => showClosed.value ? [...TEMP_LANES_OPEN, 'closed'] : TEMP_LANES_OPEN)
-const visibleTasks = computed(() => showClosed.value ? tasks.value : tasks.value.filter((task) => task.status !== 'CLOSED'))
+const cancelledCount = computed(() => tasks.value.filter((task) => task.status === 'CANCELLED').length)
+const showCancelled = ref(false)
+watch(cancelledCount, (count) => { if (count === 0) showCancelled.value = false })
+const shownLanes = computed<readonly TempLane[]>(() => showCancelled.value ? [...TEMP_LANES_OPEN, 'cancelled'] : TEMP_LANES_OPEN)
+const visibleTasks = computed(() => showCancelled.value ? tasks.value : tasks.value.filter((task) => task.status !== 'CANCELLED'))
 const matching = computed(() => visibleTasks.value.filter((task) => !searching.value || task.description.toLocaleLowerCase().includes(searchQuery.value.trim().toLocaleLowerCase())))
 const lanes = computed(() => {
-  const grouped: Record<TempLane, TaskWithoutProject[]> = { open: [], done: [], closed: [] }
+  const grouped: Record<TempLane, TaskWithoutProject[]> = { open: [], done: [], cancelled: [] }
   for (const task of matching.value) grouped[tempTaskLaneOf(task.status)].push(task)
   return grouped
 })
@@ -116,6 +116,6 @@ watch(() => node.bindingRevision, load)
 .temp-board__lanes { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
 @container temp-board (min-width: 752px) {
   .temp-board__lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .temp-board__lanes--with-closed { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .temp-board__lanes--with-cancelled { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 </style>

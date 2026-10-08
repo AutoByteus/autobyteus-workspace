@@ -38,7 +38,7 @@
 - Investigation plan followed: `Yes`
 - Existing coverage decisions revised during execution: none. Every existing suite stayed `Still Valid`; nothing was removed.
 - Reroute required: `No`
-- Notes: PMU-017 failed twice on a probe-owned selector defect (`[data-testid^="project-task-column-"]` also matched the lane's `-count`/`-empty` children). Run 2 used the unchanged probe because the edit had not applied. The fixed selector is `section[data-testid^=…]`. The rendered product was correct in both failing runs (the boxes in the failure output show a full-width Closed lane after Done). This was test code only, with no product classification.
+- Notes: PMU-017 failed twice on a probe-owned selector defect (`[data-testid^="project-task-column-"]` also matched the lane's `-count`/`-empty` children). Run 2 used the unchanged probe because the edit had not applied. The fixed selector is `section[data-testid^=…]`. The rendered product was correct in both failing runs (the boxes in the failure output show a full-width Cancelled lane after Done). This was test code only, with no product classification.
 
 ## Test-Case Ledger Reconciliation
 
@@ -90,10 +90,10 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
 | 1 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts -t CLS-API-001 --no-watch` | ungated | CLS-API-001 | Pass (1) | console |
 | 2 | `… vitest run tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts -t CLS-E2E --no-watch` | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TASK_REACTIVATION_E2E_EVIDENCE_DIR=…/cls-e2e` | CLS-E2E-001/002 | Pass (2) | `cls-e2e/run-1.log` |
 | 3 | Mutation: same two files `-t CLS-` with `isTerminalTaskStatus` DONE-only | temporary, restored | sensitivity | 3 failed as expected | ledger |
-| 4 | `… vitest run tests/unit/projects tests/unit/agent-collaboration tests/unit/agent-tools/project-tasks tests/unit/agent-tools/task-delegation tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts tests/unit/api --no-watch` | — | unit layers incl. `task-closed-status.test.ts`, LLM-contract hashes, migration frozen reader | Pass (70 files / 649 tests) | `server-regression/unit.log` |
+| 4 | `… vitest run tests/unit/projects tests/unit/agent-collaboration tests/unit/agent-tools/project-tasks tests/unit/agent-tools/task-delegation tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts tests/unit/api --no-watch` | — | unit layers incl. `task-cancelled-status.test.ts`, LLM-contract hashes, migration frozen reader | Pass (70 files / 649 tests) | `server-regression/unit.log` |
 | 5 | `… vitest run tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/integration/standalone-agent-run-root/native-root-termination.integration.test.ts --no-watch` | — | helper/termination integration | Pass (2 / 16) | `server-regression/integration.log` |
 | 6 | `… vitest run tests/e2e/projects --no-watch` | ungated | all Projects E2E incl. startup migration, E-007, CLS-API-001 | Pass (4 files / 27; 5 gated files skipped) | `server-regression/e2e-projects-ungated.log` |
-| 7 | `… vitest run tests/e2e/projects --no-watch` | gated (as in order 2) | all 9 files incl. closure, reactivation (DONE + CLOSED), change feed, ad-hoc, context-files delegation | Pass (9 files / 47; 1 skipped = live-Claude case) | `server-regression/e2e-projects-gated.log` |
+| 7 | `… vitest run tests/e2e/projects --no-watch` | gated (as in order 2) | all 9 files incl. closure, reactivation (DONE + CANCELLED), change feed, ad-hoc, context-files delegation | Pass (9 files / 47; 1 skipped = live-Claude case) | `server-regression/e2e-projects-gated.log` |
 | 8 | `pnpm -C autobyteus-web test:nuxt components/projects localization/messages/__tests__ stores/__tests__ utils/projects scripts/__tests__/localizationLiteralAudit.spec.ts --run` | — | boards, toggle, pills, store live moves, catalog parity | Pass (102 / 981) | `web/projects-specs.log` |
 | 9 | `pnpm -C autobyteus-web audit:localization-literals && pnpm -C autobyteus-web guard:localization-boundary` | — | literal keys, boundary | Pass | `web/localization-guards.log` |
 | 10 | `pnpm -C autobyteus-web test:nuxt --run` | full | whole web suite | Pass (587 / 3978; 0 failed) | `web/full-test-nuxt.log` |
@@ -110,12 +110,12 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 90% | 96% | +6 | AC-001..AC-012 each proven directly at their real boundary (matrix above). AC-013: server and web docs describe CLOSED, its display and agent-only status (`docs/modules/projects.md` L25-31, L477-506; `autobyteus-web/docs/projects.md` L11-14, L115-122, L200-204) | Desktop user verification of AC-001/AC-008 is delivery-owned |
+| Requirement and acceptance-criteria proof | 90% | 96% | +6 | AC-001..AC-012 each proven directly at their real boundary (matrix above). AC-013: server and web docs describe CANCELLED, its display and agent-only status (`docs/modules/projects.md` L25-31, L477-506; `autobyteus-web/docs/projects.md` L11-14, L115-122, L200-204) | Desktop user verification of AC-001/AC-008 is delivery-owned |
 | Changed-boundary execution directness | 92% | 96% | +4 | Real MCP/GraphQL/WS, real roots and worker processes (pgrep), real rendering through the live feed | — |
-| Cross-boundary integration realism and mock gap | 90% | 95% | +5 | Only the external AGY CLI/model is scripted; server, stores, feed, Nuxt store and components are real | A real model choosing CLOSED from the description is not proven (model behavior, not the changed boundary) |
+| Cross-boundary integration realism and mock gap | 90% | 95% | +5 | Only the external AGY CLI/model is scripted; server, stores, feed, Nuxt store and components are real | A real model choosing CANCELLED from the description is not proven (model behavior, not the changed boundary) |
 | Environment, configuration, identity, and fixture fidelity | 95% | 95% | 0 | Rebuilt current dist; owned temp data roots; Nuxt dev | Nuxt dev, not the packaged renderer (no shell change) |
-| Failure, edge-case, lifecycle, and recovery evidence | 95% | 96% | +1 | Retry, DONE↔CLOSED, input error before closure, assignment and reactivation refusals, physical stop, reopen and reactivation, Temp scope, search over hidden Closed, toggle reset on revisit, keyboard toggle, mutation sensitivity | A CLOSED-vs-reactivation race is not separately raced; it shares the predicate and serialization with the raced DONE case (QR-001 test) |
-| User-surface, browser, and desktop-shell confidence | 80% | 95% | +15 | PMU-017: toggle button before Refresh, absent at 0, `aria-pressed` and title, Enter/Space, full-width Closed lane after Done at 1440 px, text heading, muted pill vs Done (computed colors), card counts, live reopen with `moved`, Temp board/header/page, right-panel board and detail; no browser errors; screenshots consistent | zh-CN and narrow width only at component/catalog level; the lane is a `grid-column: 1 / -1` row (trivially a row in single-column layouts); packaged desktop is delivery user verification |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 96% | +1 | Retry, DONE↔CANCELLED, input error before closure, assignment and reactivation refusals, physical stop, reopen and reactivation, Temp scope, search over hidden Cancelled, toggle reset on revisit, keyboard toggle, mutation sensitivity | A CANCELLED-vs-reactivation race is not separately raced; it shares the predicate and serialization with the raced DONE case (QR-001 test) |
+| User-surface, browser, and desktop-shell confidence | 80% | 95% | +15 | PMU-017: toggle button before Refresh, absent at 0, `aria-pressed` and title, Enter/Space, full-width Cancelled lane after Done at 1440 px, text heading, muted pill vs Done (computed colors), card counts, live reopen with `moved`, Temp board/header/page, right-panel board and detail; no browser errors; screenshots consistent | zh-CN and narrow width only at component/catalog level; the lane is a `grid-column: 1 / -1` row (trivially a row in single-column layouts); packaged desktop is delivery user verification |
 | Durable regression coverage quality and relevance | 90% | 96% | +6 | 3 new durable cases at the real boundaries, plus 1 browser case; documented in TESTING.md; existing suites unchanged and green | — |
 
 - Overall post-repository confidence: 90% (simple average 90.3%; user surface 80% below gate → broader validation Required)
@@ -125,13 +125,13 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
 - Every critical acceptance criterion directly proven: `Yes`
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: packaged desktop app and real-model behavior (delivery user verification), external Project Task Manager skill not aware of CLOSED (approved out of scope, R-002)
+- Confidence-limiting residual risks: packaged desktop app and real-model behavior (delivery user verification), external Project Task Manager skill not aware of CANCELLED (approved out of scope, R-002)
 
 ## Broader Validation Decision And Execution
 
 - Decision and mode: `Required` → `Browser` (repository-resident `project-manager-ux` probe; TESTING.md "Renderer UI … Web unit tests + a browser dev-path probe")
 - Material deviation: none
-- Gap addressed: live agent-driven rendering of the hidden Closed lane, toggle, pills and counts across the Project board, Task page, Temp board and right panel, which the implementer checked only with statuses written to disk
+- Gap addressed: live agent-driven rendering of the hidden Cancelled lane, toggle, pills and counts across the Project board, Task page, Temp board and right panel, which the implementer checked only with statuses written to disk
 - Startup: probe-owned `dist/app.js` backend (free port, private SQLite/data/HOME), Nuxt dev (free port), warm-up, headless Chrome; the scripted AGY Manager drives tools over its real input channel
 - Environment choices: 1440×1000 viewport, `en-US`
 - Seed data: definitions, roots, Projects, Tasks and delegations created through public GraphQL and the Manager's tool calls only
@@ -139,16 +139,16 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
 | --- | --- | --- | --- | --- |
 | Card before close | 2 open (TODO+TODO, DONE excluded) | "2 open tasks · No workspaces" | evidence `cardBefore` | Pass |
-| Agent CLOSED on open board | row leaves lanes live; "Closed (1)" toggle appears right before Refresh, unpressed; no Closed lane | as expected; root `closed=true` on server | `toggleHidden`, `pmu-017-board-closed-hidden.png` | Pass |
-| Search for a Closed Task | no-match while hidden; toggle stays; toggle reveals the row | as expected | assertions | Pass |
-| Toggle on | `aria-pressed=true`, title "Hide closed tasks"; lanes TODO, IN_PROGRESS, DONE, CLOSED; Closed full width (1053 = grid) under the row of three | as expected; row Offline, not openable | `lanes`, `pmu-017-board-closed-lane-shown.png` | Pass |
+| Agent CANCELLED on open board | row leaves lanes live; "Cancelled (1)" toggle appears right before Refresh, unpressed; no Cancelled lane | as expected; root `closed=true` on server | `toggleHidden`, `pmu-017-board-closed-hidden.png` | Pass |
+| Search for a Cancelled Task | no-match while hidden; toggle stays; toggle reveals the row | as expected | assertions | Pass |
+| Toggle on | `aria-pressed=true`, title "Hide closed tasks"; lanes TODO, IN_PROGRESS, DONE, CANCELLED; Cancelled full width (1053 = grid) under the row of three | as expected; row Offline, not openable | `lanes`, `pmu-017-board-closed-lane-shown.png` | Pass |
 | Keyboard | Enter hides, Space shows | as expected | assertions | Pass |
-| Task page | "Closed" pill, muted (`rgb(255,255,255)`/`rgb(100,116,139)`) vs Done (`rgb(236,253,245)`/`rgb(6,95,70)`); no status control | as expected | `pills`, `pmu-017-task-page-closed.png` | Pass |
-| Revisit board | Closed hidden again | as expected | assertion | Pass |
+| Task page | "Cancelled" pill, muted (`rgb(255,255,255)`/`rgb(100,116,139)`) vs Done (`rgb(236,253,245)`/`rgb(6,95,70)`); no status control | as expected | `pills`, `pmu-017-task-page-closed.png` | Pass |
+| Revisit board | Cancelled hidden again | as expected | assertion | Pass |
 | Card after close | 1 open | "1 open task · No workspaces" | `cardClosed` | Pass |
 | Agent reopen (TODO) | row back in To Do with `data-live=moved`; toggle gone; root Offline | as expected | `reopened`, `pmu-017-board-reopened.png` | Pass |
-| Temp task CLOSED | header count drops live (1 → hidden); board hides it; toggle before Refresh; Closed lane last, full width; page pill "Closed" | as expected | `tempCounts`, `tempToggle`, `tempLanes`, `tempPill`, screenshots | Pass |
-| Right-panel tab | agent CLOSED hides the row live; toggle; Closed lane; detail pill "Closed" | as expected | `panelToggle`, `panelPill`, `pmu-017-panel-*.png` | Pass |
+| Temp task CANCELLED | header count drops live (1 → hidden); board hides it; toggle before Refresh; Cancelled lane last, full width; page pill "Cancelled" | as expected | `tempCounts`, `tempToggle`, `tempLanes`, `tempPill`, screenshots | Pass |
+| Right-panel tab | agent CANCELLED hides the row live; toggle; Cancelled lane; detail pill "Cancelled" | as expected | `panelToggle`, `panelPill`, `pmu-017-panel-*.png` | Pass |
 | Regression PMU-001/002/003/005/009/015 | unchanged DONE/Temp/panel journeys | all Pass | `pmu-regression-run-1/evidence.json` | Pass |
 
 ## Desktop Application Validation
@@ -165,9 +165,9 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
 
 - Approved decision: `Directly Usable — No Migration`
 - Representative existing data: current-format Tasks (E-007), released `projects.json` fixtures (startup migration E2E, API-009), and store/migration unit fixtures.
-- Result: all green on the current reader. The released migration uses the frozen 3-status reader (unit + startup E2E pass). A CLOSED write keeps the exact `task.json` key set and reads back after reader reconstruction (CLS-API-001).
+- Result: all green on the current reader. The released migration uses the frozen 3-status reader (unit + startup E2E pass). A CANCELLED write keeps the exact `task.json` key set and reads back after reader reconstruction (CLS-API-001).
 - Version-specific runtime branch or compatibility fallback observed: `No`
-- Residual risk: none material. A restart with stored CLOSED Tasks is covered at reader level (reader reconstruction) rather than by a whole-process restart.
+- Residual risk: none material. A restart with stored CANCELLED Tasks is covered at reader level (reader reconstruction) rather than by a whole-process restart.
 
 ## Durable Coverage Changed In The Codebase
 
@@ -213,11 +213,11 @@ All commands ran from the worktree root after `pnpm -C autobyteus-server-ts preb
 - Non-blocking observations for delivery (cosmetic, no behavior impact):
   - `autobyteus-web/components/projects/ProjectCard.vue` L34 comment still says "Open Tasks are those not Done". The behavior (server `openTaskCount`) is correct and proven.
   - `delegate_task {task_id}` on a terminal Task returns `{error: {code: "TASK_AGENT_RESOURCE_CLOSED", message}}` rather than the description's `target_agent_run_id: null` shape. This is the pre-existing DONE behavior, unchanged by this ticket, and CLS-E2E asserts the current shape.
-  - R-002 (external Project Task Manager skill not aware of CLOSED) remains the approved follow-up.
+  - R-002 (external Project Task Manager skill not aware of CANCELLED) remains the approved follow-up.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
 - Final validation confidence: 95%
 - Broader validation decision: `Required` → executed (Browser), Pass
-- Notes: CLS-MUT-001 confirmed the new durable cases detect a non-terminal CLOSED.
+- Notes: CLS-MUT-001 confirmed the new durable cases detect a non-terminal CANCELLED.

@@ -506,11 +506,11 @@ describe("ProjectService", () => {
     expect(await fs.readFile(harness.layout.projectFile("project_x"), "utf8")).toBe(source);
   });
 
-  it("counts open Tasks (not DONE or CLOSED) from valid task.json files and never exposes a Task list on the Project view", async () => {
+  it("counts open Tasks (not DONE or CANCELLED) from valid task.json files and never exposes a Task list on the Project view", async () => {
     const task = (taskId: string, status: string) => ({ taskId, description: `Task ${taskId}`, status,
       createdAt: "2026-09-26T00:00:00.000Z", updatedAt: "2026-09-26T00:00:00.000Z" });
     await harness.writeProject({ projectId: "project_x", name: "x", description: "", createdAt: "2026-09-26T00:00:00.000Z", updatedAt: "2026-09-26T00:00:00.000Z", workspaces: [] });
-    for (const t of [task("t1", "TODO"), task("t2", "IN_PROGRESS"), task("t3", "DONE"), task("t4", "CLOSED")]) await harness.writeTask("project_x", t);
+    for (const t of [task("t1", "TODO"), task("t2", "IN_PROGRESS"), task("t3", "DONE"), task("t4", "CANCELLED")]) await harness.writeTask("project_x", t);
     await harness.writeTask("project_x", { taskId: "broken" });
     await harness.writeJson(path.join(harness.layout.tasksDir("project_x"), "deleted", "agent_run_resources.json"), { taskId: "deleted", agentRunResources: [] });
     const project = await harness.service.getProject("project_x");

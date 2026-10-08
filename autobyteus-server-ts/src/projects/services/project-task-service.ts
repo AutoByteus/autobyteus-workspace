@@ -60,7 +60,7 @@ type ContextUpdate = { removals: string[]; writesContextList: boolean; prepare: 
 /**
  * The Task subject boundary: Project Task metadata and context (released semantics over the
  * per-Project store), Tasks with no Project (ad-hoc, created only by described delegation), saved
- * work for assignment, status rules, and closure (DONE or CLOSED) / assignment orchestration for both. It is the
+ * work for assignment, status rules, and closure (DONE or CANCELLED) / assignment orchestration for both. It is the
  * runtime's `TaskAgentResourcePort`, delegating agent run facts to TaskAgentResourceService.
  */
 export class ProjectTaskService implements TaskAgentResourcePort {
@@ -73,7 +73,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     this.resources = deps.taskAgentResources
       ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout, this.adHocTasks.layout));
     this.release = new TaskAgentResourceRelease(deps.requestRelease);
-    // Every committed run-resource write may change a Task's root (link, start, fail, DONE or CLOSED, reopen).
+    // Every committed run-resource write may change a Task's root (link, start, fail, DONE or CANCELLED, reopen).
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
   private get changes(): ProjectChangeMarks { return this.deps.changes ?? getProjectChangePublisher(); }
@@ -124,7 +124,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   /**
    * Patches any Task by its unique id: an ad-hoc Task (direct path read, no Projects gate) or else
    * a Project Task (found across Projects). Description and status; for Project Tasks also
-   * `localContextFiles`, copied in and appended (never removed). DONE or CLOSED closes its agent runs.
+   * `localContextFiles`, copied in and appended (never removed). DONE or CANCELLED closes its agent runs.
    */
   async updateTaskById(command: UpdateTaskByIdCommand): Promise<TaskAcknowledgementView> {
     const hasDescription = Object.hasOwn(command, "description");
@@ -233,7 +233,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     const filePath = await this.context.savedFile(projectId, taskId, file).catch(() => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved Task bytes are unavailable."); });
     return { file, filePath };
   }
-  /** Settles stop requests already made by DONE or CLOSED (tests and orderly shutdown). */
+  /** Settles stop requests already made by DONE or CANCELLED (tests and orderly shutdown). */
   async drainRuntimeReleases(): Promise<void> { await this.release.drain(); }
 
   // ── TaskAgentResourcePort (runtime-facing) ──
@@ -250,7 +250,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
     const { projectId } = await this.uniqueTask(input.taskId);
     await this.resources.serialize(input.taskId, async () => {
-      // Status re-check inside the Task's serialization: a DONE or CLOSED is entirely before or entirely after.
+      // Status re-check inside the Task's serialization: a DONE or CANCELLED is entirely before or entirely after.
       const task = await this.store.readTask(projectId, input.taskId);
       if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${input.taskId}' was not found.`);
       if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
@@ -280,7 +280,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
     await this.assertTaskNotTerminal(location);
   }
-  /** The reactivation commit: re-validated under the Task's serialization, so a DONE or CLOSED is entirely before or after. Status is never written. */
+  /** The reactivation commit: re-validated under the Task's serialization, so a DONE or CANCELLED is entirely before or after. Status is never written. */
   async reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult> {
     const location = await this.reopenLocation(input.agentRun);
     return this.resources.serialize(location.taskId, async () => {
@@ -300,7 +300,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     await this.resources.serialize(taskId, () => this.resources.linkAssigned({ projectId: null, taskId }, link));
     return taskId;
   }
-  /** DONE or CLOSED (both Task kinds): close the Task's agent runs first (fences at once), then write the status, then ask roots to stop them. */
+  /** DONE or CANCELLED (both Task kinds): close the Task's agent runs first (fences at once), then write the status, then ask roots to stop them. */
   private async closeAndWrite<T>(location: TaskLocation, write: () => Promise<T>): Promise<T> {
     let closed = false, written: T | undefined;
     try {
@@ -351,14 +351,14 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   /**
    * Shared Project Task update body over a validated patch. The context step (draft prepare or local
    * import) runs after every input check and before any write, so a failure changes nothing and DONE
-   * or CLOSED never closes runs first. Prepared files are appended to the current list under the Task lock.
+   * or CANCELLED never closes runs first. Prepared files are appended to the current list under the Task lock.
    */
   private async update(projectId: string, taskId: string, patch: { description?: string; status?: ProjectTaskStatus }, context: ContextUpdate)
     : Promise<{ task: ProjectTask; attached: ProjectTaskContextFile[] }> {
     const { description, status } = patch;
     const { removals } = context;
     const existing = await this.assertOwner(projectId, taskId);
-    // Input errors are rejected before anything is written (DONE or CLOSED would otherwise already have closed its runs).
+    // Input errors are rejected before anything is written (DONE or CANCELLED would otherwise already have closed its runs).
     if (removals.some((name) => !(existing?.contextFiles ?? []).some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
     const prepared = await context.prepare();
     let removed: ProjectTaskContextFile[] = [];

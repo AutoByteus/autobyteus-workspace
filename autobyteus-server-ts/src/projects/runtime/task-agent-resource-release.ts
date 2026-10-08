@@ -2,8 +2,8 @@ import type { TaskAgentResourceReleaseRequest } from "../../agent-collaboration/
 import type { TaskAgentResourceGroup } from "../services/task-agent-resource-service.js";
 
 /**
- * The runtime side effect of DONE or CLOSED: asks each host root to stop exactly the Task's closed agent runs.
- * Nothing is persisted (Q-1): failures are logged and repeating DONE or CLOSED requests the stop again.
+ * The runtime side effect of DONE or CANCELLED: asks each host root to stop exactly the Task's closed agent runs.
+ * Nothing is persisted (Q-1): failures are logged and repeating DONE or CANCELLED requests the stop again.
  */
 export class TaskAgentResourceRelease {
   private readonly inFlight = new Set<Promise<void>>();

@@ -8,7 +8,7 @@
 
 ## Revision Entries
 
-### API-REV-001 — Baseline validation of the CLOSED Task status
+### API-REV-001 — Baseline validation of the CANCELLED Task status
 
 - Triggering role, report path, and round: Implementation Engineer; `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/implementation-handoff.md`; round 1
 - Triggering finding or case IDs: N/A (initial validation)
@@ -31,4 +31,4 @@ None.
 - Current result and confidence: `Pass`, 95%
 - New or remaining failure IDs: None. PMU-017 runs 1–2 failed on a probe-selector defect in the new test code, which was fixed in the same round.
 - Recommended owner: Delivery Engineer
-- Remaining risks, blocked evidence, or untested scope: packaged desktop app and real-model behavior (delivery user verification); external Project Task Manager skill unaware of CLOSED (R-002, approved out of scope); cosmetic stale comment in `ProjectCard.vue` L34
+- Remaining risks, blocked evidence, or untested scope: packaged desktop app and real-model behavior (delivery user verification); external Project Task Manager skill unaware of CANCELLED (R-002, approved out of scope); cosmetic stale comment in `ProjectCard.vue` L34

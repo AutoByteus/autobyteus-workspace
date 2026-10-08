@@ -187,7 +187,7 @@ export class AgentOrgRunManager {
     });
   }
 
-  /** Closed (Task DONE or CLOSED) task executions of the given tree of this Org (stored, or the active snapshot's). */
+  /** Closed (Task DONE or CANCELLED) task executions of the given tree of this Org (stored, or the active snapshot's). */
   closedTaskExecutionsFor(orgRunIdInput: string, tree: AgentOrgRunExecutionTreeFile): readonly TaskExecutionReference[] {
     const index = new AgentOrgExecutionIndex(tree);
     return listClosedTaskExecutions({ port: this.taskAgentResources, root: createAgentOrgRootExecutionIdentity(required(orgRunIdInput, "orgRunId")),

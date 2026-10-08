@@ -18,26 +18,26 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (SR-005 design revision; initial baseline IR-001)
+- Implementation cycle: `Rework` (SR-006 rename CLOSED → CANCELLED, on top of SR-005; initial baseline IR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-004`, `SR-005`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-004`, `SR-005`, `SR-006`
 - Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
 
-A Task status can now be `CLOSED`, meaning dropped as not needed, not completed. On the server, one vocabulary owner (`projects/domain/task-status.ts`) holds the four values, `validateTaskStatus` and `isTerminalTaskStatus` (DONE or CLOSED). All server consumers use it:
+A Task status can now be `CANCELLED`, meaning dropped as not needed, not completed. On the server, one vocabulary owner (`projects/domain/task-status.ts`) holds the four values, `validateTaskStatus` and `isTerminalTaskStatus` (DONE or CANCELLED). All server consumers use it:
 - **Service:** closure triggers in both update paths; assignment and reactivation refusals name the actual status.
 - **Readers and schemas:** both store readers, the change-feed schema and the tool contract.
 - **Counts and transport:** the open count and the GraphQL enum.
 
-CLOSED reuses `closeAndWrite` unchanged. Agent-facing tool texts, the collaboration LLM contract and runtime refusal texts explain CLOSED. The released `projects-per-folder-v1` migration now reads tasks through a frozen 3-status reader.
+CANCELLED reuses `closeAndWrite` unchanged. Agent-facing tool texts, the collaboration LLM contract and runtime refusal texts explain CANCELLED. The released `projects-per-folder-v1` migration now reads tasks through a frozen 3-status reader.
 
 On the web, `utils/projects/taskStatusPresentation.ts` (renamed from `taskStatusLabelKey.ts`, no shim) owns:
 - labels and pill classes;
 - the open predicate;
 - the Project and Temp lanes.
 
-Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)" beside Refresh, absent at 0) that reveals a Closed column as the last column, after Done (SR-005; four equal columns at ≥752px on the Project board, three on the Temp board, stacked below 752px). Task page, Temp page and right-panel detail show a muted "Closed" pill. en/zh-CN strings and the generated enum value are added. Docs are synced.
+Both boards hide Cancelled Tasks behind a new `CancelledTasksToggle.vue` ("Cancelled (N)" beside Refresh, absent at 0) that reveals a Cancelled column as the last column, after Done (SR-005; four equal columns at ≥752px on the Project board, three on the Temp board, stacked below 752px). Task page, Temp page and right-panel detail show a muted "Cancelled" pill. en/zh-CN strings and the generated enum value are added. Docs are synced.
 
 ## Routing Classification (Mandatory)
 
@@ -45,7 +45,7 @@ Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)"
 - Architecture risk: `Low`
 - Design classification section / evidence reference: `design-spec.md` › Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale: all changes stayed inside the listed Projects owners. CLOSED reused `closeAndWrite` unchanged. DONE ↔ CLOSED produced no resource-file change beyond repeated-DONE behaviour (unit test). The migration repoint left every migration test and the startup-migration E2E green. No unlisted status consumer with runtime behaviour was found: a full grep found only the listed sites plus comment/wording sites.
+- Evidence and rationale: all changes stayed inside the listed Projects owners. CANCELLED reused `closeAndWrite` unchanged. DONE ↔ CANCELLED produced no resource-file change beyond repeated-DONE behaviour (unit test). The migration repoint left every migration test and the startup-migration E2E green. No unlisted status consumer with runtime behaviour was found: a full grep found only the listed sites plus comment/wording sites.
 - Selected route: `Direct API/E2E`
 - Lightweight implementation self-review completed: `Yes` (diff review against design, boundaries, removal list, file sizes, scope guardrail; see checks below)
 - New design impact or escalation trigger: `None`
@@ -54,16 +54,16 @@ Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)"
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | CLOSED closes and stops workers exactly like DONE; reopen writes only | `project-task-tool-contract.ts` (parse via `validateTaskStatus`) → `ProjectTaskService.updateTaskById` / `update` → `isTerminalTaskStatus` → `closeAndWrite` (unchanged) | Done. Repeated CLOSED re-requests stop with no file change; DONE↔CLOSED = repeated DONE |
+| BEH-001 | CANCELLED closes and stops workers exactly like DONE; reopen writes only | `project-task-tool-contract.ts` (parse via `validateTaskStatus`) → `ProjectTaskService.updateTaskById` / `update` → `isTerminalTaskStatus` → `closeAndWrite` (unchanged) | Done. Repeated CANCELLED re-requests stop with no file change; DONE↔CANCELLED = repeated DONE |
 | BEH-002 | App stays display-only | No GraphQL input change; no new control (toggle only shows/hides) | Preserved |
-| BEH-003 | Closed out of open lanes, hidden by default, toggle beside Refresh, Closed as last column after Done (SR-005) | `ProjectTaskBoard.vue` (`project-task-board__columns--with-closed` → `repeat(4, …)`), `ClosedTasksToggle.vue`, `taskStatusPresentation.ts` (`BOARD_OPEN_LANES`) | Done, incl. compact/right-panel board |
-| BEH-004 | Temp: Closed neither Open nor Done; hidden + toggle; header count excludes | `TempTaskBoard.vue`, `TempTaskDetail.vue`, `TempTasksLink.vue`, `tempTaskLaneOf` | Done |
-| BEH-005 | `list_project_tasks` filters CLOSED | Tool enum from `PROJECT_TASK_STATUSES`; `listTasks` validation | Done |
-| BEH-006 | Terminal refuses assignment/reactivation naming status; reopen → assigner reactivation | `resolveAssignment`, `linkAgentRun`, `assertTaskNotTerminal` (renamed from `assertTaskNotDone`) | Done. Messages: "The Task is CLOSED; move it to TODO or IN_PROGRESS before assigning new work." / "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." |
+| BEH-003 | Cancelled out of open lanes, hidden by default, toggle beside Refresh, Cancelled as last column after Done (SR-005) | `ProjectTaskBoard.vue` (`project-task-board__columns--with-cancelled` → `repeat(4, …)`), `CancelledTasksToggle.vue`, `taskStatusPresentation.ts` (`BOARD_OPEN_LANES`) | Done, incl. compact/right-panel board |
+| BEH-004 | Temp: Cancelled neither Open nor Done; hidden + toggle; header count excludes | `TempTaskBoard.vue`, `TempTaskDetail.vue`, `TempTasksLink.vue`, `tempTaskLaneOf` | Done |
+| BEH-005 | `list_project_tasks` filters CANCELLED | Tool enum from `PROJECT_TASK_STATUSES`; `listTasks` validation | Done |
+| BEH-006 | Terminal refuses assignment/reactivation naming status; reopen → assigner reactivation | `resolveAssignment`, `linkAgentRun`, `assertTaskNotTerminal` (renamed from `assertTaskNotDone`) | Done. Messages: "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work." / "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." |
 | BEH-007 | Open count = TODO + IN_PROGRESS | `project-service.ts` (`!isTerminalTaskStatus`), web `projectTaskStore.publish` / `TempTasksLink` (`isOpenTaskStatus`) | Done; delete confirm unchanged |
-| BEH-008 | Feed carries CLOSED; live lane moves | `project-change-messages.ts` `z.enum(PROJECT_TASK_STATUSES)`; web `laneOf` via `tempTaskLaneOf` | Done; DONE→CLOSED highlights as `moved` |
+| BEH-008 | Feed carries CANCELLED; live lane moves | `project-change-messages.ts` `z.enum(PROJECT_TASK_STATUSES)`; web `laneOf` via `tempTaskLaneOf` | Done; DONE→CANCELLED highlights as `moved` |
 | BEH-009 | Existing data directly usable | Readers use `isProjectTaskStatus`; frozen `readReleasedTaskFileV1` for the released migration | Done; no migration |
-| BEH-010 | CLOSED exists | `task-status.ts`, GraphQL enum, web type, en/zh-CN labels | Done |
+| BEH-010 | CANCELLED exists | `task-status.ts`, GraphQL enum, web type, en/zh-CN labels | Done |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
@@ -72,13 +72,13 @@ Both boards hide Closed Tasks behind a new `ClosedTasksToggle.vue` ("Closed (N)"
 Server:
 - **Added:** `src/projects/domain/task-status.ts`.
 - **Status logic:** `src/projects/{domain/models.ts, stores/project-store.ts, stores/ad-hoc-task-store.ts, services/project-task-service.ts, services/project-service.ts, changes/project-change-messages.ts}`.
-- **Agent tools and GraphQL:** `src/agent-tools/project-tasks/project-task-tool-contract.ts`, `src/api/graphql/types/project-tasks.ts` (enum + `CLOSED`).
+- **Agent tools and GraphQL:** `src/agent-tools/project-tasks/project-task-tool-contract.ts`, `src/api/graphql/types/project-tasks.ts` (enum + `CANCELLED`).
 - **Migration:** `src/app-data-migrations/migrations/projects-per-folder-v1/{released-project-folder-v1.ts, projects-per-folder-v1-app-data-migration.ts}`.
 - **Agent-facing wording:** `src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`; runtime refusal texts in `agent-collaboration/execution/task/*`.
 - **Comment-only sweep:** files in agent-team/org/standalone/run-history plus `projects/{runtime,services,domain}`.
 
 Web:
-- **Added:** `components/projects/ClosedTasksToggle.vue`.
+- **Added:** `components/projects/CancelledTasksToggle.vue`.
 - **Rename:** `utils/projects/taskStatusLabelKey.ts` → `taskStatusPresentation.ts`.
 - **Boards and pages:** `components/projects/{ProjectTaskBoard,TempTaskBoard,TempTaskDetail,TempTasksLink,ProjectTaskDetail}.vue`, `components/projects/panel/ProjectsPanelTaskDetail.vue`.
 - **Store, types and strings:** `stores/projectTaskStore.ts`, `types/project.ts`, `localization/messages/{en,zh-CN}/projects.ts`, `generated/graphql.ts`.
@@ -88,20 +88,20 @@ Docs:
 - Web: `docs/{projects,chat}.md`, `AGENTS.md` catalog line.
 
 Tests:
-- **Server:** new `tests/unit/projects/task-closed-status.test.ts`; updated `project-service.test.ts`, `project-task-tools.test.ts`, `agent-team-collaboration-llm-contract.test.ts` (pinned hashes + wording).
+- **Server:** new `tests/unit/projects/task-cancelled-status.test.ts`; updated `project-service.test.ts`, `project-task-tools.test.ts`, `agent-team-collaboration-llm-contract.test.ts` (pinned hashes + wording).
 - **Web:** new `utils/projects/__tests__/taskStatusPresentation.spec.ts`; updated `ProjectTaskBoard.spec.ts`, `TempTasks.spec.ts`, `ProjectsPanel.spec.ts`, `stores/__tests__/projectLiveChanges.spec.ts`.
 
 ## Important Assumptions
 
-- Board rows carry no status label of their own today; Closed rows are labelled by their "Closed" lane heading (same as Done rows by "Done"). The Task page, Temp page and right panel show the "Closed" pill (REQ-009).
-- The toggle's accessible name is its visible text "Closed (N)", with `aria-pressed` for state and a `title` "Show/Hide closed tasks". No changing aria-label.
-- The web `PROJECT_TASK_STATUSES` constant became unused once the boards use `BOARD_OPEN_LANES` and was removed (dead code); the type gained `'CLOSED'`.
-- The generated GraphQL enum line was applied by hand in codegen order (`Closed` first, alphabetical), which the design allowed.
+- Board rows carry no status label of their own today; Cancelled rows are labelled by their "Cancelled" lane heading (same as Done rows by "Done"). The Task page, Temp page and right panel show the "Cancelled" pill (REQ-009).
+- The toggle's accessible name is its visible text "Cancelled (N)", with `aria-pressed` for state and a `title` "Show/Hide closed tasks". No changing aria-label.
+- The web `PROJECT_TASK_STATUSES` constant became unused once the boards use `BOARD_OPEN_LANES` and was removed (dead code); the type gained `'CANCELLED'`.
+- The generated GraphQL enum line was applied by hand in codegen order (`Cancelled` first, alphabetical), which the design allowed.
 
 ## Known Risks
 
 - R-001 (wording "closed" for agent-run closure) mitigated in tool/LLM texts and docs as designed.
-- R-002: the external Project Task Manager skill (`autobyteus-agents`) does not know CLOSED. This is out of scope and a follow-up candidate.
+- R-002: the external Project Task Manager skill (`autobyteus-agents`) does not know CANCELLED. This is out of scope and a follow-up candidate.
 - The pinned LLM-contract hashes changed: `sendTool`, `sendExactRun`, `delegateTool` and `collaborationPrompt`. The `prompt_engineering.md` Team example was synced to match.
 - The collaborator-mention note (`agent_communication.md` L385, `@`-mention guidance text in code) still says "mark that Task DONE". It is a separate, unchanged code string outside the design's wording list; cosmetic only.
 
@@ -134,7 +134,7 @@ Tests:
 - Direct-use evidence:
   - The current readers accept all four values and still reject unknown ones (unit test).
   - The existing store/migration fixtures still pass.
-  - The released migration's frozen reader `readReleasedTaskFileV1` is a verbatim copy of the current `readTaskFile`, pinned to `3a2496c95`. It keeps 3 statuses and rejects CLOSED (unit test).
+  - The released migration's frozen reader `readReleasedTaskFileV1` is a verbatim copy of the current `readTaskFile`, pinned to `3a2496c95`. It keeps 3 statuses and rejects CANCELLED (unit test).
   - The migration unit test and `projects-startup-migration.e2e.test.ts` pass on a rebuilt dist.
 - Migration implementation: N/A
 - Deviation: `None`
@@ -149,7 +149,7 @@ Tests:
 
 - Server source typecheck (`tsc -p tsconfig.build.json --noEmit`): clean. Server build: success.
 - Server unit tests:
-  - `tests/unit/projects tests/unit/agent-collaboration tests/unit/agent-tools/project-tasks tests/unit/agent-tools/task-delegation tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts tests/unit/api` passed; after new tests, `tests/unit/projects/task-closed-status.test.ts` adds 10 tests;
+  - `tests/unit/projects tests/unit/agent-collaboration tests/unit/agent-tools/project-tasks tests/unit/agent-tools/task-delegation tests/unit/app-data-migrations/projects-per-folder-v1-app-data-migration.test.ts tests/unit/api` passed; after new tests, `tests/unit/projects/task-cancelled-status.test.ts` adds 10 tests;
   - `tests/unit/agent-team-execution tests/unit/agent-tools/task-delegation tests/unit/agent-execution/prompt`: 39 files / 203 tests pass;
   - `tests/unit/agent-tools/project-tasks`: 89 pass.
 - Existing server regression suites re-run unchanged (not new API/E2E sign-off):
@@ -159,16 +159,16 @@ Tests:
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Project board (Tasks tab), Closed toggle, Task page pill; Temp board/page/header and right-panel board/detail via component tests.
-- Approved references: requirements REQ-008/009/010, QR-001; design Concrete Examples (toolbar; Closed as fourth column, SR-005).
+- Affected surfaces / journeys: Project board (Tasks tab), Cancelled toggle, Task page pill; Temp board/page/header and right-panel board/detail via component tests.
+- Approved references: requirements REQ-008/009/010, QR-001; design Concrete Examples (toolbar; Cancelled as fourth column, SR-005).
 - Existing design system reviewed: existing Refresh button style (toggle matches: `min-h-11`, slate border, `rounded-lg`), lane section markup (reused), pill palette.
 - Surface used: `pnpm dev` (worktree-local `.autobyteus/development` state), backend `127.0.0.1:8000`, frontend `127.0.0.1:3000`, driven through the browser tool. Stopped afterwards.
 - States inspected:
-  - Board at narrow width (stacked lanes): Closed hidden, "Closed (2)" immediately before Refresh, unpressed.
+  - Board at narrow width (stacked lanes): Cancelled hidden, "Cancelled (2)" immediately before Refresh, unpressed.
   - Board at wide width, toggle off: To Do / In Progress / Done, three equal columns, unchanged.
-  - Board at wide width, toggle on (IR-002, SR-005): four equal columns on one row (`[To Do][In Progress][Done][Closed 2]`, each 195 CSS px at a 0.6 zoom, same top), toggle pressed (`bg-slate-100`). The SR-004 full-width row is gone.
-  - Board below 752px, toggle on: four stacked lanes, Closed last.
-  - Task page for a Closed Task: muted outlined "Closed" pill, distinct from Done green.
+  - Board at wide width, toggle on (IR-002, SR-005): four equal columns on one row (`[To Do][In Progress][Done][Cancelled 2]`, each 195 CSS px at a 0.6 zoom, same top), toggle pressed (`bg-slate-100`). The SR-004 full-width row is gone.
+  - Board below 752px, toggle on: four stacked lanes, Cancelled last.
+  - Task page for a Cancelled Task: muted outlined "Cancelled" pill, distinct from Done green.
 - Issues found / corrected: none needed.
 - Limitations:
   - Statuses for the rendering check were set by writing `task.json` directly in the dev data root; the agent tool path is covered by unit and E2E tests. Live feed movement was not observed in the browser; it is covered by `projectLiveChanges.spec.ts` and `project-change-feed.e2e`.
@@ -177,20 +177,20 @@ Tests:
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- **IR-002 / SR-005: browser probe PMU-017 needs updating (API/E2E-owned, not changed by me).** `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` L1210–1218 asserts "Closed lane is a full-width row beneath the three open lanes". Under SR-005 it should assert that all four lanes share one row (same top) with equal widths and Closed last, at 1440px. The Temp lane assertions near L1280 (`tempLanes`) and the `laneBoxes` doc comment (L1148) also need the same change: three equal columns, Closed last. `TESTING.md` L445 says "full-width Closed lane after Done" and should say "Closed column after Done". The PMU-017 evidence under `api-e2e-evidence/` predates SR-005.
+- **IR-002 / SR-005: browser probe PMU-017 needs updating (API/E2E-owned, not changed by me).** `autobyteus-web/tests/e2e/project-manager-ux-probe.mjs` L1210–1218 asserts "Cancelled lane is a full-width row beneath the three open lanes". Under SR-005 it should assert that all four lanes share one row (same top) with equal widths and Cancelled last, at 1440px. The Temp lane assertions near L1280 (`tempLanes`) and the `laneBoxes` doc comment (L1148) also need the same change: three equal columns, Cancelled last. `TESTING.md` L445 says "full-width Cancelled lane after Done" and should say "Cancelled column after Done". The PMU-017 evidence under `api-e2e-evidence/` predates SR-005.
 
-- An agent (scripted AGY) closes a delegated Project Task with `create_or_update_task {task_id, status:"CLOSED"}`:
+- An agent (scripted AGY) closes a delegated Project Task with `create_or_update_task {task_id, status:"CANCELLED"}`:
   - `task_executions_closed` is published before the stop;
   - the root is Offline;
-  - a repeated CLOSED re-publishes;
-  - DONE→CLOSED and CLOSED→DONE behave as a repeated DONE.
-- While CLOSED: `delegate_task {task_id}` is refused without spawning; messaging the worker run ID is refused with "This Task is CLOSED…"; reopen → assigner reactivation works (mirror `task-reactivation-root-visibility`).
-- Temp task closed by `task_id` (mirror `ad-hoc-task-delegation`); feed `task_upserted` with CLOSED for both scopes (`project-change-feed`).
-- GraphQL schema exposes `ProjectTaskStatus.CLOSED` and still has no status input (`projects-graphql.e2e`). `list_project_tasks {status:"CLOSED"}` over MCP.
-- Browser: the board toggle and Closed lane through a live agent close/reopen (`test:e2e:project-manager-ux` style), plus Temp board and right panel. Desktop user verification per design (`pnpm --silent isolated-app start --build`).
+  - a repeated CANCELLED re-publishes;
+  - DONE→CANCELLED and CANCELLED→DONE behave as a repeated DONE.
+- While CANCELLED: `delegate_task {task_id}` is refused without spawning; messaging the worker run ID is refused with "This Task is CANCELLED…"; reopen → assigner reactivation works (mirror `task-reactivation-root-visibility`).
+- Temp task closed by `task_id` (mirror `ad-hoc-task-delegation`); feed `task_upserted` with CANCELLED for both scopes (`project-change-feed`).
+- GraphQL schema exposes `ProjectTaskStatus.CANCELLED` and still has no status input (`projects-graphql.e2e`). `list_project_tasks {status:"CANCELLED"}` over MCP.
+- Browser: the board toggle and Cancelled lane through a live agent close/reopen (`test:e2e:project-manager-ux` style), plus Temp board and right panel. Desktop user verification per design (`pnpm --silent isolated-app start --build`).
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-- New durable API/E2E coverage for CLOSED, per the design Guidance and the hints above. None of the E2E files were changed in this round; only existing suites were re-run as regressions.
+- New durable API/E2E coverage for CANCELLED, per the design Guidance and the hints above. None of the E2E files were changed in this round; only existing suites were re-run as regressions.
 - Browser probe / isolated desktop verification of the live close → hide → toggle → reopen journey.
 - Pass/fail classification and confidence for AC-001…AC-013 (AC-013 docs included).

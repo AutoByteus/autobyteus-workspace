@@ -255,25 +255,25 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(listed.tasks).toEqual([{...created.task, status: "DONE", description: "hello", contextFiles: [], assignments: []}]);
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId, tasks: []});
   });
-  it("documents and accepts CLOSED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)", async () => {
+  it("documents and accepts CANCELLED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)", async () => {
     for (const name of ["create_or_update_task", "list_project_tasks"] as const) {
       const schema = buildProjectTaskToolSchema(name).toJsonSchema() as {properties: Record<string, any>};
-      expect(schema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CLOSED"]);
+      expect(schema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
     }
-    expect(CreateOrUpdateTaskTool.getDescription()).toMatch(/TODO\/IN_PROGRESS\/DONE\/CLOSED status.*CLOSED means the Task was dropped as not needed \(not completed\)\. Both stop the Task's delegated copies.*set the Task to TODO or IN_PROGRESS first/);
-    expect(ListProjectTasksTool.getDescription()).toMatch(/TODO, IN_PROGRESS, DONE or CLOSED status \(CLOSED = dropped as not needed\)/);
+    expect(CreateOrUpdateTaskTool.getDescription()).toMatch(/TODO\/IN_PROGRESS\/DONE\/CANCELLED status.*CANCELLED means the Task was dropped as not needed \(not completed\)\. Both stop the Task's delegated copies.*set the Task to TODO or IN_PROGRESS first/);
+    expect(ListProjectTasksTool.getDescription()).toMatch(/TODO, IN_PROGRESS, DONE or CANCELLED status \(CANCELLED = dropped as not needed\)/);
     const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: "unneeded"}));
     const kept = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: "kept"}));
-    expect((await mcp("create_or_update_task", {task_id: created.task.taskId, status: "CLOSED"})).structuredContent)
-      .toEqual({task: {...created.task, status: "CLOSED"}});
-    const closed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "CLOSED"}));
+    expect((await mcp("create_or_update_task", {task_id: created.task.taskId, status: "CANCELLED"})).structuredContent)
+      .toEqual({task: {...created.task, status: "CANCELLED"}});
+    const closed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "CANCELLED"}));
     expect(closed.tasks.map((t: {taskId: string}) => t.taskId)).toEqual([created.task.taskId]);
     expect((await mcp("list_project_tasks", {project_id: projectId})).structuredContent.tasks.map((t: {taskId: string}) => t.taskId).sort())
       .toEqual([created.task.taskId, kept.task.taskId].sort());
     // Reopen through the tool.
     expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {task_id: created.task.taskId, status: "TODO"})).task.status).toBe("TODO");
     const invalid = await new CreateOrUpdateTaskTool().execute(null, {task_id: created.task.taskId, status: "WONT_DO"}).then(() => null, (e) => JSON.parse(e.message));
-    expect(invalid).toMatchObject({error: {code: "TASK_STATUS_INVALID", message: "Task status must be TODO, IN_PROGRESS, DONE or CLOSED."}});
+    expect(invalid).toMatchObject({error: {code: "TASK_STATUS_INVALID", message: "Task status must be TODO, IN_PROGRESS, DONE or CANCELLED."}});
   });
   it.each([
     ["list_projects", {extra: true}, "PROJECT_TOOL_ARGUMENT_INVALID"],
@@ -287,7 +287,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     ["create_or_update_task", {description: "x"}, "PROJECT_TOOL_ARGUMENT_INVALID"],
     ["create_or_update_task", {project_id: "p", description: ""}, "TASK_DESCRIPTION_REQUIRED"],
     ["create_or_update_task", {project_id: "p", description: "x", status: "TODO"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
-    ["create_or_update_task", {project_id: "p", description: "x", status: "CLOSED"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
+    ["create_or_update_task", {project_id: "p", description: "x", status: "CANCELLED"}, "TASK_CREATE_STATUS_UNSUPPORTED"],
     ["create_or_update_task", {task_id: "t"}, "TASK_PATCH_REQUIRED"],
     // context_files: one additive array of non-blank path strings in both modes (AC-004, AC-008).
     ["create_or_update_task", {task_id: "t", context_files: []}, "TASK_PATCH_REQUIRED"],

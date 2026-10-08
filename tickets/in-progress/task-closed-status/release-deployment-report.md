@@ -18,16 +18,16 @@ Ticket `task-closed-status` (SR-004, IR-001, API-REV-001). Direct route: `task_s
 - Latest tracked remote base reference checked: `origin/personal` @ `ace86bf1fb2e5e533e6f7b706179726a2db3bf8f` (fetched 2026-10-08)
 - Base advanced since bootstrap or previous refresh: `Yes` (13 commits: idle-shutdown-background-tasks ticket and the `v1.4.99-beta.1` release commit)
 - New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint commit result: `Completed`. `ee78e1e19` "test(projects): add API/E2E coverage for CLOSED Task status (API-REV-001)". Paths were staged explicitly, and the untracked SDK `dist/` folders were excluded.
+- Local checkpoint commit result: `Completed`. `ee78e1e19` "test(projects): add API/E2E coverage for CANCELLED Task status (API-REV-001)". Paths were staged explicitly, and the untracked SDK `dist/` folders were excluded.
 - Integration method: `Merge` (`19a85ba3c`)
 - Integration result: `Completed`. There were three content conflicts in one paragraph:
   - `agent-team-collaboration-llm-contract.ts`
   - `prompt_engineering.md`
   - the hash pin in `agent-team-collaboration-llm-contract.test.ts`
 
-  They were resolved as a union: the base's "but not while it has a running background task" clause plus the ticket's "`DONE` or `CLOSED`" wording. The line breaks satisfy both tickets' exact-substring assertions without editing them. Only the pinned `collaborationPrompt` sha256 changed, to `04bc40a0…fd30`.
+  They were resolved as a union: the base's "but not while it has a running background task" clause plus the ticket's "`DONE` or `CANCELLED`" wording. The line breaks satisfy both tickets' exact-substring assertions without editing them. Only the pinned `collaborationPrompt` sha256 changed, to `04bc40a0…fd30`.
 
-  The auto-merged overlaps (`root-task-execution-lifecycle.ts`, `agent-org-run.ts`, `standalone-agent-run-root.ts`) are orthogonal: background-task re-arm versus terminal-status closure. Terminal closure still routes DONE and CLOSED through the same `closeAndWrite`.
+  The auto-merged overlaps (`root-task-execution-lifecycle.ts`, `agent-org-run.ts`, `standalone-agent-run-root.ts`) are orthogonal: background-task re-arm versus terminal-status closure. Terminal closure still routes DONE and CANCELLED through the same `closeAndWrite`.
 - Post-integration executable checks rerun: `Yes` (logs in `delivery-evidence/`):
   - `pnpm -C autobyteus-server-ts prebuild && build` → exit 0 (`server-build.log`)
   - `vitest run tests/unit/agent-team-execution/` → 35 files / 153 tests pass (during conflict resolution)
@@ -138,7 +138,7 @@ See Initial Delivery Integration Refresh. The user verification steps are in `ha
 
 ## Rollback Criteria
 
-If the desktop verification shows Closed Tasks rendered as Done, workers not stopping, or existing Tasks missing, do not finalize; route to `/software_engineering_team/implementation_engineer`. After finalization, rollback is a revert of the merge commit on `personal`. Tasks already stored as CLOSED would then be unreadable by the reverted app; they stay on disk and reappear on re-upgrade (approved non-goal).
+If the desktop verification shows Cancelled Tasks rendered as Done, workers not stopping, or existing Tasks missing, do not finalize; route to `/software_engineering_team/implementation_engineer`. After finalization, rollback is a revert of the merge commit on `personal`. Tasks already stored as CANCELLED would then be unreadable by the reverted app; they stay on disk and reappear on re-upgrade (approved non-goal).
 
 ## Final Status
 

@@ -13,10 +13,10 @@
 
 | Case ID | Case / Journey | Requirement / AC IDs | Boundary / Execution Surface | Planned Command Or Entry Point | Planned Order | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| CLS-API-001 | MCP + native + GraphQL CLOSED contract | AC-004, AC-006, AC-007, AC-010, AC-012, REQ-001 | Real Studio HTTP MCP / GraphQL | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts --no-watch` | 1 | ungated |
-| CLS-E2E-001 | Agent root live CLOSED journey | AC-001, AC-003, AC-004, AC-005, AC-011 | Real HTTP/WS/scoped MCP, scripted AGY | gated `task-reactivation-root-visibility.e2e.test.ts -t CLS-E2E` | 2 | |
-| CLS-E2E-002 | Team root live CLOSED journey | same | same (Team stream) | same | 3 | |
-| CLS-MUT-001 | Mutation sanity: CLOSED made non-terminal → new cases must fail | — | temporary source edit, restored | same commands | 4 | temporary |
+| CLS-API-001 | MCP + native + GraphQL CANCELLED contract | AC-004, AC-006, AC-007, AC-010, AC-012, REQ-001 | Real Studio HTTP MCP / GraphQL | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts --no-watch` | 1 | ungated |
+| CLS-E2E-001 | Agent root live CANCELLED journey | AC-001, AC-003, AC-004, AC-005, AC-011 | Real HTTP/WS/scoped MCP, scripted AGY | gated `task-reactivation-root-visibility.e2e.test.ts -t CLS-E2E` | 2 | |
+| CLS-E2E-002 | Team root live CANCELLED journey | same | same (Team stream) | same | 3 | |
+| CLS-MUT-001 | Mutation sanity: CANCELLED made non-terminal → new cases must fail | — | temporary source edit, restored | same commands | 4 | temporary |
 | REG-SRV | Server regression layers (unit + integration + tests/e2e/projects + gated siblings) | AC-012, preserved BEH | Vitest | TESTING.md commands | 5 | |
 | REG-WEB | Web specs for Projects + full test:nuxt | AC-008, AC-009, AC-011, QR-001/002 | Vitest/Nuxt | `pnpm -C autobyteus-web test:nuxt … --run` | 6 | |
 | PMU-017 | Browser: agent closes/reopens on Project board, Task page pill, card count, Temp board + header, right-panel board | AC-008..AC-011, REQ-008..010, QR-001 | Built backend + Nuxt dev + headless Chrome | `pnpm -C autobyteus-web test:e2e:project-manager-ux --cases PMU-017 --output-dir …` | 7 | |
@@ -27,7 +27,7 @@
 | Sequence | Case ID | Timestamp | Event | Command / Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | CLS-API-001 | 2026-10-08 16:18 | Completed | `vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts -t CLS-API-001` | all assertions pass | 1 passed (818 ms) | Pass | console | — |
-| 2 | CLS-E2E-001 | 2026-10-08 16:2x | Completed | gated, `-t CLS-E2E`, `TASK_REACTIVATION_E2E_EVIDENCE_DIR=api-e2e-evidence/cls-e2e` | live closure, stop, refusals naming CLOSED, reopen, reactivation, Temp CLOSED, strict feed | passed (4.5 s) | Pass | `api-e2e-evidence/cls-e2e/run-1.log`, `task-reactivation-root-visibility.json` | — |
+| 2 | CLS-E2E-001 | 2026-10-08 16:2x | Completed | gated, `-t CLS-E2E`, `TASK_REACTIVATION_E2E_EVIDENCE_DIR=api-e2e-evidence/cls-e2e` | live closure, stop, refusals naming CANCELLED, reopen, reactivation, Temp CANCELLED, strict feed | passed (4.5 s) | Pass | `api-e2e-evidence/cls-e2e/run-1.log`, `task-reactivation-root-visibility.json` | — |
 | 3 | CLS-E2E-002 | 2026-10-08 16:2x | Completed | same run | same via Team stream | passed (4.5 s) | Pass | same | — |
 | 4 | CLS-MUT-001 | 2026-10-08 16:2x | Completed | `isTerminalTaskStatus` temporarily DONE-only | CLS-API-001, CLS-E2E-001/002 fail | 3 failed (`expected null to deeply equal Any<String>`); source restored (`git diff` empty for `task-status.ts`) | Pass | console | — |
 

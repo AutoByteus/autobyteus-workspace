@@ -10,18 +10,18 @@
 
 ## Why Docs Were Updated
 
-- Summary: the implementation (`17e4299a6`) already synced the server and web docs for CLOSED. A delivery review of the integrated state found three remaining DONE-only statements that are now untrue because CLOSED uses the same terminal closure path (`isTerminalTaskStatus` → `closeAndWrite`): one came in with the base merge, one was an older damaged-file paragraph, and one was a stale code comment. The single merge conflict in `prompt_engineering.md` was resolved so that the doc matches the merged collaboration prompt word for word.
+- Summary: the implementation (`17e4299a6`) already synced the server and web docs for CANCELLED. A delivery review of the integrated state found three remaining DONE-only statements that are now untrue because CANCELLED uses the same terminal closure path (`isTerminalTaskStatus` → `closeAndWrite`): one came in with the base merge, one was an older damaged-file paragraph, and one was a stale code comment. The single merge conflict in `prompt_engineering.md` was resolved so that the doc matches the merged collaboration prompt word for word.
 - Why this should live in long-lived project docs: the docs are the canonical description of Task status semantics, of the agent-facing collaboration prompt (a doc-to-source parity test pins it) and of damaged-resource behavior.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/projects.md` | Primary Task status/closure doc (REQ-014) | Updated | Implementation's CLOSED sections verified accurate; the damaged-file paragraph (Q-3) corrected in delivery |
-| `autobyteus-server-ts/docs/modules/prompt_engineering.md` | Merge conflict; mirrors the collaboration prompt | Updated | Conflict resolved as a union: base's background-task clause plus the ticket's CLOSED wording; identical to the source |
-| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Changed by the base merge (idle shutdown) | Updated | "Task DONE release" → "Task DONE or CLOSED release" |
+| `autobyteus-server-ts/docs/modules/projects.md` | Primary Task status/closure doc (REQ-014) | Updated | Implementation's CANCELLED sections verified accurate; the damaged-file paragraph (Q-3) corrected in delivery |
+| `autobyteus-server-ts/docs/modules/prompt_engineering.md` | Merge conflict; mirrors the collaboration prompt | Updated | Conflict resolved as a union: base's background-task clause plus the ticket's CANCELLED wording; identical to the source |
+| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Changed by the base merge (idle shutdown) | Updated | "Task DONE release" → "Task DONE or CANCELLED release" |
 | `autobyteus-server-ts/docs/modules/agent_communication.md` | Mention-note DONE guidance | No change | Accurately quotes the mention-note text (`collaborator-mention-note.ts` L49 says DONE); changing that note is outside the approved scope |
-| `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md` | Tool enums | No change | Implementation update verified (CLOSED listed) |
+| `autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md` | Tool enums | No change | Implementation update verified (CANCELLED listed) |
 | `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Feed status values | No change | Implementation update verified |
 | `autobyteus-server-ts/docs/modules/agent_execution.md`, `agent_tools.md`, `antigravity_cli_runtime.md` | Changed by the base merge | No change | Background-task idle wording; no Task status claims |
 | `autobyteus-web/docs/projects.md` | Board, toggle, pills, Temp tasks (REQ-014) | No change | Implementation update verified against PMU-017 screenshots and the component sources |
@@ -34,18 +34,18 @@
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/prompt_engineering.md` | Merge resolution | Delegated Agents paragraph: a quiet copy is not shut down "while it has a running background task", and a copy whose Task is `DONE` or `CLOSED` is stopped | The doc must equal the merged `AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION` (parity assertion) |
-| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Correction | The root-stop fence and the "Task DONE or CLOSED" release do not consult background tasks | CLOSED stops copies through the same closure (REQ-002) |
-| `autobyteus-server-ts/docs/modules/projects.md` | Correction | Damaged file: changes to an open status keep working; "assign, DONE and CLOSED" fail with `TASK_AGENT_RESOURCES_UNAVAILABLE` | `isTerminalTaskStatus` routes CLOSED through `closeAndWrite`, which needs the resource file |
-| `autobyteus-web/components/projects/ProjectCard.vue` | Comment | "Open Tasks are those To Do or In Progress; Done and Closed Tasks are not open." | REQ-011; the old comment said "not Done" |
+| `autobyteus-server-ts/docs/modules/prompt_engineering.md` | Merge resolution | Delegated Agents paragraph: a quiet copy is not shut down "while it has a running background task", and a copy whose Task is `DONE` or `CANCELLED` is stopped | The doc must equal the merged `AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION` (parity assertion) |
+| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Correction | The root-stop fence and the "Task DONE or CANCELLED" release do not consult background tasks | CANCELLED stops copies through the same closure (REQ-002) |
+| `autobyteus-server-ts/docs/modules/projects.md` | Correction | Damaged file: changes to an open status keep working; "assign, DONE and CANCELLED" fail with `TASK_AGENT_RESOURCES_UNAVAILABLE` | `isTerminalTaskStatus` routes CANCELLED through `closeAndWrite`, which needs the resource file |
+| `autobyteus-web/components/projects/ProjectCard.vue` | Comment | "Open Tasks are those To Do or In Progress; Done and Cancelled Tasks are not open." | REQ-011; the old comment said "not Done" |
 
 ## Durable Design / Runtime Knowledge Promoted
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Terminal Task status | DONE and CLOSED are both terminal through one rule (`isTerminalTaskStatus`): closure, stop, assignment refusal, reactivation refusal | `design-spec.md` | `autobyteus-server-ts/docs/modules/projects.md` (implementation), now with the damaged-file case |
-| Closed display | Hidden by default; the "Closed (N)" toggle before Refresh; muted pill; open count = TODO + IN_PROGRESS | `requirements-doc.md` DEC-002 | `autobyteus-web/docs/projects.md` |
-| Collaboration prompt | Idle shutdown with background tasks and CLOSED stop/reopen in one paragraph | merge of both tickets | `autobyteus-server-ts/docs/modules/prompt_engineering.md` |
+| Terminal Task status | DONE and CANCELLED are both terminal through one rule (`isTerminalTaskStatus`): closure, stop, assignment refusal, reactivation refusal | `design-spec.md` | `autobyteus-server-ts/docs/modules/projects.md` (implementation), now with the damaged-file case |
+| Cancelled display | Hidden by default; the "Cancelled (N)" toggle before Refresh; muted pill; open count = TODO + IN_PROGRESS | `requirements-doc.md` DEC-002 | `autobyteus-web/docs/projects.md` |
+| Collaboration prompt | Idle shutdown with background tasks and CANCELLED stop/reopen in one paragraph | merge of both tickets | `autobyteus-server-ts/docs/modules/prompt_engineering.md` |
 
 ## Removed / Replaced Components Recorded
 
@@ -63,4 +63,4 @@
 
 - Result: `Pass`
 - Next delivery action: handoff summary and user-verification hold
-- Notes: R-002 (the external Project Task Manager skill does not know CLOSED) is an approved out-of-scope follow-up; it is not in this repository.
+- Notes: R-002 (the external Project Task Manager skill does not know CANCELLED) is an approved out-of-scope follow-up; it is not in this repository.

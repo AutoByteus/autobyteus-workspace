@@ -8,11 +8,12 @@
 | SR-002 | Requirements | User feedback 2026-10-08: no status control in the app | DEC-003 | Ready for Approval | Ready for Approval | BEH-002; UC-001 (removed), UC-003; REQ-006 (withdrawn → display-only), REQ-007, REQ-012, REQ-014; AC-001..003, AC-011, AC-013; SCN-001 (removed), SCN-003 | App stays display-only; status changes only through agent tools |
 | SR-003 | Requirements | User approval 2026-10-08 | DEC-001, DEC-002, DEC-004, DEC-005 | Ready for Approval | Approved | REQ-008, REQ-010, AC-008, AC-009; DEC-001/002/004/005 | Approved baseline; architecture design starts |
 | SR-004 | Design | Architecture design complete | N/A | Approved; design none | Approved; design Ready | All REQ/AC (design mapping) | design-spec.md Ready; Medium / Low → direct implementation route |
-| SR-005 | Design | User feedback 2026-10-08 on the implemented Closed row (screenshot) | N/A | Design Ready (SR-004) | Design Ready (revised) | REQ-008, REQ-010; AC-008, AC-009 (design only) | Closed lane becomes the last column after Done instead of a full-width row |
+| SR-005 | Design | User feedback 2026-10-08 on the implemented Cancelled row (screenshot) | N/A | Design Ready (SR-004) | Design Ready (revised) | REQ-008, REQ-010; AC-008, AC-009 (design only) | Cancelled lane becomes the last column after Done instead of a full-width row |
 
+| SR-006 | Mixed | User decision 2026-10-08: rename CLOSED → CANCELLED | DEC-001, R-001 | Approved (SR-003); design Ready (SR-005) | Approved (renewed); design Ready (revised) | REQ-001, REQ-004, REQ-008..010; AC-001, AC-004..009; DEC-001 | Status renamed to CANCELLED / "Cancelled" to avoid DONE confusion |
 ## Revision Entries
 
-### SR-001 — Initial requirements baseline for a Closed Task status
+### SR-001 — Initial requirements baseline for a Cancelled Task status
 
 - Phase and classification: Requirements — `Initial Baseline`
 - Triggering input: User request 2026-10-08 delivered as a Project Task by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
@@ -65,7 +66,7 @@
 - Triggering finding IDs: DEC-001, DEC-002, DEC-004, DEC-005
 - Prior status: Requirements `Ready for Approval` (SR-002)
 - Current status: Requirements `Approved`; design in progress
-- IDs affected: REQ-008, REQ-010 (concrete presentation: hidden by default, "Closed (N)" toggle beside Refresh, Closed lane after Done, toggle absent when none); AC-008, AC-009; DEC-001/002/004/005 resolved
+- IDs affected: REQ-008, REQ-010 (concrete presentation: hidden by default, "Cancelled (N)" toggle beside Refresh, Cancelled lane after Done, toggle absent when none); AC-008, AC-009; DEC-001/002/004/005 resolved
 - Scenario-basis changes: None
 - Canonical sections changed: Document Status, REQ-008, REQ-010, AC-008, AC-009, UI section, QR-001, Open Decisions, Readiness
 - Intended behavior changed: `Yes` (proposals fixed as approved)
@@ -97,17 +98,36 @@
 - Remaining gaps: R-002 (external Project Task Manager skill) follow-up candidate
 - Next action: Implementation
 
-### SR-005 — Closed lane as the last column
+### SR-005 — Cancelled lane as the last column
 
 - Phase and classification: Design — `Refinement` (user feedback on the design's layout choice)
 - Triggering input: User, 2026-10-08, with a screenshot of the implemented full-width Closed row: "Why don't we just use a vertical column … the closed column is the last column? … why are we putting closed on the separate row under the other one? … Does Jira have that column?" Research: Jira keeps terminal states (Done with resolution Won't Do, or a Canceled status) in the single far-right column; Linear board columns are ordered by status with Canceled last.
 - Triggering finding IDs: N/A
 - Prior status: Requirements Approved; design Ready (SR-004)
 - Current status: Requirements Approved (unchanged); design Ready (revised)
-- IDs affected: REQ-008, REQ-010, AC-008, AC-009. The design mapping changed only; the approved text "a separate Closed lane after Done" is satisfied more literally
+- IDs affected: REQ-008, REQ-010, AC-008, AC-009. The design mapping changed only; the approved text "a separate Cancelled lane after Done" is satisfied more literally
 - Canonical sections changed: design-spec Solution Basis, Intended Change, Final File Responsibility Mapping (ProjectTaskBoard, TempTaskBoard), Concrete Examples, Key Tradeoffs
 - Intended behavior changed: `No` (layout realization only, at the user's direction)
 - Approval impact: None; SR-003 approval stands
 - Post-design classification: unchanged (Medium / Low)
 - Applied handoff-rule outcome: design revision sent to `/software_engineering_team/implementation_engineer` (Small/Medium + Low rule)
 - Next action: Implementation adjusts the board layout
+
+### SR-006 — Rename the status CLOSED → CANCELLED
+
+- Phase and classification: Mixed — `Requirement Gap` (user change to an approved name) with a design follow-through
+- Triggering input: Solution Designer raised the risk that LLMs (and people) read "closed" as "finished", which also collides with the existing wording that DONE "closes" a Task's workers. Options offered: CANCELLED (recommended), WONT_DO, keep CANCELLED. User, 2026-10-08: "We should do the change … Not closed. Closer has confused the meaning. We need to just cancel it. Cancel it is better." then "CANCELLED is better".
+- Triggering finding IDs: DEC-001, R-001
+- Prior status: Requirements Approved (SR-003); design Ready (SR-005); implementation of SR-005 committed (`814e41a26`); delivery DR-001 halted awaiting the revised package
+- Current status: Requirements Approved (renewed by the user's explicit decision); design Ready (rename delta added)
+- IDs affected: REQ-001 (name and labels), REQ-004 (tool enum/texts), REQ-008..REQ-010 (lane, toggle and labels), AC-001, AC-004..AC-009, DEC-001 (re-resolved), R-001 (resolved)
+- Scenario-basis changes: None
+- Canonical sections changed: requirements (all status-name mentions, Document Status, DEC-001, Architecture Input); design (Solution Basis, all status-name mentions, naming check, Persisted Data note, new "SR-006 Rename Delta", Risks); investigation notes R-001
+- Intended behavior changed: `Yes` (status name and labels only; semantics unchanged)
+- Approval impact: Explicit user approval of CANCELLED, 2026-10-08 (quotes above). Approved baseline = requirements-doc.md at SR-006
+- Persisted data: `CLOSED` was never released, so no migration and no alias; unreleased test data with CLOSED is acceptable to lose
+- Post-design classification: unchanged (Medium / Low); a mechanical rename over existing owners
+- Applied handoff-rule outcome: sent to `/software_engineering_team/implementation_engineer` (Small/Medium + Low rule); handoff file section "Revision SR-006"
+- Downstream impact: implementation → API/E2E → delivery DR-002. Delivery artifacts that mention Cancelled (docs-sync-report, handoff-summary, release-notes) need updating
+- Remaining gaps: R-002 (external Project Task Manager skill) follow-up
+- Next action: Implementation of the rename

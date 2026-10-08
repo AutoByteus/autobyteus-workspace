@@ -26,15 +26,15 @@ const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", r
 const worker = { agentRunId: "worker" };
 const at = "2026-10-08T00:00:00.000Z";
 
-describe("Task status vocabulary (CLOSED)", () => {
-  it("has four values; DONE and CLOSED are terminal; the invalid-status error lists all four", () => {
-    expect(PROJECT_TASK_STATUSES).toEqual(["TODO", "IN_PROGRESS", "DONE", "CLOSED"]);
-    expect(PROJECT_TASK_STATUSES.filter(isTerminalTaskStatus)).toEqual(["DONE", "CLOSED"]);
+describe("Task status vocabulary (CANCELLED)", () => {
+  it("has four values; DONE and CANCELLED are terminal; the invalid-status error lists all four", () => {
+    expect(PROJECT_TASK_STATUSES).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
+    expect(PROJECT_TASK_STATUSES.filter(isTerminalTaskStatus)).toEqual(["DONE", "CANCELLED"]);
     for (const status of PROJECT_TASK_STATUSES) expect(validateTaskStatus(status)).toBe(status);
-    for (const bad of ["closed", "CANCELED", "", null, undefined, 3]) {
+    for (const bad of ["cancelled", "CANCELED", "CLOSED", "", null, undefined, 3]) {
       expect(isProjectTaskStatus(bad)).toBe(false);
       expect(() => validateTaskStatus(bad)).toThrow(expect.objectContaining({
-        code: "TASK_STATUS_INVALID", message: "Task status must be TODO, IN_PROGRESS, DONE or CLOSED." }));
+        code: "TASK_STATUS_INVALID", message: "Task status must be TODO, IN_PROGRESS, DONE or CANCELLED." }));
     }
   });
 
@@ -52,19 +52,19 @@ describe("Task status vocabulary (CLOSED)", () => {
     const released = { taskId: "t", projectId: "p", description: "d", createdAt: at, updatedAt: at, contextFiles: [] };
     expect(readReleasedTaskFileV1({ ...released, status: "DONE" }, "p", "t"))
       .toEqual({ taskId: "t", description: "d", status: "DONE", createdAt: at, updatedAt: at, contextFiles: [] });
-    expect(readReleasedTaskFileV1({ ...released, status: "CLOSED" }, "p", "t")).toBeNull();
+    expect(readReleasedTaskFileV1({ ...released, status: "CANCELLED" }, "p", "t")).toBeNull();
   });
 
-  it("the change feed accepts a CLOSED Task upsert for both scopes", () => {
+  it("the change feed accepts a CANCELLED Task upsert for both scopes", () => {
     const root = null;
     expect(ProjectChangeMessageSchema.safeParse({ type: "task_upserted", scope: { kind: "project", projectId: "p" }, task: {
-      contextFiles: [], taskId: "t", projectId: "p", description: "d", status: "CLOSED", createdAt: at, updatedAt: at, root } }).success).toBe(true);
+      contextFiles: [], taskId: "t", projectId: "p", description: "d", status: "CANCELLED", createdAt: at, updatedAt: at, root } }).success).toBe(true);
     expect(ProjectChangeMessageSchema.safeParse({ type: "task_upserted", scope: { kind: "no_project" }, task: {
-      taskId: "a", description: "d", status: "CLOSED", referenceFiles: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
+      taskId: "a", description: "d", status: "CANCELLED", referenceFiles: [], createdAt: at, updatedAt: at, root } }).success).toBe(true);
   });
 });
 
-describe("CLOSED ends a Task's work exactly like DONE", () => {
+describe("CANCELLED ends a Task's work exactly like DONE", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
   let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
   let tasks: ProjectTaskService;
@@ -75,7 +75,7 @@ describe("CLOSED ends a Task's work exactly like DONE", () => {
   const settle = () => tasks.drainRuntimeReleases();
 
   beforeEach(async () => {
-    appData = await fs.mkdtemp(path.join(os.tmpdir(), "task-closed-status-"));
+    appData = await fs.mkdtemp(path.join(os.tmpdir(), "task-cancelled-status-"));
     layout = new ProjectsLayout(path.join(appData, "projects"));
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
@@ -87,7 +87,7 @@ describe("CLOSED ends a Task's work exactly like DONE", () => {
   });
   afterEach(async () => { await settle(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
-  it("a Project Task: closes agent runs first, then writes CLOSED, then asks each host root to stop them; repeating retries (AC-001, AC-004)", async () => {
+  it("a Project Task: closes agent runs first, then writes CANCELLED, then asks each host root to stop them; repeating retries (AC-001, AC-004)", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     const b = await tasks.createTask({ projectId, description: "B" });
     await assign(a.taskId, "worker-a"); await assign(a.taskId, "worker-a2", otherRoot); await assign(b.taskId, "worker-b");
@@ -101,26 +101,26 @@ describe("CLOSED ends a Task's work exactly like DONE", () => {
       expect(tasks.isOpen({ agentRunId: "worker-a" })).toBe(false); // closure committed before the status write
       return ProjectStore.prototype.updateTask.apply(store, args);
     });
-    expect(await setStatus(a.taskId, "CLOSED")).toEqual({ projectId, taskId: a.taskId, status: "CLOSED" });
+    expect(await setStatus(a.taskId, "CANCELLED")).toEqual({ projectId, taskId: a.taskId, status: "CANCELLED" });
     await settle();
     expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker-a" }]);
     expect(release).toHaveBeenCalledWith(otherRoot, [{ agentRunId: "worker-a2" }]);
-    expect(observed.sort()).toEqual(["manager-root:CLOSED:false", "team-root:CLOSED:false"]);
+    expect(observed.sort()).toEqual(["manager-root:CANCELLED:false", "team-root:CANCELLED:false"]);
     expect(tasks.isOpen({ agentRunId: "worker-b" })).toBe(true);
-    // Repeated CLOSED: no file change, the stop is requested again.
+    // Repeated CANCELLED: no file change, the stop is requested again.
     const bytes = await resourcesFile(a.taskId);
     release.mockClear();
-    await setStatus(a.taskId, "CLOSED"); await settle();
+    await setStatus(a.taskId, "CANCELLED"); await settle();
     expect(release).toHaveBeenCalledTimes(2);
     expect(await resourcesFile(a.taskId)).toBe(bytes);
   });
 
-  it("DONE → CLOSED and CLOSED → DONE behave as a repeated DONE: no resource file change, the stop is requested again", async () => {
+  it("DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE: no resource file change, the stop is requested again", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await assign(a.taskId, "worker-a");
     await setStatus(a.taskId, "DONE"); await settle();
     const bytes = await resourcesFile(a.taskId);
-    for (const status of ["CLOSED", "DONE"] as const) {
+    for (const status of ["CANCELLED", "DONE"] as const) {
       release.mockClear();
       expect((await setStatus(a.taskId, status)).status).toBe(status);
       await settle();
@@ -129,11 +129,11 @@ describe("CLOSED ends a Task's work exactly like DONE", () => {
     }
   });
 
-  it("refuses new assignment while CLOSED, naming the status; a reopen writes only and starts nothing (AC-003, AC-005)", async () => {
+  it("refuses new assignment while CANCELLED, naming the status; a reopen writes only and starts nothing (AC-003, AC-005)", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await assign(a.taskId, "before");
-    await setStatus(a.taskId, "CLOSED");
-    const refusal = { code: "TASK_AGENT_RESOURCE_CLOSED", message: "The Task is CLOSED; move it to TODO or IN_PROGRESS before assigning new work." };
+    await setStatus(a.taskId, "CANCELLED");
+    const refusal = { code: "TASK_AGENT_RESOURCE_CLOSED", message: "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work." };
     await expect(assign(a.taskId, "after")).rejects.toMatchObject(refusal);
     await expect(tasks.resolveAssignment(a.taskId)).rejects.toMatchObject(refusal);
     await settle();
@@ -146,16 +146,16 @@ describe("CLOSED ends a Task's work exactly like DONE", () => {
     expect(await tasks.resolveAssignment(a.taskId)).toEqual({ description: "A", referenceFiles: [] });
   });
 
-  it("refuses reactivation while CLOSED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {
+  it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {
     const task = await tasks.createTask({ projectId, description: "A" });
     await tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, agentRun: worker });
     await tasks.markStarted(worker);
-    await setStatus(task.taskId, "CLOSED");
+    await setStatus(task.taskId, "CANCELLED");
     const closedFile = await resourcesFile(task.taskId);
     for (const call of [() => tasks.assertReopenable({ agentRun: worker, requestedBy: "manager" }),
       () => tasks.reopenAssignment({ agentRun: worker, requestedBy: "manager" })]) {
       await expect(call()).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED",
-        message: "This Task is CLOSED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." });
+        message: "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." });
     }
     expect(await resourcesFile(task.taskId)).toBe(closedFile);
     await setStatus(task.taskId, "IN_PROGRESS");
@@ -165,26 +165,26 @@ describe("CLOSED ends a Task's work exactly like DONE", () => {
     expect(tasks.isOpen(worker)).toBe(true);
   });
 
-  it("a Task with no Project: CLOSED closes and stops its copy like DONE; delegation by its ID stays refused (AC-004)", async () => {
+  it("a Task with no Project: CANCELLED closes and stops its copy like DONE; delegation by its ID stays refused (AC-004)", async () => {
     const { taskId } = await tasks.linkAgentRun({ role: "assigned", assignedBy: "delegator", hostRoot, agentRun: { agentRunId: "copy-1" },
       adHocTask: { description: "Review the plan", referenceFiles: [] } });
-    expect(await setStatus(taskId, "CLOSED")).toEqual({ projectId: null, taskId, status: "CLOSED" });
+    expect(await setStatus(taskId, "CANCELLED")).toEqual({ projectId: null, taskId, status: "CANCELLED" });
     await settle();
     expect(release).toHaveBeenCalledExactlyOnceWith(hostRoot, [{ agentRunId: "copy-1" }]);
     expect(tasks.isOpen({ agentRunId: "copy-1" })).toBe(false);
-    expect((await tasks.listTasksWithoutProject()).map((t) => t.status)).toEqual(["CLOSED"]);
+    expect((await tasks.listTasksWithoutProject()).map((t) => t.status)).toEqual(["CANCELLED"]);
     release.mockClear();
-    await setStatus(taskId, "CLOSED"); await settle();
+    await setStatus(taskId, "CANCELLED"); await settle();
     expect(release).toHaveBeenCalledOnce();
   });
 
-  it("list_project_tasks filtering: CLOSED returns only Closed Tasks; unfiltered returns all four (AC-006)", async () => {
+  it("list_project_tasks filtering: CANCELLED returns only Cancelled Tasks; unfiltered returns all four (AC-006)", async () => {
     const ids: Record<string, string> = {};
     for (const status of PROJECT_TASK_STATUSES) {
       ids[status] = (await tasks.createTask({ projectId, description: status })).taskId;
       if (status !== "TODO") await setStatus(ids[status]!, status);
     }
-    expect((await tasks.listTasks(projectId, "CLOSED")).map((t) => t.taskId)).toEqual([ids.CLOSED]);
-    expect((await tasks.listTasks(projectId)).map((t) => t.status).sort()).toEqual(["CLOSED", "DONE", "IN_PROGRESS", "TODO"]);
+    expect((await tasks.listTasks(projectId, "CANCELLED")).map((t) => t.taskId)).toEqual([ids.CANCELLED]);
+    expect((await tasks.listTasks(projectId)).map((t) => t.status).sort()).toEqual(["CANCELLED", "DONE", "IN_PROGRESS", "TODO"]);
   });
 });

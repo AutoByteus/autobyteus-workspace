@@ -23,7 +23,7 @@ export type TaskAgentResourceLinkInput = Readonly<{
 );
 
 export interface TaskAgentResourcePort {
-  /** Saved work for a non-owned assignment of a Project Task; unknown, DONE, CLOSED or unreadable Tasks reject. */
+  /** Saved work for a non-owned assignment of a Project Task; unknown, DONE, CANCELLED or unreadable Tasks reject. */
   resolveAssignment(taskId: string): Promise<Readonly<{ description: string; referenceFiles: string[] }>>;
   /**
    * Records the agent run `starting` before any of its resources are acquired; returns the Task it
@@ -40,18 +40,18 @@ export interface TaskAgentResourcePort {
   ownerOf(chain: readonly TaskExecutionReference[]): TaskAgentResourceOwner | null;
   isOpen(agentRun: TaskExecutionReference): boolean;
   openAgentRuns(taskId: string, role: TaskAgentResourceRole): readonly TaskExecutionReference[];
-  /** Every closed (Task DONE or CLOSED) agent run hosted by this root; an unreadable Task contributes none. Never throws. */
+  /** Every closed (Task DONE or CANCELLED) agent run hosted by this root; an unreadable Task contributes none. Never throws. */
   closedAgentRunsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */
   assertResourceDataReadable(): void;
   /**
    * Read-only, advisory reactivation eligibility of one closed assignment: the Task exists and is not
-   * DONE or CLOSED, `requestedBy` is the entry's assigner and the assignment started. Rejects with a coded error
+   * DONE or CANCELLED, `requestedBy` is the entry's assigner and the assignment started. Rejects with a coded error
    * (one of TASK_REACTIVATION_REJECTION_CODES).
    */
   assertReopenable(input: TaskAgentResourceReopenInput): Promise<void>;
   /**
-   * Reopens that one entry under the Task's ordering with DONE or CLOSED, re-validating every condition. Never
+   * Reopens that one entry under the Task's ordering with DONE or CANCELLED, re-validating every condition. Never
    * writes the Task status. `reopened: false` when the entry was already open.
    */
   reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult>;

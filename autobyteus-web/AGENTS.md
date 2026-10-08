@@ -27,7 +27,7 @@ The primary actors and capabilities within the system.
 The tools and environments where agents live and users interact.
 
 *   **[File Explorer](./docs/file_explorer.md)**: The file system interface, workspace management, and real-time synchronization.
-*   **[Projects](./docs/projects.md)**: Node-scoped Projects, always available on desktop: named containers with aggregate workspace links, durable Task text/context, read-only status on a continuous three-column board (Closed Tasks behind a toggle), manual Refresh, and separately selected agent status tools.
+*   **[Projects](./docs/projects.md)**: Node-scoped Projects, always available on desktop: named containers with aggregate workspace links, durable Task text/context, read-only status on a continuous three-column board (Cancelled Tasks behind a toggle), manual Refresh, and separately selected agent status tools.
 *   **[Terminal](./docs/terminal.md)**: The integrated terminal emulator for executing system commands.
 *   **[Content Rendering](./docs/content_rendering.md)**: How the system displays rich content like Markdown, Code, and Mermaid diagrams.
 *   **[Settings](./docs/settings.md)**: Application configuration, API key management, and system monitoring.

@@ -1,13 +1,13 @@
 # Handoff Summary — task-closed-status
 
 ## What Changed
-A fourth Task status, **CLOSED** ("Closed" / "已关闭"), meaning the Task was dropped as not needed and was not completed.
+A fourth Task status, **CANCELLED** ("Cancelled" / "已取消"), meaning the Task was dropped as not needed and was not completed.
 - Agents set it with `create_or_update_task` (patch only). It closes and stops the Task's workers exactly as DONE does.
-- Saved-ID delegation and reactivation are refused while a Task is Closed. Reopening to TODO or IN_PROGRESS starts nothing.
-- `list_project_tasks` filters by CLOSED.
+- Saved-ID delegation and reactivation are refused while a Task is Cancelled. Reopening to TODO or IN_PROGRESS starts nothing.
+- `list_project_tasks` filters by CANCELLED.
 - The app is display-only for status:
-  - On the Project board, the right-panel board and the Temp tasks board, Closed Tasks are hidden behind a "Closed (N)" toggle beside Refresh.
-  - The Task pages and right-panel detail show a muted "Closed" pill.
+  - On the Project board, the right-panel board and the Temp tasks board, Cancelled Tasks are hidden behind a "Cancelled (N)" toggle beside Refresh.
+  - The Task pages and right-panel detail show a muted "Cancelled" pill.
   - The open count is TODO + IN_PROGRESS.
 - Existing data loads unchanged, with no migration.
 
@@ -28,7 +28,7 @@ A fourth Task status, **CLOSED** ("Closed" / "已关闭"), meaning the Task was 
   1. 13 commits (idle-shutdown-background-tasks and `v1.4.99-beta.1`).
   2. During delivery, 8 more commits (archived-open-run-disappears and `v1.4.99-beta.2`). This merge was clean.
 - The branch is current with `origin/personal` @ `b5e0da508`, checked by a fetch after the re-integration checks.
-- One conflict, in the collaboration prompt paragraph (source, `prompt_engineering.md` and the hash pin). It was resolved as a union of the base's background-task clause and the ticket's CLOSED wording. Every assertion from both tickets passes unchanged, and only the pinned hash changed.
+- One conflict, in the collaboration prompt paragraph (source, `prompt_engineering.md` and the hash pin). It was resolved as a union of the base's background-task clause and the ticket's CANCELLED wording. Every assertion from both tickets passes unchanged, and only the pinned hash changed.
 - Nothing has been pushed or merged into `personal`.
 
 ## Post-Integration Verification (on the merged state)
@@ -47,16 +47,16 @@ A fourth Task status, **CLOSED** ("Closed" / "已关闭"), meaning the Task was 
 
 ## Docs Sync
 - See `docs-sync-report.md`. Implementation docs were verified.
-- Delivery corrected `agent_team_execution.md` (DONE or CLOSED release) and the damaged-file paragraph in `projects.md`.
+- Delivery corrected `agent_team_execution.md` (DONE or CANCELLED release) and the damaged-file paragraph in `projects.md`.
 - Delivery also fixed the stale `ProjectCard.vue` comment.
 
 ## User Verification Requested
 1. From the worktree: `pnpm --silent isolated-app start --build`.
-2. In a Project with a delegated Task, ask an agent to close the Task (`create_or_update_task` status `CLOSED`).
+2. In a Project with a delegated Task, ask an agent to close the Task (`create_or_update_task` status `CANCELLED`).
 3. Check that:
    - the Task leaves the lanes;
-   - "Closed (1)" appears beside Refresh and reveals a Closed lane;
-   - the Task page says "Closed" (not Done green);
+   - "Cancelled (1)" appears beside Refresh and reveals a Cancelled lane;
+   - the Task page says "Cancelled" (not Done green);
    - the worker shows Offline.
 4. Ask the agent to reopen the Task to TODO. Check that it returns to To Do and that nothing starts.
 5. Optionally, check that a Temp task closed by an agent behaves the same.
@@ -64,10 +64,10 @@ A fourth Task status, **CLOSED** ("Closed" / "已关闭"), meaning the Task was 
 Also please decide on the release: finalize only, or finalize and publish a release (a new beta via `scripts/desktop-release.sh beta`, as for the previous ticket).
 
 ## Residual Risks (non-blocking)
-- R-002: the external Project Task Manager skill (`autobyteus-agents` repo) does not know CLOSED. Approved out of scope; follow-up candidate.
+- R-002: the external Project Task Manager skill (`autobyteus-agents` repo) does not know CANCELLED. Approved out of scope; follow-up candidate.
 - `delegate_task {task_id}` on a terminal Task returns `{error:{code,message}}`, unlike the description's `target_agent_run_id: null` shape. This is pre-existing DONE behavior and unchanged here.
-- Downgrade: an older app may not show Closed Tasks (approved non-goal).
-- The packaged desktop app and a real model choosing CLOSED are proven only by the user verification above.
+- Downgrade: an older app may not show Cancelled Tasks (approved non-goal).
+- The packaged desktop app and a real model choosing CANCELLED are proven only by the user verification above.
 
 ## Artifacts
 `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/` contains:

@@ -27,7 +27,7 @@ export const LIVE_HIGHLIGHT_MS = 2400
 export const listIdOf = (scope: TaskScope): string => scope.kind === 'project' ? scope.projectId : TEMP_TASKS_LIST_ID
 const empty = (): TaskListState<AnyTask> => ({status: 'loading', tasks: [], hasLoaded: false, initialPending: false, refreshPending: false, error: null})
 const compare = (a: AnyTask, b: AnyTask) => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId)
-/** The board lane a Task is shown in: Project boards by status; Temp tasks Open, Done or Closed. */
+/** The board lane a Task is shown in: Project boards by status; Temp tasks Open, Done or Cancelled. */
 const laneOf = (id: string, task: AnyTask) => id === TEMP_TASKS_LIST_ID ? tempTaskLaneOf(task.status) : task.status
 /**
  * Current-node cache of Task lists: one per Project, and one for the Tasks with no Project.

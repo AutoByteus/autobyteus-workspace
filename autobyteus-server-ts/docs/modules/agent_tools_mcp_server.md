@@ -313,7 +313,7 @@ category-wide native task exposure are not restored.
 - `list_projects({})` → `{projects: [{projectId, name, description}]}` for all
   current-node Projects, sorted by name/ID. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
-  Project is required; status must be exact TODO, IN_PROGRESS, DONE or CLOSED (CLOSED = dropped as not needed).
+  Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
 - `create_or_update_project({project_id?, name?, description?, workspaces?})` → `{project}`.
   Omit project_id to create with required nonblank name; supply known project_id
   to patch at least one field. Omitted fields persist; blank description clears.
@@ -345,7 +345,7 @@ contextFiles (metadata/HTTP locator plus validated server-local localPath when
 bytes are available), not timestamps. Missing bytes do not fabricate paths.
 No workspace discovery/registration, Task attachment removal, batch, delegation, automatic
 status/linkage/quality assessment or resource-stopping operation is provided.
-DONE and CLOSED are business metadata, not proof of accepted work or execution cleanup.
+DONE and CANCELLED are business metadata, not proof of accepted work or execution cleanup.
 
 Known domain errors preserve `{error:{code,message}}`; unexpected execution
 errors redact to PROJECT_OPERATION_FAILED. Tool errors set isError:true; text

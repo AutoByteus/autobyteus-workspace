@@ -11,7 +11,7 @@ import type { TeamRunHistoryService } from "./team-run-history-service.js";
 export type CollaborationRootHistoryItem =
   | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
   | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto;
-    /** Task executions of `org` whose Task is DONE or CLOSED; the Workspaces rows leave them out before the Org context hydrates. */
+    /** Task executions of `org` whose Task is DONE or CANCELLED; the Workspaces rows leave them out before the Org context hydrates. */
     closed_task_executions: readonly TaskExecutionReferenceDto[] }>;
 
 /** Read-only mixed facade. Family selection remains explicit and subject readers stay authoritative. */

@@ -19,7 +19,7 @@ class TeamRunResumeConfigPayload {
   @Field(() => GraphQLJSON)
   executionTree!: unknown;
 
-  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE or CLOSED. */
+  /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE or CANCELLED. */
   @Field(() => GraphQLJSON)
   closedTaskExecutions!: unknown;
 

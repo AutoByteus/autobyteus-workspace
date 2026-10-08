@@ -552,7 +552,7 @@ through the wake path below. Helpers stay closed. See
   root calls `onAgentBackgroundTaskEnded`, which re-arms every live execution
   containing that agent, so an otherwise quiet copy is shut down one grace
   period after the end even when no turn follows (AGY). The root-stop fence and
-  Task DONE or CLOSED release do not consult background tasks: they stop the copy and its
+  Task DONE or CANCELLED release do not consult background tasks: they stop the copy and its
   background work as before. A task Agent keeps its registered handle and only its run
   ends; a task Team terminates as a whole and is unregistered. Nothing is
   written to the tree on shutdown or wake.

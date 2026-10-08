@@ -1,9 +1,9 @@
-# Design Spec — Closed Task status (`task-closed-status`)
+# Design Spec — Cancelled Task status (`task-closed-status`)
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005`
-- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` at SR-003. The user approved on 2026-10-08 ("Just have your design create a clean UI. I like your suggestion … a small closed control next to the refresh button shows a closed [lane] on demand"), on top of SR-002 ("the UI is just for displaying").
+- Current solution revision ID: `SR-006`
+- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` at SR-006 (SR-003 approval; status renamed CLOSED → CANCELLED by the user on 2026-10-08, SR-006). The user approved on 2026-10-08 ("Just have your design create a clean UI. I like your suggestion … a small closed control next to the refresh button shows a closed [lane] on demand"), on top of SR-002 ("the UI is just for displaying").
 - Behavior-defining supplements and their approval references: None
 - Design status: `Ready`
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-closed-status/tickets/in-progress/task-closed-status/investigation-notes.md`
@@ -42,13 +42,13 @@
 - Risk rationale:
   - The new value travels through existing contracts as an **additive enum value** (persisted `status`, GraphQL enum, tool enum, change-feed schema).
   - No migration (Directly Usable). No new write path; GraphQL stays read-only for status.
-  - No new lifecycle or concurrency: CLOSED reuses DONE's existing serialized closure, release and refusals through one predicate.
+  - No new lifecycle or concurrency: CANCELLED reuses DONE's existing serialized closure, release and refusals through one predicate.
   - The guideline-mandated repoint of the released migration is behavior-preserving (shown below).
   - By the house test, existing structural surfaces absorb the value; the only structural edit consolidates a duplicated vocabulary into its owner.
 - Escalation trigger: return a `Design Impact` if implementation finds any of:
   - a status consumer not listed here that changes runtime behavior, beyond wording;
-  - that CLOSED cannot reuse `closeAndWrite` unchanged;
-  - that DONE ↔ CLOSED transitions alter the resource file beyond today's repeated-DONE behavior;
+  - that CANCELLED cannot reuse `closeAndWrite` unchanged;
+  - that DONE ↔ CANCELLED transitions alter the resource file beyond today's repeated-DONE behavior;
   - that the migration repoint changes any classification outcome.
 
 ## Architecture Investigation Evidence
@@ -56,38 +56,38 @@
 | Source | Exact Path / Reference | Observation | Design Decision Supported | Remaining Uncertainty |
 | --- | --- | --- | --- | --- |
 | Code | `projects/services/project-task-service.ts` L49-52, 149, 243, 257, 304-335, 376 | DONE literal checks around a status-agnostic `closeAndWrite` | One `isTerminalTaskStatus` predicate drives trigger and refusals | None |
-| Code | `projects/domain/task-agent-resources.ts` L76-80; `services/task-agent-resource-service.ts` L84-124 | Closure closes open entries only; repeat = re-request stop | DONE→CLOSED / CLOSED→DONE = existing retry semantics, no new file change | None |
+| Code | `projects/domain/task-agent-resources.ts` L76-80; `services/task-agent-resource-service.ts` L84-124 | Closure closes open entries only; repeat = re-request stop | DONE→CANCELLED / CANCELLED→DONE = existing retry semantics, no new file change | None |
 | Code | `projects/stores/{project-store,ad-hoc-task-store}.ts` | Tolerant readers gate on a local STATUSES set; unknown → task absent | Widen via shared vocabulary; existing values unchanged | None |
 | Code | `app-data-migrations/migrations/projects-per-folder-v1/projects-per-folder-v1-app-data-migration.ts` L7, L121-160 | Released migration uses current `readTaskFile` for CURRENT/CONFLICT classification and post-write validation | Repoint to a frozen copy before widening (guideline §3/§4) | None. Outcomes are identical: expected content always has 3-value statuses, and a non-equal or invalid target is `CONFLICT` under either reader |
-| Code | `api/graphql/types/project-tasks.ts` | Enum is a TS enum; no status in update input | Add `CLOSED` to enum only | None |
+| Code | `api/graphql/types/project-tasks.ts` | Enum is a TS enum; no status in update input | Add `CANCELLED` to enum only | None |
 | Code | `projects/changes/project-change-messages.ts` L29 | zod enum gates feed messages | Build from shared tuple | None |
-| Code | `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`; `execution/task/{root-task-execution-lifecycle,root-task-dispatch,root-task-agent-resource-scope}.ts`; `projects/domain/task-agent-resources.ts` L51, L82-83 | LLM-facing texts and refusal messages say "DONE" | Wording to "DONE or CLOSED" | None |
+| Code | `agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`; `execution/task/{root-task-execution-lifecycle,root-task-dispatch,root-task-agent-resource-scope}.ts`; `projects/domain/task-agent-resources.ts` L51, L82-83 | LLM-facing texts and refusal messages say "DONE" | Wording to "DONE or CANCELLED" | None |
 | Code | `autobyteus-web/stores/projectTaskStore.ts` L30, L78; `components/projects/{ProjectTaskBoard,TempTaskBoard,TempTasksLink,ProjectTaskDetail,TempTaskDetail}.vue`; `panel/ProjectsPanelTaskDetail.vue`; `utils/projects/taskStatusLabelKey.ts` | Duplicated DONE classification, pill styles and lane mapping | One web status-presentation owner | None |
 | Doc | `autobyteus-web/codegen.ts` | Codegen reads schema from a running backend | Regenerate, or apply the generated-equivalent enum line | None |
 | Command | `grep -rn "\bDONE\b"` over server/web src (2026-10-08) | Full inventory of DONE sites (recorded in investigation notes) | Change inventory below | Comment-only sites listed as wording sweep |
 
 ## Intended Change
 
-1. Introduce one owned Task-status vocabulary on the server (`projects/domain/task-status.ts`): the four values, validation, and `isTerminalTaskStatus` (DONE or CLOSED). Every server consumer uses it.
-2. CLOSED triggers exactly DONE's closure and is refused for new assignment or reactivation exactly like DONE.
-3. Additive `CLOSED` in the GraphQL enum, the agent tool enum and descriptions, the LLM collaboration texts, and the change-feed schema. The open count becomes "not terminal".
-4. Web: one status-presentation owner (labels, pill style, temp lanes, open predicate). Closed Tasks are hidden from the boards by default. A small "Closed (N)" toggle beside Refresh reveals a Closed column as the last column, after Done (SR-005). Pills and labels show "Closed".
+1. Introduce one owned Task-status vocabulary on the server (`projects/domain/task-status.ts`): the four values, validation, and `isTerminalTaskStatus` (DONE or CANCELLED). Every server consumer uses it.
+2. CANCELLED triggers exactly DONE's closure and is refused for new assignment or reactivation exactly like DONE.
+3. Additive `CANCELLED` in the GraphQL enum, the agent tool enum and descriptions, the LLM collaboration texts, and the change-feed schema. The open count becomes "not terminal".
+4. Web: one status-presentation owner (labels, pill style, temp lanes, open predicate). Cancelled Tasks are hidden from the boards by default. A small "Cancelled (N)" toggle beside Refresh reveals a Cancelled column as the last column, after Done (SR-005). Pills and labels show "Cancelled".
 5. Repoint the released projects-per-folder migration to a frozen task-file reader. Docs are updated.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind | Requirement / AC IDs | Trigger Or Contract | Existing Behavior / Evidence | Approved Change Or Preserved Outcome | Target Path / Spine |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Contract | REQ-002, REQ-004, REQ-007; AC-001, AC-003, AC-004, AC-007 | `create_or_update_task {task_id, status}` | DONE closes; others write | CLOSED closes like DONE; reopen writes only | DS-001 |
+| BEH-001 | Contract | REQ-002, REQ-004, REQ-007; AC-001, AC-003, AC-004, AC-007 | `create_or_update_task {task_id, status}` | DONE closes; others write | CANCELLED closes like DONE; reopen writes only | DS-001 |
 | BEH-002 | User | REQ-006; AC-002 | Projects pages | Display only | Preserved: display only, no status write | DS-003 |
-| BEH-003 | User | REQ-008, REQ-009; AC-008 | Project board, right panel | 3 lanes | 3 lanes plus a hidden-by-default Closed lane behind a toggle | DS-003 |
-| BEH-004 | User | REQ-010; AC-009 | Temp board/page/header | Open/Done by DONE | Open/Done/Closed (Closed hidden by default); count excludes Closed | DS-003 |
+| BEH-003 | User | REQ-008, REQ-009; AC-008 | Project board, right panel | 3 lanes | 3 lanes plus a hidden-by-default Cancelled lane behind a toggle | DS-003 |
+| BEH-004 | User | REQ-010; AC-009 | Temp board/page/header | Open/Done by DONE | Open/Done/Cancelled (Cancelled hidden by default); count excludes Cancelled | DS-003 |
 | BEH-005 | Contract | REQ-005; AC-006 | `list_project_tasks {status}` | 3-value filter | 4-value filter | DS-001 (list branch) |
-| BEH-006 | Contract | REQ-003, REQ-007; AC-005 | `delegate_task {task_id}`, `send_message_to` run ID | DONE refuses | Terminal (DONE or CLOSED) refuses; reopen allows assigner reactivation | DS-002 |
+| BEH-006 | Contract | REQ-003, REQ-007; AC-005 | `delegate_task {task_id}`, `send_message_to` run ID | DONE refuses | Terminal (DONE or CANCELLED) refuses; reopen allows assigner reactivation | DS-002 |
 | BEH-007 | User | REQ-011; AC-010 | Project cards, panel picker | open = not DONE | open = not terminal | DS-003 |
 | BEH-008 | System | REQ-012; AC-011 | `/ws/projects` | 3-value schema | 4-value schema; live lane moves | DS-004 |
 | BEH-009 | Contract | REQ-013; AC-012 | Stored task.json | 3 values | Directly usable; reader accepts 4 | Persisted Data |
-| BEH-010 | Contract | REQ-001 | — | none | CLOSED exists | all |
+| BEH-010 | Contract | REQ-001 | — | none | CANCELLED exists | all |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -106,17 +106,17 @@ None.
     - Persisted-data: Directly Usable.
     - Ambiguous-boundary: no new API.
 - Root cause classification: `Duplicated Policy Or Coordination`
-- Refactor needed now: `Yes` (bounded). Consolidate the status vocabulary and terminal rule (server) and the status presentation (web) into one owner each, as part of adding CLOSED.
+- Refactor needed now: `Yes` (bounded). Consolidate the status vocabulary and terminal rule (server) and the status presentation (web) into one owner each, as part of adding CANCELLED.
 - Evidence: the grep inventory in the investigation notes, and the code lines cited above.
 - Design response: `projects/domain/task-status.ts` (server) and `utils/projects/taskStatusPresentation.ts` (web, renamed from `taskStatusLabelKey.ts`). Every consumer imports from them; the local sets, literals and ternaries are removed.
-- Refactor rationale: Adding CLOSED to each copy separately would leave the next status change just as error-prone. Consolidating costs only a few lines.
-- Intentional deferrals and residual risk: GraphQL's TS enum stays a separate declaration (type-graphql needs a TS enum). A unit test asserts it equals the shared tuple. Comment-only "(Task DONE)" mentions in runtime subsystems outside Projects become "(Task DONE or CLOSED)" in a mechanical sweep; leftovers would be cosmetic only.
+- Refactor rationale: Adding CANCELLED to each copy separately would leave the next status change just as error-prone. Consolidating costs only a few lines.
+- Intentional deferrals and residual risk: GraphQL's TS enum stays a separate declaration (type-graphql needs a TS enum). A unit test asserts it equals the shared tuple. Comment-only "(Task DONE)" mentions in runtime subsystems outside Projects become "(Task DONE or CANCELLED)" in a mechanical sweep; leftovers would be cosmetic only.
 
 ## Terminology
 
-- **Terminal status**: DONE or CLOSED. The Task's work has ended: its agent runs are closed and stopped, and new assignment or reactivation is refused until it is reopened.
+- **Terminal status**: DONE or CANCELLED. The Task's work has ended: its agent runs are closed and stopped, and new assignment or reactivation is refused until it is reopened.
 - **Open status**: TODO or IN_PROGRESS (not terminal).
-- **CLOSED**: dropped as not needed, not completed. Shown as "Closed" / "已关闭".
+- **CANCELLED**: dropped as not needed, not completed. Shown as "Cancelled" / "已取消".
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -128,7 +128,7 @@ None.
 ## Persisted Data / State Transition Decision (Mandatory)
 
 - Stored subject: `status` in `<appData>/projects/<projectId>/tasks/<taskId>/task.json` and `<appData>/ad-hoc-tasks/<taskId>/task.json`. Tens to hundreds per node.
-- Change: the enum gains `CLOSED`. There is no new field and no change of meaning for existing values (guideline §3: no field reused with a new meaning).
+- Change: the enum gains `CANCELLED`. There is no new field and no change of meaning for existing values (guideline §3: no field reused with a new meaning).
 - Normal readers/writers: tolerant readers project the known fields and validate `status` against the vocabulary. Writers emit the exact shape (unchanged key set).
 - Required semantics under direct use: every existing TODO/IN_PROGRESS/DONE file reads identically, and the agent-run resource files are untouched.
 - Decision: `Directly Usable — No Migration`.
@@ -144,8 +144,9 @@ None.
     8. References: none crossing.
     9. Evidence: store tests read all four values and the existing fixtures; existing migration tests stay green after the repoint.
     10. Lessons: avoided adding a migration or version field merely because an enum widened.
-  - Downgrade (an older app reading CLOSED) hides that Task without loss; this is an approved non-goal.
+  - Downgrade (an older app reading CANCELLED) hides that Task without loss; this is an approved non-goal.
 - Supported ACs: AC-012.
+- **SR-006 rename (CLOSED → CANCELLED):** `CLOSED` was never released. It exists only on this unmerged branch, so no installed data can contain it. The value is replaced outright, with no alias and no reader acceptance of `CLOSED`. A developer or test task.json written with `CLOSED` on this branch becomes unreadable (hidden) under the tolerant reader; that is acceptable for unreleased test data.
 
 ## Data-Flow Spine Inventory
 
@@ -154,21 +155,21 @@ None.
 | DS-001 | Primary End-to-End | BEH-001, BEH-005, BEH-010 | Agent tool call | Status persisted; workers stopped; ack returned | `ProjectTaskService` | Closing and reopening through the tool |
 | DS-002 | Primary End-to-End | BEH-006 | `delegate_task {task_id}` / `send_message_to` run ID | Refusal or admission | `ProjectTaskService` (TaskAgentResourcePort) | Terminal Tasks refuse new and reactivated work |
 | DS-003 | Primary End-to-End | BEH-002, BEH-003, BEH-004, BEH-007 | GraphQL read / store snapshot | Board lanes, toggle, pills, counts | Web `projectTaskStore` + board components | Clean display |
-| DS-004 | Return-Event | BEH-008 | Task write commit | Open pages updated live | `ProjectChangePublisher` → web store | Live lane move into or out of Closed |
+| DS-004 | Return-Event | BEH-008 | Task write commit | Open pages updated live | `ProjectChangePublisher` → web store | Live lane move into or out of Cancelled |
 
 ## Primary Execution Spine(s)
 
-- DS-001: `Agent → create_or_update_task (tool contract parse/validate) → project-task-tool-manifest → ProjectTaskService.updateTaskById → [isTerminalTaskStatus ? closeAndWrite : write] → TaskAgentResourceService.closeTask → store write → TaskAgentResourceRelease.release (host roots stop runs) → change publisher → ack {status: CLOSED}`
-- DS-002: `Agent → delegate_task {task_id} → root task dispatch → ProjectTaskService.resolveAssignment / linkAgentRun (terminal → TASK_AGENT_RESOURCE_CLOSED)`; and `send_message_to run ID → assertReopenable / reopenAssignment → assertTaskNotTerminal`
-- DS-003: `projectTasks / tasksWithoutProject query → projectTaskStore snapshot → ProjectTaskBoard / TempTaskBoard (lane grouping via taskStatusPresentation; Closed hidden unless toggled) → ProjectTaskRow / Task pages (status pill)`
+- DS-001: `Agent → create_or_update_task (tool contract parse/validate) → project-task-tool-manifest → ProjectTaskService.updateTaskById → [isTerminalTaskStatus ? closeAndWrite : write] → TaskAgentResourceService.closeTask → store write → TaskAgentResourceRelease.release (host roots stop runs) → change publisher → ack {status: CANCELLED}`
+- DS-002: `Agent → delegate_task {task_id} → root task dispatch → ProjectTaskService.resolveAssignment / linkAgentRun (terminal → TASK_AGENT_RESOURCE_CANCELLED)`; and `send_message_to run ID → assertReopenable / reopenAssignment → assertTaskNotTerminal`
+- DS-003: `projectTasks / tasksWithoutProject query → projectTaskStore snapshot → ProjectTaskBoard / TempTaskBoard (lane grouping via taskStatusPresentation; Cancelled hidden unless toggled) → ProjectTaskRow / Task pages (status pill)`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The tool parses `status` against the shared vocabulary. The service asks `isTerminalTaskStatus`; for DONE or CLOSED it closes open runs first (fence), writes the status, then requests stops, exactly as DONE does today. A reopen (TODO/IN_PROGRESS) only writes. | tool contract, manifest, service, resource service, store, release | ProjectTaskService | task-status vocabulary, change publisher |
+| DS-001 | The tool parses `status` against the shared vocabulary. The service asks `isTerminalTaskStatus`; for DONE or CANCELLED it closes open runs first (fence), writes the status, then requests stops, exactly as DONE does today. A reopen (TODO/IN_PROGRESS) only writes. | tool contract, manifest, service, resource service, store, release | ProjectTaskService | task-status vocabulary, change publisher |
 | DS-002 | Assignment and reactivation guards ask the same predicate under the Task's serialization and refuse with a message naming the actual status. | dispatch, service | ProjectTaskService | task-status vocabulary |
-| DS-003 | Reads deliver four-value statuses. Boards group by status: Project → TODO/IN_PROGRESS/DONE lanes plus a CLOSED lane; Temp → open/done/closed. The Closed lane renders only while the toggle is on. Counts use the open predicate. | store, boards, rows, pages | projectTaskStore / boards | taskStatusPresentation, ClosedTasksToggle |
+| DS-003 | Reads deliver four-value statuses. Boards group by status: Project → TODO/IN_PROGRESS/DONE lanes plus a CANCELLED lane; Temp → open/done/cancelled. The Cancelled lane renders only while the toggle is on. Counts use the open predicate. | store, boards, rows, pages | projectTaskStore / boards | taskStatusPresentation, CancelledTasksToggle |
 | DS-004 | Every committed write publishes `task_upserted` with the new status (schema from the shared tuple). The web store applies it; a lane change highlights as `moved`. | publisher, feed, store | ProjectChangePublisher / projectTaskStore | — |
 
 ## Spine Actors / Main-Line Nodes
@@ -184,7 +185,7 @@ None.
 - Tool contract: agent-facing schema and descriptions; delegates status validation to the vocabulary.
 - LLM collaboration contract: agent-facing wording.
 - Web `utils/projects/taskStatusPresentation.ts` (renamed): owns label keys, pill classes, temp lane mapping, the open predicate and the board lane order.
-- Web `ClosedTasksToggle.vue` (new): owns the toggle's rendering and accessibility only. Each board owns its own show/hide state.
+- Web `CancelledTasksToggle.vue` (new): owns the toggle's rendering and accessibility only. Each board owns its own show/hide state.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -209,7 +210,7 @@ None.
 
 ## Return Or Event Spine(s) (If Applicable)
 
-DS-004: `ProjectTaskService write → ProjectChangePublisher.taskChanged → /ws/projects task_upserted{status} (zod: shared tuple) → useProjectChangeFeed → projectTaskStore.applyToList (laneOf → 'moved' highlight) → board`. The only change is that the schema accepts CLOSED and `laneOf` uses the presentation owner.
+DS-004: `ProjectTaskService write → ProjectChangePublisher.taskChanged → /ws/projects task_upserted{status} (zod: shared tuple) → useProjectChangeFeed → projectTaskStore.applyToList (laneOf → 'moved' highlight) → board`. The only change is that the schema accepts CANCELLED and `laneOf` uses the presentation owner.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
@@ -221,7 +222,7 @@ The closure ordering inside `ProjectTaskService.closeAndWrite` is unchanged: `cl
 | --- | --- | --- | --- | --- | --- |
 | Task-status vocabulary (`task-status.ts`) | DS-001/002/004 | ProjectTaskService, stores, tool contract, feed | Values, validation, predicates | One source of truth | Rule drift across copies |
 | Status presentation (`taskStatusPresentation.ts`) | DS-003 | Boards, pages, store | Labels, pill classes, lanes, open predicate | One source of truth | Inline ternaries drift |
-| `ClosedTasksToggle.vue` | DS-003 | Both boards | Toggle button UI and a11y | Same control on both boards | Duplicated markup |
+| `CancelledTasksToggle.vue` | DS-003 | Both boards | Toggle button UI and a11y | Same control on both boards | Duplicated markup |
 
 ## Ownership Boundaries
 
@@ -247,14 +248,14 @@ The closure ordering inside `ProjectTaskService.closeAndWrite` is unchanged: `cl
 
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
-| `PROJECT_TASK_STATUSES: readonly ["TODO","IN_PROGRESS","DONE","CLOSED"]` | Task status | Vocabulary | — | `as const` tuple; `ProjectTaskStatus = typeof …[number]` |
+| `PROJECT_TASK_STATUSES: readonly ["TODO","IN_PROGRESS","DONE","CANCELLED"]` | Task status | Vocabulary | — | `as const` tuple; `ProjectTaskStatus = typeof …[number]` |
 | `isProjectTaskStatus(v: unknown): v is ProjectTaskStatus` | Task status | Reader guard | — | Stores |
-| `validateTaskStatus(v: unknown): ProjectTaskStatus` | Task status | Throws `TASK_STATUS_INVALID` "Task status must be TODO, IN_PROGRESS, DONE or CLOSED." | — | Service and tool contract |
-| `isTerminalTaskStatus(s: ProjectTaskStatus): boolean` | Task status | DONE or CLOSED | — | Closure trigger, refusals, open count |
-| `create_or_update_task.status` enum | Tool | + CLOSED | task_id | Description updated (below) |
-| `list_project_tasks.status` enum | Tool | + CLOSED | project_id | Description updated |
-| GraphQL `ProjectTaskStatus` | Transport | + `CLOSED` | — | Read-only; no status in inputs |
-| Web `TASK_STATUS_LABEL_KEYS`, `taskStatusPillClass(status)`, `tempTaskLaneOf(status): 'open'\|'done'\|'closed'`, `TEMP_LANE_LABEL_KEYS`, `isOpenTaskStatus(status)`, `BOARD_OPEN_LANES = ['TODO','IN_PROGRESS','DONE']` | Status presentation | Display mapping | — | One file |
+| `validateTaskStatus(v: unknown): ProjectTaskStatus` | Task status | Throws `TASK_STATUS_INVALID` "Task status must be TODO, IN_PROGRESS, DONE or CANCELLED." | — | Service and tool contract |
+| `isTerminalTaskStatus(s: ProjectTaskStatus): boolean` | Task status | DONE or CANCELLED | — | Closure trigger, refusals, open count |
+| `create_or_update_task.status` enum | Tool | + CANCELLED | task_id | Description updated (below) |
+| `list_project_tasks.status` enum | Tool | + CANCELLED | project_id | Description updated |
+| GraphQL `ProjectTaskStatus` | Transport | + `CANCELLED` | — | Read-only; no status in inputs |
+| Web `TASK_STATUS_LABEL_KEYS`, `taskStatusPillClass(status)`, `tempTaskLaneOf(status): 'open'\|'done'\|'cancelled'`, `TEMP_LANE_LABEL_KEYS`, `isOpenTaskStatus(status)`, `BOARD_OPEN_LANES = ['TODO','IN_PROGRESS','DONE']` | Status presentation | Display mapping | — | One file |
 
 ## Interface Boundary Check
 
@@ -268,21 +269,21 @@ The closure ordering inside `ProjectTaskService.closeAndWrite` is unchanged: `cl
 
 | Subject | Name | Natural? | Drift Risk | Action |
 | --- | --- | --- | --- | --- |
-| New status | `CLOSED` / "Closed" | Yes (user's word) | Medium: "closed" also describes agent-run resources | The doc and tool text define CLOSED as "dropped as not needed"; resource closure is described as happening for "DONE or CLOSED" |
+| New status | `CANCELLED` / "Cancelled" | Yes | Low: unambiguous "not done"; no clash with the existing "closed" wording for agent-run resources (SR-006 replaced `CLOSED`) | Agent-facing texts never call CANCELLED "closed" |
 | Predicate | `isTerminalTaskStatus` | Yes | Low | — |
 | Private guard | `assertTaskNotTerminal` | Yes | Low | Renamed from `assertTaskNotDone` |
 | Web file | `taskStatusPresentation.ts` | Yes | Low | — |
-| Toggle | `ClosedTasksToggle.vue` | Yes | Low | — |
+| Toggle | `CancelledTasksToggle.vue` | Yes | Low | — |
 
 ## Existing Capability / Subsystem Reuse Check
 
 | Need | Existing Area | Decision | Why |
 | --- | --- | --- | --- |
-| Stop workers for CLOSED | `closeAndWrite` / `TaskAgentResourceService` / `TaskAgentResourceRelease` | Reuse | Status-agnostic already |
+| Stop workers for CANCELLED | `closeAndWrite` / `TaskAgentResourceService` / `TaskAgentResourceRelease` | Reuse | Status-agnostic already |
 | Live updates | `ProjectChangePublisher`, `projectTaskStore` | Reuse | Schema widening only |
-| Board lane rendering | `ProjectTaskBoard` / `TempTaskBoard` section markup | Extend | Same lane section markup for Closed |
+| Board lane rendering | `ProjectTaskBoard` / `TempTaskBoard` section markup | Extend | Same lane section markup for Cancelled |
 | Vocabulary owner | none | Create New (`task-status.ts`) | No current owner; 7 copies |
-| Toggle control | none | Create New (`ClosedTasksToggle.vue`) | Shared by 2 boards |
+| Toggle control | none | Create New (`CancelledTasksToggle.vue`) | Shared by 2 boards |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -303,31 +304,31 @@ The drafts held after extraction; the final mapping is below.
 
 | File | Kind | Concrete Change |
 | --- | --- | --- |
-| `autobyteus-server-ts/src/projects/domain/task-status.ts` | **Add** | Holds the `PROJECT_TASK_STATUSES` tuple, `ProjectTaskStatus` type, `isProjectTaskStatus`, `validateTaskStatus` and `isTerminalTaskStatus`. The doc comment defines each status, including CLOSED as "dropped as not needed, not completed; ends work like DONE". |
-| `src/projects/domain/models.ts` | Modify | Re-export the `ProjectTaskStatus` type from `task-status.ts` (or update importers; no duplicate literal). Fix the `openTaskCount` and `TaskRootView` comments to "not DONE or CLOSED" and "closed (DONE or CLOSED)". |
+| `autobyteus-server-ts/src/projects/domain/task-status.ts` | **Add** | Holds the `PROJECT_TASK_STATUSES` tuple, `ProjectTaskStatus` type, `isProjectTaskStatus`, `validateTaskStatus` and `isTerminalTaskStatus`. The doc comment defines each status, including CANCELLED as "dropped as not needed, not completed; ends work like DONE". |
+| `src/projects/domain/models.ts` | Modify | Re-export the `ProjectTaskStatus` type from `task-status.ts` (or update importers; no duplicate literal). Fix the `openTaskCount` and `TaskRootView` comments to "not DONE or CANCELLED" and "closed (DONE or CANCELLED)". |
 | `src/projects/stores/project-store.ts`, `ad-hoc-task-store.ts` | Modify | Replace `STATUSES` with `isProjectTaskStatus`. |
-| `src/projects/services/project-task-service.ts` | Modify | Import `validateTaskStatus` and `isTerminalTaskStatus`. Make five changes: (1) L149 and L376: `isTerminalTaskStatus(status)` → `closeAndWrite`; (2) L243 and L257: refuse when terminal, with `The Task is ${status}; move it to TODO or IN_PROGRESS before assigning new work.`; (3) rename `assertTaskNotDone` → `assertTaskNotTerminal`, message `This Task is ${status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`; (4) update comments mentioning DONE closure to "DONE or CLOSED"; (5) `status` is only `undefined` when absent, so call `isTerminalTaskStatus` only on a defined status. |
+| `src/projects/services/project-task-service.ts` | Modify | Import `validateTaskStatus` and `isTerminalTaskStatus`. Make five changes: (1) L149 and L376: `isTerminalTaskStatus(status)` → `closeAndWrite`; (2) L243 and L257: refuse when terminal, with `The Task is ${status}; move it to TODO or IN_PROGRESS before assigning new work.`; (3) rename `assertTaskNotDone` → `assertTaskNotTerminal`, message `This Task is ${status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`; (4) update comments mentioning DONE closure to "DONE or CANCELLED"; (5) `status` is only `undefined` when absent, so call `isTerminalTaskStatus` only on a defined status. |
 | `src/projects/services/project-service.ts` | Modify | `openTaskCount = tasks.filter(t => !isTerminalTaskStatus(t.status)).length` |
 | `src/projects/changes/project-change-messages.ts` | Modify | `z.enum(PROJECT_TASK_STATUSES)` |
 | `src/agent-tools/project-tasks/project-task-tool-contract.ts` | Modify | `statuses = [...PROJECT_TASK_STATUSES]`; the parse uses `validateTaskStatus`; descriptions per Concrete Examples. |
 | `src/agent-tools/project-tasks/project-task-tool-manifest.ts` | Modify (type import only, if needed) | — |
-| `src/api/graphql/types/project-tasks.ts` | Modify | Add `CLOSED = "CLOSED"` to the enum; keep the resolver comment (no status mutation). |
-| `src/api/graphql/types/projects.ts` | Modify (comment) | `openTaskCount`: "not DONE or CLOSED". |
+| `src/api/graphql/types/project-tasks.ts` | Modify | Add `CANCELLED = "CANCELLED"` to the enum; keep the resolver comment (no status mutation). |
+| `src/api/graphql/types/projects.ts` | Modify (comment) | `openTaskCount`: "not DONE or CANCELLED". |
 | `src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts` | Modify (text) | See Concrete Examples. |
-| `src/agent-collaboration/execution/task/{root-task-execution-lifecycle,root-task-dispatch,root-task-agent-resource-scope,task-agent-resource-port,root-task-execution-adapter}.ts`, `src/projects/domain/task-agent-resources.ts`, `src/projects/runtime/task-agent-resource-release.ts`, `src/projects/services/{task-agent-resource-service,task-root-view-builder}.ts` | Modify (text) | Error messages "(Task DONE)" → "(its Task is DONE or CLOSED)"; `root-task-dispatch` → "The Task was marked DONE or CLOSED; its new work was not started."; `root-task-agent-resource-scope` "repeat DONE" → "repeat DONE or CLOSED"; comments likewise. |
-| Comment-only sites in `agent-team-execution`, `agent-org-execution`, `standalone-agent-run-root`, `agent-execution/shared/runtime-agent-tool-exposure.ts` | Modify (comment) | "Task DONE" → "Task DONE or CLOSED" (mechanical; cosmetic). |
+| `src/agent-collaboration/execution/task/{root-task-execution-lifecycle,root-task-dispatch,root-task-agent-resource-scope,task-agent-resource-port,root-task-execution-adapter}.ts`, `src/projects/domain/task-agent-resources.ts`, `src/projects/runtime/task-agent-resource-release.ts`, `src/projects/services/{task-agent-resource-service,task-root-view-builder}.ts` | Modify (text) | Error messages "(Task DONE)" → "(its Task is DONE or CANCELLED)"; `root-task-dispatch` → "The Task was marked DONE or CANCELLED; its new work was not started."; `root-task-agent-resource-scope` "repeat DONE" → "repeat DONE or CANCELLED"; comments likewise. |
+| Comment-only sites in `agent-team-execution`, `agent-org-execution`, `standalone-agent-run-root`, `agent-execution/shared/runtime-agent-tool-exposure.ts` | Modify (comment) | "Task DONE" → "Task DONE or CANCELLED" (mechanical; cosmetic). |
 | `src/app-data-migrations/migrations/projects-per-folder-v1/released-project-folder-v1.ts` | Modify | Add a frozen `readReleasedTaskFileV1(raw, projectId, taskId)`, a verbatim copy of the current `readTaskFile` plus its `normalizeContextFiles` and 3-value status set (pin the source commit in the header like the existing note). |
 | `.../projects-per-folder-v1-app-data-migration.ts` | Modify | Import `readReleasedTaskFileV1` instead of the current `readTaskFile`. |
-| `autobyteus-web/types/project.ts` | Modify | `ProjectTaskStatus` adds `'CLOSED'`; `PROJECT_TASK_STATUSES` has 4 values; comments updated. |
-| `autobyteus-web/utils/projects/taskStatusLabelKey.ts` → `taskStatusPresentation.ts` | Rename/Modify | `TASK_STATUS_LABEL_KEYS` (+CLOSED); `taskStatusPillClass(status)` (DONE emerald, IN_PROGRESS blue, TODO slate, CLOSED muted: e.g. `bg-white text-slate-500 ring-slate-300`, plus optional `heroicons:no-symbol` icon); `isOpenTaskStatus`; `BOARD_OPEN_LANES`; `TempLane = 'open'\|'done'\|'closed'`, `TEMP_LANES_OPEN = ['open','done']`, `tempTaskLaneOf(status)`, `TEMP_LANE_LABEL_KEYS` (literal keys, for the localization audit). |
-| `autobyteus-web/components/projects/ClosedTasksToggle.vue` | **Add** | Button `Closed (N)`: props `count`, `pressed`; emits `toggle`; `aria-pressed`; same size and style as Refresh (`min-h-11`, slate border), pressed state `bg-slate-100`; icon `heroicons:archive-box` (permitted variation); `data-testid` set by the parent via attrs. Renders nothing itself when count is 0 (or the parent uses `v-if`). |
-| `autobyteus-web/components/projects/ProjectTaskBoard.vue` | Modify | Toolbar: `[search] [ClosedTasksToggle v-if closedCount>0] [Refresh] [New task]`, with `ml-auto` moved to the toggle when present (toggle+Refresh grouped on the right). Local `showClosed = ref(false)`, reset to false when `closedCount` becomes 0. `closedCount` = all CLOSED Tasks in the list (search-independent). Lanes iterate `BOARD_OPEN_LANES`. When `showClosed`, a Closed `<section>` (same markup, heading "Closed" + filtered count, `data-testid="project-task-column-CLOSED"`) is the **fourth column, after Done**, in the same grid (SR-005). Grid: below 752px one column (stacked, as today); at 752px and above `repeat(N, minmax(0, 1fr))`, where N = 3 (Closed hidden) or 4 (Closed shown). A modifier class such as `project-task-board__columns--with-closed` switches 3→4. No full-width row. `isNoMatch` is computed over the **visible** tasks (closed excluded unless shown). |
-| `autobyteus-web/components/projects/TempTaskBoard.vue` | Modify | Same toggle and pattern: lanes `open`/`done` via `tempTaskLaneOf`, plus a `closed` column after Done when toggled (2→3 columns at ≥752px; stacked below, as today); the Done 10-item limit is unchanged; the Closed lane shows all. |
+| `autobyteus-web/types/project.ts` | Modify | `ProjectTaskStatus` adds `'CANCELLED'`; `PROJECT_TASK_STATUSES` has 4 values; comments updated. |
+| `autobyteus-web/utils/projects/taskStatusLabelKey.ts` → `taskStatusPresentation.ts` | Rename/Modify | `TASK_STATUS_LABEL_KEYS` (+CANCELLED); `taskStatusPillClass(status)` (DONE emerald, IN_PROGRESS blue, TODO slate, CANCELLED muted: e.g. `bg-white text-slate-500 ring-slate-300`, plus optional `heroicons:no-symbol` icon); `isOpenTaskStatus`; `BOARD_OPEN_LANES`; `TempLane = 'open'\|'done'\|'cancelled'`, `TEMP_LANES_OPEN = ['open','done']`, `tempTaskLaneOf(status)`, `TEMP_LANE_LABEL_KEYS` (literal keys, for the localization audit). |
+| `autobyteus-web/components/projects/CancelledTasksToggle.vue` | **Add** | Button `Cancelled (N)`: props `count`, `pressed`; emits `toggle`; `aria-pressed`; same size and style as Refresh (`min-h-11`, slate border), pressed state `bg-slate-100`; icon `heroicons:archive-box` (permitted variation); `data-testid` set by the parent via attrs. Renders nothing itself when count is 0 (or the parent uses `v-if`). |
+| `autobyteus-web/components/projects/ProjectTaskBoard.vue` | Modify | Toolbar: `[search] [CancelledTasksToggle v-if cancelledCount>0] [Refresh] [New task]`, with `ml-auto` moved to the toggle when present (toggle+Refresh grouped on the right). Local `showCancelled = ref(false)`, reset to false when `cancelledCount` becomes 0. `cancelledCount` = all CANCELLED Tasks in the list (search-independent). Lanes iterate `BOARD_OPEN_LANES`. When `showCancelled`, a Cancelled `<section>` (same markup, heading "Cancelled" + filtered count, `data-testid="project-task-column-CANCELLED"`) is the **fourth column, after Done**, in the same grid (SR-005). Grid: below 752px one column (stacked, as today); at 752px and above `repeat(N, minmax(0, 1fr))`, where N = 3 (Cancelled hidden) or 4 (Cancelled shown). A modifier class such as `project-task-board__columns--with-cancelled` switches 3→4. No full-width row. `isNoMatch` is computed over the **visible** tasks (cancelled excluded unless shown). |
+| `autobyteus-web/components/projects/TempTaskBoard.vue` | Modify | Same toggle and pattern: lanes `open`/`done` via `tempTaskLaneOf`, plus a `cancelled` column after Done when toggled (2→3 columns at ≥752px; stacked below, as today); the Done 10-item limit is unchanged; the Cancelled lane shows all. |
 | `autobyteus-web/components/projects/{ProjectTaskDetail,TempTaskDetail}.vue`, `panel/ProjectsPanelTaskDetail.vue` | Modify | Pill class and label from the presentation owner; the Temp label uses `TEMP_LANE_LABEL_KEYS[tempTaskLaneOf(status)]`. |
 | `autobyteus-web/components/projects/TempTasksLink.vue` | Modify | Count with `isOpenTaskStatus`. |
 | `autobyteus-web/stores/projectTaskStore.ts` | Modify | `laneOf` uses `tempTaskLaneOf` for Temp; the open count uses `isOpenTaskStatus`. |
-| `autobyteus-web/localization/messages/{en,zh-CN}/projects.ts` | Modify | `projects.task.status.CLOSED`: "Closed" / "已关闭"; `projects.temp.lane.closed`: "Closed" / "已关闭"; `projects.board.closedToggle`: "Closed ({{count}})" / "已关闭（{{count}}）"; optional toggle aria labels "Show closed tasks" / "Hide closed tasks" ("显示已关闭的任务" / "隐藏已关闭的任务"). |
-| `autobyteus-web/generated/graphql.ts` | Modify | Add `Closed = 'CLOSED'` to `ProjectTaskStatus` (regenerate with `pnpm -C autobyteus-web codegen` against a running server, or apply the identical generated line). |
+| `autobyteus-web/localization/messages/{en,zh-CN}/projects.ts` | Modify | `projects.task.status.CANCELLED`: "Cancelled" / "已取消"; `projects.temp.lane.cancelled`: "Cancelled" / "已取消"; `projects.board.cancelledToggle`: "Cancelled ({{count}})" / "已取消（{{count}}）"; optional toggle aria labels "Show cancelled tasks" / "Hide cancelled tasks" ("显示已取消的任务" / "隐藏已取消的任务"). |
+| `autobyteus-web/generated/graphql.ts` | Modify | Add `Cancelled = 'CANCELLED'` to `ProjectTaskStatus` (regenerate with `pnpm -C autobyteus-web codegen` against a running server, or apply the identical generated line). |
 | Docs | Modify | See the Docs list in Guidance. |
 
 ## Reusable Owned Structures Check / Shared Structure Tightness Check
@@ -343,29 +344,29 @@ None beyond the existing serialized closure.
 
 ## Target Subsystem / Folder / File Mapping
 
-New files: `autobyteus-server-ts/src/projects/domain/task-status.ts` (domain vocabulary sits beside `models.ts`) and `autobyteus-web/components/projects/ClosedTasksToggle.vue` (beside the boards that use it). Rename: `autobyteus-web/utils/projects/taskStatusLabelKey.ts` → `taskStatusPresentation.ts`. All other changes are in place, as listed above.
+New files: `autobyteus-server-ts/src/projects/domain/task-status.ts` (domain vocabulary sits beside `models.ts`) and `autobyteus-web/components/projects/CancelledTasksToggle.vue` (beside the boards that use it). Rename: `autobyteus-web/utils/projects/taskStatusLabelKey.ts` → `taskStatusPresentation.ts`. All other changes are in place, as listed above.
 
 ## Folder Boundary Check
 
 | Path | Depth | Clear? | Risk | Justification |
 | --- | --- | --- | --- | --- |
 | `projects/domain/task-status.ts` | Main-Line Domain | Yes | Low | Domain vocabulary beside the models |
-| `components/projects/ClosedTasksToggle.vue` | Off-Spine UI | Yes | Low | Sibling of its two users |
+| `components/projects/CancelledTasksToggle.vue` | Off-Spine UI | Yes | Low | Sibling of its two users |
 
 ## Concrete Examples / Shape Guidance
 
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
-| Closure trigger | `const updated = status !== undefined && isTerminalTaskStatus(status) ? await this.closeAndWrite(loc, write) : await write();` | `status === "DONE" \|\| status === "CLOSED"` written at each site | One rule |
-| Board layout (≥752px) | Toggle off: `[To Do][In Progress][Done]`. Toggle on: `[To Do][In Progress][Done][Closed n]` (four equal columns) | A full-width Closed row under the lanes (SR-004, rejected by the user in SR-005), or Closed mixed into Done | Matches common boards: Linear shows Canceled as the last status column; Jira keeps terminal states in the far-right column |
-| Toolbar | `[ Search… ] [Closed (3)] [⟳ Refresh] [+ New task]`; Closed absent when 0 | A filter dropdown or status picker | Small, on demand |
+| Closure trigger | `const updated = status !== undefined && isTerminalTaskStatus(status) ? await this.closeAndWrite(loc, write) : await write();` | `status === "DONE" \|\| status === "CANCELLED"` written at each site | One rule |
+| Board layout (≥752px) | Toggle off: `[To Do][In Progress][Done]`. Toggle on: `[To Do][In Progress][Done][Cancelled n]` (four equal columns) | A full-width Cancelled row under the lanes (SR-004, rejected by the user in SR-005), or Cancelled mixed into Done | Matches common boards: Linear shows Canceled as the last status column; Jira keeps terminal states in the far-right column |
+| Toolbar | `[ Search… ] [Cancelled (3)] [⟳ Refresh] [+ New task]`; Cancelled absent when 0 | A filter dropdown or status picker | Small, on demand |
 
 **Tool description text** (contract; exact wording may be polished, but the meaning is fixed):
-- `list_project_tasks`: "…optionally filtered by exact TODO, IN_PROGRESS, DONE or CLOSED status (CLOSED = dropped as not needed)…"
-- `create_or_update_task`: "…Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE/CLOSED status… DONE means the work is finished; CLOSED means the Task was dropped as not needed (not completed). Both stop the Task's delegated copies and remove them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then…"
-- `DELEGATE_TASK_ID_DESCRIPTION`: "…Blank, unknown, ambiguous, DONE or CLOSED Tasks fail…"
-- `send_message_to` / team instruction: "A copy whose Task is DONE or CLOSED is stopped… first moves the Task out of DONE or CLOSED (for example to IN_PROGRESS)…"
-- Delegation guidance line "mark that Task DONE … which stops the copy": append "(or CLOSED if the work turned out not to be needed)".
+- `list_project_tasks`: "…optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed)…"
+- `create_or_update_task`: "…Patch: supply task_id with description and/or TODO/IN_PROGRESS/DONE/CANCELLED status… DONE means the work is finished; CANCELLED means the Task was dropped as not needed (not completed). Both stop the Task's delegated copies and remove them from the run; their history is kept. To continue with a copy later, set the Task to TODO or IN_PROGRESS first, then…"
+- `DELEGATE_TASK_ID_DESCRIPTION`: "…Blank, unknown, ambiguous, DONE or CANCELLED Tasks fail…"
+- `send_message_to` / team instruction: "A copy whose Task is DONE or CANCELLED is stopped… first moves the Task out of DONE or CANCELLED (for example to IN_PROGRESS)…"
+- Delegation guidance line "mark that Task DONE … which stops the copy": append "(or CANCELLED if the work turned out not to be needed)".
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -373,7 +374,7 @@ New files: `autobyteus-server-ts/src/projects/domain/task-status.ts` (domain voc
 | --- | --- | --- | --- |
 | Status migration / version field | Enum changed | Rejected | Directly Usable tolerant reader |
 | Keep `taskStatusLabelKey.ts` re-exporting from the new file | Avoid touching importers | Rejected | Rename and update 3 importers |
-| Mapping CLOSED to DONE for older clients | Downgrade | Rejected | Approved non-goal |
+| Mapping CANCELLED to DONE for older clients | Downgrade | Rejected | Approved non-goal |
 | GraphQL status mutation | Earlier proposal | Rejected | User decision SR-002 |
 
 ## Derived Layering (If Useful)
@@ -385,61 +386,73 @@ N/A.
 1. Server vocabulary: add `task-status.ts`; repoint the released migration to its frozen task reader **before** the current reader changes; then switch the stores, service, project-service, change messages and tool contract to the vocabulary and predicate; add the GraphQL enum value.
 2. Server wording: tool descriptions, LLM contract, refusal messages, comments.
 3. Server tests (below).
-4. Web: types, presentation owner (rename), store, Temp link, pills, `ClosedTasksToggle`, both boards, localization, generated enum.
+4. Web: types, presentation owner (rename), store, Temp link, pills, `CancelledTasksToggle`, both boards, localization, generated enum.
 5. Web tests.
 6. Docs (delivery may finalize).
+
+## SR-006 Rename Delta (CLOSED → CANCELLED)
+
+The SR-004/SR-005 implementation is committed on the branch (through `814e41a26`). The rename is a clean, mechanical replacement over that code, tests and docs. There is no structural change, and nothing keeps `CLOSED`:
+- Status value `CLOSED` → `CANCELLED` everywhere: the server vocabulary tuple, GraphQL enum, tool enums and descriptions, LLM collaboration texts, refusal messages, change-feed schema, web types and generated enum, tests and fixtures.
+- Labels "Closed" → "Cancelled" (en); "已关闭" → "已取消" (zh-CN). The toggle reads "Cancelled (N)", and the lane heading is "Cancelled".
+- Identifiers: `ClosedTasksToggle.vue` → `CancelledTasksToggle.vue`; `showClosed`/`closedCount` → `showCancelled`/`cancelledCount`; temp lane `'closed'` → `'cancelled'`; i18n keys `projects.task.status.CANCELLED`, `projects.temp.lane.cancelled`, toggle key `…cancelledToggle`; test IDs `…-CANCELLED` / `…-cancelled`; CSS modifier `--with-cancelled`.
+- Agent-facing wording: "CANCELLED: the Task was dropped as not needed, not completed. DONE and CANCELLED both stop the Task's delegated copies and remove them from the run." Never describe CANCELLED as "closed". Refusals name the actual status ("The Task is CANCELLED; move it to TODO or IN_PROGRESS…"). Runtime messages say "(its Task is DONE or CANCELLED)".
+- Keep the internal agent-run resource vocabulary (`closeTask`, `closedAt`, `closeAndWrite`, root `closed`, `TASK_AGENT_RESOURCE_CLOSED`) unchanged. It describes what DONE or CANCELLED does to the runs, not a Task status.
+- Strict spelling: `CANCELED` is not accepted; the invalid-status error lists the four valid values.
+- Docs and test titles that mention CANCELLED (for example CLS-API-001 / CLS-E2E-001/002, docs-sync wording) are updated by their owners in this round.
+- Verification: `grep -rn -E "\bCLOSED\b|'Closed'|\"Closed\"|已关闭|ClosedTasksToggle|showClosed|closedCount" autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-web --include=*.ts --include=*.vue` (excluding node_modules) returns no Task-status hits. Internal resource names like `TASK_AGENT_RESOURCE_CLOSED` and `closedAt` remain.
 
 ## Key Tradeoffs
 
 - A hidden-by-default lane with a toggle (approved) versus an always-visible column. It adds one local boolean per board; the state is not persisted, so every visit starts clean.
-- Closed is a fourth column after Done (SR-005, user direction). While it is shown at 752–1007px, the columns are narrower than 240px. This is accepted because rows are compact 2-line summaries and the toggle is off by default. The earlier full-width row (SR-004) was rejected: it looked detached from the board.
-- The search no-match state ignores hidden Closed Tasks. A search for a closed Task shows "no match" until the toggle is on, and the toggle stays visible (with its count) beside the search.
+- Cancelled is a fourth column after Done (SR-005, user direction). While it is shown at 752–1007px, the columns are narrower than 240px. This is accepted because rows are compact 2-line summaries and the toggle is off by default. The earlier full-width row (SR-004) was rejected: it looked detached from the board.
+- The search no-match state ignores hidden Cancelled Tasks. A search for a cancelled Task shows "no match" until the toggle is on, and the toggle stays visible (with its count) beside the search.
 
 ## Risks
 
-- **R-001 wording.** "Closed" also names agent-run closure. Mitigated by definitions in the tool text and docs.
-- **R-002 external Project Task Manager skill.** It doesn't know CLOSED (dependency readiness = DONE). This is a separate-repository follow-up. Agents still learn CLOSED from the tool descriptions.
+- **R-001 wording.** Resolved by SR-006: the status is CANCELLED, so it no longer shares the word "closed" with DONE's worker closure. Agent-facing texts say DONE and CANCELLED both *stop* the copies.
+- **R-002 external Project Task Manager skill.** It doesn't know CANCELLED (dependency readiness = DONE). This is a separate-repository follow-up. Agents still learn CANCELLED from the tool descriptions.
 - **LLM-contract string tests** may assert exact text; update them with the wording.
 
 ## Guidance For Implementation
 
 - **Server tests** (`pnpm -C autobyteus-server-ts exec vitest run <file> --no-watch`):
   - `tests/unit/projects/project-task-service.test.ts` and `ad-hoc-tasks.test.ts`:
-    - CLOSED closes open entries and requests release (Project and ad-hoc), exactly as DONE;
-    - repeated CLOSED re-requests the stop with no file change;
-    - DONE→CLOSED and CLOSED→DONE behave as a repeated DONE;
-    - reopen from CLOSED writes only;
-    - `resolveAssignment` / `linkAgentRun` / `assertReopenable` / `reopenAssignment` refuse CLOSED with the status-naming messages.
-  - `tests/unit/projects/task-agent-resource-reactivation.test.ts` / `task-agent-resources.test.ts`: reopen after CLOSED allows the assigner to reactivate.
+    - CANCELLED closes open entries and requests release (Project and ad-hoc), exactly as DONE;
+    - repeated CANCELLED re-requests the stop with no file change;
+    - DONE→CANCELLED and CANCELLED→DONE behave as a repeated DONE;
+    - reopen from CANCELLED writes only;
+    - `resolveAssignment` / `linkAgentRun` / `assertReopenable` / `reopenAssignment` refuse CANCELLED with the status-naming messages.
+  - `tests/unit/projects/task-agent-resource-reactivation.test.ts` / `task-agent-resources.test.ts`: reopen after CANCELLED allows the assigner to reactivate.
   - `tests/unit/agent-tools/project-tasks/project-task-tools.test.ts`:
-    - enums contain CLOSED;
-    - parse accepts CLOSED on patch and list;
+    - enums contain CANCELLED;
+    - parse accepts CANCELLED on patch and list;
     - create with status still fails;
     - invalid-status message lists four values;
-    - descriptions mention CLOSED.
+    - descriptions mention CANCELLED.
   - Store tests: `readTaskFile` and the ad-hoc reader accept all four; unknown values are still rejected.
-  - `project-change-messages` / publisher tests accept CLOSED.
-  - `project-service.test.ts`: openTaskCount excludes CLOSED.
+  - `project-change-messages` / publisher tests accept CANCELLED.
+  - `project-service.test.ts`: openTaskCount excludes CANCELLED.
   - LLM contract test text.
   - `projects-per-folder-v1` migration tests remain green with the frozen reader.
   - A unit test asserts the GraphQL enum values equal `PROJECT_TASK_STATUSES`.
-  - E2E: `tests/e2e/projects/projects-graphql.e2e.test.ts` (CLOSED in schema/read); `task-closure-root-visibility.e2e.test.ts` and `ad-hoc-task-delegation.e2e.test.ts` (add a CLOSED case mirroring DONE); `project-change-feed.e2e.test.ts` (CLOSED upsert).
+  - E2E: `tests/e2e/projects/projects-graphql.e2e.test.ts` (CANCELLED in schema/read); `task-closure-root-visibility.e2e.test.ts` and `ad-hoc-task-delegation.e2e.test.ts` (add a CANCELLED case mirroring DONE); `project-change-feed.e2e.test.ts` (CANCELLED upsert).
 - **Web tests** (`pnpm -C autobyteus-web test:nuxt <path> --run`):
   - `ProjectTaskBoard.spec.ts`:
-    - Closed hidden by default; toggle absent at 0;
-    - toggle shows/hides the Closed lane with `aria-pressed`;
+    - Cancelled hidden by default; toggle absent at 0;
+    - toggle shows/hides the Cancelled lane with `aria-pressed`;
     - counts and no-match over visible tasks;
     - compact mode too.
-  - `TempTasks.spec.ts`: Closed in neither Open nor Done; toggle; page label; header count.
-  - `projectLiveChanges.spec.ts`: lane move to/from CLOSED highlights; counts.
+  - `TempTasks.spec.ts`: Cancelled in neither Open nor Done; toggle; page label; header count.
+  - `projectLiveChanges.spec.ts`: lane move to/from CANCELLED highlights; counts.
   - `ProjectsPanel.spec.ts`: panel detail label.
   - `projectsCatalog.spec.ts`: en/zh-CN parity.
-- **Desktop verification:** `pnpm --silent isolated-app start --build`, then have an agent close and reopen a Task with `create_or_update_task`. Check that the board hides it, the toggle shows it, the label reads "Closed" and the worker stops.
+- **Desktop verification:** `pnpm --silent isolated-app start --build`, then have an agent close and reopen a Task with `create_or_update_task`. Check that the board hides it, the toggle shows it, the label reads "Cancelled" and the worker stops.
 - **Docs to sync:**
-  - `autobyteus-server-ts/docs/modules/projects.md`: status set, DONE-or-CLOSED closure, refusals, open count, tool table;
-  - `autobyteus-web/docs/projects.md`: Closed display, toggle, Temp lanes; status still read-only and agent-owned;
+  - `autobyteus-server-ts/docs/modules/projects.md`: status set, DONE-or-CANCELLED closure, refusals, open count, tool table;
+  - `autobyteus-web/docs/projects.md`: Cancelled display, toggle, Temp lanes; status still read-only and agent-owned;
   - `autobyteus-server-ts/docs/modules/{agent_tools_mcp_server,prompt_engineering,agent_communication}.md`;
-  - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` (closed task executions: "Task DONE or CLOSED");
+  - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` (closed task executions: "Task DONE or CANCELLED");
   - `autobyteus-web/docs/chat.md`;
   - `TESTING.md` mentions of "Task is DONE" (where they describe status rules).
 - No GraphQL status input may be added (AC-002).
