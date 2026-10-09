@@ -144,6 +144,22 @@ describe("AGY canonical stream conversion", () => {
     expect(converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } })
       .filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toHaveLength(0);
   });
+  it("declares AGY result usage as base input that excludes cache reads, carrying only the raw counts", () => {
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini-3.8-flash-high");
+    converter.startTurn("turn");
+    const usage = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS",
+      num_turns: 3, usage: { input_tokens: 6_110, output_tokens: 1, total_tokens: 6_111, cache_read_tokens: 307_003 } } })
+      .find((item) => item.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED);
+    expect(usage?.payload).toMatchObject({
+      usage_scope: "cumulative_snapshot", snapshot_series_key: "conversation",
+      input_token_semantic: "base_excludes_cache",
+      reported_input_tokens: 6_110, reported_output_tokens: 1, reported_total_tokens: 6_111,
+      cache_read_input_tokens: 307_003, cache_state: "positive",
+    });
+    expect(usage?.payload).not.toHaveProperty("accounting_input_tokens");
+    expect(usage?.payload).not.toHaveProperty("cache_miss_input_tokens");
+    expect(usage?.payload).not.toHaveProperty("standard_input_tokens");
+  });
   describe("background tool steps AGY never finishes", () => {
     const BACKGROUND = "Started as a background task; still running when the turn ended.";
     const step = (stepIndex: number, state: string, toolName = "run_command", toolInfo: Record<string, unknown> = {}) =>
