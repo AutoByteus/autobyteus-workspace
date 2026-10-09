@@ -10,18 +10,19 @@
   - Solution: SR-003.
   - Architecture review: ARCH-REV-001.
   - Implementation: IR-001.
-  - Code review: CRR-001 Pass.
+  - Code review: CRR-001 Pass (9.4/10).
   - API/E2E: API-REV-001 Pass (95%).
   - Test-code review: CRR-002 Pass.
 - One repository: `codex/composer-context-file-removal` → `origin/personal`.
-- Current state: **DR-001: held for user verification.** Nothing has been pushed, merged or released.
+- Release: the user asked for a new beta, published as **`v1.4.99-beta.10`**.
+- Current state: **Delivery Completed (DR-002)**. The ticket is user verified, finalized, released and cleaned up.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/tickets/in-progress/composer-context-file-removal/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/composer-context-file-removal/handoff-summary.md` (on `personal`)
 - Handoff summary status: `Updated`
-- Delivery revision record: `.../tickets/in-progress/composer-context-file-removal/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Delivery revision record: `tickets/done/composer-context-file-removal/delivery-revision-record.md` (on `personal`)
+- Current delivery revision ID: `DR-002` (finalization and release)
 
 ## Initial Delivery Integration Refresh
 
@@ -29,10 +30,10 @@
 - Latest tracked remote base reference checked: `origin/personal` @ `46e94fdea` (fetched 2026-10-09, about 17:45 CEST)
 - Base advanced since bootstrap or previous refresh: `No`
 - New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed`. No integration was performed, so the reviewed state at `dbd2e9a91` / `42380226b` plus the uncommitted API/E2E files was never at risk.
+- Local checkpoint commit result: `Not needed`. No integration was performed.
 - Integration method: `Already current`
 - Integration result: `Completed`
-- Post-integration executable checks rerun: `Yes`, as a confidence check on `42380226b` with the uncommitted test and docs changes. A rerun was not strictly required, because no base commits were integrated.
+- Post-integration executable checks rerun: `Yes`, as a confidence check on `42380226b` with the uncommitted test and docs changes:
 
   | Command | Result | Log |
   | --- | --- | --- |
@@ -43,20 +44,19 @@
   | `pnpm -C autobyteus-web exec vitest run services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts` | 9/9 pass | `delivery-evidence/dr1-web-org-context-files.log` |
 
 - Post-integration verification result: `Passed`
-- No-rerun rationale: not applicable (the checks above were run).
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Requested check: the 19.png case in the desktop app (see `handoff-summary.md` § How To Verify).
-- Release decision requested: a new beta `v1.4.99-beta.10`, or merge without a release.
-- Renewed verification required after later re-integration: `Not yet known`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: the user on 2026-10-09: "Finalize and release a new beta." Recorded in `handoff-summary.md` § User Verification.
+- Renewed verification required after later re-integration: `No`. `origin/personal` was still `46e94fdea` after verification.
+- Renewed verification received: `Not needed`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `.../tickets/in-progress/composer-context-file-removal/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/composer-context-file-removal/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md`
@@ -66,39 +66,71 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/composer-context-file-removal`: `No`. This waits for user verification.
+- Ticket moved to `tickets/done/composer-context-file-removal`: `Yes` (`b875627eb`)
+- Archived ticket path: `tickets/done/composer-context-file-removal/`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision. The current version is `1.4.99-beta.9`. If a beta is requested, the next is `v1.4.99-beta.10`, via `scripts/desktop-release.sh beta`.
+- Helper: `scripts/desktop-release.sh beta --branch release-tmp-ccfr --no-push`.
+  - It ran in a temporary clean worktree (`autobyteus-worktrees/release-tmp-ccfr`, at merge `a0d8f06e6`).
+  - The pushes happened only after confirming that `origin/personal` was still `a0d8f06e6`.
+- **`v1.4.99-beta.10`**: release commit `ca8569449` on top of merge `a0d8f06e6`. It changes `autobyteus-web/package.json` from 1.4.99-beta.9 to 1.4.99-beta.10.
+- Pushes: `a0d8f06e6..ca8569449 HEAD -> personal` and the new tag `v1.4.99-beta.10` (`delivery-evidence/beta10-release.log`).
+- Content since beta.9: this ticket only.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` / the CRR-002 package (base and finalization target `origin/personal`)
-- Ticket branch: `codex/composer-context-file-removal` @ `42380226b` (plus uncommitted delivery and test files)
-- Ticket branch commit result: `Pending verification`
-- Ticket branch push result: `Pending verification`
+- Ticket branch: `codex/composer-context-file-removal` @ `b875627eb`.
+  - Commits: `dbd2e9a91` (the fix), `42380226b` (PB-001 note), `b875627eb` (probe, docs sync, artifacts and archive).
+- Ticket branch commit result: `Completed`. The untracked `*/dist/` folders were excluded.
+- Ticket branch push result: `Completed` (`[new branch] codex/composer-context-file-removal`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Repository finalization status: `Not started`. This waits for user verification.
+- Target advanced after verification / acceptance: `No` (`46e94fdea`)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The ticket worktree was detached at the fetched `origin/personal`; the main checkout was not touched.
+- Merge into target result: `Completed`, a `--no-ff` merge, `a0d8f06e6`.
+  - `check_licensing.py` and `check_repository_artifact_hygiene.py` both exit 0 (`delivery-evidence/finalization-hygiene.log`).
+  - The longest new path is 111 characters.
+- Push target branch result: `Completed` (`46e94fdea..a0d8f06e6 HEAD -> personal`, after re-checking that the target had not moved)
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
-- Applicable: `Pending user decision`
-- Method (if a beta is requested): `Release Script`, `scripts/desktop-release.sh beta`, with tag-triggered GitHub workflows (Desktop, iOS, Server Docker, Android)
-- Release notes: `release-notes.md`, created before verification
+- Applicable: `Yes` (the user asked for a new beta)
+- Method: `Release Script`, `scripts/desktop-release.sh beta`, with tag-triggered GitHub workflows
+- Workflows: all 4 succeeded on attempt 1 (`delivery-evidence/workflows-beta10.json`):
+  - Desktop `37954975699`
+  - iOS `37954975773`
+  - Server Docker `37954975833`
+  - Android `37954975600`
+- GitHub release `v1.4.99-beta.10` (`delivery-evidence/github-release-beta10.json`): a **pre-release**, not a draft, published 2026-10-09T15:57:02Z, with 17 assets.
+- Updater metadata: `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` all report `version: 1.4.99-beta.10` (`delivery-evidence/updater-metadata/`). GitHub `releases/latest` stays on stable `v1.4.98`.
+- Docker `autobyteus/autobyteus-server` (`delivery-evidence/docker-tags.txt`):
+  - `:1.4.99-beta.10` and `:beta` share digest `sha256:c0b258d1…9389` (amd64, arm64).
+  - `:latest` is unchanged at `sha256:8aa17b23…5187` (1.4.98).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Beta mode publishes generated notes; the archived `release-notes.md` stays as the ticket's user-facing summary for the next stable release.
+- Blocker: none
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal`
-- Planned after finalization:
-  - remove the worktree and prune;
-  - delete the local ticket branch once it is contained in `origin/personal`;
-  - keep the remote branch as the review reference.
+  - Before removal it held only the untracked SDK `dist/` build output.
+  - The finalization hygiene log was copied into this record.
+- Worktree cleanup result: `Completed` (`git worktree remove --force`)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`codex/composer-context-file-removal` deleted at `b875627eb`; it is contained in `origin/personal`)
+- Remote branch cleanup result: `Not required`. `origin/codex/composer-context-file-removal` is kept as the review reference, as on earlier tickets.
+- Release helper worktree `autobyteus-worktrees/release-tmp-ccfr` and branch `release-tmp-ccfr`: removed after this delivery record is pushed.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `.../tickets/in-progress/composer-context-file-removal/release-notes.md`
+- Release notes artifact created before verification: `tickets/done/composer-context-file-removal/release-notes.md`
+- Archived release notes artifact used for release/publication: not used (beta generated notes)
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
@@ -112,19 +144,20 @@
   - Every draft owner kind passes upload → GET 200 → DELETE 204 → GET 404 → DELETE 204.
   - × and Clear All work in a delegated Agent copy, a delegated Team-copy member and every other run kind; each removal is checked in the tray, on the wire and on disk.
   - Foreign-draft clones are safe, failures are visible, uploads are gated, and removal still works after a stop, restart and reload.
-- Delivery reruns: see above.
+- Delivery reruns: see Initial Delivery Integration Refresh.
+- Release: 4/4 workflows green; pre-release, updater metadata and Docker tags verified.
 
 ## Rollback Criteria
 
-- Roll back if any draft attachment cannot be read or deleted, or if a runtime fails to resolve a draft locator to a local file. To roll back, revert the ticket merge on `personal`; no data rollback is needed.
+- Roll back if any draft attachment cannot be read or deleted, or if a runtime fails to resolve a draft locator to a local file. To roll back, revert merge `a0d8f06e6` on `personal` and publish the next beta; no data rollback is needed.
 - Clients or scripts that depend on the old status codes (DELETE unknown owner 400, GET bad owner 500) see the documented new mapping. No in-repo caller depends on them.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (decision pending)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user verification pending (expected hold, not a defect)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.4.99-beta.10` published)
+- Applicable safe cleanup complete or not required: `Yes` (the release helper worktree is removed right after this record is pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record is pushed (see `delivery-revision-record.md` DR-002)
