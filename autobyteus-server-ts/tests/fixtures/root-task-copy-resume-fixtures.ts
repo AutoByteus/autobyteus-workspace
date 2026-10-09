@@ -26,13 +26,17 @@ export function fixture() {
   const authority = new Map<string, "live" | "fenced">();
   const log: string[] = [];
   const control = { restorable: true, releasePending: false, releaseGate: null as Promise<void> | null, restoreFailure: null as Error | null,
-    deliveryRefusal: null as AgentOperationResult | null };
+    deliveryRefusal: null as AgentOperationResult | null,
+    /** Copies not in the root's tree, as a copy whose start failed never is (keys). */
+    absent: new Set<string>() };
   const key = taskExecutionReferenceKey;
+  const inTree = (reference: TaskExecutionReference) => key(reference) in ingress && !control.absent.has(key(reference));
+  const chainOf = (agentRunId: string) => (chains[agentRunId] ?? []).filter(inTree);
   const adapter: RootTaskExecutionAdapter<string> = {
     root, isOpen: () => true, authorize: () => undefined, assertCurrentSchemaReady: () => undefined,
     planActivation: vi.fn(), beginActivation: vi.fn(), registrationFor: () => null, taskExecutionAt: () => null,
-    ownershipChainFor: agentRunId => chains[agentRunId] ?? [],
-    taskExecutionChainFor: agentRunId => chains[agentRunId] ?? [],
+    ownershipChainFor: chainOf,
+    taskExecutionChainFor: chainOf,
     listTaskExecutions: () => [worker, team, helper],
     taskExecutionStatus: reference => authority.get(key(reference)) === "live" ? "idle" : "offline",
     cancelOwnedExecution: vi.fn(),
@@ -48,12 +52,12 @@ export function fixture() {
       log.push(`discard:${key(reference)}`);
       if (authority.get(key(reference)) === "fenced") authority.delete(key(reference));
     }),
-    taskExecutionTargetOf: reference => key(reference) in ingress ? { root, execution: reference, ingressAgentRunId: ingress[key(reference)]! } : null,
+    taskExecutionTargetOf: reference => inTree(reference) ? { root, execution: reference, ingressAgentRunId: ingress[key(reference)]! } : null,
     taskExecutionWithIngress: agentRunId => {
-      const innermost = chains[agentRunId]?.[0];
+      const innermost = chainOf(agentRunId)[0];
       return innermost && ingress[key(innermost)] === agentRunId ? innermost : null;
     },
-    containsTaskExecution: reference => key(reference) in ingress,
+    containsTaskExecution: inTree,
     publishTaskExecutionsClosed: vi.fn((references: readonly TaskExecutionReference[]) => { log.push(`closed:${references.map(key)}`); }),
     publishTaskExecutionsReopened: vi.fn((references: readonly TaskExecutionReference[]) => { log.push(`reopened:${references.map(key)}`); }),
     isLive: reference => authority.get(key(reference)) === "live",

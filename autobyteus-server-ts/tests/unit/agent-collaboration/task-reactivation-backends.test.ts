@@ -105,6 +105,13 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: reactivat
     expect(await refused({ teamRunId: 'B-worker' })).toBe('B-worker is an Agent copy\'s agent run ID; use target_agent_run_id "B-worker".');
     expect(await refused({ agentRunId: 'A-child' })).toContain('sub-work or a helper of a Task worker');
     expect(await refused({ agentRunId: 'nobody' })).toContain('nobody is not a delegated copy in this run.');
+    // A copy whose start failed is linked on the Task side but never reached the actual tree (CR-001, AC-009).
+    f.resources.addTask('D');
+    await f.resources.linkNewTaskExecution({ role: 'assigned', taskId: 'D', assignedBy: f.managerId, recipientAddress: '/never', hostRoot: f.root, execution: { agentRunId: 'never-started' } });
+    await f.resources.markFailed({ agentRunId: 'never-started' });
+    f.resources.close('D');
+    expect(f.adapter.taskExecutionTargetOf({ agentRunId: 'never-started' })).toBeNull();
+    expect(await refused({ agentRunId: 'never-started' })).toContain('This copy never started');
     expect(f.resources.assignments).toEqual([]);
     expect(await f.assignTo({ agentRunId: 'B-worker' }, 'C')).toEqual({ delegated: true, copy: { kind: 'agent', agentRunId: 'B-worker' } });
     const restored = f.active.get('B-worker');

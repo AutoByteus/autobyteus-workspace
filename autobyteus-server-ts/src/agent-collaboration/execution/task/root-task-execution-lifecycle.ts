@@ -1,7 +1,7 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
-import { resolveExistingCopy } from "./existing-copy-target.js";
+import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
 import { RootTaskExecutionResourceScope, asTaskDelegationError } from "./root-task-execution-resource-scope.js";
 import { taskReactivationRejectionCode, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
@@ -153,8 +153,10 @@ export class RootTaskExecutionLifecycle<TPlacement> {
       this.adapter.assertCurrentSchemaReady();
       if (this.resourceScope.ownerOf(sender)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "Task workers delegate sub-work without task_id.");
       taskId = requireTaskString(input.taskId, "task_id");
-      target = resolveExistingCopy(this.adapter, input.copy);
       const port = this.resourceScope.port();
+      const found = resolveExistingCopy(this.adapter, input.copy);
+      if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
+      target = found;
       const saved = await port.resolveAssignment(taskId);
       ({ description } = saved);
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
@@ -182,6 +184,19 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     try { await port.markStarted(target.execution); }
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }
     return { delegated: true, copy: delegatedCopyOf(target) };
+  }
+  /**
+   * A named copy that is not in this root's tree. A copy whose start failed never reached the tree, but the
+   * Task side still knows it: when it is a closed copy this root hosts, the Task side's specific refusal
+   * applies (never started, another assigner, already this Task; AC-009). Anything else is not a copy of
+   * this run (unknown, or hosted by another root). Always rejects.
+   */
+  private async refuseCopyOutsideTree(port: TaskExecutionResourcePort, copy: TaskExecutionReference, requestedBy: string, taskId: string): Promise<never> {
+    const key = taskExecutionReferenceKey(copy);
+    if (port.closedTaskExecutionsIn(this.adapter.root).some(reference => taskExecutionReferenceKey(reference) === key)) {
+      await port.assertAssignable({ execution: copy, requestedBy, taskId });
+    }
+    throw notACopyOfThisRun(copy);
   }
   /** `send_message_to` guidance: the coordinator agent run of the Team copy with this team run ID in this root, or `null`. */
   teamCoordinatorOf(teamRunId: string): string | null {

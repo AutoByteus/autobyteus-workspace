@@ -34,7 +34,6 @@ const refusalCases: Array<[string, (f: Fixture) => Promise<void>, string, string
   ["Task B is unknown (AC-009)", async (f: Fixture) => { f.resources.tasks.delete("task-B"); }, "Task 'task-B' was not found.", "manager"],
   ["the copy's latest assignment is already Task B (AC-009)", async (f: Fixture) => { f.resources.entry(worker)!.taskId = "task-B"; },
       "This copy's most recent assignment is already Task task-B.", "manager"],
-  ["the copy never started (AC-009)", async (f: Fixture) => { delete f.resources.entry(worker)!.everStarted; }, "This copy never started", "manager"],
   ["any Task's data is unreadable (REQ-005)", async (f: Fixture) => { f.resources.damaged.add("task-Z"); }, "could not be read", "manager"],
 ];
 
@@ -84,6 +83,37 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     await arrange(f);
     expect(await f.assignTo(worker, "task-B", sender)).toEqual({ delegated: false, message: expect.stringContaining(message) });
     expect(f.log).toEqual([]);
+    unchanged(f);
+  });
+
+  it("refuses a copy whose start failed with the never-started reason, though it never reached the tree (AC-009, CR-001)", async () => {
+    const f = fixture();
+    // Task F's dispatch linked the copy, then its start failed: it was never registered in the root's tree.
+    f.resources.addTask("task-F"); f.resources.addTask("task-G");
+    await f.resources.linkNewTaskExecution({ role: "assigned", taskId: "task-F", assignedBy: "manager", recipientAddress: "/worker", hostRoot: root, execution: worker });
+    await f.resources.markFailed(worker);
+    f.control.absent.add("agent:worker");
+    // While F is open the copy is not closed work of this root: nothing tells it apart from an unknown ID.
+    expect(await f.assignTo(worker, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("worker is not a delegated copy in this run.") });
+    f.resources.close("task-F");
+    expect(await f.assignTo(worker, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("This copy never started") });
+    // Another sender gets the assigner-only reason; the wrong ID kind keeps its own refusal.
+    expect(await f.assignTo(worker, "task-G", "intruder")).toEqual({ delegated: false,
+      message: expect.stringContaining("Only the run that made this copy's most recent assignment") });
+    expect(await f.assignTo({ teamRunId: "worker" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("is not a delegated copy in this run.") });
+    expect(f.log).toEqual([]);
+    unchanged(f);
+  });
+
+  it("keeps the generic refusal for a closed copy of another root that the Task side knows (REQ-005)", async () => {
+    const f = fixture();
+    f.resources.addTask("task-F"); f.resources.addTask("task-G");
+    const otherRoot = { rootSubjectKind: "agent" as const, rootRunId: "other-root" };
+    await f.resources.linkNewTaskExecution({ role: "assigned", taskId: "task-F", assignedBy: "manager", recipientAddress: "/x", hostRoot: otherRoot,
+      execution: { agentRunId: "elsewhere" } });
+    await f.resources.markStarted({ agentRunId: "elsewhere" });
+    f.resources.close("task-F");
+    expect(await f.assignTo({ agentRunId: "elsewhere" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("elsewhere is not a delegated copy in this run.") });
     unchanged(f);
   });
 
