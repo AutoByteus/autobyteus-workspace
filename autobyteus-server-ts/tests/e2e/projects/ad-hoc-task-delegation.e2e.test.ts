@@ -395,8 +395,9 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     // 6b. mention-candidates-in-run: definitions already in the run are mentionable (AC-001..003, AC-006).
     // The run's own definition is not; a Team/Org run's configured shared members are.
     const rootSubjectKind = kind === "agent" ? "agent" : kind === "team" ? "agent_team" : "agent_org";
-    const candidates = ((await graphql(`query($k:String!,$id:String!){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id){availability candidates{kind definitionId}}}`,
-      { k: rootSubjectKind, id: rootId })).collaboratorMentionCandidates.candidates as any[]).map((candidate) => candidate.definitionId);
+    // An Agent root answers for the focused agent: the host's own composer here.
+    const candidates = ((await graphql(`query($k:String!,$id:String!,$f:String){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id,focusedAgentRunId:$f){availability candidates{kind definitionId}}}`,
+      { k: rootSubjectKind, id: rootId, f: kind === "agent" ? rootId : null })).collaboratorMentionCandidates.candidates as any[]).map((candidate) => candidate.definitionId);
     expect(candidates).toContain(ids.assistant); // an in-run collaborator (the reported case)
     if (kind === "agent") expect(candidates).not.toContain(ids.manager); // the standalone host's own definition
     else expect(candidates).toContain(ids.worker); // a configured shared member

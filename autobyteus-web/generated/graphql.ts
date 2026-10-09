@@ -2364,6 +2364,7 @@ export type QueryApplicationPackageDetailsArgs = {
 
 
 export type QueryCollaboratorMentionCandidatesArgs = {
+  focusedAgentRunId?: InputMaybe<Scalars['String']['input']>;
   rootRunId: Scalars['String']['input'];
   rootSubjectKind: Scalars['String']['input'];
 };
@@ -4426,6 +4427,7 @@ export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRoo
 export type GetCollaboratorMentionCandidatesQueryVariables = Exact<{
   rootSubjectKind: Scalars['String']['input'];
   rootRunId: Scalars['String']['input'];
+  focusedAgentRunId?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -9223,10 +9225,11 @@ export function useGetAgentOrgRootHistoryLazyQuery(variables?: GetAgentOrgRootHi
 }
 export type GetAgentOrgRootHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgRootHistoryQuery, GetAgentOrgRootHistoryQueryVariables>;
 export const GetCollaboratorMentionCandidatesDocument = gql`
-    query GetCollaboratorMentionCandidates($rootSubjectKind: String!, $rootRunId: String!) {
+    query GetCollaboratorMentionCandidates($rootSubjectKind: String!, $rootRunId: String!, $focusedAgentRunId: String) {
   collaboratorMentionCandidates(
     rootSubjectKind: $rootSubjectKind
     rootRunId: $rootRunId
+    focusedAgentRunId: $focusedAgentRunId
   ) {
     availability
     candidates {
@@ -9255,6 +9258,7 @@ export const GetCollaboratorMentionCandidatesDocument = gql`
  * const { result, loading, error } = useGetCollaboratorMentionCandidatesQuery({
  *   rootSubjectKind: // value for 'rootSubjectKind'
  *   rootRunId: // value for 'rootRunId'
+ *   focusedAgentRunId: // value for 'focusedAgentRunId'
  * });
  */
 export function useGetCollaboratorMentionCandidatesQuery(variables: GetCollaboratorMentionCandidatesQueryVariables | VueCompositionApi.Ref<GetCollaboratorMentionCandidatesQueryVariables> | ReactiveFunction<GetCollaboratorMentionCandidatesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetCollaboratorMentionCandidatesQuery, GetCollaboratorMentionCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetCollaboratorMentionCandidatesQuery, GetCollaboratorMentionCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetCollaboratorMentionCandidatesQuery, GetCollaboratorMentionCandidatesQueryVariables>> = {}) {

@@ -10,7 +10,8 @@ import { draftMentionCandidates, type DraftMentionTarget } from '~/utils/collabo
 
 /**
  * Where a composer's `@` candidates come from:
- * - a live run: the server's candidates for its root (the server owns eligibility);
+ * - a live run: the server's candidates for its root, or for the focused agent of an Agent root
+ *   (the server owns eligibility);
  * - a New chat draft: the same rule applied to the would-be run (`draftMentionEligibility`).
  */
 export type MentionCandidateSource =
@@ -30,7 +31,7 @@ export function useMentionCandidates(source: Ref<MentionCandidateSource | null>)
         teams: teamStore.agentTeamDefinitions,
       })
     }
-    const entry = collaboratorCandidatesService.entry(current.scope.rootKind, current.scope.rootRunId)
+    const entry = collaboratorCandidatesService.entry(current.scope)
     return entry?.available === false ? [] : entry?.candidates ?? []
   })
 
@@ -46,7 +47,7 @@ export function useMentionCandidates(source: Ref<MentionCandidateSource | null>)
     const current = source.value
     if (!current) return
     if (current.kind === 'live_run') {
-      void collaboratorCandidatesService.refresh(current.scope.rootKind, current.scope.rootRunId)
+      void collaboratorCandidatesService.refresh(current.scope)
       return
     }
     if (!agentStore.agentDefinitions.length) void agentStore.fetchAllAgentDefinitions().catch(() => undefined)

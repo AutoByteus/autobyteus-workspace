@@ -272,6 +272,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       kind: child.kind === 'task_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
       host: Object.freeze({ hostRunId }),
       address: child.address,
+      agentRunId: child.agentRunId,
       context,
       workspaceRootPath: child.source.launchConfiguration.workspaceRootPath,
       collaborationMessages: collaboration.messagesView(child.agentRunId),

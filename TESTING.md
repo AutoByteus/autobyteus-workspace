@@ -658,6 +658,9 @@ have a gated server E2E beside the closure suite and a live browser probe:
 ```bash
 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts --no-watch
+env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS \
+  RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts --no-watch
 pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agent_sdk --output-dir <fresh dir>
 ```
 
@@ -679,8 +682,8 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   - a brought-in collaborator survives Stop/restore;
   - definitions already in the run (that collaborator; a Team/Org run's
     configured members) are `@` candidates, while the run's own definition is
-    not. Mentioning one stores `…, already in this run` with the in-run
-    guidance and adds nothing;
+    not offered to the run itself (the host, or a Team/Org run). Mentioning one
+    stores `…, already in this run` with the in-run guidance and adds nothing;
   - permanent delete removes only that run's ad-hoc Tasks.
 
   Set `AD_HOC_TASK_E2E_EVIDENCE_DIR` to keep a JSON receipt. The in-process
@@ -689,6 +692,25 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   candidates too. It only reads them, but prefix the command with
   `env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS`
   for a run that does not depend on your machine.
+- **`delegated-copy-member-contact-host.e2e.test.ts`.** The same server and
+  scripted AGY actor. One standalone Agent run (the host) delegates a Team copy
+  and an Agent copy, and the members of those copies contact the host:
+  - DCM-001: `@` candidates per `focusedAgentRunId`. The host never sees itself.
+    A copy member sees the host plus exactly the host's list. An Agent-root
+    query without `focusedAgentRunId` is an error.
+  - DCM-002/003: the user's `@<host>` post to a not-yet-started copy member
+    stores the `the run's own agent` note with the `send_message_to` sentence
+    and adds nothing. The member's `send_message_to(<host address>)` then
+    reaches the existing host run.
+  - DCM-004: `list_available_agents` lists the host for copy members, not for
+    the host, and a message to the listed address reaches the same host run.
+  - DCM-005: `delegate_task` to the host is refused, with no copy or
+    collaborator added.
+  - DCM-006: the host's own `@<host>` and an ineligible mention are rejected.
+  - DCM-007: after Stop, the stored run answers per focused agent, and a
+    restored member's message reaches the same host run.
+
+  Set `DELEGATED_COPY_CONTACT_E2E_EVIDENCE_DIR` to keep a JSON receipt.
 - **`test:e2e:cross-scope-agent-mentions`.** The same journeys with a real
   model, browser, Nuxt and built backend. It needs a logged-in Claude or Codex
   CLI (`--runtime codex_app_server`). Reporting copies may be closed by their

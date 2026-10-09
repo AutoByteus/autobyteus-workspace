@@ -53,7 +53,7 @@ const contexts = Object.fromEntries(kinds.map(kind => {
 }));
 const ctx = computed(() => contexts[current.value]);
 const workspaceTarget = computed(() => {
-  const base = { context: ctx.value, access: current.value === 'read-only' ? 'read_only' : 'live', address: '/researcher' };
+  const base = { context: ctx.value, access: current.value === 'read-only' ? 'read_only' : 'live', address: '/researcher', agentRunId: ctx.value.state.runId };
   if (current.value === 'team') return { ...base, kind: 'standalone_team_member', team: { rootRunId: 'probe-team-root', focusedMemberAddress: '/researcher' } };
   const mapping = { org: 'agent_org_direct_agent', 'org-team': 'agent_org_team_member', 'agent-task': 'agent_run_task_agent', 'agent-team-task': 'agent_run_task_team_member', 'org-task': 'agent_org_task_agent', 'org-team-task': 'agent_org_task_team_member' };
   if (current.value in mapping) return { ...base, kind: mapping[current.value], host: { hostRunId: 'probe-agent-root' }, root: { orgRunId: 'probe-org-root' } };

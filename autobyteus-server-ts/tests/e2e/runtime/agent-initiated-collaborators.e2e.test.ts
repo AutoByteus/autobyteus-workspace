@@ -306,10 +306,11 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
     (await gql<{ agentRunCollaborationMemberProjection: { conversation: ConversationEntry[] } }>(
       `query($h: String!, $a: String!, $r: String!) { agentRunCollaborationMemberProjection(hostRunId: $h, memberAddress: $a, agentRunId: $r) { conversation } }`,
       { h: hostRunId, a: memberAddress, r: agentRunId })).agentRunCollaborationMemberProjection.conversation;
-  const mentionCandidates = async (rootSubjectKind: string, rootRunId: string) =>
+  /** An Agent root answers for one focused agent; the host's own composer unless another is given. */
+  const mentionCandidates = async (rootSubjectKind: string, rootRunId: string, focusedAgentRunId: string | null = rootSubjectKind === "agent" ? rootRunId : null) =>
     (await gql<{ collaboratorMentionCandidates: { candidates: Array<{ kind: string; definitionId: string; name: string }> } }>(
-      `query($k: String!, $id: String!) { collaboratorMentionCandidates(rootSubjectKind: $k, rootRunId: $id) { candidates { kind definitionId name } } }`,
-      { k: rootSubjectKind, id: rootRunId })).collaboratorMentionCandidates.candidates;
+      `query($k: String!, $id: String!, $f: String) { collaboratorMentionCandidates(rootSubjectKind: $k, rootRunId: $id, focusedAgentRunId: $f) { candidates { kind definitionId name } } }`,
+      { k: rootSubjectKind, id: rootRunId, f: focusedAgentRunId })).collaboratorMentionCandidates.candidates;
   const teamTree = async (teamRunId: string): Promise<Record_> =>
     asRecord(field((await gql<{ getTeamRunResumeConfig: { executionTree: Record_ } }>(
       "query($id: String!) { getTeamRunResumeConfig(teamRunId: $id) { executionTree } }", { id: teamRunId })).getTeamRunResumeConfig.executionTree, "rootTeam"))!;

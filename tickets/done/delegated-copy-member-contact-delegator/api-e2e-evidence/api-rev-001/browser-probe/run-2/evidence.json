@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-10-09T06:03:45.792Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BJ-001": {
+      "title": "reviewer composer @ lists the host; host composer @ does not (focused per composer)",
+      "result": "Pass",
+      "reviewerMenu": "Delegate to an agent or team @ · ↑↓ to move, Enter to choose\n\nAgents\nPM\nProject Manager 19e5\nProject Manager 19e5 description\nRL\nReview Lead 19e5\nReview Lead 19e5 description\nCR\nCode Reviewer 19e5\nCode Reviewer 19e5 description\nAgent teams\nRT\nReview Team 19e5\n2 members · coordinator lead\nreviewer gets your message and delegates the work",
+      "hostMenu": "Delegate to an agent or team @ · ↑↓ to move, Enter to choose\n\nAgents\nRL\nReview Lead 19e5\nReview Lead 19e5 description\nCR\nCode Reviewer 19e5\nCode Reviewer 19e5 description\nAgent teams\nRT\nReview Team 19e5\n2 members · coordinator lead\nProject Manager 19e5 gets your message and delegates the work",
+      "reviewerRequests": [
+        {
+          "rootSubjectKind": "agent",
+          "rootRunId": "project_manager_19e5_dac7000007c54037ad75cd30ec4628a9",
+          "focusedAgentRunId": "code_reviewer_19e5_f13d9e530cd248ac966341c7bd31ed9f"
+        }
+      ],
+      "hostRequests": [
+        {
+          "rootSubjectKind": "agent",
+          "rootRunId": "project_manager_19e5_dac7000007c54037ad75cd30ec4628a9",
+          "focusedAgentRunId": "project_manager_19e5_dac7000007c54037ad75cd30ec4628a9"
+        }
+      ],
+      "ms": 3092
+    },
+    "BJ-002": {
+      "title": "user @host in the reviewer composer; the host run receives the reviewer message; Team tab; nothing added",
+      "result": "Pass",
+      "marker": "BROWSER_TICKET_f83486",
+      "nodesBefore": [
+        "review_team_19e5_5dd033ff93274fef921654d3de94c200"
+      ],
+      "nodesAfter": [
+        "review_team_19e5_5dd033ff93274fef921654d3de94c200"
+      ],
+      "ms": 2125
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": 53610,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 51410,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRemoved": true,
+    "homeRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:60715",
+    "frontendUrl": "http://127.0.0.1:60716",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI"
+  },
+  "setup": {
+    "hostRunId": "project_manager_19e5_dac7000007c54037ad75cd30ec4628a9",
+    "hostAddress": "/project_manager_19e5",
+    "ids": {
+      "manager": "project-manager-19e5",
+      "lead": "review-lead-19e5",
+      "reviewer": "code-reviewer-19e5",
+      "squad": "review-team-19e5"
+    },
+    "names": {
+      "manager": "Project Manager 19e5",
+      "lead": "Review Lead 19e5",
+      "reviewer": "Code Reviewer 19e5",
+      "squad": "Review Team 19e5"
+    },
+    "copy": {
+      "teamRunId": "review_team_19e5_5dd033ff93274fef921654d3de94c200",
+      "address": "/review_team_19e5",
+      "members": [
+        {
+          "address": "/review_team_19e5/lead",
+          "agentRunId": "review_lead_19e5_de9bad01c96a4de29cce05fd76a3ff69"
+        },
+        {
+          "address": "/review_team_19e5/reviewer",
+          "agentRunId": "code_reviewer_19e5_f13d9e530cd248ac966341c7bd31ed9f"
+        }
+      ]
+    }
+  },
+  "browserErrors": [],
+  "finishedAt": "2026-10-09T06:04:07.416Z"
+}

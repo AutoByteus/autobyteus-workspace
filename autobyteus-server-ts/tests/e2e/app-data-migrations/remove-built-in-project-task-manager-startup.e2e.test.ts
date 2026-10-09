@@ -321,7 +321,7 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
     expect(await conversationText(retried, otherRunId)).toContain("Write more field notes.");
 
     // AC-009: the remaining built-ins stay excluded from `@`; the repository manager is an ordinary candidate.
-    const candidates = (await retried.gql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent",rootRunId:$id){availability candidates{kind definitionId}}}`, { id: otherRunId }))
+    const candidates = (await retried.gql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent",rootRunId:$id,focusedAgentRunId:$id){availability candidates{kind definitionId}}}`, { id: otherRunId }))
       .collaboratorMentionCandidates;
     expect(candidates.availability).toBe("AVAILABLE");
     const candidateIds = candidates.candidates.map((c: { definitionId: string }) => c.definitionId);

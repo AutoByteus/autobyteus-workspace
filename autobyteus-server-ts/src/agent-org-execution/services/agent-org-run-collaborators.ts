@@ -37,7 +37,7 @@ export const agentOrgCollaboratorPortFor = (tree: AgentOrgRunExecutionTreeSnapsh
     isApplicationBound: tree.applicationBinding !== null,
     rootLaunchConfiguration: () => tree.rootOrg.defaultLaunchConfiguration,
     // An Org is never a catalog candidate, so it has no own definition to exclude.
-    rootDefinition: () => null,
+    ownDefinition: () => null,
     inRunPlacementsByDefinition: () => buildInRunPlacements({ configured, collaborators: tree.rootOrg.collaborators }),
     collaborators: () => tree.rootOrg.collaborators,
     addressesInUse: () => addresses,

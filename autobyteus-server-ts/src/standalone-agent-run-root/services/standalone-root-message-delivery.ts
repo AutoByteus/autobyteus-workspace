@@ -67,7 +67,7 @@ export class StandaloneRootMessageDelivery {
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.resolveMentions(input.mentions)
+      ? this.options.collaborators.resolveMentions(input.focusedAgentRunId, input.mentions)
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in Agent root '${this.options.hostRunId}'.` });
   }
 
@@ -100,7 +100,7 @@ export class StandaloneRootMessageDelivery {
   /** `list_available_agents` (DS-001): read-only, never creates the package (AR-005). */
   listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> {
     this.options.authorizeIdentity(sender);
-    return this.options.collaborators.listAvailable();
+    return this.options.collaborators.listAvailable(sender.agentRunId);
   }
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in. */
