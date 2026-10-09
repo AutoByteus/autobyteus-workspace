@@ -50,6 +50,17 @@
 - Docs impact: Not applicable (docs were updated)
 - Rationale: —
 
+## Re-check After Resume (DR-003, 2026-10-09)
+
+- Integrated base: `origin/personal@033a6d780` (merge `1f34735ed`).
+- Requirements and design are unchanged (SR-005 withdrew the change request), so the DR-001 docs still describe the final behavior.
+- I re-read the docs after the merge:
+  - `workspace_layout.md`: "Collapsed strip: pages and Workspaces" section intact.
+  - `chat.md`: the base added mention text elsewhere. The Highlight paragraph and the `chatRouteRunId` note are intact.
+  - `TESTING.md`: the range is still `PMU-001..PMU-019`, the PMU-018/019 bullets are intact, and the base added no new PMU IDs.
+  - `projects.md`: the PMU-018–019 pointer is intact.
+- Result: no further docs change needed.
+
 ## Delivery Continuation
 
 - Result: `Pass`

@@ -10,8 +10,11 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: halted on 2026-10-09 by the Solution Designer. The user rejected the Workspaces icon design (Requirement Gap). Delivery restarts on the revised package.
+- Current delivery revision ID: `DR-003`
+- Notes:
+  - DR-002: halted on 2026-10-09 by the Solution Designer, after the user objected to the Workspaces icon design.
+  - DR-003: resumed the same day. The user withdrew the request and kept the tree option (SR-005). Requirements and design are unchanged.
+  - Re-integrated and rechecked. Awaiting user verification.
 
 ## Initial Delivery Integration Refresh
 
@@ -33,7 +36,24 @@
 - Post-integration verification result: `Passed`
 - No-rerun rationale: N/A (rerun performed)
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (as of `ebf68c4af`)
+- Handoff state current with latest tracked remote base: superseded by the re-integration below
+- Blocker: None
+
+### Re-integration after resume (DR-003, 2026-10-09)
+
+- Latest tracked remote base reference checked: `origin/personal@033a6d780` (fetched 2026-10-09)
+- Base advanced since previous refresh: `Yes` (78 commits beyond `ebf68c4af`, through v1.4.99-beta.8)
+- Local checkpoint commit result: `Completed`. `a4a98b712` holds the Solution Designer's SR-005 edits to `investigation-notes.md` and `solution-revision-record.md`, plus `api-e2e-evidence/manual-electron/` (secret scan clean).
+- Integration method: `Merge` (`1f34735ed`)
+- Integration result: `Completed`, no conflicts.
+  - The base does not touch this ticket's source, specs or probes.
+  - `autobyteus-web/docs/chat.md` and `TESTING.md` merged automatically. This ticket's Highlight paragraph and PMU-018/019 bullets are intact, and the base added no new PMU IDs.
+- Post-integration executable checks rerun: `Yes`
+  - `pnpm install --frozen-lockfile`, then `pnpm -C autobyteus-server-ts prebuild && build`: EXIT=0
+  - `pnpm -C autobyteus-web test:nuxt --run`: 592 passed / 2 skipped files, 4041 passed / 3 skipped tests, EXIT=0 (`delivery-evidence/dr003-web-unit-full.log`)
+  - `pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir delivery-evidence/dr003-pmu-full`: PMU-001..PMU-019 all pass, cleanup clean (`delivery-evidence/dr003-pmu-full/evidence.json`)
+- Post-integration verification result: `Passed`
+- Handoff state current with latest tracked remote base: `Yes` (as of `033a6d780`)
 - Blocker: None
 
 ## User Verification
@@ -120,6 +140,7 @@
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
+- Status: resolved (DR-003). The user withdrew the change request on 2026-10-09 and kept the tree option (SR-005). The entry below is kept as history.
 - Classification: `Requirement Gap` (classified by the Solution Designer)
 - Recommended recipient: `/software_engineering_team/solution_designer` (already owning it)
 - Why final handoff could not complete: after trying the build on 2026-10-09, the user rejected the separate Workspaces tree icon. They want the same control to fold and unfold the left panel. See `investigation-notes.md`, "User Change Request (2026-10-09)".
@@ -134,7 +155,7 @@
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No`
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: Requirement Gap (DR-002). The user rejected the current design, and finalization is halted until a revised, re-validated package returns.
+- Unresolved blocker: None. The DR-002 Requirement Gap was withdrawn by the user (SR-005). Awaiting user verification.
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
 - Terminal message/reference: —
