@@ -3,16 +3,16 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket `delegated-copy-member-contact-delegator`: delegated copy members can contact the standalone Agent-run host.
-- Classification is preserved: `task_size=Medium`, `architectural_risk=High`. Route: reviewed (ARCH-REV-001, CRR-001, API-REV-001, CRR-002).
-- Release, publication and deployment: to be decided by the user at finalization. Release notes are prepared (`release-notes.md`). Recent tickets shipped as `1.4.99-beta.N` workspace releases.
+- Classification is preserved: `task_size=Medium`, `architectural_risk=High`. Route: reviewed (ARCH-REV-001, CRR-001, API-REV-001, CRR-002, API-REV-002, CRR-003).
+- Release: the user asked for a new beta. Published as `v1.4.99-beta.7`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/in-progress/delegated-copy-member-contact-delegator/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/done/delegated-copy-member-contact-delegator/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/in-progress/delegated-copy-member-contact-delegator/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`. The package was updated to CRR-003 and API-REV-002. `origin/personal` is still `742a0df97`, so the branch is current and no rerun was needed.
-- Notes: waiting for the user's AC-003 desktop verification.
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/done/delegated-copy-member-contact-delegator/delivery-revision-record.md`
+- Current delivery revision ID: `DR-003` (finalization and release). DR-002 updated the package to CRR-003 and API-REV-002 while `origin/personal` stayed at `742a0df97`.
+- Notes: the user verified on 2026-10-09.
   - API-REV-002 ran during delivery at the user's request (Pass, 96.7%). It was a packaged desktop journey with a real model, built after the integration merge.
   - It is product evidence, not user verification.
 
@@ -47,88 +47,118 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/in-progress/delegated-copy-member-contact-delegator/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/done/delegated-copy-member-contact-delegator/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/agent_communication.md`, `autobyteus-server-ts/docs/modules/standalone_agent_run_root.md`, `autobyteus-web/docs/chat.md`, `TESTING.md`
 - No-impact rationale: N/A
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/delegated-copy-member-contact-delegator`: `No` (after verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/delegated-copy-member-contact-delegator`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/done/delegated-copy-member-contact-delegator` (on `personal`)
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision at finalization.
+- Helper: `scripts/desktop-release.sh beta --branch release-tmp-dcm --no-push`.
+  - It ran in a temporary clean worktree (`autobyteus-worktrees/release-tmp-dcm`, at merge `0263fff37`). The ticket worktree was not clean then: its untracked SDK `dist/` output and another actor's in-progress `product-video/` folder were there, and neither was disturbed.
+  - The release commit and tag were pushed only after confirming that `origin/personal` was still `0263fff37`.
+- **`v1.4.99-beta.7`**: release commit `2a88509d3` on top of merge `0263fff37`. It changes `autobyteus-web/package.json` from 1.4.99-beta.6 to 1.4.99-beta.7.
+- Pushes: `0263fff37..2a88509d3 HEAD -> personal`, and the new tag `v1.4.99-beta.7` (`delivery-evidence/beta7-release.log`).
+- Content since beta.6: this ticket only.
 
 ## Repository Finalization
 
-- Bootstrap context source: the code_reviewer handoff, which records the base and finalization target `origin/personal` and the branch `codex/delegated-copy-member-contact-delegator`
+- Bootstrap context source: the code_reviewer handoff and the bootstrap record (base and finalization target `origin/personal`).
 - Ticket branch: `codex/delegated-copy-member-contact-delegator`
-- Ticket branch commit result: pending verification
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`
+  - `24baaf7c5`: IR-001 implementation
+  - `73e871592`: durable E2E and ticket artifacts (the delivery checkpoint)
+  - `01ab8b7de`: merge of `origin/personal` @ `742a0df97`
+  - `54bec2c4f`: docs sync
+  - `35c209acf`: archive to `tickets/done`, with API-REV-002, CRR-003 and the delivery artifacts
+- Evidence video: before the push, the local unpushed commits were rebuilt so that only a trimmed recording enters history, as the user asked.
+  - The 348 s `desktop-journey.mp4` (9.4 MB) and the 87 s `desktop-journey-4x.mp4` (4.1 MB) were replaced by one 42 s, 1512 px `desktop-journey.mp4` (1.0 MB).
+  - The cut keeps every moving part. Each near-frozen stretch keeps 0.5 s from its start and 0.8 s from its end.
+- Ticket branch push result: `Completed` (`[new branch] codex/delegated-copy-member-contact-delegator`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: —
-- Delivery-owned edits protected before re-integration: —
-- Re-integration before final merge result: —
-- Target branch update result: —
-- Merge into target result: —
-- Push target branch result: —
-- Repository finalization status: `Blocked`, waiting for user verification (not a defect)
-- Blocker: user verification pending
+- Target advanced after verification / acceptance: `No` (`742a0df97` at merge time)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The ticket worktree was detached at the fetched `origin/personal`. The main checkout was not touched.
+- Merge into target result: `Completed`. A `--no-ff` merge, `0263fff37`.
+  - `check_licensing.py` and `check_repository_artifact_hygiene.py` both exit 0 (`delivery-evidence/finalization-hygiene.log`).
+  - The longest new path is 137 characters, and no path has Windows-invalid characters.
+- Push target branch result: `Completed` (`742a0df97..0263fff37 HEAD -> personal`)
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user
-- Method: `Release Script` if requested (the workspace release-version flow used by earlier tickets)
-- Method reference / command: —
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
+- Applicable: `Yes` (the user asked for a new beta)
+- Method: `Release Script` (tag-triggered GitHub workflows)
+- Method reference / command: `scripts/desktop-release.sh beta` (see above)
+- Workflows: all 4 succeeded on attempt 1 (`delivery-evidence/workflows-beta7.json`):
+  - Desktop `37895998782`
+  - iOS `37895998754`
+  - Server Docker `37895998745`
+  - Android `37895998724`
+- GitHub release `v1.4.99-beta.7` (`delivery-evidence/github-release-beta7.json`): a **pre-release**, not a draft, published 2026-10-09T06:58:57Z, with 17 assets.
+- Updater metadata: `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` all report `version: 1.4.99-beta.7` (`delivery-evidence/updater-metadata/`). GitHub `releases/latest` stays on stable `v1.4.98`, so only beta-channel installs are offered the beta.
+- Docker `autobyteus/autobyteus-server` (`delivery-evidence/docker-tags.txt`):
+  - `:1.4.99-beta.7` and `:beta` share digest `sha256:6f162692…ddce` (amd64, arm64).
+  - `:latest` is unchanged at `sha256:8aa17b23…5187` (1.4.98).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Beta mode publishes generated notes. The archived `release-notes.md` remains the ticket's user-facing summary for the next stable release.
+- Blocker: none
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator`
-- Worktree cleanup result: pending finalization
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed` (after this record was pushed). By then another actor's `product-video/` folder was gone, and only the regenerable SDK `dist/` output remained untracked.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Removed `codex/delegated-copy-member-contact-delegator` and the temporary `release-tmp-dcm` (with its worktree).
+- Remote branch cleanup result: `Not required`. The repo convention keeps remote `codex/*` branches.
 - Blocker: none
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/tickets/in-progress/delegated-copy-member-contact-delegator/release-notes.md`
-- Archived release notes artifact used for release/publication: —
+- Release notes artifact created before verification: `tickets/done/delegated-copy-member-contact-delegator/release-notes.md`
+- Archived release notes artifact used for release/publication: not used (beta generated notes)
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- None beyond an optional release, which is decided at finalization.
+- The tag-triggered workflows published the desktop, Android, iOS and Docker artifacts (see above). No other deployment is needed.
 
 ## Environment Or Persisted-Data Transition Notes
 
 - Approved persisted-data decision: `Directly Usable — No Migration` (design-spec)
 - Delivery action required: `None`
-- Result and evidence: contract tests parse notes from earlier releases (`dr1-contracts.log`, 16/16).
+- Result and evidence: contract tests parse notes from earlier releases (`delivery-evidence/dr1-contracts.log`, 16/16).
 
 ## Verification Checks
 
-- See "Initial Delivery Integration Refresh" above, and the handoff summary's "How To Verify (AC-003)".
+- Post-integration checks: see "Initial Delivery Integration Refresh" (`delivery-evidence/dr1-*.log`).
+- Product: the API-REV-002 packaged desktop journey and the user's verification.
+- Release: see "Release / Publication / Deployment".
 
 ## Rollback Criteria
 
-- Roll back if a Team or Org `@` menu or `list_available_agents` result changes (AC-007).
-- Roll back if a host is ever offered in its own composer.
-- Roll back if a copy member's message to the host creates a second host or misses the existing run.
-- Rollback method: revert the merge commit on `personal`. No data migration needs undoing.
+- Roll back if any of these happens:
+  - a Team or Org `@` menu or `list_available_agents` result changes (AC-007);
+  - a host is offered in its own composer;
+  - a copy member's message to the host creates a second host or misses the existing run.
+- How: publish a fixed beta through the helper, or revert merge `0263fff37` on `personal`. No persisted data changed, so a revert needs no data action.
+- Do not delete published betas, because beta-channel installs may already have taken them.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending)
-- Applicable safe cleanup complete or not required: `No` (pending)
-- Unresolved blocker: user verification pending
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Explicit user testing/verification complete: `Yes` (2026-10-09, "the task is done. lets finalize and release a new beta")
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes`. `v1.4.99-beta.7` is published, and all 4 workflows succeeded.
+- Applicable safe cleanup complete or not required: `Yes` (performed right after this record was pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (after cleanup)
+- Terminal message/reference: delivery-engineer `send_message_to` → the `get_handoff_rules` recipient

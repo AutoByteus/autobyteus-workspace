@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-002 test-code review Pass; cumulative reviewed package from `code_reviewer` | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr1-*.log` |
 | DR-002 | CRR-003 addendum (test-code recheck after API-REV-002) from `code_reviewer` | DR-001: waiting for user verification | Package updated to CRR-003 / API-REV-002; base still current; still waiting for user verification | `handoff-summary.md`, `release-deployment-report.md`, this record |
+| DR-003 | User verification: "the task is done. lets finalize and release a new beta" | DR-002: waiting for user verification | Finalized on `personal` (merge `0263fff37`), released `v1.4.99-beta.7` (`2a88509d3`), cleanup done | `release-deployment-report.md`, `handoff-summary.md`, this record, `delivery-evidence/` |
 
 ## Revision Entries
 
@@ -68,3 +69,25 @@
 - Remaining blockers, rollback concerns, or untested scope: as in DR-001. Separate-ticket candidates:
   - When the host replies to a copy member at that member's address, it gets `COLLABORATION_TARGET_NOT_FOUND`. Delivery by run ID works.
   - The `@` menu "delegates the work" copy for the host entry.
+
+### DR-003 — Finalization and `v1.4.99-beta.7` release
+
+- Delivery round and trigger: on 2026-10-09 the user wrote "the task is done. lets finalize and release a new beta".
+- Triggering upstream report, verification, or evidence: that user verification; the DR-002 package (CRR-003, API-REV-002).
+- Prior authoritative result: DR-002, waiting for user verification.
+- Current authoritative result: finalized and released.
+  - The ticket was archived to `tickets/done/`.
+  - At the user's request, the evidence video was trimmed to 42 s (1.0 MB) before anything was pushed. The unpushed commits were rebuilt so the 348 s and 4x recordings never enter history.
+  - Branch pushed. `--no-ff` merge `0263fff37` into `personal` (hygiene and licensing pass), then pushed.
+  - Release commit `2a88509d3` and tag `v1.4.99-beta.7` pushed.
+  - All 4 workflows succeeded. The pre-release has 17 assets, the updater metadata reports beta.7, and Docker `:beta` points to beta.7 while `:latest` is unchanged.
+- Docs sync report: unchanged (DR-001).
+- Handoff summary: user verification recorded.
+- Release/publication/deployment report: finalized (`release-deployment-report.md`).
+- Integration and post-integration verification: the target did not move after verification (`742a0df97`), so no re-integration was needed.
+- User verification/finalization state: verified, finalized and released.
+- Terminal return to `/solution_designer`: `Sent` after cleanup (see `release-deployment-report.md` → Final Status).
+- Terminal return message/reference: delivery-engineer `send_message_to` → the `get_handoff_rules` recipient.
+- Why this delivery revision was recorded: it records finalization and release.
+- Next recipient/action: Solution Designer verifies the terminal package.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. The DR-001 residual risks and the two separate-ticket candidates stand.
