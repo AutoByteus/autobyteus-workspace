@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer pass (ARCH-REV-003, round 3) → implementation | N/A | `Initial Baseline` | SR-003, SR-006, ARCH-REV-003 | Implemented S1–S8; ready for code review |
 | IR-002 | code_reviewer failure-origin review (CRR-002, round 2) of API/E2E F-001 (API-REV-001) | CR-001 (F-001, EXC-E2E-006) | `Local Fix` | SR-006, ARCH-REV-003, CRR-002, API-REV-001 | A copy whose start failed is refused as never started; back to code review |
+| IR-003 | delivery_engineer post-integration Local Fix (DR-001) | DR-001 unit + DCM-005 failures | `Local Fix` | SR-006, CRR-003, API-REV-002, DR-001 | Base-added tests aligned with the explicit contract; back to code review |
 
 ## Revision Entries
 
@@ -57,3 +58,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: src typecheck clean; no new test type errors in my files; unit suites for agent-collaboration, projects, Team/Org/standalone roots and agent-tools pass (137 files); the API/E2E owner's `EXC-E2E-006` (scripted AGY, Team root) passes locally (implementation check, not API/E2E sign-off).
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (targeted review of CR-001), then API/E2E rerun.
 - Remaining limitations or risks: while the failed copy's Task (F) is still open, the copy is not closed work of this root and the existing port cannot show its host root, so it gets the generic refusal; once F is DONE or CANCELLED (needed before any reassignment anyway) the never-started reason applies. Telling that case apart would need a new port contract (host root of an open copy); not done (Design Impact if wanted).
+
+### IR-003 — Base-added tests aligned with the explicit delegate_task contract (DR-001)
+
+- Triggering role, report path, and round: `delivery_engineer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/delivery-revision-record.md` (DR-001), after merging `origin/personal` @ 927796780 as 97b767186
+- Triggering finding IDs: DR-001 failures: `standalone-agent-run-root.test.ts` "a delegated copy member sees the host…" (`root.delegateTask is not a function`); `delegated-copy-member-contact-host.e2e.test.ts` DCM-005 (`target_agent_run_id` expected null)
+- Classification: `Local Fix` (test code only; no product, requirement or design change)
+- Prior authoritative result: IR-002 (CRR-003 Pass; API-REV-002)
+- Current authoritative result: the two tests added by the base ticket `delegated-copy-member-contact-delegator` follow the DEC-008 contract: `delegateToNewCopy` with the internal outcome (`{delegated: true, copy: {kind: "team"}}` / `{delegated: false, message}`), and DCM-005 asserts `delegated: false`, a message and no copy IDs.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: DR-001
+- Why this baseline or implementation revision is recorded: implementation-owned Local Fix requested by delivery after base integration.
+- Approved behavior or requirement IDs affected: REQ-001 / DEC-008 (test assertions only)
+- Implementation delta: commit 17a5f2125 (2 test files) on top of merge 97b767186. A sweep of the base delta (`git diff 742a0df97 927796780 -- autobyteus-server-ts/tests autobyteus-server-ts/src`) found no other old-shape `delegate_task` use (remaining `target_agent_run_id` hits are `send_message_to` results and command inputs, which are agent run IDs).
+- Changed files or areas: `autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts`, `autobyteus-server-ts/tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts`
+- Local validation and result: src typecheck 0 errors; `standalone-agent-run-root.test.ts` passes; every unit file in the base delta passes (8 files); `delegated-copy-member-contact-host.e2e.test.ts` (scripted AGY) passes; no new test type errors beyond the existing `ws` typings warning in new E2E files.
+- Next recipient or routing: per handoff rules (Large/High Local Fix) → `/software_engineering_team/code_reviewer`; delivery then reruns the post-integration checks.
+- Remaining limitations or risks: the live-gated base suites `agent-initiated-collaborators.e2e.test.ts` and `standalone-agent-collaborator-mention.e2e.test.ts` were swept (no old delegate_task shapes added) but not run.

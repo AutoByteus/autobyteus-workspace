@@ -15,14 +15,14 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (latest: IR-002, Local Fix for CR-001)
+- Implementation cycle: `Rework` (latest: IR-003, test-only Local Fix after base integration, DR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-003` (requirements), `SR-006` (design)
 - Related architecture-review revision IDs: `ARCH-REV-003`
 - Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (failure-origin, CR-001 Local Fix)
 - Related API/E2E revision IDs: `API-REV-001` (F-001)
-- Related delivery revision IDs: `N/A`
+- Related delivery revision IDs: `DR-001`
 - Triggering finding IDs: CR-001 (F-001 / EXC-E2E-006); see IR-002
 
 Repositories and commits:
@@ -33,6 +33,7 @@ Repositories and commits:
   - `24056ffdd` baseline timing fix (TESTING.md rule 9): explicit timeouts for two load-sensitive tests that also run at ~4 s on the base (see Known Risks)
   - `1aa02f256` integration/E2E assertions aligned with the explicit result and new texts
   - `88e59f500` IR-002 / CR-001: a copy whose start failed is refused as never started
+  - `17a5f2125` IR-003 / DR-001: base-added delegated-copy-member tests aligned with the explicit contract (on top of delivery's merge 97b767186)
   - ticket artifact commits: these ticket artifacts (`implementation-handoff.md`, `implementation-revision-record.md`) with the solution package
 - Agents repo (cross-repo S7): worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-agents-delegate-to-existing-copy`, branch `codex/delegate-to-existing-copy` from `origin/main` `fd2b99e`, commit `0bd84e0` (PTM skill + board template). Not pushed; it must ship with the server change. The main checkout `~/autobyteus_org/autobyteus-agents` has unrelated uncommitted user changes and was not touched.
 
