@@ -7,6 +7,12 @@
   1. Finalize into `origin/personal`.
   2. **No release.** The workspace version stays `1.4.99-beta.8`.
   3. OBS-002 is left with Solution Designer as a separate Project Task candidate.
+- Finalized:
+  - archived as `3685290fa`;
+  - the ticket branch is pushed;
+  - merged `--no-ff` into `personal` as `3913a75d6` and pushed (`e350a194b..3913a75d6`);
+  - no release (see `release-deployment-report.md`).
+- The "State For User Verification" below is the pre-verification snapshot.
 
 ## State For User Verification
 

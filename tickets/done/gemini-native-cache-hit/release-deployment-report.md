@@ -3,17 +3,17 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `gemini-native-cache-hit`. `task_size=Small`, `architectural_risk=Low`, direct route (architecture, code and test-code review `Not Applicable`).
-- Repository finalization: merge the ticket branch into `origin/personal` after user verification.
-- Release: decided at user verification. The candidate is `v1.4.99-beta.9` through `scripts/desktop-release.sh beta`.
-- Deployment: none beyond the desktop release path.
+- Repository finalization: the ticket branch is merged into `origin/personal`.
+- Release: **none**, at the user's direction ("no need to release new version"). The workspace version stays `1.4.99-beta.8`.
+- Deployment: none.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/gemini-native-cache-hit/handoff-summary.md` (on `origin/personal`)
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: written against the integrated state `78df53634`. DR-002 adds API-REV-002, the live AC-003 evidence (`54eab3d8f`, evidence only). `origin/personal` was re-checked at `e350a194b`, 0 behind.
+- Delivery revision record: `tickets/done/gemini-native-cache-hit/delivery-revision-record.md`
+- Current delivery revision ID: `DR-003`
+- Notes: written against the integrated state `78df53634`. DR-002 added API-REV-002, the live AC-003 evidence (`54eab3d8f`). DR-003 records verification, finalization and cleanup.
 
 ## Initial Delivery Integration Refresh
 
@@ -39,72 +39,81 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: —
-- Renewed verification required after later re-integration: —
-- Renewed verification received: —
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: the user, 2026-10-09: "finalize, no need to release new version. i just tested. it works". This was preceded by API-REV-002, the live AC-003 check (`live-check/`).
+- Renewed verification required after later re-integration: `No`. The target had not advanced (`e350a194b`).
+- Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: —
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/gemini-native-cache-hit/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/token_usage.md`, `autobyteus-ts/docs/provider_model_catalogs.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/gemini-native-cache-hit`: `No` (after verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/gemini-native-cache-hit`: `Yes` (`3685290fa`)
+- Archived ticket path: `tickets/done/gemini-native-cache-hit/`
 
 ## Version / Tag / Release Commit
 
-Pending the user's release decision.
+None. There was no version bump, tag or release commit, at the user's direction.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (base and finalization target `origin/personal`)
 - Ticket branch: `codex/gemini-native-cache-hit`
-- Ticket branch commit result: pending
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`. Commits on top of the bootstrap base:
+  - `dd4b3de4a`: fix;
+  - `871f01cb3`: baseline test fix;
+  - `88e5c6002`: E2E coverage;
+  - `8105060a1`: API/E2E artifacts;
+  - `02f2759ed` and `78df53634`: base merges;
+  - `54eab3d8f`: live AC-003 evidence;
+  - `3685290fa`: archive, docs sync and delivery artifacts.
+- Ticket branch push result: `Completed` (`[new branch] codex/gemini-native-cache-hit`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: —
-- Delivery-owned edits protected before re-integration: —
-- Re-integration before final merge result: —
-- Target branch update result: —
-- Merge into target result: —
-- Push target branch result: —
-- Repository finalization status: `Blocked`, waiting for user verification
-- Blocker (if applicable): user verification hold
+- Target advanced after verification / acceptance: `No` (`e350a194b`, re-fetched immediately before the merge and again before the push)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The ticket worktree was detached at the fetched `origin/personal`, and the main checkout was not touched.
+- Merge into target result: `Completed`, a `--no-ff` merge, `3913a75d6`.
+  - `python3 scripts/check_licensing.py` and `python3 scripts/check_repository_artifact_hygiene.py` both exit 0 (`delivery-logs/finalization-hygiene.log`).
+  - The longest new path is 103 characters.
+- Push target branch result: `Completed` (`e350a194b..3913a75d6 HEAD -> personal`)
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
-- Applicable: decided at verification
-- Method: `Release Script` (`scripts/desktop-release.sh beta`) if a release is requested
-- Method reference / command: `scripts/desktop-release.sh beta`
-- Release/publication/deployment result: not started
-- Release notes handoff result: not started
-- Blocker (if applicable): user decision
+- Applicable: `No`. The user said "no need to release new version".
+- Method: —
+- Method reference / command: —
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required`. The archived `release-notes.md` stays as the ticket's user-facing summary for the next release.
+- Blocker (if applicable): None
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
-- Blocker (if applicable): —
+- Worktree cleanup result: `Completed` (after this record was pushed). Only regenerable SDK `dist/` output remained untracked.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Removed `codex/gemini-native-cache-hit`.
+- Remote branch cleanup result: `Not required`. The repo convention keeps remote `codex/*` branches.
+- Blocker (if applicable): None
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/release-notes.md`
-- Archived release notes artifact used for release/publication: —
-- Release notes status: `Updated`
+- Release notes artifact created before verification / acceptance: `tickets/done/gemini-native-cache-hit/release-notes.md`
+- Archived release notes artifact used for release/publication: not used (no release)
+- Release notes status: `Not required` for publication; kept for the next release
 
 ## Deployment Steps
 
-None beyond the release script, if a release is chosen.
+None.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -114,19 +123,22 @@ None beyond the release script, if a release is chosen.
 
 ## Verification Checks
 
-See Initial Delivery Integration Refresh. The user check (AC-003) is in `handoff-summary.md` › How To Verify.
+- The integration checks are listed above.
+- Live AC-003 is API-REV-002 (`live-check/ac-003-live-receipt.json`). Turn 1 showed gross 92,090 = input 67,632 + cache read 24,458, hit 26.6%.
+- The user tested and accepted on 2026-10-09.
+- The finalization hygiene checks pass on `3913a75d6`.
 
 ## Rollback Criteria
 
-Revert the merge on `personal`. There is no persisted-data change, so a rollback needs no data step. AGY rows recorded after the fix would keep the corrected values.
+Revert merge `3913a75d6` on `personal` (`git revert -m 1 3913a75d6`). There is no persisted-data change, so a rollback needs no data step. AGY rows recorded after the fix would keep the corrected values.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user verification hold
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: `Yes` (after this record was pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record was pushed (see `delivery-revision-record.md` DR-003)
+- Terminal message/reference: `send_message_to /software_engineering_team/solution_designer`, Delivery Completed

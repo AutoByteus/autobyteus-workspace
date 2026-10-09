@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass API-REV-001 (direct low-risk route) | N/A | Integrated, checked and docs-synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-logs/`, `token_usage.md`, `provider_model_catalogs.md` |
 | DR-002 | API/E2E addendum API-REV-002 (live AC-003 check, commit `54eab3d8f`) | DR-001: waiting for verification, AC-003 unproven live | Still waiting for user verification; AC-003 proven live | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-003 | User verification and finalization (no release) | DR-002: waiting for user verification | Delivery Completed: archived, merged to `personal` (`3913a75d6`), no release, cleanup | `handoff-summary.md`, `release-deployment-report.md`, `delivery-logs/finalization-hygiene.log` |
 
 ## Revision Entries
 
@@ -68,3 +69,29 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - User verification hold.
   - AGY usage format drift.
   - Historical rows are not rewritten (accepted).
+
+### DR-003 — Verified and finalized to `personal`; no release
+
+- Delivery round and trigger: round 3, on the user's verification: "finalize, no need to release new version. i just tested. it works" (2026-10-09).
+- Triggering upstream report, verification, or evidence: the explicit user verification, together with API-REV-002 (live AC-003).
+- Prior authoritative result: DR-002 (waiting for user verification).
+- Current authoritative result:
+  - The ticket was archived to `tickets/done/gemini-native-cache-hit` (`3685290fa`), together with the docs sync edits, the delivery artifacts and Solution Designer's OBS-002 note.
+  - The ticket branch was pushed.
+  - It was merged `--no-ff` into `personal` as `3913a75d6`. The target had not advanced (`e350a194b`).
+  - The licensing and artifact-hygiene checks pass.
+  - Pushed `e350a194b..3913a75d6`.
+- Docs sync report: `docs-sync-report.md` (unchanged)
+- Handoff summary: `handoff-summary.md` (user verification and decisions recorded)
+- Release/publication/deployment report: `release-deployment-report.md`. Finalization is `Completed` and release is `Not required`.
+- Integration and post-integration verification: no re-integration was needed. The target did not move between the handoff and the merge.
+- User verification/finalization state: verified; finalization complete; no release.
+- Terminal return to `/solution_designer`: `Sent` after this record was pushed to `personal`.
+- Terminal return message/reference: `send_message_to /software_engineering_team/solution_designer`, Delivery Completed.
+- Why this baseline or delivery revision was recorded: completion of the user-verification, finalization and cleanup gates.
+- Next recipient/action: Solution Designer verifies the terminal package.
+- Remaining blockers, rollback concerns, or untested scope:
+  - No blockers.
+  - Rollback is `git revert -m 1 3913a75d6`, with no data step.
+  - Residual risks: AGY usage-format drift, and historical rows not rewritten (accepted).
+  - OBS-002 is a separate candidate.
