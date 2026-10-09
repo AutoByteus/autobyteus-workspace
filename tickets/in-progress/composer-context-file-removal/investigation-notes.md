@@ -159,3 +159,9 @@ Full UI-click reproduction across every run kind was not performed in the deskto
 
 - Map SCN-001..SCN-004. Verify route parity (GET/DELETE) for every draft owner kind with a parity test so a future owner kind cannot ship without DELETE.
 - Decide error ownership (per composer instance vs global store) and DEC-001 outcome.
+
+## Out-Of-Scope Baseline Note (2026-10-09)
+
+- Reported by `/software_engineering_team/implementation_engineer`: `autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts` — two content-cadence cases fail on `origin/personal` @ 46e94fdea independent of this ticket (log `/tmp/ccfr-server-int.log`).
+- Triage: known defect **PB-001**, already documented in commit `c29d502d6` (2026-10-08) and accepted by the user as a documented exception in `tickets/done/base-test-suite-green/release-deployment-report.md` (lines 25, 32, 107; "recommended as a separate ticket"). Cause per that record: `AgentRun` publishes `AGENT_INPUT_STATE` after every canonical batch and the content cadence scheduler flushes pending content before it. The test capture filters `AGENT_INPUT_STATE` out of the trace, which is why no flush-triggering frame appears in it.
+- Disposition: not in this ticket's scope; no Project Task found for PB-001 in the project's tasks (grep of task.json). Accepted exception for this ticket's validation.
