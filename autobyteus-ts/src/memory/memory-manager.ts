@@ -1,8 +1,9 @@
 import type { CompactionRecoveryBlock, CompactionRetryRequest, CompactionExecutionSite } from './compaction/compaction-recovery.js';
 import { LLMUserMessage } from '../llm/user-message.js';
-import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../llm/utils/messages.js';
+import { Message, MessageRole, ToolCallPayload, ToolResultPayload, type MessageMetadata } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
-import { ANTHROPIC_ASSISTANT_TURN_KEY, assertAnthropicTurnMatchesToolCalls, parseAnthropicAssistantTurn, withoutAnthropicThinkingInMessage, type AnthropicAssistantTurn } from '../llm/utils/provider-native-assistant-turn.js';
+import { nativeTurnMetadata } from '../llm/provider-native/provider-native-history.js';
+import { RetainedReasoningPrefixBinding } from './retained-reasoning-prefix-binding.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
 
@@ -69,7 +70,7 @@ export type {
   LlmRequestRecoverySnapshot,
 } from './llm-request-recovery.js';
 
-export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null; nativeAssistantTurn?: AnthropicAssistantTurn | null };
+export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
 export type ToolResultIngestionOptions = {
   source?: string;
   appendToWorkingContext?: boolean;
@@ -98,6 +99,7 @@ export class MemoryManager {
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
   private readonly compactionCoordinator: MemoryManagerCompactionCoordinator;
   private readonly llmRequestRecovery: LlmRequestRecoveryBoundary;
+  private readonly retainedReasoningBinding: RetainedReasoningPrefixBinding;
   private seqByTurn = new Map<string, number>();
   private readonly toolLifecycleState: ToolTraceLifecycleState;
   private readonly automaticCompactionConfiguration: MemoryCompactionConfiguration;
@@ -130,6 +132,10 @@ export class MemoryManager {
       setCompactionState: (state) => this.compactionCoordinator.restoreState(state),
       persistWorkingContextSnapshot: () => this.persistWorkingContextSnapshot(),
       appendRawTrace: (input) => this.appendRawTrace(input),
+    });
+    this.retainedReasoningBinding = new RetainedReasoningPrefixBinding({
+      getMessages: () => this.workingContextController.getMessages(),
+      replace: (workingContext) => this.workingContextController.replace(workingContext),
     });
   }
 
@@ -259,7 +265,7 @@ export class MemoryManager {
 
   private persistNormalizedToolIntents(
     registrations: NativeToolCallRegistration[], options?: ToolIntentIngestionOptions,
-    responseRawTraceIds: readonly string[] = [],
+    responseRawTraceIds: readonly string[] = [], nativeMetadata: MessageMetadata | null = null,
   ): void {
     const seen = new Set<string>();
     const accepted = registrations.filter((registration) => {
@@ -282,7 +288,7 @@ export class MemoryManager {
           content: options?.assistantContent ?? null,
           reasoning_content: options?.assistantReasoning ?? null,
           tool_payload: new ToolCallPayload(accepted.map(({ toolCall }) => toolCall)),
-          metadata: options?.nativeAssistantTurn ? { [ANTHROPIC_ASSISTANT_TURN_KEY]: parseAnthropicAssistantTurn(options.nativeAssistantTurn) } : null,
+          metadata: nativeMetadata,
         }),
         {
           turnId: accepted[0]!.identity.turnId,
@@ -298,15 +304,15 @@ export class MemoryManager {
       return;
     }
     const registrations = normalizeNativeToolCallBatch(toolInvocations, turnId);
-    if (response.providerNativeAssistantTurn) assertAnthropicTurnMatchesToolCalls(response.providerNativeAssistantTurn, registrations.map(({ toolCall }) => toolCall));
+    const nativeMetadata = response.providerNativeAssistantTurn // validated before anything is written
+      ? nativeTurnMetadata(response.providerNativeAssistantTurn, registrations.map(({ toolCall }) => toolCall)) : null;
     const responseTraces = this.ingestAssistantResponse(
       response, turnId, sourceEvent, { appendToWorkingContext: false },
     );
     this.persistNormalizedToolIntents(registrations, {
       assistantContent: response.content ?? null,
       assistantReasoning: response.reasoning ?? null,
-      nativeAssistantTurn: response.providerNativeAssistantTurn,
-    }, responseTraces.map((trace) => trace.id));
+    }, responseTraces.map((trace) => trace.id), nativeMetadata);
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {
@@ -502,13 +508,8 @@ export class MemoryManager {
 
   getWorkingContextMessages(): Message[] { return this.workingContextController.getMessages(); }
 
-  resetAnthropicSignedHistory(): void {
-    const current = this.getWorkingContextMessages();
-    const reset = current.map(withoutAnthropicThinkingInMessage);
-    if (reset.some((message, index) => JSON.stringify(message.metadata) !== JSON.stringify(current[index]!.metadata))) {
-      this.replaceWorkingContext(new WorkingContext(reset));
-    }
-  }
+  /** Removes all prefix-bound reasoning once if `digest` (leading system + tools) differs from the previous request's; see `RetainedReasoningPrefixBinding`. */
+  bindRetainedReasoningToRequestPrefix(digest: string): boolean { return this.retainedReasoningBinding.bind(digest); }
 
   getWorkingContext(): WorkingContext {
     return this.workingContextController.getContext();

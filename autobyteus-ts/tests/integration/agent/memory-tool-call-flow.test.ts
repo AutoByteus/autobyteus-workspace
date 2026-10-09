@@ -5,7 +5,6 @@ import path from 'node:path';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
 import { LlmStreamingResponseHandler } from '../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
-import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
@@ -44,17 +43,18 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
       });
       memoryManager.ingestUserMessage(userMessage, turnId, 'LLMUserMessageReadyEvent', []);
 
-      const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
+      const assembler = new LLMRequestAssembler(memoryManager);
       const request = await assembler.prepareRequest(
         userMessage,
-        { turnId, requestId: `${turnId}:llm:1` },
+        { turnId, requestId: `${turnId}:llm:1` } as any,
         llm.config.systemMessage,
+        [toolSchema],
       );
 
       const handler = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
       try {
-        for await (const chunk of llm.streamMessages(request.outboundMessages, request.renderedPayload, {
-          tools: [toolSchema],
+        for await (const chunk of llm.streamMessages(request.outboundMessages, {
+          tools: request.tools,
           tool_choice: 'required'
         })) {
           handler.feed(chunk);
@@ -88,13 +88,14 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
       const followup = new LLMUserMessage({ content: "All tools finished. Please respond with 'done'." });
       const followRequest = await assembler.prepareRequest(
         followup,
-        { turnId, requestId: `${turnId}:llm:2` },
+        { turnId, requestId: `${turnId}:llm:2` } as any,
         llm.config.systemMessage,
+        [toolSchema],
       );
 
       let followResponse;
       try {
-        followResponse = await llm.sendMessages(followRequest.outboundMessages, followRequest.renderedPayload);
+        followResponse = await llm.sendMessages(followRequest.outboundMessages);
       } catch (error) {
         console.warn(`LM Studio follow-up failed: ${String(error)}`);
         return;

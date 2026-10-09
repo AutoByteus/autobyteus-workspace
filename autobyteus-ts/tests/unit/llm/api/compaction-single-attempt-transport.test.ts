@@ -47,26 +47,26 @@ describe('compaction invocation-local SDK retry bound', () => {
     const fetch = vi.fn(async () => new Response(JSON.stringify({ error: { message: 'synthetic failure', code: status } }), { status, headers: { 'content-type': 'application/json', 'retry-after': '0.001' } }));
     vi.stubGlobal('fetch', fetch);
     const llm = factories[family]!();
-    await expect(llm.sendMessages(messages, null, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
+    await expect(llm.sendMessages(messages, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
     expect(fetch).toHaveBeenCalledOnce();
   });
   it('preserves parent OpenAI SDK retry defaults on the same adapter', async () => {
     const fetch = vi.fn(async () => new Response('{}', { status: 503, headers: { 'retry-after': '0.001' } }));
     vi.stubGlobal('fetch', fetch); const llm = factories.openai!();
-    await expect(llm.sendMessages(messages, null, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
+    await expect(llm.sendMessages(messages, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
     expect(fetch).toHaveBeenCalledTimes(1);
     await expect(llm.sendMessages(messages)).rejects.toThrow(); expect(fetch).toHaveBeenCalledTimes(4);
   });
   it.each(['openai', 'responses', 'deepseek', 'anthropic', 'mistral', 'geminiAiStudio', 'ollama'])('%s transport timeout does not amplify one invocation', async family => {
     const fetch = vi.fn(async () => { throw new DOMException('Synthetic timeout', 'TimeoutError'); });
     vi.stubGlobal('fetch', fetch);
-    await expect(factories[family]!().sendMessages(messages, null, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
+    await expect(factories[family]!().sendMessages(messages, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
     expect(fetch).toHaveBeenCalledOnce();
   });
   it('sets Gemini retries on its isolated client after user extras, leaving the parent client unchanged', async () => {
     const fetch = vi.fn(async () => new Response('{}', { status: 503 })); vi.stubGlobal('fetch', fetch);
     const llm = new GeminiLLM(model(LLMProvider.GEMINI), new LLMConfig({ extraParams: { httpOptions: { retryOptions: { attempts: 7 } } } }), key, geminiRuntimeResolver());
-    await expect(llm.sendMessages(messages, null, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
+    await expect(llm.sendMessages(messages, {}, { retryMode: 'single_attempt' })).rejects.toThrow();
     expect(fetch).toHaveBeenCalledOnce();
     // The normal cached client was not constructed or overwritten by the isolated invocation.
     expect((llm as any).clientPromise).toBeNull();
@@ -78,7 +78,7 @@ describe('compaction invocation-local SDK retry bound', () => {
         { status: 503, statusText: 'Unavailable', data: {}, headers: {}, config });
     } }));
     const llm = new AutobyteusLLM(model(LLMProvider.AUTOBYTEUS), config(), key);
-    await expect(llm.sendMessages(messages, null, { logicalConversationId: 'synthetic-op' }, { retryMode: 'single_attempt' })).rejects.toThrow();
+    await expect(llm.sendMessages(messages, { logicalConversationId: 'synthetic-op' }, { retryMode: 'single_attempt' })).rejects.toThrow();
     expect(requests).toHaveLength(1); expect(requests[0]).toMatch(/\/send-message$/);
   });
 });

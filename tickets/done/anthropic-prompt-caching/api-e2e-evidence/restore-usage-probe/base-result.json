@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-09T11:03:36.513Z",
+  "beforeStop": {
+    "summary": {
+      "usageReportCount": 1,
+      "totalTokens": 6775
+    },
+    "ledgerEvents": 0,
+    "usageFrames": 1
+  },
+  "restore": {
+    "success": true,
+    "message": "Agent run restored successfully.",
+    "runId": "probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d"
+  },
+  "afterRestore": {
+    "summary": {
+      "usageReportCount": 1,
+      "totalTokens": 6775
+    },
+    "ledgerEvents": 0,
+    "usageFrames": 2
+  }
+}

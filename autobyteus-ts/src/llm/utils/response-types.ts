@@ -1,6 +1,6 @@
 import type { LlmTokenUsageObservation } from './llm-token-usage-observation.js';
 import { ToolCallDelta } from './tool-call-delta.js';
-import type { AnthropicAssistantTurn } from './provider-native-assistant-turn.js';
+import type { ProviderNativeAssistantTurn } from '../provider-native/provider-native-assistant-turn.js';
 
 export class CompleteResponse {
   completionStatus: 'complete' | 'incomplete' | 'unknown';
@@ -11,7 +11,7 @@ export class CompleteResponse {
   image_urls: string[];
   audio_urls: string[];
   video_urls: string[];
-  providerNativeAssistantTurn: AnthropicAssistantTurn | null;
+  providerNativeAssistantTurn: ProviderNativeAssistantTurn | null;
 
   constructor(data: {
     completionStatus?: 'complete' | 'incomplete' | 'unknown';
@@ -22,7 +22,7 @@ export class CompleteResponse {
     image_urls?: string[];
     audio_urls?: string[];
     video_urls?: string[];
-    providerNativeAssistantTurn?: AnthropicAssistantTurn | null;
+    providerNativeAssistantTurn?: ProviderNativeAssistantTurn | null;
   }) {
     this.completionStatus = data.completionStatus ?? 'unknown';
     this.completionReason = data.completionReason ?? null;
@@ -49,7 +49,7 @@ export class ChunkResponse {
   audio_urls: string[];
   video_urls: string[];
   tool_calls: ToolCallDelta[] | null;
-  providerNativeAssistantTurn: AnthropicAssistantTurn | null;
+  providerNativeAssistantTurn: ProviderNativeAssistantTurn | null;
 
   constructor(data: {
     content: string;
@@ -60,7 +60,7 @@ export class ChunkResponse {
     audio_urls?: string[];
     video_urls?: string[];
     tool_calls?: ToolCallDelta[] | null;
-    providerNativeAssistantTurn?: AnthropicAssistantTurn | null;
+    providerNativeAssistantTurn?: ProviderNativeAssistantTurn | null;
   }) {
     this.content = data.content;
     this.reasoning = data.reasoning ?? null;

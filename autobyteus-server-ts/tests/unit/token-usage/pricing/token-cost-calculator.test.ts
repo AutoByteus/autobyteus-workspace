@@ -246,6 +246,51 @@ describe('TokenCostCalculator', () => {
     expect(enriched.estimated_api_input_cost).toBeCloseTo(0.00128);
   });
 
+  it('prices every Claude Opus 5.5 cache component at its catalog rate (AC-006)', () => {
+    const million = 1_000_000;
+    const enriched = calculator.applyPolicy(buildPayload({
+      model_provider: 'ANTHROPIC',
+      model_identifier: 'claude-opus-5-5',
+      input_token_semantic: 'base_excludes_cache',
+      reported_input_tokens: million,
+      accounting_input_tokens: 4 * million,
+      accounting_output_tokens: million,
+      accounting_total_tokens: 5 * million,
+      standard_input_tokens: million,
+      cache_read_input_tokens: million,
+      cache_creation_input_tokens: 2 * million,
+      cache_creation_5m_input_tokens: million,
+      cache_creation_1h_input_tokens: million,
+      cache_state: 'positive',
+    }), {
+      ...basePrice,
+      model_provider: 'ANTHROPIC',
+      model_identifier: 'claude-opus-5-5',
+      model_value: 'claude-opus-5-5',
+      canonical_name: 'claude-opus-5-5',
+      input_price_per_million: 4,
+      output_price_per_million: 20,
+      cached_input_read_price_per_million: 0.2,
+      cached_input_write_price_per_million: 5,
+      cached_input_write_5m_price_per_million: 5,
+      cached_input_write_1h_price_per_million: 8,
+      trusted_dimensions: {
+        input: true, output: true, cached_input_read: true, cached_input_write: true,
+        cached_input_write_5m: true, cached_input_write_1h: true,
+      },
+    });
+
+    expect(enriched.api_cost_status).toBe('estimated');
+    expect(enriched.estimated_api_standard_input_cost).toBe(4);
+    expect(enriched.estimated_api_cache_read_input_cost).toBeCloseTo(0.2);
+    expect(enriched.estimated_api_cache_creation_5m_input_cost).toBe(5);
+    expect(enriched.estimated_api_cache_creation_1h_input_cost).toBe(8);
+    expect(enriched.estimated_api_cache_creation_input_cost).toBe(13);
+    expect(enriched.estimated_api_input_cost).toBeCloseTo(17.2);
+    expect(enriched.estimated_api_output_cost).toBe(20);
+    expect(enriched.estimated_api_total_cost).toBeCloseTo(37.2);
+  });
+
   it('selects input-size pricing tiers from event input tokens', () => {
     const tieredPrice: ResolvedTokenPricingPolicy = {
       ...basePrice,

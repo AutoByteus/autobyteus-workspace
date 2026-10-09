@@ -1,0 +1,32 @@
+{
+  "V1 captured + strict": {
+    "status": 200,
+    "stop_reason": "refusal",
+    "blocks": [],
+    "output_tokens": 0,
+    "error": null
+  },
+  "V2 captured, no strict": {
+    "status": 200,
+    "stop_reason": "refusal",
+    "blocks": [],
+    "output_tokens": 0,
+    "error": null
+  },
+  "V3 no summarized display, strict": {
+    "status": 200,
+    "stop_reason": "refusal",
+    "blocks": [],
+    "output_tokens": 0,
+    "error": null
+  },
+  "V4 run-1 prompt + summarized, strict": {
+    "status": 200,
+    "stop_reason": "tool_use",
+    "blocks": [
+      "tool_use"
+    ],
+    "output_tokens": 113,
+    "error": null
+  }
+}

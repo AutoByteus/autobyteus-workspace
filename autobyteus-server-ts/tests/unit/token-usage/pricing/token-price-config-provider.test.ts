@@ -46,7 +46,7 @@ describe('TokenPriceConfigProvider catalog policies', () => {
     ['claude-fable-5', 10, 50, 1, 12.5, 20],
     ['claude-opus-4.8', 5, 25, 0.5, 6.25, 10],
     ['claude-opus-5', 5, 25, 0.5, 6.25, 10],
-    ['claude-sonnet-5', 3, 15, 0.3, 3.75, 6],
+    ['claude-sonnet-5', 2, 10, 0.2, 2.5, 4],
   ] as const)(
     'exposes cache-aware Anthropic pricing dimensions for %s to server token-pricing consumers',
     async (modelIdentifier, input, output, cacheRead, cacheWrite5m, cacheWrite1h) => {

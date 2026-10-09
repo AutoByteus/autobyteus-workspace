@@ -60,10 +60,11 @@ describe('direct compression strategy', () => {
     await expect(new DirectLlmCompressionStrategy(factory, exec).compress(content)).resolves.toBe(body);
     expect(factory.mock.calls.map((call: any) => call[0].parentModelIdentifier)).toEqual(Array.from({ length: success }, (_, i) => `parent-${i + 1}`));
     const ids = models.map(model => {
-      const [messages, tools, kwargs, options] = vi.mocked(model.sendMessages).mock.calls[0]!;
+      const [messages, kwargs, options] = vi.mocked(model.sendMessages).mock.calls[0]!;
       expect(messages.map(m => m.content)).toEqual([COMPACTION_SUMMARY_PROMPT, content]);
-      expect(tools).toBeNull(); expect(kwargs).not.toHaveProperty('tools');
+      expect(kwargs).not.toHaveProperty('tools');
       expect(options).toMatchObject({ signal: exec.signal, retryMode: 'single_attempt' });
+      expect(options).not.toHaveProperty('promptCacheScope'); // AC-005: one-shot summarizer is never cached
       expect(model.send).toHaveBeenCalledOnce(); expect(model.cleaned).toHaveBeenCalledOnce();
       return kwargs!.logicalConversationId;
     });

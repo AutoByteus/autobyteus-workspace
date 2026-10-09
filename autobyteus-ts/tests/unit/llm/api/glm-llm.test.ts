@@ -112,7 +112,6 @@ describe('GlmLLM', () => {
         new Message(MessageRole.SYSTEM, { content: 'You are a helpful assistant.' }),
         new Message(MessageRole.USER, { content: 'Say pong.' })
       ],
-      null,
       {
         thinking_type: 'enabled',
         reasoning_effort: 'max'
@@ -136,7 +135,6 @@ describe('GlmLLM', () => {
         new Message(MessageRole.SYSTEM, { content: 'You are a helpful assistant.' }),
         new Message(MessageRole.USER, { content: 'Say pong.' })
       ],
-      null,
       {
         thinking_type: 'disabled',
         reasoning_effort: 'max'
@@ -167,7 +165,6 @@ describe('GlmLLM', () => {
         new Message(MessageRole.SYSTEM, { content: 'You are a helpful assistant.' }),
         new Message(MessageRole.USER, { content: 'Say pong.' })
       ],
-      null,
       {
         thinking_type: 'disabled'
       }

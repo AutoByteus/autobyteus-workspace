@@ -138,16 +138,14 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     expect(pipelineResult.llmUserMessage).not.toBeNull();
     expect(pipelineResult.llmUserMessage?.audio_urls).toEqual([workspaceAudioPath]);
 
-    const request = await new LLMRequestAssembler(
-      memoryManager,
-      new GeminiPromptRenderer()
-    ).prepareRequest(
+    const request = await new LLMRequestAssembler(memoryManager).prepareRequest(
       pipelineResult.llmUserMessage,
-      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` },
-      'You are validating direct Gemini audio input. Follow the user transcription instruction.'
+      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` } as any,
+      'You are validating direct Gemini audio input. Follow the user transcription instruction.',
+      [],
     );
 
-    const renderedMessages = request.renderedPayload as Array<{ role?: string; parts?: Array<Record<string, unknown>> }>;
+    const renderedMessages = await new GeminiPromptRenderer().render(request.outboundMessages) as Array<{ role?: string; parts?: Array<Record<string, unknown>> }>;
     const currentRenderedMessage = renderedMessages.at(-1);
     const inlineParts = currentRenderedMessage?.parts?.filter((part) => 'inlineData' in part) ?? [];
     expect(inlineParts).toContainEqual({
@@ -164,7 +162,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     }));
 
     try {
-      const response = await llm.sendMessages(request.outboundMessages, request.renderedPayload);
+      const response = await llm.sendMessages(request.outboundMessages);
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(response.content.toLowerCase()).toContain('hello');
     } finally {

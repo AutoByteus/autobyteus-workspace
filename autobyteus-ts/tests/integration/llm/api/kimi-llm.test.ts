@@ -45,7 +45,7 @@ const runToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
     })
   ];
   const parser = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
-  for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
+  for await (const chunk of llm.streamMessages(toolPromptMessages, {
     tools: [TOOL_SCHEMA],
     tool_choice: 'required'
   })) {
@@ -98,7 +98,7 @@ const runK2_7CodeToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
   let streamedReasoning = '';
   let streamedContent = '';
 
-  for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
+  for await (const chunk of llm.streamMessages(toolPromptMessages, {
     tools: [TOOL_SCHEMA],
     tool_choice: { type: 'function', function: { name: 'echo_number' } }
   })) {
@@ -141,7 +141,7 @@ const runK2_7CodeToolCallContinuation = async (llm: KimiLLM): Promise<void> => {
     })
   ];
 
-  const continuationResponse = await llm.sendMessages(continuationMessages, null, { max_tokens: 64 });
+  const continuationResponse = await llm.sendMessages(continuationMessages, { max_tokens: 64 });
   expect(typeof continuationResponse.content).toBe('string');
   expect((continuationResponse.content ?? '').trim().length).toBeGreaterThan(0);
 };
@@ -282,7 +282,6 @@ runIntegration('KimiLLM Integration', () => {
           new Message(MessageRole.SYSTEM, { content: 'You are a concise coding assistant.' }),
           new Message(MessageRole.USER, { content: 'Write one sentence explaining what TypeScript interfaces are.' })
         ],
-        null,
         { max_tokens: 64 }
       );
       expect(response).toBeInstanceOf(CompleteResponse);

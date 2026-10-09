@@ -1,0 +1,11 @@
+[
+  {
+    "case": "APC-E2E-001: a new turn reads the whole previous history from cache, writes only new input and keeps earlier thinking",
+    "state": "fail",
+    "errors": [
+      "expected 4 to be greater than or equal to 6"
+    ],
+    "details": null,
+    "at": "2026-10-09T10:52:37.507Z"
+  }
+]

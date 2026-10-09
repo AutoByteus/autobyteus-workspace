@@ -66,6 +66,15 @@ describe('current supported model definitions', () => {
     expect(supportedModelDefinitions.filter((item) => item.value === 'claude-opus-5')).toHaveLength(1);
   });
 
+  it('prices Claude Sonnet 5 at the official Standard rates', () => {
+    const sonnet = supportedModelDefinitions.filter((item) => item.value === 'claude-sonnet-5');
+    expect(sonnet).toHaveLength(1);
+    expect(sonnet[0]!.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.2,
+      cachedInputWrite5mTokenPricing: 2.5, cachedInputWrite1hTokenPricing: 4,
+    });
+  });
+
   it('contains current named rows and removes the replaced curated identifiers', () => {
     const names = new Set(supportedModelDefinitions.map((definition) => definition.name));
     expect([...names]).toEqual(expect.arrayContaining([

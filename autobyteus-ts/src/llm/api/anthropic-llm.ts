@@ -6,14 +6,14 @@ import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { AnthropicAssistantTurnAssembler } from './anthropic-assistant-turn-assembler.js';
-import { parseAnthropicAssistantTurn } from '../utils/provider-native-assistant-turn.js';
+import { parseAnthropicAssistantTurn } from './anthropic-native-assistant-turn.js';
 import {
   createAnthropicTokenUsageObservation,
   createAnthropicUsageAccumulator,
   createAnthropicTokenUsageObservationFromAccumulator,
   foldAnthropicUsage,
 } from './anthropic-token-usage-normalizer.js';
-import { Message, MessageRole } from '../utils/messages.js';
+import { Message, MessageRole, leadingSystemMessages } from '../utils/messages.js';
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { AnthropicPromptRenderer } from '../prompt-renderers/anthropic-prompt-renderer.js';
@@ -23,7 +23,9 @@ import {
   cloneSafeProviderRequestKwargs,
 } from './provider-request-kwargs.js';
 import type {
+  CacheControlEphemeral,
   ContentBlock,
+  MessageCreateParamsBase,
   MessageCreateParamsNonStreaming,
   MessageCreateParamsStreaming,
   MessageParam,
@@ -31,13 +33,27 @@ import type {
   ToolUnion
 } from '@anthropic-ai/sdk/resources/messages/messages.js';
 
-const splitSystemMessages = (messages: Message[]): { systemPrompt: string | null; remaining: Message[] } => {
-  const systemParts = messages
-    .filter((msg) => msg.role === MessageRole.SYSTEM)
+/**
+ * Agent conversations cache with the 1-hour TTL. Two breakpoints are used: the last
+ * top-level system block (covers tools + system) and top-level automatic caching (the
+ * growing tail). Both are 1h, so the longer-TTL-first ordering rule always holds.
+ */
+const ANTHROPIC_CONVERSATION_CACHE_CONTROL: Readonly<CacheControlEphemeral> = { type: 'ephemeral', ttl: '1h' };
+
+/**
+ * Only the leading system run becomes the top-level `system`, so a SYSTEM note added
+ * later (e.g. an interruption boundary note) never changes the cached system prefix.
+ * Late notes stay in place; the prompt renderer sends them as user-role text.
+ */
+const splitLeadingSystemMessages = (messages: Message[]): { systemPrompt: string | null; remaining: Message[] } => {
+  const leading = leadingSystemMessages(messages);
+  const systemParts = leading
     .map((msg) => msg.content)
     .filter((content): content is string => Boolean(content));
   const systemPrompt = systemParts.length ? systemParts.join('\n') : null;
-  const remaining = messages.filter((msg) => msg.role !== MessageRole.SYSTEM);
+  const remaining = messages
+    .slice(leading.length)
+    .filter((msg) => msg.role !== MessageRole.SYSTEM || Boolean(msg.content));
   return { systemPrompt, remaining };
 };
 
@@ -46,9 +62,12 @@ const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
   'thinking_budget_tokens',
   'thinking_display'
 ]);
+// Config extra params are forwarded to the request except internal toggles and
+// `cache_control`, which only the adapter decides (from the invocation's cache scope).
+const ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS = new Set([...ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS, 'cache_control']);
 
 const ANTHROPIC_SAMPLING_PARAM_KEYS = new Set(['temperature', 'top_p', 'top_k']);
-const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools']);
+const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools', 'cache_control']);
 
 type AnthropicModelRequestPolicy = {
   usesAdaptiveThinking: boolean;
@@ -100,7 +119,7 @@ const sanitizeThinkingParam = (
 const filterInternalExtraParams = (
   extraParams: Record<string, unknown> | null | undefined
 ): Record<string, unknown> => {
-  return cloneSafeProviderRequestKwargs(extraParams, { controlledKeys: ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS });
+  return cloneSafeProviderRequestKwargs(extraParams, { controlledKeys: ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS });
 };
 
 const buildThinkingParam = (
@@ -126,7 +145,7 @@ const buildThinkingParam = (
 };
 
 const applyAnthropicRequestParams = (
-  params: MessageCreateParamsNonStreaming | MessageCreateParamsStreaming,
+  params: MessageCreateParamsBase,
   modelValue: string,
   configExtraParams: Record<string, unknown> | null | undefined,
   kwargs: Record<string, unknown>
@@ -234,21 +253,41 @@ export class AnthropicLLM extends BaseLLM {
     return new Anthropic({ apiKey: secret.revealToTrustedConsumer() });
   }
 
-  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
-    const { systemPrompt, remaining } = splitSystemMessages(messages);
-    const formattedMessages = await this._renderer.render(remaining) as MessageParam[];
-
-    const params: MessageCreateParamsNonStreaming = {
+  /**
+   * One request builder for the sync and streaming paths, so caching applies identically.
+   * Cache markers are added only for a conversation-scoped invocation; one-shot calls
+   * (e.g. the compaction summarizer) are sent without any `cache_control`.
+   */
+  private async buildRequestParams(
+    messages: Message[],
+    kwargs: Record<string, unknown>,
+    options: LLMInvocationOptions,
+  ): Promise<MessageCreateParamsBase> {
+    const { systemPrompt, remaining } = splitLeadingSystemMessages(messages);
+    const cachesConversation = options.promptCacheScope === 'conversation';
+    const params: MessageCreateParamsBase = {
       model: this.model.value,
       max_tokens: this.maxTokens,
-      messages: formattedMessages,
+      messages: await this._renderer.render(remaining) as MessageParam[],
     };
 
     if (systemPrompt) {
-      params.system = systemPrompt;
+      params.system = cachesConversation
+        ? [{ type: 'text', text: systemPrompt, cache_control: { ...ANTHROPIC_CONVERSATION_CACHE_CONTROL } }]
+        : systemPrompt;
     }
 
     applyAnthropicRequestParams(params, this.model.value, this.config.extraParams ?? null, kwargs);
+
+    if (cachesConversation) {
+      params.cache_control = { ...ANTHROPIC_CONVERSATION_CACHE_CONTROL };
+    }
+    return params;
+  }
+
+  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
+    const { stream: _stream, ...base } = await this.buildRequestParams(messages, kwargs, options);
+    const params: MessageCreateParamsNonStreaming = base;
 
     try {
       const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
@@ -279,22 +318,10 @@ export class AnthropicLLM extends BaseLLM {
   }
 
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
-    const { systemPrompt, remaining } = splitSystemMessages(messages);
-    const formattedMessages = await this._renderer.render(remaining) as MessageParam[];
-
     const params: MessageCreateParamsStreaming = {
-      model: this.model.value,
-      max_tokens: this.maxTokens,
-      messages: formattedMessages,
+      ...(await this.buildRequestParams(messages, kwargs, options)),
       stream: true,
     };
-
-    if (systemPrompt) {
-      params.system = systemPrompt;
-    }
-
-    applyAnthropicRequestParams(params, this.model.value, this.config.extraParams ?? null, kwargs);
-    params.stream = true;
 
     try {
       const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),

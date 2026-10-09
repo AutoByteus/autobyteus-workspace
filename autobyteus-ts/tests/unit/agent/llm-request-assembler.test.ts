@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CompactionPreparationError } from '../../../src/agent/compaction/compaction-preparation-error.js';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
-import { BasePromptRenderer } from '../../../src/llm/prompt-renderers/base-prompt-renderer.js';
+import { computeLlmRequestPrefixDigest } from '../../../src/agent/llm-request-prefix-digest.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
@@ -13,15 +13,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-class FakeRenderer extends BasePromptRenderer {
-  async render(messages: Message[]) {
-    return messages.map((message) => ({ role: message.role, content: message.content }));
-  }
-}
-
 class FakeMemoryManager {
   workingContext = new WorkingContext();
-  resetAnthropicSignedHistory = vi.fn();
+  bindRetainedReasoningToRequestPrefix = vi.fn((_digest: string) => false);
   private recoverySequence = 0;
   ensureWorkingContextToolProtocolSafeForNextLlm = vi.fn(() => ({
     messages: this.workingContext.buildMessages(),
@@ -65,25 +59,64 @@ describe('LLMRequestAssembler', () => {
   it('defers pending compaction during an active tool continuation', async () => {
     const memoryManager = new FakeMemoryManager();
     const executor = { executeIfAuthorized: vi.fn(async () => true) };
-    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
+    const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
     const request = await assembler.prepareRequest(null, {
       turnId: 'turn_tool', requestId: 'turn_tool:llm:2', isToolContinuation: true,
-    });
+    } as any, undefined, []);
     expect(request.didCompact).toBe(false);
     expect(executor.executeIfAuthorized).not.toHaveBeenCalled();
-    expect(memoryManager.resetAnthropicSignedHistory).not.toHaveBeenCalled();
+    // The prefix-binding guard still runs: tool definitions can change mid tool cycle.
+    expect(memoryManager.bindRetainedReasoningToRequestPrefix).toHaveBeenCalledTimes(1);
+  });
+
+  it('binds retained reasoning to the post-compaction prefix digest before the recovery checkpoint', async () => {
+    const memoryManager = new FakeMemoryManager();
+    const executor = {
+      executeIfAuthorized: vi.fn(async () => {
+        memoryManager.replaceWorkingContext(new WorkingContext([
+          new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+          new Message(MessageRole.SYSTEM, { content: 'Carried note' }),
+          new Message(MessageRole.USER, { content: 'Earlier progress' }),
+        ]));
+        return true;
+      }),
+    };
+    const tools = [{ name: 'read_file', description: 'Read a file', input_schema: { type: 'object' } }];
+    const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
+
+    const request = await assembler.prepareRequest(
+      new LLMUserMessage({ content: 'next' }),
+      { turnId: 'turn_bind', requestId: 'turn_bind:llm:1' } as any,
+      'System prompt',
+      tools,
+    );
+
+    expect(memoryManager.bindRetainedReasoningToRequestPrefix).toHaveBeenCalledWith(computeLlmRequestPrefixDigest({
+      leadingSystem: [
+        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+        new Message(MessageRole.SYSTEM, { content: 'Carried note' }),
+      ],
+      tools,
+    }));
+    const guardOrder = memoryManager.bindRetainedReasoningToRequestPrefix.mock.invocationCallOrder[0]!;
+    expect(request.tools).toBe(tools);
+    expect(executor.executeIfAuthorized.mock.invocationCallOrder[0]).toBeLessThan(guardOrder);
+    expect(guardOrder).toBeLessThan(memoryManager.captureLlmRequestRecoverySnapshot.mock.invocationCallOrder[0]!);
   });
   it('appends the system prompt and user message without compaction', async () => {
     const memoryManager = new FakeMemoryManager();
-    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer());
+    const assembler = new LLMRequestAssembler(memoryManager as any);
 
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
       { turnId: 'turn_0001', requestId: 'turn_0001:llm:1' },
       'System prompt',
+      [],
     );
 
     expect(request.didCompact).toBe(false);
+    expect(request.tools).toEqual([]);
+    expect(request).not.toHaveProperty('renderedPayload');
     expect(request.canonicalMessages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
     expect(request.outboundMessages).toEqual(request.canonicalMessages);
     expect(memoryManager.workingContext.buildMessages()).toEqual(request.canonicalMessages);
@@ -108,11 +141,12 @@ describe('LLMRequestAssembler', () => {
       })
     };
 
-    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
+    const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'new input' }),
       { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
       'System prompt',
+      [],
     );
 
     expect(request.didCompact).toBe(true);
@@ -162,7 +196,6 @@ describe('LLMRequestAssembler', () => {
     };
     const assembler = new LLMRequestAssembler(
       memoryManager as any,
-      new OpenAIChatRenderer(),
       executor as any,
     );
 
@@ -170,6 +203,7 @@ describe('LLMRequestAssembler', () => {
       null,
       { turnId: 'turn_tool', requestId: 'turn_tool:llm:2' },
       'System prompt',
+      [],
     );
 
     expect(request.didCompact).toBe(true);
@@ -179,7 +213,7 @@ describe('LLMRequestAssembler', () => {
       MessageRole.ASSISTANT,
       MessageRole.TOOL,
     ]);
-    expect((request.renderedPayload as any[]).map(({ role }) => role)).toEqual([
+    expect((await new OpenAIChatRenderer().render(request.outboundMessages) as any[]).map(({ role }) => role)).toEqual([
       'system',
       'assistant',
       'tool',
@@ -223,14 +257,14 @@ describe('LLMRequestAssembler', () => {
 
       const request = await new LLMRequestAssembler(
         memoryManager,
-        new OpenAIChatRenderer(),
       ).prepareRequest(
         new LLMUserMessage({ content: 'please continue there was a shutdown' }),
         { turnId: 'turn_new', requestId: 'turn_new:llm:1' },
         'System prompt',
+        [],
       );
 
-      const rendered = request.renderedPayload as any[];
+      const rendered = await new OpenAIChatRenderer().render(request.outboundMessages) as any[];
       const assistantIndex = rendered.findIndex((message) => Array.isArray(message.tool_calls));
       expect(assistantIndex).toBeGreaterThanOrEqual(0);
       expect(rendered[assistantIndex + 1]).toMatchObject({
@@ -259,19 +293,20 @@ describe('LLMRequestAssembler', () => {
       }
     };
 
-    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
+    const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
       { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
       'System prompt',
+      [],
     )).rejects.toBeInstanceOf(
       CompactionPreparationError
     );
     expect(memoryManager.captureLlmRequestRecoverySnapshot).not.toHaveBeenCalled();
   });
 
-  it('restores the post-compaction stable base when rendering fails after request capture', async () => {
+  it('restores the post-compaction stable base when request assembly fails after request capture', async () => {
     const memoryManager = new FakeMemoryManager();
     memoryManager.replaceWorkingContext(new WorkingContext([
       new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
@@ -286,15 +321,17 @@ describe('LLMRequestAssembler', () => {
         return true;
       }),
     };
-    const renderer = new FakeRenderer();
-    vi.spyOn(renderer, 'render').mockRejectedValueOnce(new Error('renderer failed'));
-    const assembler = new LLMRequestAssembler(memoryManager as any, renderer, executor as any);
+    vi.spyOn(memoryManager, 'appendWorkingContextUserMessage').mockImplementationOnce(() => {
+      throw new Error('append failed');
+    });
+    const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'transient user input' }),
       { turnId: 'turn_restore', requestId: 'turn_restore:llm:1' },
       'System prompt',
-    )).rejects.toThrow('renderer failed');
+      [],
+    )).rejects.toThrow('append failed');
 
     expect(memoryManager.captureLlmRequestRecoverySnapshot).toHaveBeenCalledTimes(1);
     expect(memoryManager.restoreLlmRequestRecoverySnapshot).toHaveBeenCalledTimes(1);

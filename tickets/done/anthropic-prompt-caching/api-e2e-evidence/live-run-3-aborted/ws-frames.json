@@ -1,0 +1,150 @@
+[
+  {
+    "type": "CONNECTED",
+    "payload": "{\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\",\"session_id\":\"094a92f2-b1bb-48bc-87e1-59db99b5503d\"}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then reply with t"
+  },
+  {
+    "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "payload": "{\"trace_id\":\"rt_1791543243535_074df1cf-9b73-41d1-aab6-b0e79fda0f64\",\"content\":\"## Agent Identity\\n\\n- Name: anthropic-cache-e2e-0c0a4865\\n- Description: Live prompt-caching validation agent.\\n\\n### Responsibilities and Boundaries\\n\\nYou are a careful engineering agent working through workspace files with tools.\\nWhen the user gives a rule for choosing the next file from the file just read, work out the next file\\nnumber step by step before every read_file call and double-check the arithmetic.\\nCall read_file exactly once per file, one tool call per response.\\nNever call generate_image unless t"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then reply with t"
+  },
+  {
+    "type": "AGENT_COMMAND_ACK",
+    "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\",\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":null,\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then reply wit"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "TURN_STARTED",
+    "payload": "{\"turn_id\":\"turn_0001\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":\"turn_0001\",\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then re"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":\"turn_0001\",\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then re"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":\"turn_0001\",\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then re"
+  },
+  {
+    "type": "TOKEN_USAGE_UPDATED",
+    "payload": "{\"usage_event_id\":\"dccbe96c-8d9c-4640-9e2d-d1439003fd2a\",\"idempotency_key\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5:turn_0001:llm:1\",\"observed_at\":\"2026-10-09T10:54:05.591Z\",\"run_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\",\"root_team_run_id\":null,\"turn_id\":\"turn_0001\",\"llm_call_id\":\"turn_0001:llm:1\",\"call_sequence\":1,\"agent_definition_id\":\"anthropic-cache-e2e-0c0a4865\",\"workspace_id\":\"agent_ws_87627e3f264685422ddd6ff2042d56a59b8e8e95bc2c68a3f9d5abfb3304e013\",\"task_id\":null,\"team_name\":null,\"agent_name\":\"anthropic-cache-e2e-0c0a4865\",\"run_summary\":\""
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":\"turn_0001\",\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then re"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":\"turn_0001\",\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then re"
+  },
+  {
+    "type": "ASSISTANT_COMPLETE",
+    "payload": "{\"content\":\"\",\"usage\":{\"input_tokens\":4,\"output_tokens\":0,\"total_tokens\":4,\"usage_scope\":\"per_call\",\"model_provider\":\"ANTHROPIC\",\"provider_name\":\"Anthropic\",\"model_identifier\":\"claude-opus-5-5\",\"model_value\":\"claude-opus-5-5\",\"input_token_semantic\":\"base_excludes_cache\",\"cache_state\":\"positive\",\"standard_input_tokens\":4,\"cache_miss_input_tokens\":null,\"cache_read_input_tokens\":0,\"cache_creation_input_tokens\":7678,\"cache_creation_5m_input_tokens\":0,\"cache_creation_1h_input_tokens\":7678,\"reasoning_output_tokens\":null,\"billable_input_tokens\":null,\"billable_output_tokens\":null,\"raw_usage_json\":{\"ev"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"dedupe_key\":\"agent_run_input:e2e:e2e-0056e3bf-fe9d-4cc8-91a2-4eedacd73b39\",\"turn_id\":\"turn_0001\",\"state\":\"forwarded\",\"content\":\"Start with chunk-01.txt. After reading each file, choose the next file yourself: let a, b and c be the latency budgets (in ms) of sections 3, 8 and 14 of the file you just read; the next file is chunk-NN.txt with NN = ((a + b * c) mod 30) + 1, written with two digits. Read 12 files in total, one per tool call. Then re"
+  },
+  {
+    "type": "TURN_COMPLETED",
+    "payload": "{\"turn_id\":\"turn_0001\"}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":6,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Now start with chunk-13.txt and use the same rule to read 12 more files, one per tool call. Then reply with the CODE value of the last file.\",\"sender_type\":\"user\",\"file_attachments\":[]}],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":7,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"turn_id\":null,\"state\":\"forwarded\",\"content\":\"Now start with chunk-13.txt and use the same rule to read 12 more files, one per tool call. Then reply with the CODE value of the last file.\",\"sender_type\":\"user\",\"file_attachments\":[]}],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}"
+  },
+  {
+    "type": "AGENT_COMMAND_ACK",
+    "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\",\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}}"
+  },
+  {
+    "type": "TURN_STARTED",
+    "payload": "{\"turn_id\":\"turn_0002\"}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":8,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"turn_id\":\"turn_0002\",\"state\":\"forwarded\",\"content\":\"Now start with chunk-13.txt and use the same rule to read 12 more files, one per tool call. Then reply with the CODE value of the last file.\",\"sender_type\":\"user\",\"file_attachments\":[]}],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":8,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"turn_id\":\"turn_0002\",\"state\":\"forwarded\",\"content\":\"Now start with chunk-13.txt and use the same rule to read 12 more files, one per tool call. Then reply with the CODE value of the last file.\",\"sender_type\":\"user\",\"file_attachments\":[]}],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":8,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"turn_id\":\"turn_0002\",\"state\":\"forwarded\",\"content\":\"Now start with chunk-13.txt and use the same rule to read 12 more files, one per tool call. Then reply with the CODE value of the last file.\",\"sender_type\":\"user\",\"file_attachments\":[]}],\"recoverableBlock\":null}"
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": "{\"run_instance_id\":\"8abf1671-81d7-47a7-b3a3-30d28b80b470\",\"revision\":9,\"entries\":[{\"sequence\":2,\"message_id\":\"e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"dedupe_key\":\"agent_run_input:e2e:e2e-a545d7dc-7cd8-46f7-92da-803a28fe6e16\",\"turn_id\":\"turn_0002\",\"state\":\"forwarded\",\"content\":\"Now start with chunk-13.txt and use the same rule to read 12 more files, one per tool call. Then reply with the CODE value of the last file.\",\"sender_type\":\"user\",\"file_attachments\":[]},{\"sequence\":3,\"message_id\":\"e2e-b4abdab5-45f6-4499-9188-1a51ac47a12c\",\"dedupe_key\":\"agent_run_input:e2e:e2e-b4abdab5-45f6-4499-9188-1"
+  },
+  {
+    "type": "AGENT_COMMAND_ACK",
+    "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\",\"message_id\":\"e2e-b4abdab5-45f6-4499-9188-1a51ac47a12c\",\"dedupe_key\":\"agent_run_input:e2e:e2e-b4abdab5-45f6-4499-9188-1a51ac47a12c\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"anthropic_cache_e2e_0c0a4865_91f7b6c8600a4a45aafd70e5ba4f69d5\"}}"
+  }
+]

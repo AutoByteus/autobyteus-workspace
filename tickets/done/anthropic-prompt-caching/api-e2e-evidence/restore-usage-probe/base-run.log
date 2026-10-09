@@ -1,0 +1,539 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/private/tmp/apc-base-api/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/apc-base-api/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:24042) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/apc-base-api/autobyteus-server-ts
+App data directory: /private/tmp/apc-base-api/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/.env
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mLoading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/tmp/apc-base-api/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /private/tmp/apc-base-api/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T11:03:36.659Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mServer setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-09T11:03:36.976Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39m[2026-10-09T11:03:36.976Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mIn-memory cache: Added new agent definition with ID probe-1791543817025.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent Definition created successfully with ID: probe-1791543817025
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-ws-iuOBIx
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-ws-iuOBIx.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mCreated and registered workspace ID: agent_ws_470e9af2ca95256fbfca3d64b351c1419b797c6930b9211b74ae9e16720d6d2b
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-ws-iuOBIx
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-ws-iuOBIx.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mReusing registered workspace ID: agent_ws_470e9af2ca95256fbfca3d64b351c1419b797c6930b9211b74ae9e16720d6d2b
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/media
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentRuntimeState initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': LLM instance 'AnthropicLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' with config: 'probe-1791543817025'.
+AgentWorker initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'.
+Registered AgentContext for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Context registered.
+Agent facade initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' created and stored successfully.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' requesting runtime to start.
+AgentRuntime for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Starting worker.
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Starting...
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' asyncRun(): Starting.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (event store initialized).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (status deriver initialized).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (AgentEventInbox initialized).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' to become idle (timeout: 30s)...
+AgentEventStream (ID: 6d572ea1-cee1-4a6d-afd9-6a9102887f21) initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Subscribed to notifier.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Bootstrapper starting direct lifecycle execution.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Executing SystemPromptProcessingStep.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': No configured skills. Skipping skill catalog.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Final processed system prompt configured and captured. Trace ID: rt_1791543817145_666f38b2-b5cc-4a7b-9a73-186e699880bf. Final length: 3973.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: 6d572ea1-cee1-4a6d-afd9-6a9102887f21) for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: fe686eff-98a7-4e72-a948-fbc9d8be8960) initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent websocket attached for run probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d
+Created agent session 76c0fa3c-06a0-4647-9936-6d11d73f0155 for run probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d
+Agent WebSocket connected: session=76c0fa3c-06a0-4647-9936-6d11d73f0155, run=probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent run 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': UserInputContextBuildingProcessor completed. Final content length: 31
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent run 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mRemoving agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Attempting graceful shutdown.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: 8b524504-727b-4d77-a37d-66753b8b3fcb, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' asyncRun() loop has finished.
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Shutdown resource cleanup completed successfully.
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mUnregistered AgentContext for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'.
+AgentRuntime for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentRuntime for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: fe686eff-98a7-4e72-a948-fbc9d8be8960) for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: fe686eff-98a7-4e72-a948-fbc9d8be8960) for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mClosed agent session 76c0fa3c-06a0-4647-9936-6d11d73f0155
+Agent WebSocket disconnected: 76c0fa3c-06a0-4647-9936-6d11d73f0155
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-ws-iuOBIx
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-ws-iuOBIx.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mReusing registered workspace ID: agent_ws_470e9af2ca95256fbfca3d64b351c1419b797c6930b9211b74ae9e16720d6d2b
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restore-usage-probe-appdata-O9Q0Op/media
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentRuntimeState initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': LLM instance 'AnthropicLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' with config: 'probe-1791543817025'.
+AgentWorker initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'.
+Registered AgentContext for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Context registered.
+Agent facade initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' restored and stored successfully.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' requesting runtime to start.
+AgentRuntime for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Starting worker.
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Starting...
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' asyncRun(): Starting.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (event store initialized).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (status deriver initialized).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (AgentEventInbox initialized).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' to become idle (timeout: 30s)...
+AgentEventStream (ID: 6bb2b460-1f6b-4eb8-a9f0-ab84eb78d6fd) initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Subscribed to notifier.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Bootstrapper starting direct lifecycle execution.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Executing SystemPromptProcessingStep.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': No configured skills. Skipping skill catalog.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Final processed system prompt configured and captured. Trace ID: rt_1791543817145_666f38b2-b5cc-4a7b-9a73-186e699880bf. Final length: 3973.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: 6bb2b460-1f6b-4eb8-a9f0-ab84eb78d6fd) for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: fab58cbe-ec29-4d94-8ce1-0d4905b93534) initialized for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent websocket attached for run probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d
+Created agent session 9d2fe37f-d158-4e8f-919f-e08210c33ed6 for run probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d
+Agent WebSocket connected: session=9d2fe37f-d158-4e8f-919f-e08210c33ed6, run=probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent run 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': UserInputContextBuildingProcessor completed. Final content length: 31
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgent run 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mClosed agent session 9d2fe37f-d158-4e8f-919f-e08210c33ed6
+Agent WebSocket disconnected: 9d2fe37f-d158-4e8f-919f-e08210c33ed6
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mRemoving agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'. Attempting graceful shutdown.
+Agent 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentExternalEventNotifier (NotifierID: ec4e7a45-6ee6-4050-b751-3c2260e7f79b, AgentID: probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' asyncRun() loop has finished.
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Shutdown resource cleanup completed successfully.
+AgentWorker 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mUnregistered AgentContext for agent_id 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d'.
+AgentRuntime for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentRuntime for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: fab58cbe-ec29-4d94-8ce1-0d4905b93534) for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts[2m > [22m[2mrestore usage probe[2m > [22m[2mcounts recorded usage before and after restore
+[22m[39mAgentEventStream (ID: fab58cbe-ec29-4d94-8ce1-0d4905b93534) for 'probe_1791543817025_318d355de6a144ac81ad56543bd3ea6d': close() called. Unsubscribing all listeners and signaling.
+
+ [32m✓[39m tests/e2e/runtime/zz-restore-usage-probe.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 15167[2mms[22m[39m
+     [33m[2m✓[22m[39m counts recorded usage before and after restore [33m 14649[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 13:03:15
+[2m   Duration [22m 36.00s[2m (transform 15.09s, setup 55ms, import 19.63s, tests 15.17s, environment 0ms)[22m
+

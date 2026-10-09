@@ -52,7 +52,6 @@ describe('AutobyteusLLM', () => {
         new Message(MessageRole.ASSISTANT, 'answer'),
         new Message(MessageRole.USER, 'next')
       ],
-      null,
       { logicalConversationId: 'run-123' }
     );
 
@@ -90,7 +89,6 @@ describe('AutobyteusLLM', () => {
 
     await llm.sendMessages(
       [new Message(MessageRole.USER, 'hello')],
-      null,
       { logicalConversationId: 'run-config' }
     );
 
@@ -120,7 +118,6 @@ describe('AutobyteusLLM', () => {
 
     for await (const _chunk of llm.streamMessages(
       [new Message(MessageRole.USER, 'hello')],
-      null,
       { logicalConversationId: 'run-stream-config' }
     )) {
       // Drain the mocked stream.
@@ -147,7 +144,6 @@ describe('AutobyteusLLM', () => {
 
     await llm.sendMessages(
       [new Message(MessageRole.USER, 'hello')],
-      null,
       { logicalConversationId: 'run-signal' },
       { signal: controller.signal }
     );
@@ -171,7 +167,6 @@ describe('AutobyteusLLM', () => {
     const chunks: string[] = [];
     for await (const chunk of llm.streamMessages(
       [new Message(MessageRole.USER, 'hello')],
-      null,
       { logicalConversationId: 'run-stream-signal' },
       { signal: controller.signal }
     )) {
@@ -199,7 +194,6 @@ describe('AutobyteusLLM', () => {
 
     await expect(llm.sendMessages(
       [new Message(MessageRole.USER, 'hello')],
-      null,
       kwargs as Record<string, unknown>
     )).rejects.toThrow('AutobyteusLLM requires kwargs.logicalConversationId as a non-empty string.');
 
@@ -220,7 +214,6 @@ describe('AutobyteusLLM', () => {
 
     const stream = llm.streamMessages(
       [new Message(MessageRole.USER, 'hello')],
-      null,
       {}
     );
 
@@ -241,8 +234,8 @@ describe('AutobyteusLLM', () => {
 
     const messages = [new Message(MessageRole.USER, 'hello')];
 
-    await llm.sendMessages(messages, null, { logicalConversationId: 'run-1' });
-    await llm.sendMessages(messages, null, { logicalConversationId: 'run-2' });
+    await llm.sendMessages(messages, { logicalConversationId: 'run-1' });
+    await llm.sendMessages(messages, { logicalConversationId: 'run-2' });
     await llm.cleanup();
 
     expect(cleanup).toHaveBeenCalledTimes(2);

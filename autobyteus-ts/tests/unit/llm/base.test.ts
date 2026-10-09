@@ -6,12 +6,18 @@ import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../src/llm/utils/response-types.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
+import { LLMExtension } from '../../../src/llm/extensions/base-extension.js';
 
 class ConcreteLLM extends BaseLLM {
   lastMessages: Message[] | null = null;
 
-  async _sendMessagesToLLM(messages: Message[], _kwargs: Record<string, unknown>): Promise<CompleteResponse> {
+  lastKwargs: Record<string, unknown> | null = null;
+  lastOptions: unknown = null;
+
+  async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options?: unknown): Promise<CompleteResponse> {
     this.lastMessages = messages;
+    this.lastKwargs = kwargs;
+    this.lastOptions = options;
     return new CompleteResponse({ content: 'Mock response' });
   }
 
@@ -60,6 +66,26 @@ describe('BaseLLM', () => {
     }
     expect(chunks.join('')).toBe('Mock Stream');
     expect(llm.lastMessages).toEqual(messages);
+  });
+
+  it('passes (messages, kwargs, options) to the provider and (messages, kwargs) to extension hooks', async () => {
+    const hooks: unknown[][] = [];
+    class RecordingExtension extends LLMExtension {
+      async beforeInvoke(...args: unknown[]): Promise<void> { hooks.push(['before', ...args]); }
+      async afterInvoke(...args: unknown[]): Promise<void> { hooks.push(['after', ...args]); }
+    }
+    llm.registerExtension(new RecordingExtension(llm));
+    const messages = [new Message(MessageRole.USER, 'hi')];
+    const kwargs = { tools: [{ name: 'tool' }] };
+    const options = { promptCacheScope: 'conversation' as const };
+
+    await llm.sendMessages(messages, kwargs, options);
+
+    expect(llm.lastKwargs).toBe(kwargs);
+    expect(llm.lastOptions).toBe(options);
+    expect(hooks[0]).toEqual(['before', messages, kwargs]);
+    expect(hooks[1]![0]).toBe('after');
+    expect(hooks[1]![3]).toBe(kwargs);
   });
 
   it('should configure system prompt', () => {

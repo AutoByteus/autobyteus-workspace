@@ -1,5 +1,5 @@
 import type { RawMessageStreamEvent } from '@anthropic-ai/sdk/resources/messages/messages.js';
-import { parseAnthropicAssistantTurn, type AnthropicAssistantTurn } from '../utils/provider-native-assistant-turn.js';
+import { parseAnthropicAssistantTurn, type AnthropicAssistantTurn } from './anthropic-native-assistant-turn.js';
 
 type BlockState = {
   type: string;
