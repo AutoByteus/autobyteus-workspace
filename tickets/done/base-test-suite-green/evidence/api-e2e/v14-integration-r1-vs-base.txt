@@ -1,0 +1,22 @@
+BASE clean-integration-prereqs-built.json total=408 passed=290 failed=47 skipped=71 suites_failed=32
+HEAD v04-integration-clean-r1.json total=408 passed=338 failed=2 skipped=68 suites_failed=2
+HEAD impl-clean-integration-r2.json total=408 passed=338 failed=2 skipped=68 suites_failed=2
+
+== comparisons against v04-integration-clean-r1.json ==
+base-passed now not passed: 2
+    failed ('tests/integration/agent/agent-status-websocket.integration.test.ts', 'Agent status WebSocket contract integration coalesces a representative fine-grained canonical stream into one default-window content frame')
+    failed ('tests/integration/agent/agent-status-websocket.integration.test.ts', "Agent status WebSocket contract integration uses a changed interval only for the active socket's next newly opened window")
+new skips (skipped in head, not skipped in base): 0
+skips in base that now run: 3
+    skipped -> passed ('tests/integration/api/team-communication-api.integration.test.ts', 'Team communication API integration does not hydrate unmigrated old flat projections through a runtime compatibility fallback')
+    skipped -> passed ('tests/integration/api/team-communication-api.integration.test.ts', 'Team communication API integration hydrates historical messages through GraphQL and serves reference content through the message-owned REST route')
+    skipped -> passed ('tests/integration/api/team-communication-api.integration.test.ts', 'Team communication API integration maps unreadable reference content failures to a graceful 403 REST response')
+identities only in base: 7
+    failed ('tests/integration/agent/agent-websocket.integration.test.ts', 'Agent websocket backend-owned command lifecycle integration returns duplicate and busy ACKs for same and different in-flight command ids')
+identities only in head: 7
+    passed ('tests/integration/agent/agent-websocket.integration.test.ts', "Agent websocket backend-owned command lifecycle integration returns a duplicate ACK for the same in-flight command id and hands a different id to the run's input admission")
+head failures:
+    ('tests/integration/agent/agent-status-websocket.integration.test.ts', 'Agent status WebSocket contract integration coalesces a representative fine-grained canonical stream into one default-window content frame')
+    ('tests/integration/agent/agent-status-websocket.integration.test.ts', "Agent status WebSocket contract integration uses a changed interval only for the active socket's next newly opened window")
+
+== outcome differences v04-integration-clean-r1.json vs impl-clean-integration-r2.json: 0 ==

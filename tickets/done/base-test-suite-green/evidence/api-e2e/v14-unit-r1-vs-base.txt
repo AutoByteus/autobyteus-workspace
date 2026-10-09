@@ -1,0 +1,38 @@
+BASE clean-unit.json total=5089 passed=5042 failed=41 skipped=6 suites_failed=26
+HEAD v06-unit-clean-r1.json total=5090 passed=5084 failed=0 skipped=6 suites_failed=0
+HEAD impl-clean-unit-r2.json total=5090 passed=5084 failed=0 skipped=6 suites_failed=0
+
+== comparisons against v06-unit-clean-r1.json ==
+base-passed now not passed: 0
+new skips (skipped in head, not skipped in base): 0
+skips in base that now run: 0
+identities only in base: 11
+    failed ('tests/unit/agent-memory/team-memory-explorer-service.test.ts', 'TeamMemoryExplorerService member identity and invalid roots skips a corrupt root tree with a warning while other roots still list (AC-003)')
+    passed ('tests/unit/agent-tools/project-tasks/project-task-tools.test.ts', 'Project data tools — actual native preparation/execute and selected MCP adapter rejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["2026-10-08T17:41:32.848Z"]}')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer builds the workspace directory tree')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer produces shallow JSON with limited depth')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer reads file content within size limits')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer rejects reading files outside the workspace')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer returns the root tree node')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer serializes the tree to JSON')
+    failed ('tests/unit/file-explorer/file-explorer.test.ts', 'FileExplorer throws when reading a file that exceeds max size')
+    failed ('tests/unit/logging/prisma-query-log-policy.test.ts', 'repository_prisma installed package policy installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code')
+    failed ('tests/unit/workspaces/workspace-manager-skill-integration.test.ts', 'WorkspaceManager skill integration creates and initializes a SkillWorkspace for skill_ws_ IDs')
+identities only in head: 12
+    passed ('tests/unit/agent-memory/team-memory-explorer-service.test.ts', 'TeamMemoryExplorerService member identity and invalid roots skips a corrupt root tree with a readiness diagnostic while other roots still list (AC-003)')
+    passed ('tests/unit/agent-tools/project-tasks/project-task-tools.test.ts', 'Project data tools — actual native preparation/execute and selected MCP adapter rejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["2026-10-08T19:41:57.078Z"]}')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer builds the workspace directory tree')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer produces shallow JSON with limited depth')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer reads file content within size limits')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer rejects reading files outside the workspace')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer returns the root tree node')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer serializes the tree to JSON')
+    passed ('tests/unit/file-explorer/file-explorer.test.ts', 'WorkspaceFileExplorer throws when reading a file that exceeds max size')
+    passed ('tests/unit/logging/prisma-query-log-policy.test.ts', 'repository_prisma installed package policy installs exact unpatched 1.0.10 entrypoints without dotenv acquisition code')
+    passed ('tests/unit/services/team-communication/team-communication-content-service.test.ts', 'TeamCommunicationContentService rejects a relative reference path as an invalid stored path')
+    passed ('tests/unit/workspaces/workspace-manager-skill-integration.test.ts', 'WorkspaceManager skill integration creates and caches a SkillWorkspace for skill_ws_ IDs')
+head failures:
+
+== outcome differences v06-unit-clean-r1.json vs impl-clean-unit-r2.json: 2 ==
+    None vs passed ('tests/unit/agent-tools/project-tasks/project-task-tools.test.ts', 'Project data tools — actual native preparation/execute and selected MCP adapter rejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["2026-10-08T19:11:51.257Z"]}')
+    passed vs None ('tests/unit/agent-tools/project-tasks/project-task-tools.test.ts', 'Project data tools — actual native preparation/execute and selected MCP adapter rejects malformed Project input before native coercion with MCP parity: {"name":"x","workspaces":["2026-10-08T19:41:57.078Z"]}')
