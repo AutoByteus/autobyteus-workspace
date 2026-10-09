@@ -9,6 +9,7 @@
 | SR-003 | Mixed | Architecture investigation (AF-01–AF-15); design completed | AF-10 | Approved (SR-002) | Approved (DEC-002 revised under delegation); design Ready | DEC-002; REQ-004; all REQ mapped in design | Design complete; classification Large / High |
 | SR-004 | Design | ARCH-REV-001 (Fail — Design Impact) | ARCH-F-001, ARCH-F-002; RR-1–RR-5 | design Ready (SR-003) | design Ready (round 2) | REQ-004, REQ-006, REQ-008; AC-003, AC-004, AC-006 | D-9 freshness key, D-10 awaited emission; requirements unchanged |
 | SR-005 | Design | ARCH-REV-002 (Fail — Design Impact) | ARCH-F-003 | design Ready (SR-004) | design Ready (round 3) | REQ-008, REQ-010; AC-003, AC-008 | Strict shared contract schemas mapped; requirements unchanged |
+| SR-006 | Evidence | PTM coordination note: gemini-native-cache-hit merged | AF-16 | design Ready, ARCH-REV-003 Pass | unchanged | BEH-003 | Integration note for delivery; no requirement or design change |
 
 ## Revision Entries
 
@@ -107,3 +108,18 @@
 - Post-design classification: unchanged (Large / High)
 - Applied handoff-rule outcome: Architecture Design Complete, Large/High → `/software_engineering_team/architecture_reviewer` (round 3)
 - Next action: architecture review round 3
+
+### SR-006 — Upstream Gemini/AGY merge (evidence only)
+
+- Phase and classification: Evidence, `Evidence-only clarification`
+- Trigger: Project Task Manager message 2026-10-09 (gemini-native-cache-hit merged as 3913a75d6 + 033a6d780; verification `/Users/normy/.autobyteus/reports/gemini-native-cache-hit-terminal-verification.md`). Also recorded: ARCH-REV-003 Pass (informational).
+- Finding IDs: AF-16
+- Prior/current status: requirements Approved; design Ready; reviewed Pass; implementation committed (`9e8e5bf26`, `a5d8d2d31`, `aa9d949e1`); route at Code Review
+- IDs affected: BEH-003 / REQ-005 (unchanged intent)
+- Why recorded: the upstream AGY result-semantic fix overlaps D-5. D-5 supersedes it, and integrating requires one conflict resolution plus one test adaptation.
+- Canonical sections changed: investigation notes AF-16
+- Intended behavior changed: `No`
+- Approval impact: none
+- Design/review impact: none (design unchanged); delivery integration note
+- Applied handoff-rule outcome: no rule matches an evidence-only note; result returned to the Project Task Manager
+- Next action: delivery integrates with current `origin/personal` per AF-16

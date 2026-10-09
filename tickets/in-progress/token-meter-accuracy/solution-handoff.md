@@ -69,3 +69,10 @@ Independent architecture review round 3 of the package above.
 ## Review Outcome
 
 - ARCH-REV-003 (SR-005): **Pass**. ARCH-F-001, ARCH-F-002 and ARCH-F-003 resolved (report: `design-review-report.md`). The architecture reviewer forwarded the cumulative package to `/software_engineering_team/implementation_engineer` (delivery confirmed). Informational; no further Solution Designer handoff.
+
+## Integration Note For Delivery (SR-006, AF-16)
+
+`origin/personal` now contains gemini-native-cache-hit (3913a75d6, 033a6d780). When integrating:
+- resolve the single conflict in `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts` in favor of this branch (per-step `base_excludes_cache` usage; the result emits no usage);
+- adapt the upstream converter test that asserts result-usage semantics to per-step usage;
+- keep the upstream fold test and the Gemini 3.1 Pro catalog prices.
