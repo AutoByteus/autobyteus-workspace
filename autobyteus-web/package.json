@@ -80,7 +80,8 @@
     "test:e2e:composer-mention-discoverability": "node tests/e2e/composer-mention-discoverability-probe.mjs",
     "test:e2e:fresh-run-auto-approval": "node tests/e2e/fresh-run-auto-approval-probe.mjs",
     "test:e2e:run-settings-live": "node tests/e2e/run-settings-live-probe.mjs",
-    "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs"
+    "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
+    "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
