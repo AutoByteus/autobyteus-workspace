@@ -185,6 +185,42 @@ describe('current supported model definitions', () => {
     });
   });
 
+  it('prices Gemini 3.1 Pro Preview at the official per-prompt-size tiers', async () => {
+    const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'gemini-3.1-pro-preview');
+    expect(definitions).toHaveLength(1);
+    expect(definitions[0]?.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 2,
+      outputTokenPricing: 12,
+      cachedInputReadTokenPricing: 0.2,
+    });
+
+    await expect(LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'gemini-3.1-pro-preview',
+      modelProvider: LLMProvider.GEMINI,
+    })).resolves.toMatchObject({
+      pricing_status: 'trusted',
+      input_price_per_million: 2,
+      output_price_per_million: 12,
+      cached_input_read_price_per_million: 0.2,
+      input_price_tiers: [
+        {
+          tier_id: 'prompt_le_200k',
+          max_input_tokens: 200_000,
+          input_price_per_million: 2,
+          output_price_per_million: 12,
+          cached_input_read_price_per_million: 0.2,
+        },
+        {
+          tier_id: 'prompt_gt_200k',
+          max_input_tokens: null,
+          input_price_per_million: 4,
+          output_price_per_million: 18,
+          cached_input_read_price_per_million: 0.4,
+        },
+      ],
+    });
+  });
+
   it('defines exact GPT-6 Astra metadata, direct schema, and complete Standard pricing tiers', async () => {
     const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'gpt-6-astra');
     expect(definitions).toHaveLength(1);
