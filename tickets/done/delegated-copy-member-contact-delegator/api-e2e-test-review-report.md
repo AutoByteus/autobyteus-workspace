@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: API/E2E Pass (API-REV-001) for IR-001 (commit `24baaf7c5`); proportional test-code review requested (architectural risk High)
+- Review Round: 2
+- Trigger: round 1: API/E2E Pass (API-REV-001) for IR-001 (commit `24baaf7c5`). Round 2: API/E2E addendum API-REV-002 (still Pass). It adds packaged-desktop evidence (isolated Electron instance, public agent package, real model `claude-haiku-5-5`). No durable test code changed.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-005)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
@@ -13,14 +13,14 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Original Code Review Report: `code-review-report.md` (CRR-001, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-003`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
 - Delivery Revision Record Reviewed As Context: N/A
 - API/E2E Result: Pass
-- Final Validation Confidence: 95.3%
-- Prior unresolved test-review findings rechecked: none (first test review)
+- Final Validation Confidence: 96.7% (API-REV-002; was 95.3% at API-REV-001)
+- Prior unresolved test-review findings rechecked: none were open (CRR-002 Pass, no findings). Round-2 check: the durable file was committed unchanged in `73e871592`, and HEAD has no diff to it. The API-REV-002 desktop journey is execution evidence (isolated instance, recording, screenshots, backend JSON), not durable test code.
 - Project testing guideline(s) applied: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/TESTING.md` ("`@` delegation and ad-hoc Tasks" command shape; Rules 2, 5, 6, 9). No conflicts. Rule 9 (baseline failures) is satisfied at the package level: the 42 base-identical server failures were reported, with causes, as a separate baseline item (implementation evidence `server-baseline-failures.txt`).
 - Supported Product Scenario Basis Confirmed: `Yes` (SCN-001, SCN-002, preserved SCN-004/005 and AC-009; see `code-review-report.md`)
 
@@ -63,10 +63,11 @@ Non-blocking notes (no action required for delivery):
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts` (Added)
+- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts` (Added; committed unchanged as `73e871592`; no change in API-REV-002)
 - Unresolved finding IDs: none
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
 - Notes:
   - Delivery should commit the new E2E file. It should not commit the untracked SDK or server `dist/` build outputs.
   - Delivery should add the file to TESTING.md's "`@` delegation and ad-hoc Tasks" commands, as API/E2E suggests.
-  - Desktop user verification of AC-003 is still a delivery gate.
+  - API-REV-002 adds packaged-desktop evidence for AC-001..003 (DSK-001..004) with a real model. Delivery decides whether this satisfies the AC-003 user-verification gate or whether explicit user verification is still needed.
+  - The new API-REV-002 observation (the host replying to a copy member's in-copy address returns `COLLABORATION_TARGET_NOT_FOUND`, and a retry by run ID succeeds) is pre-existing behavior under BEH-004/out-of-scope addressing. `resolveMessageRecipient` is unchanged in this ticket. It is a separate-ticket candidate and not a test-review finding.

@@ -19,11 +19,30 @@
 - Coverage Investigation: `…/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `…/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
-- Trigger: code review pass CRR-001
-- Prior Round Reviewed: none
-- Latest Authoritative Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2
+- Trigger: round 1 = code review pass CRR-001; round 2 = user request (2026-10-09) to validate in an isolated desktop instance with the public agent package and a real model
+- Prior Round Reviewed: round 1 (API-REV-001, Pass 95.3%)
+- Latest Authoritative Round: 2 (round 1 results carried forward unchanged; round 2 adds DSK-001..DSK-004)
+
+## Round 2 — Isolated Desktop Instance, Public Agent Package, Real Model (API-REV-002)
+
+Evidence folder: `…/api-e2e-evidence/api-rev-002/` (MP4 `desktop-journey.mp4`, trimmed at delivery from the 348 s recording to 42 s at 1512 px: each near-frozen stretch kept 0.5 s from its start and 0.8 s from its end, all motion kept, screenshots `shots/00..08`, backend readback `desktop-journey-backend.json`, `pm-conversation.json`, `isolated-start.json`, `isolated-build.log`, read-only checker `verify.py`).
+
+- Instance: `pnpm --silent isolated-app start --build` from this worktree (HEAD `24baaf7c5`; packaged `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`, 1.4.99-beta.6), instance `iso-61062-6a74`, its own ports (control 61062, server 61063) and auto-created data root. Driven with the browser-automation skill in attach-only mode. Other recorded instances (not mine, not running) were untouched; the user's app/data were untouched.
+- Content, as a user does: Settings → Agent Packages → import `https://github.com/AutoByteus/autobyteus-agents` (GitHub; 8 shared agents, 47 team-local agents, 14 teams).
+- Model: Claude Agent SDK runtime (logged-in `claude` CLI, 2.1.295), `claude-haiku-5-5`; the delegated Team inherits it. No key import.
+
+| Case ID | REQ / AC | Journey Step | Expected | Observed | Result | Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| DSK-001 | Setup (SCN-001 start) | New chat → Project Task Manager; ask it to delegate a tiny review to the Software Engineering Team | PM delegates; Team copy appears under the PM run | PM called `list_available_agents`, then `delegate_task(/software_engineering_team)` → `target_kind: team`, ad-hoc Task; tree shows the SE Team with 6 members; solution designer replied to the PM | Pass | `shots/05-pm-delegated.png`, `pm-conversation.json` |
+| DSK-002 | REQ-001, AC-001 | Select the (Offline) code reviewer; type `@` | Project Task Manager offered | Menu lists Project Task Manager among the agents | Pass | `shots/06-code-reviewer-at-menu.png` |
+| DSK-003 | REQ-002, REQ-004, REQ-006; AC-002, AC-003 | Choose `@Project Task Manager`, type "please create a follow-up ticket: fix the README typo …", Enter | Note with run-agent entry + send_message_to sentence; the code reviewer (real model) messages the PM's existing run; Team tab shows it; nothing added | Stored note: `- Project Task Manager (Agent) at /project_task_manager, the run's own agent` / `Use send_message_to with recipient_address /project_task_manager to message Project Task Manager; delegate_task cannot target it.` Code reviewer started and called `send_message_to({recipient_address:"/project_task_manager", message_type:"task_request", …})` → `DELIVERED`, `target_agent_run_id` = the one PM run `project_task_manager_49ba05d4…`. PM conversation shows "From Code Reviewer"; PM answered the code reviewer. Team tab: Task Request code reviewer → Project Task Manager. Backend: exactly one PM run, one task node (the SE Team), `collaborators: []` | Pass | `shots/07-code-reviewer-after-send.png`, `shots/08-pm-own-menu.png`, `desktop-journey-backend.json` |
+| DSK-004 | REQ-001 (host half) | PM composer, type `@Pro` | PM not offered | Only Product Team and Software Product Promo Video Team | Pass | `shots/08-pm-own-menu.png` |
+
+Observation (pre-existing, not caused by this change, separate-ticket candidate): when the PM replied, its first `send_message_to` used the code reviewer's address `/software_engineering_team/code_reviewer` (the code reviewer had written that address into its message) and was refused with `COLLABORATION_TARGET_NOT_FOUND … was not found in this Agent run.`; the PM retried by `target_agent_run_id` and it was delivered. Delegated-copy members are reachable from the host by run ID only; `resolveMessageRecipient` is unchanged by this ticket and requirements keep "run ID remains the exact identifier" out of scope.
+
+Cleanup: recording stopped (`end_reason: stopped`); `isolated-app stop iso-61062-6a74` → `wasRunning: true, forced: false, dataRootRemoved: true`, both ports released; no leftover app processes. The packaged build in `autobyteus-web/electron-dist/` is untracked build output.
 
 ## Routing Classification
 
@@ -90,24 +109,24 @@ Recorded in the coverage investigation (orders 1–8). After the broader-validat
 
 ## Validation Confidence Scorecard
 
-| Confidence Category | Post-Repository | Final | Change | New / Final Supporting Evidence | Residual Uncertainty |
+| Confidence Category | Post-Repository | Round 1 Final | Round 2 Final | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 95% | 96% | +1 | AC-001/002/003 also proven in the rendered web journey | Explicit desktop user verification of AC-003 (delivery-owned) |
-| Changed-boundary execution directness | 95% | 96% | +1 | Real composer → stream → admission → note → MCP → host | — |
-| Cross-boundary integration realism and mock gap | 92% | 95% | +3 | Real browser → real built backend; only the external CLI scripted | Real-model adherence to the note (prompt adherence; recorded design risk) |
-| Environment, configuration, identity, and fixture fidelity | 93% | 94% | +1 | Built dist + Nuxt dev + disposable data | AGY runtime only; the port logic is runtime-agnostic. Not packaged Electron |
-| Failure, edge-case, lifecycle, and recovery evidence | 92% | 95% | +3 | DCM-007 stopped root, restore on send; refusals; mutation control | — |
-| User-surface, browser, and desktop-shell confidence | 90% | 95% | +5 | Rendered menu per composer, send, Team tab, note hidden in bubble | No desktop-shell change; packaged app is user verification |
-| Durable regression coverage quality and relevance | 96% | 96% | 0 | New E2E (7 cases) mutation-proven, stable over 5 runs, owned cleanup | Browser journey is temporary (rationale in investigation) |
+| Requirement and acceptance-criteria proof | 95% | 96% | 98% | AC-001/002/003 proven in the packaged desktop app with the real public package and a real model (DSK-002..004) | Explicit user acceptance remains delivery's gate |
+| Changed-boundary execution directness | 95% | 96% | 97% | Real desktop composer → stream → admission → note → real model → MCP → existing host | — |
+| Cross-boundary integration realism and mock gap | 92% | 95% | 97% | Nothing scripted in round 2: real Claude Agent SDK runtime followed the note and used `send_message_to` with the host address | One model (Haiku 5.5) and one run; other runtimes rely on the same server path |
+| Environment, configuration, identity, and fixture fidelity | 93% | 94% | 96% | Packaged worktree app, isolated data, GitHub-imported public package (real PM / SE Team definitions and tool lists) | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 92% | 95% | 95% | DCM-007; refusals; mutation control | — |
+| User-surface, browser, and desktop-shell confidence | 90% | 95% | 98% | Packaged Electron app: menu per composer, send, Team tab, host conversation | — |
+| Durable regression coverage quality and relevance | 96% | 96% | 96% | New E2E (7 cases), mutation-proven | Browser and desktop journeys are not durable (rationale in investigation) |
 
 - Overall post-repository confidence: 93.3%
-- Overall final confidence: 95.3%
+- Overall final confidence: round 1 95.3% → round 2 96.7%
 - Calculation method: simple average of the seven categories
-- Confidence change from broader validation: +2.0 points (user surface, integration, lifecycle)
+- Confidence change: round 1 +2.0 (browser + lifecycle); round 2 +1.4 (packaged desktop, real package, real model)
 - Every critical acceptance criterion directly proven: `Yes`
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: real-model note adherence; AGY-only runtime; desktop packaged app not exercised (no shell change).
+- Confidence-limiting residual risks: one real model/run; pre-existing host → copy-member address refusal (recovered by run ID).
 
 ## Broader Validation Decision And Execution
 
@@ -127,10 +146,11 @@ Recorded in the coverage investigation (orders 1–8). After the broader-validat
 
 ## Desktop Application Validation
 
-- Approach: web-equivalent renderer (Nuxt dev) against the real built backend, per TESTING.md "Renderer UI … client–server behavior that also runs in a browser".
-- Shell-specific behavior: none changed (no Electron main/preload/IPC/packaging change).
-- Effect on any running desktop application: `None` (own ports, data root, HOME; installed app and `~/.autobyteus` untouched).
-- Not directly proven: packaged desktop app journey; it is the requirements' explicit user verification of AC-003 (delivery-owned).
+- Round 1: web-equivalent renderer (Nuxt dev) against the real built backend.
+- Round 2: isolated packaged desktop instance built from this worktree (`isolated-app start --build`), the full product journey with the GitHub-imported public agent package and a real model (DSK-001..004, see "Round 2" above). TESTING.md "A full real-product journey a user would perform → isolated desktop instance" is now satisfied.
+- Shell-specific behavior: none changed (no Electron main/preload/IPC/packaging change); the packaged run confirms the renderer/server change behaves the same inside the shell.
+- Effect on any running desktop application: `None` (own ports and data root; installed app, `~/.autobyteus` and other recorded instances untouched).
+- Not directly proven: none material; explicit user acceptance remains a delivery gate.
 
 ## Platform / Runtime Targets
 
@@ -197,11 +217,11 @@ N/A (Pass).
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Final validation confidence: 95.3%
+- Result: `Pass` (round 2)
+- Final validation confidence: 96.7% (round 1: 95.3%)
 - Default `95%` target met: `Yes`
 - Any final applicable category below `90%`: `No`
 - Broader validation decision: `Required` → executed, Pass
-- Critical acceptance criteria lacking direct proof: none (AC-003 explicit desktop user verification remains a delivery gate by requirement)
+- Critical acceptance criteria lacking direct proof: none. AC-003 is now proven in an isolated packaged desktop instance with the real public package and a real model (DSK-003); explicit user acceptance remains delivery's gate.
 - Next recipient from `get_handoff_rules`: Code Reviewer (proportional test-code review)
 - Notes: residual risks — MP-001 catalog-address divergence after host rename (not-found only, by design); `list_available_agents` is opt-in; 42 server unit/integration files fail identically on base (`…/implementation-evidence/ir-001/server-baseline-failures.txt`, reported by implementation per TESTING.md rule 9; not caused by this change); menu header/footer copy still reads as delegation for the host entry (separate-ticket candidate); the new E2E file and ticket artifacts are uncommitted.

@@ -57,3 +57,17 @@
 - Last completed case and result: DCM-007 Pass
 - Cases still running or not started: none
 - Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md`, "Test-Case Ledger Reconciliation"
+
+## Round 2 (API-REV-002) — Isolated Desktop Instance
+
+| Seq | Case ID | Timestamp | Event | Command / Configuration | Expected | Observed | Result | Evidence | Next Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 15 | — | 08:05 | Completed | `pnpm --silent isolated-app start --build` | instance ready | `iso-61062-6a74`, control 61062, server 61063 | Pass | `api-rev-002/isolated-start.json`, `isolated-build.log` | — |
+| 16 | — | 08:18 | Completed | Settings → Agent Packages → import GitHub `AutoByteus/autobyteus-agents` | imported | "Agent package imported."; 8 shared / 47 team-local agents / 14 teams | Pass | `desktop-journey.mp4` | — |
+| 17 | DSK-001 | 08:20 | Completed | New chat → Project Task Manager, Claude Agent SDK `claude-haiku-5-5`; delegation request | SE Team copy | Delegated; 6 members in tree | Pass | `shots/05-pm-delegated.png` | — |
+| 18 | DSK-002 | 08:21 | Completed | code reviewer composer `@` | PM offered | Listed | Pass | `shots/06-code-reviewer-at-menu.png` | — |
+| 19 | DSK-003 | 08:22 | Completed | choose `@Project Task Manager`, follow-up ticket request | existing PM run receives | code reviewer `send_message_to(/project_task_manager)` DELIVERED to the one PM run; Team tab; nothing added | Pass | `shots/07…`, `desktop-journey-backend.json` | — |
+| 20 | DSK-004 | 08:24 | Completed | PM composer `@Pro` | PM not offered | Not offered | Pass | `shots/08-pm-own-menu.png` | — |
+| 21 | — | 08:26 | Completed | stop recording; `isolated-app stop iso-61062-6a74` | clean | data root removed, ports released, no leftover processes | Pass | `desktop-journey.mp4` | — |
+
+- Round 2 reconciled into execution coverage report: `Yes` — "Round 2" section.

@@ -16,7 +16,7 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `…/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002`
 - API/E2E Test-Case Ledger: `…/api-e2e-test-case-ledger.md`
 - Current Investigation Round: 1
 - Trigger: Code review pass CRR-001 (Medium / High, reviewed route)
@@ -196,6 +196,7 @@ Scored after orders 1–8 (before DCM-007 and the browser journey).
 - Gap addressed: rendered `@` menu per focused composer, real web → server `focusedAgentRunId`, send through the real task-child composer, Team tab; stopped-root path
 - Why: these are the only material paths not exercised at the real boundary; both run with zero credits and owned resources
 - Expected confidence after: ≥95%
+- Round 2 (API-REV-002, user-directed): `Project Desktop Validation` added — isolated packaged instance from this worktree, public agent package imported from GitHub, Claude Agent SDK real model; the full SCN-001 journey (see execution report "Round 2"). Round 1 had wrongly deferred this to user verification although the requirement's success is defined in the desktop app and the change is High risk.
 - Browser-specific rationale: the change alters only menu contents, but the focused ID is wired through the real store/tree projection; a rendered journey proves the integration. Desktop-shell behavior is unchanged (no Electron/preload/IPC change), so an isolated desktop instance adds no material evidence beyond the delivery-owned user verification.
 
 ## Live Environment And Fixture Plan
@@ -230,6 +231,6 @@ None. Non-blocking observation (not a finding against approved scope): the `@` m
 
 - Proceed To API/E2E Execution: `Yes` (completed)
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (one new E2E file)
-- Post-repository confidence: 93.3%; final 95.3% (see execution report)
+- Post-repository confidence: 93.3%; final 95.3% (round 1) → 96.7% (round 2, desktop) (see execution report)
 - Broader validation decision: `Required` → executed (browser journey + DCM-007), Pass
 - Reroute Required Before Validation Execution: `No`
