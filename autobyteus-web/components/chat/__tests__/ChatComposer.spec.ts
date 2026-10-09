@@ -54,7 +54,7 @@ describe('ChatComposer', () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order)
   })
 
-  it('enables send only for text, a skill tag or a context file', async () => {
+  it('enables send only for text or a skill tag, never for context files alone', async () => {
     const target = buildTarget()
     const wrapper = mountComposer(target)
     const send = () => wrapper.get('[data-test="chat-primary-action"]')
@@ -67,8 +67,13 @@ describe('ChatComposer', () => {
     target.context.requestedSkillNames = []
     target.context.contextFilePaths = [{ kind: 'workspace_path', id: 'f', locator: '/a.txt', type: 'Text' } as any]
     await flushPromises()
-    expect(send().attributes('disabled')).toBeUndefined()
+    expect(send().attributes('disabled')).toBeDefined()
+    await send().trigger('click')
+    expect(target.send).not.toHaveBeenCalled()
 
+    target.context.requirement = 'summarize this file'
+    await flushPromises()
+    expect(send().attributes('disabled')).toBeUndefined()
     await send().trigger('click')
     expect(target.send).toHaveBeenCalledTimes(1)
   })

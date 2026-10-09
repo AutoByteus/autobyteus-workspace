@@ -1,0 +1,588 @@
+[
+  {
+    "type": "CONNECTED",
+    "payload": {
+      "agent_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257",
+      "session_id": "016eec37-aff3-4b1c-bfcf-d4e2adab72fe"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "idle",
+      "recoverableBlock": null,
+      "agent_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 1,
+      "entries": [],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "initializing",
+      "recoverableBlock": null,
+      "agent_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 2,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": null,
+          "state": "queued",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "running",
+      "recoverableBlock": null,
+      "agent_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257"
+    }
+  },
+  {
+    "type": "TURN_STARTED",
+    "payload": {
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+          "state": "queued",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "AGENT_COMMAND_ACK",
+    "payload": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257",
+      "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+      "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+      "state": "accepted",
+      "accepted": true,
+      "duplicate": false,
+      "status": {
+        "status": "running",
+        "recoverableBlock": null,
+        "agent_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257"
+      }
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+          "state": "forwarded",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "payload": {
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "invocation_id": "agy-tool-95bdfb8c-299b-4bb0-a7e5-5284b87800c8-2",
+      "tool_name": "view_file",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+        "toolAction": "Viewing image",
+        "toolSummary": "View image file"
+      }
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+          "state": "forwarded",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "payload": {
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "invocation_id": "agy-tool-95bdfb8c-299b-4bb0-a7e5-5284b87800c8-2",
+      "tool_name": "view_file",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+        "toolAction": "Viewing image",
+        "toolSummary": "View image file"
+      },
+      "result": {
+        "provider_state": "DONE",
+        "output": null
+      },
+      "provider_state": "DONE"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+          "state": "forwarded",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "SEGMENT_START",
+    "payload": {
+      "id": "agy-text-95bdfb8c-299b-4bb0-a7e5-5284b87800c8-3",
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "segment_type": "text",
+      "metadata": null
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "id": "agy-text-95bdfb8c-299b-4bb0-a7e5-5284b87800c8-3",
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "segment_type": "text",
+      "delta": "Green"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+          "state": "forwarded",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "SEGMENT_END",
+    "payload": {
+      "id": "agy-text-95bdfb8c-299b-4bb0-a7e5-5284b87800c8-3",
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "metadata": null,
+      "interrupted": false,
+      "reason": null,
+      "failed": false,
+      "error": null
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "dedupe_key": "agent_run_input:e2e:e2e-3ee1d462-f306-47a4-a439-9bc9038b5cb6",
+          "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+          "state": "forwarded",
+          "content": "What colour is this image? Answer in one word.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-outside-9oOpO1/pasted image.png",
+              "file_type": "image",
+              "file_name": "pasted image.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null
+    }
+  },
+  {
+    "type": "TOKEN_USAGE_UPDATED",
+    "payload": {
+      "usage_event_id": "621bc087-0a92-4d8c-805b-f25c37ad4e6a",
+      "idempotency_key": "agy:352899af-f35e-41c4-b0a1-9a01ec704974:1",
+      "observed_at": "2026-10-08T20:06:35.864Z",
+      "run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257",
+      "root_team_run_id": null,
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "llm_call_id": null,
+      "call_sequence": null,
+      "agent_definition_id": "agy-context-files-live-080d6082-fb24-48f7-a5e2-0620628f2334",
+      "workspace_id": "agent_ws_7fd403f8399de72572e7c9efd5887998c18eb5a1547465806d19b0c65ab553ad",
+      "task_id": null,
+      "team_name": null,
+      "agent_name": "agy-context-files-live-080d6082-fb24-48f7-a5e2-0620628f2334",
+      "run_summary": "What colour is this image? Answer in one word.",
+      "run_created_at": "2026-10-08T20:06:26.805Z",
+      "member_display_name": null,
+      "runtime_kind": "antigravity_cli",
+      "model_provider": "GEMINI",
+      "provider_name": "Antigravity CLI",
+      "model_identifier": "gemini-3.8-flash-low",
+      "model_value": "gemini-3.8-flash-low",
+      "selected_match_state": null,
+      "selected_model_value": null,
+      "selected_resolved_raw_model_id": null,
+      "claude_sdk_model_usage": [],
+      "claude_sdk_session_id": null,
+      "claude_sdk_query_kind": null,
+      "claude_sdk_main_loop_usage": null,
+      "ingestion_kind": "agy_result",
+      "usage_scope": "cumulative_snapshot",
+      "snapshot_series_key": "352899af-f35e-41c4-b0a1-9a01ec704974",
+      "previous_snapshot_event_id": null,
+      "input_token_semantic": "gross_includes_cache",
+      "reported_input_tokens": 19254,
+      "reported_output_tokens": 94,
+      "reported_total_tokens": 19348,
+      "accounting_input_tokens": 19254,
+      "accounting_output_tokens": 94,
+      "accounting_total_tokens": 19348,
+      "standard_input_tokens": 19254,
+      "cache_miss_input_tokens": 19254,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "cache_state": "zero_reported",
+      "reasoning_output_tokens": 0,
+      "billable_input_tokens": 19254,
+      "billable_output_tokens": 94,
+      "cost_basis": null,
+      "currency": null,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "cached_input_read_price_per_million": null,
+      "cached_input_write_price_per_million": null,
+      "cached_input_write_5m_price_per_million": null,
+      "cached_input_write_1h_price_per_million": null,
+      "pricing_source": null,
+      "pricing_status": "missing",
+      "pricing_missing_reason": "model_not_found",
+      "pricing_snapshot_json": {
+        "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash-low",
+        "price_config_id": null,
+        "model_provider": "GEMINI",
+        "model_identifier": "gemini-3.8-flash-low",
+        "model_value": "gemini-3.8-flash-low",
+        "canonical_name": null,
+        "currency": null,
+        "input_price_per_million": null,
+        "output_price_per_million": null,
+        "cached_input_read_price_per_million": null,
+        "cached_input_write_price_per_million": null,
+        "cached_input_write_5m_price_per_million": null,
+        "cached_input_write_1h_price_per_million": null,
+        "input_price_tiers": [],
+        "pricing_status": "missing",
+        "trusted_dimensions": {
+          "input": false,
+          "output": false,
+          "cached_input_read": false,
+          "cached_input_write": false,
+          "cached_input_write_5m": false,
+          "cached_input_write_1h": false
+        },
+        "missing_reason": "model_not_found",
+        "source": null,
+        "effective_from": null,
+        "effective_to": null,
+        "version": null,
+        "pricing_schedule_id": null,
+        "pricing_schedule_period_id": null,
+        "pricing_schedule_effective_from": null,
+        "pricing_schedule_window_timezone": null,
+        "pricing_schedule_peak_days": null,
+        "pricing_schedule_peak_days_timezone": null
+      },
+      "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash-low",
+      "selected_pricing_tier_id": null,
+      "missing_price_dimensions": [
+        "model_not_found"
+      ],
+      "estimated_api_input_cost": null,
+      "estimated_api_standard_input_cost": null,
+      "estimated_api_cache_read_input_cost": null,
+      "estimated_api_cache_creation_input_cost": null,
+      "estimated_api_cache_creation_5m_input_cost": null,
+      "estimated_api_cache_creation_1h_input_cost": null,
+      "estimated_api_output_cost": null,
+      "estimated_api_reasoning_output_cost": null,
+      "estimated_api_total_cost": null,
+      "api_cost_status": "price_missing",
+      "meter_delta_input_tokens": 19254,
+      "meter_delta_output_tokens": 94,
+      "meter_delta_total_tokens": 19348,
+      "run_summary_after_event": {
+        "run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257",
+        "root_team_run_id": null,
+        "agent_definition_id": "agy-context-files-live-080d6082-fb24-48f7-a5e2-0620628f2334",
+        "workspace_id": "agent_ws_7fd403f8399de72572e7c9efd5887998c18eb5a1547465806d19b0c65ab553ad",
+        "gross_input_tokens": 19254,
+        "standard_input_tokens": 19254,
+        "cache_miss_input_tokens": 19254,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_creation_5m_input_tokens": 0,
+        "cache_creation_1h_input_tokens": 0,
+        "output_tokens": 94,
+        "reasoning_output_tokens": 0,
+        "billable_output_tokens": 94,
+        "total_tokens": 19348,
+        "cache_read_input_token_rate": 0,
+        "standard_input_token_rate": 1,
+        "cache_creation_input_token_rate": 0,
+        "cache_state": "zero_reported",
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "currency": null,
+        "api_cost_status": "price_missing",
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash-low",
+        "selected_pricing_tier_id": null,
+        "unit_prices": {
+          "standard_input": {
+            "status": "missing",
+            "price_per_million": null
+          },
+          "cache_read_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "cache_creation_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "cache_creation_5m_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "cache_creation_1h_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "output": {
+            "status": "missing",
+            "price_per_million": null
+          },
+          "reasoning_output": {
+            "status": "not_applicable",
+            "price_per_million": null
+          }
+        },
+        "usage_report_count": 1,
+        "updated_at": "2026-10-08T20:06:35.864Z",
+        "latest_prompt_tokens": null,
+        "effective_context_window_tokens": null,
+        "context_window_usage_percent": null,
+        "latest_model_provider": "GEMINI",
+        "latest_model_identifier": "gemini-3.8-flash-low",
+        "latest_runtime_kind": "antigravity_cli",
+        "latest_selected_raw_model_id": null,
+        "has_cache_write_rate_assumption": false
+      },
+      "latest_prompt_tokens": null,
+      "effective_context_window_tokens": null,
+      "context_window_usage_percent": null,
+      "raw_usage_json": {
+        "input_tokens": 19254,
+        "output_tokens": 94,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 19348
+      },
+      "raw_event_json": {
+        "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+        "idempotency_key": "agy:352899af-f35e-41c4-b0a1-9a01ec704974:1",
+        "runtime_kind": "antigravity_cli",
+        "ingestion_kind": "agy_result",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "352899af-f35e-41c4-b0a1-9a01ec704974",
+        "model_identifier": "gemini-3.8-flash-low",
+        "model_value": "gemini-3.8-flash-low",
+        "model_provider": "GEMINI",
+        "provider_name": "Antigravity CLI",
+        "reported_input_tokens": 19254,
+        "reported_output_tokens": 94,
+        "reported_total_tokens": 19348,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_read_input_tokens": 0,
+        "cache_state": "zero_reported",
+        "reasoning_output_tokens": 0,
+        "raw_usage_json": {
+          "input_tokens": 19254,
+          "output_tokens": 94,
+          "thinking_tokens": 0,
+          "cache_read_tokens": 0,
+          "total_tokens": 19348
+        },
+        "quality_flags": [
+          "agy_provider_reported_cumulative_usage"
+        ],
+        "autobyteus_cumulative_snapshot_source_tokens": {
+          "reported_input_tokens": 19254,
+          "reported_output_tokens": 94,
+          "reported_total_tokens": 19348,
+          "accounting_input_tokens": 19254,
+          "accounting_output_tokens": 94,
+          "accounting_total_tokens": 19348,
+          "standard_input_tokens": 19254,
+          "cache_miss_input_tokens": 19254,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 0,
+          "billable_input_tokens": 19254,
+          "billable_output_tokens": 94
+        }
+      },
+      "quality_flags": [
+        "agy_provider_reported_cumulative_usage",
+        "first_cumulative_snapshot_assumed_run_origin"
+      ]
+    }
+  },
+  {
+    "type": "TURN_COMPLETED",
+    "payload": {
+      "turn_id": "95bdfb8c-299b-4bb0-a7e5-5284b87800c8",
+      "provider_status": "SUCCESS"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "status": "idle",
+      "recoverableBlock": null,
+      "agent_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_bb99d7e93b1549419750af3e4e2f6257"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "b27409ee-50b2-418a-98eb-18091d9f4b62",
+      "revision": 5,
+      "entries": [],
+      "recoverableBlock": null
+    }
+  }
+]
