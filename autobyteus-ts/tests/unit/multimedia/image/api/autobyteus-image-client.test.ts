@@ -76,7 +76,8 @@ describe('AutobyteusImageClient', () => {
       ['input.png'],
       null,
       { size: '1024x1024' },
-      client.sessionId
+      client.sessionId,
+      { signal: undefined },
     );
   });
 
@@ -95,7 +96,8 @@ describe('AutobyteusImageClient', () => {
       ['input.png'],
       'mask.png',
       { size: '1024x1024' },
-      client.sessionId
+      client.sessionId,
+      { signal: undefined },
     );
   });
 
