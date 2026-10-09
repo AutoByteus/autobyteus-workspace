@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { computed } from 'vue'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { AgentStatus } from '~/types/agent/AgentStatus'
@@ -156,3 +157,50 @@ it.each(['host-input', 'unknown-input', 'duplicate-input', 'duplicate-status', '
     expect(() => build(view)).toThrow(/identity/)
   },
 )
+
+/** delegated-team-aggregate-status REQ-001..003/005/008, AC-001/002/005/006/007 (Agent runs). */
+describe('AgentRunCollaborationContext task Team status', () => {
+  beforeEach(() => { setActivePinia(createPinia()) })
+
+  const teamStatusOf = (rows: ReturnType<AgentRunCollaborationContext['listTaskRows']>, name: string) =>
+    rows.find((entry) => entry.row.displayName === name)!.teamStatus
+
+  it('gives a task Team row its status from all its listed agents, collapsed or expanded; agent rows carry none', () => {
+    const context = build()
+    const collapsed = context.listTaskRows(() => false)
+    expect(collapsed.map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team'])
+    expect(teamStatusOf(collapsed, 'product team')).toBe(AgentStatus.Running)
+    expect(teamStatusOf(collapsed, 'computer use agent')).toBeNull()
+    const expanded = context.listTaskRows(() => true)
+    expect(teamStatusOf(expanded, 'product team')).toBe(AgentStatus.Running)
+    expect(teamStatusOf(expanded, 'prototyper')).toBeNull()
+    // The Team row keeps its agent-only currentStatus empty.
+    expect(expanded.find((entry) => entry.row.displayName === 'product team')!.row.currentStatus).toBeNull()
+  })
+
+  it('follows member status changes while collapsed, without expanding or reloading', () => {
+    const context = build()
+    const rows = computed(() => context.listTaskRows(() => false))
+    const team = () => teamStatusOf(rows.value, 'product team')
+    const prototyper = context.getAgentContext('pp-run')!.state
+    const bootstrapper = context.getAgentContext('pb-run')!.state
+    expect(team()).toBe(AgentStatus.Running)
+    prototyper.currentStatus = AgentStatus.Idle
+    expect(team()).toBe(AgentStatus.Idle)
+    bootstrapper.currentStatus = AgentStatus.Error
+    expect(team()).toBe(AgentStatus.Error)
+    bootstrapper.currentStatus = AgentStatus.Initializing
+    expect(team()).toBe(AgentStatus.Running)
+    prototyper.currentStatus = AgentStatus.Offline
+    bootstrapper.currentStatus = AgentStatus.Offline
+    expect(team()).toBe(AgentStatus.Offline)
+  })
+
+  it('reads gray when the run is not alive, whatever the members last reported', () => {
+    const view = agentRootView()
+    view.is_active = false
+    const context = build(view)
+    expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Running)
+    expect(teamStatusOf(context.listTaskRows(() => true), 'product team')).toBe(AgentStatus.Offline)
+  })
+})

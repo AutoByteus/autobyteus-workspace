@@ -160,6 +160,7 @@
                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
                 <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
                 <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+                <TeamAggregateStatusDot class="mr-1.5 flex-none" :status="display.row.status" />
                 <!-- Teams share the people-group identity, in the tree's slate. -->
                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-4 w-4 flex-none text-slate-500" data-team-icon="temporary-task-team" />
                 <span class="truncate font-semibold">{{ label(display.row.address) }}</span>
@@ -183,6 +184,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import { agentOrgGroupArchiveKey } from '~/composables/useWorkspaceHistoryGroupArchive'
 import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
 import type { AgentStatus } from '~/types/agent/AgentStatus'
+import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { useLeavingTreeRows } from './useLeavingTreeRows'
 import { projectAgentOrgHistoryRows, type AgentOrgHistoryAgentRow, type AgentOrgHistoryDelegator, type AgentOrgHistoryTaskAgentRow, type AgentOrgHistoryTaskTeamRow, type AgentOrgHistoryTeamRow } from '~/utils/agentOrgHistoryRows'
 
@@ -213,14 +215,14 @@ const initials = (address: string) => label(address).split(/\s+/).slice(0, 2).ma
 const startedBy = (delegator: AgentOrgHistoryDelegator) =>
   t('workspace.members.started_by', { name: delegator.address ? label(delegator.address) : delegator.agentRunId })
 const agentStatusLabelKey = (status: AgentStatus) => `workspace.history.hierarchy.status.${status}`
-const teamStatusLabelKey = (status: AgentStatus) => `workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_${status}`
+const teamStatusLabelKey = (status: TeamStatus) => `workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_${status}`
 const agentRowLabel = (row: AgentOrgHistoryAgentRow | AgentOrgHistoryTaskAgentRow) => {
   const status = t(agentStatusLabelKey(row.status))
   const starter = 'delegatedBy' in row && row.delegatedBy ? `, ${startedBy(row.delegatedBy)}` : ''
   return `${label(row.address)}, ${status}${starter}, ${row.address}, ${row.agentRunId}`
 }
 const taskTeamRowLabel = (row: AgentOrgHistoryTaskTeamRow) =>
-  `${label(row.address)}${row.delegatedBy ? `, ${startedBy(row.delegatedBy)}` : ''}, ${row.address}, ${row.teamRunId}`
+  `${label(row.address)}. ${t(teamStatusLabelKey(row.status))}${row.delegatedBy ? `, ${startedBy(row.delegatedBy)}` : ''}, ${row.address}, ${row.teamRunId}`
 const teamRowLabel = (row: AgentOrgHistoryTeamRow) => `${label(row.address)}. ${t(teamStatusLabelKey(row.status))}`
 const rowStyle = (depth: number) => ({ paddingLeft: `calc((${depth} + 1) * 0.875rem)` })
 const relative = (createdAt: string) => {

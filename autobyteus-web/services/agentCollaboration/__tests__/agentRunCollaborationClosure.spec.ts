@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import type { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
+import { AgentStatus } from '~/types/agent/AgentStatus'
 
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 
@@ -53,6 +54,18 @@ describe('Agent root closed task executions', () => {
     // A later DONE closes it again (REQ-009).
     expect(context.applyEvent(6, { kind: 'task_executions_closed', task_executions: [{ teamRunId: 'review-team' }] })).toBe('applied')
     expect(context.isListed('rp-run')).toBe(false)
+  })
+
+  // delegated-team-aggregate-status REQ-002, AC-006: a Team counts only the work still shown under it.
+  it('does not count agents of closed work in a task Team status; reopening counts them again', () => {
+    const teamStatus = (context: AgentRunCollaborationContext) => context.listTaskRows(() => false)
+      .find((entry) => entry.row.rowKey === 'team:review-team')!.teamStatus
+    const context = buildClosureContext(closureView([{ agentRunId: 'helper-run' }]))
+    context.getAgentContext('helper-run')!.state.currentStatus = AgentStatus.Running
+    context.getAgentContext('rp-run')!.state.currentStatus = AgentStatus.Idle
+    expect(teamStatus(context)).toBe(AgentStatus.Idle)
+    expect(context.applyEvent(5, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'helper-run' }] })).toBe('applied')
+    expect(teamStatus(context)).toBe(AgentStatus.Running)
   })
 
   it('requires a fresh view when a reopened reference is not a task execution of the run', () => {

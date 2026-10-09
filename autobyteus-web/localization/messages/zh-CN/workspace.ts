@@ -222,8 +222,6 @@ const messages = {
     "临时任务执行",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
     "团队状态：运行中",
-  "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_initializing":
-    "团队状态：正在初始化",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_error":
     "团队状态：错误",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_idle":

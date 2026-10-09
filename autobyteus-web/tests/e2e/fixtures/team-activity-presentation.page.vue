@@ -1,7 +1,7 @@
 <template>
   <main data-test="team-activity-probe" class="min-h-screen bg-slate-100 p-6 text-slate-900">
     <header class="mx-auto mb-6 max-w-5xl rounded-lg bg-white p-4 shadow-sm">
-      <h1 class="text-xl font-semibold">Binary team activity presentation probe</h1>
+      <h1 class="text-xl font-semibold">Team status (history) and binary activity (running) presentation probe</h1>
       <p data-test="resolved-locale" class="mt-1 text-sm text-slate-600">{{ resolvedLocale }}</p>
       <p data-test="independent-facts" class="mt-1 text-sm text-slate-600">
         member={{ memberStatus }} subscribed={{ subscribed }} stopPending={{ stopPending }} failures={{ stopFailureCount }}

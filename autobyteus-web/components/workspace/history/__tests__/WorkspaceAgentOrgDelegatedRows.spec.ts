@@ -6,11 +6,16 @@ import type { AgentOrgHistoryDefinitionGroup } from '~/stores/runHistoryTypes';
 import type { WorkspaceHistorySectionState } from '../workspaceHistorySectionContracts';
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
 /** CR-003 (REQ-013 / AC-017 via REQ-017): Org members tree shows plain names plus who started a delegated child. */
 type OrgTree = ReturnType<typeof taskBearingView>['execution_tree'];
-const mountOrg = (isActive: boolean, mutate: (tree: OrgTree) => OrgTree = (tree) => tree) => {
+const mountOrg = (
+  isActive: boolean,
+  mutate: (tree: OrgTree) => OrgTree = (tree) => tree,
+  liveStatuses: Readonly<Record<string, AgentStatus>> | null = null,
+) => {
   const tree = mutate(structuredClone(taskBearingView().execution_tree) as OrgTree);
   const group: AgentOrgHistoryDefinitionGroup = {
     stableKey: 'agent_org_definition:org-definition',
@@ -31,7 +36,11 @@ const mountOrg = (isActive: boolean, mutate: (tree: OrgTree) => OrgTree = (tree)
     isAgentOrgDeleting: () => false,
     isAgentOrgArchiving: () => false,
     agentOrgTerminationError: () => null,
-    agentOrgContextFor: () => null,
+    // A live Org context as the rows read it (tree, closure facts, agent statuses).
+    agentOrgContextFor: () => liveStatuses && {
+      orgRunId: 'org-run', executionTree: tree, isActive: true, phase: 'live', view: { closed_task_executions: [] },
+      getAgentContext: (agentRunId: string) => ({ state: { currentStatus: liveStatuses[agentRunId] ?? AgentStatus.Offline } }),
+    },
   } as unknown as WorkspaceHistorySectionState;
   const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: vi.fn() };
   const actions = { onInspectAgentOrgExecution: vi.fn() } as never;
@@ -95,6 +104,34 @@ describe('Org history delegated rows', () => {
       expect(team.findAll('[data-icon="heroicons:user-group-20-solid"]')).toHaveLength(1);
       expect(team.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
       expect(team.attributes('aria-expanded')).toBe('true');
+    }
+  });
+
+  // delegated-team-aggregate-status REQ-001/003/005/006/007, AC-001/007/009/010 (Org runs).
+  it('gives every Org Team row exactly one Team status dot before the slate people-group, in its accessible label', () => {
+    const wrapper = mountOrg(true, undefined, {
+      'agent-task-lead': AgentStatus.Running, 'agent-lead-configured': AgentStatus.Idle, 'agent-director': AgentStatus.Error,
+    });
+    const taskTeam = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
+    const dots = taskTeam.findAll('[data-test="team-aggregate-status-dot"]');
+    expect(dots).toHaveLength(1);
+    expect(dots[0]!.attributes('data-status')).toBe(AgentStatus.Running);
+    expect(dots[0]!.element.nextElementSibling?.getAttribute('data-team-icon')).toBe('temporary-task-team');
+    expect(dots[0]!.get('[aria-hidden="true"]').classes()).toEqual(expect.arrayContaining(['bg-blue-500', 'animate-pulse']));
+    expect(taskTeam.attributes('aria-label')).toMatch(/^team\. .*Running, Started by director/);
+    const configured = wrapper.get('[data-test="agent-org-team-row-team-configured"]');
+    expect(configured.findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(1);
+    expect(configured.get('[data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Idle);
+    // Agent rows keep their own status; the Org root row has no Team dot.
+    expect(wrapper.get('[data-test="agent-org-agent-row-agent-director"]').attributes('data-status')).toBe(AgentStatus.Error);
+    expect(wrapper.findAll('[data-test="team-aggregate-status-dot"]')).toHaveLength(2);
+    expect(wrapper.get('[data-test="agent-org-run-open-org-run"]').find('[data-test="team-aggregate-status-dot"]').exists()).toBe(false);
+  });
+
+  it('reads every Org Team row gray when the Org run is stopped', () => {
+    const wrapper = mountOrg(false);
+    for (const testId of ['agent-org-task-team-row-team-task', 'agent-org-team-row-team-configured']) {
+      expect(wrapper.get(`[data-test="${testId}"] [data-test="team-aggregate-status-dot"]`).attributes('data-status')).toBe(AgentStatus.Offline);
     }
   });
 
