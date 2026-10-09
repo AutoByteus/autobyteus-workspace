@@ -1,0 +1,6 @@
+# files under ~/.autobyteus modified during the run (read-only; counts per top-level entry)
+   1 logs/app.log
+   1 server-data/db
+   1 server-data/logs
+   8 server-data/memory
+# test-signature hits (vitest/tmp/fixture/test-run names):

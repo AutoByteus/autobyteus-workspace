@@ -11,8 +11,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { RunFileChangeProjectionService } from "../../../src/run-history/services/run-file-change-projection-service.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
-import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { RunFileChangeProjectionStore } from "../../../src/services/run-file-changes/run-file-change-projection-store.js";
 import {
@@ -100,7 +99,7 @@ describe("Run file changes API integration", () => {
     const memberDir = path.join(teamDir, input.memberRunId);
     await fs.mkdir(memberDir, { recursive: true });
     const memberAddress = `/${input.memberRouteKey}`;
-    await new TeamRunExecutionTreeStore().write(teamDir, testExecutionTree({
+    await writeCurrentTeamRunPackage(teamDir, testExecutionTree({
       rootTeamRunId: input.teamRunId, rootTeamDefinitionId: "team-def-1",
       teamDefinitionName: "Team Definition", coordinatorAddress: memberAddress,
       children: [testAgentNode(memberAddress, { agentRunId: input.memberRunId,

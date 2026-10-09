@@ -1,0 +1,4 @@
+# files under ~/.autobyteus modified during the run (read-only; counts per top-level entry)
+   1 logs/app.log
+   4 server-data/memory/agents/project_task_manager_7c8dce0c4a8b44f88e776a83809dee03
+# test-signature hits (vitest/tmp/fixture/test-run names):

@@ -1,0 +1,10 @@
+
+> autobyteus-server-ts@0.1.1 test:integration /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration
+
+Integration test prerequisites are missing:
+  - autobyteus-application-frontend-sdk/dist/index.js
+  - applications/brief-studio/dist/importable-package/applications/brief-studio/application.json
+Build them from the repository root with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

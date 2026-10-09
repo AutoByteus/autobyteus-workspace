@@ -21,7 +21,9 @@ export default defineConfig({
       "tests/unit/agent-tools/prompt-engineering/**/*.test.ts",
       "tests/integration/prompt-engineering/**/*.test.ts",
     ],
-    setupFiles: ["./tests/setup/prisma-env.ts"],
+    // The environment isolation must run first: it removes inherited
+    // live-app variables before anything under test is imported.
+    setupFiles: ["./tests/setup/test-environment-isolation.ts", "./tests/setup/prisma-env.ts"],
     globalSetup: "./tests/setup/prisma-global-setup.ts",
   },
 });
