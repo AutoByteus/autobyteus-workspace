@@ -118,6 +118,7 @@ All native probes use `probes/gemini-cache-lab.mjs`: the production `GeminiLLM` 
 | UNK-002 | Unknown | Whether a project-scoped `cachedContents` path works with an Express key | Would make explicit caching possible on Express | Out of scope unless DEC-003 chooses explicit caching | Open |
 | RSK-001 | Risk | Repairing historical AGY/3.1 Pro rows touches run records and analytics facets | Data correctness versus migration complexity | DEC-001 / DEC-002 | Open |
 | OBS-001 | Observation | The Gemini renderer drops mid-history `system` notes (interruption notes) | Gemini doesn't see interruption context | Separate-ticket candidate; not caching | Recorded |
+| OBS-002 | Observation (pre-existing base failure, reported by Implementation Engineer 2026-10-09; reproduced by Solution Designer) | `autobyteus-ts/tests/unit/llm/api/compaction-single-attempt-transport.test.ts` › "sets Gemini retries on its isolated client after user extras…" times out (20 s) on base `927796780`, independent of this ticket. Cause: `GeminiLLM.buildGenerationConfig` copies user `extraParams` (`httpOptions.retryOptions.attempts = 7`) into the request config, which overrides the single-attempt client's `attempts = 1`. Compaction's single-attempt Gemini call can therefore retry when users configure retry extras | Compaction single-attempt guarantee for Gemini | Separate Project Task candidate (product change in `GeminiLLM`, outside approved scope); awaiting the user's decision | Recorded; not blocking |
 
 ## Architecture Investigation Findings (2026-10-09, after approval)
 
