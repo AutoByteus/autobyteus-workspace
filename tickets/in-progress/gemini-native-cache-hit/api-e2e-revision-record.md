@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer / implementation-handoff.md / round 1 | SR-002, IR-001 | N/A | Pass / 95% |
+| API-REV-002 | User request ("start the test electron and do live check") / round 2 | SR-002, IR-001 | Pass / 95% | Pass / 96% |
 
 ## Revision Entries
 
@@ -38,3 +39,26 @@ None.
   - AC-003's live Token Meter rendering (user verification);
   - no live AGY run with cache reads > 0 through the server (covered by replay plus the investigation's direct 1.3.2 probe);
   - future AGY usage-format changes.
+
+### API-REV-002 — Live AC-003 check in an isolated desktop instance
+
+- Triggering role, report path, and round: the user asked directly for a live Electron check; round 2
+- Triggering finding or case IDs: AC-003 (previously planned as user verification)
+- Related revision IDs: SR-002, IR-001; branch HEAD `78df53634` (after Delivery merged `origin/personal`; the new coverage was re-run post-merge and passed 16 files / 136 tests)
+- Why recorded: new live desktop evidence; it changes the confidence and AC-003 status
+- Coverage decisions or durable test paths changed: None. LV-001 is a live journey and was not added as durable automation; it uses quota and the user's AGY login.
+- Cases added, changed, removed, or rechecked: LV-001 added
+- Commands, environment, fixture, or broader-validation delta:
+  - `pnpm --silent isolated-app start --build` (instance `iso-63523-dd36`), driven with the browser-automation launcher (attach-only); `pnpm --silent isolated-app stop iso-63523-dd36`.
+  - The first build was interrupted by a power-off and redone.
+
+#### Prior Failure Resolution
+
+None.
+
+- Canonical artifacts and sections updated: execution coverage report (round meta, ledger reconciliation, the new "Round 2 — LV-001" section, scorecard, result summary, latest result); test-case ledger (seq 15)
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 96%
+- New or remaining failure IDs: None
+- Recommended owner: N/A
+- Remaining risks: future AGY usage-format changes. The explicit user acceptance at finalization still belongs to Delivery.

@@ -18,11 +18,11 @@
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/tickets/in-progress/gemini-native-cache-hit/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2 (user-requested live desktop check of AC-003)
 - Trigger: Implementation complete (IR-001, `dd4b3de4a`), direct low-risk route
 - Prior Round Reviewed: None
-- Latest Authoritative Round: 1
+- Latest Authoritative Round: 2
 
 ## Routing Classification
 
@@ -68,6 +68,7 @@
 | AE-007 | Pass | seq 7 | `api-e2e-logs/order1-unit-focused.log` | Pass |
 | TP-001 | Pass | seq 8 | `api-e2e-logs/tp-001-fail-before.log` | Discriminates |
 | TP-002 | Pass | seq 14 | `api-e2e-logs/tp-002-live-agy-usage.json` | Pass |
+| LV-001 | Pass | seq 15 | `live-check/ac-003-live-receipt.json`, `live-check/ac-003-token-meter-after-turn-2.png` | Pass (round 2) |
 
 ## Compatibility / Legacy Scope Check
 
@@ -100,22 +101,22 @@ Recorded in the coverage investigation › Repository Coverage Execution Plan An
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 95% | 95% | — | TP-002 confirms the server-side AC-003 behaviour on the installed CLI | The live Token Meter part of AC-003 is user verification by plan |
+| Requirement and acceptance-criteria proof | 95% | 98% | +3 | TP-002, and in round 2 LV-001: AC-003 proven live in the real desktop Token Meter with real cache reads | None material |
 | Changed-boundary execution directness | 95% | 95% | — | — | — |
-| Cross-boundary integration realism and mock gap | 90% | 95% | +5 | TP-002: the real `agy` 1.3.2 reports cumulative `result.usage` with `total = input + output`, and the server folds it correctly | No live cache reads > 0 through the server (the small prompts did not cache). That path is proven by the verbatim replay, and the investigation's direct 1.3.2 probe showed reads excluded from `input_tokens` |
+| Cross-boundary integration realism and mock gap | 90% | 98% | +8 | TP-002, plus LV-001: real `agy` 1.3.2 with 24,458 real cache reads through the packaged app's server into the Token Meter | — |
 | Environment, configuration, identity, and fixture fidelity | 95% | 95% | — | — | — |
 | Failure, edge-case, lifecycle, and recovery evidence | 95% | 95% | — | — | AGY process restart (unchanged behaviour) not exercised |
-| User-surface, browser, and desktop-shell confidence | N/A | N/A | — | No UI, browser or desktop code changed; the Token Meter renders the proven WS/GraphQL fields | — |
+| User-surface, browser, and desktop-shell confidence | N/A | 95% | new | LV-001: the packaged desktop app's Token Meter renders the corrected gross, cache hit and breakdown | Only one model and runtime checked live |
 | Durable regression coverage quality and relevance | 95% | 95% | — | — | — |
 
 - Overall post-repository confidence: 94%
-- Overall final confidence: 95%
-- Calculation method: simple average of the 6 applicable categories
+- Overall final confidence: 96% (round 2; round 1 was 95%)
+- Calculation method: simple average of the applicable categories (6 in round 1; 7 in round 2, adding the user-surface category)
 - Confidence change produced by broader validation: +1 overall (integration realism 90% → 95%)
 - Every critical acceptance criterion directly proven: `Yes`
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: the live Token Meter rendering (AC-003 user verification); future AGY usage-format changes (named design risk; AE-001 detects drift only if the recording is refreshed, and TP-002-style live runs detect it directly)
+- Confidence-limiting residual risks: future AGY usage-format changes (named design risk; AE-001 detects drift only if the recording is refreshed, and TP-002-style live runs detect it directly)
 
 ## Broader Validation Decision And Execution
 
@@ -135,6 +136,21 @@ Recorded in the coverage investigation › Repository Coverage Execution Plan An
 | AGY raw `result.usage` per turn | Cumulative per process; `total = input + output` | 8,919 / 17,920 / 27,003 input; totals 8,920 / 17,922 / 27,006 | `raw_usage_json` | Pass |
 | Server deltas | Per-turn increments under `base_excludes_cache`, miss = input | 8,919 / 9,001 / 9,083, miss = standard = gross (0 reads) | frames | Pass |
 | Run record via GraphQL | gross ≥ cache reads; rate < 1; no regression flag | 27,003 gross, 0 reads, rate 0; flags exclude `cumulative_snapshot_regressed` | `persisted`, `runQualityFlags` | Pass |
+
+### Round 2 — LV-001: live AC-003 in the real desktop app (user request)
+
+- Mode: an isolated desktop instance built from worktree HEAD `78df53634` (`pnpm --silent isolated-app start --build`, instance `iso-63523-dd36`), driven with the browser-automation skill in attach-only mode on its control port. No user app or data was touched. AGY used the installed CLI 1.3.2 and its own login.
+- Setup: the agent definition "Cache Meter Check" was created through the instance's GraphQL. A ~480 KB data file was placed in the instance's own temp workspace, so each turn shares a large prefix that Google can cache.
+- Journey (UI): Agents → Reload → Run → runtime Antigravity CLI, model Gemini 3.8 Flash (Low), Temp workspace → 2 composer sends → right panel Token tab.
+
+| Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
+| --- | --- | --- | --- | --- |
+| Turn 1: read the file, reply with Record 05200's checksum | Correct reply; meter gross = input + cache read; hit < 100% | Reply 77567 (correct). AGY reported input 67,632, cache read 24,458, total 68,320 = input + output. Meter: gross 92,090, cache hit 26.6%, uncached 67,632, cache hits 24,458, 1 report | DOM text; instance DB row; receipt | Pass |
+| Turn 2: Record 00042's checksum | Correct reply; cumulative snapshot accepted; meter consistent | Reply 32589 (correct). Cumulative input 95,560, read 24,458 (Google cached nothing new this turn). Meter: gross 120,018, hit 20.4%, uncached 95,560, 2 reports; no regression flag | DOM text; DB row; screenshot | Pass |
+| Price status | AGY ids `price_missing` (out of scope) | "Price missing", `model_not_found` | screenshot | Pass |
+
+- Pre-fix comparison: after turn 1 the old code would have shown gross 67,632, uncached 43,174 and a 36% hit; the fixed meter shows the true 92,090 / 67,632 / 26.6%.
+- Cleanup: `isolated-app stop` reported the instance stopped, the data root removed and both ports released. Temporary files were removed. The AGY conversation from this run stays in the user's AGY CLI history.
 
 ## Platform / Runtime Targets
 
@@ -197,8 +213,8 @@ Recorded in the coverage investigation › Repository Coverage Execution Plan An
 
 | Result | Case IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | AE-001, AE-002, AE-003, AE-004, AE-005, AE-006, AE-007, TP-001, TP-002 | All acceptance criteria in scope proven at server boundaries; fail-before verified; live current-CLI contract confirmed |
-| Out Of Scope | AC-001 (review), BEH-001 (unchanged), Token Meter UI (AC-003 user verification) | By plan |
+| Pass | AE-001, AE-002, AE-003, AE-004, AE-005, AE-006, AE-007, TP-001, TP-002, LV-001 | All acceptance criteria in scope proven at server boundaries; fail-before verified; live current-CLI contract confirmed |
+| Out Of Scope | AC-001 (review), BEH-001 (unchanged) | By plan |
 
 ## Cleanup Performed
 
@@ -216,11 +232,11 @@ N/A (Pass).
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Final validation confidence: 95%
+- Final validation confidence: 96%
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required` → Live API (TP-002), Pass. Browser not required (no UI change).
-- Critical acceptance criteria lacking direct proof: None. AC-003's live Token Meter rendering remains user verification as planned.
+- Broader validation decision: `Required` → Live API (TP-002), Pass; round 2: live desktop (LV-001, user request), Pass.
+- Critical acceptance criteria lacking direct proof: None. AC-003 is now proven live in the desktop Token Meter (LV-001). The explicit user acceptance at finalization still belongs to Delivery.
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: see the handoff
 - Notes:

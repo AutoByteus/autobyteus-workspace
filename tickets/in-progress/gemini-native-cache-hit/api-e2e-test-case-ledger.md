@@ -41,13 +41,14 @@
 | 12 | — | 2026-10-09 | Completed | Order 7: typecheck, `test:unit`, `test:integration:prepare` + `test:integration` | Green (known exception allowed) | typecheck Pass; unit 5,104 passed; integration only the 2 documented `agent-status-websocket` cadence cases failed | Pass | `api-e2e-logs/order7-*.log` | — |
 | 13 | — | 2026-10-09 | Completed | Order 8: `autobyteus-ts` `tests/unit/llm` | Green except the known base failure | 399/400; the known `compaction-single-attempt-transport` Gemini timeout (OBS-002) | Pass (known base failure) | `api-e2e-logs/order8-autobyteus-ts-llm-unit.log` | Already reported |
 | 14 | TP-002 | 2026-10-09 | Completed | Live `agy` 1.3.2 through the real server, 3 tiny turns, `gemini-3.8-flash-low` | Cumulative `result.usage`; correct per-turn deltas; `base_excludes_cache`; no regression | Raw input 8,919 → 17,920 → 27,003 (cumulative, total = input + output); deltas 8,919 / 9,001 / 9,083; record 27,003 gross = miss; 0 cache reads (small prompts); no errors or regression flags | Pass | `api-e2e-logs/tp-002-live-agy-usage.json`, `.log` | Probe file deleted |
+| 15 | LV-001 | 2026-10-09 | Completed | User-requested live check (round 2): isolated desktop instance `iso-63523-dd36` built from worktree HEAD `78df53634`; installed `agy` 1.3.2, Gemini 3.8 Flash (Low), Temp workspace with a ~480 KB data file; 2 composer sends; Token tab | AC-003: gross = input + cache read ≥ cache reads; hit < 100% with uncached input; no regression flag | Turn 1 (reply 77567, correct): AGY input 67,632 + cache read 24,458 (total 68,320 = input + output) → meter gross 92,090, cache hit 26.6%, uncached 67,632. Turn 2 (reply 32589, correct): cumulative input 95,560, read 24,458 → gross 120,018, hit 20.4%, 2 reports; no regression flag. Pre-fix code would have shown gross 67,632 after turn 1 | Pass | `live-check/ac-003-live-receipt.json`, `live-check/ac-003-token-meter-after-turn-2.png` | Instance stopped; data root removed; ports released |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 14 (TP-002)
-- Last completed case and result: TP-002 Pass
+- Last durably recorded event: 15 (LV-001)
+- Last completed case and result: LV-001 Pass
 - Cases still running, interrupted, or not started: None
 - Next case or recovery action: None
-- Interruption, context-compression, or rerun note: AE-005 was redesigned twice (test-design corrections, not product failures); AE-001 was extended from 3 to 11 turns
+- Interruption, context-compression, or rerun note: the first LV-001 build was interrupted by a power-off and restarted from scratch (no partial instance left). On turn 2 the first scripted type-and-send left no message and an empty composer; the immediate retry sent normally. This is a driver-level timing observation that was not reproduced, and no user-visible error appeared. AE-005 was redesigned twice (test-design corrections, not product failures); AE-001 was extended from 3 to 11 turns
 - Reconciled into execution coverage report: `Yes`, in `api-e2e-execution-coverage-report.md` › Test-Case Ledger Reconciliation
 - Reconciliation note for any case missing a terminal result: None
