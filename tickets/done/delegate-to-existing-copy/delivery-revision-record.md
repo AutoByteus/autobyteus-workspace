@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | code_reviewer delivery handoff after CRR-004 | N/A | `Blocked`: post-integration test failures (Local Fix, routed to implementation_engineer) | `docs-sync-report.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/dr1-*.log` |
 | DR-002 | code_reviewer re-entry after IR-003, CRR-005, API-REV-003 and CRR-006 | DR-001 `Blocked` | `Awaiting user verification`: the post-integration checks are green | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr2-*.log` |
+| DR-003 | User verification: "Okay finalize and release a new beta version." | DR-002 `Awaiting user verification` | `Delivery Completed`: finalized to `personal` and agents `main`; `v1.4.99-beta.8` published | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/` (release, workflow, updater and Docker evidence), `api-e2e-evidence/electron/journey.mp4` (trimmed) |
 
 ## Revision Entries
 
@@ -56,3 +57,29 @@
 - Why this revision was recorded: the DR-001 blocker is resolved, and the integrated state was re-verified.
 - Next recipient/action: the user verifies and answers the three decisions in `handoff-summary.md` (beta release, recording trim, agents-repo push). Then delivery finalizes.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. The residual risks are listed in `handoff-summary.md`.
+
+### DR-003 — Finalization and `v1.4.99-beta.8` release
+
+- Delivery round and trigger: the user verified on 2026-10-09 ("Okay finalize and release a new beta version.") and asked for a smaller API/E2E video.
+- Triggering upstream report, verification, or evidence: the user's verification, after the DR-002 hold.
+- Prior authoritative result: DR-002, awaiting user verification.
+- Current authoritative result: `Delivery Completed`.
+  - Video: the recording was trimmed from 387 s / 12.6 MB to 58 s / 1.4 MB. The full original is kept outside the repo.
+  - Archive: `c5c2b49b8`.
+  - Ticket branch: pushed.
+  - Server merge: `0eb882007` → `personal`.
+  - Release commit: `f47cfd1ab` with tag `v1.4.99-beta.8`. All 4 workflows succeeded, the GitHub pre-release has 17 assets, the updater metadata reports beta.8, and Docker `:beta` points to beta.8.
+  - Agents: `eea734b`, a byte-identical rebase of `0bd84e0`, → `main`.
+- Docs sync report: `docs-sync-report.md` (unchanged)
+- Handoff summary: `handoff-summary.md` (records the user's verification and decisions)
+- Release/publication/deployment report: `release-deployment-report.md` (final)
+- Integration and post-integration verification: DR-002 (`delivery-evidence/dr2-*.log`). The base did not advance before the final merge.
+- User verification/finalization state: verified and finalized
+- Terminal return to `/solution_designer`: `Sent` after cleanup
+- Terminal return message/reference: delivery-engineer `send_message_to` → the `get_handoff_rules` terminal recipient
+- Why this revision was recorded: completion of finalization and release
+- Next recipient/action: Solution Designer verifies the terminal receipt.
+- Remaining blockers, rollback concerns, or untested scope:
+  - none blocking;
+  - rollback must revert the server and agents changes together (see the report);
+  - the residual risks are listed in `handoff-summary.md`.
