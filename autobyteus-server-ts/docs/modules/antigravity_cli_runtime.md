@@ -153,8 +153,9 @@ already absolute local paths there (`AgentRunProviderInputNormalizer`).
 - Non-image files use the shared `Reference files:` section; a non-image file
   without a local path becomes `Context file: <uri>`.
 
-A message with attachments but no typed text is still sent, as the attachment
-sections alone. Without context files the content is sent unchanged, so
+Sending requires typed text (or a skill tag): composers keep Send disabled for
+a draft with only context files, and run input admission rejects empty
+content on every runtime. Without context files the content is sent unchanged, so
 delegated tasks and inter-agent messages keep their own `Reference files:`
 text. The displayed and stored user message is not changed. The opt-in live
 check is `AGY_LIVE=1 pnpm -C autobyteus-server-ts exec vitest run

@@ -107,8 +107,8 @@ const primaryAction = computed(() => {
     status: context?.state.currentStatus ?? AgentStatus.Offline,
     submissionPending: context?.submissionPending ?? false,
     isUploading: contextFileUploadStore.isUploading,
-    // Send is enabled by text, a skill tag or a context file.
-    hasDraft: context ? hasSendableDraft(context, { attachmentsAreSendable: true }) : false,
+    // Send is enabled by text or a skill tag; context files alone are not sendable.
+    hasDraft: context ? hasSendableDraft(context) : false,
   })
 })
 const primaryKind = computed(() => (primaryAction.value.kind === 'interrupt' ? 'interrupt' : 'send'))

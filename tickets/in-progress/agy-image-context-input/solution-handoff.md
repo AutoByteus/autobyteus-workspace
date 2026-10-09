@@ -61,3 +61,34 @@ Implement per `design-spec.md` "Change / Refactor Sequence"; satisfy AC-001..AC-
 ## Next Expected Action
 
 Implementation Engineer implements and validates; downstream stages per team rules.
+
+
+---
+
+## SR-003 Update (supersedes routing above)
+
+- Result classification: `Architecture Design Complete` (revised after code review CRR-001 Requirement Gap)
+- Current SR entry: `SR-003`
+- Classification: `task_size=Medium`, `architectural_risk=High` — the runtime-independent AgentRun input admission contract is modified (all runtimes).
+- Applied handoff rule: "Architecture Design Complete with task_size=Large or architectural_risk=High … ready for independent architecture review" → `/software_engineering_team/architecture_reviewer`
+- Approval basis: requirements `Approved` on SR-003 — SR-001 (DEC-001 A, DEC-002 A) plus DEC-003 A ("agree. go ahead", 2026-10-08): attach-only standalone sends are admitted and delivered on every runtime; neither-text-nor-attachments still rejected.
+- What changed: REQ-004 revised, REQ-007 added, AC-003 revised (server entry path), AC-006 extended, AC-009..AC-011 added, BEH-007/UC-005/SCN-007 added. Design adds the AgentRun admission step to DS-001, a text-or-attachment admission predicate, a Codex empty-text-item guard, and per-runtime/history test locks ("SR-003 Revision" in `design-spec.md`).
+- Already implemented and still valid: IR-001 commit `8139c6b12` (AGY builder). API/E2E artifacts (uncommitted) remain in the worktree; E2E-CF-002 must be re-run after implementation.
+- Review artifacts to include: `code-review-report.md` and `code-review-revision-record.md` (CRR-001 failure-origin round; reviewed basis = IR-001 + API-REV-001). Architecture review artifacts: none yet (first review of this package).
+- Open risks: provider acceptance of image-only turns (validate one Codex attach-only send live); ACP/Grok web-URL-only attach-only remains a visible error (accepted residual); user verification in desktop app pending.
+- Next expected action: independent architecture review of the SR-003 package.
+
+
+---
+
+## SR-004 Update (supersedes SR-003 routing above)
+
+- Result classification: `Architecture Design Complete`
+- Current SR entry: `SR-004`
+- Classification: `task_size=Small`, `architectural_risk=Low` — no shared server contract change; frontend Send-availability rule in an existing owner plus the already-implemented AGY builder.
+- Applied handoff rule: "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer` (direct route).
+- Approval basis: SR-001 (DEC-001 A, DEC-002 A) + DEC-006 (user, 2026-10-09): text (or a skill tag) is required to send; a draft with only context files cannot be sent; server admission unchanged.
+- Work for implementation: "SR-004 Revision" in `design-spec.md` — remove `attachmentsAreSendable` from `hasSendableDraft` and its 4 callers; frontend tests; keep IR-001 (`8139c6b12`). Do **not** implement the superseded SR-003 revision.
+- Review history to carry: `code-review-report.md` / `code-review-revision-record.md` (CRR-001, basis IR-001 + API-REV-001); `design-review-report.md` / `architecture-review-revision-record.md` (ARCH-REV-001 Fail on SR-003 — findings moot under SR-004; SR-004 itself not architecture-reviewed because the direct route applies).
+- API/E2E: E2E-CF-002 (uncommitted test) must be revised by its owner; attach-only is no longer a supported send.
+- Open risks: user verification in desktop app pending; Claude-in-AGY not live-probed.

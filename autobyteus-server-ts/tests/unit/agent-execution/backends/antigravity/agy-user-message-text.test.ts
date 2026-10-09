@@ -52,7 +52,7 @@ describe("buildAgyUserMessageText", () => {
     ].join("\n\n"));
   });
 
-  it("produces non-empty text from an image-only message with no typed text (AC-003)", () => {
+  it("produces non-empty text when the content is empty (design rule 4; empty content is rejected upstream)", () => {
     expect(buildAgyUserMessageText(message("", [image(IMAGE_PATH)])))
       .toBe(`Attached images (open each with view_file to see it):\n- ${IMAGE_PATH}`);
     expect(buildAgyUserMessageText(message("  \n", [new ContextFile("/tmp/a.txt", ContextFileType.TEXT)])))

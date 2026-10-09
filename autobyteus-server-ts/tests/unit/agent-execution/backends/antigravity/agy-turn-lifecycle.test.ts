@@ -147,7 +147,7 @@ describe("AGY ordinary turn lifecycle", () => {
     expect(closed.events.some((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toBe(false);
   });
 
-  it("sends attached images and files to AGY as path text, including an attachment-only message (AC-003, AC-005)", async () => {
+  it("sends attached images and files to AGY as path text, and an empty-content message as its attachment sections alone (AC-005)", async () => {
     const run = setup();
     const imagePath = "/tmp/attachments/ctx_13d2e97292bc__10.png";
     const withImage = await run.backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("her",

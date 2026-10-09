@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` SR-001, approved by the user on 2026-10-08 ("Okay, go ahead, approved."), with DEC-001 = A (separate explicit image section) and DEC-002 = A (no extra UI notice).
+- Current solution revision ID: `SR-004`
+- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` SR-004 — SR-001 basis plus DEC-006 (user, 2026-10-09: text required; attachment-only drafts cannot be sent). Earlier: SR-003 — SR-001 approved 2026-10-08 (DEC-001 A, DEC-002 A) plus DEC-003 A (attach-only sends admitted on every runtime) approved by the user 2026-10-08 ("agree. go ahead").
 - Behavior-defining supplements and their approval references: None
-- Design status: `Ready`
+- Design status: `Ready` (SR-004 revision governs — see "SR-004 Revision" at the end; the "SR-003 Revision" section is superseded and must not be implemented. Prior note — SR-003 revision: adds the AgentRun admission step to DS-001, widens admission per DEC-003, and a one-line Codex mapper adjustment; see "SR-003 Revision" below, which supersedes earlier sections where they differ)
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/in-progress/agy-image-context-input/investigation-notes.md`
 - Authorities read (design reading gate; 2026-10-08): `.claude/skills/solution-designer/references/architecture-design.md`, `.claude/skills/solution-designer/design-principles.md`, project `DESIGN.md` (repo root of the worktree); `autobyteus-server-ts/AGENTS.md` (testing commands). No closer `DESIGN*.md` under `autobyteus-server-ts`. `design-examples.md` not used.
 - Project design-principle conflicts or discrepancies: None.
@@ -16,9 +16,11 @@ User attachments travel `UI composer → SEND_MESSAGE (context_file_paths / imag
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- Task size: `Small`
-- Size rationale and supporting evidence: One new pure function file in the AGY backend's own folder, a one-line call-site change in `agy-agent-run-backend.ts`, one new unit test file, one extended unit test, one opt-in live test, two doc paragraphs. No other runtime, API, frontend, or persistence file changes.
-- Architectural risk: `Low`
+- Task size: `Small` (SR-004; was `Medium` in SR-003, `Small` in SR-002)
+- SR-003 rationale: the change now also modifies the runtime-independent AgentRun input admission contract (`agent-run-input-admission-state.ts`), which gates every runtime's input, and the Codex input mapper. Source scope is still small (2 production files beyond IR-001), but the shared-contract blast radius across all runtimes is a material contract change under the risk standard, so the package is `Medium` / `High` and goes to independent architecture review.
+- SR-002 size rationale (historical): One new pure function file in the AGY backend's own folder, a one-line call-site change in `agy-agent-run-backend.ts`, one new unit test file, one extended unit test, one opt-in live test, two doc paragraphs. No other runtime, API, frontend, or persistence file changes.
+- Architectural risk: `Low` (SR-004; was `High` in SR-003, `Low` in SR-002)
+- SR-004 rationale: the shared AgentRun admission contract is no longer touched. The delta is the already-implemented AGY builder (IR-001) plus a frontend-only Send-availability rule in the existing `hasSendableDraft` owner and its 4 callers. No API, persistence, server contract, security, concurrency or deployment change.
 - Risk rationale and supporting evidence: Existing ownership absorbs the change (the backend already owns provider input shaping for its runtime; the pattern exists for Codex/Claude/ACP). AGY wire contract stays a text string (`sendUserMessage(content: string)` unchanged). No persistence, security boundary, concurrency, lifecycle or deployment change. Attachment paths become visible to the AGY agent, which already holds `--dangerously-skip-permissions` and already receives such paths through delegated `Reference files:` text; Codex/ACP already expose the same paths.
 - Escalation trigger: If implementation finds that dispatches can reach the AGY backend with un-normalized `/rest/...` locators in a supported path, or that AGY must receive anything other than a text string, return a Design Impact.
 
@@ -293,3 +295,122 @@ Adapter (message → provider input), mirroring sibling runtimes.
 - Handle `message.contextFiles` being `null`/`undefined` (test fixtures pass `{content}` only).
 - Do not change `AgyStreamProcess.sendUserMessage`'s signature.
 - User verification (desktop app): standalone AGY Daily Assistant with uploaded and pasted image; an AGY team member with an image; a `.txt`/`.pdf` attachment.
+
+
+## SR-003 Revision — Attach-only sends (DEC-003 A) — SUPERSEDED by SR-004; do not implement
+
+### Trigger and root cause
+Code review CRR-001 (API-REV-001, E2E-CF-002): the SR-002 DS-001 path omitted AgentRun's input admission. `AgentRunInputAdmissionState.admit` and `.reserve` (`autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts:87-93, 114-120`, since `1e7837929`, 2026-08-13) reject any message whose `content` is empty/whitespace via `requiredString(message.content)`, before any backend runs. The Chat/standalone composer has enabled attach-only Send since `797d49d6a` (2026-09-28), sending `content: ""`. Root cause classification: `Missing Invariant` — the shared admission invariant ("input must carry something to deliver") is encoded as "content must be non-empty", which no longer matches the product's supported input (text **or** attachments). Owner (admission state) is correct; the rule is wrong.
+
+### Corrected primary spine
+- DS-001 (revised): `Composer (upload/paste, Send) → AgentStreamHandler (ContextFile[]) → AgentRunCommandCoordinator → AgentRun → AgentRunInputAdmissionState.admit/reserve (text-or-attachment rule) → AgentRunProviderInputNormalizer (absolute paths) → runtime backend dispatchUserInput → runtime input mapping (AGY: buildAgyUserMessageText) → provider`
+- DS-003 (new, Primary End-to-End, BEH-007): same as DS-001 up to the backend, for Claude / Codex / native / ACP / Grok standalone runs.
+
+### Admission rule (owner: `AgentRunInputAdmissionState`)
+- Accept when `message.content` is a string **and** (`content.trim()` is non-empty **or** `message.contextFiles` has at least one entry).
+- Reject otherwise with the existing code `AGENT_RUN_INPUT_INVALID` and message `AgentRun input needs text or at least one context file.`
+- Implement once (one private predicate, e.g. `hasDeliverableInput(message)`) used by both `admit` and `reserve`; remove the content-only `requiredString` use for content (keep `requiredString` only if still used elsewhere in the file).
+- Do not move this rule into callers (stream handlers, coordinator, GraphQL) — they must keep relying on AgentRun admission.
+
+### Per-runtime handling of `content: ""` + attachments (investigated; AC-010)
+| Runtime | Mapping owner | Behavior with empty text + local image / local file | Change |
+| --- | --- | --- | --- |
+| AGY | `antigravity/input/agy-user-message-text.ts` | Image section / `Reference files:` (non-empty) | None (IR-001) |
+| Claude | `claude/session/claude-user-message-builder.ts` | Text block omitted when empty; image block(s) / reference text for files; `hasClaudeUserMessageContent` already true for image-only | None |
+| Codex | `codex/thread/codex-user-input-mapper.ts` | Local image/file paths are in the reference section → text non-empty. Only a remote-URL-only image yields an empty text item | **Modify:** omit the leading text item when its text is empty and at least one other input exists |
+| Native (AutoByteus) | `autobyteus-ts/agent/message/multimodal-message-builder.ts` → `LLMUserMessage` | Reference section non-empty for local files; `LLMUserMessage` explicitly allows empty content with media | None |
+| ACP / Grok | `acp/input/acp-prompt-builder.ts` | Local files → non-empty `Reference files:` text | None. Web-URL-only no-text message throws `ACP_PROMPT_EMPTY` → visible `RUNTIME_COMMAND_FAILED` (accepted residual, out of scope) |
+
+### History and summary (REQ-007, AC-011)
+- `RuntimeMemoryEventAccumulator.recordForwardedUserMessage` writes the user trace with `content: ""` plus media/file attachments (no empty-content filter).
+- `raw-trace-to-historical-replay-events.ts` replays user traces regardless of empty content, with attachments.
+- Run summary: `AgentRunHistoryCatalogService.recordRunSummary` ignores empty summaries; the first later message with text sets it. Preserved, no change.
+
+### File changes (SR-003 additions)
+| File | Change | Responsibility |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts` | Modify | Text-or-attachment admission predicate used by `admit` and `reserve`; updated rejection message |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts` | Modify | Omit empty leading text item when other inputs exist |
+| `autobyteus-server-ts/tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts` | Modify | AC-009 cases (a)(b)(c); update any assertion of the old message |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts` | Modify | Remote-URL-only image, empty text → no text item |
+| Claude / ACP / native builder unit tests (`claude-user-message-builder.test.ts`, `acp-permission-bridge-and-prompt.test.ts`, autobyteus-ts multimodal builder test) | Modify/Add | AC-010 empty-text + local image/file cases (behavior already correct; lock it in) |
+| Raw-trace replay unit test | Add case | AC-011 empty-content user trace with attachment is replayed |
+| `autobyteus-server-ts/tests/e2e/runtime/agy-context-files-transport.e2e.test.ts` (API/E2E-owned, uncommitted) | — | E2E-CF-002 re-run must pass (AC-003) |
+| `autobyteus-server-ts/docs/modules/agent_execution.md` | Modify | Document the input admission rule (text or at least one context file) |
+
+### Dependency rules (unchanged + added)
+- Admission stays inside AgentRun; callers do not pre-validate content.
+- Runtime builders must not assume non-empty `content`.
+
+### Design health (SR-003)
+- Change posture: Bug Fix (pre-existing cross-runtime defect, approved into scope)
+- Root cause: `Missing Invariant` (rule encoded too narrowly at the correct owner)
+- Refactor needed now: No — one predicate at the existing owner; one guard in the Codex mapper.
+- Structural triggers: duplicated policy — the two identical content checks in `admit`/`reserve` are collapsed into one predicate (removal). Ambiguous boundary — none.
+
+### Removal / compatibility
+- Removed: content-only admission checks at lines 87-93 and 114-120 (replaced by the shared predicate). No fallback or flag.
+- Persisted data: Not Affected (empty-content user traces are already a valid shape for readers).
+
+### Change sequence (SR-003)
+1. Admission predicate + unit tests (AC-009).
+2. Codex mapper guard + test.
+3. AC-010 per-runtime unit cases; AC-011 replay case.
+4. Docs.
+5. API/E2E re-runs E2E-CF-002 and affected suites; user verifies attach-only on AGY and one other runtime.
+
+### Risks (SR-003)
+- Some provider may reject an image-only turn at its API (e.g. Codex app-server with no text item). Mitigation: Codex keeps a text item whenever it has local paths; only remote-URL-only cases omit it. Validate one Codex attach-only send live in API/E2E or user verification.
+- ACP/Grok web-URL-only attach-only: visible error (accepted residual).
+
+
+## SR-004 Revision — Text required to send (DEC-006)
+
+### Decision
+The user chose one consistent rule (2026-10-09): a message cannot be sent with only context files; typed text (or a skill tag, which supplies instruction text) is required. Server admission (`agent-run-input-admission-state.ts`: non-empty `content`) is **unchanged** and remains the authoritative backstop. The SR-003 admission predicate, Codex mapper guard and per-runtime/history test locks are dropped. ARCH-REV-001 findings AR-001/AR-002 concerned attach-only delivery and are moot; N-1 (old rejection message assertion) is moot because the message is unchanged.
+
+### Root cause (BEH-007)
+`Missing Invariant` at the frontend owner: `hasSendableDraft` (`autobyteus-web/services/runSubmission/agentPrimaryAction.ts:50-60`) counts context files alone as sendable when `attachmentsAreSendable` is true (Chat and standalone run view since `797d49d6a`), contradicting the server's input contract. Fix at that owner.
+
+### Primary spine (DS-004, BEH-007)
+`Composer draft (text, skill tags, context files) → hasSendableDraft → resolveAgentPrimaryAction (hasDraft) → Send button enabled/disabled and store send() guard`.
+
+### Change
+- `hasSendableDraft(draft)`: `Boolean(draft.requirement.trim()) || draft.requestedSkillNames.length > 0`. **Remove** the `options.attachmentsAreSendable` parameter and the context-file clause entirely (clean cut; no flag). `contextFilePaths` is removed from `SendableDraft` if no longer used.
+- Update every caller to the single-argument form and remove now-wrong comments:
+  - `autobyteus-web/stores/activeContextStore.ts:~270` (`send`) and `:~299` (`interruptGeneration`)
+  - `autobyteus-web/components/chat/ChatComposer.vue:~111` (comment "Send is enabled by text, a skill tag or a context file" → text or skill tag)
+  - `autobyteus-web/components/chat/ChatNewSurface.vue:~210` (`sendBlockedReason`)
+  - `autobyteus-web/components/agentInput/AgentUserInputTextArea.vue:~142` (skill-tagging branch; comment)
+- Team/org composers: already text-required; unchanged behavior.
+- Antigravity: IR-001 (`buildAgyUserMessageText`, commit `8139c6b12`) unchanged and still required (REQ-001..003, REQ-005). Its empty-content handling (rule 4) is harmless and stays.
+
+### Tests
+| File | Change |
+| --- | --- |
+| `autobyteus-web/services/runSubmission/__tests__/agentPrimaryAction.spec.ts` | Add `hasSendableDraft` cases: only context file → false; file + text → true; skill tag only → true; whitespace text + file → false |
+| `autobyteus-web/components/chat/__tests__/ChatComposer.spec.ts` (`enables send only for text, a skill tag or a context file`, ~line 57) | Rewrite: a context file alone leaves Send disabled; adding text enables it |
+| `autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` | Skill-tagging composer: file-only draft keeps Send disabled |
+| Any other spec asserting attachment-only Send in Chat/standalone (search `attachmentsAreSendable`, `contextFilePaths` + send) | Update to the new rule |
+| `autobyteus-server-ts/tests/e2e/runtime/agy-context-files-transport.e2e.test.ts` E2E-CF-002 (API/E2E-owned, uncommitted) | API/E2E owner revises: attach-only is no longer a supported send; server rejection of empty content is preserved behavior |
+
+### Docs
+- `autobyteus-web` docs that describe Chat attachment-only Send, if any (search "context file" + "Send") — update to "text required". `docs/modules/agent_execution.md` needs no admission change.
+
+### Persisted data
+Not Affected.
+
+### Backward-compatibility rejection
+- Keeping `attachmentsAreSendable` with all callers passing `false`: Rejected — remove the option.
+
+### Removal / decommission
+| Item | Replaced By | Scope |
+| --- | --- | --- |
+| `attachmentsAreSendable` option and context-file clause in `hasSendableDraft` | Text-or-skill rule | In This Change |
+| SR-003 design (admission predicate, Codex guard, per-runtime locks) | Not implemented | Withdrawn |
+
+### Change sequence
+1. `hasSendableDraft` + callers + frontend tests (AC-003).
+2. Keep IR-001 as is; run existing AGY/Claude/Codex/ACP unit suites (AC-008).
+3. API/E2E re-validates; E2E-CF-002 revised by its owner.
+4. User verification in desktop app: AGY image with text (uploaded + pasted), team member image, `.txt`/`.pdf`; Chat composer Send disabled with only an attachment.

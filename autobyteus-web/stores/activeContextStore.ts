@@ -268,9 +268,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       status: context.state.currentStatus,
       submissionPending: context.submissionPending,
       isUploading: contextFileUploadStore.isUploading,
-      hasDraft: hasSendableDraft(context, {
-        attachmentsAreSendable: activeWorkspaceTarget.value?.kind === 'standalone_agent',
-      }),
+      hasDraft: hasSendableDraft(context),
     });
     if (action.kind !== 'send') {
       console.warn(`Send action aborted: Primary action is '${action.kind}'.`);
@@ -297,9 +295,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       status: context.state.currentStatus,
       submissionPending: context.submissionPending,
       isUploading: contextFileUploadStore.isUploading,
-      hasDraft: hasSendableDraft(context, {
-        attachmentsAreSendable: activeWorkspaceTarget.value?.kind === 'standalone_agent',
-      }),
+      hasDraft: hasSendableDraft(context),
     });
     if (action.kind !== 'interrupt') {
       console.warn(`Interrupt action aborted: Primary action is '${action.kind}'.`);

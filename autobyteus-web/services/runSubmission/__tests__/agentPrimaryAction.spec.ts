@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { resolveAgentPrimaryAction } from '../agentPrimaryAction';
+import { hasSendableDraft, resolveAgentPrimaryAction } from '../agentPrimaryAction';
 
 const resolve = (overrides: Partial<Parameters<typeof resolveAgentPrimaryAction>[0]> = {}) =>
   resolveAgentPrimaryAction({
@@ -41,5 +41,19 @@ describe('resolveAgentPrimaryAction', () => {
   it('permits retrying from offline and error when the draft is sendable', () => {
     expect(resolve({ status: AgentStatus.Offline })).toEqual({ kind: 'send', enabled: true });
     expect(resolve({ status: AgentStatus.Error })).toEqual({ kind: 'send', enabled: true });
+  });
+});
+
+describe('hasSendableDraft', () => {
+  const draft = (requirement: string, requestedSkillNames: string[] = [], contextFilePaths: unknown[] = []) =>
+    ({ requirement, requestedSkillNames, contextFilePaths });
+
+  it('requires typed text or a skill tag; context files alone are not sendable', () => {
+    const file = { kind: 'workspace_path', locator: '/tmp/a.png', type: 'Image' };
+    expect(hasSendableDraft(draft('', [], [file]))).toBe(false);
+    expect(hasSendableDraft(draft('  \n', [], [file]))).toBe(false);
+    expect(hasSendableDraft(draft('describe this', [], [file]))).toBe(true);
+    expect(hasSendableDraft(draft('', ['writer']))).toBe(true);
+    expect(hasSendableDraft(draft(''))).toBe(false);
   });
 });

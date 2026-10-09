@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal`
 - Bootstrap result: Worktree created from freshly fetched `origin/personal`; ticket folder `tickets/in-progress/agy-image-context-input/`.
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate; file and date): `.claude/skills/solution-designer/references/requirements-engineering.md` (2026-10-08)
 - Authorities read (design reading gate; 2026-10-08): `references/architecture-design.md`, `design-principles.md`, project `DESIGN.md`, `autobyteus-server-ts/AGENTS.md`
 - Investigation status: Requirements-phase investigation complete; root cause confirmed by code and live AGY CLI probes.
@@ -163,3 +163,20 @@ Note: Live re-runs of Claude/Codex/native image input were not executed in this 
 - Single fix point: AGY backend input dispatch (message → AGY text). Reuse `appendContextFileReferenceSection` / `collectContextFileReferencePaths` and `resolveContextImageSource`.
 - Never send non-text blocks to AGY (session-terminating).
 - Ensure non-empty text when a message contains only attachments.
+
+
+## SR-003 Architecture Investigation (2026-10-08)
+
+| Source | Finding |
+| --- | --- |
+| `autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts:52-53,87-93,114-120` | `requiredString(message.content)` rejects empty/whitespace content in both `admit` and `reserve`; introduced `1e7837929` (2026-08-13) |
+| `git log -S attachmentsAreSendable` → `797d49d6a` (2026-09-28) | Chat/standalone composer enables attach-only Send (`agentPrimaryAction.ts:55-60`, `ChatComposer.vue:111`, `ChatNewSurface.vue:210`, `AgentUserInputTextArea.vue:142`); team composer keeps text required (`activeContextStore.ts:272,301`) |
+| `api-e2e-evidence/e2e-cf-transport.log:288,378` | Attach-only `SEND_MESSAGE` to AGY → `rejected / RUNTIME_REJECTED`, "AgentRun input content must be a non-empty string." |
+| `claude-user-message-builder.ts` | Empty text omitted; image blocks sent; `hasClaudeUserMessageContent` true for image-only |
+| `codex-user-input-mapper.ts` | Reference section includes all local context files (images too) → text non-empty for local attachments; empty text item only for remote-URL-only images |
+| `autobyteus-ts/src/agent/message/multimodal-message-builder.ts`, `autobyteus-ts/src/llm/user-message.ts` | Native content = reference section of all local files; `LLMUserMessage` allows empty content with media |
+| `acp/input/acp-prompt-builder.ts`, `acp/backend/acp-agent-run-backend.ts:95-101`, `grok/grok-build-agent-run-backend-factory.ts:8` | ACP/Grok text includes local file paths; remote-URL-only + no text throws `ACP_PROMPT_EMPTY` → `RUNTIME_COMMAND_FAILED` with visible message |
+| `agent-memory/services/runtime-memory-event-accumulator.ts:52-66` | User trace recorded with empty content plus media/file attachments |
+| `run-history/projection/transformers/raw-trace-to-historical-replay-events.ts:178-191` | User traces replayed regardless of empty content |
+| `run-history/services/agent-run-history-catalog-service.ts:253-257` | Empty summary ignored; first text message sets it |
+| Other content-required checks (`root-communication-engine.ts:41`, `member-execution-context.ts:92`, `send-message-to-dispatcher.ts:60`) | Inter-agent/delegation surfaces; out of scope, unchanged |
