@@ -268,6 +268,12 @@ None before execution. A 400 `prefix_binding_mismatch` (or any strict-mode 400) 
   - **APC-E2E-007.** Runs before the restore. Restored-run usage is dropped by turn-id idempotency collision on base and HEAD (pre-existing DEF-B, `restore-usage-probe/`).
 - Final result and scorecard: see `api-e2e-execution-coverage-report.md` (Pass, 95%).
 
+## Round 2 Update (desktop app, API-REV-002)
+
+- The user requested real Electron testing. Execution mode: `Project Desktop Validation`, an isolated desktop instance of the worktree build per TESTING.md (Rules 1–6).
+- No durable coverage changed: a packaged-app UI journey with a paid model is driven manually here, and no existing probe covers paid live inference.
+- Results: DSK-001..004 Pass; DSK-005 confirms the pre-existing DEF-B in the product. Details are in the execution report.
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`

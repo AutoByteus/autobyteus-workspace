@@ -19,12 +19,15 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
+- Current API/E2E Revision ID: `API-REV-002` (adds the desktop/Electron round; API-REV-001 = server-boundary round)
+- Current Execution Round: 2 (round 2 = real desktop app, requested by the user)
 - Trigger: code review pass CRR-001
 - Prior Round Reviewed: N/A
-- Latest Authoritative Round: 1 (final live run = run 6)
-- Code under validation: `codex/anthropic-prompt-caching` @ `80845f45e` (base `927796780`), plus the new uncommitted durable test file
+- Latest Authoritative Round: 2. Server-boundary evidence = live run 6 (API-REV-001); desktop evidence = DSK-001..005 (API-REV-002)
+- Code under validation:
+  - round 1: `80845f45e`;
+  - round 2 (desktop): a packaged build of `a89fe62cc`, which is the delivery checkpoint `b684a8963` + merge of `origin/personal` @ `e350a194b`.
+- The durable test is unchanged in round 2.
 
 ## Routing Classification
 
@@ -194,6 +197,35 @@ All commands run from the worktree root unless noted.
 | T6 Settings change while a thinking `tool_use` waits | Tools changed; all thinking stripped once; accepted | As expected | calls 36–42 | Pass |
 | Strict control | 200 / 400 | 200 / 400 (prefix-binding error) | calls 43–44 | Pass |
 
+
+## Desktop Application Validation (Round 2, API-REV-002)
+
+The user asked for real Electron testing, so this round used the real desktop app.
+
+**Setup**
+- An isolated desktop instance (`iso-64203-6f86`) was built from the worktree (`pnpm --silent isolated-app start --build`; packaged `build:electron:mac` of HEAD `a89fe62cc`). It had its own ports and data root, and the user's app was untouched.
+- **Key:** only `ANTHROPIC_API_KEY` from the user's server `.env` was copied into a one-line temp file (mode 600). It was imported with the unchanged `pnpm secrets:import` into the instance DB (dry run: `provider.anthropic.api-key MISSING CREATE`, then `IMPORT`), and the instance was restarted. The temp file was deleted. Settings → API Keys showed **Anthropic: Configured**.
+- **How the app was driven:** the browser-automation skill (CDP on the instance control port, attach-only), clicking the same controls a user clicks. The Daily Assistant has `read_file`, `generate_image` and `edit_image` among 20 tools, a realistic large prefix (about 27.8k tokens).
+  - Composer: Temp workspace, **Ask first** (approvals on), `claude-opus-5-5 · AutoByteus`, thinking display **Summarized**.
+  - Every tool call was approved with the UI's **Approve** button.
+- **Per-call usage:** a read-only renderer observer copies the `TOKEN_USAGE_UPDATED` frames the app already receives; it doesn't change them. The meter's run record and the persisted working-context snapshot were read from the instance's own data.
+- **Strict mode** cannot be injected into the packaged app. Thinking removal is proven from the persisted snapshot, and acceptance from the absence of any error. The server-boundary round proved acceptance under strict mode.
+
+| Case ID | Journey (real UI) | Expected | Actual (evidence under `api-e2e-evidence/electron/`) | Result |
+| --- | --- | --- | --- | --- |
+| DSK-001 (AC-001/003/004, AC-006 UI) | Turns 1 and 2, 12-file audits each, approvals in the UI | No error; the new turn writes only new input; meter cache rows | T1: 13 calls; Token Meter **cache hit 90.2%**. T2 first call: read 27,873 (= T1's last prompt 27,875 − 2 uncached), wrote 420. Later calls read the full previous prompt and wrote about 857, all 1h, 0 × 5m. Meter **95.0%** after T2 (`shots/06`, `07`, `usage-t2.json`) | Pass |
+| DSK-002 (AC-011) | T3: **Stop generation** while the chunk-25 approval is pending; T4 new message | Idle; no 400; system unchanged | Idle; chunk-25 never executed. T4 first call read 40,036 = the full T3 prompt (39,610 + 426), so the top-level system was unchanged. The note is persisted as its own `system` message (snapshot msg 59) | Pass |
+| DSK-003 (AC-013a, P-005) | T6: agent waits on **Thinking → read_file chunk-28**; Settings → Server Settings → Default media models → Image generation **Gemini / imagen-4** → save → "Default media models saved."; back → **Approve** | Accepted; thinking stripped once | Continuation accepted: read 0, wrote 48,851 (tools changed, a full rewrite once, as expected). Calls 3–8 are append-only. Snapshot: msg 83 (the pending tool_use that came with thinking) and every earlier turn have 0 thinking blocks; thinking exists only after the change (85–95). 0 errors in the UI or server log (`shots/13–17`, `usage-through-t6.json`, `snapshot-before-restart.json`) | Pass |
+| DSK-004 (AC-013b, whole-process restart) | `pnpm isolated-app restart` (new pid), reopen the run from the workspace tree, T7 | Accepted; one strip; append-only after | First request read 48,851, wrote 6,108, accepted. Calls 2–5 append-only. Snapshot: thinking 85–95 removed, new thinking kept (99, 101, 105). The meter recorded all 5 calls (47 → 52 reports) | Pass |
+| DSK-005 (REQ-006, DEF-B check) | Left panel **Terminate run** (idle), then continue in the same app session | Meter records the new calls | 2 calls, no error. Their usage frames had empty usage fields, and the run record stayed at 52 reports / $1.536216: **the calls are missing from the meter** | DEF-B reproduced in the product (pre-existing) |
+
+**Meter totals in the app**
+- At 52 reports: input 120 uncached, 1,871,598 cache read, 113,472 1h write; output 12,682.
+- **Hit 94.3%**, estimate **$1.536**. The same calls uncached would cost about $8.19.
+- Model `claude-opus-5-5`, runtime `autobyteus`, "Complete estimate".
+
+**Cleanup:** recordings saved (`recording-dsk.mp4`, 17.7 min; `recording-dsk-after-restart.mp4`, 3.6 min). `isolated-app stop` (not forced) removed the data root and the vault with the key, and released both ports. There's no temp key file and no key material in the evidence. Other people's instances were not touched.
+
 ## Platform / Runtime Targets
 
 - macOS (Darwin 25.5), Node 22.23.1, Vitest 4.0.18
@@ -261,7 +293,11 @@ All commands run from the worktree root unless noted.
 - In run 1 it also blocked the meter write of the call completed milliseconds before the Stop, and server teardown.
 - Owner: native run lifecycle / standalone run root.
 
-**DEF-B: the Token Meter drops all usage of a native run after Stop → restore.**
+**DEF-B: the Token Meter drops usage of a native run after Stop → restore in the same app session.**
+- **Confirmed in the real desktop app (DSK-005):** Terminate run, then continue, then the calls are missing from the meter.
+- **After a whole-app restart (DSK-004),** the post-restart calls were recorded in this run.
+- So the trigger is the in-session restore path, or the key's collision with the run's recent-digest window (64 entries). The owner should confirm the exact dedupe rule.
+- The rest of this description comes from the server-boundary round.
 - A restored native runtime numbers turns from `turn_0001` again. The usage idempotency keys (`<runId>:turn_NNNN:llm:N`) collide with the pre-restore keys, and `TokenUsageRunStore.recordObservation` dedupes them.
 - Run 4: 12 post-restore calls, exactly 12 duplicate keys, 12 missing reports.
 - Probe on HEAD and base: the post-restore `TOKEN_USAGE_UPDATED` is emitted, but the run summary stays at 1 report (`restore-usage-probe/`).
@@ -285,8 +321,8 @@ Not applicable (Pass). DEF-A and DEF-B are pre-existing product defects outside 
 
 ## Latest Authoritative Result
 
-- Result: **Pass**
-- Final validation confidence: **95%**
+- Result: **Pass** (round 1 server-boundary + round 2 real desktop app)
+- Final validation confidence: **96%**. The real desktop journey raised cross-boundary realism and the desktop-shell category; the scorecard values are kept from round 1 except these
 - Default 95% target met: `Yes`
 - Any final applicable category below 90%: `No`
 - Broader validation decision: `Required` → executed (Live API through the real server), passed

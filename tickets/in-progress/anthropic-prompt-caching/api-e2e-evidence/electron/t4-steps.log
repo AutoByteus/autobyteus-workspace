@@ -1,0 +1,7 @@
+13:40:05 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:40:09 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:40:13 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:40:16 {"clicked": false, "approvesVisible": 0, "running": false, "stopBtn": false, "errors": [], "hasErrorWord": false}
+13:40:20 {"clicked": false, "approvesVisible": 0, "running": false, "stopBtn": false, "errors": [], "hasErrorWord": false}
+13:40:24 {"clicked": false, "approvesVisible": 0, "running": false, "stopBtn": false, "errors": [], "hasErrorWord": false}
+done after 6 steps

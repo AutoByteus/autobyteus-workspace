@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer / `code-review-report.md` CRR-001 / round 1 | SR-005, ARCH-REV-003, IR-001, CRR-001 | N/A | Pass / 95% |
+| API-REV-002 | user request (real Electron testing), during delivery DR-001 | SR-005, CRR-002, DR-001 | Pass / 95% | Pass / 96% |
 
 ## Revision Entries
 
@@ -48,3 +49,30 @@ None.
   - AC-007 is user verification (DEF-B affects restored runs);
   - P-004;
   - one cache rewrite per restore (measured: 24237 tokens).
+
+### API-REV-002 — Real desktop app (isolated Electron instance) round
+
+- Triggering role: the user ("please use test electron to do real testing"; "yes go ahead"). The Solution Designer relayed delivery's pause (DR-001, Blocked) and the routing instruction.
+- Related revision IDs: SR-005, CRR-002, DR-001. Code: a packaged build of `a89fe62cc` (delivery checkpoint `b684a8963` + merge of `origin/personal`).
+- Why recorded: new execution surface (the real desktop app) and a real whole-process restart.
+- Durable test paths changed: **none** (the gated live E2E is unchanged).
+- Cases added: DSK-001..005 (ledger rows 18–24).
+- Environment:
+  - `pnpm isolated-app start --build`;
+  - `pnpm secrets:import` of `ANTHROPIC_API_KEY` only;
+  - browser-automation through CDP, attach-only;
+  - `pnpm isolated-app restart` and `stop`.
+
+#### Prior Failure Resolution
+
+None. No prior failures for this change.
+
+- Canonical artifacts updated:
+  - execution report (§ Desktop Application Validation, DEF-B, Latest Result);
+  - ledger;
+  - coverage investigation (post-execution note).
+- Prior result and confidence: Pass / 95%
+- Current result and confidence: Pass / 96%
+- New or remaining failure IDs: none for this change. DEF-B was confirmed in the product and refined: it occurs on a same-session restore; it did not occur after a whole-app restart in this run. DEF-A is unchanged.
+- Recommended owner: delivery_engineer, to resume DR-002, because no test code changed. DEF-A and DEF-B need separate tickets.
+- Remaining risks: AC-007 Console comparison (user), DEF-A, DEF-B, P-004, one cache rewrite per restore.

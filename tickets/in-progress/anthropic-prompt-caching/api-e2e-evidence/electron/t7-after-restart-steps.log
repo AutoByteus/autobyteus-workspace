@@ -1,0 +1,18 @@
+13:53:35 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:53:39 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:53:43 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:53:47 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:53:51 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:53:54 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:53:58 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:01 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:06 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:09 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:14 {"clicked": true, "approvesVisible": 1, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:17 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:21 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:24 {"clicked": false, "approvesVisible": 0, "running": true, "stopBtn": true, "errors": [], "hasErrorWord": false}
+13:54:28 {"clicked": false, "approvesVisible": 0, "running": false, "stopBtn": false, "errors": [], "hasErrorWord": false}
+13:54:32 {"clicked": false, "approvesVisible": 0, "running": false, "stopBtn": false, "errors": [], "hasErrorWord": false}
+13:54:35 {"clicked": false, "approvesVisible": 0, "running": false, "stopBtn": false, "errors": [], "hasErrorWord": false}
+done after 17 steps
