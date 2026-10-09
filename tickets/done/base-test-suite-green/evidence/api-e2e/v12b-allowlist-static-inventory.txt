@@ -1,0 +1,24 @@
+entries=59 names=73 allowed=50 notAllowed=23
+self-set  AUTOBYTEUS_AGENT_PACKAGE_ROOTS  
+self-set  AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS  
+self-set  AUTOBYTEUS_MEMORY_DIR  
+self-set  AUTOBYTEUS_SERVER_HOST  
+self-set  AUTOBYTEUS_SKILLS_PATHS  
+self-set  AUTOBYTEUS_STREAM_PARSER  
+READ-ONLY AUTOBYTEUS_STREAM_PARSER_SUFFIX  tests/unit/config/app-config.test.ts
+self-set  AUTOBYTEUS_TEMP_WORKSPACE_DIR  
+self-set  CODEX_APP_SERVER_APPROVAL_POLICY  
+self-set  CODEX_APP_SERVER_ARGS  
+self-set  CODEX_APP_SERVER_ARGS_JSON  
+self-set  CODEX_APP_SERVER_COMMAND  
+self-set  CODEX_APP_SERVER_SANDBOX  
+self-set  CODEX_HOME  
+self-set  DASHSCOPE_API_KEY  
+READ-ONLY DATABASE_URL  tests/unit/config/prisma-import-lifecycle.test.ts,tests/unit/app-data-migrations/released-run-tree-skip-version-upgrade.test.ts,tests/unit/app-data-migrations/app-data-migration-record-repository.test.ts,tests/unit/token-usage/services/token-usage-run-accumulator.test.ts,tests/integration/token-usage/providers/token-usage-store.integration.test.ts,tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts,tests/integration/token-usage/repositories/token-usage-analytics-atomicity.integration.test.ts,tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts
+self-set  DATABASE_URL_TEST  
+self-set  GEMINI_SETUP_MODE  
+self-set  OPENAI_API_KEY  
+self-set  PERSISTENCE_PROVIDER  
+READ-ONLY QWEN_BASE_URL  tests/unit/config/app-config.test.ts
+self-set  VERTEX_AI_LOCATION  
+self-set  VERTEX_AI_PROJECT  

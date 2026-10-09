@@ -84,9 +84,16 @@ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fi
 - `view_file` limits for unusual or very large images are unknown. A failure would show as a visible tool error.
 - Untracked build outputs are not committed: `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/`.
 
+## Outcome
+
+- Merged to `personal` as `d2847442f`.
+- Released as **`v1.4.99-beta.6`** (release commit `a573465d9`): a GitHub pre-release, desktop updater metadata, and Docker `:1.4.99-beta.6`/`:beta`.
+- Details: `release-deployment-report.md`.
+
 ## Delivery Artifacts
 
 - Docs sync: `docs-sync-report.md`
 - Release notes: `release-notes.md`
 - Release/deployment report: `release-deployment-report.md`
 - Delivery revision record: `delivery-revision-record.md`
+- User verification: `user-verification.md`

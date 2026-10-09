@@ -11,9 +11,12 @@
     "build": "pnpm run build:full",
     "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
     "pretypecheck": "pnpm prepare:shared",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "pretest": "pnpm prepare:shared",
     "test": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration",
+    "test:integration:prepare": "node ./scripts/integration-test-prerequisites.mjs prepare",
     "cleanup:codex-e2e-history": "node ./scripts/cleanup-codex-e2e-run-history.mjs"
   },
   "dependencies": {

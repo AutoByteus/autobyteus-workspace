@@ -97,13 +97,17 @@ describe("MediaUrlTransformerProcessor", () => {
     const notifyAgentSegmentEvent = vi.fn();
     const context = {
       agentId: "test_agent",
+      state: { activeTurn: { turnId: "turn-media-1" } },
       statusManager: { notifier: { notifyAgentSegmentEvent } },
-    } as AgentContext;
+    } as unknown as AgentContext;
 
     await processor.processResponse(response, context, {} as any);
 
     const events = notifyAgentSegmentEvent.mock.calls.map((call) => call[0]);
     const startEvents = events.filter((event) => event.type === "SEGMENT_START");
+    // Media segments belong to the active turn.
+    expect(events.length).toBeGreaterThan(0);
+    expect(events.every((event) => event.turn_id === "turn-media-1")).toBe(true);
 
     expect(
       startEvents.some(

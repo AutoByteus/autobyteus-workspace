@@ -47,6 +47,8 @@ const createScope = async () => {
     autoByteus: { createBackend: vi.fn(), restoreBackend: vi.fn() },
     codex: { createBackend: vi.fn(), restoreBackend: vi.fn() },
     claude: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+    antigravity: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+    grok: { createBackend: vi.fn(), restoreBackend: vi.fn() },
   };
   const createForExecution = vi.fn(() => Object.freeze(factories));
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };

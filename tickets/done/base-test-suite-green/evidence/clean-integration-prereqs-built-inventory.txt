@@ -1,0 +1,64 @@
+total=408 passed=290 failed=47 skipped=71
+## tests/integration/agent/agent-status-websocket.integration.test.ts 2
+   - preserves B while rejecting a retired turn's late segment content across reconnect | AssertionError: expected { status: 'running', …(2) } to deeply equal { status: 'running', …(1) }
+   - keeps diagnostic errors running, terminalizes the current turn to error, then publishes of | TypeError: Cannot read properties of undefined (reading 'kind')
+## tests/integration/agent/agent-websocket.integration.test.ts 3
+   - connects to an inactive identity without restore, then publishes initializing before slow  | AssertionError: expected { type: 'AGENT_STATUS', …(1) } to deeply equal { type: 'AGENT_STATUS', …(1) }
+   - activates a prepared identity through SEND_MESSAGE rather than websocket connect | AssertionError: expected { type: 'AGENT_STATUS', …(1) } to deeply equal { type: 'AGENT_STATUS', …(1) }
+   - returns duplicate and busy ACKs for same and different in-flight command ids | Error: Timed out waiting for matching websocket message
+## tests/integration/agent-definition/md-centric-provider.integration.test.ts 2
+   - does not silently skip malformed application-owned agents during catalog reads | Error: The property "getInstance" is not defined on the function.
+   - updates application-owned agent defaultLaunchConfig in place | Error: The property "getInstance" is not defined on the function.
+## tests/integration/agent-execution/agent-run-manager.integration.test.ts 12
+   - creates and registers an active autobyteus run through the matching backend factory | TypeError: manager.prepareNewAgentRun is not a function
+   - creates and registers an active codex_app_server run through the matching backend factory | TypeError: manager.prepareNewAgentRun is not a function
+   - creates and registers an active claude_agent_sdk run through the matching backend factory | TypeError: manager.prepareNewAgentRun is not a function
+   - restores a autobyteus run through the matching backend factory | TypeError: manager.prepareRestoreAgentRun is not a function
+   - restores a codex_app_server run through the matching backend factory | TypeError: manager.prepareRestoreAgentRun is not a function
+   - restores a claude_agent_sdk run through the matching backend factory | TypeError: manager.prepareRestoreAgentRun is not a function
+   - restores Claude platform state with auto approval separate from provider permission mode | TypeError: manager.prepareRestoreAgentRunFromPlatformState is not a function
+   - evicts inactive runs when queried or listed | TypeError: manager.prepareNewAgentRun is not a function
+   - terminates and unregisters active runs on accepted termination | TypeError: manager.prepareNewAgentRun is not a function
+   - returns false for missing runs and for unaccepted termination without unregistering | TypeError: manager.prepareNewAgentRun is not a function
+   - wraps termination failures in AgentTerminationError | TypeError: manager.prepareNewAgentRun is not a function
+   - rejects unsupported runtime kinds for create and restore | TypeError: manager.prepareNewAgentRun is not a function
+## tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts 2
+   - uses fresh definition instructions for the next run even when the cache is stale | TypeError: this.agent.getCompactionRecovery is not a function
+   - falls back to description when fresh definition instructions are blank | TypeError: this.agent.getCompactionRecovery is not a function
+## tests/integration/agent-execution/agent-run-service.integration.test.ts 6
+   - prepares, durably starts, and only then publishes a autobyteus run | TypeError: this.agentRunManager.releaseRetiredRun is not a function
+   - prepares, durably starts, and only then publishes a codex_app_server run | TypeError: this.agentRunManager.releaseRetiredRun is not a function
+   - prepares, durably starts, and only then publishes a claude_agent_sdk run | TypeError: this.agentRunManager.releaseRetiredRun is not a function
+   - restores a started autobyteus run through the correct exact continuation path | Error: promise rejected "TypeError: this.agentRunManager.releaseRe…" instead of resolving
+   - restores a started codex_app_server run through the correct exact continuation path | Error: promise rejected "TypeError: this.agentRunManager.releaseRe…" instead of resolving
+   - restores a started claude_agent_sdk run through the correct exact continuation path | Error: promise rejected "TypeError: this.agentRunManager.releaseRe…" instead of resolving
+## tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts 3
+   - creates a live backend that can process a turn and terminate cleanly | TypeError: ownLlm is not a function
+   - respects a preferred run id and provisions the standalone memory directory explicitly | TypeError: ownLlm is not a function
+   - restores a terminated run with the same run id | TypeError: ownLlm is not a function
+## tests/integration/agent-execution/claude-session-manager.integration.test.ts 1
+   - materializes an activated headerless provider-neutral descriptor into the Claude streaming | TypeError: ownSession is not a function
+## tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts 1
+   - preserves one enriched provider-shaped failure through standalone and Team wire paths | Error: Collaboration member execution identity accepts exactly agentRunId, memberAddress, root.
+## tests/integration/api/run-file-changes-api.integration.test.ts 1
+   - hydrates historical AutoByteus team-member file changes through GraphQL and REST | AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+## tests/integration/api/team-communication-api.integration.test.ts suite-error
+## tests/integration/application-backend/brief-package-team-prompt.integration.test.ts 1
+   - composes the exact graph-local package team and member semantics through Codex bootstrap | TypeError: Cannot read properties of undefined (reading 'assertAccepting')
+## tests/integration/file-explorer/file-explorer.integration.test.ts 6
+   - builds tree and lists file paths | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - writes new file and emits ADD change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - modifies existing file and emits MODIFY change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - renames file and emits RENAME change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - moves file and emits MOVE change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - removes file and emits DELETE change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+## tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts 1
+   - returns one direct move event and suppresses watcher self-echoes for a nested ticket folde | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+## tests/integration/services/media-storage-service.integration.test.ts 4
+   - saves media from a remote URL | AssertionError: expected false to be true // Object.is equality
+   - saves media from a data URI | AssertionError: expected false to be true // Object.is equality
+   - saves media from a local file path | AssertionError: expected false to be true // Object.is equality
+   - lists media files by category | AssertionError: expected '/rest/files/images/test_image.png' to be 'http://testserver:8000/rest/files/ima…' // Object.is equality
+## tests/integration/api/rest/upload-file.integration.test.ts 2
+   - uploads a file and serves it from /rest/files | TypeError: Invalid URL
+   - uploads a dummy PNG image and stores it under /images | TypeError: Invalid URL

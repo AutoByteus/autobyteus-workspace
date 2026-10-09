@@ -11,7 +11,8 @@ import { projectTaskTeamExecution } from "../../../src/agent-collaboration/execu
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
-import { address, testAgentNode, testAgentTeamNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
+import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
@@ -56,7 +57,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         delegatorAgentRunId: "writer-run", startedAt: "2026-08-15T00:02:00.000Z",
       }),
     });
-    await new TeamRunExecutionTreeStore().write(
+    await writeCurrentTeamRunPackage(
       layout.getTeamDirPath({ rootTeamRunId: "root-team-run", ancestorTeamRunIds: [] }),
       tree,
     );
@@ -126,7 +127,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
   });
 
   it("reads only the requested root's tree when the team run ID is a stored root (REQ-005)", async () => {
-    await new TeamRunExecutionTreeStore().write(
+    await writeCurrentTeamRunPackage(
       layout.getTeamDirPath({ rootTeamRunId: "other-root", ancestorTeamRunIds: [] }),
       testExecutionTree({
         rootTeamRunId: "other-root",
@@ -165,13 +166,23 @@ describe("AgentMemoryLocationService current V1 tree", () => {
   });
 
   it("does not resolve members of a stored root that the package readiness index did not admit", async () => {
-    // The fixture root has only a tree file, so the readiness rebuild excludes its incomplete package.
+    // This root has only a tree file, so the readiness rebuild excludes its incomplete package.
+    await new TeamRunExecutionTreeStore().write(
+      layout.getTeamDirPath({ rootTeamRunId: "incomplete-root", ancestorTeamRunIds: [] }),
+      testExecutionTree({
+        rootTeamRunId: "incomplete-root",
+        rootTeamDefinitionId: "classroom",
+        coordinatorAddress: "/writer",
+        children: [testAgentNode("/writer", { agentRunId: "incomplete-writer-run" })],
+      }),
+    );
     const readiness = new RootRunPackageReadinessIndex(memoryDir);
     await readiness.rebuild();
-    expect(readiness.isAdmitted("agent_team", "root-team-run")).toBe(false);
+    expect(readiness.isAdmitted("agent_team", "incomplete-root")).toBe(false);
+    expect(readiness.isAdmitted("agent_team", "root-team-run")).toBe(true);
 
     const service = new AgentMemoryLocationService({ memoryDir });
-    await expect(service.resolveTeamMemberLocation({ teamRunId: "root-team-run", agentRunId: "writer-run" }))
+    await expect(service.resolveTeamMemberLocation({ teamRunId: "incomplete-root", agentRunId: "incomplete-writer-run" }))
       .resolves.toBeNull();
   });
 
@@ -184,6 +195,12 @@ describe("AgentMemoryLocationService current V1 tree", () => {
         testOrgTeamNode({ address: "/delivery", teamRunId: "org-delivery-team", coordinatorAddress: lead.address, members: [lead] }),
       ],
     }));
+    await new AgentOrgCommunicationMessagesV1Store().write(layout.getOrgDirPath("org-root"), {
+      schemaVersion: 1,
+      subjectKind: "agent_org",
+      orgRunId: "org-root",
+      messages: [],
+    });
     const service = new AgentMemoryLocationService({ memoryDir });
 
     await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "org-root", agentRunId: "org-lead-run" }))

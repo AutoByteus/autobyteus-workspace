@@ -3,7 +3,7 @@
 ## Release / Publication / Deployment Scope
 
 - Repository finalization of `codex/agy-image-context-input` into `origin/personal`.
-- A workspace release (version bump and tag) is conditional. It is decided with the user at finalization.
+- Workspace beta release `v1.4.99-beta.6`, as the user asked.
 - Classification: `task_size=Small`, `architectural_risk=Low`. Route: direct.
 
 ## Handoff Summary
@@ -34,8 +34,8 @@
 
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification / acceptance reference: the user, 2026-10-09: "task is done. finalize and release a new beta"
-- Renewed verification required after later re-integration: see Repository Finalization
-- Renewed verification received: see Repository Finalization
+- Renewed verification required after later re-integration: `No` (the target did not advance)
+- Renewed verification received: `Not needed`
 
 ## Docs Sync Result
 
@@ -54,24 +54,64 @@
 
 ## Version / Tag / Release Commit
 
-- Pending. To be decided with the user after verification.
+- Helper: `scripts/desktop-release.sh beta --branch release-tmp-agyimg --no-push`. It ran in the ticket worktree on a temporary local branch at merge `d2847442f`. The release commit and tag were pushed only after confirming `origin/personal` was still `d2847442f`. Before the run, the untracked `autobyteus-application-*/dist/` build output was moved to `/tmp/agyimg-aside/` so that the helper got a clean checkout.
+- **`v1.4.99-beta.6`**: release commit `a573465d9` on top of merge `d2847442f`. It changes `autobyteus-web/package.json` from 1.4.99-beta.5 to 1.4.99-beta.6.
+- Pushes: `d2847442f..a573465d9 HEAD -> personal` and the tag (`delivery-evidence/beta6-release.log`).
+- Content since beta.5: this ticket only.
 
 ## Repository Finalization
 
 - Bootstrap context source: `solution-handoff.md` (finalization target `origin/personal`)
 - Ticket branch: `codex/agy-image-context-input`
-- Every finalization step is pending user verification.
-- Repository finalization status: `Blocked`. Waiting for user verification, which is expected and is not a defect.
+- Ticket branch commit result: `Completed`
+  - `8139c6b12`: IR-001, the AGY builder
+  - `e259a0203`: IR-002, the composer Send rule
+  - `cdb288781`: API/E2E durable tests (API-REV-002)
+  - `b9247a4f2`: delivery docs and artifacts (DR-001)
+  - `237358fb9`: archive to `tickets/done`
+- Ticket branch push result: `Completed` (`[new branch] codex/agy-image-context-input`)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `No`. It was `048ea6cec` at merge time, re-checked after a local power-off.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. Done in the ticket worktree, detached at the fetched `origin/personal`. The main checkout was not touched.
+- Merge into target result: `Completed`.
+  - Commit: `--no-ff` merge `d2847442f`.
+  - Size: 63 files. Most of the line count is the ticket's evidence logs.
+  - Checks: `check_licensing.py` and `check_repository_artifact_hygiene.py` both exit 0 (`delivery-evidence/finalization-hygiene.log`).
+  - Paths: no archived path contains Windows-invalid characters. The longest is 102 characters.
+- Push target branch result: `Completed` (`048ea6cec..d2847442f HEAD -> personal`). A power-off came between the merge and the push. Afterwards the local merge was intact and `origin/personal` had not moved, so the same merge was pushed.
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Release notes handoff result: pending
+- Applicable: `Yes` (the user asked for a new beta)
+- Method: `Release Script` (tag-triggered GitHub workflows)
+- Method reference / command: `scripts/desktop-release.sh beta` (see above)
+- Workflows: all 4 succeeded on attempt 1 (`delivery-evidence/workflows-beta6.json`):
+  - Desktop `37883646456`
+  - Android `37883646418`
+  - Server Docker `37883646597`
+  - iOS `37883646378`
+- GitHub release `v1.4.99-beta.6` (`delivery-evidence/github-release-beta6.json`): a **pre-release**, not a draft, published 2026-10-09T04:27:56Z, with 17 assets.
+- Updater metadata: `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` all report `version: 1.4.99-beta.6` (`delivery-evidence/updater-metadata/`). GitHub `releases/latest` stays on stable `v1.4.98`, so only beta-channel installs are offered the beta.
+- Docker `autobyteus/autobyteus-server` (`delivery-evidence/docker-tags.txt`):
+  - `:1.4.99-beta.6` and `:beta` share digest `sha256:eed82fc5…8306` (amd64, arm64).
+  - `:latest` is unchanged at `sha256:8aa17b23…5187` (1.4.98).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Beta mode publishes generated notes. The archived `release-notes.md` remains the ticket's user-facing summary for the next stable release.
+- Blocker: none
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input`
-- Cleanup: pending finalization
+- Worktree cleanup result: `Completed` (after this record was pushed)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. Removed `codex/agy-image-context-input` and the temporary `release-tmp-agyimg`.
+- Remote branch cleanup result: `Not required`. The repo convention keeps remote `codex/*` branches.
+- Note: the untracked `dist/` build output that was moved aside is in `/tmp/agyimg-aside/` and can be regenerated.
+- Blocker: none
 
 ## Release Notes Summary
 
@@ -89,15 +129,20 @@
 
 ## Rollback Criteria
 
-- If AGY agents start failing turns that carry attachments, revert `8139c6b12`. AGY then goes back to dropping context files.
-- If the text-required Send rule is unwanted, revert `e259a0203`. The server's rejection of attach-only input would then come back as a visible error.
+- Publish a fixed `v1.4.99-beta.7` through the helper, or revert merge `d2847442f` on `personal`, if any of these happens:
+  - AGY turns that carry attachments fail;
+  - AGY agents stop receiving images;
+  - the text-required Send rule blocks a legitimate send.
+- No persisted data changed, so a revert needs no data action.
+- Do not delete published betas, because beta-channel installs may already have taken them.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: none. Waiting for user verification.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes` (`user-verification.md`)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes`. `v1.4.99-beta.6` is published, and all 4 workflows succeeded.
+- Applicable safe cleanup complete or not required: `Yes` (performed right after this record was pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (after cleanup)
+- Terminal message/reference: delivery-engineer `send_message_to` → `/software_engineering_team/solution_designer`

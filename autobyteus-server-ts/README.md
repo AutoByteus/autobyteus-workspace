@@ -516,6 +516,17 @@ cp .env.example .env
 pnpm -C autobyteus-server-ts exec vitest
 ```
 
+The unit and integration baseline, the integration build prerequisites, the
+test environment isolation and the `typecheck` scope are described in
+[TESTING.md](../TESTING.md#server-unit-and-integration-baseline):
+
+```bash
+pnpm -C autobyteus-server-ts test:unit
+pnpm -C autobyteus-server-ts test:integration:prepare
+pnpm -C autobyteus-server-ts test:integration
+pnpm -C autobyteus-server-ts typecheck
+```
+
 ### Start the real backend and frontend for local development
 
 Run the complete local development stack from the workspace root:
