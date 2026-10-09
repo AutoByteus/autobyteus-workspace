@@ -345,14 +345,23 @@ target mode.
   time the menu opens and invalidated when a collaborator is added. Shared
   Agents (no Daily Assistant or built-ins), then shared Agent Teams, including
   ones already in the run (configured members, collaborators); only the run's own
-  definition is left out, and Agent Orgs are never offered. The footer reads
+  definition is left out, and Agent Orgs are never offered. In a standalone Agent
+  run the options depend on the focused agent. The host's composer never offers
+  the host. A task child's composer (a member of a delegated Team or Agent copy)
+  offers the host, the run's own agent, plus the host's own options. Candidates
+  are cached per focused agent, and adding a collaborator clears every key of
+  that root. The footer reads
   "{agent} gets your message and delegates the work", naming the focused agent.
   For a mention already in the run, the note marks it "already in this run" and
   tells the agent it can message that instance with `send_message_to` or delegate
-  a separate copy.
+  a separate copy. A mention of the host from a child is marked "the run's own
+  agent", and the note tells the child to use `send_message_to` with the host's
+  address (no `delegate_task` alternative). The message reaches the existing host
+  run.
 - **Scope.** `useComposerTarget` sets `mentionScope` from the active target
   (`composables/agentInput/runMentionScope.ts`); launch drafts and read-only
-  views have none and show no menu.
+  views have none and show no menu. Agent-root scopes carry `focusedAgentRunId`:
+  the host's `runId`, or the task child target's `agentRunId`.
 - **Discovery.** A mention-capable empty run editor uses the native placeholder
   "Ask anything · @ for an agent or team" (zh-CN: "随便问 · @ 选择智能体或团队")
   inside the message box below Context Files. It disappears when typing and is

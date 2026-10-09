@@ -100,6 +100,20 @@ to the caller's own address is rejected with `COLLABORATION_SELF_TARGET_REJECTED
 and Org roots. `listAvailableAgents(sender)` serves `list_available_agents` and never writes, so
 a run that only lists has no `collaboration/` package and no `hasCollaboration` flag (AR-005).
 
+The root's collaborator port is built **per viewer** (`collaboratorPortFor(viewerAgentRunId)` /
+`standaloneRootCollaboratorPortFor(tree, launch, viewer)`). The viewer is the focused composer
+agent for `@` candidates and mention resolution, and the sender for `list_available_agents`,
+bring-in and catalog copies. The host is always an in-run placement with rank `run_agent` at its
+host address. `ownDefinition()` is the host definition only when the viewer is the host. So a
+member of any delegated copy (a Team copy's member, an Agent copy) can `@` the host and find it
+in `list_available_agents`. It then reaches the existing host run with
+`send_message_to(<host address>)`. The host never sees itself. `delegate_task` to the host is
+refused, and bring-in or a catalog copy never creates a second host. Other definitions get the
+same catalog addresses for every viewer in the normal case. Known limit (MP-001): after the
+host's definition is renamed and another definition takes the old name's slug, a definition not
+yet in the run can be listed at different catalog addresses for the host and for other viewers.
+That address then fails as not found; it never creates a second instance.
+
 ## Project Task-Linked Copies
 
 The host and children use the same strict saved-ID/described `delegate_task`
@@ -160,7 +174,9 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
   never restores. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation (sender
   addresses of agent-to-agent deliveries are resolved from the root's index).
-  `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId)` lists the `@` options.
+  `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
+  the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
+  for Agent roots, and the stored root answers per focused agent too.
   `getStandaloneRunTokenUsageSummary(runId)` rolls the run's token usage up over its children
   (see [Token Usage](./token_usage.md#standalone-run-roll-up)).
 - **Context files.** Children use the owner kinds `agent_collaboration_member_draft` /
