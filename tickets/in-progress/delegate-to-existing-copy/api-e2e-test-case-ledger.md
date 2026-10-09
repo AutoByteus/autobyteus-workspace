@@ -57,9 +57,12 @@
 | 20 | BR-012..016 (round 2, attempt 2) | 2026-10-09 | Completed | same, probe fixed | pass | 5/5; cleanup clean | Pass | `round-2/browser-existing-copy/` | — |
 | 21 | EXC-E2E-001..008 (round 2 final) | 2026-10-09 | Completed | `RUN_CLAUDE_E2E=1` added | pass | 8/8; EXC-E2E-008 real Claude recalled `HERON-5842`; race 24 rounds both outcomes; cleanup clean; 762 feed frames, 0 invalid | Pass | `round-2/exc-e2e-final.log`, `round-2/exc-e2e-final/` | — |
 
+| 22 | ELECTRON-001 | 2026-10-09 10:48–11:05 | Completed | `pnpm isolated-app start --build` (iso-54380-fba9); UI journey with the real PTM on Claude haiku 5.5 | follow-up Task to the same copy works in the packaged app | Task A → Team copy; A DONE; follow-up B via `delegate_task({target_team_run_id, task_id})` accepted with explicit IDs; the copy recalled OSPREY-7314; board shows both Tasks with the same root; instance stopped cleanly | Pass | `api-e2e-evidence/electron/` | — |
+| 23 | CRR-005 pass | 2026-10-09 11:08–11:15 | Completed | typecheck; standalone root unit; DCM E2E; existing-copy E2E (`RUN_CLAUDE_E2E=1`) on the integrated base | pass | all pass (21/21; 1/1; 8/8) | Pass | `api-e2e-evidence/round-3/` | — |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: 21
-- Last completed case and result: EXC-E2E-001..008 round 2 final (Pass)
+- Last durably recorded event: 23
+- Last completed case and result: CRR-005 pass on the integrated base (Pass)
 - Cases still running, interrupted, or not started: none
 - Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md` → Test-Case Ledger Reconciliation

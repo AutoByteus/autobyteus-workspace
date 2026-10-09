@@ -10,6 +10,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 / API-REV-001 F-001 | Pass | Fail — Local Fix → implementation_engineer | CR-001 (new) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (Targeted Delta) / IR-002 | Fail (CR-001 open) | Pass | CR-001 (resolved) |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-002 pass | Pass (CRR-003) | Pass | None |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 4 (Targeted Delta) / IR-003 after DR-001 | Pass (CRR-004) | Pass | None |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, round 2 / API-REV-003 pass | Pass (CRR-005) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -134,3 +136,63 @@ None (no prior test-review findings).
   - The PTM skill commit `0bd84e0` is unpushed.
   - C-09 (accepted residual).
   - `project-task-service.ts` is near the 500-line limit.
+
+### CRR-005 — Delivery-stage test alignment after base integration (IR-003)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/code-review-report.md` (round-4 section at the top)
+- Review entry point and round: Implementation Review, round 4 (re-entry after a delivery-stage Local Fix)
+- Review scope: `Targeted Delta Review`. Commit `17a5f2125` touches 2 test files; I also checked the merge `97b767186` resolution in the 2 overlapping feature source files.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-revision-record.md` (IR-003); delivery DR-001 (`delivery-revision-record.md`, `delivery-evidence/dr1-*.log`)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The base-added tests were aligned to the approved explicit `delegate_task` contract; no assertion was weakened.
+  - The merge resolution keeps both the base's viewer-scoped collaborator port and this feature's delegation methods.
+  - Reviewer-run evidence: typecheck clean; 1122 unit tests passed; DCM E2E passed.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None (no open findings).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (handoff rule)
+- Remaining risks or uncertainty:
+  - The live-gated collaborator suites were swept but not run (O-003).
+  - Earlier residuals are unchanged.
+
+### CRR-006 — Test review for API-REV-003: no durable test change
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/api-e2e-test-review-report.md` (round-2 section at the top)
+- Review entry point and round: successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer, `api-e2e-execution-coverage-report.md` (API-REV-003, Pass)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Not Applicable. API/E2E changed no durable test file; verified with git status and diff.
+- What changed in the review result and why: re-entry rerun on the integrated base, plus a packaged Electron real-model journey, which is evidence only.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None (no open findings).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - MP-003 (covered probabilistically).
+  - C-09 (accepted).
+  - O-001..O-003 (unrelated).
+  - `project-task-service.ts` is near the 500-line limit.
+  - The PTM skill commit `0bd84e0` must ship together with the server change.

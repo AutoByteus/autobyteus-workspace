@@ -1,5 +1,32 @@
 # API/E2E Test Review Report
 
+> **Latest authoritative round: 2 (CRR-006): `Not Applicable`.** Round 1 (CRR-004, `Pass`) follows as history.
+
+## Round 2 — API-REV-003 re-entry (integrated base)
+
+- Trigger: api_e2e_engineer, API-REV-003, `Pass`. This is the proportionate rerun after CRR-005 on merge `97b767186` + `17a5f2125`, plus a packaged Electron real-model journey.
+- Changed durable test scope: none by API/E2E.
+  - Verified: `git status` and `git diff 1252b6034..HEAD` show no changes to tests, fixtures, probes or `TESTING.md` outside the tickets folder.
+  - The two test files changed in this cycle (`17a5f2125`) were implementation-owned and were reviewed in CRR-005.
+  - The existing-copy suite, fixture, probe and `TESTING.md` remain as reviewed in round 1 (committed in `75bcb39c8`).
+- Evidence noted, not test code under review: `api-e2e-evidence/round-3/` and `api-e2e-evidence/electron/`. The Electron journey (isolated instance, real Claude model, PTM skill `0bd84e0`) is execution evidence only.
+- Findings: None.
+
+### Latest Authoritative Result
+
+- Result: `Not Applicable` (no durable test file changed)
+- Changed durable test paths reviewed: None
+- Unresolved finding IDs: None
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+- Notes:
+  - Classification is unchanged: Large / High.
+  - Delivery reruns its post-integration checks.
+  - Agents-repo commit `0bd84e0` must ship with the server change.
+
+---
+
+# Round 1 (CRR-004), history
+
 ## Review Meta
 
 - Review Round: 1 (proportional test-code review)
@@ -58,7 +85,7 @@ Non-blocking notes (not actionable for this ticket):
 - `taskNodes` and the live-AGY-process lookup are duplicated across about six `tests/e2e/projects` files, now including this one. Moving them into `tests/e2e/helpers/` would be a good separate cleanup.
 - `afterAll` records `leftoverProcesses` in the evidence JSON without asserting it. Termination of every root is asserted. Asserting it is optional.
 
-## Latest Authoritative Result
+## Round 1 Result (superseded by round 2)
 
 - Result: `Pass`
 - Changed durable test paths reviewed:

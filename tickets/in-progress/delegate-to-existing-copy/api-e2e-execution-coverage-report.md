@@ -25,7 +25,32 @@
 - Prior Round Reviewed: round 1 (API-REV-001, `Fail` on F-001)
 - Latest Authoritative Round: 2
 
-### Round 2 delta (authoritative)
+### Round 3 delta (authoritative, API-REV-003)
+
+Trigger: CRR-005, a re-entry after delivery's merge of `origin/personal` @ `927796780` (merge `97b767186`) and the test-only alignment `17a5f2125` (IR-003).
+
+- **CRR-005 proportionate pass** (`api-e2e-evidence/round-3/`), on the integrated base:
+  - typecheck: pass;
+  - `tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts`: 21/21 pass;
+  - `delegated-copy-member-contact-host.e2e.test.ts` (includes DCM-005; scripted AGY): pass;
+  - `task-existing-copy-assignment.e2e.test.ts` with `RUN_CLAUDE_E2E=1`: 8/8 pass (race again with both outcomes; cleanup clean; 766 feed frames, 0 invalid).
+- **Packaged Electron journey, real model** (added at the user's request: an isolated desktop instance is the more realistic surface):
+  - `pnpm isolated-app start --build` built this worktree's app (1.4.99-beta.7, build started 10:48, after the 10:43 merge, so the integrated product). It ran as `iso-54380-fba9` with its own ports and temp data; the user's app was not touched.
+  - Setup: the agents-repo worktree (`0bd84e0`, with the updated PTM skill and board template) was imported as a local package through the app's GraphQL API. A small "Docs Review Team" (reviewer coordinator plus editor) was created.
+  - In the UI, Chat → Project Task Manager → Claude Agent SDK `claude-haiku-5-5`. Every step after that is a real-model tool call:
+    1. **Task A.** "Create a Project … add a Task … delegate it to the Docs Review Team". The PTM created the Project and Task A and delegated it to the team. Task A's root is Team copy `docs_review_team_58ad…` (coordinator `docs_reviewer_b148…`). The tree shows the Task Team under the Manager, with the coordinator live and the editor not started.
+    2. **Task A DONE.** The team reported a blocker (no README file); the user supplied the text. The team proposed a cleanup, and the PTM marked A DONE. The Task Team left the tree, and A's root went closed/offline. The PTM recorded the copy under "Done dispatches" with `target_team_run_id` (new board template).
+    3. **Follow-up Task B, worded without any tool or ID hint.** "Give it to the same team copy that did the review." The PTM read its board and called `delegate_task({"target_team_run_id":"docs_review_team_58ad…","task_id":"project_task_02d1…"})`. Result: `{"delegated":true,"target_kind":"team","target_team_run_id":"docs_review_team_58ad…","target_team_coordinator_agent_run_id":"docs_reviewer_b148…"}`.
+    4. **The copy continued its conversation.** The Team tab shows "Task Assignment … New Task assigned to you: project_task_02d1…" to the reviewer. The team answered "Codeword: OSPREY-7314, as stated in the earlier Task", plus the final README. The PTM marked B DONE.
+    5. **Board.** Both Tasks are in DONE, each with the root "docs review team" (same copy), shown Offline.
+  - Evidence (`api-e2e-evidence/electron/`): screenshots `00`–`07`; a 6.4-minute recording `journey.mp4`; `manager-conversation.json` (tool calls and results); `start.json`, `stop.json`.
+  - Cleanup: `stop` → `wasRunning: true`, `forced: false`, `dataRootRemoved: true`, both ports released.
+  - Not covered in Electron: an app restart around the assignment. That is covered by BR-015 with a real backend restart (web-equivalent renderer).
+  - Observed and unrelated: after an API-side package import, the renderer's agent catalog needed the Agents page's Reload before the Chat picker listed the new agents.
+- **Durable coverage changes this round:** none. The suite, fixture, probe and TESTING.md were committed in `75bcb39c8` after the CRR-004 test review.
+- **Confidence:** user-surface/desktop moves from 93% to 97% (real packaged app and a real model end to end). Overall is now about 96%.
+
+### Round 2 delta
 
 - F-001 recheck first: EXC-E2E-006 passes. The start-failed copy, found through `list_project_tasks` and with its Task CANCELLED, now gets `This copy never started, so it has no conversation to resume; or delegate Task <G> to a new copy with recipient_address.` Project files are byte-identical.
 - Regression around the fix: the generic refusal is unchanged for an unknown ID (EXC-E2E-001..003) and another root's copy (EXC-E2E-005). The AC-008 other-kind, coordinator and member refusals are unchanged.
@@ -302,8 +327,9 @@ None (all methods are durable).
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2, API-REV-002; round 1 was `Fail` on F-001, now resolved)
-- Final validation confidence: 95.4%
+- Result: `Pass` (round 3, API-REV-003, on the integrated base, plus a packaged Electron real-model journey; round 2 Pass; round 1 `Fail` on F-001, resolved)
+- Final validation confidence: ~96% (round 3: user surface 97%; round 2: 95.4%)
+- Round 3 test-code review: `Not Applicable` (no API/E2E-owned durable test changes in round 3)
 - Default `95%` target met: `Yes`
 - Final categories below 90%: none
 - Broader validation decision: `Required` — executed (Live API server E2E incl. a real Claude case + Browser with real restarts)

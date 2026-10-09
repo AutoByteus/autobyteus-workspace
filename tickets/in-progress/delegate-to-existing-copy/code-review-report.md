@@ -1,6 +1,61 @@
 # Code Review Report
 
-> **Latest authoritative round: 3, Implementation Review, Targeted Delta Review (CRR-003): `Pass`.** CR-001 is resolved. Round 3 comes first. Round 2 (failure origin, CRR-002) and round 1 (full implementation review, CRR-001) follow as history. The round-1 structural checks and scorecard carry forward unchanged except where round 3 updates them.
+> **Latest authoritative round: 4, Implementation Review after a delivery-stage Local Fix, Targeted Delta Review (CRR-005): `Pass`.** Round 4 comes first. Rounds 3, 2 and 1 follow as history. The round-1 structural checks and scorecard carry forward, as amended in round 3.
+
+## Round 4 — Implementation Review (Targeted Delta Review, delivery re-entry)
+
+### Review Round Meta
+
+- Review Entry Point: `Implementation Review` (re-entry after a delivery-stage Local Fix)
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 4
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence:
+  - Commit `17a5f2125` changes only two test files (+8/−5); there is no source change.
+  - The integration merge `97b767186` touched two feature source files, `standalone-agent-run-root.ts` and `standalone-root-message-delivery.ts`. I checked their resolution below.
+- Trigger: implementation_engineer, IR-003, Local Fix requested by delivery (DR-001) after base integration
+- Delivery Revision Record Reviewed: `delivery-revision-record.md` (DR-001), `delivery-evidence/dr1-*.log`
+- Relevant revision IDs: SR-006, IR-003, CRR-003/004, API-REV-002, DR-001
+- Routing classification: Large / High, unchanged.
+
+### What was reviewed
+
+- **Test fix, `17a5f2125`.** The base-added `delegated-copy-member-contact-delegator` tests used the pre-DEC-008 contract.
+  - `standalone-agent-run-root.test.ts` now calls `delegateToNewCopy` and expects `{delegated: true, copy: {kind: "team"}}`, plus `{delegated: false, message}` for the refused host delegation. These are the internal outcome shapes at this unit boundary, which is correct.
+  - DCM-005 now asserts `delegated: false`, a message, and the absence of all three copy-ID fields. This matches REQ-001 (failure carries no copy ID).
+  - The intent of the base tests is preserved. No assertion was weakened.
+- **Merge resolution, `97b767186`.**
+  - `standalone-agent-run-root.ts`: the conflict hunk keeps the base's `collaboratorPortFor(viewerAgentRunId)` and this feature's `delegateToNewCopy` / `assignToExistingCopy` / `teamCoordinatorOf`, both under the existing `operationGate`. Correct.
+  - `standalone-root-message-delivery.ts`: the base's viewer-scoped `resolveMentions` / `listAvailable` changes auto-merged and don't overlap the delegation methods.
+- **Sweep for old shapes.** No `.delegateTask(` root/capability call, `DelegateTaskInput` or `{target_agent_run_id: null}` delegation shape remains in `src` or `tests`. The only `target_agent_run_id: null` is the `send_message_to` result contract, which is an agent run ID and still correct.
+
+### Evidence (reviewer-run)
+
+- `tsc -p tsconfig.build.json --noEmit`: exit 0.
+- `vitest run` over the unit layers `standalone-agent-run-root`, `agent-collaboration`, `agent-team-execution`, `agent-org-execution`, `projects`, `agent-communication` and `agent-tools`: 140 files, 1122 tests passed.
+- `RUN_AGY_FAILURE_E2E=1 … delegated-copy-member-contact-host.e2e.test.ts` (scripted AGY): passed. The logged `COLLABORATOR_ADD_FAILED` line is an expected refusal inside the suite.
+
+### Candidate Gate (delta)
+
+None. The change is test-only and conforms to the approved contract (REQ-001, DEC-008).
+
+### Findings (Round 4)
+
+None.
+
+### Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 4, Targeted Delta Review)
+- Supported Product Scenario Gate: `Pass` (unchanged)
+- Material-Premise Gate: `Pass` (unchanged)
+- Score Summary: 9.3/10, carried forward; every category ≥ 9.0
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`, per the handoff rule. The proportionate rerun scope is the two changed tests, already passing here, plus whatever post-integration checks delivery owns.
+- Notes: the live-gated `agent-initiated-collaborators` and `standalone-agent-collaborator-mention` suites were swept but not run (O-003 context).
+
+---
+
+# Round 3 — Implementation Review (CRR-003), history
 
 ## Round 3 — Implementation Review (Targeted Delta Review)
 
@@ -60,7 +115,7 @@ Tests:
 
 None open. CR-001 is resolved.
 
-### Latest Authoritative Result
+### Round 3 Result (superseded by round 4)
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review` (round 3, Targeted Delta Review)
