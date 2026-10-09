@@ -53,6 +53,7 @@ const buildEvent = (input: {
         run_created_at: input.runCreatedAt ?? null,
         member_display_name: input.memberDisplayName ?? null,
         runtime_kind: input.runtimeKind ?? "codex_app_server",
+        reports_model_call: true,
         model_provider: input.modelProvider ?? null,
         provider_name: input.providerName ?? null,
         model_identifier: input.model,

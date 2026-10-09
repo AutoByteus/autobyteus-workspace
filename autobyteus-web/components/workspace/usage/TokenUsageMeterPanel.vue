@@ -41,7 +41,7 @@
                 {{ formatInteger(primarySummary.effectiveContextWindowTokens ?? 0) }}
                 {{ $t('shell.tokenUsage.contextTokens') }}
               </p>
-              <p v-if="primarySummary.contextCompactionThresholdTokens !== null" class="tabular-nums" data-test="context-compaction-label">
+              <p v-if="primarySummary.contextCompactionThresholdTokens !== null" class="ml-auto tabular-nums" data-test="context-compaction-label">
                 {{ t('shell.tokenUsage.autoCompactsAt', { tokens: formatInteger(primarySummary.contextCompactionThresholdTokens) }) }}
               </p>
             </div>
