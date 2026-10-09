@@ -6,7 +6,7 @@
 - Trigger: CRR-002 Pass (proportional test-code review) from `/software_engineering_team/code_reviewer`, after API-REV-001 Pass.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`. Route: reviewed (ARCH-REV-003, CRR-001, API-REV-001, CRR-002).
 - Bootstrap base reference: `origin/personal` @ `927796780`.
-- Integrated base reference used for docs sync: `origin/personal` @ `e350a194b` (merged into the ticket branch as `a89fe62cc`).
+- Integrated base reference used for docs sync: `origin/personal` @ `e350a194b` (DR-001 merge `a89fe62cc`), then re-checked on `origin/personal` @ `033a6d780` (DR-002 merge `b7e318107`). The base's additive sections in `token_usage.md` (AGY usage) and `provider_model_catalogs.md` (Gemini 3.1 Pro prices) sit beside this ticket's Anthropic sections without contradiction.
 - Post-integration verification reference: `release-deployment-report.md` → Initial Delivery Integration Refresh; logs in `delivery-evidence/dr1-*.log`.
 
 ## Why Docs Were Updated

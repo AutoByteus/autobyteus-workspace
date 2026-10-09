@@ -11,14 +11,16 @@
   - API/E2E: API-REV-001 Pass (95%).
   - Test-code review: CRR-002 Pass.
 - One repository: `codex/anthropic-prompt-caching` → `origin/personal`. A release (for example a new beta) is decided at user verification.
-- Current state: **held before user verification (DR-001)**. During delivery, API/E2E validation was reopened at the user's request for real desktop-app (Electron) testing, so the received package is no longer final. See Escalation.
+- Current state: **waiting for user verification (DR-002)**.
+  - DR-001 was held because the API/E2E desktop round was reopened at the user's request.
+  - That round finished as API-REV-002 Pass (96%), with no test-code change, and was routed directly to delivery.
 
 ## Handoff Summary
 
-- Handoff summary artifact: not yet issued. It is written when the package is final and ready for user verification.
-- Handoff summary status: `Blocked` (waiting for the reopened API/E2E desktop round)
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/tickets/in-progress/anthropic-prompt-caching/handoff-summary.md`
+- Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/tickets/in-progress/anthropic-prompt-caching/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -44,11 +46,31 @@
   - The reopened API/E2E desktop round is building from this worktree after the merge, so its evidence will be on the integrated state.
 - Post-integration verification result: `Passed`
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (as of DR-001)
+- Handoff state current with latest tracked remote base: `Yes`. DR-002 brought it current again.
+
+### DR-002 re-integration
+
+- Latest tracked remote base checked: `origin/personal` @ `033a6d780`. 10 new commits from gemini-native-cache-hit (no release).
+- Checkpoint: `328630c0a`. It contains the API-REV-002 desktop evidence, the `TESTING.md` row and the DR-001 artifacts. The two `.mp4` recordings are held for a user decision.
+- Merge: `b7e318107`, with no conflicts.
+  - Overlapping files: `autobyteus-server-ts/docs/modules/token_usage.md` (base adds an AGY section), `autobyteus-ts/docs/provider_model_catalogs.md` (base adds Gemini 3.1 Pro prices), `autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts` and `TESTING.md`.
+  - Each merged additively and stays consistent.
+- Checks on `b7e318107`:
+
+  | Command | Result | Log |
+  | --- | --- | --- |
+  | `pnpm -C autobyteus-ts exec tsc --noEmit -p tsconfig.build.json` | exit 0 | `delivery-evidence/dr2-core-typecheck.log` |
+  | `pnpm -C autobyteus-server-ts typecheck` | exit 0 | `delivery-evidence/dr2-server-typecheck.log` |
+  | `pnpm -C autobyteus-ts exec vitest run tests/unit --no-watch` | 1860/1861 pass. The 1 failure is the known Gemini retry-options test, which also fails on base | `delivery-evidence/dr2-core-unit.log` |
+  | `pnpm -C autobyteus-server-ts test:unit` | exit 0. 669 files pass, 4 skipped; 5172 tests pass, 7 skipped | `delivery-evidence/dr2-server-unit.log` |
+  | `vitest run tests/e2e/token-usage/{gemini-native-pricing-graphql,token-usage-ledger-provider-semantics,token-usage-unit-prices-graphql}.e2e.test.ts` | 3 files, 10/10 pass. These are the base's new pricing E2Es, run against the merged catalog and meter | `delivery-evidence/dr2-token-usage-e2e.log` |
+
+- The paid live E2E was not rerun. The base changes affect AGY usage ingestion and Gemini prices only, not the Anthropic request, memory or Anthropic pricing paths, and the token-usage checks above pass.
+- Result: `Passed`.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`. Not yet requested; held for the reopened API/E2E round.
+- Initial explicit user completion/verification received: `No`. Requested at DR-002 with `handoff-summary.md`.
 - Pending user checks:
   - AC-007: the Anthropic Console shows prompt caching active and tokens reused, and the Token Meter total matches the Console. For restored runs, see DEF-B.
   - The release decision.
@@ -72,9 +94,9 @@
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (base and finalization target `origin/personal`)
-- Ticket branch: `codex/anthropic-prompt-caching` @ `a89fe62cc` (local only)
+- Ticket branch: `codex/anthropic-prompt-caching` @ `b7e318107` (local only)
 - Finalization target: `origin` / `personal`
-- Repository finalization status: `Blocked`. Waiting for the final package and user verification.
+- Repository finalization status: `Blocked`. Waiting for user verification.
 
 ## Release / Publication / Deployment
 
@@ -83,9 +105,9 @@
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching`. Cleanup is pending finalization. An isolated desktop instance started from this worktree by the API/E2E round must be stopped first.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching`. Cleanup is pending finalization. The API/E2E desktop instance has already been stopped and its data removed (API-REV-002).
 
-## Escalation / Reroute
+## Escalation / Reroute (DR-001, resolved at DR-002)
 
 - Classification: final handoff blocked by a non-deployment issue: upstream validation was reopened during delivery.
 - Recommended recipient: `/software_engineering_team/solution_designer` (coordinator), per the handoff rules.
@@ -132,6 +154,6 @@
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No` (undecided)
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: the reopened API/E2E desktop round (DSK-001..004) must finish and come back through the normal route before user verification.
+- Unresolved blocker: explicit user verification (AC-007) and the release/recording decisions.
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`

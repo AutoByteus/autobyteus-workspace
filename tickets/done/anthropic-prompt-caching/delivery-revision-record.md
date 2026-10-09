@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-002 Pass from `/software_engineering_team/code_reviewer` | N/A | Integrated, checked and docs synced. Held before user verification: the API/E2E desktop round was reopened during delivery | `release-deployment-report.md`, `docs-sync-report.md`, `release-notes.md`, `TESTING.md`, `delivery-evidence/dr1-*.log` |
+| DR-002 | API-REV-002 Pass (desktop round, no test-code change) from `/software_engineering_team/api_e2e_engineer` | DR-001 held | Re-integrated (`b7e318107`), checked and docs re-checked. Handoff summary issued. Waiting for user verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr2-*.log` |
 
 ## Revision Entries
 
@@ -43,6 +44,38 @@ The latest docs sync report, handoff summary and release/publication/deployment 
   - AC-007 user check.
   - DEF-A and DEF-B (pre-existing; separate tickets recommended).
   - CR-001 (Low, optional).
+  - P-004.
+  - One cache rewrite per restore.
+  - `memory-manager.ts` at 498/500 lines.
+
+### DR-002 — Re-integrated after the desktop round; waiting for user verification
+
+- Delivery round and trigger: DR-001 hold resolved. API-REV-002 (desktop/Electron round DSK-001..005, Pass, 96%) was routed directly to delivery because no test code changed, as Solution Designer instructed.
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` § Desktop Application Validation; `api-e2e-revision-record.md` API-REV-002; `api-e2e-evidence/electron/`.
+- Prior authoritative result: DR-001 (held before user verification).
+- Current authoritative result: re-integrated, checked and docs re-checked. Handoff summary issued.
+  - Checkpoint `328630c0a`.
+  - Merge `b7e318107` of `origin/personal` @ `033a6d780` (gemini-native-cache-hit, 10 commits). Three files overlapped and all merged without conflicts.
+  - Typechecks: clean.
+  - Core unit: 1860/1861 (the known base-identical Gemini test).
+  - Server unit: 5172 pass.
+  - Base token-usage pricing E2Es: 10/10.
+- Docs sync report: `docs-sync-report.md` (re-checked; no further edits)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: see the report's "DR-002 re-integration".
+- User verification/finalization state: verification requested (AC-007, release decision, recordings, follow-up tickets). Nothing finalized.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal return message/reference: N/A
+- Why this delivery revision was recorded: the hold was resolved, and the base advanced again with overlapping token-usage docs and a catalog test.
+- Next recipient/action: the user verifies. Then delivery:
+  - moves the ticket to `tickets/done/`;
+  - commits, pushes and merges into `personal`;
+  - handles the optional beta, then cleans up and returns the terminal package.
+- Remaining blockers, rollback concerns, or untested scope:
+  - User verification.
+  - DEF-A and DEF-B (pre-existing).
+  - CR-001 (optional).
   - P-004.
   - One cache rewrite per restore.
   - `memory-manager.ts` at 498/500 lines.
