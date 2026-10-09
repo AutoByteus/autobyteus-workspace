@@ -67,14 +67,19 @@ export class AgentRunCollaborationResolver {
     return getStandaloneRootMemberViewProjectionService().getActiveTracePage(hostRunId, memberAddress, agentRunId, beforeCursor);
   }
 
-  /** `@` menu options for a live run's root, from the one server-owned candidate policy. */
+  /**
+   * `@` menu options for a live run's root, from the one server-owned candidate policy. An Agent
+   * root answers for one focused agent (`focusedAgentRunId`, required for `agent`); Team and Org
+   * roots answer per root and ignore it.
+   */
   @Query(() => CollaboratorMentionCandidatesPayload)
   async collaboratorMentionCandidates(
     @Arg("rootSubjectKind", () => String) rootSubjectKind: string,
     @Arg("rootRunId", () => String) rootRunId: string,
+    @Arg("focusedAgentRunId", () => String, { nullable: true }) focusedAgentRunId?: string | null,
   ): Promise<CollaboratorMentionCandidatesPayload> {
     if (!isRootSubjectKind(rootSubjectKind)) throw new Error(`Unknown root kind '${rootSubjectKind}'.`);
-    const port = await resolveCollaboratorRootPort(rootSubjectKind, rootRunId);
+    const port = await resolveCollaboratorRootPort(rootSubjectKind, rootRunId, focusedAgentRunId);
     if (!port) throw new Error(`Run '${rootRunId}' was not found.`);
     const list = await getCollaboratorAdmission().policy.listCandidates(port);
     return {

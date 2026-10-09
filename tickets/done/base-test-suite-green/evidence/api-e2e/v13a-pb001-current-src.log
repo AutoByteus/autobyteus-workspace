@@ -1,0 +1,264 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-autobyteus
+Created agent session 1ac3182a-3c1c-4cf3-bc54-01435d632412 for run run-autobyteus
+Agent WebSocket connected: session=1ac3182a-3c1c-4cf3-bc54-01435d632412, run=run-autobyteus
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-autobyteus
+Created agent session e62bd6b3-3475-4b81-ae17-f1db4d407912 for run run-autobyteus
+Agent WebSocket connected: session=e62bd6b3-3475-4b81-ae17-f1db4d407912, run=run-autobyteus
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only autobyteus status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session e62bd6b3-3475-4b81-ae17-f1db4d407912
+Agent WebSocket disconnected: e62bd6b3-3475-4b81-ae17-f1db4d407912
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 1ac3182a-3c1c-4cf3-bc54-01435d632412
+Agent WebSocket disconnected: 1ac3182a-3c1c-4cf3-bc54-01435d632412
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-codex_app_server
+Created agent session 9e52046a-c775-4723-83ec-ce82b00a078b for run run-codex_app_server
+Agent WebSocket connected: session=9e52046a-c775-4723-83ec-ce82b00a078b, run=run-codex_app_server
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-codex_app_server
+Created agent session c3ffe543-ecfb-4b50-8842-cd1d6a1a8fb3 for run run-codex_app_server
+Agent WebSocket connected: session=c3ffe543-ecfb-4b50-8842-cd1d6a1a8fb3, run=run-codex_app_server
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only codex_app_server status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session c3ffe543-ecfb-4b50-8842-cd1d6a1a8fb3
+Agent WebSocket disconnected: c3ffe543-ecfb-4b50-8842-cd1d6a1a8fb3
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 9e52046a-c775-4723-83ec-ce82b00a078b
+Agent WebSocket disconnected: 9e52046a-c775-4723-83ec-ce82b00a078b
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-claude_agent_sdk
+Created agent session cca63c5e-7806-48ef-8f52-5183ec425508 for run run-claude_agent_sdk
+Agent WebSocket connected: session=cca63c5e-7806-48ef-8f52-5183ec425508, run=run-claude_agent_sdk
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mAgent websocket attached for run run-claude_agent_sdk
+Created agent session 16a8e892-22bc-478d-aad2-f927f3a65aa9 for run run-claude_agent_sdk
+Agent WebSocket connected: session=16a8e892-22bc-478d-aad2-f927f3a65aa9, run=run-claude_agent_sdk
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mprojects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions
+[22m[39mClosed agent session 16a8e892-22bc-478d-aad2-f927f3a65aa9
+Agent WebSocket disconnected: 16a8e892-22bc-478d-aad2-f927f3a65aa9
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[22m[39mClosed agent session cca63c5e-7806-48ef-8f52-5183ec425508
+Agent WebSocket disconnected: cca63c5e-7806-48ef-8f52-5183ec425508
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[22m[39mAgent websocket attached for run run-default-window-rate
+Created agent session 016a650f-b87e-417e-99c3-a76bd949e877 for run run-default-window-rate
+Agent WebSocket connected: session=016a650f-b87e-417e-99c3-a76bd949e877, run=run-default-window-rate
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2muses a changed interval only for the active socket's next newly opened window
+[22m[39mClosed agent session 016a650f-b87e-417e-99c3-a76bd949e877
+Agent WebSocket disconnected: 016a650f-b87e-417e-99c3-a76bd949e877
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2muses a changed interval only for the active socket's next newly opened window
+[22m[39mAgent websocket attached for run run-live-interval-change
+Created agent session b81a0c49-b05f-4e8b-bc6c-76850be6c12c for run run-live-interval-change
+Agent WebSocket connected: session=b81a0c49-b05f-4e8b-bc6c-76850be6c12c, run=run-live-interval-change
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session b81a0c49-b05f-4e8b-bc6c-76850be6c12c
+Agent WebSocket disconnected: b81a0c49-b05f-4e8b-bc6c-76850be6c12c
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 90304cde-544e-4d4d-8636-e2ba7a54ac8f for run run-retired-turn-ordering
+Agent WebSocket connected: session=90304cde-544e-4d4d-8636-e2ba7a54ac8f, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session 3d90a982-0eaa-40d0-be7c-4a4a54b7f3ca for run run-retired-turn-ordering
+Agent WebSocket connected: session=3d90a982-0eaa-40d0-be7c-4a4a54b7f3ca, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session 3d90a982-0eaa-40d0-be7c-4a4a54b7f3ca
+Agent WebSocket disconnected: 3d90a982-0eaa-40d0-be7c-4a4a54b7f3ca
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mAgent websocket attached for run run-retired-turn-ordering
+Created agent session eec71e00-fe1c-4946-b951-6c387723fbcf for run run-retired-turn-ordering
+Agent WebSocket connected: session=eec71e00-fe1c-4946-b951-6c387723fbcf, run=run-retired-turn-ordering
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mpreserves B while rejecting a retired turn's late segment content across reconnect
+[22m[39mClosed agent session eec71e00-fe1c-4946-b951-6c387723fbcf
+Agent WebSocket disconnected: eec71e00-fe1c-4946-b951-6c387723fbcf
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mkeeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+[22m[39mClosed agent session 90304cde-544e-4d4d-8636-e2ba7a54ac8f
+Agent WebSocket disconnected: 90304cde-544e-4d4d-8636-e2ba7a54ac8f
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22m[2mAgent status WebSocket contract integration[2m > [22m[2mkeeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+[22m[39mAgent websocket attached for run run-error-contract
+Created agent session 3b37dfb9-310f-4938-b933-0285b544ad8d for run run-error-contract
+Agent WebSocket connected: session=3b37dfb9-310f-4938-b933-0285b544ad8d, run=run-error-contract
+
+[90mstdout[2m | tests/integration/agent/agent-status-websocket.integration.test.ts
+[22m[39mClosed agent session 3b37dfb9-310f-4938-b933-0285b544ad8d
+Agent WebSocket disconnected: 3b37dfb9-310f-4938-b933-0285b544ad8d
+
+ [31m❯[39m tests/integration/agent/agent-status-websocket.integration.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 876[2mms[22m[39m
+     [32m✓[39m projects only autobyteus status transitions to a real standalone socket while preserving canonical companions[32m 47[2mms[22m[39m
+     [32m✓[39m projects only codex_app_server status transitions to a real standalone socket while preserving canonical companions[32m 22[2mms[22m[39m
+     [32m✓[39m projects only claude_agent_sdk status transitions to a real standalone socket while preserving canonical companions[32m 29[2mms[22m[39m
+[31m     [31m×[31m coalesces a representative fine-grained canonical stream into one default-window content frame[39m[33m 362[2mms[22m[39m
+[31m     [31m×[31m uses a changed interval only for the active socket's next newly opened window[39m[33m 354[2mms[22m[39m
+     [32m✓[39m preserves B while rejecting a retired turn's late segment content across reconnect[32m 33[2mms[22m[39m
+     [32m✓[39m keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination[32m 28[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22mAgent status WebSocket contract integration[2m > [22mcoalesces a representative fine-grained canonical stream into one default-window content frame
+[31m[1mAssertionError[22m: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2m❯[22m tests/integration/agent/agent-status-websocket.integration.test.ts:[2m357:91[22m[39m
+    [90m355| [39m
+    [90m356| [39m      [35mawait[39m [34mwait[39m([34m350[39m)[33m;[39m
+    [90m357| [39m      expect(connection.messages.filter((message) => message.type === …
+    [90m   | [39m                                                                                          [31m^[39m
+    [90m358| [39m      [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m359| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent/agent-status-websocket.integration.test.ts[2m > [22mAgent status WebSocket contract integration[2m > [22muses a changed interval only for the active socket's next newly opened window
+[31m[1mAssertionError[22m: expected [ { type: 'SEGMENT_CONTENT', …(1) } ] to have a length of +0 but got 1[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2m❯[22m tests/integration/agent/agent-status-websocket.integration.test.ts:[2m409:10[22m[39m
+    [90m407| [39m      [35mawait[39m [34mwait[39m([34m350[39m)[33m;[39m
+    [90m408| [39m      expect(connection.messages.filter((message) => message.type === …
+    [90m409| [39m        [33m.[39m[34mtoHaveLength[39m([34m0[39m)[33m;[39m
+    [90m   | [39m         [31m^[39m
+    [90m410| [39m      [35mawait[39m [34mwait[39m([34m300[39m)[33m;[39m
+    [90m411| [39m      expect(connection.messages.filter((message) => message.type === …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (7)[39m
+[2m   Start at [22m 22:01:57
+[2m   Duration [22m 9.36s[2m (transform 5.34s, setup 43ms, import 7.72s, tests 876ms, environment 0ms)[22m
+
+exit 1; 12s (cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-server-ts; HOME=/tmp/apie2e-home-vAUL6x; cmd=pnpm exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts --no-watch)

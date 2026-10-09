@@ -60,6 +60,7 @@ describe("package-root-summary", () => {
       sharedAgentCount: 1,
       teamLocalAgentCount: 1,
       agentTeamCount: 1,
+      applicationCount: 0,
     });
   });
 

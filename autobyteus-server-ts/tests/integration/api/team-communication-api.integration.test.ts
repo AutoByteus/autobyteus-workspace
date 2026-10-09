@@ -4,7 +4,10 @@ import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createHash } from "node:crypto";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const timestamp = "2026-04-12T10:00:00.000Z";
 
@@ -18,68 +21,13 @@ describe("Team communication API integration", () => {
   let appDataDir: string;
   let workspaceRootPath: string;
   let originalServerHostEnv: string | undefined;
+  let releaseOwnedRunManagers: (() => void) | null = null;
 
   const getMemoryDir = (): string => path.join(appDataDir, "memory");
 
-  const memberAddress = (memberRouteKey: string) => ({
-    segments: [{ kind: "member" as const, memberRouteKey }],
-  });
+  const getTeamDir = (teamRunId: string): string => path.join(getMemoryDir(), "agent_teams", teamRunId);
 
-  const seedTeamRunMetadata = async (teamRunId: string): Promise<string> => {
-    const teamDir = path.join(getMemoryDir(), "agent_teams", teamRunId);
-    await fs.mkdir(teamDir, { recursive: true });
-    await fs.writeFile(
-      path.join(teamDir, "team_run_metadata.json"),
-      JSON.stringify(
-        {
-          teamRunId,
-          teamDefinitionId: "team-def-1",
-          teamDefinitionName: "Team Communication Validation",
-          coordinatorMemberRouteKey: "solution_designer",
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          archivedAt: null,
-          memberTree: [
-            {
-              memberKind: "agent",
-              memberRouteKey: "solution_designer",
-              memberPath: ["solution_designer"],
-              memberName: "Solution Designer",
-              memberRunId: "sender-run-1",
-              runtimeKind: RuntimeKind.AUTOBYTEUS,
-              platformAgentRunId: null,
-              agentDefinitionId: "agent-def-sender",
-              llmModelIdentifier: "model-1",
-              autoExecuteTools: true,
-              llmConfig: null,
-              workspaceRootPath,
-              applicationExecutionContext: null,
-            },
-            {
-              memberKind: "agent",
-              memberRouteKey: "implementation_engineer",
-              memberPath: ["implementation_engineer"],
-              memberName: "Implementation Engineer",
-              memberRunId: "receiver-run-1",
-              runtimeKind: RuntimeKind.AUTOBYTEUS,
-              platformAgentRunId: null,
-              agentDefinitionId: "agent-def-receiver",
-              llmModelIdentifier: "model-1",
-              autoExecuteTools: true,
-              llmConfig: null,
-              workspaceRootPath,
-              applicationExecutionContext: null,
-            },
-          ],
-        },
-        null,
-        2,
-      ),
-      "utf-8",
-    );
-    return teamDir;
-  };
-
+  /** Current Team package: execution tree with the two members plus the V1 communication messages. */
   const seedTeamCommunicationRun = async (input: {
     teamRunId: string;
     messageId: string;
@@ -87,62 +35,40 @@ describe("Team communication API integration", () => {
     missingReferencePath: string;
     directoryReferencePath: string;
   }): Promise<void> => {
-    const teamDir = await seedTeamRunMetadata(input.teamRunId);
-    await fs.writeFile(
-      path.join(teamDir, "team_communication_messages.json"),
-      JSON.stringify(
-        {
-          teamRunId: input.teamRunId,
-          messages: [
-            {
-              messageId: input.messageId,
-              senderAddress: memberAddress("solution_designer"),
-              receiverAddress: memberAddress("implementation_engineer"),
-              content: `Please review the attached file at ${input.readableReferencePath}; it should stay plain text in message content.`,
-              messageType: "handoff",
-              createdAt: timestamp,
-              referenceFiles: [
-                {
-                  referenceId: "ref-readable",
-                  path: input.readableReferencePath,
-                  type: "file",
-                  createdAt: timestamp,
-                  updatedAt: timestamp,
-                },
-                {
-                  referenceId: "ref-missing",
-                  path: input.missingReferencePath,
-                  type: "file",
-                  createdAt: timestamp,
-                  updatedAt: timestamp,
-                },
-                {
-                  referenceId: "ref-directory",
-                  path: input.directoryReferencePath,
-                  type: "file",
-                  createdAt: timestamp,
-                  updatedAt: timestamp,
-                },
-                {
-                  referenceId: "ref-invalid",
-                  path: "relative/reference.md",
-                  type: "file",
-                  createdAt: timestamp,
-                  updatedAt: timestamp,
-                },
-              ],
-            },
-          ],
-        },
-        null,
-        2,
-      ),
-      "utf-8",
-    );
+    const teamDir = getTeamDir(input.teamRunId);
+    await new TeamRunExecutionTreeStore().write(teamDir, testExecutionTree({
+      rootTeamRunId: input.teamRunId,
+      rootTeamDefinitionId: "team-def-1",
+      teamDefinitionName: "Team Communication Validation",
+      coordinatorAddress: "/solution_designer",
+      createdAt: timestamp,
+      children: [
+        testAgentNode("/solution_designer", { agentRunId: "sender-run-1", workspaceRootPath }),
+        testAgentNode("/implementation_engineer", { agentRunId: "receiver-run-1", workspaceRootPath }),
+      ],
+    }));
+    await new TeamCommunicationV1Store().write(teamDir, {
+      schemaVersion: 1,
+      rootTeamRunId: input.teamRunId,
+      messages: [{
+        messageId: input.messageId,
+        senderAgentRunId: "sender-run-1",
+        receiverAgentRunId: "receiver-run-1",
+        content: `Please review the attached file at ${input.readableReferencePath}; it should stay plain text in message content.`,
+        messageType: "handoff",
+        createdAt: timestamp,
+        referenceFiles: [input.readableReferencePath, input.missingReferencePath, input.directoryReferencePath],
+      }],
+    });
   };
 
+  /** Reference IDs are derived from the owning message and the stored absolute path. */
+  const referenceIdFor = (messageId: string, filePath: string): string =>
+    createHash("sha256").update(`${messageId}\0${filePath}`).digest("hex");
+
   const seedLegacyFlatTeamCommunicationRun = async (teamRunId: string): Promise<void> => {
-    const teamDir = await seedTeamRunMetadata(teamRunId);
+    const teamDir = getTeamDir(teamRunId);
+    await fs.mkdir(teamDir, { recursive: true });
     await fs.writeFile(
       path.join(teamDir, "team_communication_messages.json"),
       JSON.stringify(
@@ -203,6 +129,33 @@ describe("Team communication API integration", () => {
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir });
 
+    // Server startup initializes the process run managers before routes resolve their services.
+    const [{ AgentRunManager }, { AgentTeamRunManager }] = await Promise.all([
+      import("../../../src/agent-execution/services/agent-run-manager.js"),
+      import("../../../src/agent-team-execution/services/agent-team-run-manager.js"),
+    ]);
+    const ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
+      autoByteusBackendFactory: {} as never, codexBackendFactory: {} as never,
+      claudeBackendFactory: {} as never, agyBackendFactory: {} as never, grokBackendFactory: {} as never,
+      activationRegistry: { getActiveRun: () => null } as never,
+      memoryRecorder: {} as never,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+      agentToolMcpRunSessionDeactivator: {} as never,
+    });
+    const ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+      memoryDir: appConfigProvider.config.getMemoryDir(), flatTeamExecutionFactory: {} as never,
+      memberExecutionContextBuilder: {} as never,
+      taskExecutionIdentity: {
+        agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
+        taskTeams: { create: () => "unused-task-team" },
+      } as never,
+      modelSelectionValidator: { validate: () => undefined } as never,
+    });
+    releaseOwnedRunManagers = () => {
+      AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
+      AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
+    };
+
     const [{ registerTeamCommunicationRoutes }, { registerGraphql }] = await Promise.all([
       import("../../../src/api/rest/team-communication.js"),
       import("../../../src/api/graphql/index.js"),
@@ -215,6 +168,7 @@ describe("Team communication API integration", () => {
 
   afterAll(async () => {
     await app.close();
+    releaseOwnedRunManagers?.();
     await Promise.all([
       fs.rm(appDataDir, { recursive: true, force: true }),
       fs.rm(workspaceRootPath, { recursive: true, force: true }),
@@ -245,8 +199,8 @@ describe("Team communication API integration", () => {
     const data = await execGraphql<{
       getTeamCommunicationMessages: Array<{
         messageId: string;
-        senderAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
-        receiverAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
+        senderAgentRunId: string;
+        receiverAgentRunId: string;
         content: string;
         messageType: string;
         referenceFiles: Array<{ referenceId: string; path: string; type: string }>;
@@ -255,24 +209,8 @@ describe("Team communication API integration", () => {
       `query GetTeamCommunicationMessages($teamRunId: String!) {
         getTeamCommunicationMessages(teamRunId: $teamRunId) {
           messageId
-          senderAddress {
-            segments {
-              kind
-              memberRouteKey
-              memberPath
-              taskTeamRunId
-              taskAgentRunId
-            }
-          }
-          receiverAddress {
-            segments {
-              kind
-              memberRouteKey
-              memberPath
-              taskTeamRunId
-              taskAgentRunId
-            }
-          }
+          senderAgentRunId
+          receiverAgentRunId
           content
           messageType
           referenceFiles {
@@ -288,21 +226,13 @@ describe("Team communication API integration", () => {
     expect(data.getTeamCommunicationMessages).toEqual([
       expect.objectContaining({
         messageId,
-        senderAddress: expect.objectContaining({
-          segments: [
-            expect.objectContaining({ kind: "member", memberRouteKey: "solution_designer" }),
-          ],
-        }),
-        receiverAddress: expect.objectContaining({
-          segments: [
-            expect.objectContaining({ kind: "member", memberRouteKey: "implementation_engineer" }),
-          ],
-        }),
+        senderAgentRunId: "sender-run-1",
+        receiverAgentRunId: "receiver-run-1",
         messageType: "handoff",
         content: expect.stringContaining(readableReferencePath),
         referenceFiles: expect.arrayContaining([
-          expect.objectContaining({ referenceId: "ref-readable", path: readableReferencePath, type: "file" }),
-          expect.objectContaining({ referenceId: "ref-missing", path: missingReferencePath, type: "file" }),
+          expect.objectContaining({ referenceId: referenceIdFor(messageId, readableReferencePath), path: readableReferencePath, type: "file" }),
+          expect.objectContaining({ referenceId: referenceIdFor(messageId, missingReferencePath), path: missingReferencePath, type: "file" }),
         ]),
       }),
     ]);
@@ -329,7 +259,7 @@ describe("Team communication API integration", () => {
 
     const contentResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/ref-readable/content`,
+      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, readableReferencePath)}/content`,
     });
 
     expect(contentResponse.statusCode).toBe(200);
@@ -339,24 +269,20 @@ describe("Team communication API integration", () => {
 
     const missingResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/ref-missing/content`,
+      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, missingReferencePath)}/content`,
     });
     expect(missingResponse.statusCode).toBe(404);
     expect(missingResponse.json()).toEqual(expect.objectContaining({ code: "REFERENCE_CONTENT_UNAVAILABLE" }));
 
     const directoryResponse = await app.inject({
       method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/ref-directory/content`,
+      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/${referenceIdFor(messageId, directoryReferencePath)}/content`,
     });
     expect(directoryResponse.statusCode).toBe(404);
     expect(directoryResponse.json()).toEqual(expect.objectContaining({ code: "REFERENCE_CONTENT_UNAVAILABLE" }));
 
-    const invalidPathResponse = await app.inject({
-      method: "GET",
-      url: `/team-runs/${encodeURIComponent(teamRunId)}/team-communication/messages/${encodeURIComponent(messageId)}/references/ref-invalid/content`,
-    });
-    expect(invalidPathResponse.statusCode).toBe(400);
-    expect(invalidPathResponse.json()).toEqual(expect.objectContaining({ code: "INVALID_REFERENCE_PATH" }));
+    // A relative stored reference path is no longer a reachable state: the V1 message schema
+    // accepts only normalized absolute paths when the package is read.
 
     const unknownReferenceResponse = await app.inject({
       method: "GET",
@@ -370,34 +296,24 @@ describe("Team communication API integration", () => {
     const teamRunId = `team-legacy-flat-${Date.now()}`;
     await seedLegacyFlatTeamCommunicationRun(teamRunId);
 
-    const data = await execGraphql<{
-      getTeamCommunicationMessages: Array<{
-        messageId: string;
-        senderAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
-        receiverAddress: { segments: Array<{ kind: string; memberRouteKey?: string | null }> };
-      }>;
-    }>(
-      `query GetTeamCommunicationMessages($teamRunId: String!) {
-        getTeamCommunicationMessages(teamRunId: $teamRunId) {
-          messageId
-          senderAddress {
-            segments {
-              kind
-              memberRouteKey
-            }
+    const response = await app.inject({
+      method: "POST",
+      url: "/graphql",
+      payload: {
+        query: `query GetTeamCommunicationMessages($teamRunId: String!) {
+          getTeamCommunicationMessages(teamRunId: $teamRunId) {
+            messageId
+            senderAgentRunId
+            receiverAgentRunId
           }
-          receiverAddress {
-            segments {
-              kind
-              memberRouteKey
-            }
-          }
-        }
-      }`,
-      { teamRunId },
-    );
-
-    expect(data.getTeamCommunicationMessages).toEqual([]);
+        }`,
+        variables: { teamRunId },
+      },
+    });
+    const body = response.json() as GraphqlResponse<{ getTeamCommunicationMessages: unknown[] | null }>;
+    // The strict V1 reader rejects the old flat shape; nothing is hydrated through a fallback.
+    expect(body.data?.getTeamCommunicationMessages ?? null).toBeNull();
+    expect(body.errors?.[0]?.message).toContain("unsupported or missing field");
   });
 
   it("maps unreadable reference content failures to a graceful 403 REST response", async () => {

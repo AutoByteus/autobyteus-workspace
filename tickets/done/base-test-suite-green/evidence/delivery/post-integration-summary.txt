@@ -1,0 +1,4 @@
+HEAD 626ebee4cf17b6fbc92fbd635fc4d9ed9ae13a71 base 048ea6cecb3f1999d4201be5b995157a8007d8e7
+typecheck exit 0 12s
+test:unit exit 0 384s
+test:integration exit 1 120s

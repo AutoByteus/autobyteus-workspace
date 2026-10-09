@@ -269,14 +269,14 @@ describe("md-centric provider integration", () => {
       writable: true,
     };
 
-    vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+    const applicationBundleService = {
       listApplicationOwnedAgentSources: vi.fn(async () => [source]),
       getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: string) =>
         requestedId === definitionId ? source : null
       ),
-    } as unknown as ApplicationBundleService);
+    } as unknown as ApplicationBundleService;
 
-    const provider = new FileAgentDefinitionProvider();
+    const provider = new FileAgentDefinitionProvider({ applicationBundleService });
     await expect(provider.getAll()).rejects.toBeInstanceOf(AgentMdParseError);
   });
 
@@ -314,7 +314,7 @@ describe("md-centric provider integration", () => {
     );
     await fs.writeFile(path.join(agentDir, "agent-config.json"), "{}\n", "utf-8");
 
-    vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+    const applicationBundleService = {
       getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: string) =>
         requestedId === definitionId
           ? {
@@ -330,9 +330,9 @@ describe("md-centric provider integration", () => {
             }
           : null,
       ),
-    } as unknown as ApplicationBundleService);
+    } as unknown as ApplicationBundleService;
 
-    const provider = new FileAgentDefinitionProvider();
+    const provider = new FileAgentDefinitionProvider({ applicationBundleService });
     await provider.update(
       new AgentDefinition({
         id: definitionId,

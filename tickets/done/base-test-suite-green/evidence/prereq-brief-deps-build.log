@@ -1,0 +1,9 @@
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green/applications/brief-studio
+> autobyteus-app pack
+
+sh: autobyteus-app: command not found
+/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green/applications/brief-studio:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @autobyteus-example/brief-studio-authoring@ build: `autobyteus-app pack`
+spawn ENOENT
+exit 1

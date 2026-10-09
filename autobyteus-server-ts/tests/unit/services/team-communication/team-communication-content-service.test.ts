@@ -67,6 +67,39 @@ describe("TeamCommunicationContentService", () => {
     expect(await readStreamAsText(resolved.stream)).toBe("# Report");
   });
 
+  it("rejects a relative reference path as an invalid stored path", async () => {
+    // Moved from the Team communication API integration suite: the current V1 package reader admits
+    // only absolute reference paths, so a relative path can now only reach this guard through the
+    // projection boundary.
+    const service = new TeamCommunicationContentService({
+      resolveReference: async () => ({
+        message: {
+          messageId: "message-1",
+          senderAgentRunId: "sender-run-1",
+          receiverAgentRunId: "receiver-run-1",
+          content: "Please review.",
+          messageType: "handoff",
+          createdAt: "2026-04-08T00:00:00.000Z",
+          referenceFiles: [],
+        },
+        reference: {
+          referenceId: "ref-invalid",
+          path: "relative/reference.md",
+          type: "file",
+          createdAt: "2026-04-08T00:00:00.000Z",
+          updatedAt: "2026-04-08T00:00:00.000Z",
+        },
+      }),
+    } as any);
+
+    await expect(
+      service.resolveContent({ teamRunId: "team-1", messageId: "message-1", referenceId: "ref-invalid" }),
+    ).rejects.toMatchObject({
+      name: "TeamCommunicationReferenceContentError",
+      code: "INVALID_REFERENCE_PATH",
+    } satisfies Partial<TeamCommunicationReferenceContentError>);
+  });
+
   it("returns not-found when the message-owned reference does not exist", async () => {
     const service = new TeamCommunicationContentService({
       resolveReference: async () => null,

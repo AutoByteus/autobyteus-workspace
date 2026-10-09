@@ -17,19 +17,33 @@ import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
 import { addStandaloneRootCollaborators } from "./standalone-root-tree-mutator.js";
 
-/** Collaborator facts of one Agent-root tree: the host Agent's own definition is the root's own. */
+/**
+ * Collaborator facts of one Agent-root tree for one viewer (the focused or sending agent). The
+ * host is always in the run, as the run's own agent at its host address; its definition is the
+ * viewer's own only when the viewer is the host, so every other agent in the run can mention,
+ * list and message the host while the host never offers itself.
+ */
 export const standaloneRootCollaboratorPortFor = (
   tree: StandaloneRootTreeSnapshot,
   rootLaunchConfiguration: AgentLaunchConfiguration,
-): CollaboratorRootPort => Object.freeze({
-  rootKind: "agent",
-  isApplicationBound: false,
-  rootLaunchConfiguration: () => rootLaunchConfiguration,
-  rootDefinition: () => Object.freeze({ kind: "agent", definitionId: tree.host.agentDefinitionId }),
-  inRunPlacementsByDefinition: () => buildInRunPlacements({ configured: [], collaborators: tree.collaborators }),
-  collaborators: () => tree.collaborators,
-  addressesInUse: () => new Set([tree.host.address, ...tree.collaborators.map((entry) => entry.address)]),
-});
+  viewerAgentRunId: string,
+): CollaboratorRootPort => {
+  const hostDefinition = Object.freeze({ kind: "agent" as const, definitionId: tree.host.agentDefinitionId });
+  const ownDefinition = viewerAgentRunId === tree.host.agentRunId ? hostDefinition : null;
+  return Object.freeze({
+    rootKind: "agent",
+    isApplicationBound: false,
+    rootLaunchConfiguration: () => rootLaunchConfiguration,
+    ownDefinition: () => ownDefinition,
+    inRunPlacementsByDefinition: () => buildInRunPlacements({
+      runAgent: { ref: hostDefinition, address: tree.host.address },
+      configured: [],
+      collaborators: tree.collaborators,
+    }),
+    collaborators: () => tree.collaborators,
+    addressesInUse: () => new Set([tree.host.address, ...tree.collaborators.map((entry) => entry.address)]),
+  });
+};
 
 /**
  * Agent-root collaborators. For `@` it only resolves the mentioned definitions' addresses (nothing
@@ -54,9 +68,12 @@ export class StandaloneRootCollaborators {
     publish(event: StandaloneRootEvent): void;
   }>) {}
 
-  /** `@`: each mentioned definition's name, kind and address; adds nothing. Call only inside the root gate. */
-  resolveMentions(definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
-    return this.queue.run(() => this.admission.resolveMentions(this.port(), definitions));
+  /**
+   * `@` for the focused agent: each mentioned definition's name, kind, address and presence;
+   * adds nothing. Call only inside the root gate.
+   */
+  resolveMentions(viewerAgentRunId: string, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
+    return this.queue.run(() => this.admission.resolveMentions(this.portFor(viewerAgentRunId), definitions));
   }
 
   /**
@@ -66,28 +83,33 @@ export class StandaloneRootCollaborators {
    */
   bringInAt(input: Readonly<{ address: string; senderRunId: string }>): Promise<CollaboratorAdmissionResult | null> {
     return this.queue.run(async () => {
-      const definition = await this.admission.catalogDefinitionAt(this.port(), input.address);
+      const definition = await this.admission.catalogDefinitionAt(this.portFor(input.senderRunId), input.address);
       return definition ? this.ensureNow({ senderRunId: input.senderRunId, definitions: [definition] }) : null;
     });
   }
 
-  listAvailable(): Promise<readonly AvailableCollaborator[]> { return this.admission.policy.listEligible(this.port()); }
+  /** `list_available_agents` for the calling agent. */
+  listAvailable(viewerAgentRunId: string): Promise<readonly AvailableCollaborator[]> {
+    return this.admission.policy.listEligible(this.portFor(viewerAgentRunId));
+  }
+
   catalogTaskSource(input: Readonly<{ address: string; senderRunId: string }>): Promise<CatalogTaskSource | null> {
-    return this.admission.catalogTaskSource(this.port(), input);
+    return this.admission.catalogTaskSource(this.portFor(input.senderRunId), input);
   }
 
   private get admission(): CollaboratorAdmission { return this.options.admission ?? getCollaboratorAdmission(); }
 
   private ensureNow(input: Readonly<{ senderRunId: string; definitions: readonly CollaboratorMention[] }>): Promise<CollaboratorAdmissionResult> {
-    return this.admission.ensure(this.port(), {
+    return this.admission.ensure(this.portFor(input.senderRunId), {
       ...input,
       identities: this.options.identities,
       addEntries: (entries) => this.add(entries),
     });
   }
 
-  port(): CollaboratorRootPort {
-    return standaloneRootCollaboratorPortFor(this.options.getTree(), this.options.rootLaunchConfiguration);
+  /** The root's collaborator facts as seen by one agent of the run. */
+  portFor(viewerAgentRunId: string): CollaboratorRootPort {
+    return standaloneRootCollaboratorPortFor(this.options.getTree(), this.options.rootLaunchConfiguration, viewerAgentRunId);
   }
 
   private async add(entries: readonly CollaboratorEntry[]): Promise<void> {

@@ -1,7 +1,5 @@
-import type {
-  DelegateTaskInput,
-  DelegateTaskResult,
-} from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { DelegateTaskResult } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
+import type { DelegateTaskToolInput } from "./task-delegation-tool-input-parsers.js";
 import {
   cloneCollaborationMemberExecutionIdentity,
   isRootSubjectKind,
@@ -71,7 +69,7 @@ export const requireConfiguredTaskDelegationToolContext = (
 };
 
 export type TaskDelegationToolInputs = {
-  [DELEGATE_TASK_TOOL_NAME]: DelegateTaskInput;
+  [DELEGATE_TASK_TOOL_NAME]: DelegateTaskToolInput;
 };
 
 export type TaskDelegationToolResults = {

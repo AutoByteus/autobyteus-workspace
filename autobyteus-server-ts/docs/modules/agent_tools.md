@@ -277,20 +277,29 @@ work packet. The work packet (delegator address and AgentRun ID, description,
 reference files) is the child's first message. Multiple independent pieces of
 work are delegated through additional `delegate_task` calls.
 
+`delegate_task` has three strict input modes: `{recipient_address, task_id}` and
+`{recipient_address, description, reference_files?}` spawn a new copy;
+`{target_team_run_id | target_agent_run_id, task_id}` gives a saved Task to an
+existing copy (see [Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy)).
+`recipient_address` is therefore not required by the parameter schema; the
+parser requires exactly one mode.
+
 The result is a strict union, also published as the MCP output schema
-(`anyOf`):
+(`anyOf`). It names every ID for what it is:
 
 ```text
-{ target_agent_run_id: "<child ingress AgentRun ID>" }
-{ target_agent_run_id: null, message: "<why nothing started>" }
+{ delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>", task_id?: "…" }
+{ delegated: true, target_kind: "team", target_team_run_id: "<Team copy run ID>",
+  target_team_coordinator_agent_run_id: "<its coordinator AgentRun ID>", task_id?: "…" }
+{ delegated: false, message: "<why nothing started>" }
 ```
 
 An address that is neither a configured placement, a collaborator nor an
-available catalog agent of the run returns `{ target_agent_run_id: null,
+available catalog agent of the run returns `{ delegated: false,
 message }` ("'…' is not a mounted Agent or Agent Team, a collaborator or an
 available agent of this run."); it is not a tool error. A catalog copy that
 cannot run with the run's settings also starts nothing and returns
-`{ target_agent_run_id: null, message: "<name> cannot be delegated to: <reason>" }`.
+`{ delegated: false, message: "<name> cannot be delegated to: <reason>" }`.
 Collaborators are added by the user's `@` send or by an agent's first
 `send_message_to` to a listed address; both use the same admission, and a
 failure there is `COLLABORATOR_ADD_FAILED`. Input errors (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`) and a
@@ -305,7 +314,7 @@ messages reach the same instance. Messaging never creates a second instance,
 and `send_message_to` by run ID creates nothing.
 `delegate_task` starts a fresh child and delivers the complete work packet as
 the creation call; the same packet must not be resent through
-`send_message_to`. The accepted result is `{target_agent_run_id}`, plus
+`send_message_to`. The accepted result names the copy (see above), plus
 `task_id` when a description-only delegation from an agent that is not working
 on a Task created a Task with no Project for the copy; the caller marks it DONE
 with `create_or_update_task({task_id, status: "DONE"})` when the work is

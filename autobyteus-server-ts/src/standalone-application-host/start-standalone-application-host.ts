@@ -62,8 +62,8 @@ import { getCodexAppServerClientManager } from "../runtime-management/codex/clie
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { createProcessAgentProviderFactoryBuilder } from "../compositions/create-process-agent-provider-factory-builder.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskAgentResourcePort } from "../agent-collaboration/execution/task/task-agent-resource-port.js";
-import { composeProjectTaskAgentResources, releaseProjectTaskAgentResources } from "../compositions/project-task-agent-resource-composition.js";
+import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
 
 const logger = createServerLogger("standalone.application-host");
 
@@ -229,7 +229,7 @@ export const startStandaloneApplicationHost = async (
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
-  let taskAgentResources: TaskAgentResourcePort | null = null;
+  let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
@@ -267,7 +267,7 @@ export const startStandaloneApplicationHost = async (
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    taskAgentResources = await composeProjectTaskAgentResources({
+    taskExecutionResources = await composeProjectTaskExecutionResources({
       activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
     generalProcessRunSupervisor =
       createGeneralProcessRunSupervisor({
@@ -281,7 +281,7 @@ export const startStandaloneApplicationHost = async (
         agentProviderFactoryBuilder,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
-        taskAgentResources,
+        taskExecutionResources,
       });
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
@@ -323,7 +323,7 @@ export const startStandaloneApplicationHost = async (
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
-            releaseProjectTaskAgentResources(taskAgentResources!);
+            releaseProjectTaskExecutionResources(taskExecutionResources!);
             try {
               await agentToolsMcpHost!.close();
             } finally {
@@ -358,7 +358,7 @@ export const startStandaloneApplicationHost = async (
         try {
           await generalProcessRunSupervisor?.close();
         } finally {
-          if (taskAgentResources) releaseProjectTaskAgentResources(taskAgentResources);
+          if (taskExecutionResources) releaseProjectTaskExecutionResources(taskExecutionResources);
           try {
             generalProcessAuthority?.close();
           } finally {

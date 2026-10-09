@@ -18,6 +18,8 @@ package's script from its own directory.
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | All web tests | Both of the above | `pnpm -C autobyteus-web test` |
 | Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
+| Server unit / integration baseline | The green server `tests/unit` and `tests/integration` suites (see [Server unit and integration baseline](#server-unit-and-integration-baseline)) | `pnpm -C autobyteus-server-ts test:unit`; `pnpm -C autobyteus-server-ts test:integration:prepare` once, then `pnpm -C autobyteus-server-ts test:integration` |
+| Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
 | Core library tests | `autobyteus-ts` agent runtime, tools, LLM layer | `pnpm -C autobyteus-ts test` |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
@@ -27,8 +29,8 @@ package's script from its own directory.
 | Claude compaction live E2E | Real Claude CLI/SDK `/compact`, Stop and CLI process exit during compaction, raw-trace rotation and reopened history, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts --no-watch`; add `RUN_CLAUDE_AUTO_COMPACTION_E2E=1` for the costly auto-compaction case (~300K input tokens) |
 | Claude background-task live E2E | Real Claude CLI/SDK background Bash tasks for a standalone agent and a team member: `BACKGROUND_TASK_UPDATED` snapshots with the shell `command` (explicit background and CLI auto-background, which the test enables itself), completion, failure, Stop+terminate and CLI crash, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-background-task.e2e.test.ts tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts --no-watch` |
 | Delegated background-task idle shutdown live E2E | A delegated copy is not idle-shut-down while its background task runs (grace set to 60 s by the test), then is shut down one grace period after it is quiet. Claude (Team root, Claude coordinator): a `run_in_background` task longer than the grace completes, the copy reports to its delegator, then goes offline. AGY (Team root, Claude coordinator, AGY worker): a daemon running 180 s outlives two grace periods with the same AGY process and answers a follow-up; its own exit finishes the task and the copy goes offline one grace period later | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts --no-watch` (optional `CLAUDE_E2E_TOOL_MODEL`, default `haiku`); `RUN_AGY_BACKGROUND_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts --no-watch` (optional `AGY_E2E_MODEL`; leave `ANTIGRAVITY_CLI_COMMAND` unset). `DELEGATED_BACKGROUND_E2E_EVIDENCE_DIR` keeps JSON receipts. About 4 and 6 minutes; uses Claude and AGY quota |
-| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files, compaction rotation in `agy-compaction-rotation-transport.e2e.test.ts`, compaction version gate off in `agy-compaction-gate-off-transport.e2e.test.ts`, Stop then an immediate send for a standalone run and a Team member in `agy-interrupt-resend-transport.e2e.test.ts`) with a scripted CLI; no model call. `AGY_FAKE_VERSION` overrides the fake CLI's `--version` output | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
-| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1`, `RUN_AGY_RECOVERY_E2E=1` (`agy-runtime-stop-recovery-live.e2e.test.ts`: crash, terminate and shutdown recovery, plus Stop mid-turn then an immediate send for a standalone run and a Team member, `LIVE-STANDALONE-INT` and `LIVE-TEAM-INT`) or `RUN_AGY_COMPACTION_E2E=1` (automatic compaction from ~90K-token turns; uses AGY quota, leave `ANTIGRAVITY_CLI_COMMAND` unset; add `AGY_COMPACTION_E2E_CHECKPOINTS=2` to continue until a second compaction), then the same `vitest run` command |
+| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files, compaction rotation in `agy-compaction-rotation-transport.e2e.test.ts`, compaction version gate off in `agy-compaction-gate-off-transport.e2e.test.ts`, Stop then an immediate send for a standalone run and a Team member in `agy-interrupt-resend-transport.e2e.test.ts`, uploaded/pasted context files reaching AGY's stdin text for a standalone run and a Team member in `agy-context-files-transport.e2e.test.ts`, and Token Meter usage in `agy-token-usage-transport.e2e.test.ts`: the `usage_report` case replays the 11 `result` events of a recorded AGY 1.2.16 run, whose `input_tokens` excludes cache reads, and the run record must count gross = input + cache read and miss = input) with a scripted CLI; no model call. `AGY_FAKE_VERSION` overrides the fake CLI's `--version` output | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
+| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1`, `RUN_AGY_CONTEXT_FILES_E2E=1` (`agy-context-files-live.e2e.test.ts`: uploaded and pasted images and a note opened with `view_file` and answered from their content, standalone and Team member), `RUN_AGY_RECOVERY_E2E=1` (`agy-runtime-stop-recovery-live.e2e.test.ts`: crash, terminate and shutdown recovery, plus Stop mid-turn then an immediate send for a standalone run and a Team member, `LIVE-STANDALONE-INT` and `LIVE-TEAM-INT`) or `RUN_AGY_COMPACTION_E2E=1` (automatic compaction from ~90K-token turns; uses AGY quota, leave `ANTIGRAVITY_CLI_COMMAND` unset; add `AGY_COMPACTION_E2E_CHECKPOINTS=2` to continue until a second compaction), then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
 | Composer voice lifetime regression | Unchanged Team publication vs genuine destination cancellation through run/Chat composers and native browser capture | `pnpm -C autobyteus-web test:e2e:composer-voice-lifetime --output-dir <fresh-dir>` |
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
@@ -72,6 +74,56 @@ Notes:
   (`autobyteus_mcps/browser-automation`), using
   `CHROME_REMOTE_DEBUGGING_PORT=<controlPort>` (as reported by `start`) and
   `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
+
+### Server unit and integration baseline
+
+The server `tests/unit` and `tests/integration` suites and the `typecheck`
+script are expected to pass on the base branch. A failure there is caused by
+your change, or it is a new base failure to fix under Rule 9. From the
+repository root, after `pnpm install`:
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts test:unit
+pnpm -C autobyteus-server-ts test:integration:prepare   # once per worktree, and after changing server or SDK source
+pnpm -C autobyteus-server-ts test:integration
+pnpm -C autobyteus-server-ts typecheck
+```
+
+- **Integration prerequisites.** Some integration tests load build outputs: the
+  server `dist` watcher runtime, the application SDK and devkit `dist`, and the
+  Brief Studio importable package. `test:integration` checks them first. If any
+  is missing, it names the missing files and the prepare command, and exits
+  before running the suite. `test:integration:prepare` builds them in order.
+  It packs Brief Studio with the devkit CLI directly, so no re-install is
+  needed for the `autobyteus-app` bin. The SDK and Brief Studio `dist/`
+  folders are untracked build output; stage paths explicitly.
+- **Environment isolation.** Agent shells inherit the live app's variables
+  (data, memory and database paths, package/skill roots, settings, provider
+  modes and keys). For every file under `tests/unit/` and `tests/integration/`,
+  `tests/setup/test-environment-isolation.ts` removes every variable except
+  system essentials and test-owned knobs before the file imports anything. The
+  knobs are opt-in gates and fake-CLI or fixture inputs such as `RUN_*`,
+  `TEST_*`, `FAKE_*`, `AGY_*` and `ANTIGRAVITY_CLI_COMMAND`. The same commands
+  therefore give the same results in any shell and never resolve to
+  `~/.autobyteus`. Tests that need an app variable set and restore it
+  themselves. When you add an opt-in gate variable to a unit or integration
+  test, add its name to `TEST_ENVIRONMENT_ALLOWLIST`. E2E and the other test
+  folders keep the inherited environment.
+- **Opt-in gates.** Live tests stay skipped unless their gate is set, for
+  example `RUN_CODEX_E2E`, `RUN_CLAUDE_E2E`, `RUN_LMSTUDIO_E2E`, `AGY_LIVE`,
+  `RUN_GITHUB_AGENT_PACKAGE_E2E` and the Google MCP credentials. Platform-gated
+  tests (Windows/WSL) skip elsewhere. A skip is not a pass for that capability.
+- **Typecheck scope.** `typecheck` runs `tsc -p tsconfig.build.json --noEmit`,
+  the production compilation unit that `pnpm build` compiles, with semantic
+  checking on. Test files are not type-checked yet; their existing type errors
+  are a separate follow-up.
+- **Known exception.** Two cases in
+  `tests/integration/agent/agent-status-websocket.integration.test.ts` (the
+  content-cadence window cases) fail because of a reported product defect: an
+  `AGENT_INPUT_STATE` frame published after every event batch flushes the
+  content cadence buffer early. They are not skipped. Remove this note when
+  that defect is fixed.
 
 ### Event Monitor Native File Preview Regression
 
@@ -305,10 +357,24 @@ What these suites cover:
   payloads, compact business results, DONE close-then-stop, retry by repeated
   DONE with nothing about the stop persisted, and reopen. Reactivation (reopen
   the Task, then the assigner messages the run ID) is covered on the Task side by
-  `tests/unit/projects/task-agent-resource-reactivation.test.ts` and in the
+  `tests/unit/projects/task-execution-resource-reactivation.test.ts` and in the
   runtime by `tests/unit/agent-collaboration/root-task-reactivation.test.ts`
   (sequencing and refusals) and `task-reactivation-backends.test.ts` (actual
   registries for all three root kinds).
+- **Follow-up Task to an existing copy** (`delegate_task` with
+  `target_team_run_id` / `target_agent_run_id`). Task side:
+  `tests/unit/projects/task-execution-existing-copy-assignment.test.ts`
+  (eligibility, appended periods, A → B → A, DONE of the earlier Task never
+  stopping the copy, the reopen hint, QR-001 orders) and
+  `task-execution-current-entry.test.ts` (the current-entry rule). Runtime:
+  `tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts`
+  (sequencing, every refusal, delivery failure, DONE racing the assignment in
+  each order), the existing-copy cases in `task-reactivation-backends.test.ts`
+  (actual registries, all three root kinds), and one case per root in the
+  Team, Org and standalone root suites. Tool contract:
+  `tests/unit/agent-tools/task-delegation/` and
+  `tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts`.
+  Real wire and rendering: the gated server E2E and browser cases below.
 - **RootTeam/catalog helper integration.** Same-address helpers isolated per
   Task, borrowed advisers that are never adopted, exact stop sets, and closed
   ingress.
@@ -407,6 +473,69 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,B
   rows survive the first; then DONE, a restart, reopen and a message reactivate
   the worker live with its whole conversation. Before sending to a stopped
   root, the probe calls the root's restore mutation, as the app does.
+
+A follow-up Task to an existing copy (`delegate_task` with the copy's
+`target_team_run_id` / `target_agent_run_id`) has the same two layers:
+
+```bash
+env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS \
+  RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts --no-watch
+pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-012,BR-013,BR-014,BR-015,BR-016 --output-dir <fresh evidence dir>
+```
+
+- **`task-existing-copy-assignment.e2e.test.ts`** (about 4 minutes, no model
+  calls). Real HTTP/WS/scoped MCP with the scripted AGY actor, for all three
+  roots (EXC-E2E-001..003):
+  - the explicit result IDs and their exact keys, for a Team copy and an Agent
+    copy;
+  - refusals that change no file of the Project and publish nothing: the copy
+    still on an open Task (named, with its status); a coordinator, member or
+    team run ID passed as the wrong field; sub-work; an unknown ID; mixed or
+    missing inputs; a sender that is not the copy's assigner; a DONE,
+    CANCELLED or unknown Task; the copy's most recent assignment already being
+    that Task;
+  - the Team copy given Task B by its team run ID: the same IDs back, one
+    reopened event, the saved conversation resumed (`--conversation`) and
+    continued with `New Task assigned to you: <B>`, B's root (GraphQL and the
+    live feed) is the copy, and Task A's files are byte-identical;
+  - DONE, CANCELLED and DONE again of Task A never stop it (no closure frame,
+    the same process, no relaunch); DONE of B does;
+  - the reopen hint naming B, then A → B → A: A's file keeps the earlier
+    period and appends a new open one;
+  - `list_project_tasks` `assignments` / `closedAssignments` with explicit IDs;
+    `send_message_to` with a team run ID (`TARGET_IS_TEAM_RUN`);
+  - the Agent copy given Task D by its agent run ID: only it reopens, its
+    sub-work stays closed.
+
+  EXC-E2E-004 issues `create_or_update_task(DONE)` and `delegate_task` as
+  parallel tool calls in one Manager turn (the fixture's `CALL_TOOLS:[…]`
+  route) at offsets on both sides, for a Team and an Agent copy. Each round
+  ends with at most one open entry for the copy. An accepted assignment leaves
+  the copy live and receiving the next Task. A refused one names the open Task,
+  and the copy then stops with it. EXC-E2E-005 covers a sender in another root:
+  the team run ID hint, and another root's copy refused. EXC-E2E-006/007 cover
+  a copy whose start failed (found through `list_project_tasks`) and a copy
+  whose saved conversation is gone. With `RUN_CLAUDE_E2E=1` and a logged-in
+  `claude`, EXC-E2E-008 gives an Org copy a real Claude model (haiku). After
+  its Task is DONE, the follow-up Task asks for a codeword from that earlier
+  Task, and the copy must recall it. `TASK_EXISTING_COPY_E2E_EVIDENCE_DIR`
+  keeps a JSON receipt.
+- **`test:e2e:task-closure-tree` BR-012..BR-016.** Rendering and a real
+  backend:
+  - BR-012..BR-014 (Agent, Team, Org): a Task Team row returns live when its
+    copy is given a follow-up Task, with its members and continued
+    conversation; the board shows the new Task's root as that copy and the
+    earlier Task's root closed; a repeated DONE/CANCELLED of the earlier Task
+    never removes the row; the Agent copy returns without its helpers.
+  - BR-015: after a real restart the stopped Team copy takes a new Task live,
+    and after another restart the assignment, row and board root persist.
+  - BR-016: a damaged Task file (detected at load) makes
+    `list_project_tasks` mark only that Task unavailable and refuses the
+    follow-up with nothing written. Restoring the file and restarting accepts
+    it.
+
+  BR-015 and BR-016 need BR-012..BR-014 in the same run.
 
 Live Projects pages, Task roots and Temp tasks (the per-node `/ws/projects`
 feed) have a gated server E2E and a browser probe. Rebuild the server first.
@@ -543,6 +672,9 @@ have a gated server E2E beside the closure suite and a live browser probe:
 ```bash
 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts --no-watch
+env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS \
+  RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts --no-watch
 pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agent_sdk --output-dir <fresh dir>
 ```
 
@@ -564,8 +696,8 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   - a brought-in collaborator survives Stop/restore;
   - definitions already in the run (that collaborator; a Team/Org run's
     configured members) are `@` candidates, while the run's own definition is
-    not. Mentioning one stores `…, already in this run` with the in-run
-    guidance and adds nothing;
+    not offered to the run itself (the host, or a Team/Org run). Mentioning one
+    stores `…, already in this run` with the in-run guidance and adds nothing;
   - permanent delete removes only that run's ad-hoc Tasks.
 
   Set `AD_HOC_TASK_E2E_EVIDENCE_DIR` to keep a JSON receipt. The in-process
@@ -574,6 +706,25 @@ pnpm -C autobyteus-web test:e2e:cross-scope-agent-mentions --runtime claude_agen
   candidates too. It only reads them, but prefix the command with
   `env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS`
   for a run that does not depend on your machine.
+- **`delegated-copy-member-contact-host.e2e.test.ts`.** The same server and
+  scripted AGY actor. One standalone Agent run (the host) delegates a Team copy
+  and an Agent copy, and the members of those copies contact the host:
+  - DCM-001: `@` candidates per `focusedAgentRunId`. The host never sees itself.
+    A copy member sees the host plus exactly the host's list. An Agent-root
+    query without `focusedAgentRunId` is an error.
+  - DCM-002/003: the user's `@<host>` post to a not-yet-started copy member
+    stores the `the run's own agent` note with the `send_message_to` sentence
+    and adds nothing. The member's `send_message_to(<host address>)` then
+    reaches the existing host run.
+  - DCM-004: `list_available_agents` lists the host for copy members, not for
+    the host, and a message to the listed address reaches the same host run.
+  - DCM-005: `delegate_task` to the host is refused, with no copy or
+    collaborator added.
+  - DCM-006: the host's own `@<host>` and an ineligible mention are rejected.
+  - DCM-007: after Stop, the stored run answers per focused agent, and a
+    restored member's message reaches the same host run.
+
+  Set `DELEGATED_COPY_CONTACT_E2E_EVIDENCE_DIR` to keep a JSON receipt.
 - **`test:e2e:cross-scope-agent-mentions`.** The same journeys with a real
   model, browser, Nuxt and built backend. It needs a logged-in Claude or Codex
   CLI (`--runtime codex_app_server`). Reporting copies may be closed by their

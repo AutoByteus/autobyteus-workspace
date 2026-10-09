@@ -71,7 +71,7 @@ describe('AgentUserInputTextArea @ mentions', () => {
     await type(wrapper, 'please ask @')
     const menu = wrapper.find('[data-test="run-mention-menu"]')
     expect(menu.exists()).toBe(true)
-    expect(candidates.refresh).toHaveBeenCalledWith('agent_team', 'team-run')
+    expect(candidates.refresh).toHaveBeenCalledWith({ rootKind: 'agent_team', rootRunId: 'team-run', focusedName: 'researcher' })
     expect(menu.text()).toContain('Code Reviewer')
     expect(menu.text()).toContain('2 members · coordinator product prototyper')
     expect(wrapper.find('[data-test="run-mention-menu-footer"]').exists()).toBe(true)

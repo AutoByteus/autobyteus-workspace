@@ -1,4 +1,4 @@
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
@@ -29,7 +29,7 @@ export type TeamRootMaterializationInput = Readonly<{
   factory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskAgentResources?: TaskAgentResourcePort;
+  taskExecutionResources?: TaskExecutionResourcePort;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationV1Store;
   /** The process admission coordinator unless given. */
@@ -62,7 +62,8 @@ export const materializeTeamRoot = async (
   };
   const taskCommands: MemberTaskCommandCapability = Object.freeze({
     root: rootIdentity,
-    delegateTask: (caller, command) => requireActiveRoot().delegateTask({ identity: caller }, command),
+    delegateToNewCopy: (caller, command) => requireActiveRoot().delegateToNewCopy({ identity: caller }, command),
+    assignToExistingCopy: (caller, command) => requireActiveRoot().assignToExistingCopy({ identity: caller }, command),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
     assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
@@ -118,7 +119,7 @@ export const materializeTeamRoot = async (
       persistence,
       publisher,
       taskExecutionIdentity: input.taskExecutionIdentity,
-      taskAgentResources: input.taskAgentResources,
+      taskExecutionResources: input.taskExecutionResources,
       collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: () => { if (root) input.onTerminated(root); },
     });

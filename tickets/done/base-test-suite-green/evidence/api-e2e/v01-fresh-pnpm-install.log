@@ -1,0 +1,30 @@
+inherited AUTOBYTEUS_* vars: 23; provider *_API_KEY vars: 13
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1689
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1689, reused 1687, downloaded 0, added 19
+Progress: resolved 1689, reused 1687, downloaded 0, added 408
+Progress: resolved 1689, reused 1687, downloaded 0, added 595
+Progress: resolved 1689, reused 1687, downloaded 0, added 825
+Progress: resolved 1689, reused 1687, downloaded 0, added 1172
+Progress: resolved 1689, reused 1687, downloaded 0, added 1679
+Progress: resolved 1689, reused 1687, downloaded 0, added 1689, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 7.5s using pnpm v10.28.2
+exit 0; sentinel unchanged; 191s (cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e; SENTINEL=/tmp/apie2e-sentinel-zCu3zL; cmd=pnpm install --frozen-lockfile)

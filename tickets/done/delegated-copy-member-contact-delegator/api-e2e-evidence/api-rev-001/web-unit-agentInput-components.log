@@ -1,0 +1,77 @@
+
+> autobyteus@1.4.99-beta.6 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentInput --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-web
+
+stderr | components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts (2 tests) 17ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts (5 tests) 71ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts (11 tests) 179ms
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts > focused team member interrupt UI-to-WebSocket e2e > clicking stop after switching focus sends the WebSocket interrupt to the visible focused member
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts (1 test) 56ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (18 tests) 339ms
+ ✓ components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts (3 tests) 74ms
+ ✓ components/agentInput/__tests__/TeamComposerPublication.spec.ts (4 tests) 127ms
+
+ Test Files  7 passed (7)
+      Tests  44 passed (44)
+   Start at  07:57:54
+   Duration  8.75s (transform 4.62s, setup 48.52s, collect 2.62s, tests 864ms, environment 2.30s, prepare 1.94s)
+

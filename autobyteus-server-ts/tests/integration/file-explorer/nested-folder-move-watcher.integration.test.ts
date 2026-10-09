@@ -6,7 +6,7 @@ import {
   ChangeType,
   MoveChange,
 } from "../../../src/file-explorer/file-system-changes.js";
-import { FileExplorer } from "../../../src/file-explorer/file-explorer.js";
+import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 
 const createTempWorkspace = async (): Promise<string> => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-move-watch-"));
@@ -59,11 +59,11 @@ const expectNoEvent = async (
 
 describe("Nested folder move watcher integration", () => {
   let workspace: string;
-  let explorer: FileExplorer;
+  let explorer: WorkspaceFileExplorer;
 
   beforeEach(async () => {
     workspace = await createTempWorkspace();
-    explorer = new FileExplorer(workspace);
+    explorer = new WorkspaceFileExplorer(workspace);
     await explorer.buildWorkspaceDirectoryTree();
     await explorer.startWatcher();
   });

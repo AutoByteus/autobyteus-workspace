@@ -9,11 +9,11 @@ import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-exe
 import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history/services/agent-org-member-run-view-projection-service.js';
 import { projectAgentOrgExecutionSnapshot } from '../../../src/services/agent-streaming/agent-org-execution-view-projector.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
-import { InMemoryTaskAgentResources } from '../../fixtures/task-agent-resource-fixtures.js';
+import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 
 const dirs: string[] = [];
 afterEach(async () => { for (const dir of dirs.splice(0)) await fs.rm(dir, { recursive: true, force: true }); });
-const fixture = async (taskAgentResources?: InMemoryTaskAgentResources) => {
+const fixture = async (taskExecutionResources?: InMemoryTaskExecutionResources) => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'org-inspection-')); dirs.push(memoryDir);
   const dir = path.join(memoryDir, 'agent_orgs', 'org');
   const tree = structuredClone(testAgentOrgExecutionTree({ orgRunId: 'org', members: [
@@ -25,7 +25,7 @@ const fixture = async (taskAgentResources?: InMemoryTaskAgentResources) => {
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
   await new AgentOrgCommunicationMessagesV1Store().write(dir, messages as never);
   const build = vi.fn();
-  const manager = new AgentOrgRunManager({ memoryDir, scopeBuilder: { build } as never, taskAgentResources });
+  const manager = new AgentOrgRunManager({ memoryDir, scopeBuilder: { build } as never, taskExecutionResources });
   return { memoryDir, dir, tree, messages, manager, build };
 };
 
@@ -48,13 +48,13 @@ describe('strict read-only Org inspection', () => {
   });
 
   it('reads closed task executions of the stored tree through the manager, without filtering the tree', async () => {
-    const resources = new InMemoryTaskAgentResources();
+    const resources = new InMemoryTaskExecutionResources();
     resources.addTask('A');
     const hostRoot = { rootSubjectKind: 'agent_org' as const, rootRunId: 'org' };
-    await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'configured', hostRoot, agentRun: { agentRunId: 'task-run' } });
+    await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'configured', hostRoot, execution: { agentRunId: 'task-run' } });
     // Closed but never committed to this tree, and closed in another root: neither is listed for this Org.
-    await resources.linkAgentRun({ role: 'delegated', creator: { agentRunId: 'task-run' }, hostRoot, agentRun: { agentRunId: 'not-in-tree' } });
-    await resources.linkAgentRun({ role: 'delegated', creator: { agentRunId: 'task-run' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'other' }, agentRun: { agentRunId: 'elsewhere' } });
+    await resources.linkNewTaskExecution({ role: 'delegated', creator: { agentRunId: 'task-run' }, hostRoot, execution: { agentRunId: 'not-in-tree' } });
+    await resources.linkNewTaskExecution({ role: 'delegated', creator: { agentRunId: 'task-run' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'other' }, execution: { agentRunId: 'elsewhere' } });
     const f = await fixture(resources);
     expect((await f.manager.getInspection('org')).snapshot.closedTaskExecutions).toEqual([]);
     resources.close('A');

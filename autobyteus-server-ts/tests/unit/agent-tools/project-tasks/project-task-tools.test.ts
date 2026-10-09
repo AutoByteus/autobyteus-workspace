@@ -252,7 +252,7 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect(patched.structuredContent).toMatchObject({task: {...created.task, status: "DONE"}});
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, {project_id: projectId, status: "DONE"}));
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "DONE"})).structuredContent).toEqual(listed);
-    expect(listed.tasks).toEqual([{...created.task, status: "DONE", description: "hello", contextFiles: [], assignments: []}]);
+    expect(listed.tasks).toEqual([{...created.task, status: "DONE", description: "hello", contextFiles: [], assignments: [], closedAssignments: []}]);
     expect((await mcp("list_project_tasks", {project_id: projectId, status: "TODO"})).structuredContent).toEqual({projectId, tasks: []});
   });
   it("documents and accepts CANCELLED (dropped as not needed) on patch and list, never on create (AC-004, AC-006, AC-007)", async () => {
@@ -260,7 +260,7 @@ describe("Project data tools — actual native preparation/execute and selected 
       const schema = buildProjectTaskToolSchema(name).toJsonSchema() as {properties: Record<string, any>};
       expect(schema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
     }
-    expect(CreateOrUpdateTaskTool.getDescription()).toMatch(/TODO\/IN_PROGRESS\/DONE\/CANCELLED status.*CANCELLED means the Task was dropped as not needed \(not completed\)\. Both stop the Task's delegated copies.*set the Task to TODO or IN_PROGRESS first/);
+    expect(CreateOrUpdateTaskTool.getDescription()).toMatch(/TODO\/IN_PROGRESS\/DONE\/CANCELLED status.*CANCELLED means the Task was dropped as not needed \(not completed\)\. Both stop the copies whose current Task this is.*set the Task to TODO or IN_PROGRESS first/);
     expect(ListProjectTasksTool.getDescription()).toMatch(/TODO, IN_PROGRESS, DONE or CANCELLED status \(CANCELLED = dropped as not needed\)/);
     const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: "unneeded"}));
     const kept = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, {project_id: projectId, description: "kept"}));

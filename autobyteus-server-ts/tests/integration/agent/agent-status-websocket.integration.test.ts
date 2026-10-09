@@ -49,6 +49,8 @@ const event = (
 
 class ScriptedAgentRunBackend implements AgentRunBackend {
   readonly context: AgentRunContext<null>;
+  readonly inputCapabilities = { kind: "start_only" } as const;
+  readonly compactionRecovery = { kind: "unsupported" } as const;
   active = true;
   private snapshot: AgentRuntimeLifecycleSnapshot;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
@@ -143,9 +145,16 @@ const waitForOpen = (socket: WebSocket, timeoutMs = 2_000): Promise<void> =>
     });
   });
 
+/**
+ * Status and content frames in arrival order. AGENT_INPUT_STATE companions (the input-queue
+ * projection) are not part of this status/content contract and are left out of the trace.
+ */
 const captureMessages = (socket: WebSocket): WsMessage[] => {
   const messages: WsMessage[] = [];
-  socket.on("message", (data) => messages.push(JSON.parse(data.toString()) as WsMessage));
+  socket.on("message", (data) => {
+    const message = JSON.parse(data.toString()) as WsMessage;
+    if (message.type !== "AGENT_INPUT_STATE") messages.push(message);
+  });
   return messages;
 };
 
@@ -277,7 +286,8 @@ describe("Agent status WebSocket contract integration", () => {
         expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(4);
 
         expect(canonicalEvents.filter(
-          (runEvent) => runEvent.eventType !== AgentRunEventType.AGENT_STATUS,
+          (runEvent) => runEvent.eventType !== AgentRunEventType.AGENT_STATUS
+            && runEvent.eventType !== AgentRunEventType.AGENT_INPUT_STATE,
         ).map((runEvent) => runEvent.eventType)).toEqual([
           AgentRunEventType.TURN_STARTED,
           AgentRunEventType.SEGMENT_START,
@@ -490,6 +500,7 @@ describe("Agent status WebSocket contract integration", () => {
       expect(run.getStatusSnapshot()).toEqual({
         status: "running",
         agent_id: run.runId,
+        recoverableBlock: null,
       });
 
       const reconnectRunning = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);

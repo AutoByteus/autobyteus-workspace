@@ -1,9 +1,12 @@
 import { gql } from 'graphql-tag'
 
-/** `@` menu options for a live run's root, from the server's one candidate policy. */
+/**
+ * `@` menu options for a live run's root, from the server's one candidate policy. An Agent root
+ * answers for its focused agent (`focusedAgentRunId`, required there); Team and Org roots per root.
+ */
 export const GetCollaboratorMentionCandidates = gql`
-  query GetCollaboratorMentionCandidates($rootSubjectKind: String!, $rootRunId: String!) {
-    collaboratorMentionCandidates(rootSubjectKind: $rootSubjectKind, rootRunId: $rootRunId) {
+  query GetCollaboratorMentionCandidates($rootSubjectKind: String!, $rootRunId: String!, $focusedAgentRunId: String) {
+    collaboratorMentionCandidates(rootSubjectKind: $rootSubjectKind, rootRunId: $rootRunId, focusedAgentRunId: $focusedAgentRunId) {
       availability
       candidates {
         kind

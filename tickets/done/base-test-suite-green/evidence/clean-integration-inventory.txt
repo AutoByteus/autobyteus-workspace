@@ -1,0 +1,117 @@
+total=408 passed=248 failed=89 skipped=71
+## tests/integration/agent/agent-status-websocket.integration.test.ts 2
+   - preserves B while rejecting a retired turn's late segment content across reconnect | AssertionError: expected { status: 'running', …(2) } to deeply equal { status: 'running', …(1) }
+   - keeps diagnostic errors running, terminalizes the current turn to error, then publishes of | TypeError: Cannot read properties of undefined (reading 'kind')
+## tests/integration/agent/agent-websocket.integration.test.ts 3
+   - connects to an inactive identity without restore, then publishes initializing before slow  | AssertionError: expected { type: 'AGENT_STATUS', …(1) } to deeply equal { type: 'AGENT_STATUS', …(1) }
+   - activates a prepared identity through SEND_MESSAGE rather than websocket connect | AssertionError: expected { type: 'AGENT_STATUS', …(1) } to deeply equal { type: 'AGENT_STATUS', …(1) }
+   - returns duplicate and busy ACKs for same and different in-flight command ids | Error: Timed out waiting for matching websocket message
+## tests/integration/agent-definition/md-centric-provider.integration.test.ts 2
+   - does not silently skip malformed application-owned agents during catalog reads | Error: The property "getInstance" is not defined on the function.
+   - updates application-owned agent defaultLaunchConfig in place | Error: The property "getInstance" is not defined on the function.
+## tests/integration/agent-execution/agent-run-manager.integration.test.ts 12
+   - creates and registers an active autobyteus run through the matching backend factory | TypeError: manager.prepareNewAgentRun is not a function
+   - creates and registers an active codex_app_server run through the matching backend factory | TypeError: manager.prepareNewAgentRun is not a function
+   - creates and registers an active claude_agent_sdk run through the matching backend factory | TypeError: manager.prepareNewAgentRun is not a function
+   - restores a autobyteus run through the matching backend factory | TypeError: manager.prepareRestoreAgentRun is not a function
+   - restores a codex_app_server run through the matching backend factory | TypeError: manager.prepareRestoreAgentRun is not a function
+   - restores a claude_agent_sdk run through the matching backend factory | TypeError: manager.prepareRestoreAgentRun is not a function
+   - restores Claude platform state with auto approval separate from provider permission mode | TypeError: manager.prepareRestoreAgentRunFromPlatformState is not a function
+   - evicts inactive runs when queried or listed | TypeError: manager.prepareNewAgentRun is not a function
+   - terminates and unregisters active runs on accepted termination | TypeError: manager.prepareNewAgentRun is not a function
+   - returns false for missing runs and for unaccepted termination without unregistering | TypeError: manager.prepareNewAgentRun is not a function
+   - wraps termination failures in AgentTerminationError | TypeError: manager.prepareNewAgentRun is not a function
+   - rejects unsupported runtime kinds for create and restore | TypeError: manager.prepareNewAgentRun is not a function
+## tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts 2
+   - uses fresh definition instructions for the next run even when the cache is stale | TypeError: this.agent.getCompactionRecovery is not a function
+   - falls back to description when fresh definition instructions are blank | TypeError: this.agent.getCompactionRecovery is not a function
+## tests/integration/agent-execution/agent-run-service.integration.test.ts 6
+   - prepares, durably starts, and only then publishes a autobyteus run | TypeError: this.agentRunManager.releaseRetiredRun is not a function
+   - prepares, durably starts, and only then publishes a codex_app_server run | TypeError: this.agentRunManager.releaseRetiredRun is not a function
+   - prepares, durably starts, and only then publishes a claude_agent_sdk run | TypeError: this.agentRunManager.releaseRetiredRun is not a function
+   - restores a started autobyteus run through the correct exact continuation path | Error: promise rejected "TypeError: this.agentRunManager.releaseRe…" instead of resolving
+   - restores a started codex_app_server run through the correct exact continuation path | Error: promise rejected "TypeError: this.agentRunManager.releaseRe…" instead of resolving
+   - restores a started claude_agent_sdk run through the correct exact continuation path | Error: promise rejected "TypeError: this.agentRunManager.releaseRe…" instead of resolving
+## tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts 3
+   - creates a live backend that can process a turn and terminate cleanly | TypeError: ownLlm is not a function
+   - respects a preferred run id and provisions the standalone memory directory explicitly | TypeError: ownLlm is not a function
+   - restores a terminated run with the same run id | TypeError: ownLlm is not a function
+## tests/integration/agent-execution/claude-session-manager.integration.test.ts 1
+   - materializes an activated headerless provider-neutral descriptor into the Claude streaming | TypeError: ownSession is not a function
+## tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts 1
+   - preserves one enriched provider-shaped failure through standalone and Team wire paths | Error: Collaboration member execution identity accepts exactly agentRunId, memberAddress, root.
+## tests/integration/api/run-file-changes-api.integration.test.ts 1
+   - hydrates historical AutoByteus team-member file changes through GraphQL and REST | AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+## tests/integration/api/team-communication-api.integration.test.ts suite-error
+## tests/integration/file-explorer/file-explorer.integration.test.ts 6
+   - builds tree and lists file paths | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - writes new file and emits ADD change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - modifies existing file and emits MODIFY change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - renames file and emits RENAME change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - moves file and emits MOVE change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+   - removes file and emits DELETE change | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+## tests/integration/file-explorer/file-system-watcher.integration.test.ts 14
+   - does not emit events for pre-existing root .gitignore excluded directories | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - does not emit events for pre-existing nested .gitignore excluded directories | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - emits add + modify + delete events | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - returns one idle event stream without stopping other subscribers | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - emits move/rename event | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - emits file creation event with node metadata | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - emits folder creation and deletion events | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - ignores default strategy paths like __pycache__ | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - ignores specific folders like .git and their contents | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - respects nested .gitignore files | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - respects root .gitignore files | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - captures rapid changes without dropping events | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - treats moves into ignored directories as deletes from the visible tree | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+   - emits delete events even if the in-memory node is missing | Error: FileSystemWatcher not available: Error: Watcher runtime entrypoint not found at <path>
+## tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts 1
+   - returns one direct move event and suppresses watcher self-echoes for a nested ticket folde | TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+## tests/integration/services/media-storage-service.integration.test.ts 4
+   - saves media from a remote URL | AssertionError: expected false to be true // Object.is equality
+   - saves media from a data URI | AssertionError: expected false to be true // Object.is equality
+   - saves media from a local file path | AssertionError: expected false to be true // Object.is equality
+   - lists media files by category | AssertionError: expected '/rest/files/images/test_image.png' to be 'http://testserver:8000/rest/files/ima…' // Object.is equality
+## tests/integration/application-backend/application-agent-tool-worker.integration.test.ts 3
+   - lazy-starts the real worker, invokes the exact v7 handler, and supplies isolated storage p | Error: promise rejected "Error: Application worker process closed …" instead of resolving
+   - rejects an invalid handler result across the real worker protocol without retrying | AssertionError: expected Error: Application worker process closed … to match object { Object (code) }
+   - fails safely when the real child worker crashes and does not retry the invocation | AssertionError: expected Error: Application worker process closed … to match object { Object (code) }
+## tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts 2
+   - round-trips readiness-hidden text and binary frames through the real Gateway and child wor | ApplicationBackendWebSocketConnectionError: The application backend WebSocket handler is unavailable.
+   - maps a real worker stop to one safe frontend error and close | ApplicationBackendWebSocketConnectionError: The application backend WebSocket handler is unavailable.
+## tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts 1
+   - round-trips structured JSON route bodies through /backend/routes/* | Error: Application worker process closed unexpectedly (code=1, signal=null).
+## tests/integration/application-backend/application-backend-rest-ws.integration.test.ts 2
+   - starts the app worker through the REST boundary and streams backend notifications over web | AssertionError: expected 500 to be 200 // Object.is equality
+   - keeps the REST boundary app-scoped by taking application identity from the route, not the  | AssertionError: expected 500 to be 200 // Object.is equality
+## tests/integration/application-backend/application-context-capabilities.integration.test.ts 1
+   - executes all named capabilities and both explicit starts through the real worker/host boun | Error: Application worker process closed unexpectedly (code=1, signal=null).
+## tests/integration/application-backend/brief-package-team-prompt.integration.test.ts 1
+   - composes the exact graph-local package team and member semantics through Codex bootstrap | Error: Standalone package root is not a directory: <path>
+## tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts 1
+   - lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team bin | Error: promise rejected "Error: ENOENT: no such file or directory,… { …(4) }" instead of resolving
+## tests/integration/application-backend/brief-studio-imported-package.integration.test.ts 3
+   - discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and proje | Error: Expected Brief Studio bundle to be discoverable from the importable package root.
+   - preserves same-binding early final projection when the packaged Brief Studio GraphQL clien | Error: Expected Brief Studio bundle to be discoverable from the importable package root.
+   - rejects unexpected Brief Studio producers without committing projection state | Error: Expected Brief Studio bundle to be discoverable from the importable package root.
+## tests/integration/application-backend/brief-studio-team-config.integration.test.ts 4
+   - ships source and packaged team configs with the research-first coordinator handoff | Error: ENOENT: no such file or directory, open '<path>
+   - ships source and packaged agent configs with the intended research-first tool split | Error: ENOENT: no such file or directory, open '<path>
+   - ships source and packaged role prompts with context-first validation and publication order | Error: ENOENT: no such file or directory, open '<path>
+   - ships source and packaged team/launch reinforcement without replacing role-local ownership | Error: ENOENT: no such file or directory, open '<path>
+## tests/integration/application-backend/standalone-application-server.integration.test.ts 2
+   - selects one current package, exposes only its confined surface, and leaves package bytes i | Error: ENOENT: no such file or directory, scandir '<path>
+   - fails before server construction for invalid roots and missing explicit selections | AssertionError: expected [Function] to throw error including 'Standalone application \'missing-app\…' but got 'Standalone package root is not a dire…'
+## tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts 9
+   - validates the real Brief package with exact token tuning and typed pricing | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested server_url without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested api_url without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested connection_string without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested access_key without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested baseUri without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested service_address without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested client_key without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+   - rejects a real Brief package containing nested auth_config without echoing its value | Error: ENOENT: no such file or directory, lstat '<path>
+## tests/integration/api/rest/upload-file.integration.test.ts 2
+   - uploads a file and serves it from /rest/files | TypeError: Invalid URL
+   - uploads a dummy PNG image and stores it under /images | TypeError: Invalid URL

@@ -2,18 +2,18 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
-import { FileExplorer } from "../../../src/file-explorer/file-explorer.js";
+import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 import type { TreeNode } from "../../../src/file-explorer/tree-node.js";
 
 const createTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-file-explorer-"));
 
-describe("FileExplorer", () => {
+describe("WorkspaceFileExplorer", () => {
   let tempDir: string;
-  let explorer: FileExplorer;
+  let explorer: WorkspaceFileExplorer;
 
   beforeEach(async () => {
     tempDir = createTempDir();
-    explorer = new FileExplorer(tempDir);
+    explorer = new WorkspaceFileExplorer(tempDir);
     await explorer.buildWorkspaceDirectoryTree();
   });
 

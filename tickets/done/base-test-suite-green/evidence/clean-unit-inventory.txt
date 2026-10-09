@@ -1,0 +1,55 @@
+total=5089 passed=5042 failed=41 skipped=6
+## tests/unit/agent-memory/agent-memory-location-service.test.ts 5
+   - derives configured and task Agent memory from exact root, physical Team ancestry, and Agen | AssertionError: expected [] to deeply equal [ { address: '/writer', …(4) }, …(2) ]
+   - resolves only one exact current address/run match while retaining its configured launch pl | AssertionError: expected null to match object { …(3) }
+   - reads only the requested root's tree when the team run ID is a stored root (REQ-005) | AssertionError: expected null to match object { kind: 'team_member', …(3) }
+   - still resolves a nested team run ID by searching every root | AssertionError: expected null to match object { Object (rootTeamRunId, ancestorTeamRunIds, ...) }
+   - resolves an AgentOrg member's own run inside the requested org root | AssertionError: expected null to deeply equal { kind: 'agent_org_member', …(6) }
+## tests/unit/agent-memory/team-memory-explorer-service.test.ts 4
+   - reports a delegated task instance with its own run ID (AC-011) | AssertionError: expected undefined to deeply equal [ ObjectContaining{…} ]
+   - lists the configured member and its task instance as separate runs | AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]
+   - skips a corrupt root tree with a warning while other roots still list (AC-003) | AssertionError: expected [] to deeply equal [ 'writing-team' ]
+   - skips a root folder whose tree names a different team run, while other roots still list | AssertionError: expected [] to deeply equal [ 'writing-team' ]
+## tests/unit/agent-packages/package-root-summary.test.ts 1
+   - validates package roots and counts shared agents, team-local agents, and teams | AssertionError: expected { sharedAgentCount: 1, …(3) } to deeply equal { sharedAgentCount: 1, …(2) }
+## tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts 3
+   - unwinds the exact owned authority at K6 | AssertionError: expected [Function] to throw error including 'K6 Team graph failed' but got 'AgentRunManager requires all executio…'
+   - unwinds the exact owned authority at K7 | AssertionError: expected [Function] to throw error including 'K7 kernel finalization failed' but got 'AgentRunManager requires all executio…'
+   - transfers one complete frozen K8 kernel with fixed idempotent construction abort | Error: AgentRunManager requires all execution-family dependencies.
+## tests/unit/application-platform/application-execution-scope.test.ts 8
+   - owns one complete graph-local kernel and freezes every outward capability | Error: AgentRunManager requires all execution-family dependencies.
+   - projects direct configured Team Agents, excludes task nodes, and deep-freezes | Error: AgentRunManager requires all execution-family dependencies.
+   - projects Agent launch identity without leaking the service result | Error: AgentRunManager requires all execution-family dependencies.
+   - authorizes configured and dynamic application Team producers through the live root topolog | Error: AgentRunManager requires all execution-family dependencies.
+   - maps restore-aware Agent and Team input without changing target or errors | Error: AgentRunManager requires all execution-family dependencies.
+   - quiesces issue admission and closes run graph before authority exactly once | Error: AgentRunManager requires all execution-family dependencies.
+   - continues authority close after shutdown failure and aggregates both failures | Error: AgentRunManager requires all execution-family dependencies.
+   - delegates construction abort exactly once after kernel transfer | Error: AgentRunManager requires all execution-family dependencies.
+## tests/unit/application-platform/application-platform-lifecycle.test.ts 1
+   - materializes a fresh selected application runtime cwd before definition/provider readiness | AssertionError: expected { configured: false, …(1) } to deeply equal { configured: true, reason: null }
+## tests/unit/application-platform/application-platform-runtime-isolation.test.ts 1
+   - builds isolated services without starting an agent or team run | Error: The property "prepareNewAgentRun" is not defined on the object.
+## tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts 2
+   - lets lifecycle restart recovery reach ready and dispatch an existing pending event | TypeError: Cannot read properties of undefined (reading 'initializeFromBundleSnapshot')
+   - lets reload/reentry inspect and dispatch existing journal state before activation | TypeError: service.reloadAndReenter is not a function
+## tests/unit/file-explorer/file-explorer.test.ts 7
+   - builds the workspace directory tree | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+   - reads file content within size limits | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+   - throws when reading a file that exceeds max size | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+   - returns the root tree node | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+   - serializes the tree to JSON | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+   - rejects reading files outside the workspace | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+   - produces shallow JSON with limited depth | TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+## tests/unit/logging/prisma-query-log-policy.test.ts 6
+   - installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code | AssertionError: expected '1.0.10' to be '1.0.9' // Object.is equality
+   - esm import acquires no Prisma client or datasource | Error: Command failed: <path> --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-OGVWLo/syn
+   - esm defaults to non-query log kinds | Error: Command failed: <path> --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-OGVWLo/syn
+   - esm honors explicit environment query-log policy only | Error: Command failed: <path> --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-OGVWLo/syn
+   - esm honors typed policy and typed-false precedence | Error: Command failed: <path> --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-OGVWLo/syn
+   - esm rejects a conflicting post-bind logging policy | Error: Command failed: <path> --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-OGVWLo/syn
+## tests/unit/services/media-storage-service.test.ts 1
+   - stores media from a remote URL | AssertionError: expected '/rest/files/images/downloaded.png' to be 'http://unittest.server:8000/rest/file…' // Object.is equality
+## tests/unit/workspaces/workspace-manager-skill-integration.test.ts 1
+   - creates and initializes a SkillWorkspace for skill_ws_ IDs | AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+## tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts 1
+   - emits media segment events | AssertionError: expected false to be true // Object.is equality

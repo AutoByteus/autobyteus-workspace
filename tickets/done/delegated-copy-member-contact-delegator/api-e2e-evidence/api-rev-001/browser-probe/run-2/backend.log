@@ -1,0 +1,251 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60715
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60715
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/db/development.db
+
+26 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:51410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T06:03:48.780Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-10-09T06:03:48.920Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-09T06:03:48.921Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1791525828927,"pid":51410,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60718"}
+{"level":30,"time":1791525828959,"pid":51410,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:60715"}
+[2026-10-09T06:03:48.959Z] [INFO] [server.runtime] Server listening on 127.0.0.1:60715
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID project-manager-19e5.
+Agent Definition created successfully with ID: project-manager-19e5
+In-memory cache: Added new agent definition with ID review-lead-19e5.
+Agent Definition created successfully with ID: review-lead-19e5
+In-memory cache: Added new agent definition with ID code-reviewer-19e5.
+Agent Definition created successfully with ID: code-reviewer-19e5
+[2026-10-09T06:03:56.458Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID review-team-19e5.
+Agent Team Definition created successfully with ID: review-team-19e5
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace.
+Created and registered workspace ID: agent_ws_25f602139fbdd5841ea86917d9d3143bf9777eae93ed742ab45288fa97c2385c
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace.
+Reusing registered workspace ID: agent_ws_25f602139fbdd5841ea86917d9d3143bf9777eae93ed742ab45288fa97c2385c
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace.
+Reusing registered workspace ID: agent_ws_25f602139fbdd5841ea86917d9d3143bf9777eae93ed742ab45288fa97c2385c
+AGY compaction detection off for run project_manager_19e5_dac7000007c54037ad75cd30ec4628a9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_manager_19e5_dac7000007c54037ad75cd30ec4628a9
+Created agent session 24eb7660-158c-4d3d-9401-4bb82df27389 for run project_manager_19e5_dac7000007c54037ad75cd30ec4628a9
+Agent WebSocket connected: session=24eb7660-158c-4d3d-9401-4bb82df27389, run=project_manager_19e5_dac7000007c54037ad75cd30ec4628a9
+{"level":40,"time":1791525836891,"pid":51410,"hostname":"MacBookPro","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_vC4tETirisvKT2XpDcATceq1NTGFcnSCL0tx0V2pRY4","statusCode":405,"elapsedMs":0.3002080023288727,"msg":"http request completed"}
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace.
+Reusing registered workspace ID: agent_ws_25f602139fbdd5841ea86917d9d3143bf9777eae93ed742ab45288fa97c2385c
+AGY compaction detection off for run review_lead_19e5_de9bad01c96a4de29cce05fd76a3ff69: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 0502d3f1-ba6c-4dfb-872f-2dd239ed5b20 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-home-DnOMGh
+Terminal WebSocket connected: 0502d3f1-ba6c-4dfb-872f-2dd239ed5b20
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-home-DnOMGh
+Agent websocket attached for run project_manager_19e5_dac7000007c54037ad75cd30ec4628a9
+Created agent session 5b13529f-b766-44af-8a6f-604d0767cb80 for run project_manager_19e5_dac7000007c54037ad75cd30ec4628a9
+Agent WebSocket connected: session=5b13529f-b766-44af-8a6f-604d0767cb80, run=project_manager_19e5_dac7000007c54037ad75cd30ec4628a9
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/memory/agents/project_manager_19e5_dac7000007c54037ad75cd30ec4628a9/collaboration/review_team_19e5_5dd033ff93274fef921654d3de94c200/code_reviewer_19e5_f13d9e530cd248ac966341c7bd31ed9f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/memory/agents/project_manager_19e5_dac7000007c54037ad75cd30ec4628a9/collaboration/review_team_19e5_5dd033ff93274fef921654d3de94c200/code_reviewer_19e5_f13d9e530cd248ac966341c7bd31ed9f/raw_traces_active.jsonl
+Closed PTY session 0502d3f1-ba6c-4dfb-872f-2dd239ed5b20
+Terminal WebSocket disconnected: 0502d3f1-ba6c-4dfb-872f-2dd239ed5b20
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcm-browser-journey-sEmzOI/workspace.
+Reusing registered workspace ID: agent_ws_25f602139fbdd5841ea86917d9d3143bf9777eae93ed742ab45288fa97c2385c
+AGY compaction detection off for run code_reviewer_19e5_f13d9e530cd248ac966341c7bd31ed9f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+{"level":40,"time":1791525846134,"pid":51410,"hostname":"MacBookPro","reqId":"req-7","method":"GET","url":"/mcp/agent-tools/agtrun_UkDy5l1CxvseKN9ouGUpSMh_kXut7kfJKfyXJiElTnM","statusCode":405,"elapsedMs":0.30550000071525574,"msg":"http request completed"}
+Closed agent session 5b13529f-b766-44af-8a6f-604d0767cb80
+Agent WebSocket disconnected: 5b13529f-b766-44af-8a6f-604d0767cb80
+Closed agent session 24eb7660-158c-4d3d-9401-4bb82df27389
+Agent WebSocket disconnected: 24eb7660-158c-4d3d-9401-4bb82df27389
+[2026-10-09T06:04:07.253Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-09T06:04:07.262Z] [INFO] [server.runtime] Server closed cleanly.

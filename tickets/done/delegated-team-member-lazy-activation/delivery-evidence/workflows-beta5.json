@@ -1,0 +1,34 @@
+[
+ {
+  "attempt": 1,
+  "conclusion": "success",
+  "databaseId": 37816742404,
+  "headBranch": "v1.4.99-beta.5",
+  "name": "iOS App Store Connect Release",
+  "status": "completed"
+ },
+ {
+  "attempt": 1,
+  "conclusion": "success",
+  "databaseId": 37816742356,
+  "headBranch": "v1.4.99-beta.5",
+  "name": "Server Docker Release",
+  "status": "completed"
+ },
+ {
+  "attempt": 1,
+  "conclusion": "success",
+  "databaseId": 37816742307,
+  "headBranch": "v1.4.99-beta.5",
+  "name": "Android APK Release",
+  "status": "completed"
+ },
+ {
+  "attempt": 1,
+  "conclusion": "success",
+  "databaseId": 37816742299,
+  "headBranch": "v1.4.99-beta.5",
+  "name": "Desktop Release",
+  "status": "completed"
+ }
+]

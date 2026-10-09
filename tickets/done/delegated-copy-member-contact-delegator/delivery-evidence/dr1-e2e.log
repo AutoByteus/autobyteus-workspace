@@ -1,0 +1,966 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:31420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T06:20:32.209Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-09T06:20:32.493Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-09T06:20:32.494Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID aht-manager-086a12.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-manager-086a12
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID aht-reviewer-086a12.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-reviewer-086a12
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID aht-helper-086a12.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-helper-086a12
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID aht-assistant-086a12.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-assistant-086a12
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID aht-worker-086a12.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: aht-worker-086a12
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-09T06:20:32.700Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aht-team-086a12.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: aht-team-086a12
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreated and registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAgent websocket attached for run aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87
+Created agent session aaa42e70-dce1-4b7d-9b21-94abbe526409 for run aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87
+Agent WebSocket connected: session=aaa42e70-dce1-4b7d-9b21-94abbe526409, run=aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agents/aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_19cb1ec9e25e4274905eb5994dc6b0f4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_helper_086a12_8e015fc204ec414ba23dfe7cfdcb15cb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_assistant_086a12_826d846f9bd04cfb9d264b7b0377d1f5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_0a60c9b73e3f4af2b6424e06c2428633: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mClosed agent session aaa42e70-dce1-4b7d-9b21-94abbe526409
+Agent WebSocket disconnected: aaa42e70-dce1-4b7d-9b21-94abbe526409
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAgent websocket attached for run aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreated agent session 045f4b85-18e7-40e5-8149-66534fc1646a for run aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87
+Agent WebSocket connected: session=045f4b85-18e7-40e5-8149-66534fc1646a, run=aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_manager_086a12_f709bfff4b2a40b29bbbed1261ff3a87: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_assistant_086a12_826d846f9bd04cfb9d264b7b0377d1f5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mClosed agent session 045f4b85-18e7-40e5-8149-66534fc1646a
+Agent WebSocket disconnected: 045f4b85-18e7-40e5-8149-66534fc1646a
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_manager_086a12_5fb4ed92d6f9499b9c586697f83e866b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAgent websocket attached for run aht_manager_086a12_5fb4ed92d6f9499b9c586697f83e866b
+Created agent session c176c13a-4fa9-4717-bbd6-fc08fad0cf7a for run aht_manager_086a12_5fb4ed92d6f9499b9c586697f83e866b
+Agent WebSocket connected: session=c176c13a-4fa9-4717-bbd6-fc08fad0cf7a, run=aht_manager_086a12_5fb4ed92d6f9499b9c586697f83e866b
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mClosed agent session c176c13a-4fa9-4717-bbd6-fc08fad0cf7a
+Agent WebSocket disconnected: c176c13a-4fa9-4717-bbd6-fc08fad0cf7a
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mstandalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_84ce57b1019f498cb3662f032f47169d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+Created agent session ec20b240-c0e4-4e66-9762-4349066f8639 for run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=ec20b240-c0e4-4e66-9762-4349066f8639, run=aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_teams/aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd/aht_manager_086a12_a49912c1006b4b26a2513746010889cb/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_teams/aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd/aht_manager_086a12_a49912c1006b4b26a2513746010889cb/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_teams/aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd/aht_manager_086a12_a49912c1006b4b26a2513746010889cb/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_manager_086a12_a49912c1006b4b26a2513746010889cb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_teams/aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd/aht_manager_086a12_a49912c1006b4b26a2513746010889cb/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_teams/aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd/aht_manager_086a12_a49912c1006b4b26a2513746010889cb/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_9de63cad45c241c9892de7187c51eda3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_helper_086a12_3d486d2024584799b8b7af18beb45a49: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+Created agent session b2551d45-cfb4-42a8-811c-bad0ce612b0f for run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=b2551d45-cfb4-42a8-811c-bad0ce612b0f, run=aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session ec20b240-c0e4-4e66-9762-4349066f8639
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+Created agent session f3d5641f-6233-4f94-bd90-a729a69adb01 for run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=f3d5641f-6233-4f94-bd90-a729a69adb01, run=aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session b2551d45-cfb4-42a8-811c-bad0ce612b0f
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_assistant_086a12_5ff8448d6e3f4db6b84fea1f111be4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session f3d5641f-6233-4f94-bd90-a729a69adb01
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent team websocket attached for team run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreated agent session fe5ac775-0007-4a9c-ba4e-fafe573de186 for run aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent Team WebSocket connected: session=fe5ac775-0007-4a9c-ba4e-fafe573de186, run=aht_team_086a12_8c2bdadad9754914bc7bdeca545810fd
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_manager_086a12_a49912c1006b4b26a2513746010889cb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_assistant_086a12_5ff8448d6e3f4db6b84fea1f111be4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session fe5ac775-0007-4a9c-ba4e-fafe573de186
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_manager_086a12_788ebd16903a42dba3c00569e55eb63d: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAgent websocket attached for run aht_manager_086a12_788ebd16903a42dba3c00569e55eb63d
+Created agent session 96b79e22-fee8-44c8-b413-b85a739ec2ab for run aht_manager_086a12_788ebd16903a42dba3c00569e55eb63d
+Agent WebSocket connected: session=96b79e22-fee8-44c8-b413-b85a739ec2ab, run=aht_manager_086a12_788ebd16903a42dba3c00569e55eb63d
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mClosed agent session 96b79e22-fee8-44c8-b413-b85a739ec2ab
+Agent WebSocket disconnected: 96b79e22-fee8-44c8-b413-b85a739ec2ab
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_a484218933374271ad85a8b35da49a2c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_orgs/aht_org_086a12_5562e1fb5ba14b69863802021ec25752/aht_manager_086a12_c3f8d58ced2147188be5bd6ede3bb841/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_orgs/aht_org_086a12_5562e1fb5ba14b69863802021ec25752/aht_manager_086a12_c3f8d58ced2147188be5bd6ede3bb841/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_orgs/aht_org_086a12_5562e1fb5ba14b69863802021ec25752/aht_manager_086a12_c3f8d58ced2147188be5bd6ede3bb841/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_manager_086a12_c3f8d58ced2147188be5bd6ede3bb841: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/memory/agent_orgs/aht_org_086a12_5562e1fb5ba14b69863802021ec25752/aht_manager_086a12_c3f8d58ced2147188be5bd6ede3bb841/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_e1698355828a478aa27483ca91234c1b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_helper_086a12_db5661ea85584bc3baa2c6c64ed89863: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_assistant_086a12_32b7d173bfa34fa683510df4fc26ddfb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_manager_086a12_c3f8d58ced2147188be5bd6ede3bb841: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_assistant_086a12_32b7d173bfa34fa683510df4fc26ddfb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_manager_086a12_3edc7201f38746959be13829de3fdc37: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAgent websocket attached for run aht_manager_086a12_3edc7201f38746959be13829de3fdc37
+Created agent session 7a24999d-abee-4681-b94a-2644888c2c67 for run aht_manager_086a12_3edc7201f38746959be13829de3fdc37
+Agent WebSocket connected: session=7a24999d-abee-4681-b94a-2644888c2c67, run=aht_manager_086a12_3edc7201f38746959be13829de3fdc37
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ad-hoc-task-e2e-FgClIT/workspace.
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mReusing registered workspace ID: agent_ws_8178a3605e2dd681b13ca32639f2efb520c0bf3238a8e71688d2b0a5127a780c
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mClosed agent session 7a24999d-abee-4681-b94a-2644888c2c67
+Agent WebSocket disconnected: 7a24999d-abee-4681-b94a-2644888c2c67
+
+[90mstdout[2m | tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts[2m > [22m[2m@ delegates and every delegated copy is closable by its ad-hoc Task (real HTTP/WS/scoped MCP, scripted AGY actor)[2m > [22m[2mAgent Org root: same journey through the Org stream
+[22m[39mAGY compaction detection off for run aht_reviewer_086a12_ebeb4e9975bf4be98a8862dff293e8f4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ [32m✓[39m tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 14219[2mms[22m[39m
+     [33m[2m✓[22m[39m standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete [33m 4633[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED) [33m 3775[2mms[22m[39m
+     [33m[2m✓[22m[39m Agent Org root: same journey through the Org stream [33m 5268[2mms[22m[39m
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:41836) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-member-contact-delegator/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T06:20:54.098Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-09T06:20:54.332Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-09T06:20:54.333Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID dcm-manager-548ee1.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dcm-manager-548ee1
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID dcm-lead-548ee1.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dcm-lead-548ee1
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID dcm-reviewer-548ee1.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dcm-reviewer-548ee1
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID dcm-solo-548ee1.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dcm-solo-548ee1
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39m[2026-10-09T06:20:54.600Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID dcm-squad-548ee1.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Team Definition created successfully with ID: dcm-squad-548ee1
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mIn-memory cache: Added new agent definition with ID dcm-outsider-548ee1.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+[22m[39mAgent Definition created successfully with ID: dcm-outsider-548ee1
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreated and registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mReusing registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAGY compaction detection off for run dcm_manager_548ee1_f485a4d6c093424694550347a42af925: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAgent websocket attached for run dcm_manager_548ee1_f485a4d6c093424694550347a42af925
+Created agent session 089cf75d-6f26-445b-b739-fdda23320e84 for run dcm_manager_548ee1_f485a4d6c093424694550347a42af925
+Agent WebSocket connected: session=089cf75d-6f26-445b-b739-fdda23320e84, run=dcm_manager_548ee1_f485a4d6c093424694550347a42af925
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/memory/agents/dcm_manager_548ee1_f485a4d6c093424694550347a42af925/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mReusing registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAGY compaction detection off for run dcm_lead_548ee1_bd938949b1de4b3c9046f11db6a28f66: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mReusing registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAGY compaction detection off for run dcm_solo_548ee1_a4001b81fd1448adbeef7106317811df: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/memory/agents/dcm_manager_548ee1_f485a4d6c093424694550347a42af925/collaboration/dcm_squad_548ee1_9be9bca0318f442e946085c2b9796ca8/dcm_reviewer_548ee1_c6fd4b31f5544c2b9d0873d6c7b62c9e/raw_traces_active.jsonl
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mReusing registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAGY compaction detection off for run dcm_reviewer_548ee1_c6fd4b31f5544c2b9d0873d6c7b62c9e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstderr[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mSEND_MESSAGE command not accepted for agent run dcm_manager_548ee1_f485a4d6c093424694550347a42af925: [COLLABORATOR_ADD_FAILED] DCM Manager 548ee1 is this run's own definition.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mClosed agent session 089cf75d-6f26-445b-b739-fdda23320e84
+Agent WebSocket disconnected: 089cf75d-6f26-445b-b739-fdda23320e84
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mReusing registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAGY compaction detection off for run dcm_manager_548ee1_f485a4d6c093424694550347a42af925: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-copy-contact-e2e-0hhcfi/workspace.
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mReusing registered workspace ID: agent_ws_3622c9e59050a2db3149675298c631ffc853bb51d1d3920db5e4ac5447a91e40
+
+[90mstdout[2m | tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts[2m > [22m[2mDelegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)[2m > [22m[2ma Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself
+[22m[39mAGY compaction detection off for run dcm_reviewer_548ee1_c6fd4b31f5544c2b9d0873d6c7b62c9e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ [32m✓[39m tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 4865[2mms[22m[39m
+     [33m[2m✓[22m[39m a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself [33m 4200[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 08:20:18
+[2m   Duration [22m 40.12s[2m (transform 9.30s, setup 54ms, import 20.02s, tests 19.08s, environment 0ms)[22m
+

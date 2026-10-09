@@ -60,28 +60,23 @@ describe("collaboration public result contracts", () => {
     })).toThrow();
   });
 
-  it("keeps the delegate spawn and not-started outcomes strict and mutually exclusive", () => {
-    expect(DelegateTaskResultSchema.parse({
-      target_agent_run_id: "fresh-task-ingress", target_kind: "team",
-    })).toEqual({ target_agent_run_id: "fresh-task-ingress", target_kind: "team" });
-    // The kind is required on success and is only `agent` or `team` (REQ-010); never on not-started.
-    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: "fresh-task-ingress" })).toThrow();
-    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: "fresh-task-ingress", target_kind: "agent_team" })).toThrow();
-    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: null, target_kind: "agent", message: "Activation failed." })).toThrow();
-    expect(DelegateTaskResultSchema.parse({
-      target_agent_run_id: null,
-      message: "Activation failed.",
-    })).toEqual({ target_agent_run_id: null, message: "Activation failed." });
-    expect(() => DelegateTaskResultSchema.parse({
-      target_agent_run_id: "fabricated-run",
-      message: "Activation failed.",
-    })).toThrow();
-    expect(() => DelegateTaskResultSchema.parse({
-      task_id: "task-1",
-      status: "active",
-      target_agent_run_id: "fresh-task-ingress",
-    })).toThrow();
-    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: null })).toThrow();
+  it("keeps the delegate results strict, explicitly named and mutually exclusive (REQ-001, DEC-008)", () => {
+    const team = { delegated: true, target_kind: "team", target_team_run_id: "team-copy", target_team_coordinator_agent_run_id: "team-copy-lead" };
+    const agent = { delegated: true, target_kind: "agent", target_agent_run_id: "agent-copy", task_id: "ad_hoc_task_1" };
+    expect(DelegateTaskResultSchema.parse(team)).toEqual(team);
+    expect(DelegateTaskResultSchema.parse(agent)).toEqual(agent);
+    // A Team copy is never named by an agent run ID alone, and an Agent copy has no team fields.
+    expect(() => DelegateTaskResultSchema.parse({ ...team, target_agent_run_id: "team-copy-lead" })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ delegated: true, target_kind: "team", target_team_run_id: "team-copy" })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ delegated: true, target_kind: "agent", target_team_run_id: "team-copy" })).toThrow();
+    // The kind is required on success and is only `agent` or `team`; never on failure.
+    expect(() => DelegateTaskResultSchema.parse({ delegated: true, target_agent_run_id: "agent-copy" })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ delegated: true, target_kind: "agent_team", target_agent_run_id: "x" })).toThrow();
+    expect(DelegateTaskResultSchema.parse({ delegated: false, message: "Activation failed." })).toEqual({ delegated: false, message: "Activation failed." });
+    expect(() => DelegateTaskResultSchema.parse({ delegated: false, target_kind: "agent", message: "Activation failed." })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ delegated: false, target_agent_run_id: "fabricated-run", message: "Activation failed." })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: null, message: "Activation failed." })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ delegated: false })).toThrow();
   });
 
   it.each(["2025-06-18", "2025-11-25"])(
@@ -105,7 +100,7 @@ describe("collaboration public result contracts", () => {
         expect(tool.outputSchema?.type).toBe("object");
         const branches = (tool.outputSchema as { oneOf?: unknown[]; anyOf?: unknown[] }).oneOf
           ?? (tool.outputSchema as { anyOf?: unknown[] }).anyOf;
-        expect(branches).toHaveLength(2);
+        expect(branches).toHaveLength(tool.name === DELEGATE_TASK_TOOL_NAME ? 3 : 2);
         expect(() => ToolSchema.parse(tool)).not.toThrow();
       }
       const ajv = new Ajv2020({ strict: false });
@@ -124,13 +119,19 @@ describe("collaboration public result contracts", () => {
         target_agent_run_id: null,
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {
-        target_agent_run_id: "fresh-task-ingress", target_kind: "agent",
+        delegated: true, target_kind: "agent", target_agent_run_id: "fresh-task-ingress",
       })).toBe(true);
+      expect(ajv.validate(delegateSchema, {
+        delegated: true, target_kind: "team", target_team_run_id: "team-copy", target_team_coordinator_agent_run_id: "team-copy-lead",
+      })).toBe(true);
+      expect(ajv.validate(delegateSchema, {
+        delegated: true, target_kind: "team", target_agent_run_id: "team-copy-lead",
+      })).toBe(false);
       expect(ajv.validate(delegateSchema, {
         target_agent_run_id: "fresh-task-ingress",
       })).toBe(false);
       expect(ajv.validate(delegateSchema, {
-        target_agent_run_id: null,
+        delegated: false,
         message: "Activation failed.",
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {

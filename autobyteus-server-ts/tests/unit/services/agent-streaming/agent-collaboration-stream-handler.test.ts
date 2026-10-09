@@ -19,7 +19,7 @@ const fakeRoot = (hostLive = true) => ({
     subscribe: vi.fn(() => () => undefined),
     close: vi.fn(),
   })),
-  resolveCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer" }] })),
+  resolveCollaboratorMentions: vi.fn(async () => ({ admitted: true as const, collaborators: [{ name: "Code Reviewer", kind: "agent" as const, address: "/code_reviewer", presence: "not_in_run" as const }] })),
   executeAgentCommand: vi.fn(async (agentRunId: string) => agentRunId === HOST
     ? { accepted: false, code: "AGENT_ROOT_HOST_COMMAND_REJECTED", message: "host" }
     : { accepted: true }),

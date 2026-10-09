@@ -292,22 +292,22 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.1-pro-preview', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/gemini-3', '2026-04-09', GEMINI_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
-      pricingConfig: pricing(2.25, 18.0, {
-        cachedInputReadTokenPricing: 0.225,
+      pricingConfig: pricing(2.0, 12.0, {
+        cachedInputReadTokenPricing: 0.2,
         inputTokenPricingTiers: [
           {
             tierId: 'prompt_le_200k',
             maxInputTokens: 200_000,
-            inputTokenPricing: 2.25,
-            outputTokenPricing: 18.0,
-            cachedInputReadTokenPricing: 0.225,
+            inputTokenPricing: 2.0,
+            outputTokenPricing: 12.0,
+            cachedInputReadTokenPricing: 0.2,
           },
           {
             tierId: 'prompt_gt_200k',
             maxInputTokens: null,
-            inputTokenPricing: 4.5,
-            outputTokenPricing: 27.0,
-            cachedInputReadTokenPricing: 0.45,
+            inputTokenPricing: 4.0,
+            outputTokenPricing: 18.0,
+            cachedInputReadTokenPricing: 0.4,
           },
         ],
       })

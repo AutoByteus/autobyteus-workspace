@@ -1,0 +1,19 @@
+{
+  "note": "DOM state read through run-script on the isolated desktop instance iso-57725-bf13 (worktree build autobyteus-web/electron-dist/mac-arm64/AutoByteus.app, carries IR-001 + IR-002: no 'attachmentsAreSendable' in app.asar; server/dist contains agy-user-message-text.js). Screenshots were requested, but no files were written to this folder (the browser tool's output path did not persist). This JSON transcribes the tool output observed on 2026-10-09.",
+  "runtime": { "agent": "Daily Assistant", "runtime": "Antigravity CLI", "model": "Gemini 3.8 Flash (Low)", "agyAvailability": { "enabled": true } },
+  "DJ-001_chat_new_surface": {
+    "file_only_after_paste_of_red_png": { "contextFiles": "Context Files (1)", "text": "", "sendDisabled": true },
+    "enter_with_file_only": { "url": "#/chat", "contextFiles": "Context Files (1)", "runCreated": false },
+    "text_her_plus_file": { "text": "her", "sendDisabled": false },
+    "after_send": { "url": "#/chat?id=daily_assistant_61490d497ceb4fe6b8e78430743cd6c8" },
+    "conversation": "You: her / Context files | DA: [view_file] The attached image is a solid red square (similar to the color used for the movie Her cover / poster background). How can I help you with this? ..."
+  },
+  "DJ-002_standalone_run_view_composer": {
+    "before": { "composer": "Message", "contextFiles": "Context Files (0)", "buttons": [{ "label": "Send message", "disabled": true }] },
+    "file_only_after_paste_of_blue_png": { "contextFiles": "Context Files (1)", "text": "", "buttons": [{ "label": "Send message", "disabled": true }] },
+    "enter_with_file_only": { "contextFiles": "Context Files (1)", "buttons": [{ "label": "Send message", "disabled": true }], "userBubbles": 1 },
+    "text_plus_file": { "text": "What colour is this one?", "buttons": [{ "label": "Send message", "disabled": false }] },
+    "conversation": "You: What colour is this one? / Context files | DA: [view_file] This one is blue (a solid medium/royal blue)."
+  },
+  "cleanup": { "isolated_app_stop": { "wasRunning": true, "forced": false, "dataRootRemoved": true, "controlPortReleased": true, "serverPortReleased": true } }
+}

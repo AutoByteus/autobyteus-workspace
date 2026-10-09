@@ -119,8 +119,9 @@ Family semantics still come from the shared server-owned services:
 - Task-delegation tools call `TaskDelegationToolService` with the current
   `MemberTeamContext`, inherit the canonical ready-to-run/no-dependencies
   guidance from the shared manifest/schema, and remain unavailable for
-  standalone sessions. Successful delegation returns the fresh task Agent or
-  task Team coordinator ingress as `target_agent_run_id`; the delegation call
+  standalone sessions. Successful delegation names the copy: an Agent copy's
+  `target_agent_run_id`, or a Team copy's `target_team_run_id` and
+  `target_team_coordinator_agent_run_id`; the delegation call
   already delivers the complete packet and must not be duplicated by ordinary
   messaging.
 - Browser, media, and `publish_artifacts` tools execute through their shared

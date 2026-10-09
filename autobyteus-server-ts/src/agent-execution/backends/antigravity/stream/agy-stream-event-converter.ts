@@ -227,7 +227,7 @@ export class AgyStreamEventConverter {
       reported_input_tokens: number(usage.input_tokens),
       reported_output_tokens: number(usage.output_tokens),
       reported_total_tokens: number(usage.total_tokens),
-      input_token_semantic: "gross_includes_cache",
+      input_token_semantic: "base_excludes_cache",
       cache_read_input_tokens: number(usage.cache_read_tokens),
       cache_state: number(usage.cache_read_tokens) === null ? "not_reported" : number(usage.cache_read_tokens)! > 0 ? "positive" : "zero_reported",
       reasoning_output_tokens: number(usage.thinking_tokens),

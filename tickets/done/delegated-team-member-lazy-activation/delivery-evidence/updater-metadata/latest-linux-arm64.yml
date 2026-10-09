@@ -1,0 +1,9 @@
+version: 1.4.99-beta.5
+files:
+  - url: AutoByteus_personal_linux-arm64-1.4.99-beta.5.AppImage
+    sha512: 0T2Njmy1Hgo5GS1SYpStw8JTtkqk8GjBfmM+P8N2AxCQTpD/SmMXPoZQIahDU1JUMEo2bYVv05MSlpQPKB3C3g==
+    size: 447787497
+    blockMapSize: 466229
+path: AutoByteus_personal_linux-arm64-1.4.99-beta.5.AppImage
+sha512: 0T2Njmy1Hgo5GS1SYpStw8JTtkqk8GjBfmM+P8N2AxCQTpD/SmMXPoZQIahDU1JUMEo2bYVv05MSlpQPKB3C3g==
+releaseDate: '2026-10-08T17:32:34.318Z'

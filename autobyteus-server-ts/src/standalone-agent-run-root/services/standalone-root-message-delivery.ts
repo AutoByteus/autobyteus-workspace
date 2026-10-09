@@ -12,8 +12,9 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { TaskDelegationError, type DelegateTaskInput, type DelegateTaskResult, type TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { TaskDelegationError, type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -66,7 +67,7 @@ export class StandaloneRootMessageDelivery {
   /** `@`: resolves the mentioned definitions for the focused agent (adds nothing); the caller composes the note. */
   resolveMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.options.getIndex().getAgent(input.focusedAgentRunId)
-      ? this.options.collaborators.resolveMentions(input.mentions)
+      ? this.options.collaborators.resolveMentions(input.focusedAgentRunId, input.mentions)
       : Promise.resolve({ admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in Agent root '${this.options.hostRunId}'.` });
   }
 
@@ -99,7 +100,7 @@ export class StandaloneRootMessageDelivery {
   /** `list_available_agents` (DS-001): read-only, never creates the package (AR-005). */
   listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> {
     this.options.authorizeIdentity(sender);
-    return this.options.collaborators.listAvailable();
+    return this.options.collaborators.listAvailable(sender.agentRunId);
   }
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in. */
@@ -135,7 +136,7 @@ export class StandaloneRootMessageDelivery {
    * `delegate_task(address)`: never to the caller's own address (as in Team and Org roots). The
    * host is not a delegation placement, so its own address is refused before resolution.
    */
-  delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     const selfTarget = () => new CollaborationContractError(
       "COLLABORATION_SELF_TARGET_REJECTED",
@@ -146,9 +147,16 @@ export class StandaloneRootMessageDelivery {
       () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address),
       (placement) => {
         if (placement.kind === "agent" && placement.address === context.identity.memberAddress) throw selfTarget();
-        return this.options.taskExecutions.delegate(context, input, placement);
+        return this.options.taskExecutions.delegateToNewCopy(context, input, placement);
       },
     );
+  }
+
+  /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
+    this.options.authorizeIdentity(context.identity);
+    return this.options.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
+      this.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
   }
 
   async reserveAgentInput(agentRunId: string, message: AgentInputUserMessage): Promise<AgentRunInputReservationResult> {

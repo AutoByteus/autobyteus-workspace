@@ -150,6 +150,24 @@ describe("merged AGY fixture scenario routing (local process boundary, not serve
     expect((await run.send("READ_SKILLS")).at(-1)!.result.response).toBe("SKILLS:[]");
   });
 
+  it("context_files records the raw input line and opens each listed absolute path with view_file", async () => {
+    const owned = await ownedRoot(); const run = await launch("context_files", owned, boundConversation);
+    const image = path.join(owned.root, "shot.png"); await fs.writeFile(image, "image bytes");
+    const missing = path.join(owned.root, "gone.txt");
+    const content = ["her", "", "Attached images (open each with view_file to see it):", `- ${image}`, "",
+      "Reference files:", `- ${missing}`].join("\n");
+    const frames = await run.send(content);
+    expect(run.conversationId).toBe(boundConversation);
+    const steps = frames.filter((frame) => frame.step_update?.tool_name === "view_file").map((frame) => frame.step_update);
+    expect(steps.map((step) => [step.step_index, step.state])).toEqual([[101, "ACTIVE"], [101, "DONE"], [102, "ACTIVE"], [102, "ERROR"]]);
+    expect(steps[0].tool_info.parameters).toEqual({ AbsolutePath: image });
+    expect(steps[1].tool_info.output).toBe(`sha256:${createHash("sha256").update("image bytes").digest("hex")}`);
+    expect(steps[3].tool_info.error).toBe("ENOENT");
+    expect(frames.at(-1)!.result).toMatchObject({ status: "SUCCESS", response: "VIEWED:2" });
+    const inputs = (await fs.readFile(path.join(owned.root, "input.jsonl"), "utf8")).trim().split("\n").map((line) => JSON.parse(line));
+    expect(inputs).toEqual([{ conversation_id: boundConversation, turns: 1, line: { message: { content } } }]);
+  });
+
   it.each(["linked_skills", "image_done", "tool_denied", "mcp_calls", "default_failure", "daemon_background"])(
     "preserves the existing %s branch", async (mode) => {
       const owned = await ownedRoot(); const run = await launch(mode, owned, boundConversation);

@@ -41,13 +41,14 @@ describe("WorkspaceManager skill integration", () => {
     expect(result).toBe(mockWorkspace);
   });
 
-  it("creates and initializes a SkillWorkspace for skill_ws_ IDs", async () => {
+  it("creates and caches a SkillWorkspace for skill_ws_ IDs", async () => {
     const skillName = "MySkill";
     const workspaceId = `skill_ws_${skillName}`;
 
+    // SkillWorkspace.create returns a ready workspace; initialize() is metadata-only
+    // and the manager does not call it, so the double has none.
     const mockWorkspace = {
       workspaceId,
-      initialize: vi.fn().mockResolvedValue(undefined),
       close: vi.fn().mockResolvedValue(undefined),
     } as unknown as FileSystemWorkspace;
 
@@ -56,8 +57,7 @@ describe("WorkspaceManager skill integration", () => {
     const result = await manager.getOrCreateWorkspace(workspaceId);
 
     expect(result).toBe(mockWorkspace);
-    expect(createSpy).toHaveBeenCalledWith(skillName);
-    expect(mockWorkspace.initialize).toHaveBeenCalledTimes(1);
+    expect(createSpy).toHaveBeenCalledExactlyOnceWith(skillName);
 
     const cached = (manager as unknown as { activeWorkspaces: Map<string, FileSystemWorkspace> })
       .activeWorkspaces

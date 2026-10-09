@@ -46,7 +46,7 @@ describe("MediaStorageService integration", () => {
 
     const localUrl = await service.storeMediaAndGetUrl(TEST_REMOTE_URL, "remote_image");
 
-    expect(localUrl.startsWith("http://testserver:8000/rest/files/images/")).toBe(true);
+    expect(localUrl.startsWith("/rest/files/images/")).toBe(true);
     expect(localUrl.endsWith(".png")).toBe(true);
 
     const filename = localUrl.split("/").pop() as string;
@@ -69,7 +69,7 @@ describe("MediaStorageService integration", () => {
   it("saves media from a data URI", async () => {
     const localUrl = await service.storeMediaAndGetUrl(SIMPLE_DATA_URI, "hello_text");
 
-    expect(localUrl.startsWith("http://testserver:8000/rest/files/documents/")).toBe(true);
+    expect(localUrl.startsWith("/rest/files/documents/")).toBe(true);
     expect(localUrl.endsWith(".txt")).toBe(true);
   });
 
@@ -78,7 +78,7 @@ describe("MediaStorageService integration", () => {
     fs.writeFileSync(sourceFile, "Hello, world!");
 
     const localUrl = await service.storeMediaAndGetUrl(sourceFile, "source");
-    expect(localUrl.startsWith("http://testserver:8000/rest/files/documents/")).toBe(true);
+    expect(localUrl.startsWith("/rest/files/documents/")).toBe(true);
     expect(localUrl.endsWith(".txt")).toBe(true);
   });
 
@@ -113,7 +113,7 @@ describe("MediaStorageService integration", () => {
     expect(result.files[0]?.category).toBe("images");
     expect(result.files[0]?.filename).toBe("test_image.png");
     expect(result.files[0]?.url).toBe(
-      "http://testserver:8000/rest/files/images/test_image.png",
+      "/rest/files/images/test_image.png",
     );
   });
 

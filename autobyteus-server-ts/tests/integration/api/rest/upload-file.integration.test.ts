@@ -133,9 +133,10 @@ describe("REST upload-file route", () => {
 
     expect(uploadResponse.statusCode).toBe(200);
     const uploadJson = uploadResponse.json() as { fileUrl: string };
-    expect(uploadJson.fileUrl).toContain("/rest/files/");
+    // File URLs are relative to the server origin (remote access).
+    expect(uploadJson.fileUrl.startsWith("/rest/files/")).toBe(true);
 
-    const filePath = new URL(uploadJson.fileUrl).pathname;
+    const filePath = new URL(uploadJson.fileUrl, "http://localhost:8000").pathname;
     const fileResponse = await app.inject({
       method: "GET",
       url: filePath,
@@ -181,10 +182,10 @@ describe("REST upload-file route", () => {
 
     expect(uploadResponse.statusCode).toBe(200);
     const uploadJson = uploadResponse.json() as { fileUrl: string };
-    expect(uploadJson.fileUrl).toContain("/rest/files/images/");
+    expect(uploadJson.fileUrl.startsWith("/rest/files/images/")).toBe(true);
     expect(uploadJson.fileUrl.endsWith(".png")).toBe(true);
 
-    const imagePath = new URL(uploadJson.fileUrl).pathname;
+    const imagePath = new URL(uploadJson.fileUrl, "http://localhost:8000").pathname;
     const fileResponse = await app.inject({
       method: "GET",
       url: imagePath,

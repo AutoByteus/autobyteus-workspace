@@ -1,5 +1,5 @@
 import type { RootExecutionIdentity } from "../domain/root-execution-identity.js";
-import type { TaskAgentResourcePort } from "./task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "./task-execution-resource-port.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
 
 /**
@@ -8,8 +8,8 @@ import type { TaskExecutionReference } from "./task-execution-reference.js";
  * never filtered; the listing leaves these out. Empty when no Task side is bound.
  */
 export const listClosedTaskExecutions = (input: Readonly<{
-  port?: TaskAgentResourcePort;
+  port?: TaskExecutionResourcePort;
   root: RootExecutionIdentity;
   contains(reference: TaskExecutionReference): boolean;
 }>): readonly TaskExecutionReference[] =>
-  Object.freeze(input.port ? input.port.closedAgentRunsIn(input.root).filter((reference) => input.contains(reference)) : []);
+  Object.freeze(input.port ? input.port.closedTaskExecutionsIn(input.root).filter((reference) => input.contains(reference)) : []);

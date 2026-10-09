@@ -717,6 +717,10 @@ Claude paths share `agent-execution/shared/context-image-source.ts`. Local
 files are read and base64-encoded (at most 20 MB); http(s) URLs and data URLs
 pass through. An unreadable image becomes a visible text note, not a failure.
 Non-image context files keep the "Reference files" path section.
+Antigravity is the exception: its input is text-only, so it lists local image
+paths under an explicit "Attached images" heading and the agent opens them
+with its native `view_file` tool (see
+[Antigravity CLI Runtime](antigravity_cli_runtime.md#user-input-and-context-files)).
 
 For token accounting, each Claude process open resolves the selected model
 value to one raw id through that session's supported-model metadata. Terminal

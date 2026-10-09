@@ -1,0 +1,509 @@
+{
+  "startedAt": "2026-10-09T05:38:29.192Z",
+  "platform": "darwin",
+  "node": "v22.23.1",
+  "cases": {
+    "B01": {
+      "name": "capability gating and native exact copy across supported scope shapes",
+      "result": "Pass",
+      "details": {
+        "scopeSnapshots": [
+          {
+            "kind": "agent",
+            "scope": {
+              "rootKind": "agent",
+              "rootRunId": "probe-agent",
+              "focusedAgentRunId": "probe-agent",
+              "focusedName": "Research Assistant"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "team",
+            "scope": {
+              "rootKind": "agent_team",
+              "rootRunId": "probe-team-root",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "org",
+            "scope": {
+              "rootKind": "agent_org",
+              "rootRunId": "probe-org-root",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "org-team",
+            "scope": {
+              "rootKind": "agent_org",
+              "rootRunId": "probe-org-root",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "agent-task",
+            "scope": {
+              "rootKind": "agent",
+              "rootRunId": "probe-agent-root",
+              "focusedAgentRunId": "probe-agent-task",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "agent-team-task",
+            "scope": {
+              "rootKind": "agent",
+              "rootRunId": "probe-agent-root",
+              "focusedAgentRunId": "probe-agent-team-task",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "org-task",
+            "scope": {
+              "rootKind": "agent_org",
+              "rootRunId": "probe-org-root",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          },
+          {
+            "kind": "org-team-task",
+            "scope": {
+              "rootKind": "agent_org",
+              "rootRunId": "probe-org-root",
+              "focusedName": "researcher"
+            },
+            "text": "",
+            "chosen": [],
+            "attachments": [],
+            "skills": [],
+            "messages": [],
+            "failure": null,
+            "sends": []
+          }
+        ],
+        "noScope": [
+          "launch",
+          "read-only"
+        ]
+      }
+    },
+    "B02": {
+      "name": "chosen-only selection, caret, native deletion/undo/whole-token/name-edit and paste",
+      "result": "Pass",
+      "details": {
+        "compositionSmoke": "Chrome input-method protocol; not OS IME",
+        "before": "please ask @Product Team to review.",
+        "afterPaste": {
+          "kind": "agent",
+          "scope": {
+            "rootKind": "agent",
+            "rootRunId": "probe-agent",
+            "focusedAgentRunId": "probe-agent",
+            "focusedName": "Research Assistant"
+          },
+          "text": "please ask @Product Team to review. pasted <script>safe</script> 中文输入验证",
+          "chosen": [
+            {
+              "kind": "agent_team",
+              "definitionId": "product-team",
+              "name": "Product Team"
+            }
+          ],
+          "active": [
+            {
+              "kind": "agent_team",
+              "definition_id": "product-team"
+            }
+          ],
+          "attachments": [],
+          "skills": [],
+          "messages": [],
+          "failure": null,
+          "sends": []
+        },
+        "geometry": {
+          "width": 702,
+          "height": 68,
+          "viewportWidth": 702,
+          "viewportHeight": 68,
+          "scrollTop": 0,
+          "scrollLeft": 0,
+          "transform": "matrix(1, 0, 0, 1, 0, 0)",
+          "reconstructed": true,
+          "metricMatch": true,
+          "transparent": "rgba(0, 0, 0, 0)",
+          "hidden": "true",
+          "pointerEvents": "none",
+          "editableCount": 1
+        }
+      }
+    },
+    "B03": {
+      "name": "keyboard dismissal/no-match, slash skills and completed upload held rejection/acceptance",
+      "result": "Pass",
+      "details": {
+        "upload": {
+          "path": "/rest/context-files/upload",
+          "bytes": 345,
+          "multipart": "multipart/form-data; boundary=----WebKitFormBoundarypYqt7akcwfXt1j9r",
+          "ownerPresent": true,
+          "contentPresent": true,
+          "filenamePresent": true
+        },
+        "rejected": {
+          "kind": "agent",
+          "scope": {
+            "rootKind": "agent",
+            "rootRunId": "probe-agent",
+            "focusedAgentRunId": "probe-agent",
+            "focusedName": "Research Assistant"
+          },
+          "text": "please ask @Product Team to review. Unrelated edit.",
+          "chosen": [
+            {
+              "kind": "agent_team",
+              "definitionId": "product-team",
+              "name": "Product Team"
+            }
+          ],
+          "active": [
+            {
+              "kind": "agent_team",
+              "definition_id": "product-team"
+            }
+          ],
+          "attachments": [
+            {
+              "kind": "uploaded",
+              "id": "ctx_probe__notes.txt",
+              "locator": "/rest/drafts/probe-agent/ctx_probe__notes.txt",
+              "storedFilename": "ctx_probe__notes.txt",
+              "displayName": "notes.txt",
+              "phase": "draft",
+              "type": "Text"
+            }
+          ],
+          "skills": [
+            "review"
+          ],
+          "messages": [],
+          "failure": {
+            "name": "Product Team",
+            "reason": "Test admission rejected"
+          },
+          "sends": [
+            {
+              "focusedRunId": "probe-agent",
+              "mentions": [
+                {
+                  "kind": "agent_team",
+                  "definition_id": "product-team"
+                }
+              ],
+              "text": "please ask @Product Team to review. Unrelated edit.",
+              "attachments": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__notes.txt",
+                  "locator": "/rest/drafts/probe-agent/ctx_probe__notes.txt",
+                  "storedFilename": "ctx_probe__notes.txt",
+                  "displayName": "notes.txt",
+                  "phase": "draft",
+                  "type": "Text"
+                }
+              ],
+              "rejected": true
+            }
+          ]
+        },
+        "accepted": {
+          "kind": "agent",
+          "scope": {
+            "rootKind": "agent",
+            "rootRunId": "probe-agent",
+            "focusedAgentRunId": "probe-agent",
+            "focusedName": "Research Assistant"
+          },
+          "text": "",
+          "chosen": [],
+          "attachments": [],
+          "skills": [],
+          "messages": [
+            {
+              "type": "user",
+              "text": "please ask @Product Team to review. Unrelated edit.",
+              "timestamp": "2026-10-09T05:38:42.062Z",
+              "contextFilePaths": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__notes.txt",
+                  "locator": "/rest/drafts/probe-agent/ctx_probe__notes.txt",
+                  "storedFilename": "ctx_probe__notes.txt",
+                  "displayName": "notes.txt",
+                  "phase": "draft",
+                  "type": "Text"
+                }
+              ],
+              "mentionNames": [
+                "Product Team"
+              ]
+            }
+          ],
+          "failure": null,
+          "sends": [
+            {
+              "focusedRunId": "probe-agent",
+              "mentions": [
+                {
+                  "kind": "agent_team",
+                  "definition_id": "product-team"
+                }
+              ],
+              "text": "please ask @Product Team to review. Unrelated edit.",
+              "attachments": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__notes.txt",
+                  "locator": "/rest/drafts/probe-agent/ctx_probe__notes.txt",
+                  "storedFilename": "ctx_probe__notes.txt",
+                  "displayName": "notes.txt",
+                  "phase": "draft",
+                  "type": "Text"
+                }
+              ],
+              "rejected": true
+            },
+            {
+              "focusedRunId": "probe-agent",
+              "mentions": [
+                {
+                  "kind": "agent_team",
+                  "definition_id": "product-team"
+                }
+              ],
+              "text": "please ask @Product Team to review. Unrelated edit.",
+              "attachments": [
+                {
+                  "kind": "uploaded",
+                  "id": "ctx_probe__notes.txt",
+                  "locator": "/rest/drafts/probe-agent/ctx_probe__notes.txt",
+                  "storedFilename": "ctx_probe__notes.txt",
+                  "displayName": "notes.txt",
+                  "phase": "draft",
+                  "type": "Text"
+                }
+              ],
+              "rejected": false
+            }
+          ]
+        },
+        "limitation": "HTTP upload endpoint and admission response doubled; real backend independently checked by C03"
+      }
+    },
+    "B04": {
+      "name": "layout at 1512/1024/300 panel, scroll/resize, locale, forced colors and context isolation",
+      "result": "Pass",
+      "details": {
+        "snapshots": [
+          {
+            "width": 702,
+            "height": 220,
+            "viewportWidth": 702,
+            "viewportHeight": 220,
+            "scrollTop": 568,
+            "scrollLeft": 0,
+            "transform": "matrix(1, 0, 0, 1, 0, -568)",
+            "reconstructed": true,
+            "metricMatch": true,
+            "transparent": "rgba(0, 0, 0, 0)",
+            "hidden": "true",
+            "pointerEvents": "none",
+            "editableCount": 1
+          },
+          {
+            "width": 618,
+            "height": 220,
+            "viewportWidth": 618,
+            "viewportHeight": 220,
+            "scrollTop": 568,
+            "scrollLeft": 0,
+            "transform": "matrix(1, 0, 0, 1, 0, -568)",
+            "reconstructed": true,
+            "metricMatch": true,
+            "transparent": "rgba(0, 0, 0, 0)",
+            "hidden": "true",
+            "pointerEvents": "none",
+            "editableCount": 1
+          }
+        ],
+        "narrow": {
+          "width": 298,
+          "height": 220,
+          "viewportWidth": 298,
+          "viewportHeight": 220,
+          "scrollTop": 2032,
+          "scrollLeft": 0,
+          "transform": "matrix(1, 0, 0, 1, 0, -2032)",
+          "reconstructed": true,
+          "metricMatch": true,
+          "transparent": "rgba(0, 0, 0, 0)",
+          "hidden": "true",
+          "pointerEvents": "none",
+          "editableCount": 1,
+          "tokenRects": [
+            {
+              "top": 399,
+              "bottom": 417,
+              "left": 172.78125,
+              "right": 244.5
+            },
+            {
+              "top": 423,
+              "bottom": 441,
+              "left": 45,
+              "right": 82.015625
+            }
+          ]
+        },
+        "highContrast": {
+          "shadow": "rgba(5, 0, 73, 0.8) 0px 0px 0px 1px inset",
+          "color": "rgba(0, 0, 0, 0)",
+          "background": "rgba(0, 0, 0, 0)",
+          "pointer": "none"
+        },
+        "pageErrors": [],
+        "notTested": "Real OS IME/audio device and non-Chromium engines; no shell changes"
+      }
+    }
+  },
+  "requests": [
+    {
+      "path": "/graphql",
+      "operation": "GetCollaboratorMentionCandidates",
+      "variables": {
+        "rootSubjectKind": "agent",
+        "rootRunId": "probe-agent",
+        "focusedAgentRunId": "probe-agent"
+      }
+    },
+    {
+      "path": "/graphql",
+      "operation": "GetCollaboratorMentionCandidates",
+      "variables": {
+        "rootSubjectKind": "agent",
+        "rootRunId": "probe-agent",
+        "focusedAgentRunId": "probe-agent"
+      }
+    },
+    {
+      "path": "/graphql",
+      "operation": "GetCollaboratorMentionCandidates",
+      "variables": {
+        "rootSubjectKind": "agent",
+        "rootRunId": "probe-agent",
+        "focusedAgentRunId": "probe-agent"
+      }
+    },
+    {
+      "path": "/graphql",
+      "operation": "GetCollaboratorMentionCandidates",
+      "variables": {
+        "rootSubjectKind": "agent",
+        "rootRunId": "probe-agent",
+        "focusedAgentRunId": "probe-agent"
+      }
+    },
+    {
+      "path": "/rest/context-files/upload",
+      "bytes": 345,
+      "multipart": "multipart/form-data; boundary=----WebKitFormBoundarypYqt7akcwfXt1j9r",
+      "ownerPresent": true,
+      "contentPresent": true,
+      "filenamePresent": true
+    },
+    {
+      "path": "/graphql",
+      "operation": "GetCollaboratorMentionCandidates",
+      "variables": {
+        "rootSubjectKind": "agent",
+        "rootRunId": "probe-agent",
+        "focusedAgentRunId": "probe-agent"
+      }
+    },
+    {
+      "path": "/rest/context-files/upload",
+      "bytes": 345,
+      "multipart": "multipart/form-data; boundary=----WebKitFormBoundaryf20rBYz7CVa9AvOf",
+      "ownerPresent": true,
+      "contentPresent": true,
+      "filenamePresent": true
+    }
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "pid": 29421,
+      "exitCode": 0,
+      "signal": null
+    },
+    "http": "closed",
+    "page": "removed"
+  },
+  "url": "http://127.0.0.1:59866/api-e2e-composer-mention-discoverability",
+  "backend": "http://127.0.0.1:59865",
+  "nuxtPid": 29421,
+  "browser": "154.0.8037.98",
+  "finishedAt": "2026-10-09T05:38:43.804Z"
+}

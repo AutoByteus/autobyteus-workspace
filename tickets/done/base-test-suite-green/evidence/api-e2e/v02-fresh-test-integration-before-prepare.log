@@ -1,0 +1,15 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 test:integration /Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e/autobyteus-server-ts
+> node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration
+
+Integration test prerequisites are missing:
+  - autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js
+  - autobyteus-application-sdk-contracts/dist/index.js
+  - autobyteus-application-backend-sdk/dist/index.js
+  - autobyteus-application-frontend-sdk/dist/index.js
+  - autobyteus-application-devkit/dist/cli.js
+  - applications/brief-studio/dist/importable-package/applications/brief-studio/application.json
+Build them from the repository root with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1; 1s (cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green-apie2e; HOME=/tmp/apie2e-home-ySuWa0; cmd=pnpm -C autobyteus-server-ts test:integration)

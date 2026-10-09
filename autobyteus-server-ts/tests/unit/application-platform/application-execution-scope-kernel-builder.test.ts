@@ -119,6 +119,8 @@ const createHarness = (input: {
       autoByteus: {} as never,
       codex: {} as never,
       claude: {} as never,
+      antigravity: {} as never,
+      grok: {} as never,
     };
   });
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };

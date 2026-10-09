@@ -1,0 +1,28 @@
+.
+./agents
+./agents/MARKER.txt
+./apps
+./apps/MARKER.txt
+./definitions
+./definitions/MARKER.txt
+./server-data
+./server-data/agents
+./server-data/agents/MARKER.txt
+./server-data/applications
+./server-data/applications/MARKER.txt
+./server-data/db
+./server-data/db/MARKER.txt
+./server-data/db/production.db
+./server-data/memory
+./server-data/memory/MARKER.txt
+./skills
+./skills/MARKER.txt
+3df01d438e552954075deb5a99650a731156aea03744d85ecfb486e29ded0ef6  ./agents/MARKER.txt
+5094522e8dc2cbd6980940ac1edae257a3a17def2b709ff2887d905634452e72  ./apps/MARKER.txt
+58ac495ff230c89bf4568c3f846cbc4ce89f2c322617f2aaad2d6633d139cbc3  ./definitions/MARKER.txt
+21e0986ba486ba535463ecda6c924a63d6e69769177afe990a826be56fb528fb  ./server-data/agents/MARKER.txt
+0cbaaed0e420d60c4baa361f958645d2457f2d787a5aa0c88786b3f82fec266c  ./server-data/applications/MARKER.txt
+0b4121dace83e52c23f5bbf1c697a3ea3691524f466583f6952dc29484c268a8  ./server-data/db/MARKER.txt
+a7e847ab676020c37b1a5ac57e12c62a1ef3530e23f575ec7c51264bfad5b522  ./server-data/db/production.db
+756df86a5fa8cb5a235490487c8f6b72a3e5e83555b377d8b9a9caae2bc897d1  ./server-data/memory/MARKER.txt
+25533fd3970340d311569005df9fa36c3c66dc91eb721fcbfc868a996ea9f39a  ./skills/MARKER.txt

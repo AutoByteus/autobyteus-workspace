@@ -1,0 +1,40 @@
+{
+  "initial": {
+    "disabled": true,
+    "title": "Send message",
+    "header": "Context Files (0)",
+    "url": "#/chat"
+  },
+  "fileOnly": {
+    "disabled": true,
+    "title": "Send message",
+    "header": "Context Files (1)",
+    "url": "#/chat"
+  },
+  "afterEnterFileOnly": {
+    "disabled": true,
+    "title": "Send message",
+    "header": "Context Files (1)",
+    "url": "#/chat"
+  },
+  "whitespacePlusFile": {
+    "disabled": true,
+    "title": "Send message",
+    "header": "Context Files (1)",
+    "url": "#/chat"
+  },
+  "textPlusFile": {
+    "disabled": false,
+    "title": "Send message",
+    "header": "Context Files (1)",
+    "url": "#/chat"
+  },
+  "clearedText": {
+    "disabled": true,
+    "title": "Send message",
+    "header": "Context Files (1)",
+    "url": "#/chat"
+  }
+}
+
+[exited with code 144]

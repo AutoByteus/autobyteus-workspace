@@ -82,4 +82,8 @@ Team copies you delegated before this build keep their started members until the
 
 ## Outcome
 
-Awaiting user verification (AC-007) and the finalization/release decision.
+- User verification: "finalize and release a new beta" (`user-verification.md`)
+- Finalized: merge `9d28c1b17` on `origin/personal`. Ticket branch `codex/delegated-team-member-lazy-activation` pushed.
+- Released: **`v1.4.99-beta.5`** (release commit `ebf68c4af`). All 4 workflows succeeded on attempt 1. It is a GitHub pre-release; Docker images are `:1.4.99-beta.5` and `:beta`, and `:latest` is unchanged.
+- AC-007: the user checks it on the installed beta.5. After a Project Task Manager delegation, only the coordinator should be active.
+- Details: `release-deployment-report.md` (DR-002)

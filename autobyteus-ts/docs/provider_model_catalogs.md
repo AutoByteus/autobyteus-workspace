@@ -443,6 +443,18 @@ read per 1M tokens through 2026-12-31. The standard schedule effective
 3.7 is not a current catalog alias and stale selections require explicit
 reselection.
 
+`gemini-3.1-pro-preview` uses Google's official Global prices (Vertex Express
+bills at Global prices), checked on 2026-10-09, per 1M tokens. The tier is
+selected by prompt size:
+
+| Tier | Prompt size | Input | Cached-input read | Output (incl. reasoning) |
+| --- | --- | --- | --- | --- |
+| `prompt_le_200k` | ≤ 200,000 | 2.00 | 0.20 | 12.00 |
+| `prompt_gt_200k` | > 200,000 | 4.00 | 0.40 | 18.00 |
+
+These prices replaced the over-stated 2.25 / 0.225 / 18 and 4.50 / 0.45 / 27.
+Costs already captured at the old prices are not repriced.
+
 The server's catalog snapshot projects this curated row without a Gemini
 metadata credential lookup or HTTP request. Live AI Studio metadata enrichment
 is a separate explicit metadata capability and must not block static catalog

@@ -13,6 +13,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import type { AutoByteusAgentRunBackend } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 
@@ -124,9 +125,15 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     defaultToolRegistry.restore(toolRegistrySnapshot);
   });
 
+  // The factory's public contract: beginPreparation owns acquired resources until the backend is returned.
+  const prepareNewBackend = (config: AgentRunConfig, runId: string) =>
+    backendFactory.beginPreparation({ kind: "new", runId, config }).prepare() as Promise<AutoByteusAgentRunBackend>;
+  const prepareRestoredBackend = (context: AgentRunContext<null>) =>
+    backendFactory.beginPreparation({ kind: "restore", context }).prepare() as Promise<AutoByteusAgentRunBackend>;
+
   it("creates a live backend that can process a turn and terminate cleanly", async () => {
     const runId = "autobyteus_backend_agent_11111111111111111111111111111111";
-    const backend = await backendFactory.createBackend(
+    const backend = await prepareNewBackend(
       createPreparedConfig(runId),
       runId,
     );
@@ -143,7 +150,8 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     expect(agentFactory.getAgent(runId)?.context.state.memoryManager
       ?.getAutomaticCompactionConfiguration()).toMatchObject({
         kind: "enabled",
-        summarizer: expect.objectContaining({ summarize: expect.any(Function) }),
+        policy: expect.any(Object),
+        createCompressionStrategy: expect.any(Function),
       });
     expect(compactionLlmFactory).not.toHaveBeenCalled();
 
@@ -165,7 +173,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
   it("respects a preferred run id and provisions the standalone memory directory explicitly", async () => {
     const preferredRunId = "preferred_autobyteus_run_4242";
-    const backend = await backendFactory.createBackend(
+    const backend = await prepareNewBackend(
       createPreparedConfig(preferredRunId),
       preferredRunId,
     );
@@ -200,7 +208,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
   it("restores a terminated run with the same run id", async () => {
     const runId = "autobyteus_backend_agent_22222222222222222222222222222222";
-    const created = await backendFactory.createBackend(
+    const created = await prepareNewBackend(
       createPreparedConfig(runId),
       runId,
     );
@@ -217,7 +225,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     unsubscribeCreated();
     expect(terminateResult.accepted).toBe(true);
 
-    const restored = await backendFactory.restoreBackend(
+    const restored = await prepareRestoredBackend(
       new AgentRunContext({
         runId,
         config: new AgentRunConfig({
@@ -242,7 +250,8 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     expect(agentFactory.getAgent(runId)?.context.state.memoryManager
       ?.getAutomaticCompactionConfiguration()).toMatchObject({
         kind: "enabled",
-        summarizer: expect.objectContaining({ summarize: expect.any(Function) }),
+        policy: expect.any(Object),
+        createCompressionStrategy: expect.any(Function),
       });
     expect(compactionLlmFactory).not.toHaveBeenCalled();
 
@@ -258,7 +267,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
 
   it("rejects fresh create when the standalone run is not fully prepared", async () => {
     await expect(
-      backendFactory.createBackend(
+      prepareNewBackend(
         new AgentRunConfig({
           agentDefinitionId: "def-autobyteus-backend",
           llmModelIdentifier: "dummy-model",

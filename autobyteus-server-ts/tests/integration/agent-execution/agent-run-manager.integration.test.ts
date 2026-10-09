@@ -1,5 +1,6 @@
 import { createRecordingAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
+import { testBackendFactory } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -44,6 +45,8 @@ const createBackend = (input: {
   const backend: AgentRunBackend = {
     runId: input.runId,
     runtimeKind: input.runtimeKind,
+    inputCapabilities: { kind: "start_only" },
+    compactionRecovery: { kind: "unsupported" },
     getContext: () => context,
     isActive: () => state.active,
     getPlatformAgentRunId: () => state.platformAgentRunId,
@@ -68,7 +71,18 @@ const createBackend = (input: {
   };
 };
 
-const createFactory = (backend: AgentRunBackend): AgentRunBackendFactory => ({
+type ObservedBackendFactory = AgentRunBackendFactory & {
+  createBackend: ReturnType<typeof vi.fn>;
+  restoreBackend: ReturnType<typeof vi.fn>;
+};
+
+/** Current beginPreparation factory; createBackend/restoreBackend are test observations of the request kind. */
+const observedFactory = (definitions: {
+  createBackend: ReturnType<typeof vi.fn>;
+  restoreBackend: ReturnType<typeof vi.fn>;
+}): ObservedBackendFactory => ({ ...definitions, ...testBackendFactory(definitions) });
+
+const createFactory = (backend: AgentRunBackend): ObservedBackendFactory => observedFactory({
   createBackend: vi.fn().mockResolvedValue(backend),
   restoreBackend: vi.fn().mockResolvedValue(backend),
 });
@@ -121,10 +135,7 @@ describe("AgentRunManager integration", () => {
         : runtimeKind === RuntimeKind.CODEX_APP_SERVER
           ? "run-codex"
           : "run-claude";
-    const candidate = await manager.prepareNewAgentRun({
-      config: createConfig(runtimeKind),
-      runId: expectedRunId,
-    });
+    const candidate = await manager.beginActivation({ kind: "new", runId: expectedRunId, config: createConfig(runtimeKind) }).prepare();
     const run = candidate.commitPublication();
 
     expect(run.runtimeKind).toBe(runtimeKind);
@@ -165,7 +176,7 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: claude,
     });
 
-    const candidate = await manager.prepareRestoreAgentRun(restoredContext);
+    const candidate = await manager.beginActivation({ kind: "restore", context: restoredContext }).prepare();
     const run = candidate.commitPublication();
 
     expect(run.runId).toBe(restoredContext.runId);
@@ -176,7 +187,7 @@ describe("AgentRunManager integration", () => {
   });
 
   it("restores Claude platform state with auto approval separate from provider permission mode", async () => {
-    const claude = {
+    const claude = observedFactory({
       createBackend: vi.fn(),
       restoreBackend: vi.fn(async (context: AgentRunContext<unknown | null>) =>
         createBackend({
@@ -186,7 +197,7 @@ describe("AgentRunManager integration", () => {
           platformAgentRunId: "claude-session-restored",
         }).backend,
       ),
-    };
+    });
     const manager = createManager({
       agentToolMcpRunSessionDeactivator: createRecordingAgentToolMcpRunSessionDeactivator().deactivator,
       autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
@@ -194,11 +205,12 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: claude,
     });
 
-    const candidate = await manager.prepareRestoreAgentRunFromPlatformState({
+    const candidate = await manager.beginActivation({
+      kind: "platform_restore",
       runId: "run-restore-claude-platform",
       config: createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
       platformAgentRunId: "claude-session-restored",
-    });
+    }).prepare();
     candidate.commitPublication();
 
     const restoredContext = claude.restoreBackend.mock.calls[0]?.[0] as AgentRunContext<any>;
@@ -216,15 +228,15 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const candidate = await manager.prepareNewAgentRun({
-      config: createConfig(RuntimeKind.AUTOBYTEUS),
-      runId: "run-active",
-    });
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-active", config: createConfig(RuntimeKind.AUTOBYTEUS) }).prepare();
     const run = candidate.commitPublication();
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
     active.state.active = false;
     expect(manager.getActiveRun(run.runId)).toBeNull();
+    // An inactive run leaves the active set but stays listed until its exact release (fccd1a009).
+    expect(manager.listActiveRuns()).toEqual([run.runId]);
+    await manager.releaseRetiredRun(run.runId);
     expect(manager.listActiveRuns()).toEqual([]);
   });
 
@@ -240,10 +252,7 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const candidate = await manager.prepareNewAgentRun({
-      config: createConfig(RuntimeKind.CODEX_APP_SERVER),
-      runId: "run-terminate-ok",
-    });
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-terminate-ok", config: createConfig(RuntimeKind.CODEX_APP_SERVER) }).prepare();
     const run = candidate.commitPublication();
     const success = await manager.terminateAgentRun(run.runId);
 
@@ -269,10 +278,7 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(created.backend),
     });
 
-    const candidate = await manager.prepareNewAgentRun({
-      config: createConfig(RuntimeKind.CLAUDE_AGENT_SDK),
-      runId: "run-terminate-no",
-    });
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-terminate-no", config: createConfig(RuntimeKind.CLAUDE_AGENT_SDK) }).prepare();
     const run = candidate.commitPublication();
 
     await expect(manager.terminateAgentRun("missing-run")).resolves.toBe(false);
@@ -293,10 +299,7 @@ describe("AgentRunManager integration", () => {
       claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    const candidate = await manager.prepareNewAgentRun({
-      config: createConfig(RuntimeKind.AUTOBYTEUS),
-      runId: "run-terminate-error",
-    });
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-terminate-error", config: createConfig(RuntimeKind.AUTOBYTEUS) }).prepare();
     const run = candidate.commitPublication();
 
     await expect(manager.terminateAgentRun(run.runId)).rejects.toThrow(AgentTerminationError);
@@ -317,7 +320,9 @@ describe("AgentRunManager integration", () => {
       runtimeContext: null,
     });
 
-    await expect(manager.prepareNewAgentRun({ config, runId: "unsupported-run" })).rejects.toThrow(AgentCreationError);
-    await expect(manager.prepareRestoreAgentRun(context)).rejects.toThrow(AgentCreationError);
+    await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "new", runId: "unsupported-run", config }).prepare()))
+      .rejects.toThrow(AgentCreationError);
+    await expect(Promise.resolve().then(() => manager.beginActivation({ kind: "restore", context }).prepare()))
+      .rejects.toThrow(AgentCreationError);
   });
 });

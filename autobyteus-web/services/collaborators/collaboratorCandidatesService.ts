@@ -4,6 +4,15 @@ import { getApolloClient } from '~/utils/apolloClient'
 
 export type CollaboratorRootKind = 'agent' | 'agent_team' | 'agent_org'
 
+/**
+ * Whose `@` candidates: a Team or Org root answers per root; an Agent root answers for one
+ * focused agent (the host never offers itself, every other agent of the run is offered the host).
+ */
+export type CollaboratorCandidateSubject = Readonly<
+  | { rootKind: 'agent'; rootRunId: string; focusedAgentRunId: string }
+  | { rootKind: 'agent_team' | 'agent_org'; rootRunId: string }
+>
+
 /** One `@` option; the server decides what is offered (shared, not built-in, not in the run). */
 export type CollaboratorMentionCandidate = Readonly<
   | { kind: 'agent'; definitionId: string; name: string; description: string }
@@ -32,7 +41,11 @@ type CandidatesPayload = {
   } | null
 }
 
-const keyOf = (rootKind: CollaboratorRootKind, rootRunId: string): string => `${rootKind}:${rootRunId}`
+const rootKeyOf = (rootKind: CollaboratorRootKind, rootRunId: string): string => `${rootKind}:${rootRunId}`
+const FOCUSED_SEPARATOR = '|'
+const keyOf = (subject: CollaboratorCandidateSubject): string => subject.rootKind === 'agent'
+  ? `${rootKeyOf(subject.rootKind, subject.rootRunId)}${FOCUSED_SEPARATOR}${subject.focusedAgentRunId}`
+  : rootKeyOf(subject.rootKind, subject.rootRunId)
 const cache = shallowReactive(new Map<string, CollaboratorCandidateEntry>())
 const inFlight = new Map<string, Promise<void>>()
 
@@ -49,14 +62,18 @@ const toCandidate = (raw: NonNullable<CandidatesPayload['collaboratorMentionCand
   return null
 }
 
-const fetchCandidates = async (rootKind: CollaboratorRootKind, rootRunId: string): Promise<void> => {
-  const key = keyOf(rootKind, rootRunId)
+const fetchCandidates = async (subject: CollaboratorCandidateSubject): Promise<void> => {
+  const key = keyOf(subject)
   const previous = cache.get(key)
   cache.set(key, Object.freeze({ status: 'loading', candidates: previous?.candidates ?? [], available: previous?.available ?? true }))
   try {
     const result = await getApolloClient().query<CandidatesPayload>({
       query: GetCollaboratorMentionCandidates,
-      variables: { rootSubjectKind: rootKind, rootRunId },
+      variables: {
+        rootSubjectKind: subject.rootKind,
+        rootRunId: subject.rootRunId,
+        focusedAgentRunId: subject.rootKind === 'agent' ? subject.focusedAgentRunId : null,
+      },
       fetchPolicy: 'network-only',
     })
     if (result.errors?.length) throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '))
@@ -74,26 +91,33 @@ const fetchCandidates = async (rootKind: CollaboratorRootKind, rootRunId: string
 }
 
 /**
- * The `@` menu's candidate list per root. The server's candidate policy is the only authority;
- * the list is refreshed whenever the menu opens and when a collaborator is added to the root.
+ * The `@` menu's candidate list per subject (a Team or Org root, or one focused agent of an Agent
+ * root). The server's candidate policy is the only authority; the list is refreshed whenever the
+ * menu opens and when a collaborator is added to the root.
  */
 export const collaboratorCandidatesService = Object.freeze({
-  entry(rootKind: CollaboratorRootKind, rootRunId: string): CollaboratorCandidateEntry | null {
-    return cache.get(keyOf(rootKind, rootRunId)) ?? null
+  entry(subject: CollaboratorCandidateSubject): CollaboratorCandidateEntry | null {
+    return cache.get(keyOf(subject)) ?? null
   },
 
-  refresh(rootKind: CollaboratorRootKind, rootRunId: string): Promise<void> {
-    const key = keyOf(rootKind, rootRunId)
+  refresh(subject: CollaboratorCandidateSubject): Promise<void> {
+    const key = keyOf(subject)
     const pending = inFlight.get(key)
     if (pending) return pending
-    const attempt = fetchCandidates(rootKind, rootRunId).finally(() => inFlight.delete(key))
+    const attempt = fetchCandidates(subject).finally(() => inFlight.delete(key))
     inFlight.set(key, attempt)
     return attempt
   },
 
-  /** A collaborator was added (or the run changed): the next menu open fetches again. */
+  /**
+   * A collaborator was added (or the run changed): the next menu open fetches again, for every
+   * focused agent of the root.
+   */
   invalidate(rootKind: CollaboratorRootKind, rootRunId: string): void {
-    cache.delete(keyOf(rootKind, rootRunId))
+    const rootKey = rootKeyOf(rootKind, rootRunId)
+    for (const key of [...cache.keys()]) {
+      if (key === rootKey || key.startsWith(`${rootKey}${FOCUSED_SEPARATOR}`)) cache.delete(key)
+    }
   },
 
   /** Test support. */

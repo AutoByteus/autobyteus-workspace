@@ -141,17 +141,21 @@ describe("ApplicationPlatformLifecycle", () => {
         } as never,
       });
       const layout = storageLifecycleService.getStorageLayout("selected-app");
-      const acquireClient = vi.fn(async (workspaceRootPath: string) => {
-        expect(workspaceRootPath).toBe(layout.runtimeDir);
-        expect((await fs.stat(workspaceRootPath)).isDirectory()).toBe(true);
-        return {
-          request: vi.fn(async () => ({ requiresOpenaiAuth: false })),
-        };
+      const acquire = vi.fn();
+      const release = vi.fn(async () => undefined);
+      const beginAcquire = vi.fn((workspaceRootPath: string) => {
+        acquire.mockImplementation(async () => {
+          expect(workspaceRootPath).toBe(layout.runtimeDir);
+          expect((await fs.stat(workspaceRootPath)).isDirectory()).toBe(true);
+          return {
+            request: vi.fn(async () => ({ requiresOpenaiAuth: false })),
+          };
+        });
+        return { acquire, release };
       });
-      const releaseClient = vi.fn(async () => undefined);
       const credentialReadiness = new ApplicationProviderCredentialReadinessAdapter({
         llmProviderService: { getProviderCredentialSetting: vi.fn() } as never,
-        codexClientManager: { acquireClient, releaseClient } as never,
+        codexClientManager: { beginAcquire } as never,
       });
       dependencies.storageLifecycleService = storageLifecycleService as never;
       dependencies.preparation.definitionRuntimeReadiness.prepare = vi.fn(async () => {
@@ -173,8 +177,9 @@ describe("ApplicationPlatformLifecycle", () => {
       expect(
         dependencies.preparation.definitionRuntimeReadiness.prepare,
       ).toHaveBeenCalledTimes(1);
-      expect(acquireClient).toHaveBeenCalledExactlyOnceWith(layout.runtimeDir);
-      expect(releaseClient).toHaveBeenCalledExactlyOnceWith(layout.runtimeDir);
+      expect(beginAcquire).toHaveBeenCalledExactlyOnceWith(layout.runtimeDir);
+      expect(acquire).toHaveBeenCalledTimes(1);
+      expect(release).toHaveBeenCalledTimes(1);
     } finally {
       await fs.rm(tempRoot, { recursive: true, force: true });
     }

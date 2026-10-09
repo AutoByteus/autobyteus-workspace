@@ -39,6 +39,9 @@ const APPROVAL_STEP_TIMEOUT_MS = Number(
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/** The manager reports each session to its preparation owner; these tests close sessions through the manager. */
+const ownTestSession = (): void => undefined;
+
 const waitFor = async (
   predicate: () => Promise<boolean> | boolean,
   timeoutMs = FLOW_TEST_TIMEOUT_MS,
@@ -196,6 +199,7 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
           enabledTools: ["send_message_to"],
         },
       })),
+      deactivateForRun: vi.fn(),
     };
     const manager = new ClaudeSessionManager(
       activator,
@@ -212,7 +216,7 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
       workspaceRoot: "/tmp",
       autoExecuteTools: false,
       toolNames: ["send_message_to"],
-    }));
+    }), ownTestSession);
     const events: ClaudeSessionEvent[] = [];
     session.subscribeRuntimeEvents((event) => events.push(event));
 
@@ -222,7 +226,7 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
     await waitForTurnSettlement(events);
 
     expect(activator.activateForRun).toHaveBeenCalledTimes(1);
-    expect(sdkClient.openStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
+    expect(sdkClient.acquireStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
       mcpServers: {
         autobyteus_agent_tools: {
           type: "http",
@@ -278,6 +282,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           workspaceRoot,
           autoExecuteTools: true,
         }),
+        ownTestSession,
       );
 
       const events: ClaudeSessionEvent[] = [];
@@ -333,6 +338,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           workspaceRoot,
           autoExecuteTools: true,
         }),
+        ownTestSession,
       );
 
       const firstPromptToken = `first-${randomUUID()}`;
@@ -367,6 +373,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           autoExecuteTools: true,
         }),
         sessionId!,
+        ownTestSession,
       );
 
       const secondPromptToken = `second-${randomUUID()}`;
@@ -429,6 +436,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             workspaceRoot,
             autoExecuteTools: false,
           }),
+          ownTestSession,
         );
 
         const targetFileName = `test-${attempt}.txt`;
@@ -574,6 +582,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             workspaceRoot,
             autoExecuteTools: false,
           }),
+          ownTestSession,
         );
 
         const targetFileName = `deny-${attempt}.txt`;
@@ -708,6 +717,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             workspaceRoot,
             autoExecuteTools: true,
           }),
+          ownTestSession,
         );
 
         const targetFileName = `autoexec-${attempt}.txt`;
@@ -819,6 +829,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             workspaceRoot,
             autoExecuteTools: false,
           }),
+          ownTestSession,
         );
 
         const targetFilePath = path.join(workspaceRoot, `interrupt-${attempt}.txt`);
@@ -915,6 +926,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             workspaceRoot,
             autoExecuteTools: false,
           }),
+          ownTestSession,
         );
 
         const targetFilePath = path.join(workspaceRoot, `terminate-${attempt}.txt`);
@@ -997,6 +1009,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           workspaceRoot,
           autoExecuteTools: true,
         }),
+        ownTestSession,
       );
 
       const targetFilePath = path.join(workspaceRoot, "resume-tool.txt");
@@ -1036,6 +1049,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           autoExecuteTools: true,
         }),
         sessionId!,
+        ownTestSession,
       );
 
       const followupToken = `followup-${randomUUID()}`;

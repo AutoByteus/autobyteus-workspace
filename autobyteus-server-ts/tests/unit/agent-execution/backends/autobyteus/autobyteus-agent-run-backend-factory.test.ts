@@ -77,11 +77,8 @@ const createMemberExecutionContext = (
 ) => {
   const taskCommands = Object.freeze({
     root: createTeamRootExecutionIdentity("team-1"),
-    delegateTask: vi.fn(async () => ({
-      task_id: "task_0008",
-      status: "active" as const,
-      target_agent_run_id: "run-reviewer",
-    })),
+    delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" }, taskId: "task_0008" })),
+    assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
     submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
     reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
   });
@@ -659,9 +656,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     };
     const taskCommands = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
-      delegateTask: vi.fn(async () => ({
-        target_agent_run_id: "run-reviewer", target_kind: "agent",
-      })),
+      delegateToNewCopy: vi.fn(async () => ({ delegated: true as const, copy: { kind: "agent" as const, agentRunId: "run-reviewer" } })),
+      assignToExistingCopy: vi.fn(async () => ({ delegated: false as const, message: "unused" })),
     });
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
@@ -744,7 +740,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       recipient_address: "/reviewer",
       description: "Review the exact task result.",
     });
-    expect(taskCommands.delegateTask).toHaveBeenCalledWith(
+    expect(taskCommands.delegateToNewCopy).toHaveBeenCalledWith(
       {
         root: createTeamRootExecutionIdentity("team-1"),
         memberAddress: "/professor",

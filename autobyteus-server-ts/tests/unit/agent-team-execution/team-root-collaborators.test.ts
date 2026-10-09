@@ -25,8 +25,8 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     const events: TeamRunEvent[] = [];
     f.root.subscribeToEvents(({ event }) => events.push(event));
     await expect(mentionBoth(f.root)).resolves.toEqual({ admitted: true, collaborators: [
-      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: false },
-      { name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false },
+      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
     ] });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toEqual([]);
     expect((await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!.rootTeam.collaborators).toEqual([]);
@@ -42,8 +42,8 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     const events: TeamRunEvent[] = [];
     f.root.subscribeToEvents(({ event }) => events.push(event));
     const [reviewerResult, productResult] = await bringInBoth(f.root);
-    expect(reviewerResult).toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: false }] });
-    expect(productResult).toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false }] });
+    expect(reviewerResult).toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" }] });
+    expect(productResult).toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" }] });
     // `@` now resolves to the in-run collaborator addresses and adds nothing more.
     await expect(mentionBoth(f.root)).resolves.toMatchObject({ admitted: true });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toHaveLength(2);
@@ -105,10 +105,10 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     await bringInBoth(f.root);
     const { product, lead } = entriesOf(f.root);
     const coordinator = { identity: f.identity("/coordinator", "run-coordinator") };
-    await expect(f.root.delegateTask(coordinator, { recipient_address: "/code_reviewer", description: "Review too" }))
-      .resolves.toMatchObject({ target_agent_run_id: "code-reviewer-run-4" });
-    await expect(f.root.delegateTask({ identity: f.identity("/product_team/lead", lead.agentRunId) }, { recipient_address: "/product_team/designer", description: "Mock it" }))
-      .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
+    await expect(f.root.delegateToNewCopy(coordinator, { recipient_address: "/code_reviewer", description: "Review too" }))
+      .resolves.toMatchObject({ delegated: true, copy: { agentRunId: "code-reviewer-run-4" } });
+    await expect(f.root.delegateToNewCopy({ identity: f.identity("/product_team/lead", lead.agentRunId) }, { recipient_address: "/product_team/designer", description: "Mock it" }))
+      .resolves.toMatchObject({ delegated: true, copy: { agentRunId: "designer-run-5" } });
     await flushMicrotasks();
     const tree = f.root.getExecutionTreeSnapshot();
     expect(tree.rootTeam.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);

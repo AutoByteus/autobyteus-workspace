@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import { ChangeType } from "../../../src/file-explorer/file-system-changes.js";
-import { FileExplorer } from "../../../src/file-explorer/file-explorer.js";
+import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 
 const createTempWorkspace = async (): Promise<string> => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-"));
@@ -12,13 +12,13 @@ const createTempWorkspace = async (): Promise<string> => {
   return base;
 };
 
-describe("FileExplorer integration", () => {
+describe("WorkspaceFileExplorer integration", () => {
   let workspace: string;
-  let explorer: FileExplorer;
+  let explorer: WorkspaceFileExplorer;
 
   beforeEach(async () => {
     workspace = await createTempWorkspace();
-    explorer = new FileExplorer(workspace);
+    explorer = new WorkspaceFileExplorer(workspace);
     await explorer.buildWorkspaceDirectoryTree();
   });
 

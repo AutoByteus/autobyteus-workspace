@@ -151,9 +151,9 @@ const findInResult = (payload: Record<string, unknown>, key: string): unknown =>
   };
   return visit(payload.result ?? payload.error ?? null, 0);
 };
-/** The `target_agent_run_id` a delegate_task result carries, or null. */
+/** The ingress a delegate_task result names (an Agent copy, or a Team copy's coordinator), or null. */
 const delegatedRunId = (payload: Record<string, unknown>): string | null => {
-  const runId = findInResult(payload, "target_agent_run_id");
+  const runId = findInResult(payload, "target_agent_run_id") ?? findInResult(payload, "target_team_coordinator_agent_run_id");
   return typeof runId === "string" && runId ? runId : null;
 };
 const rejected = (message: WsMessage): boolean => message.type === "TOOL_EXECUTION_FAILED" || findInResult(message.payload, "accepted") === false;
@@ -226,10 +226,11 @@ describeLive("Standalone Agent collaborators on real runtimes (SR-010)", () => {
     (await gql<{ getRunProjection: { conversation: ConversationEntry[] } }>(
       "query($runId: String!) { getRunProjection(runId: $runId) { conversation } }", { runId })).getRunProjection.conversation;
 
-  const candidates = async (runId: string) =>
+  /** The host composer's `@` candidates (the focused agent is the host). */
+  const candidates = async (runId: string, focusedAgentRunId: string = runId) =>
     (await gql<{ collaboratorMentionCandidates: { availability: string; candidates: Array<{ kind: string; definitionId: string; name: string }> } }>(
-      `query($k: String!, $id: String!) { collaboratorMentionCandidates(rootSubjectKind: $k, rootRunId: $id) {
-        availability candidates { kind definitionId name } } }`, { k: "agent", id: runId })).collaboratorMentionCandidates;
+      `query($k: String!, $id: String!, $f: String) { collaboratorMentionCandidates(rootSubjectKind: $k, rootRunId: $id, focusedAgentRunId: $f) {
+        availability candidates { kind definitionId name } } }`, { k: "agent", id: runId, f: focusedAgentRunId })).collaboratorMentionCandidates;
 
   const openSocket = async (urlPath: string): Promise<Connection> => {
     const socket = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}${urlPath}`);

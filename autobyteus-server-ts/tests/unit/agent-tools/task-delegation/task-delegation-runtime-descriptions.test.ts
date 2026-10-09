@@ -15,6 +15,8 @@ import {
   DELEGATE_TASK_LLM_DESCRIPTION,
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
   DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
+  DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION,
+  DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
 } from "../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 const findParameter = (schema: ParameterSchema, name: string) =>
@@ -38,17 +40,15 @@ describe("task delegation runtime descriptions", () => {
     expect(JSON.stringify(TASK_DELEGATION_TOOL_MANIFEST)).not.toMatch(/submit_task_result|review_task_result/);
   });
 
-  it("describes delegate_task as a spawn followed by send_message_to (AC-016)", () => {
+  it("describes delegate_task as a spawn by address or an assignment to an existing copy by its own ID (AC-015)", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toBe(DELEGATE_TASK_LLM_DESCRIPTION);
-    // REQ-009: delegate_task always spawns a new copy; follow up by run ID.
-    expect(delegateEntry.description).toMatch(/Spawn one new copy of an Agent or AgentTeam/);
-    expect(delegateEntry.description).toContain("Every call spawns another copy");
+    expect(delegateEntry.description).toContain("With an address, every call spawns\nanother copy");
     expect(delegateEntry.description).toContain("available agent or team");
     expect(delegateEntry.description).toContain("recipient_address");
-    expect(delegateEntry.description).toContain("first message");
-    expect(delegateEntry.description).toContain("target_agent_run_id is null");
-    expect(delegateEntry.description).toContain("only by its run ID through send_message_to");
+    expect(delegateEntry.description).toContain("target_team_run_id or target_agent_run_id");
+    expect(delegateEntry.description).toContain("On failure delegated is false");
+    expect(delegateEntry.description).not.toMatch(/always spawns|target_agent_run_id is null/);
     expect(delegateEntry.description).not.toMatch(/submit_task_result|review_task_result|task lifecycle/i);
     expect(delegateEntry.description).not.toContain("./");
     expect(delegateEntry.description).not.toContain("direct child");
@@ -59,23 +59,27 @@ describe("task delegation runtime descriptions", () => {
     const delegateSchema = buildDelegateTaskParameterSchema();
     expect(delegateSchema.parameters.map((parameter) => parameter.name)).toEqual([
       "recipient_address",
+      "target_team_run_id",
+      "target_agent_run_id",
       "task_id",
       "description",
       "reference_files",
     ]);
     expect(findParameter(delegateSchema, "tasks")).toBeUndefined();
     expect(findParameter(delegateSchema, "target")).toBeUndefined();
-    expect(findParameter(delegateSchema, "recipient_address")?.required).toBe(true);
+    // One mode needs no address (an existing copy by its own ID): no parameter is required by itself.
+    expect(delegateSchema.parameters.every((parameter) => parameter.required === false)).toBe(true);
     expect(findParameter(delegateSchema, "recipient_address")?.description).toBe(
       EXPECTED_RECIPIENT_ADDRESS_DESCRIPTION,
     );
-    expect(findParameter(delegateSchema, "target_agent_run_id")).toBeUndefined();
+    expect(findParameter(delegateSchema, "target_team_run_id")?.description).toBe(DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION);
+    expect(findParameter(delegateSchema, "target_agent_run_id")?.description).toBe(DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION);
     const delegateDescription = findParameter(delegateSchema, "description")?.description ?? "";
     expect(delegateDescription).toBe(DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION);
     expect(delegateDescription).toContain("Complete ready-to-run work description");
     expect(delegateDescription).toContain("objective");
     expect(delegateDescription).toContain("done conditions");
-    expect(delegateDescription).toContain("delegate_task itself delivers this as the new instance's first message");
+    expect(delegateDescription).toContain("delegate_task itself delivers this as the new copy's first message");
     expect(delegateDescription).toContain("do not resend it with send_message_to");
     const delegateReferenceDescription = findParameter(delegateSchema, "reference_files")?.description ?? "";
     expect(delegateReferenceDescription.toLowerCase()).toContain("absolute local file paths");
@@ -111,14 +115,13 @@ describe("task delegation runtime descriptions", () => {
     expect(mcpDefinition?.inputSchema).toMatchObject({
       type: "object",
       additionalProperties: false,
-      required: ["recipient_address"],
       properties: {
-        recipient_address: {
-          type: "string",
-          description: EXPECTED_RECIPIENT_ADDRESS_DESCRIPTION,
-        },
+        recipient_address: { type: "string", description: EXPECTED_RECIPIENT_ADDRESS_DESCRIPTION },
+        target_team_run_id: { type: "string", description: DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION },
+        target_agent_run_id: { type: "string", description: DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION },
       },
     });
+    expect((mcpDefinition?.inputSchema as { required?: string[] }).required ?? []).toEqual([]);
 
     const publicCopy = JSON.stringify({
       native: nativeSchema.toJsonSchema(),
@@ -129,7 +132,7 @@ describe("task delegation runtime descriptions", () => {
     expect(publicCopy).toContain("target_agent_run_id");
   });
 
-  it("publishes the delegate_task MCP output schema as the spawn-result union; success may carry the created task_id (AC-019, REQ-004)", () => {
+  it("publishes the delegate_task MCP output schema as the explicit-ID union; success may carry the created task_id (AC-001, REQ-001)", () => {
     const provider = new TaskDelegationToolsMcpAdapterProvider({} as never);
     const catalog = new AgentToolMcpCatalog({ adapters: provider.getAdapters() });
     const [mcpDefinition] = catalog.listMcpToolsForSession({
@@ -140,25 +143,33 @@ describe("task delegation runtime descriptions", () => {
     } as never, "2025-06-18");
     const outputSchema = mcpDefinition?.outputSchema as { type: string; anyOf: Array<Record<string, unknown>> };
     expect(outputSchema.type).toBe("object");
-    expect(outputSchema.anyOf).toHaveLength(2);
-    const [success, notStarted] = outputSchema.anyOf;
-    expect(success).toMatchObject({
+    expect(outputSchema.anyOf).toHaveLength(3);
+    const [agentCopy, teamCopy, notDelegated] = outputSchema.anyOf;
+    expect(agentCopy).toMatchObject({
       type: "object",
       additionalProperties: false,
-      required: ["target_agent_run_id", "target_kind"],
-      properties: { target_agent_run_id: { type: "string", minLength: 1 }, target_kind: { type: "string", enum: ["agent", "team"] },
+      required: ["delegated", "target_kind", "target_agent_run_id"],
+      properties: { delegated: { const: true }, target_kind: { const: "agent" }, target_agent_run_id: { type: "string", minLength: 1 },
         task_id: { type: "string", minLength: 1 } },
     });
-    expect(Object.keys(success!.properties as object)).toEqual(["target_agent_run_id", "target_kind", "task_id"]);
-    expect(notStarted).toMatchObject({
+    expect(Object.keys(agentCopy!.properties as object)).toEqual(["delegated", "target_kind", "target_agent_run_id", "task_id"]);
+    expect(teamCopy).toMatchObject({
       type: "object",
       additionalProperties: false,
-      required: ["target_agent_run_id", "message"],
-      properties: { target_agent_run_id: { type: "null" }, message: { type: "string", minLength: 1 } },
+      required: ["delegated", "target_kind", "target_team_run_id", "target_team_coordinator_agent_run_id"],
+      properties: { delegated: { const: true }, target_kind: { const: "team" }, target_team_run_id: { type: "string", minLength: 1 },
+        target_team_coordinator_agent_run_id: { type: "string", minLength: 1 }, task_id: { type: "string", minLength: 1 } },
+    });
+    // DEC-008: a Team result carries no ambiguous target_agent_run_id.
+    expect(Object.keys(teamCopy!.properties as object)).not.toContain("target_agent_run_id");
+    expect(notDelegated).toMatchObject({
+      type: "object",
+      additionalProperties: false,
+      required: ["delegated", "message"],
+      properties: { delegated: { const: false }, message: { type: "string", minLength: 1 } },
     });
     // task_id is only an optional success field; no Task status or failed-start Task identity.
-    expect(success!.required).toEqual(["target_agent_run_id", "target_kind"]);
-    expect(JSON.stringify(notStarted)).not.toMatch(/task_id/);
+    expect(JSON.stringify(notDelegated)).not.toMatch(/task_id|target_/);
     expect(JSON.stringify(outputSchema)).not.toMatch(/"status"/);
   });
 
@@ -185,7 +196,7 @@ describe("task delegation runtime descriptions", () => {
 
   it("executes MCP task tools only from the authenticated Team-member capability", async () => {
     const delegateTask = vi.fn(async (): Promise<Record<string, unknown>> => ({
-      target_agent_run_id: "run-worker", target_kind: "agent",
+      delegated: true, target_kind: "agent", target_agent_run_id: "run-worker",
     }));
     const provider = new TaskDelegationToolsMcpAdapterProvider({ delegateTask } as never);
     const adapter = provider.getAdapters().find(
@@ -216,7 +227,7 @@ describe("task delegation runtime descriptions", () => {
       result: {
         content: [{ type: "text" }],
         structuredContent: {
-          target_agent_run_id: "run-worker", target_kind: "agent",
+          delegated: true, target_kind: "agent", target_agent_run_id: "run-worker",
         },
       },
     });
@@ -226,7 +237,7 @@ describe("task delegation runtime descriptions", () => {
     );
 
     delegateTask.mockResolvedValueOnce({
-      target_agent_run_id: null,
+      delegated: false,
       message: "Task activation failed.",
     });
     const notStarted = await adapter.execute({
@@ -247,7 +258,7 @@ describe("task delegation runtime descriptions", () => {
       kind: "mcp_tool_result",
       result: {
         structuredContent: {
-          target_agent_run_id: null,
+          delegated: false,
           message: "Task activation failed.",
         },
       },
@@ -256,11 +267,11 @@ describe("task delegation runtime descriptions", () => {
     expect(JSON.parse(String(notStarted.result.content[0]?.text))).toEqual(
       notStarted.result.structuredContent,
     );
-    expect(delegateTask).toHaveBeenCalledWith(taskDelegation, {
+    expect(delegateTask).toHaveBeenCalledWith(taskDelegation, { subject: "new_copy", input: {
       recipient_address: "/worker",
       description: "Perform the bounded work.",
       reference_files: [],
-    });
+    } });
 
     const rejected = await adapter.execute({
       session: {

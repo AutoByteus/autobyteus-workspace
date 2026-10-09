@@ -54,7 +54,9 @@ class SyntheticPrismaClient {
 }`;
 
 const esmLoaderSource = `
-const mockSource = ${JSON.stringify(`${mockStateBody}\nexport { SyntheticPrismaClient as PrismaClient };\nexport const Prisma = { ModelName: {} };`)};
+// Mirrors a CommonJS-generated @prisma/client peer seen from ESM: module.exports is the
+// default export (which repository_prisma 1.0.10 consumes), plus the detected named exports.
+const mockSource = ${JSON.stringify(`${mockStateBody}\nconst Prisma = { ModelName: {} };\nexport { SyntheticPrismaClient as PrismaClient, Prisma };\nexport default { PrismaClient: SyntheticPrismaClient, Prisma };`)};
 const mockUrl = \`data:text/javascript,\${encodeURIComponent(mockSource)}\`;
 export async function resolve(specifier, context, nextResolve) {
   if (specifier === '@prisma/client') return { url: mockUrl, shortCircuit: true };
@@ -196,8 +198,8 @@ describe('repository_prisma installed package policy', () => {
     return JSON.parse(output) as ProbeResult;
   };
 
-  it('installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code', () => {
-    expect(manifest.version).toBe('1.0.9');
+  it('installs exact unpatched 1.0.10 entrypoints without dotenv acquisition code', () => {
+    expect(manifest.version).toBe('1.0.10');
     expect(manifest.dependencies).not.toHaveProperty('dotenv');
     for (const entrypoint of Object.values(entrypoints)) {
       expect(path.isAbsolute(entrypoint)).toBe(true);

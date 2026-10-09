@@ -15,7 +15,7 @@ import { TeamCommunicationV1Store } from "../../../src/services/team-communicati
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
 import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
-import { address, testAgentNode, testAgentTeamNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
@@ -197,11 +197,12 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
       createdAt: "2026-08-15T00:00:00.000Z",
       children: [testAgentNode("/Teacher", { agentRunId: "teacher-run" })],
     }), "task-writer-run");
-    await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "writer-root", ancestorTeamRunIds: [] }), tree);
+    await writeCurrentTeamRunPackage(layout.getTeamDirPath({ rootTeamRunId: "writer-root", ancestorTeamRunIds: [] }), tree);
   });
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    resetRootRunPackageReadinessIndex(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
@@ -228,16 +229,20 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
     expect(page.entries[0]?.memberTargets.map((member) => member.agentRunId)).toEqual(["teacher-run", "task-writer-run"]);
   });
 
-  it("skips a corrupt root tree with a warning while other roots still list (AC-003)", async () => {
+  it("skips a corrupt root tree with a readiness diagnostic while other roots still list (AC-003)", async () => {
     await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
-    await fs.mkdir(path.join(memoryDir, "agent_teams", "broken-root"), { recursive: true });
-    await fs.writeFile(path.join(memoryDir, "agent_teams", "broken-root", "team_run_execution_tree.json"), "{ not json", "utf8");
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const brokenDir = layout.getTeamDirPath({ rootTeamRunId: "broken-root", ancestorTeamRunIds: [] });
+    await fs.mkdir(brokenDir, { recursive: true });
+    await fs.writeFile(path.join(brokenDir, "team_run_execution_tree.json"), "{ not json", "utf8");
+    await new TeamCommunicationV1Store().write(brokenDir, { schemaVersion: 1, rootTeamRunId: "broken-root", messages: [] });
 
     const page = await serviceWithoutHistory().listAgentTeamsWithMemory();
 
     expect(page.entries.map((entry) => entry.teamDefinitionId)).toEqual(["writing-team"]);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining("Skipping team run 'broken-root' in memory explorer"));
+    // Current root admission skips the unreadable package and records why.
+    expect(new RootRunPackageReadinessIndex(memoryDir).listDiagnostics("agent_team")).toEqual([
+      expect.objectContaining({ rootRunId: "broken-root", code: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED" }),
+    ]);
   });
 
   it("skips a root folder whose tree names a different team run, while other roots still list", async () => {
@@ -248,14 +253,18 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
       coordinatorAddress: "/Teacher",
       children: [testAgentNode("/Teacher", { agentRunId: "foreign-teacher-run" })],
     });
-    await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "mismatch-root", ancestorTeamRunIds: [] }), foreign);
+    const mismatchDir = layout.getTeamDirPath({ rootTeamRunId: "mismatch-root", ancestorTeamRunIds: [] });
+    await new TeamRunExecutionTreeStore().write(mismatchDir, foreign);
+    await new TeamCommunicationV1Store().write(mismatchDir, { schemaVersion: 1, rootTeamRunId: "mismatch-root", messages: [] });
     await touch(path.join(memoryDir, "agent_teams", "mismatch-root", "foreign-teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
     const page = await serviceWithoutHistory().listAgentTeamsWithMemory();
 
     expect(page.entries.map((entry) => entry.teamDefinitionId)).toEqual(["writing-team"]);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining("Skipping team run 'mismatch-root' in memory explorer"));
+    // Current root admission skips the mismatched package and records why.
+    expect(new RootRunPackageReadinessIndex(memoryDir).listDiagnostics("agent_team")).toEqual([
+      expect.objectContaining({ rootRunId: "mismatch-root", code: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED" }),
+    ]);
   });
 });
 

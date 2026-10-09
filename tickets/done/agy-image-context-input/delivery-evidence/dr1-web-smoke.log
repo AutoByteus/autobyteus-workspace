@@ -1,0 +1,38 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-web
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runSubmission/__tests__/agentPrimaryAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runSubmission/__tests__/agentPrimaryAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runSubmission/__tests__/agentPrimaryAction.spec.ts (5 tests) 4ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 77ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (18 tests) 258ms
+
+ Test Files  3 passed (3)
+      Tests  28 passed (28)
+   Start at  06:15:15
+   Duration  8.21s (transform 4.41s, setup 21.43s, collect 456ms, tests 339ms, environment 731ms, prepare 481ms)
+

@@ -59,11 +59,11 @@ describe('agentRunCollaborationStore', () => {
     expect(store.hostMessagesView('host-run')).toMatchObject({ rootKind: 'agent', focusedAgentRunId: 'host-run' })
     store.selectChild('host-run', 'pp-run')
     expect(store.childTargetFor('host-run')).toMatchObject({
-      kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' }, address: '/product_team/prototyper', access: 'live',
+      kind: 'agent_run_task_team_member', host: { hostRunId: 'host-run' }, address: '/product_team/prototyper', agentRunId: 'pp-run', access: 'live',
       collaborationMessages: { focusedAgentRunId: 'pp-run' }, workspaceRootPath: '/ws',
     })
     store.selectChild('host-run', 'cua-run')
-    expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', workspaceRootPath: '/ws' })
+    expect(store.childTargetFor('host-run')).toMatchObject({ kind: 'agent_run_task_agent', agentRunId: 'cua-run', workspaceRootPath: '/ws' })
     store.selectChild('host-run', 'unknown')
     expect(store.childTargetFor('host-run')).toBeNull()
   })

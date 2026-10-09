@@ -1,0 +1,393 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 3761[2mms[22m[39m
+     [33m[2m✓[22m[39m retains new native capture and exact resumed conversation binding with monotonically new step indices [33m 1773[2mms[22m[39m
+     [33m[2m✓[22m[39m retains ambiguous native plans and their normal summary stream/completion [33m 721[2mms[22m[39m
+     [33m[2m✓[22m[39m linked_skills BACKGROUND_STEP leaves a daemon step open at turn end, then writes an exit message the production reader parses [33m 376[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:5496) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T04:15:07.847Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-09T04:15:08.481Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39m[2026-10-09T04:15:08.487Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mAgent definition cache populated with 46 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mIn-memory cache: Added new agent definition with ID agy-context-files-09e468ff-2173-4ce0-a2a7-bed07bb37939.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mAgent Definition created successfully with ID: agy-context-files-09e468ff-2173-4ce0-a2a7-bed07bb37939
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+[22m[39mCreated and registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+[22m[39mAGY compaction detection off for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_fcdd8e1b4553484293b1bd4ef90cfbac: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged
+[22m[39mAgent websocket attached for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_fcdd8e1b4553484293b1bd4ef90cfbac
+Created agent session 562b10e3-d24c-4dc0-9385-71eaacc6af78 for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_fcdd8e1b4553484293b1bd4ef90cfbac
+Agent WebSocket connected: session=562b10e3-d24c-4dc0-9385-71eaacc6af78, run=agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_fcdd8e1b4553484293b1bd4ef90cfbac
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mAGY compaction detection off for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_f64bbc38e4ba41848fb671df3b4570bb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mAgent websocket attached for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_f64bbc38e4ba41848fb671df3b4570bb
+Created agent session 695d15ed-d4d2-412a-92e8-c71c8aaf3452 for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_f64bbc38e4ba41848fb671df3b4570bb
+Agent WebSocket connected: session=695d15ed-d4d2-412a-92e8-c71c8aaf3452, run=agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_f64bbc38e4ba41848fb671df3b4570bb
+
+[90mstderr[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text
+[22m[39mSEND_MESSAGE command not accepted for agent run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_f64bbc38e4ba41848fb671df3b4570bb: [RUNTIME_REJECTED] AgentRun input content must be a non-empty string.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+[22m[39mAGY compaction detection off for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_8bd4eda29b534b6ea9c1736a5be891d5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-003: a remote image URL is named and a pasted absolute image path outside the workspace is listed as an image
+[22m[39mAgent websocket attached for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_8bd4eda29b534b6ea9c1736a5be891d5
+Created agent session 86fb36ec-9088-4aa9-9149-a1498bd75505 for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_8bd4eda29b534b6ea9c1736a5be891d5
+Agent WebSocket connected: session=86fb36ec-9088-4aa9-9149-a1498bd75505, run=agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_8bd4eda29b534b6ea9c1736a5be891d5
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39m[2026-10-09T04:15:10.160Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-context-files-team-82d2b45b-6180-4b48-84e8-e55e5eb31305.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mAgent Team Definition created successfully with ID: agy-context-files-team-82d2b45b-6180-4b48-84e8-e55e5eb31305
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mAgent team websocket attached for team run agy_context_files_team_82d2b45b_6180_4b48_84e8_e_48d91a7ee49e4cb2809d4e1b1454db5d
+Created agent session c476035b-5515-4318-952f-eab93f557e07 for run agy_context_files_team_82d2b45b_6180_4b48_84e8_e_48d91a7ee49e4cb2809d4e1b1454db5d
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mAgent Team WebSocket connected: session=c476035b-5515-4318-952f-eab93f557e07, run=agy_context_files_team_82d2b45b_6180_4b48_84e8_e_48d91a7ee49e4cb2809d4e1b1454db5d
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-e2e-oDsZ9p/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mReusing registered workspace ID: agent_ws_f3601310806e8609deede661ff4ace5f2c4836a7fc7f847201217b0f3f0ad11c
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)[2m > [22m[2mE2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket
+[22m[39mAGY compaction detection off for run agy_context_files_09e468ff_2173_4ce0_a2a7_bed07b_1259d79563744aa5838c3fe1f9792c4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mClosed agent session c476035b-5515-4318-952f-eab93f557e07
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mClosed agent session 86fb36ec-9088-4aa9-9149-a1498bd75505
+Agent WebSocket disconnected: 86fb36ec-9088-4aa9-9149-a1498bd75505
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mClosed agent session 695d15ed-d4d2-412a-92e8-c71c8aaf3452
+Agent WebSocket disconnected: 695d15ed-d4d2-412a-92e8-c71c8aaf3452
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mClosed agent session 562b10e3-d24c-4dc0-9385-71eaacc6af78
+Agent WebSocket disconnected: 562b10e3-d24c-4dc0-9385-71eaacc6af78
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39m[2026-10-09T04:15:11.160Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID agy-context-files-team-82d2b45b-6180-4b48-84e8-e55e5eb31305.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mAgent Team Definition with ID agy-context-files-team-82d2b45b-6180-4b48-84e8-e55e5eb31305 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mIn-memory cache: Removed agent definition with ID agy-context-files-09e468ff-2173-4ce0-a2a7-bed07bb37939.
+
+[90mstdout[2m | tests/e2e/runtime/agy-context-files-transport.e2e.test.ts[2m > [22m[2mAGY receives app-attached context files as text through the real server (fake AGY CLI)
+[22m[39mAgent Definition with ID agy-context-files-09e468ff-2173-4ce0-a2a7-bed07bb37939 deleted successfully.
+
+ [32m✓[39m tests/e2e/runtime/agy-context-files-transport.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 3335[2mms[22m[39m
+     [33m[2m✓[22m[39m E2E-CF-001/004: uploaded image, .txt and .pdf reach AGY as one text with absolute paths; a later plain message is unchanged [33m 728[2mms[22m[39m
+     [33m[2m✓[22m[39m E2E-CF-002: sending requires text; an attachments-only send is rejected before AGY and the same image then goes with text [33m 603[2mms[22m[39m
+     [33m[2m✓[22m[39m E2E-CF-005: an AGY team member receives an uploaded image and .txt as text through the Team WebSocket [33m 733[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 166[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-user-message-text.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[32m39 passed[39m[22m[90m (39)[39m
+[2m   Start at [22m 06:14:53
+[2m   Duration [22m 18.76s[2m (transform 6.85s, setup 32ms, import 10.59s, tests 7.27s, environment 0ms)[22m
+

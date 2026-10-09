@@ -133,6 +133,34 @@ warning names the skill (`disposition=skipped-missing-source`) and the run
 resumes without it. Capsules created before skills were linked hold copied
 skill folders; restore reads them the same way.
 
+## User input and context files
+
+AGY's headless stream input accepts text only: a non-text content block ends
+the AGY session. `AgyAgentRunBackend.dispatchUserInput` therefore sends the
+single string built by `backends/antigravity/input/agy-user-message-text.ts`
+(`buildAgyUserMessageText`), never raw image blocks. Context-file URIs are
+already absolute local paths there (`AgentRunProviderInputNormalizer`).
+
+- The typed text comes first.
+- Local images are listed by absolute path under
+  `Attached images (open each with view_file to see it):`. The agent opens
+  each with its native `view_file` tool, which gives the model the actual
+  image; the `view_file` step appears in the conversation as a normal tool
+  activity. Paths outside the workspace (server-data uploads) are readable.
+- A remote image URL becomes `Attached image URL: <url>`; an inline data URL
+  image becomes a short note that it could not be attached. Image bytes are
+  never embedded in the text.
+- Non-image files use the shared `Reference files:` section; a non-image file
+  without a local path becomes `Context file: <uri>`.
+
+Sending requires typed text (or a skill tag): composers keep Send disabled for
+a draft with only context files, and run input admission rejects empty
+content on every runtime. Without context files the content is sent unchanged, so
+delegated tasks and inter-agent messages keep their own `Reference files:`
+text. The displayed and stored user message is not changed. The opt-in live
+check is `AGY_LIVE=1 pnpm -C autobyteus-server-ts exec vitest run
+tests/unit/agent-execution/backends/antigravity/agy-image-input-live.test.ts --no-watch`.
+
 ## Tools, permissions, and events
 
 AutoByteus exposes its selected run-scoped Agent Tools through the existing

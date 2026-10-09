@@ -188,7 +188,7 @@ describe("ProjectService", () => {
     const protectedFiles = [
       harness.layout.taskFile(saved.projectId, "task_owned"),
       path.join(harness.layout.contextDir(saved.projectId, "task_owned"), "ctx_owned__brief.txt"),
-      harness.layout.agentRunResourcesFile(saved.projectId, "task_owned"),
+      harness.layout.taskExecutionResourcesFile(saved.projectId, "task_owned"),
       path.join(harness.appDataDir, "memory", "runs", "owned-history.jsonl"),
       path.join(wsRoot, "source.txt"),
       harness.layout.projectFile(unrelated.projectId),
@@ -200,7 +200,7 @@ describe("ProjectService", () => {
     await harness.writeTask(saved.projectId, {taskId: "task_owned", description: "Saved task", status: "TODO",
       createdAt: "2026-09-26T00:00:00.000Z", updatedAt: "2026-09-26T00:00:00.000Z",
       contextFiles: [{storedFilename: "ctx_owned__brief.txt", displayName: "brief.txt", mimeType: "text/plain", sizeBytes: 47}]});
-    await harness.writeJson(harness.layout.agentRunResourcesFile(saved.projectId, "task_owned"), {taskId: "task_owned", agentRunResources: []});
+    await harness.writeJson(harness.layout.taskExecutionResourcesFile(saved.projectId, "task_owned"), {taskId: "task_owned", agentRunResources: []});
     const bytes = await Promise.all(protectedFiles.map(file => fs.readFile(file, "utf8")));
     await harness.service.patchProjectRecord({projectId: saved.projectId, name: "Changed", description: "New", workspaces: []});
     expect(await Promise.all(protectedFiles.map(file => fs.readFile(file, "utf8")))).toEqual(bytes);
@@ -540,7 +540,7 @@ describe("ProjectService", () => {
         createdAt: "2026-09-26T00:00:00.000Z", updatedAt: "2026-09-26T00:00:00.000Z" });
       await harness.writeJson(path.join(harness.layout.contextDir(project.projectId, `task_of_${project.projectId}`), "ctx_a__b.txt"), "x");
     }
-    const resources = harness.layout.agentRunResourcesFile(drop.projectId, `task_of_${drop.projectId}`);
+    const resources = harness.layout.taskExecutionResourcesFile(drop.projectId, `task_of_${drop.projectId}`);
     await harness.writeJson(resources, { taskId: `task_of_${drop.projectId}`, agentRunResources: [] });
     await harness.writeJson(path.join(harness.layout.draftsDir(drop.projectId), "draft", "manifest.json"), {});
 

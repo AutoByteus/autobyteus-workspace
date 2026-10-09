@@ -11,7 +11,7 @@ export class AdHocTasksLayout {
 
   taskDir(taskId: string): string { return path.join(this.root, segment(taskId)); }
   taskFile(taskId: string): string { return path.join(this.taskDir(taskId), "task.json"); }
-  agentRunResourcesFile(taskId: string): string { return path.join(this.taskDir(taskId), "agent_run_resources.json"); }
+  taskExecutionResourcesFile(taskId: string): string { return path.join(this.taskDir(taskId), "agent_run_resources.json"); }
   /** The id a folder name stands for, when it is a valid encoded segment. */
   idOfFolder(name: string): string | null { return idOfSegmentFolder(name); }
 }

@@ -9,6 +9,7 @@ import { ApplicationPlatformLifecycle } from "../../../src/application-platform/
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
 import { ApplicationExecutionEventDispatchQueue } from "../../../src/application-orchestration/services/application-execution-event-dispatch-queue.js";
 import { ApplicationExecutionEventDispatchService } from "../../../src/application-orchestration/services/application-execution-event-dispatch-service.js";
+import { ApplicationCatalogTransitionService } from "../../../src/application-orchestration/services/application-catalog-transition-service.js";
 import { ApplicationReentryService } from "../../../src/application-orchestration/services/application-reentry-service.js";
 import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
@@ -258,6 +259,7 @@ describe("application execution-event journal recovery", () => {
         },
       },
       executionReadiness: { assertReady: vi.fn() },
+      applicationAgentToolCatalog: { initializeFromBundleSnapshot: vi.fn() },
       bundleService: {
         getCatalogSnapshot: vi.fn(async () => ({
           applications: [{ id: APPLICATION_ID }],
@@ -288,6 +290,12 @@ describe("application execution-event journal recovery", () => {
         awaitDrained: vi.fn(async () => undefined),
       },
       engineLauncher: { stopAll: vi.fn(async () => undefined) },
+      applicationAgentToolCallLifecycle: {
+        open: vi.fn(),
+        quiesceAndDrainAll: vi.fn(async () => undefined),
+        closeAll: vi.fn(),
+      },
+      applicationAgentToolCapability: { close: vi.fn(async () => undefined) },
       executionLifecycle: {
         quiesce: vi.fn(),
         close: vi.fn(async () => undefined),
@@ -307,35 +315,61 @@ describe("application execution-event journal recovery", () => {
   it("lets reload/reentry inspect and dispatch existing journal state before activation", async () => {
     await journalStore.appendEventAwaitable(APPLICATION_ID, buildEvent());
     const { service: eventDispatchService, engineController } = createDispatchService();
-    const availabilityService = {
-      beginReentry: vi.fn(),
-      synchronizeWithCatalogSnapshot: vi.fn(),
-      quarantineApplication: vi.fn((_applicationId, detail) => ({
-        applicationId: APPLICATION_ID,
-        state: "QUARANTINED",
-        detail,
-        updatedAt: "2026-08-22T10:00:00.000Z",
-      })),
-      activateApplication: vi.fn(() => ({
-        applicationId: APPLICATION_ID,
-        state: "ACTIVE",
-        detail: null,
-        updatedAt: "2026-08-22T10:00:00.000Z",
-      })),
+    const availability = new Map<string, { applicationId: string; state: string; detail: string | null; updatedAt: string }>([
+      [APPLICATION_ID, { applicationId: APPLICATION_ID, state: "ACTIVE", detail: null, updatedAt: "2026-08-22T09:00:00.000Z" }],
+    ]);
+    const setAvailability = (state: string, detail: string | null) => {
+      const record = { applicationId: APPLICATION_ID, state, detail, updatedAt: "2026-08-22T10:00:00.000Z" };
+      availability.set(APPLICATION_ID, record);
+      return record;
     };
-    const service = new ApplicationReentryService({
+    const availabilityService = {
+      getAvailability: vi.fn(async (applicationId: string) => availability.get(applicationId) ?? null),
+      beginReentry: vi.fn(() => setAvailability("REENTERING", null)),
+      quarantineApplication: vi.fn((_applicationId: string, detail: string) => setAvailability("QUARANTINED", detail)),
+      activateApplication: vi.fn(() => setAvailability("ACTIVE", null)),
+    };
+    const reentryService = new ApplicationReentryService({
+      availabilityService: availabilityService as never,
+      recoveryService: { resumeApplication: vi.fn(async () => undefined) },
+      eventDispatchService,
+      engineLauncher: { ensureReady: vi.fn(async () => undefined), stop: vi.fn(async () => undefined) },
+      applicationAgentToolCallLifecycle: {
+        quiesceAndDrain: vi.fn(async () => undefined),
+        open: vi.fn(),
+        close: vi.fn(),
+      } as never,
+    });
+    const catalogReconciliation = { reconcile: vi.fn(async () => undefined) };
+    const application = { id: APPLICATION_ID, packageId: "local-package", agentTools: [] };
+    const service = new ApplicationCatalogTransitionService({
       bundleService: {
-        reloadApplication: vi.fn(async () => ({ id: APPLICATION_ID })),
+        stageApplicationCatalog: vi.fn(async () => ({
+          owner: {},
+          scope: { kind: "application", applicationId: APPLICATION_ID, packageId: "local-package" },
+          applications: [application],
+          diagnostics: [],
+          refreshedAt: "2026-08-22T10:00:00.000Z",
+        })),
+        prepareCatalogSlice: vi.fn((candidate: unknown) => ({ candidate })),
+        commitPreparedCatalogSlice: vi.fn(),
         getCatalogSnapshot: vi.fn(async () => ({
-          applications: [{ id: APPLICATION_ID }],
+          applications: [application],
           diagnostics: [],
           refreshedAt: "2026-08-22T10:00:00.000Z",
         })),
       } as never,
+      applicationAgentToolCatalog: {
+        prepareDelta: vi.fn(() => ({})),
+        commitPreparedDelta: vi.fn(),
+      } as never,
+      reentryService,
+      catalogReconciliation: catalogReconciliation as never,
+      definitionReadiness: {
+        prepare: vi.fn(async () => undefined),
+        isApplicationReady: vi.fn(() => true),
+      } as never,
       availabilityService: availabilityService as never,
-      recoveryService: { resumeApplication: vi.fn(async () => undefined) },
-      eventDispatchService,
-      engineLauncher: { stop: vi.fn(async () => undefined) },
     });
 
     await expect(service.reloadAndReenter(APPLICATION_ID)).resolves.toMatchObject({
@@ -346,8 +380,9 @@ describe("application execution-event journal recovery", () => {
     await vi.waitFor(() => {
       expect(engineController.invokeApplicationEventHandler).toHaveBeenCalledTimes(1);
     });
+    expect(availabilityService.quarantineApplication).not.toHaveBeenCalled();
     expect(availabilityService.activateApplication).toHaveBeenCalledAfter(
-      availabilityService.synchronizeWithCatalogSnapshot,
+      catalogReconciliation.reconcile,
     );
   });
 });
