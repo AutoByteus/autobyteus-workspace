@@ -25,7 +25,7 @@ export const teamCollaboratorPortFor = (tree: TeamRunExecutionTreeSnapshot): Col
   rootKind: "agent_team",
   isApplicationBound: tree.applicationBinding !== null,
   rootLaunchConfiguration: () => tree.rootTeam.defaultLaunchConfiguration,
-  rootDefinition: () => Object.freeze({ kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }),
+  ownDefinition: () => Object.freeze({ kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }),
   inRunPlacementsByDefinition: () => buildInRunPlacements({
     configured: tree.rootTeam.members.map((member) => ({
       ref: { kind: "agent", definitionId: member.agentDefinitionId }, address: member.address,

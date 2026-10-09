@@ -50,14 +50,17 @@ export type AvailableCollaborator = Readonly<{
   description: string;
 }>;
 
-const RANK_ORDER: readonly InRunPlacement["rank"][] = ["configured", "collaborator", "collaborator_member"];
+const RANK_ORDER: readonly InRunPlacement["rank"][] = ["run_agent", "configured", "collaborator", "collaborator_member"];
 
-/** AR-002: one in-run address per definition, by rank, then the lexicographically smallest address. */
-const preferredInRunAddress = (placements: readonly InRunPlacement[]): AgentTeamAddress | null => {
+/**
+ * AR-002: one in-run placement per definition, by rank, then the lexicographically smallest
+ * address; its address is the definition's in-run address. Null when it has none.
+ */
+export const preferredInRunPlacement = (placements: readonly InRunPlacement[]): InRunPlacement | null => {
   const [best] = [...placements].sort((left, right) =>
     RANK_ORDER.indexOf(left.rank) - RANK_ORDER.indexOf(right.rank)
     || (left.address < right.address ? -1 : left.address > right.address ? 1 : 0));
-  return best?.address ?? null;
+  return best ?? null;
 };
 
 /** Daily Assistant (the default chat agent) and the internal helpers are never collaborators. */
@@ -69,7 +72,7 @@ const hasId = <T extends { id?: string | null }>(definition: T): definition is T
 /**
  * The single owner of `@` and catalog eligibility. Candidates are shared standalone Agent
  * definitions then shared Agent Team definitions, in catalog order. Agent Orgs, the internal
- * built-ins and the root's own definition are never candidates. Two checks: `requireEligible`
+ * built-ins and the viewer's own definition (`port.ownDefinition()`) are never candidates. Two checks: `requireEligible`
  * may be mentioned with `@` (including definitions already in the run, which `@` addresses);
  * `requireAdmissible` may be brought in as a collaborator (not already in the run, unless it
  * is a collaborator whose entry is reused). `list_available_agents` lists every eligible
@@ -79,13 +82,14 @@ export class CollaboratorCandidatePolicy {
   constructor(private readonly catalog: CollaboratorDefinitionCatalog) {}
 
   /**
-   * In the run: the root's own definition and every in-run placement (configured placements,
-   * collaborator entries, which exist only after a successful add, and collaborator-Team members).
+   * In the run: the viewer's own definition and every in-run placement (the run agent, configured
+   * placements, collaborator entries, which exist only after a successful add, and
+   * collaborator-Team members).
    */
   inRunDefinitionIds(port: CollaboratorRootPort): InRunDefinitionIds {
     const agents = new Set<string>();
     const teams = new Set<string>();
-    const own = port.rootDefinition();
+    const own = port.ownDefinition();
     if (own) (own.kind === "agent" ? agents : teams).add(own.definitionId);
     for (const key of port.inRunPlacementsByDefinition().keys()) {
       const separator = key.indexOf(":");
@@ -94,7 +98,7 @@ export class CollaboratorCandidatePolicy {
     return Object.freeze({ agentDefinitionIds: agents, teamDefinitionIds: teams });
   }
 
-  /** The run's catalog address map over every eligible definition except the root's own. */
+  /** The run's catalog address map over every eligible definition except the viewer's own. */
   async catalogAddressMap(port: CollaboratorRootPort): Promise<CatalogAddressMap> {
     return (await this.catalogView(port)).map;
   }
@@ -115,7 +119,7 @@ export class CollaboratorCandidatePolicy {
   }
 
   private async catalogView(port: CollaboratorRootPort) {
-    const own = port.rootDefinition();
+    const own = port.ownDefinition();
     const [agents, teams] = await Promise.all([this.catalog.listAgentDefinitions(), this.catalog.listTeamDefinitions()]);
     const eligible = [
       ...agents.filter((agent) => this.isEligibleAgent(agent)).map((agent) =>
@@ -125,19 +129,19 @@ export class CollaboratorCandidatePolicy {
     ].filter((entry) => !own || own.kind !== entry.kind || own.definitionId !== entry.definitionId);
     const inRunAddresses = new Map<string, AgentTeamAddress>();
     for (const [key, placements] of port.inRunPlacementsByDefinition()) {
-      const address = preferredInRunAddress(placements);
-      if (address) inRunAddresses.set(key, address);
+      const placement = preferredInRunPlacement(placements);
+      if (placement) inRunAddresses.set(key, placement.address);
     }
     const map = new CatalogAddressMap({ eligible, inRunAddresses, addressesInUse: port.addressesInUse() });
     return { eligible, map };
   }
 
-  /** `@` options: every eligible definition, in the run or not, except the run's own definition. */
+  /** `@` options: every eligible definition, in the run or not, except the viewer's own definition. */
   async listCandidates(port: CollaboratorRootPort): Promise<CollaboratorCandidateList> {
     if (port.isApplicationBound) {
       return Object.freeze({ availability: "UNAVAILABLE_APPLICATION_ROOT", candidates: Object.freeze([]) });
     }
-    const own = port.rootDefinition();
+    const own = port.ownDefinition();
     const isOwn = (kind: CollaboratorMentionKind, definitionId: string) => own?.kind === kind && own.definitionId === definitionId;
     const [agents, teams] = await Promise.all([this.catalog.listAgentDefinitions(), this.catalog.listTeamDefinitions()]);
     const candidates: CollaboratorCandidate[] = [];
@@ -160,18 +164,18 @@ export class CollaboratorCandidatePolicy {
   }
 
   /**
-   * `@` re-check of one mention: a shared, non-built-in definition that is not the run's own.
+   * `@` re-check of one mention: a shared, non-built-in definition that is not the viewer's own.
    * It may already be in the run (the mention then addresses that instance).
    */
   async requireEligible(port: CollaboratorRootPort, mention: CollaboratorMention): Promise<AdmissibleCollaboratorDefinition> {
     if (port.isApplicationBound) {
       throw new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", "Collaborators cannot be brought into application-owned runs.");
     }
-    const own = port.rootDefinition();
+    const own = port.ownDefinition();
     const resolved: AdmissibleCollaboratorDefinition = mention.kind === "agent"
       ? { kind: "agent", definition: await this.eligibleAgent(mention) }
       : { kind: "agent_team", definition: await this.eligibleTeam(mention) };
-    if (own?.kind === resolved.kind && own.definitionId === resolved.definition.id) throw this.ownDefinition(resolved.definition.name);
+    if (own?.kind === resolved.kind && own.definitionId === resolved.definition.id) throw this.ownDefinitionError(resolved.definition.name);
     return Object.freeze(resolved);
   }
 
@@ -216,7 +220,7 @@ export class CollaboratorCandidatePolicy {
     );
   }
 
-  private ownDefinition(name: string): CollaboratorMentionError {
+  private ownDefinitionError(name: string): CollaboratorMentionError {
     return new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", `${name} is this run's own definition.`, name);
   }
 

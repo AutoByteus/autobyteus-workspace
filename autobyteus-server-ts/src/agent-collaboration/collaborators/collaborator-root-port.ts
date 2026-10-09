@@ -5,10 +5,11 @@ import type { RootSubjectKind } from "../execution/domain/root-execution-identit
 import { catalogDefinitionKey, type CatalogDefinitionRef } from "./catalog-address-map.js";
 
 /**
- * Where a definition is in the run, in address precedence order (AR-002): a configured Agent
- * placement or an Org mounted Team, then a collaborator entry, then a collaborator-Team member.
+ * Where a definition is in the run, in address precedence order (AR-002): the run's own agent
+ * (a standalone Agent run's host), a configured Agent placement or an Org mounted Team, then a
+ * collaborator entry, then a collaborator-Team member.
  */
-export type InRunPlacementRank = "configured" | "collaborator" | "collaborator_member";
+export type InRunPlacementRank = "run_agent" | "configured" | "collaborator" | "collaborator_member";
 export type InRunPlacement = Readonly<{ address: AgentTeamAddress; rank: InRunPlacementRank }>;
 export type InRunPlacementsByDefinition = ReadonlyMap<string, readonly InRunPlacement[]>;
 
@@ -22,11 +23,16 @@ export interface CollaboratorRootPort {
   readonly isApplicationBound: boolean;
   /** The run's root launch settings, snapshotted into new collaborator entries and catalog copies. */
   rootLaunchConfiguration(): AgentLaunchConfiguration;
-  /** The root's own definition: never listed, mentioned or brought in (null for an Org root). */
-  rootDefinition(): CatalogDefinitionRef | null;
   /**
-   * Every in-run placement by `catalogDefinitionKey`: configured Agents and Org mounted Teams,
-   * collaborator entries and collaborator-Team members. Task copies are not placements.
+   * The viewer's own definition: never listed, mentioned or brought in. A Team root's own Team;
+   * a standalone Agent root's host definition only when the viewer is the host; null otherwise
+   * and for an Org root.
+   */
+  ownDefinition(): CatalogDefinitionRef | null;
+  /**
+   * Every in-run placement by `catalogDefinitionKey`: the run's own agent, configured Agents and
+   * Org mounted Teams, collaborator entries and collaborator-Team members. Task copies are not
+   * placements.
    */
   inRunPlacementsByDefinition(): InRunPlacementsByDefinition;
   /** One instance per entry; its runs are recorded in the entry. */
@@ -36,10 +42,11 @@ export interface CollaboratorRootPort {
 }
 
 /**
- * Builds a root's in-run placements from its configured placements and its collaborator
- * entries (shared by every root port).
+ * Builds a root's in-run placements from its run agent (standalone Agent roots only), its
+ * configured placements and its collaborator entries (shared by every root port).
  */
 export const buildInRunPlacements = (input: Readonly<{
+  runAgent?: Readonly<{ ref: CatalogDefinitionRef; address: AgentTeamAddress }>;
   configured: Iterable<Readonly<{ ref: CatalogDefinitionRef; address: AgentTeamAddress }>>;
   collaborators: readonly CollaboratorEntry[];
 }>): InRunPlacementsByDefinition => {
@@ -50,6 +57,7 @@ export const buildInRunPlacements = (input: Readonly<{
     list.push(Object.freeze({ address, rank }));
     placements.set(key, list);
   };
+  if (input.runAgent) add(input.runAgent.ref, input.runAgent.address, "run_agent");
   for (const { ref, address } of input.configured) add(ref, address, "configured");
   for (const entry of input.collaborators) {
     if (entry.kind === "agent") {

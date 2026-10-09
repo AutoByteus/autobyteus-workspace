@@ -48,7 +48,7 @@ describe("agent-initiated collaborators in a Team root", () => {
     await expect(f.message(coordinatorOf(f), "/product_team", "More")).resolves.toMatchObject({ accepted: true });
     expect(lead.handle.reserveInput).toHaveBeenCalledTimes(2);
     await expect(f.root.resolveCollaboratorMentions({ focusedAgentRunId: "run-coordinator", mentions: [{ kind: "agent_team", definitionId: "product-team" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team", inRun: true }] });
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Product Team", kind: "agent_team", address: "/product_team", presence: "in_run" }] });
     expect(f.root.getExecutionTreeSnapshot().rootTeam.collaborators).toHaveLength(1);
   });
 

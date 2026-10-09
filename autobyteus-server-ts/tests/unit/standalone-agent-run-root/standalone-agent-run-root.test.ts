@@ -210,7 +210,7 @@ describe("Agent root of a standalone run", () => {
     expect(await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/nobody", description: "Review" }))
       .toEqual({ target_agent_run_id: null, message: "'/nobody' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run." });
     const policy = createCollaboratorAdmission(definitions().catalog, runnable).policy;
-    expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
+    expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
 
     // REQ-001: `@` answers each mentioned definition's address; nothing is added, written or hosted.
@@ -219,8 +219,8 @@ describe("Agent root of a standalone run", () => {
       mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
     });
     expect(resolved).toEqual({ admitted: true, collaborators: [
-      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: false },
-      { name: "Product Team", kind: "agent_team", address: "/product_team", inRun: false },
+      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "not_in_run" },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", presence: "not_in_run" },
     ] });
     expect(await f.store.readTree(dir, HOST)).toBeNull();
     expect(f.catalogFlag).not.toHaveBeenCalled();
@@ -248,12 +248,12 @@ describe("Agent root of a standalone run", () => {
     expect(stored.taskExecutions).toEqual([]);
     expect(f.catalogFlag).toHaveBeenCalledOnce();
     // Entries (and a Team's member Agents) are in the run and still offered for `@` (REQ-001, AC-001).
-    expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
+    expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "lead" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Lead", kind: "agent", address: "/product_team/lead", inRun: true }] });
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Lead", kind: "agent", address: "/product_team/lead", presence: "in_run" }] });
     // The host's own definition is never offered (it is the run itself).
-    expect((await policy.listCandidates(root.collaboratorPort())).candidates.some((c) => c.definitionId === "research-assistant")).toBe(false);
+    expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.some((c) => c.definitionId === "research-assistant")).toBe(false);
     // A collaborator execution that got no message yet is Offline.
     expect(root.getAgentStatusSnapshots().map((snapshot) => [snapshot.execution.memberAddress, snapshot.details.status])).toEqual(
       expect.arrayContaining([["/product_team/designer", "offline"]]),
@@ -459,8 +459,49 @@ describe("agent-initiated collaborators of a standalone run", () => {
     expect(f.handles.get("code-reviewer-run-1")!.handle.reserveInput).toHaveBeenCalledTimes(2);
     // `@` after the agent's bring-in resolves to the instance's address and adds nothing (AC-010).
     await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
-      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", inRun: true }] });
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer", presence: "in_run" }] });
     expect(root.getExecutionTreeSnapshot().collaborators).toHaveLength(1);
+  });
+
+  it("a delegated copy member sees the host: `@` offers and resolves it as the run agent, it is listed, and messaging its address reaches the existing host (REQ-001..004, REQ-006)", async () => {
+    const f = await buildManager();
+    const root = (await f.manager.resolveRoot(HOST))!;
+    await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: "Ship it" }))
+      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await flushMicrotasks();
+    const [copy] = root.getExecutionTreeSnapshot().taskExecutions as unknown as Parameters<typeof memberRun>[0][];
+    const designer = childIdentity("/product_team/designer", memberRun(copy!, "/product_team/designer"));
+    const policy = createCollaboratorAdmission(definitions().catalog, runnable).policy;
+
+    // REQ-001: the copy member's `@` offers the host; the host's own does not.
+    expect((await policy.listCandidates(root.collaboratorPortFor(designer.agentRunId))).candidates.map((c) => c.definitionId))
+      .toEqual(["research-assistant", "code-reviewer", "lead", "designer", "product-team"]);
+    expect((await policy.listCandidates(root.collaboratorPortFor(HOST))).candidates.map((c) => c.definitionId))
+      .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
+
+    // REQ-002: the mention resolves to the existing host's address as the run agent; nothing is added.
+    await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: designer.agentRunId, mentions: [{ kind: "agent", definitionId: "research-assistant" }] }))
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Research Assistant", kind: "agent", address: "/research_assistant", presence: "run_agent" }] });
+    await expect(root.resolveCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "research-assistant" }] }))
+      .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", message: "Research Assistant is this run's own definition." });
+
+    // REQ-003: list_available_agents lists the host for the copy member, at addresses identical to the host's list.
+    const hostList = await root.listAvailableAgents(f.hostIdentity);
+    const memberList = await root.listAvailableAgents(designer);
+    expect(memberList[0]).toEqual({ name: "Research Assistant", kind: "agent", address: "/research_assistant", description: "Researches" });
+    expect(memberList.slice(1)).toEqual(hostList);
+    expect(hostList.some((entry) => entry.address === "/research_assistant")).toBe(false);
+
+    // REQ-006: send_message_to the host address reaches the existing host; delegate_task to it is refused.
+    f.host.crash();
+    await expect(root.deliverLogicalMessage(designer, { recipientAddress: "/research_assistant" as never, content: "Please create ticket X" }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.restores).toHaveBeenCalledOnce();
+    expect(f.host.reserved.at(-1)).toContain("Please create ticket X");
+    await expect(root.delegateTask({ identity: designer }, { recipient_address: "/research_assistant", description: "Do it" }))
+      .resolves.toMatchObject({ target_agent_run_id: null });
+    expect(root.getExecutionTreeSnapshot().collaborators).toEqual([]);
+    expect(root.getExecutionTreeSnapshot().taskExecutions).toHaveLength(1);
   });
 
   it("catalog copies record a source, stay one unit each, delegate onward and restore after Stop (AC-005/006/007)", async () => {

@@ -269,7 +269,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.delivery.listAvailableAgents(sender);
   }
 
-  collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
+  /** The root's collaborator facts as seen by one agent of the run (the `@` candidates query). */
+  collaboratorPortFor(viewerAgentRunId: string): CollaboratorRootPort { return this.collaborators.portFor(viewerAgentRunId); }
 
   delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
     return this.operationGate.run(() => this.delivery.delegateTask(context, input));

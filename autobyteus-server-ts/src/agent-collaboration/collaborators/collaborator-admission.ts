@@ -7,10 +7,11 @@ import type {
   CollaboratorEntry,
   TaskExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type {
-  AdmissibleCollaboratorDefinition,
-  CollaboratorCandidatePolicy,
-  CollaboratorMention,
+import {
+  preferredInRunPlacement,
+  type AdmissibleCollaboratorDefinition,
+  type CollaboratorCandidatePolicy,
+  type CollaboratorMention,
 } from "./collaborator-candidate-policy.js";
 import type { CollaboratorEntryBuilder, CollaboratorEntryPlan } from "./collaborator-entry-builder.js";
 import type { CollaboratorRootPort } from "./collaborator-root-port.js";
@@ -103,10 +104,11 @@ export class CollaboratorAdmission {
   }
 
   /**
-   * `@`: each mentioned definition, in order, with its name, kind, address and whether it is
-   * already in the run. An in-run definition resolves to its collaborator entry's address, else
-   * its preferred in-run placement address; any other to its catalog address. Never writes,
-   * allocates or publishes. An ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
+   * `@`: each mentioned definition, in order, with its name, kind, address and presence. An
+   * in-run definition resolves to its collaborator entry's address, else its preferred in-run
+   * placement address (`run_agent` when that placement is the run's own agent, else `in_run`);
+   * any other to its catalog address (`not_in_run`). Never writes, allocates or publishes. An
+   * ineligible mention returns `COLLABORATOR_ADD_FAILED` with its name.
    */
   async resolveMentions(port: CollaboratorRootPort, definitions: readonly CollaboratorMention[]): Promise<CollaboratorAdmissionResult> {
     if (definitions.length === 0) return Object.freeze({ admitted: true, collaborators: Object.freeze([]) });
@@ -114,13 +116,14 @@ export class CollaboratorAdmission {
       const eligible: AdmissibleCollaboratorDefinition[] = [];
       for (const ref of definitions) eligible.push(await this.checked(() => this.dependencies.policy.requireEligible(port, ref), ref));
       const addresses = await this.dependencies.policy.catalogAddressMap(port);
-      const inRunKeys = port.inRunPlacementsByDefinition();
-      const collaborators = eligible.map((definition) => {
+      const placements = port.inRunPlacementsByDefinition();
+      const collaborators = eligible.map((definition): MentionedCollaborator => {
         const entry = port.collaborators().find(sameDefinitionAs(definition));
         const address = entry?.address ?? addresses.addressFor({ kind: definition.kind, definitionId: definition.definition.id });
         if (!address) throw new CollaboratorAddError(definition.definition.name, "It has no address in this run.");
-        const inRun = Boolean(entry) || inRunKeys.has(catalogDefinitionKey({ kind: definition.kind, definitionId: definition.definition.id }));
-        return Object.freeze({ name: definition.definition.name, kind: definition.kind, address, inRun });
+        const preferred = preferredInRunPlacement(placements.get(catalogDefinitionKey({ kind: definition.kind, definitionId: definition.definition.id })) ?? []);
+        const presence = entry ? "in_run" : preferred?.rank === "run_agent" ? "run_agent" : preferred ? "in_run" : "not_in_run";
+        return Object.freeze({ name: definition.definition.name, kind: definition.kind, address, presence });
       });
       return Object.freeze({ admitted: true, collaborators: Object.freeze(collaborators) });
     } catch (error) {
@@ -177,7 +180,7 @@ export class CollaboratorAdmission {
       }
       // An existing collaborator entry is reused (in the run); a planned one is new.
       resolved.push(Object.freeze({ name: definition.definition.name, kind: definition.kind, address,
-        inRun: port.collaborators().some(sameDefinition) }));
+        presence: port.collaborators().some(sameDefinition) ? "in_run" : "not_in_run" }));
     }
     return Object.freeze({ newPlans: Object.freeze(newPlans), resolved: Object.freeze(resolved) });
   }

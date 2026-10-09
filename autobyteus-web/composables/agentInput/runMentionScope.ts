@@ -1,11 +1,12 @@
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
-import type { CollaboratorRootKind } from '~/services/collaborators/collaboratorCandidatesService'
+import type { CollaboratorCandidateSubject } from '~/services/collaborators/collaboratorCandidatesService'
 
-/** The live run a composer belongs to, for `@` mentions. */
-export type RunMentionScope = Readonly<{
-  rootKind: CollaboratorRootKind
-  rootRunId: string
+/**
+ * The live run a composer belongs to, for `@` mentions: its candidate subject (an Agent root's
+ * candidates depend on the focused agent) and the focused agent's name.
+ */
+export type RunMentionScope = CollaboratorCandidateSubject & Readonly<{
   /** The agent the user is talking to; it receives the message and delegates to the mentioned address. */
   focusedName: string
 }>
@@ -28,6 +29,7 @@ export const resolveRunMentionScope = (target: ActiveAgentWorkspaceTarget | null
       return Object.freeze({
         rootKind: 'agent',
         rootRunId: runId,
+        focusedAgentRunId: runId,
         focusedName: target.context.config?.agentDefinitionName?.trim() || memberNameOfAddress(runId),
       })
     }
@@ -42,6 +44,7 @@ export const resolveRunMentionScope = (target: ActiveAgentWorkspaceTarget | null
       return Object.freeze({
         rootKind: 'agent',
         rootRunId: target.host.hostRunId,
+        focusedAgentRunId: target.agentRunId,
         focusedName: memberNameOfAddress(target.address),
       })
     case 'agent_org_direct_agent':
