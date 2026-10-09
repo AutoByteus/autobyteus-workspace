@@ -203,8 +203,8 @@ wire contract.
 
 `src/llm/api/provider-request-kwargs.ts` owns the shared internal kwarg deny-list
 for external provider requests: `logicalConversationId`,
-`logical_conversation_id`, `conversationId`, `agentId`, `turnId`, `requestId`,
-and `renderedPayload`. It drops null/undefined values and lets each adapter name
+`logical_conversation_id`, `conversationId`, `agentId`, `turnId`, and
+`requestId`. It drops null/undefined values and lets each adapter name
 its own controlled request fields such as `stream`, `tools`, or `tool_choice`.
 
 `logicalConversationId` remains required for `AutobyteusLLM` hosted/browser
@@ -443,6 +443,18 @@ read per 1M tokens through 2026-12-31. The standard schedule effective
 3.7 is not a current catalog alias and stale selections require explicit
 reselection.
 
+`gemini-3.1-pro-preview` uses Google's official Global prices (Vertex Express
+bills at Global prices), checked on 2026-10-09, per 1M tokens. The tier is
+selected by prompt size:
+
+| Tier | Prompt size | Input | Cached-input read | Output (incl. reasoning) |
+| --- | --- | --- | --- | --- |
+| `prompt_le_200k` | ≤ 200,000 | 2.00 | 0.20 | 12.00 |
+| `prompt_gt_200k` | > 200,000 | 4.00 | 0.40 | 18.00 |
+
+These prices replaced the over-stated 2.25 / 0.225 / 18 and 4.50 / 0.45 / 27.
+Costs already captured at the old prices are not repriced.
+
 The server's catalog snapshot projects this curated row without a Gemini
 metadata credential lookup or HTTP request. Live AI Studio metadata enrichment
 is a separate explicit metadata capability and must not block static catalog
@@ -633,10 +645,10 @@ than pretending a remote paid model cost is `$0`.
 
 Anthropic Claude rows use standard first-party Claude API pricing in the static
 catalog, not Batch API, Opus Fast Mode, data-residency premiums, or temporary
-launch discounts. Claude Sonnet 5 deliberately uses the
-durable standard `$3` input / `$15` output per MTok row even though Anthropic's
-introductory `$2` / `$10` pricing runs through 2026-08-31. Cache dimensions must
-remain explicit:
+launch discounts. Claude Sonnet 5 uses `$2` input / `$10` output per MTok:
+Anthropic made its launch price the standard price and cancelled the scheduled
+2026-09-01 increase to `$3` / `$15` (pricing page verified 2026-10-09). Cache
+dimensions must remain explicit:
 
 - Fable 5: input `10`, output `50`, cache read `1`, 5-minute cache write
   `12.5`, 1-hour cache write `20`.
@@ -646,8 +658,9 @@ remain explicit:
   `6.25`, 1-hour cache write `10`.
 - Opus 5 (effective 2026-07-24; verified 2026-07-31): input `5`, output `25`,
   cache read `0.5`, 5-minute cache write `6.25`, 1-hour cache write `10`.
-- Sonnet 5: input `3`, output `15`, cache read `0.3`, 5-minute cache write
-  `3.75`, 1-hour cache write `6`.
+- Sonnet 5 (verified 2026-10-09): input `2`, output `10`, cache read `0.2`,
+  5-minute cache write `2.5`, 1-hour cache write `4`. Only new usage is priced
+  with this row; stored records keep their captured price.
 
 OpenAI GPT-5.6 prices are first-party standard API prices per million tokens
 effective 2026-07-30 and verified against the [GPT-5.6 Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol),

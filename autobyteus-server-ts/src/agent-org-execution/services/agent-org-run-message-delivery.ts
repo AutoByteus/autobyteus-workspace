@@ -9,8 +9,9 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import type { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { TaskDelegationError, type DelegateTaskInput, type DelegateTaskResult, type TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { TaskDelegationError, type AssignToExistingCopyInput, type SpawnTaskInput, type TaskDelegationContext, type TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -98,14 +99,21 @@ export class AgentOrgRunMessageDelivery {
   }
 
   /** `delegate_task(address)`: never to the caller's own placement. */
-  delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     this.options.authorizeIdentity(context.identity);
     return delegateToResolvedTarget(() => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
       if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
         throw new Error("An Agent cannot delegate a task to its own logical placement.");
       }
-      return this.options.taskExecutions.delegate(context, input, placement);
+      return this.options.taskExecutions.delegateToNewCopy(context, input, placement);
     });
+  }
+
+  /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
+    this.options.authorizeIdentity(context.identity);
+    return this.options.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
+      this.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
   }
 
   reserveAgentInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {

@@ -66,6 +66,15 @@ describe('current supported model definitions', () => {
     expect(supportedModelDefinitions.filter((item) => item.value === 'claude-opus-5')).toHaveLength(1);
   });
 
+  it('prices Claude Sonnet 5 at the official Standard rates', () => {
+    const sonnet = supportedModelDefinitions.filter((item) => item.value === 'claude-sonnet-5');
+    expect(sonnet).toHaveLength(1);
+    expect(sonnet[0]!.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.2,
+      cachedInputWrite5mTokenPricing: 2.5, cachedInputWrite1hTokenPricing: 4,
+    });
+  });
+
   it('contains current named rows and removes the replaced curated identifiers', () => {
     const names = new Set(supportedModelDefinitions.map((definition) => definition.name));
     expect([...names]).toEqual(expect.arrayContaining([
@@ -180,6 +189,42 @@ describe('current supported model definitions', () => {
             outputTokenPricing: 7.5,
             cachedInputReadTokenPricing: 0.15,
           }),
+        },
+      ],
+    });
+  });
+
+  it('prices Gemini 3.1 Pro Preview at the official per-prompt-size tiers', async () => {
+    const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'gemini-3.1-pro-preview');
+    expect(definitions).toHaveLength(1);
+    expect(definitions[0]?.defaultConfig.pricingConfig).toMatchObject({
+      inputTokenPricing: 2,
+      outputTokenPricing: 12,
+      cachedInputReadTokenPricing: 0.2,
+    });
+
+    await expect(LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'gemini-3.1-pro-preview',
+      modelProvider: LLMProvider.GEMINI,
+    })).resolves.toMatchObject({
+      pricing_status: 'trusted',
+      input_price_per_million: 2,
+      output_price_per_million: 12,
+      cached_input_read_price_per_million: 0.2,
+      input_price_tiers: [
+        {
+          tier_id: 'prompt_le_200k',
+          max_input_tokens: 200_000,
+          input_price_per_million: 2,
+          output_price_per_million: 12,
+          cached_input_read_price_per_million: 0.2,
+        },
+        {
+          tier_id: 'prompt_gt_200k',
+          max_input_tokens: null,
+          input_price_per_million: 4,
+          output_price_per_million: 18,
+          cached_input_read_price_per_million: 0.4,
         },
       ],
     });

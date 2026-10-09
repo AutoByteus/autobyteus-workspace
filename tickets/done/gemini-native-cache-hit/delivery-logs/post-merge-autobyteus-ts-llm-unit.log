@@ -1,0 +1,188 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-ts[39m
+
+ [32m✓[39m tests/unit/llm/openai-compatible-endpoint-discovery.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+[90mstderr[2m | tests/unit/llm/utils/media-payload-formatter.test.ts[2m > [22m[2mmedia_payload_formatter[2m > [22m[2mfileToBase64 reads files
+[22m[39mFailed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-zaMxWx/missing.png: Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-zaMxWx/missing.png'
+
+[90mstderr[2m | tests/unit/llm/utils/media-payload-formatter.test.ts[2m > [22m[2mmedia_payload_formatter[2m > [22m[2murlToBase64 downloads content
+[22m[39mFailed to download from URL https://example.com/notfound.jpg: Error: Not Found
+
+[90mstderr[2m | tests/unit/llm/utils/media-payload-formatter.test.ts[2m > [22m[2mmedia_payload_formatter[2m > [22m[2mrejects empty local files, downloads, raw base64, and data URI payloads
+[22m[39mFailed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-hO3y81/empty.png: Error: Media file '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-hO3y81/empty.png' is empty.
+
+[90mstderr[2m | tests/unit/llm/utils/media-payload-formatter.test.ts[2m > [22m[2mmedia_payload_formatter[2m > [22m[2mrejects empty local files, downloads, raw base64, and data URI payloads
+[22m[39mFailed to download from URL https://127.0.0.1:51739/media/images/b132adbb-80e4-4faf-bd36-44d965d2e095.jpg: Error: Media URL 'https://127.0.0.1:51739/media/images/b132adbb-80e4-4faf-bd36-44d965d2e095.jpg' returned an empty payload.
+
+ [32m✓[39m tests/unit/llm/utils/media-payload-formatter.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 159[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/anthropic-llm.test.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/openai-compatible-llm.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/ollama-llm.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[90mstdout[2m | tests/unit/llm/lmstudio-provider.test.ts[2m > [22m[2mLMStudioModelProvider[2m > [22m[2muses the LM Studio native model list to capture supported and active context metadata
+[22m[39mDiscovering LM Studio models from host: http://127.0.0.1:1234
+
+[90mstdout[2m | tests/unit/llm/lmstudio-provider.test.ts[2m > [22m[2mLMStudioModelProvider[2m > [22m[2mreturns null active context when loaded instances disagree on configured context length
+[22m[39mDiscovering LM Studio models from host: http://127.0.0.1:1234
+
+ [32m✓[39m tests/unit/llm/lmstudio-provider.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/transport/local-long-running-fetch.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/tool-call-delta.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstdout[2m | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts[2m > [22m[2mprovider native tool history renderers[2m > [22m[2mreconciles stream-start native metadata with final normalized arguments
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+
+[90mstdout[2m | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts[2m > [22m[2mprovider native tool history renderers[2m > [22m[2mreconciles stream-start native metadata with final normalized arguments
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+
+[90mstdout[2m | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts[2m > [22m[2mprovider native tool history renderers[2m > [22m[2mreconciles stream-start native metadata with final normalized arguments
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+
+ [32m✓[39m tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/autobyteus-llm.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+[90mstdout[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2m'geminiProject' status 401 makes one SDK fetch
+[22m[39mThe user provided project/location will take precedence over the API key from the environment variables.
+
+[90mstdout[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2m'geminiProject' status 429 makes one SDK fetch
+[22m[39mThe user provided project/location will take precedence over the API key from the environment variables.
+
+[90mstdout[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2m'geminiProject' status 503 makes one SDK fetch
+[22m[39mThe user provided project/location will take precedence over the API key from the environment variables.
+
+ [32m✓[39m tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/anthropic-signed-tool-continuation.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/provider-native-request-payloads.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 80[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/autobyteus-provider.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/openai-compatible-endpoint-provider.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/metadata/gemini-developer-api-model-metadata-provider.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/gemini-llm.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/autobyteus-gateway-routing.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstderr[2m | tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts[2m > [22m[2mOpenAIResponsesRenderer[2m > [22m[2mdegrades user audio input in responses renderer and keeps text content
+[22m[39mOpenAI Responses input audio is not supported in this runtime path; skipping.
+
+[90mstderr[2m | tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts[2m > [22m[2mOpenAIResponsesRenderer[2m > [22m[2momits an empty image conversion while preserving the message text
+[22m[39mError processing image data:image/png;base64,: Error: Invalid data URI media source: the base64 payload is empty or invalid.
+
+ [32m✓[39m tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/extensions/token-usage-tracking-extension.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/metadata/model-metadata-resolver.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/llm-config.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/completion-status.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/user-message.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/custom-llm-provider-identity.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/glm-llm.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/grok-llm.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/token-usage-normalizers.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/discovery-endpoint-identity.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/llm-factory-config-composition.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/llm-config-overrides.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/base.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/supported-model-definitions.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+[90mstdout[2m | tests/unit/llm/ollama-provider.test.ts[2m > [22m[2mOllamaModelProvider[2m > [22m[2mkeeps discovered Ollama models in the OLLAMA provider bucket and captures context metadata
+[22m[39mDiscovering Ollama models from host: http://127.0.0.1:11434
+
+[90mstdout[2m | tests/unit/llm/ollama-provider.test.ts[2m > [22m[2mOllamaModelProvider[2m > [22m[2mfalls back to configured num_ctx when the model is not currently running
+[22m[39mDiscovering Ollama models from host: http://127.0.0.1:11434
+
+[90mstdout[2m | tests/unit/llm/ollama-provider.test.ts[2m > [22m[2mOllamaModelProvider[2m > [22m[2mkeeps the listed model when detail enrichment fails and leaves metadata unknown
+[22m[39mDiscovering Ollama models from host: http://127.0.0.1:11434
+
+[90mstderr[2m | tests/unit/llm/ollama-provider.test.ts[2m > [22m[2mOllamaModelProvider[2m > [22m[2mkeeps the listed model when detail enrichment fails and leaves metadata unknown
+[22m[39mFailed to fetch Ollama model details for 'llama3.3:70b' from http://127.0.0.1:11434: show failed
+
+ [32m✓[39m tests/unit/llm/ollama-provider.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/converters/ollama-tool-call-converter.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/kimi-llm.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/openai-compatible-request-builder.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/prompt-renderers/anthropic-prompt-renderer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/deepseek-llm.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/models.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/converters-media.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/messages.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/lmstudio-llm.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/extensions/extension-registry.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/prompt-renderers/ollama-prompt-renderer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/token-usage.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/response-types.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/extensions/base-extension.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/dynamic-model-identifiers.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/converters/anthropic-tool-call-converter.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/prompt-renderers/deepseek-chat-renderer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/converters/gemini-tool-call-converter.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/utils/token-usage-tracker.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/errors/provider-error.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/provider-request-kwargs.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstderr[2m | tests/unit/llm/llm-factory-provider-helper.test.ts[2m > [22m[2mLLMFactory.getProvider[2m > [22m[2mreturns null when model is not found
+[22m[39mCould not find model with identifier 'missing-model' to get its provider.
+
+ [32m✓[39m tests/unit/llm/llm-factory-provider-helper.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/prompt-renderers/mistral-prompt-renderer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/enums.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/token-counter/base-token-counter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/converters/openai-tool-call-converter.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/qwen-provider-config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/llm/api/openai-llm.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstderr[2m | tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22m[2mcompaction invocation-local SDK retry bound[2m > [22m[2mcounts one remote generation request through the real axios client (not remote host internal work)
+[22m[39mSECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+ [31m❯[39m tests/unit/llm/api/compaction-single-attempt-transport.test.ts [2m([22m[2m37 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 20061[2mms[22m[39m
+     [32m✓[39m 'openai' status 401 makes one SDK fetch[32m 9[2mms[22m[39m
+     [32m✓[39m 'openai' status 429 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'openai' status 503 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'responses' status 401 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'responses' status 429 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'responses' status 503 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'deepseek' status 401 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'deepseek' status 429 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'deepseek' status 503 makes one SDK fetch[32m 2[2mms[22m[39m
+     [32m✓[39m 'anthropic' status 401 makes one SDK fetch[32m 3[2mms[22m[39m
+     [32m✓[39m 'anthropic' status 429 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'anthropic' status 503 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'geminiAiStudio' status 401 makes one SDK fetch[32m 3[2mms[22m[39m
+     [32m✓[39m 'geminiAiStudio' status 429 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'geminiAiStudio' status 503 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'geminiExpress' status 401 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'geminiExpress' status 429 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'geminiExpress' status 503 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'geminiProject' status 401 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'geminiProject' status 429 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'geminiProject' status 503 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'mistral' status 401 makes one SDK fetch[32m 5[2mms[22m[39m
+     [32m✓[39m 'mistral' status 429 makes one SDK fetch[32m 2[2mms[22m[39m
+     [32m✓[39m 'mistral' status 503 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'ollama' status 401 makes one SDK fetch[32m 1[2mms[22m[39m
+     [32m✓[39m 'ollama' status 429 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m 'ollama' status 503 makes one SDK fetch[32m 0[2mms[22m[39m
+     [32m✓[39m preserves parent OpenAI SDK retry defaults on the same adapter[32m 10[2mms[22m[39m
+     [32m✓[39m openai transport timeout does not amplify one invocation[32m 1[2mms[22m[39m
+     [32m✓[39m responses transport timeout does not amplify one invocation[32m 0[2mms[22m[39m
+     [32m✓[39m deepseek transport timeout does not amplify one invocation[32m 0[2mms[22m[39m
+     [32m✓[39m anthropic transport timeout does not amplify one invocation[32m 0[2mms[22m[39m
+     [32m✓[39m mistral transport timeout does not amplify one invocation[32m 1[2mms[22m[39m
+     [32m✓[39m geminiAiStudio transport timeout does not amplify one invocation[32m 0[2mms[22m[39m
+     [32m✓[39m ollama transport timeout does not amplify one invocation[32m 0[2mms[22m[39m
+[31m     [31m×[31m sets Gemini retries on its isolated client after user extras, leaving the parent client unchanged[39m[33m 20001[2mms[22m[39m
+     [32m✓[39m counts one remote generation request through the real axios client (not remote host internal work)[32m 6[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/llm/api/compaction-single-attempt-transport.test.ts[2m > [22mcompaction invocation-local SDK retry bound[2m > [22msets Gemini retries on its isolated client after user extras, leaving the parent client unchanged
+[31m[1mError[22m: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/llm/api/compaction-single-attempt-transport.test.ts:[2m66:3[22m[39m
+    [90m 64| [39m    [34mexpect[39m(fetch)[33m.[39m[34mtoHaveBeenCalledOnce[39m()[33m;[39m
+    [90m 65| [39m  })[33m;[39m
+    [90m 66| [39m  it('sets Gemini retries on its isolated client after user extras, le…
+    [90m   | [39m  [31m^[39m
+    [90m 67| [39m    const fetch = vi.fn(async () => new Response('{}', { status: 503 }…
+    [90m 68| [39m    const llm = new GeminiLLM(model(LLMProvider.GEMINI), new LLMConfig…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m65 passed[39m[22m[90m (66)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m399 passed[39m[22m[90m (400)[39m
+[2m   Start at [22m 12:49:10
+[2m   Duration [22m 21.41s[2m (transform 4.07s, setup 630ms, import 22.44s, tests 20.80s, environment 6ms)[22m
+

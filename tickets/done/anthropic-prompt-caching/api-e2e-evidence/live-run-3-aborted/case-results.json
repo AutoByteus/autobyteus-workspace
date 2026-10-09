@@ -1,0 +1,29 @@
+[
+  {
+    "case": "APC-E2E-001: a new turn reads the whole previous history from cache, writes only new input and keeps earlier thinking",
+    "state": "fail",
+    "errors": [
+      "Model refused at call 0 (T1); the scenario prompt needs revision, not the product."
+    ],
+    "details": null,
+    "at": "2026-10-09T10:54:05.688Z"
+  },
+  {
+    "case": "APC-E2E-002: an interruption note is appended after the history and leaves the top-level system unchanged",
+    "state": "fail",
+    "errors": [
+      "Model refused at call 0 (T1); the scenario prompt needs revision, not the product."
+    ],
+    "details": null,
+    "at": "2026-10-09T10:54:05.707Z"
+  },
+  {
+    "case": "APC-E2E-003: run-level cache hit ≥ 90% with every call after the first reading the cache; 2 × 1h markers; SDK 0.132.1",
+    "state": "fail",
+    "errors": [
+      "T1..T4 call 1: null: expected null to be 200 // Object.is equality"
+    ],
+    "details": null,
+    "at": "2026-10-09T10:54:05.722Z"
+  }
+]

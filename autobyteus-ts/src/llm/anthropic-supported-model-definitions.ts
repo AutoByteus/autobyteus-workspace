@@ -138,11 +138,11 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-sonnet-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 10.0, {
       pricingEffectiveDate: '2026-07-07',
-      cachedInputReadTokenPricing: 0.3,
-      cachedInputWrite5mTokenPricing: 3.75,
-      cachedInputWrite1hTokenPricing: 6.0,
+      cachedInputReadTokenPricing: 0.2,
+      cachedInputWrite5mTokenPricing: 2.5,
+      cachedInputWrite1hTokenPricing: 4.0,
     }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },

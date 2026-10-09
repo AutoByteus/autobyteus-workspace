@@ -81,7 +81,7 @@ const runOptionalToolCallContinuation = async (llm: DeepSeekLLM): Promise<void> 
   ];
   const parser = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
   let assistantText = '';
-  for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
+  for await (const chunk of llm.streamMessages(toolPromptMessages, {
     tools: [TOOL_SCHEMA]
   })) {
     assistantText += chunk.content ?? '';
@@ -189,14 +189,14 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
         turnId
       );
 
-      const assembler = new LLMRequestAssembler(manager, (llm as any)._renderer);
+      const assembler = new LLMRequestAssembler(manager);
       const request = await assembler.prepareRequest(null, {
         turnId,
         requestId: 'request_deepseek_reasoning_continuation'
-      });
+      } as any, undefined, [WEATHER_TOOL_SCHEMA]);
 
-      await llm.sendMessages(request.outboundMessages, request.renderedPayload, {
-        tools: [WEATHER_TOOL_SCHEMA]
+      await llm.sendMessages(request.outboundMessages, {
+        tools: request.tools
       });
 
       expect(createMock).toHaveBeenCalledTimes(1);

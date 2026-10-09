@@ -328,8 +328,10 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const helpers = aNodes.filter((node) => node !== workerNode);
     expect(helpers).toHaveLength(2);
     const delegatedB = await root.managerCalls(callTool("delegate_task", { recipient_address: teamAddress, task_id: taskB }));
-    expect(delegatedB).toMatchObject({ target_kind: "team" });
-    const coordinator = delegatedB.target_agent_run_id as string;
+    expect(delegatedB).toMatchObject({ delegated: true, target_kind: "team" });
+    expect(delegatedB).not.toHaveProperty("target_agent_run_id");
+    const coordinator = delegatedB.target_team_coordinator_agent_run_id as string;
+    expect(delegatedB.target_team_run_id).toBeTruthy();
     const bNode = (await root.waitForNodes("Task B Team copy", (nodes) => nodes.some((node) => node.teamRunId))).find((node) => node.teamRunId)!;
     expect(bNode.members.map((member: any) => member.agentRunId)).toContain(coordinator);
     const mate = bNode.members.find((member: any) => member.agentRunId !== coordinator)!.agentRunId as string;
@@ -383,7 +385,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     view = root.state.view; from = view.frames.length;
     const toHelper = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: helpers[0]!.agentRunId, content: "Helper?" }));
     expect(toHelper).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toHelper.message).toMatch(/Only the run that assigned (it|the work) can reactivate it.*message the run ID delegate_task returned/);
+    expect(toHelper.message).toMatch(/Only the run that assigned (it|the work) can reactivate it.*message the copy's agent run ID/);
 
     // 7. QR-002 / AC-006: a sender that is not the assigner cannot reactivate. In a Team or Org root, a configured
     // teammate; in a standalone Agent root, the other senders are Task copies (a copy whose work is that message).
@@ -483,7 +485,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const resourcesB = await readBytes(path.join(bDir, "agent_run_resources.json"));
     const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member?" }));
     expect(toMember).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toMember.message).toMatch(/for a Team, its coordinator/);
+    expect(toMember.message).toMatch(/for a Team copy, its coordinator's/);
     expect(await readBytes(path.join(bDir, "agent_run_resources.json"))).toBe(resourcesB);
     view = root.state.view; from = view.frames.length;
     const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));

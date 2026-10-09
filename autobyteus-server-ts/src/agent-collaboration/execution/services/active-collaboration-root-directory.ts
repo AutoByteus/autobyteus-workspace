@@ -1,5 +1,5 @@
 import type { TaskExecutionReference } from "../task/task-execution-reference.js";
-import type { TaskAgentResourceStopResult } from "../task/task-agent-resource-port.js";
+import type { TaskExecutionStopResult } from "../task/task-execution-resource-port.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import {
@@ -31,8 +31,10 @@ export interface ActiveRootMessageBoundary {
   /** A task execution's own live status (Agent status, or folded Team status); wakes nothing. */
   taskExecutionStatus?(reference: TaskExecutionReference): AgentExecutionStatus;
   /** Stops exactly these closed Task agent runs hosted in this root. */
-  releaseTaskAgentResources?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]>;
+  releaseTaskExecutions?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
+  /** The coordinator agent run of this root's Team copy with that team run ID; `null` when it hosts none. Reads only. */
+  teamCoordinatorOf?(teamRunId: string): string | null;
 }
 
 export type ActiveRootRegistrationReservation = Readonly<{
@@ -84,6 +86,18 @@ export class ActiveCollaborationRootDirectory {
   resolve(root: RootExecutionIdentity): ActiveRootMessageBoundary | null {
     const entry = this.active.get(rootExecutionIdentityKey(root));
     return entry && sameRootExecutionIdentity(entry.root, root) ? entry.boundary : null;
+  }
+
+  /**
+   * The coordinator agent run of the Team copy with this team run ID in any active root, for
+   * `send_message_to` guidance (it reaches agents only); `null` when no active root hosts it.
+   */
+  findTeamCoordinator(teamRunId: string): string | null {
+    for (const { boundary } of this.active.values()) {
+      const coordinator = boundary.teamCoordinatorOf?.(teamRunId) ?? null;
+      if (coordinator) return coordinator;
+    }
+    return null;
   }
 
   unregister(root: RootExecutionIdentity, expected: ActiveRootMessageBoundary): boolean {

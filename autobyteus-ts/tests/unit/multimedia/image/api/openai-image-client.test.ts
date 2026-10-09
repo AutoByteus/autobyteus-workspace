@@ -82,7 +82,8 @@ describe('OpenAIImageClient', () => {
         prompt: 'a prompt',
         n: 1,
         size: '1024x1024'
-      })
+      }),
+      { signal: undefined },
     );
   });
 

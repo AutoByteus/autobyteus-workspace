@@ -8,6 +8,7 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { LlmPhase } from '../../../../src/agent/loop/llm-phase.js';
+import { LLMRequestAssembler } from '../../../../src/agent/llm-request-assembler.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -21,7 +22,7 @@ import {
   ToolCallPayload,
 } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
-import { ANTHROPIC_ASSISTANT_TURN_KEY } from '../../../../src/llm/utils/provider-native-assistant-turn.js';
+import { PROVIDER_NATIVE_ASSISTANT_TURN_KEY } from '../../../../src/llm/provider-native/provider-native-assistant-turn.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { WorkingContext } from '../../../../src/memory/working-context.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
@@ -52,11 +53,10 @@ class RequestRecoveryTestTool extends BaseTool {
 }
 
 class CapturingResumeLLM extends BaseLLM {
-  public readonly _renderer = new OpenAIChatRenderer();
   public readonly streamCaptures: Array<{
     messages: Message[];
-    renderedPayload: any;
     kwargs: Record<string, unknown>;
+    options: LLMInvocationOptions;
   }> = [];
 
   constructor() {
@@ -81,17 +81,15 @@ class CapturingResumeLLM extends BaseLLM {
 
   override async *streamMessages(
     messages: Message[],
-    renderedPayload: unknown = null,
     kwargs: Record<string, unknown> = {},
-    _options: LLMInvocationOptions = {},
+    options: LLMInvocationOptions = {},
   ): AsyncGenerator<ChunkResponse, void, unknown> {
-    this.streamCaptures.push({ messages: [...messages], renderedPayload, kwargs });
+    this.streamCaptures.push({ messages: [...messages], kwargs, options });
     yield new ChunkResponse({ content: 'resumed', is_complete: true });
   }
 }
 
 class FailingThenRecoveringLLM extends BaseLLM {
-  public readonly _renderer = new OpenAIChatRenderer();
   public readonly streamCaptures: Message[][] = [];
 
   constructor() {
@@ -116,7 +114,6 @@ class FailingThenRecoveringLLM extends BaseLLM {
 
   override async *streamMessages(
     messages: Message[],
-    _renderedPayload: unknown = null,
     _kwargs: Record<string, unknown> = {},
     _options: LLMInvocationOptions = {},
   ): AsyncGenerator<ChunkResponse, void, unknown> {
@@ -129,7 +126,6 @@ class FailingThenRecoveringLLM extends BaseLLM {
 }
 
 class ToolCallingRecoveryLLM extends BaseLLM {
-  public readonly _renderer = new OpenAIChatRenderer();
   public readonly streamCaptures: Message[][] = [];
 
   constructor() {
@@ -154,7 +150,6 @@ class ToolCallingRecoveryLLM extends BaseLLM {
 
   override async *streamMessages(
     messages: Message[],
-    _renderedPayload: unknown = null,
     _kwargs: Record<string, unknown> = {},
     _options: LLMInvocationOptions = {},
   ): AsyncGenerator<ChunkResponse, void, unknown> {
@@ -178,7 +173,6 @@ class ToolCallingRecoveryLLM extends BaseLLM {
 }
 
 class InterruptingPartialRecoveryLLM extends BaseLLM {
-  public readonly _renderer = new OpenAIChatRenderer();
   public readonly streamCaptures: Message[][] = [];
 
   constructor(private readonly interrupt: () => void) {
@@ -203,7 +197,6 @@ class InterruptingPartialRecoveryLLM extends BaseLLM {
 
   override async *streamMessages(
     messages: Message[],
-    _renderedPayload: unknown = null,
     _kwargs: Record<string, unknown> = {},
     _options: LLMInvocationOptions = {},
   ): AsyncGenerator<ChunkResponse, void, unknown> {
@@ -251,11 +244,51 @@ describe('LlmPhase unified streaming setup', () => {
       expect(llm.streamCaptures[0].kwargs).toEqual({
         logicalConversationId: 'agent_no_tools',
       });
+      expect(llm.streamCaptures[0].options).toMatchObject({ promptCacheScope: 'conversation', turnId: turn.turnId });
       expect(llm.streamCaptures[0].kwargs).not.toHaveProperty('tools');
       expect(memoryManager.listTurnRawTracesOrdered().some(({ traceType }) =>
         traceType === 'tool_call' || traceType === 'tool_result'
       )).toBe(false);
     } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('LlmPhase single request builder', () => {
+  it('sends the assembled messages and exactly the tools the assembler bound, without pre-rendering', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-phase-request-tools-'));
+    const registrySnapshot = defaultToolRegistry.snapshot();
+    const prepareRequest = vi.spyOn(LLMRequestAssembler.prototype, 'prepareRequest');
+    try {
+      registerToolClass(RequestRecoveryTestTool);
+      const llm = new CapturingResumeLLM();
+      const memoryManager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'agent_request_tools') });
+      const state = new AgentRuntimeState('agent_request_tools');
+      state.llmInstance = llm;
+      state.memoryManager = memoryManager;
+      const tool = new RequestRecoveryTestTool();
+      state.toolInstances = { [RECOVERY_TOOL_NAME]: tool };
+      const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', [tool]);
+      const context = new AgentContext('agent_request_tools', config, state);
+      const turn = new AgentTurn('turn_request_tools');
+
+      await new LlmPhase().run(makePhaseInput(turn.turnId, 'use the tool'), context, turn, null);
+
+      expect(prepareRequest).toHaveBeenCalledTimes(1);
+      const sentTools = prepareRequest.mock.calls[0]![3];
+      const request = await prepareRequest.mock.results[0]!.value;
+      expect(sentTools.map((schema: any) => schema.function?.name ?? schema.name)).toEqual([RECOVERY_TOOL_NAME]);
+      expect(request.tools).toBe(sentTools);
+      expect(llm.streamCaptures).toHaveLength(1);
+      expect(llm.streamCaptures[0].messages).toEqual(request.outboundMessages);
+      expect(llm.streamCaptures[0].kwargs).toEqual({ logicalConversationId: 'agent_request_tools', tools: request.tools });
+      expect(llm.streamCaptures[0].kwargs.tools).toBe(request.tools);
+      expect(llm.streamCaptures[0].options).toMatchObject({ promptCacheScope: 'conversation', turnId: turn.turnId });
+      expect(request).not.toHaveProperty('renderedPayload');
+    } finally {
+      prepareRequest.mockRestore();
+      defaultToolRegistry.restore(registrySnapshot);
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
@@ -316,7 +349,7 @@ describe('LlmPhase successful retained-outcome recovery settlement', () => {
         content: 'I will inspect the retained context.',
       });
       expect(retained.at(-1)?.tool_payload).toBeInstanceOf(ToolCallPayload);
-      expect(retained.at(-1)?.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).toMatchObject({
+      expect(retained.at(-1)?.metadata?.[PROVIDER_NATIVE_ASSISTANT_TURN_KEY]).toMatchObject({
         provider: 'anthropic', blocks: [
           { type: 'thinking', signature: 'signed' },
           { type: 'text', text: 'I will inspect the retained context.' },
@@ -464,7 +497,8 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
 
       expect(outcome).toMatchObject({ kind: 'final' });
       expect(llm.streamCaptures).toHaveLength(1);
-      const rendered = llm.streamCaptures[0].renderedPayload as any[];
+      // The agent no longer pre-renders; render what the provider received to inspect the wire shape.
+      const rendered = await new OpenAIChatRenderer().render(llm.streamCaptures[0].messages) as any[];
       const assistantIndex = rendered.findIndex((message) => Array.isArray(message.tool_calls));
       expect(assistantIndex).toBeGreaterThanOrEqual(0);
       expect(rendered[assistantIndex + 1]).toMatchObject({

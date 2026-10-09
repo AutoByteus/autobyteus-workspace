@@ -3,7 +3,6 @@ import { CompleteResponse, type ChunkResponse } from '../../llm/utils/response-t
 import { BaseLLM } from '../../llm/base.js';
 import { LlmStreamingResponseHandler } from '../streaming/handlers/llm-streaming-response-handler.js';
 import { SegmentEvent, SegmentType } from '../streaming/segments/segment-events.js';
-import { OpenAIChatRenderer } from '../../llm/prompt-renderers/openai-chat-renderer.js';
 import { ToolSchemaProvider } from '../../tools/usage/providers/tool-schema-provider.js';
 import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembler.js';
 import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
@@ -26,7 +25,7 @@ import type { ToolInvocation } from '../tool-invocation.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 import { MissingApiKeyError } from '../../secrets/provider-api-key-error.js';
 import { extractProviderErrorEvidence } from '../../llm/errors/provider-error.js';
-import type { AnthropicAssistantTurn } from '../../llm/utils/provider-native-assistant-turn.js';
+import type { ProviderNativeAssistantTurn } from '../../llm/provider-native/provider-native-assistant-turn.js';
 
 export type LlmPhaseOutcome =
   | { kind: 'compaction_blocked' }
@@ -76,7 +75,7 @@ export class LlmPhase {
     let completeResponseText = '';
     let completeReasoningText = '';
     let tokenUsage: LlmTokenUsageObservation | null = null;
-    let providerNativeAssistantTurn: AnthropicAssistantTurn | null = null;
+    let providerNativeAssistantTurn: ProviderNativeAssistantTurn | null = null;
     const completeImageUrls: string[] = [];
     const completeAudioUrls: string[] = [];
     const completeVideoUrls: string[] = [];
@@ -117,12 +116,6 @@ export class LlmPhase {
       ? new ToolSchemaProvider().buildSchema(toolNames, provider)
       : [];
 
-    const streamKwargs: Record<string, any> = { logicalConversationId: agentId };
-    if (toolSchemas.length) {
-      streamKwargs.tools = toolSchemas;
-    }
-
-    const renderer = (llmInstance as any)._renderer ?? new OpenAIChatRenderer();
     let compactionReporter: CompactionRuntimeReporter | null = null;
     let pendingCompactionExecutor: PendingCompactionExecutor | null = null;
     if (automaticCompaction.kind === 'enabled') {
@@ -139,7 +132,6 @@ export class LlmPhase {
     }
     const assembler = new LLMRequestAssembler(
       memoryManager,
-      renderer,
       pendingCompactionExecutor,
       llmInstance.model.multimodalCapabilities,
     );
@@ -155,6 +147,7 @@ export class LlmPhase {
           input.llmUserMessage,
           { turnId: activeTurnId, requestId: llmCallId, isToolContinuation: turn.toolInvocationBatches.length > 0, getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal },
           systemPrompt ?? undefined,
+          toolSchemas,
         )
       );
     } catch (error) {
@@ -195,9 +188,8 @@ export class LlmPhase {
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
       const stream = llmInstance.streamMessages(
         request.outboundMessages,
-        request.renderedPayload,
-        streamKwargs,
-        { signal: turn.executionScope.signal, turnId: activeTurnId }
+        { logicalConversationId: agentId, ...(request.tools.length ? { tools: request.tools } : {}) },
+        { promptCacheScope: 'conversation', signal: turn.executionScope.signal, turnId: activeTurnId }
       );
 
       for await (const chunkResponse of turn.executionScope.iterateAbortable(

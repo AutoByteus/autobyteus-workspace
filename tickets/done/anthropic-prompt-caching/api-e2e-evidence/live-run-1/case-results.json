@@ -1,0 +1,668 @@
+[
+  {
+    "case": "APC-E2E-001",
+    "state": "fail",
+    "errors": [
+      "T1 produced thinking with tool_use: expected 0 to be greater than 0"
+    ],
+    "details": {
+      "t1Calls": 13,
+      "t2Calls": 13,
+      "t1ToolCycleResponsesWithThinking": 0,
+      "thinkingBlocksInFirstT2Request": 0,
+      "lastT1Usage": {
+        "input_tokens": 2,
+        "cache_read_input_tokens": 17159,
+        "cache_creation_input_tokens": 872,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 872,
+        "output_tokens": 41
+      },
+      "firstT2Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 18031,
+        "cache_creation_input_tokens": 94,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 94,
+        "output_tokens": 113
+      },
+      "previousRequestGrossInput": 18033,
+      "previousRequestCachedPrefix": 18031,
+      "firstT2GrossInput": 18129,
+      "newInputTokens": 96,
+      "firstT2WrittenOrUncached": 98
+    },
+    "at": "2026-10-09T10:26:57.318Z"
+  },
+  {
+    "case": "APC-E2E-002",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "t3Calls": 1,
+      "t4Calls": 4,
+      "noteBlockIndex": 55,
+      "blockEntries": 57,
+      "systemShaBefore": "8733951e73710354",
+      "systemShaT4": "8733951e73710354",
+      "firstT4Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 28661,
+        "cache_creation_input_tokens": 375,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 375,
+        "output_tokens": 135
+      },
+      "systemContainsNote": false
+    },
+    "at": "2026-10-09T10:27:19.298Z"
+  },
+  {
+    "case": "APC-E2E-003",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "calls": 31,
+      "turns": 4,
+      "cacheReadTokens": 588483,
+      "grossInputTokens": 620229,
+      "runLevelHit": 0.9488156793700391,
+      "cacheWrite1hTokens": 31676,
+      "cacheWrite5mTokens": 0,
+      "sdkVersionsSentOnLiveCalls": [
+        "0.132.1"
+      ],
+      "serverSdkVersion": "0.132.1",
+      "perCall": [
+        {
+          "index": 0,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 7565,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 7565,
+          "output_tokens": 113
+        },
+        {
+          "index": 1,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 7565,
+          "cache_creation_input_tokens": 874,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 874,
+          "output_tokens": 113
+        },
+        {
+          "index": 2,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 8439,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 3,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 9311,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 4,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 10183,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 5,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 11055,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 6,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 11927,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 7,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 12799,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 8,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 13671,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 9,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 14543,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 10,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 15415,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 11,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 16287,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 12,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 17159,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 41
+        },
+        {
+          "index": 13,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 18031,
+          "cache_creation_input_tokens": 94,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 94,
+          "output_tokens": 113
+        },
+        {
+          "index": 14,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 18125,
+          "cache_creation_input_tokens": 874,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 874,
+          "output_tokens": 113
+        },
+        {
+          "index": 15,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 18999,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 16,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 19871,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 17,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 20743,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 18,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 21615,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 19,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 22487,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 20,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 23359,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 21,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 24231,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 22,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 25103,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 23,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 25975,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 24,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 26847,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 25,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 27719,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 21
+        },
+        {
+          "index": 26,
+          "phase": "T3",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 28591,
+          "cache_creation_input_tokens": 70,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 70,
+          "output_tokens": 113
+        },
+        {
+          "index": 27,
+          "phase": "T4",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 28661,
+          "cache_creation_input_tokens": 375,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 375,
+          "output_tokens": 135
+        },
+        {
+          "index": 28,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 29036,
+          "cache_creation_input_tokens": 896,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 896,
+          "output_tokens": 113
+        },
+        {
+          "index": 29,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 29932,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 113
+        },
+        {
+          "index": 30,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 30804,
+          "cache_creation_input_tokens": 872,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 872,
+          "output_tokens": 21
+        }
+      ]
+    },
+    "at": "2026-10-09T10:27:19.329Z"
+  },
+  {
+    "case": "APC-E2E-004",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "settingResult": "Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.",
+      "error": null,
+      "waitingCallThinkingInResponse": false,
+      "thinkingBlocksBeforeChange": 1,
+      "continuation": {
+        "index": 33,
+        "phase": "T5-after-change",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 2,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 33218,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 33218,
+          "output_tokens": 113
+        },
+        "errorBody": null,
+        "systemSha": "8733951e73710354",
+        "toolsSha": "bb8319c220833490",
+        "messageCount": 69,
+        "blockEntryCount": 69,
+        "thinkingBlocksInRequest": 0,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "continuationLastMessageRole": "user",
+      "toolsChanged": true,
+      "afterChange": [
+        {
+          "index": 33,
+          "phase": "T5-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 33218,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 33218,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "8733951e73710354",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 69,
+          "blockEntryCount": 69,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 34,
+          "phase": "T5-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "end_turn",
+          "responseBlockTypes": [
+            "text"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 33218,
+            "cache_creation_input_tokens": 872,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 872,
+            "output_tokens": 21
+          },
+          "errorBody": null,
+          "systemSha": "8733951e73710354",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 71,
+          "blockEntryCount": 71,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        }
+      ]
+    },
+    "at": "2026-10-09T10:27:40.709Z"
+  },
+  {
+    "case": "APC-E2E-005",
+    "state": "fail",
+    "errors": [
+      "persisted snapshot holds thinking before restore: expected false to be true // Object.is equality"
+    ],
+    "details": {
+      "thinkingInPersistedSnapshot": false,
+      "thinkingBlocksInLastRequestBeforeStop": 0,
+      "firstAfterRestore": {
+        "index": 35,
+        "phase": "T6",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 4,
+          "cache_read_input_tokens": 34090,
+          "cache_creation_input_tokens": 44,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 44,
+          "output_tokens": 113
+        },
+        "errorBody": null,
+        "systemSha": "8733951e73710354",
+        "toolsSha": "bb8319c220833490",
+        "messageCount": 73,
+        "blockEntryCount": 73,
+        "thinkingBlocksInRequest": 0,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "t6": [
+        {
+          "index": 35,
+          "phase": "T6",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "cache_read_input_tokens": 34090,
+            "cache_creation_input_tokens": 44,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 44,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "8733951e73710354",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 73,
+          "blockEntryCount": 73,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 36,
+          "phase": "T6",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "end_turn",
+          "responseBlockTypes": [
+            "text"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 34134,
+            "cache_creation_input_tokens": 874,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 874,
+            "output_tokens": 21
+          },
+          "errorBody": null,
+          "systemSha": "8733951e73710354",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 75,
+          "blockEntryCount": 75,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        }
+      ]
+    },
+    "at": "2026-10-09T10:27:46.842Z"
+  },
+  {
+    "case": "APC-E2E-006: Stop while a tool approval is pending, reopen and continue: accepted without thinking",
+    "state": "fail",
+    "errors": [
+      "fetch failed"
+    ],
+    "details": null,
+    "at": "2026-10-09T10:32:50.447Z"
+  },
+  {
+    "case": "APC-E2E-007",
+    "state": "fail",
+    "errors": [
+      "expected 37 to be 38 // Object.is equality"
+    ],
+    "details": {
+      "calls": 38,
+      "raw": {
+        "input": 90,
+        "read": 788366,
+        "write5m": 0,
+        "write1h": 67701,
+        "writeTotal": 67701,
+        "output": 3876
+      },
+      "expectedCost": 0.7771612,
+      "summary": {
+        "usageReportCount": 37,
+        "standardInputTokens": 86,
+        "cacheReadInputTokens": 753358,
+        "cacheCreationInputTokens": 67639,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 67639,
+        "outputTokens": 3763,
+        "grossInputTokens": 821083,
+        "estimatedApiTotalCost": 0.7673876000000001,
+        "estimatedApiCacheReadInputCost": 0.1506716,
+        "estimatedApiCacheCreation1hInputCost": 0.5411119999999999,
+        "cacheState": "positive",
+        "apiCostStatus": "estimated",
+        "currency": "USD"
+      }
+    },
+    "at": "2026-10-09T10:33:50.755Z"
+  },
+  {
+    "case": "APC-E2E-008",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "sourceCall": 32,
+      "thinkingBlocksKept": 1,
+      "unchanged": {
+        "status": 200,
+        "strict": true,
+        "usage": {
+          "input_tokens": 2,
+          "cache_read_input_tokens": 32631,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 0,
+          "output_tokens": 113
+        },
+        "errorBody": null
+      },
+      "changedTool": {
+        "status": 400,
+        "strict": true,
+        "errorBody": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.7.content.0: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to \\\"drop_block\\\". The `tools` list differs from the one this block was created with.\"},\"request_id\":\"req_011CfrWh9WmSeFt7C1t7eTqp\"}"
+      }
+    },
+    "at": "2026-10-09T10:33:54.822Z"
+  }
+]

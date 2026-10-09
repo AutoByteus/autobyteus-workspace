@@ -1,0 +1,603 @@
+ .../antigravity/stream/agy-stream-event-converter.ts     |  2 +-
+ autobyteus-ts/src/llm/supported-model-definitions.ts     | 16 ++++++++--------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:53035) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/memory
+============================================================
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T10:24:02.721Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mAgent definition cache populated with 47 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mPopulating agent definition cache for the first time...
+[2026-10-09T10:24:03.831Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39m[2026-10-09T10:24:03.844Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 22 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mAgent definition cache populated with 47 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mIn-memory cache: Added new agent definition with ID agy-token-usage-79e96a4f-e527-4659-b774-91feeef3ca9b.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mAgent Definition created successfully with ID: agy-token-usage-79e96a4f-e527-4659-b774-91feeef3ca9b
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mCreated and registered workspace ID: agent_ws_8290a3835268de541058412fa3c6158c71cb045cf090e14d2b6e323ffa53bb79
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-token-usage-e2e-vsLPMr/workspace.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mReusing registered workspace ID: agent_ws_8290a3835268de541058412fa3c6158c71cb045cf090e14d2b6e323ffa53bb79
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mAGY compaction detection off for run agy_token_usage_79e96a4f_e527_4659_b774_91feeef3_62489b9ef5a840c98588d20861882911: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mAgent websocket attached for run agy_token_usage_79e96a4f_e527_4659_b774_91feeef3_62489b9ef5a840c98588d20861882911
+Created agent session e8d2f63a-c064-414e-bd3d-dd9d759e7288 for run agy_token_usage_79e96a4f_e527_4659_b774_91feeef3_62489b9ef5a840c98588d20861882911
+Agent WebSocket connected: session=e8d2f63a-c064-414e-bd3d-dd9d759e7288, run=agy_token_usage_79e96a4f_e527_4659_b774_91feeef3_62489b9ef5a840c98588d20861882911
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server[2m > [22m[2mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mClosed agent session e8d2f63a-c064-414e-bd3d-dd9d759e7288
+Agent WebSocket disconnected: e8d2f63a-c064-414e-bd3d-dd9d759e7288
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mIn-memory cache: Removed agent definition with ID agy-token-usage-79e96a4f-e527-4659-b774-91feeef3ca9b.
+
+[90mstdout[2m | tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22m[2mAGY token usage counts cache reads in gross input through the real server
+[22m[39mAgent Definition with ID agy-token-usage-79e96a4f-e527-4659-b774-91feeef3ca9b deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 1810[2mms[22m[39m
+[31m     [31m×[31m streams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)[39m[33m 484[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:56486) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it[2m > [22m[2mAE-005 shape A: a cache-heavy pre-fix checkpoint is read unchanged; the miss catches up once
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [31m❯[39m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 151[2mms[22m[39m
+[31m     [31m×[31m AE-005 shape A: a cache-heavy pre-fix checkpoint is read unchanged; the miss catches up once[39m[32m 33[2mms[22m[39m
+[31m     [31m×[31m AE-005 shape B: after a pre-fix snapshot rejected as regressed, the next snapshot adds its true increment[39m[32m 24[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:58017) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path[2m > [22m[2m'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [31m❯[39m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 122[2mms[22m[39m
+[31m     [31m×[31m 'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates[39m[32m 21[2mms[22m[39m
+[31m     [31m×[31m 'AE-003' prices '3.1 Pro, 250K prompt (>200K tier)' at the official rates[39m[32m 7[2mms[22m[39m
+     [32m✓[39m 'AE-006' prices '3.8 Flash introductory prices (2026)' at the official rates[32m 10[2mms[22m[39m
+     [32m✓[39m 'AE-006' prices '3.8 Flash standard prices (from 2027)' at the official rates[32m 8[2mms[22m[39m
+[31m     [31m×[31m AE-004 selects the 3.1 Pro tier at the 200K prompt boundary[39m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts [2m([22m[2m78 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 34[2mms[22m[39m
+     [32m✓[39m shows native image parameters, redacts native image denial, and does not classify an MCP image call as native[32m 3[2mms[22m[39m
+     [32m✓[39m enriches native image DONE with AGY's step output text and resolved file_path[32m 1[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (OUTPUT_MISSING)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (OUTPUT_UNSAFE)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (OUTPUT_TOO_LARGE)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (PATH_NOT_FOUND_IN_OUTPUT)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (PATH_OUTSIDE_CONVERSATION)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (IMAGE_MISSING)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (READ_FAILED)[32m 0[2mms[22m[39m
+     [32m✓[39m keeps native image DONE successful with output null and a content-free warning when unresolved (INVALID_IDENTITY)[32m 0[2mms[22m[39m
+     [32m✓[39m never lets a throwing resolver escape convert[32m 1[2mms[22m[39m
+     [32m✓[39m resolves distinct paths for parallel native image steps[32m 0[2mms[22m[39m
+     [32m✓[39m reports distinct native image steps without duplicating terminal events[32m 0[2mms[22m[39m
+[31m     [31m×[31m declares AGY result usage as base input that excludes cache reads, carrying only the raw counts[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m leaves gross input at the reported input and the cache state not reported when AGY omits cache reads[39m[32m 4[2mms[22m[39m
+       [32m✓[39m closes an unfinished daemon step as a succeeded background task before TURN_COMPLETED[32m 1[2mms[22m[39m
+       [32m✓[39m reports unfinished steps as background tool steps at result, and nothing when every step finished[32m 0[2mms[22m[39m
+       [32m✓[39m does not report steps closed by an interrupt as background steps[32m 0[2mms[22m[39m
+       [32m✓[39m closes every unfinished step in ascending step order[32m 0[2mms[22m[39m
+       [32m✓[39m closes an unfinished step as background before the turn error on a non-SUCCESS result[32m 0[2mms[22m[39m
+       [32m✓[39m adds no background closure for steps AGY finished as DONE, ERROR or denied[32m 0[2mms[22m[39m
+       [32m✓[39m keeps interruption semantics for an unfinished step and does not leak it into the next turn[32m 0[2mms[22m[39m
+     [32m✓[39m redacts credentials in failed terminal result with status ERROR, even without a tool[32m 0[2mms[22m[39m
+     [32m✓[39m redacts credentials in failed terminal result with status UNKNOWN, even without a tool[32m 0[2mms[22m[39m
+     [32m✓[39m redacts credentials in failed terminal result with status undefined, even without a tool[32m 0[2mms[22m[39m
+     [32m✓[39m preserves useful terminal error text without exposing the response ("Individual quota reached for this model. Resets in 3h28m50s.")[32m 0[2mms[22m[39m
+     [32m✓[39m preserves useful terminal error text without exposing the response ("  Workspace unavailable.  ")[32m 0[2mms[22m[39m
+     [32m✓[39m preserves useful terminal error text without exposing the response ({"message":"Workspace service temporarily unavailable. Try again later.","code":"UNFAMILIAR"})[32m 0[2mms[22m[39m
+     [32m✓[39m preserves useful terminal error text without exposing the response ("Read limit reached. token=PRIVATE_AGY_SECRET Authorization: Bearer PRIVATE_BEARER")[32m 0[2mms[22m[39m
+     [32m✓[39m preserves useful terminal error text without exposing the response ("<script>alert('runtime')</script> Workspace unavailable.")[32m 0[2mms[22m[39m
+     [32m✓[39m preserves useful terminal error text without exposing the response ("Workspace unavailable. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. Provider explanation. ")[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error undefined[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error null[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error ""[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error "   "[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error 42[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error [][32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error {"message":42}[32m 0[2mms[22m[39m
+     [32m✓[39m uses only the generic fallback for unusable terminal error {"message":"  ","response":"private"}[32m 0[2mms[22m[39m
+     [32m✓[39m treats SUCCESS with an explicit error as a failed terminal turn and keeps prior tool DONE factual[32m 0[2mms[22m[39m
+     [32m✓[39m fails a undefined status without an explicit error and leaves canonical status error[32m 0[2mms[22m[39m
+     [32m✓[39m fails a UNKNOWN status without an explicit error and leaves canonical status error[32m 0[2mms[22m[39m
+     [32m✓[39m fails a ERROR status without an explicit error and leaves canonical status error[32m 0[2mms[22m[39m
+     [32m✓[39m keeps multi-turn text/tool order without repeating result.response[32m 2[2mms[22m[39m
+     [32m✓[39m keeps headless denial failed despite result SUCCESS[32m 1[2mms[22m[39m
+     [32m✓[39m maps exit0 DONE to provider-step success without inventing shell exit[32m 1[2mms[22m[39m
+     [32m✓[39m maps exit8_empty DONE to provider-step success without inventing shell exit[32m 0[2mms[22m[39m
+     [32m✓[39m maps not_found DONE to provider-step success without inventing shell exit[32m 1[2mms[22m[39m
+     [32m✓[39m does not mark headless denial green when the turn reports SUCCESS[32m 0[2mms[22m[39m
+     [32m✓[39m prioritizes an explicit tool error even when AGY labels the step DONE[32m 0[2mms[22m[39m
+         [32m✓[39m emits canonical object with unchanged identity and exactly one start/terminal[32m 0[2mms[22m[39m
+         [32m✓[39m emits canonical JSON text with unchanged identity and exactly one start/terminal[32m 0[2mms[22m[39m
+         [32m✓[39m emits canonical structured content with unchanged identity and exactly one start/terminal[32m 0[2mms[22m[39m
+         [32m✓[39m emits canonical MCP text content with unchanged identity and exactly one start/terminal[32m 0[2mms[22m[39m
+         [32m✓[39m emits canonical reused tab with unchanged identity and exactly one start/terminal[32m 0[2mms[22m[39m
+         [32m✓[39m does not fabricate a tab identity for output null[32m 0[2mms[22m[39m
+         [32m✓[39m does not fabricate a tab identity for output undefined[32m 0[2mms[22m[39m
+         [32m✓[39m does not fabricate a tab identity for output "not JSON"[32m 0[2mms[22m[39m
+         [32m✓[39m does not fabricate a tab identity for output {"status":"opened"}[32m 0[2mms[22m[39m
+         [32m✓[39m preserves ERROR with explicit navigation failed instead of canonicalizing success[32m 0[2mms[22m[39m
+         [32m✓[39m preserves DONE with explicit navigation failed instead of canonicalizing success[32m 0[2mms[22m[39m
+         [32m✓[39m preserves ERROR with explicit permission denied instead of canonicalizing success[32m 0[2mms[22m[39m
+         [32m✓[39m preserves DONE with explicit permission denied instead of canonicalizing success[32m 0[2mms[22m[39m
+         [32m✓[39m preserves the generic envelope for third-party open_tab[32m 0[2mms[22m[39m
+         [32m✓[39m preserves the generic envelope for other browser tool[32m 0[2mms[22m[39m
+         [32m✓[39m preserves the generic envelope for non-browser MCP tool[32m 0[2mms[22m[39m
+         [32m✓[39m preserves the generic envelope for incomplete MCP identity[32m 0[2mms[22m[39m
+         [32m✓[39m does not normalize a native tool named open_tab[32m 0[2mms[22m[39m
+       [32m✓[39m presents an AutoByteus agent tool under its bare name and own arguments on start and success[32m 0[2mms[22m[39m
+       [32m✓[39m presents send_message_to with no arguments as an empty argument object[32m 0[2mms[22m[39m
+       [32m✓[39m presents a third-party tool as mcp__<server>__<tool> and keeps plain text output unchanged[32m 0[2mms[22m[39m
+       [32m✓[39m reports a failed MCP call under the real tool name with the provider's error message[32m 0[2mms[22m[39m
+       [32m✓[39m reports a denied MCP call under the real tool name[32m 0[2mms[22m[39m
+       [32m✓[39m falls back to the provider presentation for a wrapper with missing ServerName and lets the turn continue[32m 0[2mms[22m[39m
+       [32m✓[39m falls back to the provider presentation for a wrapper with blank ToolName and lets the turn continue[32m 0[2mms[22m[39m
+       [32m✓[39m never treats an AutoByteus MCP generate_image call as AGY's native image tool[32m 0[2mms[22m[39m
+       [32m✓[39m leaves native tool names, parameters and JSON-looking output untouched[32m 0[2mms[22m[39m
+     [32m✓[39m emits assistant text that satisfies the canonical segment lifecycle contract[32m 1[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 8 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts[2m > [22mAGY token usage counts cache reads in gross input through the real server[2m > [22mstreams per-turn deltas and persists gross = input + cache read, miss = input (AE-001)
+[31m[1mAssertionError[22m: turn 1 usage frame: expected { …(84) } to match object { …(8) }
+(172 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -2,9 +2,9 @@[39m
+[2m    "accounting_input_tokens": 91684,[22m
+[2m    "accounting_output_tokens": 4,[22m
+[2m    "cache_miss_input_tokens": 91684,[22m
+[2m    "cache_read_input_tokens": 0,[22m
+[2m    "cache_state": "zero_reported",[22m
+[32m-   "input_token_semantic": "base_excludes_cache",[39m
+[31m+   "input_token_semantic": "gross_includes_cache",[39m
+[2m    "runtime_kind": "antigravity_cli",[22m
+[2m    "standard_input_tokens": 91684,[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts:[2m133:54[22m[39m
+    [90m131| [39m      [35mconst[39m expected [33m=[39m expectedTurnDeltas[index][33m;[39m
+    [90m132| [39m      [35mif[39m ([33m![39mexpected) [35mcontinue[39m[33m;[39m
+    [90m133| [39m      [34mexpect[39m(frame[33m,[39m [32m`turn [39m[36m${[39mindex [33m+[39m [34m1[39m[36m}[39m[32m usage frame`[39m)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                                                     [31m^[39m
+    [90m134| [39m        runtime_kind[33m:[39m [32m"antigravity_cli"[39m[33m,[39m
+    [90m135| [39m        input_token_semantic[33m:[39m [32m"base_excludes_cache"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22mAGY run record written before the semantic fix continues after it[2m > [22mAE-005 shape A: a cache-heavy pre-fix checkpoint is read unchanged; the miss catches up once
+[31m[1mAssertionError[22m: expected 'gross_includes_cache' to be 'base_excludes_cache' // Object.is equality[39m
+
+Expected: [32m"[7mbase_ex[27mcludes_cache"[39m
+Received: [31m"[7mgross_in[27mcludes_cache"[39m
+
+[36m [2m❯[22m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts:[2m107:44[22m[39m
+    [90m105| [39m
+    [90m106| [39m    const continued = await ingest(runId, conversationId, cacheHeavyTu…
+    [90m107| [39m    [34mexpect[39m(continued[33m.[39minput_token_semantic)[33m.[39m[34mtoBe[39m([32m"base_excludes_cache"[39m)[33m;[39m
+    [90m   | [39m                                           [31m^[39m
+    [90m108| [39m    expect(continued.quality_flags).not.toContain("cumulative_snapshot…
+    [90m109| [39m    // Accepted fix-forward outcome: the miss reaches the conversation…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22mAGY run record written before the semantic fix continues after it[2m > [22mAE-005 shape B: after a pre-fix snapshot rejected as regressed, the next snapshot adds its true increment
+[31m[1mAssertionError[22m: expected [ …(3) ] to not include 'cumulative_snapshot_regressed'[39m
+[36m [2m❯[22m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts:[2m130:41[22m[39m
+    [90m128| [39m
+    [90m129| [39m    const continued = await ingest(runId, conversationId, recordedTurn…
+    [90m130| [39m    expect(continued.quality_flags).not.toContain("cumulative_snapshot…
+    [90m   | [39m                                        [31m^[39m
+    [90m131| [39m    // The rejected pre-fix snapshot still advanced the series checkpo…
+    [90m132| [39m    // 90,059 cache reads) was lost before the fix. The post-fix delta…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22mnative Gemini catalog pricing through the server cost path[2m > [22m'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+[31m[1mAssertionError[22m: expected { …(84) } to match object { …(11) }
+(159 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "accounting_input_tokens": 150000,[22m
+[2m    "api_cost_status": "estimated",[22m
+[2m    "billable_output_tokens": 5000,[22m
+[2m    "cache_read_input_tokens": 100000,[22m
+[32m-   "cached_input_read_price_per_million": 0.2,[39m
+[32m-   "input_price_per_million": 2,[39m
+[31m+   "cached_input_read_price_per_million": 0.225,[39m
+[31m+   "input_price_per_million": 2.25,[39m
+[2m    "input_token_semantic": "gross_includes_cache",[22m
+[32m-   "output_price_per_million": 12,[39m
+[31m+   "output_price_per_million": 18,[39m
+[2m    "reasoning_output_tokens": 3000,[22m
+[2m    "selected_pricing_tier_id": "prompt_le_200k",[22m
+[2m    "standard_input_tokens": 50000,[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts:[2m142:20[22m[39m
+    [90m140| [39m    // 2,000 visible output tokens + 3,000 thinking tokens: Gemini bil…
+    [90m141| [39m    const { runId, priced } = await recordNativeGeminiCall({ ...testCa…
+    [90m142| [39m    [34mexpect[39m(priced)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                   [31m^[39m
+    [90m143| [39m      input_token_semantic[33m:[39m [32m"gross_includes_cache"[39m[33m,[39m
+    [90m144| [39m      accounting_input_tokens[33m:[39m testCase[33m.[39mpromptTokens[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22mnative Gemini catalog pricing through the server cost path[2m > [22m'AE-003' prices '3.1 Pro, 250K prompt (>200K tier)' at the official rates
+[31m[1mAssertionError[22m: expected { …(84) } to match object { …(11) }
+(159 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "accounting_input_tokens": 250000,[22m
+[2m    "api_cost_status": "estimated",[22m
+[2m    "billable_output_tokens": 5000,[22m
+[2m    "cache_read_input_tokens": 200000,[22m
+[32m-   "cached_input_read_price_per_million": 0.4,[39m
+[32m-   "input_price_per_million": 4,[39m
+[31m+   "cached_input_read_price_per_million": 0.45,[39m
+[31m+   "input_price_per_million": 4.5,[39m
+[2m    "input_token_semantic": "gross_includes_cache",[22m
+[32m-   "output_price_per_million": 18,[39m
+[31m+   "output_price_per_million": 27,[39m
+[2m    "reasoning_output_tokens": 3000,[22m
+[2m    "selected_pricing_tier_id": "prompt_gt_200k",[22m
+[2m    "standard_input_tokens": 50000,[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts:[2m142:20[22m[39m
+    [90m140| [39m    // 2,000 visible output tokens + 3,000 thinking tokens: Gemini bil…
+    [90m141| [39m    const { runId, priced } = await recordNativeGeminiCall({ ...testCa…
+    [90m142| [39m    [34mexpect[39m(priced)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                   [31m^[39m
+    [90m143| [39m      input_token_semantic[33m:[39m [32m"gross_includes_cache"[39m[33m,[39m
+    [90m144| [39m      accounting_input_tokens[33m:[39m testCase[33m.[39mpromptTokens[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22mnative Gemini catalog pricing through the server cost path[2m > [22mAE-004 selects the 3.1 Pro tier at the 200K prompt boundary
+[31m[1mAssertionError[22m: expected 2.25 to be 2 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 2[39m
+[31m+ 2.25[39m
+
+[36m [2m❯[22m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts:[2m186:65[22m[39m
+    [90m184| [39m      [35mconst[39m hydrated [33m=[39m [35mawait[39m [34msummary[39m(runId)[33m;[39m
+    [90m185| [39m      expect(hydrated.selectedPricingTierId, `${promptTokens} prompt t…
+    [90m186| [39m      expect(hydrated.unitPrices.standardInput.pricePerMillion).toBe(i…
+    [90m   | [39m                                                                [31m^[39m
+    [90m187| [39m      expect(hydrated.estimatedApiStandardInputCost).toBeCloseTo((prom…
+    [90m188| [39m    }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts[2m > [22mAGY canonical stream conversion[2m > [22mdeclares AGY result usage as base input that excludes cache reads, carrying only the raw counts
+[31m[1mAssertionError[22m: expected { turn_id: 'turn', …(18) } to match object { …(8) }
+(15 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,9 +1,9 @@[39m
+[2m  {[22m
+[2m    "cache_read_input_tokens": 307003,[22m
+[2m    "cache_state": "positive",[22m
+[32m-   "input_token_semantic": "base_excludes_cache",[39m
+[31m+   "input_token_semantic": "gross_includes_cache",[39m
+[2m    "reported_input_tokens": 6110,[22m
+[2m    "reported_output_tokens": 1,[22m
+[2m    "reported_total_tokens": 6111,[22m
+[2m    "snapshot_series_key": "conversation",[22m
+[2m    "usage_scope": "cumulative_snapshot",[22m
+
+[36m [2m❯[22m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:[2m155:28[22m[39m
+    [90m153| [39m      num_turns: 3, usage: { input_tokens: 6_110, output_tokens: 1, to…
+    [90m154| [39m      .find((item) => item.eventType === AgentRunEventType.TOKEN_USAGE…
+    [90m155| [39m    [34mexpect[39m(usage[33m?.[39mpayload)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                           [31m^[39m
+    [90m156| [39m      usage_scope: "cumulative_snapshot", snapshot_series_key: "conver…
+    [90m157| [39m      input_token_semantic[33m:[39m [32m"base_excludes_cache"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts[2m > [22mAGY canonical stream conversion[2m > [22mleaves gross input at the reported input and the cache state not reported when AGY omits cache reads
+[31m[1mAssertionError[22m: expected { …(84) } to match object { …(5) }
+(101 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "accounting_input_tokens": 6110,[22m
+[2m    "cache_read_input_tokens": null,[22m
+[2m    "cache_state": "not_reported",[22m
+[32m-   "input_token_semantic": "base_excludes_cache",[39m
+[31m+   "input_token_semantic": "gross_includes_cache",[39m
+[2m    "standard_input_tokens": 6110,[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:[2m173:22[22m[39m
+    [90m171| [39m    [35mconst[39m resolved [33m=[39m [35mnew[39m [33mTokenUsageComponentBasisResolver[39m()[33m.[39m[34mresolve[39m(
+    [90m172| [39m      createTokenUsageUpdatedPayload({ runId: "run", payload: usage!.p…
+    [90m173| [39m    [34mexpect[39m(resolved)[33m.[39m[34mtoMatchObject[39m({
+    [90m   | [39m                     [31m^[39m
+    [90m174| [39m      input_token_semantic: "base_excludes_cache", cache_state: "not_r…
+    [90m175| [39m      accounting_input_tokens[33m:[39m [34m6_110[39m[33m,[39m standard_input_tokens[33m:[39m [34m6_110[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m4 failed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m8 failed[39m[22m[2m | [22m[1m[32m78 passed[39m[22m[90m (86)[39m
+[2m   Start at [22m 12:23:52
+[2m   Duration [22m 16.89s[2m (transform 6.71s, setup 65ms, import 13.77s, tests 2.12s, environment 0ms)[22m
+

@@ -1,0 +1,1223 @@
+{
+  "agent": {
+    "delegations": {
+      "delegatedA": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+      },
+      "delegatedC": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "exc_worker_b6e25a_6b87bc6121c746d39d81e7c4e3e0c952"
+      },
+      "coordinatorAddress": "/exc_squad_b6e25a/lead",
+      "mate": "exc_worker_b6e25a_1a52d79bc53845a581ab1eaf65a0c67c",
+      "subWork": "exc_helper_b6e25a_11bc21546f0c4ff9918db0577ea37b81"
+    },
+    "busy": {
+      "busyTodo": {
+        "delegated": false,
+        "message": "This copy still works on Task project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_e364048d-eb46-4206-b19b-a20b6d5948f8 to a new copy with recipient_address."
+      },
+      "busyInProgress": {
+        "delegated": false,
+        "message": "This copy still works on Task project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd (IN_PROGRESS). Mark it DONE or CANCELLED first, or delegate Task project_task_e364048d-eb46-4206-b19b-a20b6d5948f8 to a new copy with recipient_address."
+      }
+    },
+    "idRefusals": {
+      "coordinatorAsAgent": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90 is the coordinator of Team copy exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3; use target_team_run_id \"exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3\"."
+      },
+      "memberAsAgent": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_1a52d79bc53845a581ab1eaf65a0c67c is a member of Team copy exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3, not a copy itself; to assign that Team copy, use target_team_run_id \"exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3\"."
+      },
+      "teamRunAsAgent": {
+        "delegated": false,
+        "message": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3 is a Team copy's team run ID; use target_team_run_id \"exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3\"."
+      },
+      "agentAsTeam": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_6b87bc6121c746d39d81e7c4e3e0c952 is an Agent copy's agent run ID; use target_agent_run_id \"exc_worker_b6e25a_6b87bc6121c746d39d81e7c4e3e0c952\"."
+      },
+      "subWork": {
+        "delegated": false,
+        "message": "This copy is sub-work or a helper of a Task worker, not an assignment; only an assigned copy can be given a new Task. Delegate Task project_task_e364048d-eb46-4206-b19b-a20b6d5948f8 to a new copy with recipient_address."
+      },
+      "unknown": {
+        "delegated": false,
+        "message": "team_e407e24f-4625-4579-988a-ec6b84fd74cb is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address."
+      },
+      "bothIds": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: supply exactly one of target_team_run_id (a Team copy) or target_agent_run_id (an Agent copy)."
+        }
+      },
+      "withAddress": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not recipient_address)."
+        }
+      },
+      "noTaskId": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not description)."
+        }
+      }
+    },
+    "nonAssigner": {
+      "delegated": false,
+      "message": "Task workers delegate sub-work without task_id."
+    },
+    "taskRefusals": {
+      "bDone": {
+        "delegated": false,
+        "message": "The Task is DONE; move it to TODO or IN_PROGRESS before assigning new work."
+      },
+      "bCancelled": {
+        "delegated": false,
+        "message": "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work."
+      },
+      "unknownTask": {
+        "delegated": false,
+        "message": "Task 'project_task_f07f57d0-e4c0-4f6a-ae72-ccc19acb7104' must identify exactly one current node-local Task (found 0)."
+      }
+    },
+    "assignedB": {
+      "assignedB": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+      },
+      "resumedB": [
+        {
+          "resumed": true,
+          "conversation": "1387f6fd-d104-4ed5-86d8-c7d59a29572b"
+        }
+      ],
+      "bRoot": {
+        "kind": "team",
+        "recipientAddress": "/exc_squad_b6e25a",
+        "ingressAgentRunId": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90",
+        "teamRunId": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d"
+        },
+        "start": "started",
+        "startError": null,
+        "closed": false,
+        "status": "idle"
+      },
+      "aRoot": {
+        "kind": "team",
+        "recipientAddress": "/exc_squad_b6e25a",
+        "ingressAgentRunId": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90",
+        "teamRunId": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+        "hostRoot": {
+          "kind": "agent",
+          "runId": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d"
+        },
+        "start": "started",
+        "startError": null,
+        "closed": true,
+        "status": "offline"
+      }
+    },
+    "messaging": {
+      "toTeamRun": {
+        "accepted": false,
+        "code": "TARGET_IS_TEAM_RUN",
+        "message": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3 is a Team run; send_message_to reaches agents. Message its coordinator agent run exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90.",
+        "target_agent_run_id": null
+      },
+      "toCoordinator": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+      }
+    },
+    "repeatedCloseOfA": [
+      {
+        "status": "DONE",
+        "ack": {
+          "task": {
+            "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+            "taskId": "project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd",
+            "status": "DONE"
+          }
+        },
+        "closedKeys": []
+      },
+      {
+        "status": "CANCELLED",
+        "ack": {
+          "task": {
+            "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+            "taskId": "project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd",
+            "status": "CANCELLED"
+          }
+        },
+        "closedKeys": []
+      },
+      {
+        "status": "DONE",
+        "ack": {
+          "task": {
+            "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+            "taskId": "project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd",
+            "status": "DONE"
+          }
+        },
+        "closedKeys": []
+      }
+    ],
+    "listed": {
+      "a": {
+        "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+        "taskId": "project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd",
+        "description": "Review the release checklist.",
+        "status": "DONE",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": [
+          {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+            "teamCoordinatorAgentRunId": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90",
+            "assignedBy": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+            "outcome": "accepted"
+          }
+        ]
+      },
+      "b": {
+        "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+        "taskId": "project_task_e364048d-eb46-4206-b19b-a20b6d5948f8",
+        "description": "Clean up the checklist wording you proposed.",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [
+          {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+            "teamCoordinatorAgentRunId": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90",
+            "assignedBy": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+            "outcome": "accepted"
+          }
+        ],
+        "closedAssignments": []
+      },
+      "c": {
+        "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+        "taskId": "project_task_19801733-8b83-4849-b384-a01b67c3d553",
+        "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/exc_helper_b6e25a\",\"description\":\"Reply OK.\"}}",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [
+          {
+            "kind": "agent",
+            "agentRunId": "exc_worker_b6e25a_6b87bc6121c746d39d81e7c4e3e0c952",
+            "assignedBy": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+            "outcome": "accepted"
+          }
+        ],
+        "closedAssignments": []
+      }
+    },
+    "returnRefusals": {
+      "reopenHint": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This copy's current Task is project_task_e364048d-eb46-4206-b19b-a20b6d5948f8 (DONE); reopening Task project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd does not reach it. To have this copy continue Task project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd, call delegate_task with target_team_run_id \"exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3\" and task_id \"project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd\".",
+        "target_agent_run_id": null
+      },
+      "alreadyB": {
+        "delegated": false,
+        "message": "This copy's most recent assignment is already Task project_task_e364048d-eb46-4206-b19b-a20b6d5948f8. To continue it, move Task project_task_e364048d-eb46-4206-b19b-a20b6d5948f8 to TODO or IN_PROGRESS with create_or_update_task, then message the copy (for a Team, its coordinator)."
+      }
+    },
+    "backToA": {
+      "backToA": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+      },
+      "aEntries": [
+        {
+          "role": "assigned",
+          "assignedBy": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+          "recipientAddress": "/exc_squad_b6e25a",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+            "coordinatorAgentRunId": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+          },
+          "linkedAt": "2026-10-09T07:43:28.867Z",
+          "start": "started",
+          "closedAt": "2026-10-09T07:43:30.036Z"
+        },
+        {
+          "role": "assigned",
+          "assignedBy": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+          "recipientAddress": "/exc_squad_b6e25a",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+            "coordinatorAgentRunId": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+          },
+          "linkedAt": "2026-10-09T07:43:42.297Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    },
+    "agentCopy": {
+      "assignedD": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "exc_worker_b6e25a_6b87bc6121c746d39d81e7c4e3e0c952"
+      },
+      "worker": "exc_worker_b6e25a_6b87bc6121c746d39d81e7c4e3e0c952"
+    },
+    "rootId": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+    "managerRunId": "exc_manager_b6e25a_77a00a4a3b634d649985efa140e7911d",
+    "projectId": "project_fa59c7da-4898-4c87-9bfb-a1d213f74993",
+    "taskA": "project_task_27c755ef-5bb9-4dbc-af6d-d809c1d12ffd",
+    "taskB": "project_task_e364048d-eb46-4206-b19b-a20b6d5948f8",
+    "taskC": "project_task_19801733-8b83-4849-b384-a01b67c3d553",
+    "taskD": "project_task_756b1459-9470-45e9-a86d-7b2be2d12f3b",
+    "team": "exc_squad_b6e25a_433d4a5cd7604318bc9b1bcfd2244ed3",
+    "coordinator": "exc_worker_b6e25a_4791c39afc864dfd81d58615ac0f9f90"
+  },
+  "team": {
+    "delegations": {
+      "delegatedA": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+      },
+      "delegatedC": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "exc_worker_b6e25a_836efe959d514458abff6d86810cbdbc"
+      },
+      "coordinatorAddress": "/exc_squad_b6e25a/lead",
+      "mate": "exc_worker_b6e25a_c27644884a8b474982ad4e42d8e5b4fa",
+      "subWork": "exc_helper_b6e25a_5c89dd7ecdf740409deeb7ad4ae9f73a"
+    },
+    "busy": {
+      "busyTodo": {
+        "delegated": false,
+        "message": "This copy still works on Task project_task_d34bb4ae-997e-4491-a582-33d082aececc (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b to a new copy with recipient_address."
+      },
+      "busyInProgress": {
+        "delegated": false,
+        "message": "This copy still works on Task project_task_d34bb4ae-997e-4491-a582-33d082aececc (IN_PROGRESS). Mark it DONE or CANCELLED first, or delegate Task project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b to a new copy with recipient_address."
+      }
+    },
+    "idRefusals": {
+      "coordinatorAsAgent": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee is the coordinator of Team copy exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc; use target_team_run_id \"exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc\"."
+      },
+      "memberAsAgent": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_c27644884a8b474982ad4e42d8e5b4fa is a member of Team copy exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc, not a copy itself; to assign that Team copy, use target_team_run_id \"exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc\"."
+      },
+      "teamRunAsAgent": {
+        "delegated": false,
+        "message": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc is a Team copy's team run ID; use target_team_run_id \"exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc\"."
+      },
+      "agentAsTeam": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_836efe959d514458abff6d86810cbdbc is an Agent copy's agent run ID; use target_agent_run_id \"exc_worker_b6e25a_836efe959d514458abff6d86810cbdbc\"."
+      },
+      "subWork": {
+        "delegated": false,
+        "message": "This copy is sub-work or a helper of a Task worker, not an assignment; only an assigned copy can be given a new Task. Delegate Task project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b to a new copy with recipient_address."
+      },
+      "unknown": {
+        "delegated": false,
+        "message": "team_7e0cc622-53c2-4359-ae3e-f72757f45a8f is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address."
+      },
+      "bothIds": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: supply exactly one of target_team_run_id (a Team copy) or target_agent_run_id (an Agent copy)."
+        }
+      },
+      "withAddress": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not recipient_address)."
+        }
+      },
+      "noTaskId": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not description)."
+        }
+      }
+    },
+    "nonAssigner": {
+      "delegated": false,
+      "message": "Only the run that made this copy's most recent assignment can give it a new Task; or delegate Task project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b to a new copy with recipient_address."
+    },
+    "taskRefusals": {
+      "bDone": {
+        "delegated": false,
+        "message": "The Task is DONE; move it to TODO or IN_PROGRESS before assigning new work."
+      },
+      "bCancelled": {
+        "delegated": false,
+        "message": "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work."
+      },
+      "unknownTask": {
+        "delegated": false,
+        "message": "Task 'project_task_f5114a44-987a-4c93-bee5-c1ef748b015c' must identify exactly one current node-local Task (found 0)."
+      }
+    },
+    "assignedB": {
+      "assignedB": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+      },
+      "resumedB": [
+        {
+          "resumed": true,
+          "conversation": "7d5b8fbb-3821-4f62-b5b5-3556c041842f"
+        }
+      ],
+      "bRoot": {
+        "kind": "team",
+        "recipientAddress": "/exc_squad_b6e25a",
+        "ingressAgentRunId": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee",
+        "teamRunId": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+        "hostRoot": {
+          "kind": "agent_team",
+          "runId": "exc_team_b6e25a_589c9fbd2ca6434cb5d29a9b9c8b8ba2"
+        },
+        "start": "started",
+        "startError": null,
+        "closed": false,
+        "status": "idle"
+      },
+      "aRoot": {
+        "kind": "team",
+        "recipientAddress": "/exc_squad_b6e25a",
+        "ingressAgentRunId": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee",
+        "teamRunId": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+        "hostRoot": {
+          "kind": "agent_team",
+          "runId": "exc_team_b6e25a_589c9fbd2ca6434cb5d29a9b9c8b8ba2"
+        },
+        "start": "started",
+        "startError": null,
+        "closed": true,
+        "status": "offline"
+      }
+    },
+    "messaging": {
+      "toTeamRun": {
+        "accepted": false,
+        "code": "TARGET_IS_TEAM_RUN",
+        "message": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc is a Team run; send_message_to reaches agents. Message its coordinator agent run exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee.",
+        "target_agent_run_id": null
+      },
+      "toCoordinator": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+      }
+    },
+    "repeatedCloseOfA": [
+      {
+        "status": "DONE",
+        "ack": {
+          "task": {
+            "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+            "taskId": "project_task_d34bb4ae-997e-4491-a582-33d082aececc",
+            "status": "DONE"
+          }
+        },
+        "closedKeys": []
+      },
+      {
+        "status": "CANCELLED",
+        "ack": {
+          "task": {
+            "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+            "taskId": "project_task_d34bb4ae-997e-4491-a582-33d082aececc",
+            "status": "CANCELLED"
+          }
+        },
+        "closedKeys": []
+      },
+      {
+        "status": "DONE",
+        "ack": {
+          "task": {
+            "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+            "taskId": "project_task_d34bb4ae-997e-4491-a582-33d082aececc",
+            "status": "DONE"
+          }
+        },
+        "closedKeys": []
+      }
+    ],
+    "listed": {
+      "a": {
+        "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+        "taskId": "project_task_d34bb4ae-997e-4491-a582-33d082aececc",
+        "description": "Review the release checklist.",
+        "status": "DONE",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": [
+          {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+            "teamCoordinatorAgentRunId": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee",
+            "assignedBy": "exc_manager_b6e25a_b1ae5083d82a4075852561c1d977d39d",
+            "outcome": "accepted"
+          }
+        ]
+      },
+      "b": {
+        "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+        "taskId": "project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b",
+        "description": "Clean up the checklist wording you proposed.",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [
+          {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+            "teamCoordinatorAgentRunId": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee",
+            "assignedBy": "exc_manager_b6e25a_b1ae5083d82a4075852561c1d977d39d",
+            "outcome": "accepted"
+          }
+        ],
+        "closedAssignments": []
+      },
+      "c": {
+        "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+        "taskId": "project_task_8e3b14b7-1507-4715-a37e-d16bacbea9bf",
+        "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/helper\",\"description\":\"Reply OK.\"}}",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [
+          {
+            "kind": "agent",
+            "agentRunId": "exc_worker_b6e25a_836efe959d514458abff6d86810cbdbc",
+            "assignedBy": "exc_manager_b6e25a_b1ae5083d82a4075852561c1d977d39d",
+            "outcome": "accepted"
+          }
+        ],
+        "closedAssignments": []
+      }
+    },
+    "returnRefusals": {
+      "reopenHint": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This copy's current Task is project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b (DONE); reopening Task project_task_d34bb4ae-997e-4491-a582-33d082aececc does not reach it. To have this copy continue Task project_task_d34bb4ae-997e-4491-a582-33d082aececc, call delegate_task with target_team_run_id \"exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc\" and task_id \"project_task_d34bb4ae-997e-4491-a582-33d082aececc\".",
+        "target_agent_run_id": null
+      },
+      "alreadyB": {
+        "delegated": false,
+        "message": "This copy's most recent assignment is already Task project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b. To continue it, move Task project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b to TODO or IN_PROGRESS with create_or_update_task, then message the copy (for a Team, its coordinator)."
+      }
+    },
+    "backToA": {
+      "backToA": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+      },
+      "aEntries": [
+        {
+          "role": "assigned",
+          "assignedBy": "exc_manager_b6e25a_b1ae5083d82a4075852561c1d977d39d",
+          "recipientAddress": "/exc_squad_b6e25a",
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "exc_team_b6e25a_589c9fbd2ca6434cb5d29a9b9c8b8ba2"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+            "coordinatorAgentRunId": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+          },
+          "linkedAt": "2026-10-09T07:43:46.593Z",
+          "start": "started",
+          "closedAt": "2026-10-09T07:43:47.564Z"
+        },
+        {
+          "role": "assigned",
+          "assignedBy": "exc_manager_b6e25a_b1ae5083d82a4075852561c1d977d39d",
+          "recipientAddress": "/exc_squad_b6e25a",
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "exc_team_b6e25a_589c9fbd2ca6434cb5d29a9b9c8b8ba2"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+            "coordinatorAgentRunId": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+          },
+          "linkedAt": "2026-10-09T07:43:59.777Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    },
+    "agentCopy": {
+      "assignedD": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "exc_worker_b6e25a_836efe959d514458abff6d86810cbdbc"
+      },
+      "worker": "exc_worker_b6e25a_836efe959d514458abff6d86810cbdbc"
+    },
+    "rootId": "exc_team_b6e25a_589c9fbd2ca6434cb5d29a9b9c8b8ba2",
+    "managerRunId": "exc_manager_b6e25a_b1ae5083d82a4075852561c1d977d39d",
+    "projectId": "project_e4a3bc34-822d-4019-bf18-dd8a65bbd0d8",
+    "taskA": "project_task_d34bb4ae-997e-4491-a582-33d082aececc",
+    "taskB": "project_task_4dd744e0-38f4-4c8b-8778-330e8e19119b",
+    "taskC": "project_task_8e3b14b7-1507-4715-a37e-d16bacbea9bf",
+    "taskD": "project_task_37695d8c-dee8-472a-9697-e3b9f6e1200e",
+    "team": "exc_squad_b6e25a_e3018d3f392940da8ae6452f1f5295bc",
+    "coordinator": "exc_worker_b6e25a_06bae726e5ea4abfa2aaaff4e8f077ee"
+  },
+  "org": {
+    "delegations": {
+      "delegatedA": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+      },
+      "delegatedC": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "exc_worker_b6e25a_7c7d43b16b654e3da552ca19af35e664"
+      },
+      "coordinatorAddress": "/squad/lead",
+      "mate": "exc_worker_b6e25a_0ffdced72fd442a18d7c687c12973247",
+      "subWork": "exc_helper_b6e25a_d0f385492c374d738971f57385bea6ab"
+    },
+    "busy": {
+      "busyTodo": {
+        "delegated": false,
+        "message": "This copy still works on Task project_task_861c2774-18c7-4ade-b990-7f399cae0b7c (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_7aaf93f9-715e-448f-affa-2898971f59ca to a new copy with recipient_address."
+      },
+      "busyInProgress": {
+        "delegated": false,
+        "message": "This copy still works on Task project_task_861c2774-18c7-4ade-b990-7f399cae0b7c (IN_PROGRESS). Mark it DONE or CANCELLED first, or delegate Task project_task_7aaf93f9-715e-448f-affa-2898971f59ca to a new copy with recipient_address."
+      }
+    },
+    "idRefusals": {
+      "coordinatorAsAgent": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172 is the coordinator of Team copy exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b; use target_team_run_id \"exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b\"."
+      },
+      "memberAsAgent": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_0ffdced72fd442a18d7c687c12973247 is a member of Team copy exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b, not a copy itself; to assign that Team copy, use target_team_run_id \"exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b\"."
+      },
+      "teamRunAsAgent": {
+        "delegated": false,
+        "message": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b is a Team copy's team run ID; use target_team_run_id \"exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b\"."
+      },
+      "agentAsTeam": {
+        "delegated": false,
+        "message": "exc_worker_b6e25a_7c7d43b16b654e3da552ca19af35e664 is an Agent copy's agent run ID; use target_agent_run_id \"exc_worker_b6e25a_7c7d43b16b654e3da552ca19af35e664\"."
+      },
+      "subWork": {
+        "delegated": false,
+        "message": "This copy is sub-work or a helper of a Task worker, not an assignment; only an assigned copy can be given a new Task. Delegate Task project_task_7aaf93f9-715e-448f-affa-2898971f59ca to a new copy with recipient_address."
+      },
+      "unknown": {
+        "delegated": false,
+        "message": "team_7ffc35dd-18b8-44b5-9c58-9460fbc7bbcf is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address."
+      },
+      "bothIds": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: supply exactly one of target_team_run_id (a Team copy) or target_agent_run_id (an Agent copy)."
+        }
+      },
+      "withAddress": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not recipient_address)."
+        }
+      },
+      "noTaskId": {
+        "error": {
+          "code": "TASK_DELEGATION_ERROR",
+          "message": "Invalid delegate_task input: with target_team_run_id or target_agent_run_id, supply only that ID and task_id (not description)."
+        }
+      }
+    },
+    "nonAssigner": {
+      "delegated": false,
+      "message": "Only the run that made this copy's most recent assignment can give it a new Task; or delegate Task project_task_7aaf93f9-715e-448f-affa-2898971f59ca to a new copy with recipient_address."
+    },
+    "taskRefusals": {
+      "bDone": {
+        "delegated": false,
+        "message": "The Task is DONE; move it to TODO or IN_PROGRESS before assigning new work."
+      },
+      "bCancelled": {
+        "delegated": false,
+        "message": "The Task is CANCELLED; move it to TODO or IN_PROGRESS before assigning new work."
+      },
+      "unknownTask": {
+        "delegated": false,
+        "message": "Task 'project_task_53419416-5611-476c-a08c-a131bf2aa9b4' must identify exactly one current node-local Task (found 0)."
+      }
+    },
+    "assignedB": {
+      "assignedB": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+      },
+      "resumedB": [
+        {
+          "resumed": true,
+          "conversation": "edd3600e-47c4-4677-bd54-0f7d7438e66e"
+        }
+      ],
+      "bRoot": {
+        "kind": "team",
+        "recipientAddress": "/squad",
+        "ingressAgentRunId": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172",
+        "teamRunId": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+        "hostRoot": {
+          "kind": "agent_org",
+          "runId": "exc_org_b6e25a_548f816ba77b43fbbd40421b13d58156"
+        },
+        "start": "started",
+        "startError": null,
+        "closed": false,
+        "status": "idle"
+      },
+      "aRoot": {
+        "kind": "team",
+        "recipientAddress": "/squad",
+        "ingressAgentRunId": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172",
+        "teamRunId": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+        "hostRoot": {
+          "kind": "agent_org",
+          "runId": "exc_org_b6e25a_548f816ba77b43fbbd40421b13d58156"
+        },
+        "start": "started",
+        "startError": null,
+        "closed": true,
+        "status": "offline"
+      }
+    },
+    "messaging": {
+      "toTeamRun": {
+        "accepted": false,
+        "code": "TARGET_IS_TEAM_RUN",
+        "message": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b is a Team run; send_message_to reaches agents. Message its coordinator agent run exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172.",
+        "target_agent_run_id": null
+      },
+      "toCoordinator": {
+        "accepted": true,
+        "code": "DELIVERED",
+        "message": "Message delivered.",
+        "target_agent_run_id": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+      }
+    },
+    "repeatedCloseOfA": [
+      {
+        "status": "DONE",
+        "ack": {
+          "task": {
+            "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+            "taskId": "project_task_861c2774-18c7-4ade-b990-7f399cae0b7c",
+            "status": "DONE"
+          }
+        },
+        "closedKeys": []
+      },
+      {
+        "status": "CANCELLED",
+        "ack": {
+          "task": {
+            "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+            "taskId": "project_task_861c2774-18c7-4ade-b990-7f399cae0b7c",
+            "status": "CANCELLED"
+          }
+        },
+        "closedKeys": []
+      },
+      {
+        "status": "DONE",
+        "ack": {
+          "task": {
+            "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+            "taskId": "project_task_861c2774-18c7-4ade-b990-7f399cae0b7c",
+            "status": "DONE"
+          }
+        },
+        "closedKeys": []
+      }
+    ],
+    "listed": {
+      "a": {
+        "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+        "taskId": "project_task_861c2774-18c7-4ade-b990-7f399cae0b7c",
+        "description": "Review the release checklist.",
+        "status": "DONE",
+        "contextFiles": [],
+        "assignments": [],
+        "closedAssignments": [
+          {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+            "teamCoordinatorAgentRunId": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172",
+            "assignedBy": "exc_manager_b6e25a_66477b184f664f58b3011ce6d7307aba",
+            "outcome": "accepted"
+          }
+        ]
+      },
+      "b": {
+        "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+        "taskId": "project_task_7aaf93f9-715e-448f-affa-2898971f59ca",
+        "description": "Clean up the checklist wording you proposed.",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [
+          {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+            "teamCoordinatorAgentRunId": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172",
+            "assignedBy": "exc_manager_b6e25a_66477b184f664f58b3011ce6d7307aba",
+            "outcome": "accepted"
+          }
+        ],
+        "closedAssignments": []
+      },
+      "c": {
+        "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+        "taskId": "project_task_f923b446-6f77-4244-b0e3-655028758bfe",
+        "description": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/helper\",\"description\":\"Reply OK.\"}}",
+        "status": "TODO",
+        "contextFiles": [],
+        "assignments": [
+          {
+            "kind": "agent",
+            "agentRunId": "exc_worker_b6e25a_7c7d43b16b654e3da552ca19af35e664",
+            "assignedBy": "exc_manager_b6e25a_66477b184f664f58b3011ce6d7307aba",
+            "outcome": "accepted"
+          }
+        ],
+        "closedAssignments": []
+      }
+    },
+    "returnRefusals": {
+      "reopenHint": {
+        "accepted": false,
+        "code": "TASK_AGENT_RESOURCE_CLOSED",
+        "message": "This copy's current Task is project_task_7aaf93f9-715e-448f-affa-2898971f59ca (DONE); reopening Task project_task_861c2774-18c7-4ade-b990-7f399cae0b7c does not reach it. To have this copy continue Task project_task_861c2774-18c7-4ade-b990-7f399cae0b7c, call delegate_task with target_team_run_id \"exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b\" and task_id \"project_task_861c2774-18c7-4ade-b990-7f399cae0b7c\".",
+        "target_agent_run_id": null
+      },
+      "alreadyB": {
+        "delegated": false,
+        "message": "This copy's most recent assignment is already Task project_task_7aaf93f9-715e-448f-affa-2898971f59ca. To continue it, move Task project_task_7aaf93f9-715e-448f-affa-2898971f59ca to TODO or IN_PROGRESS with create_or_update_task, then message the copy (for a Team, its coordinator)."
+      }
+    },
+    "backToA": {
+      "backToA": {
+        "delegated": true,
+        "target_kind": "team",
+        "target_team_run_id": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+        "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+      },
+      "aEntries": [
+        {
+          "role": "assigned",
+          "assignedBy": "exc_manager_b6e25a_66477b184f664f58b3011ce6d7307aba",
+          "recipientAddress": "/squad",
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "exc_org_b6e25a_548f816ba77b43fbbd40421b13d58156"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+            "coordinatorAgentRunId": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+          },
+          "linkedAt": "2026-10-09T07:44:03.973Z",
+          "start": "started",
+          "closedAt": "2026-10-09T07:44:04.976Z"
+        },
+        {
+          "role": "assigned",
+          "assignedBy": "exc_manager_b6e25a_66477b184f664f58b3011ce6d7307aba",
+          "recipientAddress": "/squad",
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "exc_org_b6e25a_548f816ba77b43fbbd40421b13d58156"
+          },
+          "agentRun": {
+            "kind": "team",
+            "teamRunId": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+            "coordinatorAgentRunId": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+          },
+          "linkedAt": "2026-10-09T07:44:16.922Z",
+          "start": "started",
+          "closedAt": null
+        }
+      ]
+    },
+    "agentCopy": {
+      "assignedD": {
+        "delegated": true,
+        "target_kind": "agent",
+        "target_agent_run_id": "exc_worker_b6e25a_7c7d43b16b654e3da552ca19af35e664"
+      },
+      "worker": "exc_worker_b6e25a_7c7d43b16b654e3da552ca19af35e664"
+    },
+    "rootId": "exc_org_b6e25a_548f816ba77b43fbbd40421b13d58156",
+    "managerRunId": "exc_manager_b6e25a_66477b184f664f58b3011ce6d7307aba",
+    "projectId": "project_cd593d71-d187-4f2b-87f7-27237ed53026",
+    "taskA": "project_task_861c2774-18c7-4ade-b990-7f399cae0b7c",
+    "taskB": "project_task_7aaf93f9-715e-448f-affa-2898971f59ca",
+    "taskC": "project_task_f923b446-6f77-4244-b0e3-655028758bfe",
+    "taskD": "project_task_2a803c32-bfdb-4e44-99aa-565c3cc25b30",
+    "team": "exc_squad_b6e25a_17095ec6b79f49bebff2fa127da9b68b",
+    "coordinator": "exc_worker_b6e25a_2524feccb1c54a4a8047da629c0ee172"
+  },
+  "race": {
+    "projectId": "project_ed43067c-654f-406f-972b-b19d2d9d2a6e",
+    "rounds": [
+      {
+        "copyKind": "team",
+        "offset": 0,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_01a4e8a5-370b-4590-9d7f-3dfb039e79da (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_df1af3de-164a-4ed0-b0a7-fb538bad7eb5 to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 5,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_df1af3de-164a-4ed0-b0a7-fb538bad7eb5 (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_2b96ff9f-cc2e-4120-a2e3-8532a86c9131 to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 7,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 9,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 11,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 13,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 15,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 30,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 60,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": 120,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "exc_squad_b6e25a_9945a41c6d654247a16d9f42530849a0",
+          "target_team_coordinator_agent_run_id": "exc_worker_b6e25a_cc8432a52c40457f86aed07823794eca"
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": -20,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_eb5c1f3d-765e-4b47-ad20-1a70ca3aeab5 (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_cb9314ee-ec71-4cc0-b6f8-60bac9fe16b4 to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "team",
+        "offset": -60,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_cb9314ee-ec71-4cc0-b6f8-60bac9fe16b4 (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_65287b55-7cc2-4fa9-8fe7-e036706412cc to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 0,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_434bc504-6e4f-4e14-bbc3-b316d45c5321 (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_9a9f89bc-c53a-455a-9ce3-7f6a017e14da to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 5,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_9a9f89bc-c53a-455a-9ce3-7f6a017e14da (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_cd960e8e-4381-4a70-a34d-37284f3e937f to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 7,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_cd960e8e-4381-4a70-a34d-37284f3e937f (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_74528b44-71a3-4d74-8c1a-d7d52fbc8faf to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 9,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 11,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 13,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 15,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 30,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 60,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": 120,
+        "outcome": "assigned",
+        "assigned": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "exc_worker_b6e25a_cd08579ea6df40eda8dff92c7eca4c2e"
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": -20,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_097fa602-3c81-4ec0-8ccd-26151285e736 (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_618b8892-60b7-418f-9c05-53d3d14a9a43 to a new copy with recipient_address."
+        }
+      },
+      {
+        "copyKind": "agent",
+        "offset": -60,
+        "outcome": "refused-busy",
+        "assigned": {
+          "delegated": false,
+          "message": "This copy still works on Task project_task_618b8892-60b7-418f-9c05-53d3d14a9a43 (TODO). Mark it DONE or CANCELLED first, or delegate Task project_task_3fae4b70-a4e2-439d-9ce4-cff600656053 to a new copy with recipient_address."
+        }
+      }
+    ],
+    "outcomes": [
+      "refused-busy",
+      "assigned"
+    ]
+  },
+  "crossRoot": {
+    "team": "exc_squad_b6e25a_64bebd11f2de4cf49278779a612cb688",
+    "coordinator": "exc_worker_b6e25a_1cdb293897134395830652bfba96e798",
+    "toTeamRun": {
+      "accepted": false,
+      "code": "TARGET_IS_TEAM_RUN",
+      "message": "exc_squad_b6e25a_64bebd11f2de4cf49278779a612cb688 is a Team run; send_message_to reaches agents. Message its coordinator agent run exc_worker_b6e25a_1cdb293897134395830652bfba96e798.",
+      "target_agent_run_id": null
+    },
+    "crossAssign": {
+      "delegated": false,
+      "message": "exc_squad_b6e25a_64bebd11f2de4cf49278779a612cb688 is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address."
+    },
+    "inactive": {
+      "accepted": false,
+      "code": "TARGET_AGENT_RUN_NOT_ACTIVE",
+      "message": "Exact AgentRun target 'exc_squad_b6e25a_64bebd11f2de4cf49278779a612cb688' is not active.",
+      "target_agent_run_id": null
+    }
+  },
+  "neverStarted": {
+    "failed": {
+      "delegated": false,
+      "message": "AGY_MODEL_UNAVAILABLE: exc-no-such-model"
+    },
+    "fAssignment": {
+      "kind": "agent",
+      "agentRunId": "exc_worker_b6e25a_bc8d35f5677a49378f16a25164512bbb",
+      "assignedBy": "exc_manager_b6e25a_93ab9d025071487eb4e985a3a9a71ba0",
+      "outcome": "failed"
+    },
+    "neverStarted": {
+      "delegated": false,
+      "message": "exc_worker_b6e25a_bc8d35f5677a49378f16a25164512bbb is not a delegated copy in this run. Use the ID delegate_task returned for a copy delegated in this run, or delegate to a new copy with recipient_address."
+    }
+  },
+  "lostConversation": {
+    "helper": "exc_helper_b6e25a_8e7662b02f4b4840921a72aaf54aab59",
+    "memoryDirs": 1,
+    "lost": {
+      "delegated": false,
+      "message": "The delegated Agent at '/helper' is shut down and its saved conversation is unavailable (none); it cannot be restored."
+    }
+  },
+  "feed": {
+    "frames": 749,
+    "invalid": 0
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "leftoverProcesses": [],
+    "errors": []
+  }
+}

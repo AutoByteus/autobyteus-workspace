@@ -56,8 +56,8 @@ import { ProjectService } from "../../../src/projects/services/project-service.j
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
-import { TaskAgentResourceService } from "../../../src/projects/services/task-agent-resource-service.js";
-import { TaskAgentResourceStore } from "../../../src/projects/stores/task-agent-resource-store.js";
+import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
+import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { buildDeliveryEndpointForParticipant } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import {
   testAgentNode,
@@ -300,10 +300,10 @@ const createHarness = async (linked = false) => {
   const contextStore = new ProjectTaskContextStore(projectsLayout);
   const adHocTasks = new AdHocTaskStore(new AdHocTasksLayout(path.join(memoryDir, "ad-hoc-tasks")));
   const tasks = new ProjectTaskService({ store: projectStore, contextStore, adHocTasks,
-    taskAgentResources: new TaskAgentResourceService(new TaskAgentResourceStore(projectsLayout, adHocTasks.layout)),
+    taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasks.layout)),
     requestRelease: (identity, agentRuns) => {
       expect(identity).toEqual(createTeamRootExecutionIdentity(rootTeamRunId));
-      return root!.releaseTaskAgentResources(agentRuns);
+      return root!.releaseTaskExecutions(agentRuns);
     },
   });
   await tasks.load();
@@ -328,7 +328,7 @@ const createHarness = async (linked = false) => {
     }),
     rootRun: new TeamRun(backend.context, backend),
     // Production always binds the Task side: every copy belongs to a Task (an ad-hoc one when unowned).
-    taskAgentResources: tasks,
+    taskExecutionResources: tasks,
     // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
     collaboratorHost: {
       prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
@@ -350,7 +350,8 @@ const createHarness = async (linked = false) => {
   });
   const commands: MemberTaskCommandCapability = Object.freeze({
     root: createTeamRootExecutionIdentity(rootTeamRunId),
-    delegateTask: (caller, command) => root!.delegateTask({ identity: caller }, command),
+    delegateToNewCopy: (caller, command) => root!.delegateToNewCopy({ identity: caller }, command),
+    assignToExistingCopy: (caller, command) => root!.assignToExistingCopy({ identity: caller }, command),
   });
   const emitStatus = (memberAddress: string, agentRunId: string, status: "idle" | "running") => publisher.publish({
     eventSourceType: TeamRunEventSourceType.AGENT,
@@ -414,7 +415,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       recipientAddress, content: "Read these instructions; do not change business status.",
     });
     // The Task side alone records which agent runs belong to a Task (C-1/C-2).
-    const resources = async (taskId: string) => (await fs.readFile(h.projectsLayout.agentRunResourcesFile(projectId, taskId), "utf8")
+    const resources = async (taskId: string) => (await fs.readFile(h.projectsLayout.taskExecutionResourcesFile(projectId, taskId), "utf8")
       .then(JSON.parse)).agentRunResources as Array<{ role: string; agentRun: { kind: string; agentRunId?: string; teamRunId?: string; coordinatorAgentRunId?: string }; closedAt: string | null; start: string }>;
     const ingressOf = (e: Awaited<ReturnType<typeof resources>>[number]) => e.agentRun.agentRunId ?? e.agentRun.coordinatorAgentRunId!;
     try {
@@ -469,10 +470,10 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       expect(h.backend.preparedAgents.length + h.backend.preparedTeams.length).toBe(prepared);
       // Explicit Delete is not DONE: B's records stay, its open runtime keeps working.
       const treeBytes = await fs.readFile(getTeamRunExecutionTreePath(h.rootDir));
-      const recordsB = await fs.readFile(h.projectsLayout.agentRunResourcesFile(projectId, b.taskId), "utf8");
+      const recordsB = await fs.readFile(h.projectsLayout.taskExecutionResourcesFile(projectId, b.taskId), "utf8");
       await h.tasks.deleteTask({ projectId, taskId: b.taskId });
       expect(await fs.readFile(getTeamRunExecutionTreePath(h.rootDir))).toEqual(treeBytes);
-      expect(await fs.readFile(h.projectsLayout.agentRunResourcesFile(projectId, b.taskId), "utf8")).toBe(recordsB);
+      expect(await fs.readFile(h.projectsLayout.taskExecutionResourcesFile(projectId, b.taskId), "utf8")).toBe(recordsB);
       await expect(h.tasks.updateTask({ projectId, taskId: b.taskId, status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
       await expect(message(workerB, address)).resolves.toMatchObject({ accepted: true });
       expect((await h.tasks.listTasks(projectId)).map(t => t.taskId)).toEqual([a.taskId]);
@@ -488,7 +489,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       description: "Solve the assigned classroom exercise and return evidence.",
       reference_files: [],
     });
-    expect(created).toEqual({ target_agent_run_id: expect.any(String), target_kind: "agent", task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(created).toEqual({ delegated: true, target_kind: "agent", target_agent_run_id: expect.any(String), task_id: expect.stringMatching(/^ad_hoc_task_/) });
     const taskAgentRunId = (created as { target_agent_run_id: string }).target_agent_run_id;
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/worker",
@@ -622,7 +623,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     })).resolves.toEqual({
-      target_agent_run_id: null,
+      delegated: false,
       message: expect.stringContaining("is not a mounted Agent or Agent Team, a collaborator or an available agent"),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
@@ -639,7 +640,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     for (const recipient_address of ["/missing", "/worker/child"]) {
       await expect(delegate(harness.service, coordinator, {
         recipient_address, description: "must not start", reference_files: [],
-      })).resolves.toMatchObject({ target_agent_run_id: null });
+      })).resolves.toMatchObject({ delegated: false });
     }
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator", "foreign-root"), {
       recipient_address: "/worker", description: "foreign", reference_files: [],

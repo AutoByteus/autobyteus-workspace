@@ -1,0 +1,899 @@
+[
+  {
+    "case": "APC-E2E-001",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "t1Calls": 13,
+      "t2Calls": 13,
+      "t1ToolCycleResponsesWithThinking": 11,
+      "thinkingBlocksInFirstT2Request": 17,
+      "lastT1Usage": {
+        "input_tokens": 2,
+        "cache_read_input_tokens": 20792,
+        "cache_creation_input_tokens": 1214,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 1214,
+        "output_tokens": 158
+      },
+      "firstT2Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 22006,
+        "cache_creation_input_tokens": 182,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 182,
+        "output_tokens": 113
+      },
+      "previousRequestGrossInput": 22008,
+      "previousRequestCachedPrefix": 22006,
+      "firstT2GrossInput": 22192,
+      "newInputTokens": 184,
+      "firstT2WrittenOrUncached": 186
+    },
+    "at": "2026-10-09T10:58:34.064Z"
+  },
+  {
+    "case": "APC-E2E-002",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "t3Calls": 1,
+      "t4Calls": 4,
+      "noteBlockIndex": 105,
+      "blockEntries": 107,
+      "systemShaBefore": "e706a7c33409edd9",
+      "systemShaT4": "e706a7c33409edd9",
+      "firstT4Usage": {
+        "input_tokens": 4,
+        "cache_read_input_tokens": 34561,
+        "cache_creation_input_tokens": 423,
+        "cache_creation_5m": 0,
+        "cache_creation_1h": 423,
+        "output_tokens": 113
+      },
+      "systemContainsNote": false
+    },
+    "at": "2026-10-09T10:58:56.383Z"
+  },
+  {
+    "case": "APC-E2E-003",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "calls": 31,
+      "turns": 4,
+      "cacheReadTokens": 693632,
+      "grossInputTokens": 731838,
+      "runLevelHit": 0.9477944572432697,
+      "cacheWrite1hTokens": 38116,
+      "cacheWrite5mTokens": 0,
+      "sdkVersionsSentOnLiveCalls": [
+        "0.132.1"
+      ],
+      "serverSdkVersion": "0.132.1",
+      "perCall": [
+        {
+          "index": 0,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 7607,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 7607,
+          "output_tokens": 113
+        },
+        {
+          "index": 1,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 7607,
+          "cache_creation_input_tokens": 826,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 826,
+          "output_tokens": 483
+        },
+        {
+          "index": 2,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 8433,
+          "cache_creation_input_tokens": 1251,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1251,
+          "output_tokens": 572
+        },
+        {
+          "index": 3,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 9684,
+          "cache_creation_input_tokens": 1285,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1285,
+          "output_tokens": 382
+        },
+        {
+          "index": 4,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 10969,
+          "cache_creation_input_tokens": 1093,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1093,
+          "output_tokens": 238
+        },
+        {
+          "index": 5,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 12062,
+          "cache_creation_input_tokens": 1025,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1025,
+          "output_tokens": 281
+        },
+        {
+          "index": 6,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 13087,
+          "cache_creation_input_tokens": 1075,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1075,
+          "output_tokens": 291
+        },
+        {
+          "index": 7,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 14162,
+          "cache_creation_input_tokens": 1091,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1091,
+          "output_tokens": 289
+        },
+        {
+          "index": 8,
+          "phase": "T1",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 15253,
+          "cache_creation_input_tokens": 1088,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1088,
+          "output_tokens": 626
+        },
+        {
+          "index": 9,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 16341,
+          "cache_creation_input_tokens": 1339,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1339,
+          "output_tokens": 835
+        },
+        {
+          "index": 10,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 17680,
+          "cache_creation_input_tokens": 1546,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1546,
+          "output_tokens": 855
+        },
+        {
+          "index": 11,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 19226,
+          "cache_creation_input_tokens": 1566,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1566,
+          "output_tokens": 503
+        },
+        {
+          "index": 12,
+          "phase": "T1",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 20792,
+          "cache_creation_input_tokens": 1214,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1214,
+          "output_tokens": 158
+        },
+        {
+          "index": 13,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 22006,
+          "cache_creation_input_tokens": 182,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 182,
+          "output_tokens": 113
+        },
+        {
+          "index": 14,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 22188,
+          "cache_creation_input_tokens": 826,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 826,
+          "output_tokens": 255
+        },
+        {
+          "index": 15,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 23014,
+          "cache_creation_input_tokens": 1029,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1029,
+          "output_tokens": 225
+        },
+        {
+          "index": 16,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 24043,
+          "cache_creation_input_tokens": 938,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 938,
+          "output_tokens": 215
+        },
+        {
+          "index": 17,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 24981,
+          "cache_creation_input_tokens": 926,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 926,
+          "output_tokens": 160
+        },
+        {
+          "index": 18,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 25907,
+          "cache_creation_input_tokens": 919,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 919,
+          "output_tokens": 161
+        },
+        {
+          "index": 19,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 26826,
+          "cache_creation_input_tokens": 923,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 923,
+          "output_tokens": 260
+        },
+        {
+          "index": 20,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 27749,
+          "cache_creation_input_tokens": 1053,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1053,
+          "output_tokens": 403
+        },
+        {
+          "index": 21,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 28802,
+          "cache_creation_input_tokens": 1116,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1116,
+          "output_tokens": 370
+        },
+        {
+          "index": 22,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 29918,
+          "cache_creation_input_tokens": 1081,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1081,
+          "output_tokens": 303
+        },
+        {
+          "index": 23,
+          "phase": "T2",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 30999,
+          "cache_creation_input_tokens": 1106,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1106,
+          "output_tokens": 395
+        },
+        {
+          "index": 24,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 32105,
+          "cache_creation_input_tokens": 1108,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1108,
+          "output_tokens": 392
+        },
+        {
+          "index": 25,
+          "phase": "T2",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 33213,
+          "cache_creation_input_tokens": 1103,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1103,
+          "output_tokens": 231
+        },
+        {
+          "index": 26,
+          "phase": "T3",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 34316,
+          "cache_creation_input_tokens": 245,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 245,
+          "output_tokens": 113
+        },
+        {
+          "index": 27,
+          "phase": "T4",
+          "input_tokens": 4,
+          "cache_read_input_tokens": 34561,
+          "cache_creation_input_tokens": 423,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 423,
+          "output_tokens": 113
+        },
+        {
+          "index": 28,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 34984,
+          "cache_creation_input_tokens": 826,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 826,
+          "output_tokens": 393
+        },
+        {
+          "index": 29,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 35810,
+          "cache_creation_input_tokens": 1104,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1104,
+          "output_tokens": 491
+        },
+        {
+          "index": 30,
+          "phase": "T4",
+          "input_tokens": 2,
+          "cache_read_input_tokens": 36914,
+          "cache_creation_input_tokens": 1202,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 1202,
+          "output_tokens": 553
+        }
+      ]
+    },
+    "at": "2026-10-09T10:58:56.440Z"
+  },
+  {
+    "case": "APC-E2E-005",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "thinkingInPersistedSnapshot": true,
+      "thinkingBlocksInLastRequestBeforeStop": 34,
+      "firstAfterRestore": {
+        "index": 31,
+        "phase": "T5",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "thinking",
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 4,
+          "cache_read_input_tokens": 7445,
+          "cache_creation_input_tokens": 25031,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 25031,
+          "output_tokens": 304
+        },
+        "errorBody": null,
+        "systemSha": "e706a7c33409edd9",
+        "toolsSha": "00f08e4b13076bb9",
+        "messageCount": 65,
+        "blockEntryCount": 85,
+        "thinkingBlocksInRequest": 0,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "t5": [
+        {
+          "index": 31,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "cache_read_input_tokens": 7445,
+            "cache_creation_input_tokens": 25031,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 25031,
+            "output_tokens": 304
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "00f08e4b13076bb9",
+          "messageCount": 65,
+          "blockEntryCount": 85,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 32,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "text",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 32476,
+            "cache_creation_input_tokens": 1017,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1017,
+            "output_tokens": 274
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "00f08e4b13076bb9",
+          "messageCount": 67,
+          "blockEntryCount": 88,
+          "thinkingBlocksInRequest": 1,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 33,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 4,
+            "cache_read_input_tokens": 33493,
+            "cache_creation_input_tokens": 1058,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1058,
+            "output_tokens": 802
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "00f08e4b13076bb9",
+          "messageCount": 69,
+          "blockEntryCount": 93,
+          "thinkingBlocksInRequest": 2,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 34,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "thinking",
+            "thinking",
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 34551,
+            "cache_creation_input_tokens": 1515,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1515,
+            "output_tokens": 1094
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "00f08e4b13076bb9",
+          "messageCount": 71,
+          "blockEntryCount": 97,
+          "thinkingBlocksInRequest": 4,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 35,
+          "phase": "T5",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "end_turn",
+          "responseBlockTypes": [
+            "thinking",
+            "text"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 36066,
+            "cache_creation_input_tokens": 1805,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 1805,
+            "output_tokens": 1369
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "00f08e4b13076bb9",
+          "messageCount": 73,
+          "blockEntryCount": 101,
+          "thinkingBlocksInRequest": 6,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        }
+      ]
+    },
+    "at": "2026-10-09T10:59:35.121Z"
+  },
+  {
+    "case": "APC-E2E-004",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "settingResult": "Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' has been updated successfully.",
+      "error": null,
+      "waitingCall": {
+        "index": 36,
+        "phase": "T6",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "thinking",
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 4,
+          "cache_read_input_tokens": 37871,
+          "cache_creation_input_tokens": 536,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 536,
+          "output_tokens": 494
+        },
+        "errorBody": null,
+        "systemSha": "e706a7c33409edd9",
+        "toolsSha": "00f08e4b13076bb9",
+        "messageCount": 75,
+        "blockEntryCount": 103,
+        "thinkingBlocksInRequest": 6,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "continuation": {
+        "index": 37,
+        "phase": "T6-after-change",
+        "sdkVersion": "0.132.1",
+        "status": 200,
+        "stopReason": "tool_use",
+        "responseBlockTypes": [
+          "tool_use"
+        ],
+        "usage": {
+          "input_tokens": 2,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 37020,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 37020,
+          "output_tokens": 113
+        },
+        "errorBody": null,
+        "systemSha": "e706a7c33409edd9",
+        "toolsSha": "bb8319c220833490",
+        "messageCount": 77,
+        "blockEntryCount": 99,
+        "thinkingBlocksInRequest": 0,
+        "cacheControlCount": 2,
+        "topLevelCacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      },
+      "continuationLastAssistantBlocks": [
+        "tool_use"
+      ],
+      "continuationLastMessageRole": "user",
+      "toolsChanged": true,
+      "afterChange": [
+        {
+          "index": 37,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 0,
+            "cache_creation_input_tokens": 37020,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 37020,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 77,
+          "blockEntryCount": 99,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 38,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 37020,
+            "cache_creation_input_tokens": 824,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 824,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 79,
+          "blockEntryCount": 101,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 39,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 37844,
+            "cache_creation_input_tokens": 824,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 824,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 81,
+          "blockEntryCount": 103,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 40,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 38668,
+            "cache_creation_input_tokens": 824,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 824,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 83,
+          "blockEntryCount": 105,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 41,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "tool_use",
+          "responseBlockTypes": [
+            "tool_use"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 39492,
+            "cache_creation_input_tokens": 824,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 824,
+            "output_tokens": 113
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 85,
+          "blockEntryCount": 107,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        },
+        {
+          "index": 42,
+          "phase": "T6-after-change",
+          "sdkVersion": "0.132.1",
+          "status": 200,
+          "stopReason": "end_turn",
+          "responseBlockTypes": [
+            "thinking",
+            "text"
+          ],
+          "usage": {
+            "input_tokens": 2,
+            "cache_read_input_tokens": 40316,
+            "cache_creation_input_tokens": 824,
+            "cache_creation_5m": 0,
+            "cache_creation_1h": 824,
+            "output_tokens": 337
+          },
+          "errorBody": null,
+          "systemSha": "e706a7c33409edd9",
+          "toolsSha": "bb8319c220833490",
+          "messageCount": 87,
+          "blockEntryCount": 109,
+          "thinkingBlocksInRequest": 0,
+          "cacheControlCount": 2,
+          "topLevelCacheControl": {
+            "type": "ephemeral",
+            "ttl": "1h"
+          }
+        }
+      ]
+    },
+    "at": "2026-10-09T11:00:12.576Z"
+  },
+  {
+    "case": "APC-E2E-007",
+    "state": "fail",
+    "errors": [
+      "expected 31 to be 43 // Object.is equality"
+    ],
+    "details": {
+      "calls": 43,
+      "raw": {
+        "input": 120,
+        "read": 1068874,
+        "write5m": 0,
+        "write1h": 110218,
+        "writeTotal": 110218,
+        "output": 16011
+      },
+      "expectedCost": 1.4162188,
+      "summary": {
+        "usageReportCount": 31,
+        "standardInputTokens": 90,
+        "cacheReadInputTokens": 693632,
+        "cacheCreationInputTokens": 38116,
+        "cacheCreation5mInputTokens": 0,
+        "cacheCreation1hInputTokens": 38116,
+        "outputTokens": 10772,
+        "grossInputTokens": 731838,
+        "estimatedApiTotalCost": 0.6594544,
+        "estimatedApiCacheReadInputCost": 0.1387264,
+        "estimatedApiCacheCreation1hInputCost": 0.304928,
+        "cacheState": "positive",
+        "apiCostStatus": "estimated",
+        "currency": "USD"
+      }
+    },
+    "at": "2026-10-09T11:01:13.070Z"
+  },
+  {
+    "case": "APC-E2E-008",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "sourceCall": 36,
+      "thinkingBlocksKept": 6,
+      "unchanged": {
+        "status": 200,
+        "strict": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_read_input_tokens": 38407,
+          "cache_creation_input_tokens": 0,
+          "cache_creation_5m": 0,
+          "cache_creation_1h": 0,
+          "output_tokens": 460
+        },
+        "errorBody": null
+      },
+      "changedTool": {
+        "status": 400,
+        "strict": true,
+        "errorBody": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.29.content.0: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to \\\"drop_block\\\". The `tools` list differs from the one this block was created with.\"},\"request_id\":\"req_011CfrYnNuYvbTCPuPkN8Sah\"}"
+      }
+    },
+    "at": "2026-10-09T11:01:19.386Z"
+  }
+]

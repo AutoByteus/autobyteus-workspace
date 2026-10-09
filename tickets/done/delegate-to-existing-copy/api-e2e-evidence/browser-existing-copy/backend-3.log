@@ -1,0 +1,150 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:65308
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:65308
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/db/development.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:89195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-09T07:43:01.860Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_project'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Project Task Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 14 items.
+Populating agent definition cache for the first time...
+[2026-10-09T07:43:02.021Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-09T07:43:02.024Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 6 items.
+Agent definition cache populated with 14 items.
+{"level":30,"time":1791531782030,"pid":89195,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49353"}
+{"level":30,"time":1791531782055,"pid":89195,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65308"}
+[2026-10-09T07:43:02.055Z] [INFO] [server.runtime] Server listening on 127.0.0.1:65308
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/workspace.
+Created terminal session a9ed8d4b-0c20-49da-9e4c-83dc673b7f77 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a9ed8d4b-0c20-49da-9e4c-83dc673b7f77
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agents/manager_exagent_b985_783cb25cc0204d5ab0204ee311650e5f/collaboration/docs_review_team_exagent_b985_7394ba9c19e4490f80d1e59302a14a58/fact_checker_exagent_b985_4210fdfacfdd45f38c4e79aaa69a88b0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agents/manager_exagent_b985_783cb25cc0204d5ab0204ee311650e5f/collaboration/docs_review_team_exagent_b985_7394ba9c19e4490f80d1e59302a14a58/fact_checker_exagent_b985_4210fdfacfdd45f38c4e79aaa69a88b0/raw_traces_active.jsonl
+Closed PTY session a9ed8d4b-0c20-49da-9e4c-83dc673b7f77
+Terminal WebSocket disconnected: a9ed8d4b-0c20-49da-9e4c-83dc673b7f77
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/workspace.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/workspace.
+Created terminal session b6bd3e50-54c4-47aa-b572-ceeca45cc000 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b6bd3e50-54c4-47aa-b572-ceeca45cc000
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_teams/delivery_team_exteam_53d3_625b503726ab47a4bad56772874c1ec0/release_notes_writer_exteam_53d3_ee9548161d2f45e68cecc5f813bad081/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_teams/delivery_team_exteam_53d3_625b503726ab47a4bad56772874c1ec0/fact_checker_exteam_53d3_b43242a7a1a543b59da577b99ee2a85f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_teams/delivery_team_exteam_53d3_625b503726ab47a4bad56772874c1ec0/docs_review_team_exteam_53d3_0d4db71614c247dab46d2b054e7b74b1/fact_checker_exteam_53d3_bb87611ec62b45f18e1becb1f42a4c76/raw_traces_active.jsonl
+Closed PTY session b6bd3e50-54c4-47aa-b572-ceeca45cc000
+Terminal WebSocket disconnected: b6bd3e50-54c4-47aa-b572-ceeca45cc000
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/workspace.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/workspace.
+Created terminal session 396a768c-8e9f-4181-ae2d-3d8f0bfe9217 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 396a768c-8e9f-4181-ae2d-3d8f0bfe9217
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_orgs/delivery_org_exorg_3638_89b22cbae30b456c9017224094b32406/release_notes_writer_exorg_3638_62aabd5dfb3344b3980abf7fffec9f56/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_orgs/delivery_org_exorg_3638_89b22cbae30b456c9017224094b32406/fact_checker_exorg_3638_d369b40671044fddbd63df67256c48a8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_orgs/delivery_org_exorg_3638_89b22cbae30b456c9017224094b32406/docs_review_team_exorg_3638_c44229b8e5834332891aafbb593e5e25/release_notes_writer_exorg_3638_ce53816700964d5293aee851714ddfe8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_orgs/delivery_org_exorg_3638_89b22cbae30b456c9017224094b32406/docs_review_team_exorg_3638_c44229b8e5834332891aafbb593e5e25/fact_checker_exorg_3638_26a7da3cb7964958b66954ed9e9750c0/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/memory/agent_orgs/delivery_org_exorg_3638_89b22cbae30b456c9017224094b32406/docs_review_team_exorg_3638_54bfeec129274198a20a835368dcb5f6/fact_checker_exorg_3638_72f19127a3924626af49e7671c65408f/raw_traces_active.jsonl
+Closed PTY session 396a768c-8e9f-4181-ae2d-3d8f0bfe9217
+Terminal WebSocket disconnected: 396a768c-8e9f-4181-ae2d-3d8f0bfe9217
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/workspace.
+[2026-10-09T07:43:09.438Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-09T07:43:09.445Z] [INFO] [server.runtime] Server closed cleanly.

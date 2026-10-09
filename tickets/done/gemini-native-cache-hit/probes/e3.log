@@ -1,0 +1,8 @@
+AgentFactory (Singleton) initialized.
+prisma:info Starting a sqlite pool with 21 connections.
+{"ts":"2026-10-09T09:18:55.022Z","experiment":"replay","model":"gemini-3.8-flash","runtime":"vertexExpress","label":"ttl","call":100,"messageIndex":202,"prompt":123814,"cached":68092,"previousPrompt":null,"uncached":55722,"newTail":null,"hitOfPrompt":0.55,"ms":14840}
+{"ts":"2026-10-09T09:19:29.022Z","experiment":"replay","model":"gemini-3.8-flash","runtime":"vertexExpress","label":"ttl","call":101,"messageIndex":204,"prompt":125433,"cached":76118,"previousPrompt":123814,"uncached":49315,"newTail":1619,"hitOfPrompt":0.607,"ms":3999}
+{"ts":"2026-10-09T09:20:36.935Z","experiment":"replay","model":"gemini-3.8-flash","runtime":"vertexExpress","label":"ttl","call":102,"messageIndex":206,"prompt":126532,"cached":80122,"previousPrompt":125433,"uncached":46410,"newTail":1099,"hitOfPrompt":0.633,"ms":7912}
+{"ts":"2026-10-09T09:22:45.070Z","experiment":"replay","model":"gemini-3.8-flash","runtime":"vertexExpress","label":"ttl","call":103,"messageIndex":208,"prompt":129463,"cached":124226,"previousPrompt":126532,"uncached":5237,"newTail":2931,"hitOfPrompt":0.96,"ms":8132}
+{"ts":"2026-10-09T09:26:49.586Z","experiment":"replay","model":"gemini-3.8-flash","runtime":"vertexExpress","label":"ttl","call":104,"messageIndex":210,"prompt":130210,"cached":124232,"previousPrompt":129463,"uncached":5978,"newTail":747,"hitOfPrompt":0.954,"ms":4514}
+{"ts":"2026-10-09T09:34:55.610Z","experiment":"replay","model":"gemini-3.8-flash","runtime":"vertexExpress","label":"ttl","call":105,"messageIndex":212,"prompt":130757,"cached":0,"previousPrompt":130210,"uncached":130757,"newTail":547,"hitOfPrompt":0,"ms":6039}

@@ -1,0 +1,27 @@
+{
+  "case": "AC-003 live (LV-001)",
+  "date": "2026-10-09",
+  "build": "isolated desktop instance built from worktree HEAD 78df53634 (pnpm isolated-app start --build)",
+  "instanceId": "iso-63523-dd36",
+  "runtime": "antigravity_cli (installed agy 1.3.2)",
+  "model": "gemini-3.8-flash-low",
+  "journey": "Agents > Reload > Run (Cache Meter Check) > runtime Antigravity CLI + Gemini 3.8 Flash (Low) > Temp workspace > 2 composer sends > Token tab",
+  "turns": [
+    {"prompt": "read ledger-dump.txt fully, reply checksum of Record 05200", "reply": "77567", "expected": "77567",
+     "agyCumulativeUsage": {"input_tokens": 67632, "cache_read_tokens": 24458, "output_tokens": 688, "total_tokens": 68320},
+     "tokenMeter": {"grossInput": 92090, "cacheHitPercent": 26.6, "uncached": 67632, "cacheHits": 24458, "output": 688, "usageReports": 1}},
+    {"prompt": "checksum of Record 00042", "reply": "32589", "expected": "32589",
+     "agyCumulativeUsage": {"input_tokens": 95560, "cache_read_tokens": 24458, "output_tokens": 693, "total_tokens": 96253},
+     "tokenMeter": {"grossInput": 120018, "cacheHitPercent": 20.4, "uncached": 95560, "cacheHits": 24458, "output": 693, "usageReports": 2}}
+  ],
+  "checks": {
+    "agyInputExcludesCacheReads": "total_tokens = input + output (68,320 = 67,632 + 688)",
+    "grossEqualsInputPlusCacheRead": true,
+    "grossAtLeastCacheReads": true,
+    "hitBelow100WithUncachedInput": true,
+    "regressionFlag": false,
+    "priceStatus": "price_missing (AGY model ids not in catalog, out of scope)"
+  },
+  "preFixWouldHaveShown": {"turn1": {"grossInput": 67632, "uncached": 43174, "cacheHits": 24458}},
+  "screenshot": "ac-003-token-meter-after-turn-2.png"
+}

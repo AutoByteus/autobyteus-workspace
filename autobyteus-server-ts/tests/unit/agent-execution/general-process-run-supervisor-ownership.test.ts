@@ -19,7 +19,7 @@ import { getTeamRunService } from "../../../src/agent-team-execution/services/te
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
 import { MemberExecutionContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
-import type { TaskAgentResourcePort } from "../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
   RunFileChangeService,
   bindProcessRunFileChangeService,
@@ -67,7 +67,7 @@ const createSupervisorInput = () => {
     agentProviderFactoryBuilder: createProviderBuilder(),
     agentToolMcpSessionAuthority: createAuthority(),
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
-    taskAgentResources: { ownerOf: vi.fn(() => null) } as unknown as TaskAgentResourcePort,
+    taskExecutionResources: { ownerOf: vi.fn(() => null) } as unknown as TaskExecutionResourcePort,
   };
 };
 
@@ -84,7 +84,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     const supervisor = new GeneralProcessRunSupervisor(input);
     expect(initializeAgent).toHaveBeenCalledOnce();
     expect(initializeTeam).toHaveBeenCalledOnce();
-    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskAgentResources: input.taskAgentResources }));
+    expect(initializeTeam).toHaveBeenCalledWith(expect.objectContaining({ taskExecutionResources: input.taskExecutionResources }));
     expect(initializeOrg).toHaveBeenCalledOnce();
     expect(getAgentRunService()).toBe(supervisor.agentRunService);
     expect(getTeamRunService()).toBe(supervisor.teamRunService);

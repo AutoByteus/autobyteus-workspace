@@ -336,7 +336,10 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     const refusedRaw = await childCalls(reviewer.address, reviewer.agentRunId,
       callTool("delegate_task", { recipient_address: hostAddress, description: "Do the follow-up yourself." }));
     const refused = toolResult(refusedRaw);
-    expect(refused.target_agent_run_id, refusedRaw).toBeNull();
+    // Nothing started: `delegated: false` with the reason, and no copy IDs.
+    expect(refused.delegated, refusedRaw).toBe(false);
+    expect(refused.message, refusedRaw).toEqual(expect.any(String));
+    for (const field of ["target_agent_run_id", "target_team_run_id", "target_team_coordinator_agent_run_id"]) expect(refused, refusedRaw).not.toHaveProperty(field);
     expect(refusedRaw).not.toMatch(/ad_hoc_task_[0-9a-f-]{36}/);
     await expectNothingAdded("delegate_task to the host");
     evidence["DCM-005"] = { refused: refusedRaw.slice(0, 2_000) };

@@ -43,8 +43,8 @@ describe("per-Project folder ProjectStore (SR-024)", () => {
     const contextFile = path.join(layout.contextDir("project_A", "task_1"), "ctx_a__note.txt");
     await fs.mkdir(path.dirname(contextFile), {recursive: true});
     await fs.writeFile(contextFile, "saved context");
-    await fs.writeFile(layout.agentRunResourcesFile("project_A", "task_1"), '{"saved":"assignment"}');
-    const preserved = [layout.taskFile("project_A", "task_1"), layout.taskFile("project_A", "task_2"), contextFile, layout.agentRunResourcesFile("project_A", "task_1")];
+    await fs.writeFile(layout.taskExecutionResourcesFile("project_A", "task_1"), '{"saved":"assignment"}');
+    const preserved = [layout.taskFile("project_A", "task_1"), layout.taskFile("project_A", "task_2"), contextFile, layout.taskExecutionResourcesFile("project_A", "task_1")];
     const bytes = await Promise.all(preserved.map(f => fs.readFile(f, "utf8")));
     expect((await store.readProject("project_A"))!.workspaces).toEqual([link]);
     expect((await store.listProjects())[0].workspaces).toEqual([link]);
@@ -79,11 +79,11 @@ describe("per-Project folder ProjectStore (SR-024)", () => {
     await seed();
     await fs.mkdir(layout.contextDir("project_A", "task_1"), { recursive: true });
     await fs.writeFile(path.join(layout.contextDir("project_A", "task_1"), "ctx_a__b.txt"), "bytes");
-    await fs.writeFile(layout.agentRunResourcesFile("project_A", "task_1"), JSON.stringify({ taskId: "task_1", agentRunResources: [] }));
+    await fs.writeFile(layout.taskExecutionResourcesFile("project_A", "task_1"), JSON.stringify({ taskId: "task_1", agentRunResources: [] }));
     expect(await store.deleteTask("project_A", "task_1")).toMatchObject({ taskId: "task_1" });
     await expect(fs.access(layout.taskFile("project_A", "task_1"))).rejects.toThrow();
     await expect(fs.access(layout.contextDir("project_A", "task_1"))).rejects.toThrow();
-    await expect(fs.readFile(layout.agentRunResourcesFile("project_A", "task_1"), "utf8")).resolves.toContain("task_1");
+    await expect(fs.readFile(layout.taskExecutionResourcesFile("project_A", "task_1"), "utf8")).resolves.toContain("task_1");
     expect((await store.listTasks("project_A")).map(t => t.taskId)).toEqual(["task_2"]);
     expect(await store.deleteTask("project_A", "task_1")).toBeUndefined();
   });

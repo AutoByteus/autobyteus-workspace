@@ -66,8 +66,8 @@ import {
   type ContextFilePathEnvironment,
 } from "../context-files/domain/context-file-path-environment.js";
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
-import type { TaskAgentResourcePort } from "../agent-collaboration/execution/task/task-agent-resource-port.js";
-import { composeProjectTaskAgentResources, releaseProjectTaskAgentResources } from "./project-task-agent-resource-composition.js";
+import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
+import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -83,7 +83,7 @@ const closeStudioProcessResources = async (input: {
   agentToolsMcpHost: AgentToolsMcpHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
-  taskAgentResources: TaskAgentResourcePort | null;
+  taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
 }): Promise<void> => {
   stopMemorySyncWorker();
@@ -91,7 +91,7 @@ const closeStudioProcessResources = async (input: {
     await input.generalProcessRunSupervisor?.close();
   } finally {
     try {
-      if (input.taskAgentResources) releaseProjectTaskAgentResources(input.taskAgentResources);
+      if (input.taskExecutionResources) releaseProjectTaskExecutionResources(input.taskExecutionResources);
       input.generalProcessAuthority?.close();
     } finally {
       try {
@@ -188,7 +188,7 @@ export const buildStudioServer = async (input: {
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
-  let taskAgentResources: TaskAgentResourcePort | null = null;
+  let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let processResourcesClosed = false;
@@ -200,7 +200,7 @@ export const buildStudioServer = async (input: {
       agentToolsMcpHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
-      taskAgentResources,
+      taskExecutionResources,
       studioApiHandle,
     });
   };
@@ -229,7 +229,7 @@ export const buildStudioServer = async (input: {
       },
       assertExecutionCapabilitiesReady: () => undefined,
     });
-    taskAgentResources = await composeProjectTaskAgentResources({
+    taskExecutionResources = await composeProjectTaskExecutionResources({
       activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: input.appConfig.getAppDataDir() });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
@@ -242,7 +242,7 @@ export const buildStudioServer = async (input: {
       agentProviderFactoryBuilder,
       agentToolMcpSessionAuthority: generalProcessAuthority,
       modelSelectionValidator,
-      taskAgentResources,
+      taskExecutionResources,
     });
     generalProcessAuthority = null;
     const applicationServices = createStudioApplicationServices({

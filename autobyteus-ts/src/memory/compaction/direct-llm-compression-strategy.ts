@@ -54,7 +54,7 @@ export class DirectLlmCompressionStrategy implements CompressionStrategy {
       if (estimateMessagesTokens(messages) > capacity.inputBudget) {
         throw new CompactionInvocationError('input_budget_exceeded', 'Selected compaction history exceeds the compactor input budget.');
       }
-      const response = await llm.sendMessages(messages, null,
+      const response = await llm.sendMessages(messages,
         { logicalConversationId: execution.invocationId },
         { signal, turnId: executionTurnId, retryMode: 'single_attempt' });
       signal.throwIfAborted();

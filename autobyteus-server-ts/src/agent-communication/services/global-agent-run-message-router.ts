@@ -123,6 +123,24 @@ export class GlobalAgentRunMessageRouter {
       return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
     }
 
+    // send_message_to reaches agents only: a Team copy's team run ID is refused with its coordinator's run ID.
+    const coordinator = this.activeRootDirectory.findTeamCoordinator(targetAgentRunId);
+    if (coordinator) {
+      const result = {
+        accepted: false,
+        code: "TARGET_IS_TEAM_RUN",
+        message: `${targetAgentRunId} is a Team run; send_message_to reaches agents. Message its coordinator agent run ${coordinator}.`,
+      } satisfies AgentOperationResult;
+      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
+        ...result,
+        senderRunId: input.sender.senderRunId,
+        targetAgentRunId,
+        messageType,
+        referenceFiles,
+      });
+      return result;
+    }
+
     const targetRun = this.agentRunManager.getActiveRun(targetAgentRunId);
     if (!targetRun) {
       const result = {

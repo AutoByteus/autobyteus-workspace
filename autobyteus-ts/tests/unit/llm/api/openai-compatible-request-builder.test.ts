@@ -39,7 +39,6 @@ describe('OpenAICompatibleRequestBuilder', () => {
         agentId: 'agent-1',
         turnId: 'turn-1',
         requestId: 'request-1',
-        renderedPayload: { provider: 'internal' },
         nullish: null,
         undefinedValue: undefined,
         metadata: { keep: true },
@@ -70,7 +69,6 @@ describe('OpenAICompatibleRequestBuilder', () => {
     expect(params).not.toHaveProperty('agentId');
     expect(params).not.toHaveProperty('turnId');
     expect(params).not.toHaveProperty('requestId');
-    expect(params).not.toHaveProperty('renderedPayload');
     expect(params).not.toHaveProperty('nullish');
     expect(params).not.toHaveProperty('undefinedValue');
   });

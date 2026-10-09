@@ -31,8 +31,10 @@ if (arg === "--version") {
   const autoCompaction = process.env.AGY_FAKE_CASE === "auto_compaction";
   const interruptResend = process.env.AGY_FAKE_CASE === "interrupt_resend";
   const contextFiles = process.env.AGY_FAKE_CASE === "context_files";
+  const usageReport = process.env.AGY_FAKE_CASE === "usage_report";
   // These independent fixtures all model exact conversation binding on resume.
   const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction || interruptResend || contextFiles
+    || usageReport
     ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
@@ -119,10 +121,17 @@ if (arg === "--version") {
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // `CALL_TOOLS:[{"name","arguments","delayMs"?}, …]` issues every call at once (parallel tool calls in one
+    // turn, as a model batches them), each after its own optional delay, and replies `CALLED_ALL:[results]`.
+    const parallelTools = /CALL_TOOLS:(\[.*\])/s.exec(content);
     const requestedTool = /CALL_TOOL:(\{.*\})/s.exec(content);
     const delegation = /DELEGATE:(\{.*\})/s.exec(content);
     const call = requestedTool ? JSON.parse(requestedTool[1]) : null;
-    const text = call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
+    const text = parallelTools ? `CALLED_ALL:${JSON.stringify(await Promise.all(JSON.parse(parallelTools[1]).map(async (each) => {
+      if (each.delayMs) await new Promise((resolve) => setTimeout(resolve, each.delayMs));
+      return callAgentTool(each.name, each.arguments);
+    })))}`
+      : call ? `CALLED:${JSON.stringify(await callAgentTool(call.name, call.arguments))}`
       : content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
       : content.includes("READ_REFERENCE_FILES") ? `REFERENCES:${JSON.stringify(readReferenceFiles(content))}`
       : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
@@ -205,6 +214,22 @@ if (arg === "--version") {
       });
       reply(turns * 100, `VIEWED:${files.length}`);
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `VIEWED:${files.length}` } });
+      return;
+    }
+    if (usageReport) {
+      // Turn N replays the Nth `result` event verbatim from a real AGY 1.2.16 recording (cumulative `usage` per
+      // process; `input_tokens` excludes `cache_read_tokens`, `total_tokens = input + output`), rebound to this
+      // process's conversation. Beyond the recording the turn fails, so a test never reads invented usage.
+      const recording = new URL("./agy-compaction/agy-stream-auto-compaction-twice.stdout.jsonl", import.meta.url);
+      const recorded = readFileSync(recording, "utf8").split("\n").filter(Boolean).map((row) => JSON.parse(row))
+        .filter((row) => row.event === "result").map((row) => row.result);
+      const result = recorded[turns - 1];
+      if (!result) {
+        emit({ event: "result", result: { conversation_id, status: "ERROR", error: "no recorded turn", response: "" } });
+        return;
+      }
+      reply(turns * 10, result.response);
+      emit({ event: "result", result: { ...result, conversation_id } });
       return;
     }
     if (autoCompaction) {

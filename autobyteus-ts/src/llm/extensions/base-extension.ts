@@ -11,7 +11,6 @@ export abstract class LLMExtension {
 
   abstract beforeInvoke(
     messages: Message[],
-    renderedPayload?: unknown,
     kwargs?: Record<string, unknown>
   ): Promise<void>;
 

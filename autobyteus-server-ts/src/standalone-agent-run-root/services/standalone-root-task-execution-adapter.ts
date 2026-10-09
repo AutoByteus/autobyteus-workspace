@@ -179,6 +179,11 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     }
     return null;
   }
+  taskExecutionTargetOf(reference: TaskExecutionReference) {
+    // The index is keyed by run ID alone: the copy must also be of the requested kind.
+    const entry = this.options.getIndex().getTaskExecution(reference);
+    return entry && taskExecutionReferenceKey(referenceOf(entry)) === taskExecutionReferenceKey(reference) ? Object.freeze({ root: this.root, execution: referenceOf(entry), ingressAgentRunId: this.ingressAgentRunId(entry) }) : null;
+  }
   cancelOwnedExecution(reference: TaskExecutionReference): void {
     const entry = this.options.getIndex().getTaskExecution(reference); if (!entry) return;
     if (entry.host.hostKind === "team") this.options.teams.getManaged(entry.host.hostRunId)?.cancelDirectTaskExecution(reference);
