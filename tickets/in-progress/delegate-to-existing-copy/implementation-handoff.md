@@ -15,15 +15,15 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (latest: IR-002, Local Fix for CR-001)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003` (requirements), `SR-006` (design)
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (failure-origin, CR-001 Local Fix)
+- Related API/E2E revision IDs: `API-REV-001` (F-001)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: CR-001 (F-001 / EXC-E2E-006); see IR-002
 
 Repositories and commits:
 - Server (worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy`, branch `codex/delegate-to-existing-copy`). The branch was fast-forwarded from the stated base `048ea6cec` to current `origin/personal` `742a0df97` before any change (the 42 upstream commits touch only AGY input and test-baseline fixes; no overlap with this change). Commits on top:
@@ -32,7 +32,8 @@ Repositories and commits:
   - `1e676ca54` S7 docs (`projects.md` and module docs, `TESTING.md`)
   - `24056ffdd` baseline timing fix (TESTING.md rule 9): explicit timeouts for two load-sensitive tests that also run at ~4 s on the base (see Known Risks)
   - `1aa02f256` integration/E2E assertions aligned with the explicit result and new texts
-  - final commit: these ticket artifacts (`implementation-handoff.md`, `implementation-revision-record.md`) with the solution package
+  - `88e59f500` IR-002 / CR-001: a copy whose start failed is refused as never started
+  - ticket artifact commits: these ticket artifacts (`implementation-handoff.md`, `implementation-revision-record.md`) with the solution package
 - Agents repo (cross-repo S7): worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-agents-delegate-to-existing-copy`, branch `codex/delegate-to-existing-copy` from `origin/main` `fd2b99e`, commit `0bd84e0` (PTM skill + board template). Not pushed; it must ship with the server change. The main checkout `~/autobyteus_org/autobyteus-agents` has unrelated uncommitted user changes and was not touched.
 
 What was built (design S1–S8):
@@ -94,6 +95,7 @@ Agents repo: `agents/project-task-manager/skills/project-task-management/SKILL.m
 
 ## Known Risks
 
+- **CR-001 (IR-002, fixed):** a copy whose start failed never reaches the root's tree; the lookup miss now asks the Task side about a closed copy this root hosts (`closedTaskExecutionsIn`) and returns its specific refusal (never started, another assigner, already this Task). Residual: while that copy's Task is still open, the existing port cannot show its host root, so it gets the generic refusal until the Task is DONE or CANCELLED (which a reassignment requires anyway).
 - **Implementation finding (fixed in scope):** the three root indexes key task executions by run ID alone (`getTaskExecution` ignores the reference kind), so a team run ID passed as `target_agent_run_id` initially resolved to the Team copy. `taskExecutionTargetOf` now also requires the found copy's reference to equal the requested one (all three adapters); covered by the real-adapter tests. Reviewers may want to confirm no other new caller relies on kind-agnostic lookup.
 - Release window (MP-003 / R-1): unchanged profile — depends on each adapter's `releaseOwnedExecution` capturing its authority at invocation. Runtime tests cover DONE(A) before the assignment, between the queue step and the commit, and after the commit; Task-side tests run both orders of DONE(A) vs assign(B).
 - A refusal at the commit after the queue step (e.g. a concurrent DONE of B or a concurrent assignment) leaves the copy's released authority dropped. This is harmless (the copy is closed and restore builds a fresh authority) and matches reactivation's profile.
