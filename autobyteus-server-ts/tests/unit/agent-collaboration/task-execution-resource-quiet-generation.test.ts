@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
-import { RootTaskAgentResourceScope } from '../../../src/agent-collaboration/execution/task/root-task-agent-resource-scope.js';
+import { RootTaskExecutionResourceScope } from '../../../src/agent-collaboration/execution/task/root-task-execution-resource-scope.js';
 import { createRootExecutionPhysicalScope } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { nestedReleaseScenario } from '../../fixtures/task-release-generation-fixtures.js';
 
@@ -8,7 +8,7 @@ const message = () => new AgentInputUserMessage('Summarize completed work');
 /** DONE on Task A: the Task side closes its agent runs, then this root stops exactly those. */
 const doneScope = (f: Awaited<ReturnType<typeof nestedReleaseScenario>>) => {
   f.resources.close('A');
-  return new RootTaskAgentResourceScope(f.adapter, f.resources);
+  return new RootTaskExecutionResourceScope(f.adapter, f.resources);
 };
 describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generation exact Task release', kind => {
   it('coordinator-only follow-up preserves verified nested Agent/Team/grandchild proof and separately stops sibling helper', async () => {
@@ -28,9 +28,9 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     await f.adapter.restoreChain('A-lead', () => undefined);
     expect(await f.getManaged('A-team')!.postMessage(message(), 'A-lead')).toMatchObject({ accepted: true });
     const scope = doneScope(f);
-    expect(await scope.releaseTaskAgentResources(f.requested)).toEqual(f.requested.map(agentRun => ({ agentRun, stopped: true })));
-    expect(await scope.releaseTaskAgentResources([{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).toEqual([
-      { agentRun: { agentRunId: 'A-child' }, stopped: true }, { agentRun: { teamRunId: 'A-nested' }, stopped: true }]);
+    expect(await scope.releaseTaskExecutions(f.requested)).toEqual(f.requested.map(execution => ({ execution, stopped: true })));
+    expect(await scope.releaseTaskExecutions([{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).toEqual([
+      { execution: { agentRunId: 'A-child' }, stopped: true }, { execution: { teamRunId: 'A-nested' }, stopped: true }]);
     expect(f.acquired.filter(r => ['A-child', 'A-nested-lead', 'A-grand'].includes(r.runId))).toHaveLength(3);
     expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);
@@ -59,14 +59,14 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     expect(f.acquired.filter(r => r.runId === id)).toHaveLength(2);
     f.stopFailures.add(restored);
     const scope = doneScope(f);
-    const first = await scope.releaseTaskAgentResources(f.requested);
-    expect(first.find(o => 'agentRunId' in o.agentRun && o.agentRun.agentRunId === id)?.stopped).toBe(false);
+    const first = await scope.releaseTaskExecutions(f.requested);
+    expect(first.find(o => 'agentRunId' in o.execution && o.execution.agentRunId === id)?.stopped).toBe(false);
     expect(f.active.get(id)).toBe(restored); expect(restored.alive).toBe(true);
     expect(f.active.has('A-helper')).toBe(false);
     f.stopFailures.delete(restored);
-    expect((await scope.releaseTaskAgentResources(f.requested)).every(o => o.stopped)).toBe(true);
+    expect((await scope.releaseTaskExecutions(f.requested)).every(o => o.stopped)).toBe(true);
     const stops = f.stopped.length, acquisitions = f.acquired.length;
-    expect((await scope.releaseTaskAgentResources(f.requested)).every(o => o.stopped)).toBe(true);
+    expect((await scope.releaseTaskExecutions(f.requested)).every(o => o.stopped)).toBe(true);
     expect(f.stopped).toHaveLength(stops); expect(f.acquired).toHaveLength(acquisitions);
     expect(restored.alive).toBe(false); expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);

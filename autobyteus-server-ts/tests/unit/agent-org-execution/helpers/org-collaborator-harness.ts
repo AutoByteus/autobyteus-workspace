@@ -23,7 +23,7 @@ import { createAgentOrgRootExecutionIdentity } from "../../../../src/agent-colla
 import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
-import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import type { AgentOrgRunCollaborators } from "../../../../src/agent-org-execution/services/agent-org-run-collaborators.js";
 
 /**
@@ -104,7 +104,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     collaboratorAdmission: admission(options.runnable ?? true),
     prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
     // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskAgentResources: new InMemoryTaskAgentResources(),
+    taskExecutionResources: new InMemoryTaskExecutionResources(),
   });
   run.activate();
   return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher };

@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import type {
-  TaskAgentResourceLinkInput, TaskAgentResourcePort, TaskAgentResourceReleaseRequest, TaskAgentResourceReopenInput,
-  TaskAgentResourceReopenResult, TaskAgentResourceRole,
-} from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+  NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
+  TaskExecutionReopenResult, TaskExecutionRole,
+} from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
@@ -14,19 +14,19 @@ import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js"
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isTerminalTaskStatus, validateTaskStatus } from "../domain/task-status.js";
-import type { TaskAssignment } from "../domain/task-agent-resources.js";
+import type { TaskAssignment } from "../domain/task-execution-resources.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { AdHocTaskStore } from "../stores/ad-hoc-task-store.js";
 import { getProjectTaskContextStore, type ProjectTaskContextStore, type PreparedTaskContext } from "../context/project-task-context-store.js";
-import { TaskAgentResourceRelease } from "../runtime/task-agent-resource-release.js";
-import { TaskAgentResourceService } from "./task-agent-resource-service.js";
-import { TaskAgentResourceStore } from "../stores/task-agent-resource-store.js";
+import { TaskExecutionResourceRelease } from "../runtime/task-execution-resource-release.js";
+import { TaskExecutionResourceService } from "./task-execution-resource-service.js";
+import { TaskExecutionResourceStore } from "../stores/task-execution-resource-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 import type { TaskChangeView } from "../changes/project-change-messages.js";
 import { buildTaskRootView, rootWorkerStatus, type TaskWorkerStatusResolver } from "./task-root-view-builder.js";
 
 type TaskPersistence = Pick<ProjectStore, "layout" | "readProject" | "listTasks" | "readTask" | "findTask" | "createTask" | "updateTask" | "deleteTask">;
-type AssignedLink = Extract<TaskAgentResourceLinkInput, { role: "assigned" }>;
+type AssignedLink = Extract<NewTaskExecutionLinkInput, { role: "assigned" }>;
 type Dependencies = {
   store?: TaskPersistence;
   /** Tasks with no Project (`<appData>/ad-hoc-tasks/`); outside the Projects store and its migration gate. */
@@ -35,9 +35,9 @@ type Dependencies = {
   now?: () => Date;
   createId?: () => string;
   /** The process authority over agent run resources; bound once by the composition. */
-  taskAgentResources?: TaskAgentResourceService;
+  taskExecutionResources?: TaskExecutionResourceService;
   /** Exact-root stop request; absent means no runtime is asked to stop anything. */
-  requestRelease?: TaskAgentResourceReleaseRequest;
+  requestRelease?: TaskExecutionReleaseRequest;
   /** Told after each committed Task write (the `/ws/projects` feed); defaults to the process publisher. */
   changes?: ProjectChangeMarks;
   /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
@@ -61,18 +61,18 @@ type ContextUpdate = { removals: string[]; writesContextList: boolean; prepare: 
  * The Task subject boundary: Project Task metadata and context (released semantics over the
  * per-Project store), Tasks with no Project (ad-hoc, created only by described delegation), saved
  * work for assignment, status rules, and closure (DONE or CANCELLED) / assignment orchestration for both. It is the
- * runtime's `TaskAgentResourcePort`, delegating agent run facts to TaskAgentResourceService.
+ * runtime's `TaskExecutionResourcePort`, delegating agent run facts to TaskExecutionResourceService.
  */
-export class ProjectTaskService implements TaskAgentResourcePort {
-  private readonly resources: TaskAgentResourceService;
-  private readonly release: TaskAgentResourceRelease;
+export class ProjectTaskService implements TaskExecutionResourcePort {
+  private readonly resources: TaskExecutionResourceService;
+  private readonly release: TaskExecutionResourceRelease;
   private readonly adHocTasks: AdHocTaskStore;
   constructor(private readonly deps: Dependencies = {}) {
     this.adHocTasks = deps.adHocTasks ?? new AdHocTaskStore();
     // Agent run resources live beside the Task metadata in the same layouts.
-    this.resources = deps.taskAgentResources
-      ?? new TaskAgentResourceService(new TaskAgentResourceStore(deps.store?.layout, this.adHocTasks.layout));
-    this.release = new TaskAgentResourceRelease(deps.requestRelease);
+    this.resources = deps.taskExecutionResources
+      ?? new TaskExecutionResourceService(new TaskExecutionResourceStore(deps.store?.layout, this.adHocTasks.layout));
+    this.release = new TaskExecutionResourceRelease(deps.requestRelease);
     // Every committed run-resource write may change a Task's root (link, start, fail, DONE or CANCELLED, reopen).
     this.resources.setCommitListener((location) => this.changes.taskChanged(location));
   }
@@ -236,7 +236,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
   /** Settles stop requests already made by DONE or CANCELLED (tests and orderly shutdown). */
   async drainRuntimeReleases(): Promise<void> { await this.release.drain(); }
 
-  // ── TaskAgentResourcePort (runtime-facing) ──
+  // ── TaskExecutionResourcePort (runtime-facing) ──
   async resolveAssignment(taskId: string) {
     const { projectId, task } = await this.uniqueTask(taskId);
     if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
@@ -245,7 +245,7 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     const referenceFiles = await Promise.all((task.contextFiles ?? []).map(f => this.context.savedFile(projectId, taskId, f)));
     return { description: task.description, referenceFiles };
   }
-  async linkAgentRun(input: TaskAgentResourceLinkInput): Promise<{ taskId: string }> {
+  async linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
     const { projectId } = await this.uniqueTask(input.taskId);
@@ -258,12 +258,12 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     });
     return { taskId: input.taskId };
   }
-  markStarted(agentRun: TaskExecutionReference): Promise<void> { return this.resources.markStarted(agentRun); }
-  markFailed(agentRun: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(agentRun, error); }
+  markStarted(execution: TaskExecutionReference): Promise<void> { return this.resources.markStarted(execution); }
+  markFailed(execution: TaskExecutionReference, error: { code: string; message: string }): Promise<void> { return this.resources.markFailed(execution, error); }
   ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
-  isOpen(agentRun: TaskExecutionReference): boolean { return this.resources.isOpen(agentRun); }
-  openAgentRuns(taskId: string, role: TaskAgentResourceRole) { return this.resources.openAgentRuns(taskId, role); }
-  closedAgentRunsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedAgentRunsIn(hostRoot); }
+  isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
+  openTaskExecutions(taskId: string, role: TaskExecutionRole) { return this.resources.openTaskExecutions(taskId, role); }
+  closedTaskExecutionsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedTaskExecutionsIn(hostRoot); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
   /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */
   taskExecutionsStatusChanged(_hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
@@ -275,18 +275,18 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     } catch (error) { console.warn("TASK_ROOT_STATUS_MARK_FAILED", error); }
   }
   /** Advisory: lets the runtime refuse an ineligible sender before it touches any runtime state. */
-  async assertReopenable(input: TaskAgentResourceReopenInput): Promise<void> {
-    const location = await this.reopenLocation(input.agentRun);
-    this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
+  async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
+    const location = await this.reopenLocation(input.execution);
+    this.resources.assertReopenable(location, input.execution, input.requestedBy);
     await this.assertTaskNotTerminal(location);
   }
   /** The reactivation commit: re-validated under the Task's serialization, so a DONE or CANCELLED is entirely before or after. Status is never written. */
-  async reopenAssignment(input: TaskAgentResourceReopenInput): Promise<TaskAgentResourceReopenResult> {
-    const location = await this.reopenLocation(input.agentRun);
+  async reopenAssignment(input: TaskExecutionReopenInput): Promise<TaskExecutionReopenResult> {
+    const location = await this.reopenLocation(input.execution);
     return this.resources.serialize(location.taskId, async () => {
-      this.resources.assertReopenable(location, input.agentRun, input.requestedBy);
+      this.resources.assertReopenable(location, input.execution, input.requestedBy);
       await this.assertTaskNotTerminal(location);
-      return { taskId: location.taskId, reopened: await this.resources.reopenAssignment(location, input.agentRun, input.requestedBy) };
+      return { taskId: location.taskId, reopened: await this.resources.reopenAssignment(location, input.execution, input.requestedBy) };
     });
   }
 
@@ -313,9 +313,9 @@ export class ProjectTaskService implements TaskAgentResourcePort {
     }
     return written!;
   }
-  private async reopenLocation(agentRun: TaskExecutionReference): Promise<TaskLocation> {
+  private async reopenLocation(execution: TaskExecutionReference): Promise<TaskLocation> {
     await this.resources.load();
-    const location = this.resources.locationOf(agentRun);
+    const location = this.resources.locationOf(execution);
     if (!location) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
     return location;
   }
@@ -436,11 +436,11 @@ let singleton: ProjectTaskService | null = null;
 /** The process instance; an uninitialized process (tests, tool-only contexts) gets an unbound instance. */
 export const getProjectTaskService = (): ProjectTaskService => singleton ??= new ProjectTaskService();
 /** Called once by the process composition before any getProjectTaskService(); fails fast otherwise. */
-export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskAgentResources" | "adHocTasks" | "requestRelease" | "workerStatus">): ProjectTaskService => {
+export const initializeProjectTaskServiceProcessInstance = (deps: Pick<Dependencies, "taskExecutionResources" | "adHocTasks" | "requestRelease" | "workerStatus">): ProjectTaskService => {
   if (singleton) throw new Error("The process ProjectTaskService is already initialized.");
   return singleton = new ProjectTaskService(deps);
 };
-export const releaseProjectTaskServiceProcessInstance = (instance: TaskAgentResourcePort): void => {
+export const releaseProjectTaskServiceProcessInstance = (instance: TaskExecutionResourcePort): void => {
   if (singleton === instance) singleton = null;
 };
 export const resetProjectTaskServiceForTests = (): void => { singleton = null; };

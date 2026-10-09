@@ -12,7 +12,7 @@ import { ProjectTaskService } from "../../../src/projects/services/project-task-
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskAgentResourceReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "host-root" });
 const originalCopyFile = fs.copyFile.bind(fs);
@@ -20,7 +20,7 @@ const originalCopyFile = fs.copyFile.bind(fs);
 /** Agent-attached context files: node-local sources copied into a Project Task's saved context (no draft). */
 describe("Project Task local context files", () => {
   let appData: string, sources: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
-  let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
+  let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   const source = async (name: string, content: string | Buffer = `bytes of ${name}`) => {
     const file = path.join(sources, name);
     await fs.mkdir(path.dirname(file), { recursive: true });
@@ -43,7 +43,7 @@ describe("Project Task local context files", () => {
     layout = new ProjectsLayout(path.join(appData, "projects"));
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
-    release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
     tasks = new ProjectTaskService({ store, contextStore: context, requestRelease: release,
       adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) });
     await tasks.load();
@@ -180,7 +180,7 @@ describe("Project Task local context files", () => {
     const notes = await source("notes.md");
     await tasks.updateTaskById({ taskId: task.taskId, description: "Revised", status: "IN_PROGRESS", localContextFiles: [notes] });
     expect(await taskJson(task.taskId)).toMatchObject({ description: "Revised", status: "IN_PROGRESS", contextFiles: [expect.anything(), expect.objectContaining({ displayName: "notes.md" })] });
-    await tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, agentRun: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
     const done = await tasks.updateTaskById({ taskId: task.taskId, status: "DONE", localContextFiles: [await source("result.txt")] });
     expect(done).toMatchObject({ status: "DONE", attachedContextFiles: [expect.objectContaining({ displayName: "result.txt" })] });
     await tasks.drainRuntimeReleases();
@@ -191,7 +191,7 @@ describe("Project Task local context files", () => {
 
   it("changes nothing, including no DONE closure, when a patch names an invalid file (AC-005)", async () => {
     const task = await uiTask();
-    await tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, agentRun: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
     const before = await taskJson(task.taskId), entries = await contextEntries(task.taskId);
     const missing = path.join(sources, "gone.png");
     await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Never", status: "DONE", localContextFiles: [await source("ok.md"), missing] }))
@@ -209,7 +209,7 @@ describe("Project Task local context files", () => {
   });
 
   it("rejects files on a Task with no Project before any write; its text/status patch still works (AC-007)", async () => {
-    const { taskId } = await tasks.linkAgentRun({ role: "assigned", assignedBy: "delegator", hostRoot, agentRun: { agentRunId: "copy" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot, execution: { agentRunId: "copy" },
       adHocTask: { description: "Ad-hoc", referenceFiles: [] } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE", localContextFiles: [await source("notes.md")] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: "Context files can be attached only to Project Tasks; this Task has no Project." });

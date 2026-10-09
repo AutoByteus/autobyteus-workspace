@@ -6,12 +6,12 @@ import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskAgentResourceService } from "../../../src/projects/services/task-agent-resource-service.js";
-import { TaskAgentResourceStore } from "../../../src/projects/stores/task-agent-resource-store.js";
-import { parseTaskAgentResourceFile } from "../../../src/projects/stores/task-agent-resource-schema.js";
+import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
+import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
+import { parseTaskExecutionResourceFile } from "../../../src/projects/stores/task-execution-resource-schema.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskAgentResourceReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
@@ -19,33 +19,33 @@ const latch = () => { let resolve!: () => void; const promise = new Promise<void
 
 describe("Task agent run resources (SR-023/SR-024)", () => {
   let root: string, layout: ProjectsLayout, store: ProjectStore, projectId: string;
-  let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
+  let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tasks: ProjectTaskService;
   const boot = async () => {
     const service = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: release,
-      taskAgentResources: new TaskAgentResourceService(new TaskAgentResourceStore(layout)) });
+      taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout)) });
     await service.load();
     return service;
   };
-  const resourcesFile = (taskId: string) => fs.readFile(layout.agentRunResourcesFile(projectId, taskId), "utf8").then(JSON.parse);
+  const resourcesFile = (taskId: string) => fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8").then(JSON.parse);
   const assign = (taskId: string, agentRunId: string, root = hostRoot) =>
-    tasks.linkAgentRun({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root, agentRun: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root, execution: { agentRunId } });
 
   beforeEach(async () => {
     root = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-resources-"));
     layout = new ProjectsLayout(path.join(root, "projects"));
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
-    release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
     tasks = await boot();
   });
   afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(root, { recursive: true, force: true }); });
 
   it("links `starting` before resources, writes the exact documented file, and settles start once", async () => {
     const task = await tasks.createTask({ projectId, description: "A" });
-    await expect(fs.access(layout.agentRunResourcesFile(projectId, task.taskId))).rejects.toThrow();
-    await tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, agentRun: { teamRunId: "team-1" }, coordinatorAgentRunId: "lead-1" });
-    await tasks.linkAgentRun({ role: "broughtIn", creator: { teamRunId: "team-1" }, hostRoot, agentRun: { agentRunId: "helper-1" } });
+    await expect(fs.access(layout.taskExecutionResourcesFile(projectId, task.taskId))).rejects.toThrow();
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { teamRunId: "team-1" }, teamCoordinatorAgentRunId: "lead-1" });
+    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { teamRunId: "team-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
     await tasks.markStarted({ teamRunId: "team-1" });
     await tasks.markFailed({ agentRunId: "helper-1" }, { code: "TASK_DISPATCH_FAILED", message: "no\nnewlines" });
     await tasks.markStarted({ agentRunId: "helper-1" });
@@ -55,21 +55,21 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
       { role: "broughtIn", hostRoot: { kind: "agent", runId: "manager-root" }, agentRun: { kind: "agent", agentRunId: "helper-1" },
         linkedAt: expect.any(String), start: "failed", startError: { code: "TASK_DISPATCH_FAILED", message: "no newlines" }, closedAt: null },
     ] });
-    expect(tasks.ownerOf([{ agentRunId: "helper-1" }])).toEqual({ taskId: task.taskId, agentRun: { agentRunId: "helper-1" }, open: true });
-    expect(tasks.openAgentRuns(task.taskId, "broughtIn")).toEqual([{ agentRunId: "helper-1" }]);
+    expect(tasks.ownerOf([{ agentRunId: "helper-1" }])).toEqual({ taskId: task.taskId, execution: { agentRunId: "helper-1" }, open: true });
+    expect(tasks.openTaskExecutions(task.taskId, "broughtIn")).toEqual([{ agentRunId: "helper-1" }]);
     expect(await tasks.currentAssignments([task.taskId])).toEqual(new Map([[task.taskId, [
       { targetAgentRunId: "lead-1", kind: "team", assignedBy: "manager", outcome: "accepted" }]]]));
   });
 
   it("schema invariants reject a mismatched taskId, a duplicate agent run, and misplaced assignedBy/startError", () => {
     const entry = { role: "delegated", hostRoot: { kind: "agent", runId: "r" }, agentRun: { kind: "agent", agentRunId: "a" }, linkedAt: "t", start: "starting", closedAt: null };
-    expect(() => parseTaskAgentResourceFile({ taskId: "x", agentRunResources: [] }, "y")).toThrow("taskId");
-    expect(() => parseTaskAgentResourceFile({ taskId: "y", agentRunResources: [entry, entry] }, "y")).toThrow("more than once");
-    expect(() => parseTaskAgentResourceFile({ taskId: "y", agentRunResources: [{ ...entry, assignedBy: "m" }] }, "y")).toThrow("assignedBy");
-    expect(() => parseTaskAgentResourceFile({ taskId: "y", agentRunResources: [{ ...entry, role: "assigned" }] }, "y")).toThrow("assignedBy");
-    expect(() => parseTaskAgentResourceFile({ taskId: "y", agentRunResources: [{ ...entry, startError: { code: "C", message: "m" } }] }, "y")).toThrow("startError");
-    expect(() => parseTaskAgentResourceFile({ taskId: "y", agentRunResources: [{ ...entry, start: "failed" }] }, "y")).toThrow("startError");
-    expect(parseTaskAgentResourceFile({ taskId: "y", agentRunResources: [entry] }, "y").agentRunResources).toHaveLength(1);
+    expect(() => parseTaskExecutionResourceFile({ taskId: "x", agentRunResources: [] }, "y")).toThrow("taskId");
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [entry, entry] }, "y")).toThrow("more than once");
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, assignedBy: "m" }] }, "y")).toThrow("assignedBy");
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, role: "assigned" }] }, "y")).toThrow("assignedBy");
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, startError: { code: "C", message: "m" } }] }, "y")).toThrow("startError");
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, start: "failed" }] }, "y")).toThrow("startError");
+    expect(parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [entry] }, "y").executionResources).toHaveLength(1);
   });
 
   it("DONE closes agent runs first (fences at once), then task.json, then asks each host root to stop all closed runs", async () => {
@@ -79,7 +79,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const observed: string[] = [];
     release.mockImplementation(async (root, agentRuns) => {
       observed.push(`${root.rootRunId}:${(await store.readTask(projectId, a.taskId))!.status}:${tasks.isOpen({ agentRunId: "worker-a" })}`);
-      return agentRuns.map(agentRun => ({ agentRun, stopped: true }));
+      return agentRuns.map(execution => ({ execution, stopped: true }));
     });
     const writes = vi.spyOn(store, "updateTask");
     writes.mockImplementationOnce(async (...args) => {
@@ -93,18 +93,18 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(tasks.isOpen({ agentRunId: "worker-b" })).toBe(true);
     expect((await resourcesFile(a.taskId)).agentRunResources.every((e: { closedAt: string | null }) => e.closedAt)).toBe(true);
     // Repeated DONE: no file change, and the stop is requested again for every closed agent run.
-    const bytes = await fs.readFile(layout.agentRunResourcesFile(projectId, a.taskId), "utf8");
+    const bytes = await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8");
     release.mockClear();
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
     expect(release).toHaveBeenCalledTimes(2);
-    expect(await fs.readFile(layout.agentRunResourcesFile(projectId, a.taskId), "utf8")).toBe(bytes);
+    expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8")).toBe(bytes);
   });
 
   it("a failed stop is logged, never persisted; a metadata failure after closure still requests the stop", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await assign(a.taskId, "worker-a");
     const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    release.mockResolvedValueOnce([{ agentRun: { agentRunId: "worker-a" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "still running" } }]);
+    release.mockResolvedValueOnce([{ execution: { agentRunId: "worker-a" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "still running" } }]);
     vi.spyOn(store, "updateTask").mockRejectedValueOnce(new Error("disk full"));
     await expect(tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" })).rejects.toThrow("disk full");
     await tasks.drainRuntimeReleases();
@@ -137,12 +137,12 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await assign(a.taskId, "worker");
     const results = await Promise.allSettled([
-      tasks.linkAgentRun({ role: "delegated", creator: { agentRunId: "worker" }, hostRoot, agentRun: { agentRunId: "child" } }),
+      tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "worker" }, hostRoot, execution: { agentRunId: "child" } }),
       tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }),
     ]);
     expect(results[1].status).toBe("fulfilled");
     expect(tasks.isOpen({ agentRunId: "child" })).toBe(false);
-    await expect(tasks.linkAgentRun({ role: "broughtIn", creator: { agentRunId: "worker" }, hostRoot, agentRun: { agentRunId: "late" } }))
+    await expect(tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "worker" }, hostRoot, execution: { agentRunId: "late" } }))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     expect((await resourcesFile(a.taskId)).agentRunResources.every((e: { closedAt: string | null }) => e.closedAt)).toBe(true);
   });
@@ -166,7 +166,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     const b = await tasks.createTask({ projectId, description: "B" });
     await assign(a.taskId, "worker-a"); await assign(b.taskId, "worker-b");
-    await fs.writeFile(layout.agentRunResourcesFile(projectId, a.taskId), "{ truncated");
+    await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "{ truncated");
     const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const restarted = await boot();
     expect(error).toHaveBeenCalledWith("TASK_AGENT_RESOURCES_UNAVAILABLE", expect.objectContaining({ taskId: a.taskId }));
@@ -184,41 +184,41 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(restarted.isOpen({ agentRunId: "worker-b" })).toBe(false);
     await restarted.createTask({ projectId, description: "creating still works" });
     // Recovery: fix or restore the file and restart; no self-repair happened meanwhile.
-    expect(await fs.readFile(layout.agentRunResourcesFile(projectId, a.taskId), "utf8")).toBe("{ truncated");
-    await fs.writeFile(layout.agentRunResourcesFile(projectId, a.taskId), JSON.stringify({ taskId: a.taskId, agentRunResources: [] }));
+    expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8")).toBe("{ truncated");
+    await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), JSON.stringify({ taskId: a.taskId, agentRunResources: [] }));
     const recovered = await boot();
     expect(() => recovered.assertResourceDataReadable()).not.toThrow();
     expect(recovered.ownerOf([{ agentRunId: "unknown-copy" }])).toBeNull();
     await recovered.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
   });
 
-  it("closedAgentRunsIn answers a root's closed runs from the view: per host root, after restart and delete, never for a damaged Task", async () => {
+  it("closedTaskExecutionsIn answers a root's closed runs from the view: per host root, after restart and delete, never for a damaged Task", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     const b = await tasks.createTask({ projectId, description: "B" });
     const c = await tasks.createTask({ projectId, description: "C" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, agentRun: { teamRunId: "a-team" }, coordinatorAgentRunId: "a-lead" });
-    await tasks.linkAgentRun({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, agentRun: { agentRunId: "a-sub" } });
-    await tasks.linkAgentRun({ role: "broughtIn", creator: { teamRunId: "a-team" }, hostRoot, agentRun: { agentRunId: "a-helper" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot, execution: { teamRunId: "a-team" }, teamCoordinatorAgentRunId: "a-lead" });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-sub" } });
+    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { teamRunId: "a-team" }, hostRoot, execution: { agentRunId: "a-helper" } });
     await assign(b.taskId, "b-worker");
     await assign(c.taskId, "c-elsewhere", otherRoot);
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([]);
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
     await tasks.updateTask({ projectId, taskId: c.taskId, status: "DONE" });
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
-    expect(tasks.closedAgentRunsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
+    expect(tasks.closedTaskExecutionsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
     // Reopen and delegate again: the old runs stay closed, the new one is open.
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
     await assign(a.taskId, "a-new");
     await tasks.deleteTask({ projectId, taskId: a.taskId });
     const restarted = await boot();
-    expect(restarted.closedAgentRunsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
+    expect(restarted.closedTaskExecutionsIn(hostRoot)).toEqual([{ teamRunId: "a-team" }, { agentRunId: "a-sub" }, { agentRunId: "a-helper" }]);
     // A damaged Task contributes nothing (its runs stay listed) and the read never throws.
-    await fs.writeFile(layout.agentRunResourcesFile(projectId, a.taskId), "{ truncated");
+    await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "{ truncated");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const damaged = await boot();
-    expect(() => damaged.closedAgentRunsIn(hostRoot)).not.toThrow();
-    expect(damaged.closedAgentRunsIn(hostRoot)).toEqual([]);
-    expect(damaged.closedAgentRunsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
+    expect(() => damaged.closedTaskExecutionsIn(hostRoot)).not.toThrow();
+    expect(damaged.closedTaskExecutionsIn(hostRoot)).toEqual([]);
+    expect(damaged.closedTaskExecutionsIn(otherRoot)).toEqual([{ agentRunId: "c-elsewhere" }]);
   });
 
   it("keeps the per-root closed index in step with every committed swap: link, DONE, reopen + new link, repeated DONE, damaged file (SR-009)", async () => {
@@ -229,31 +229,31 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     const b = await tasks.createTask({ projectId, description: "B" });
     await assign(a.taskId, "a-first");
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([]);
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual(await scan(a.taskId));
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual(await scan(a.taskId));
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }]);
     // Reopen and link again: the new open run is not in the index, the old closed one stays once.
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
     await assign(a.taskId, "a-second");
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }]);
     // A second DONE re-swaps Task A: its previous contributions are replaced, never duplicated.
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual(await scan(a.taskId));
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }, { agentRunId: "a-second" }]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual(await scan(a.taskId));
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }, { agentRunId: "a-second" }]);
     await assign(b.taskId, "b-worker");
     await tasks.updateTask({ projectId, taskId: b.taskId, status: "DONE" });
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([...await scan(a.taskId), ...await scan(b.taskId)]);
-    expect(tasks.closedAgentRunsIn(otherRoot)).toEqual([]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([...await scan(a.taskId), ...await scan(b.taskId)]);
+    expect(tasks.closedTaskExecutionsIn(otherRoot)).toEqual([]);
     // After restart the index is rebuilt by the same swaps; a damaged file never reaches swap().
-    await fs.writeFile(layout.agentRunResourcesFile(projectId, b.taskId), "{ truncated");
+    await fs.writeFile(layout.taskExecutionResourcesFile(projectId, b.taskId), "{ truncated");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const restarted = await boot();
-    expect(restarted.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }, { agentRunId: "a-second" }]);
+    expect(restarted.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "a-first" }, { agentRunId: "a-second" }]);
   });
 
   it("serializes assignment linking and DONE per Task, without blocking other Tasks", async () => {
-    const service = new TaskAgentResourceService(new TaskAgentResourceStore(layout));
+    const service = new TaskExecutionResourceService(new TaskExecutionResourceStore(layout));
     const gate = latch(), order: string[] = [];
     const first = service.serialize("t", async () => { order.push("first:start"); await gate.promise; order.push("first:end"); });
     const second = service.serialize("t", async () => { order.push("second"); });

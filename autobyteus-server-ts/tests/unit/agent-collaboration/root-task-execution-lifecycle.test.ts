@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import type {
   PreparedTaskExecutionActivation,
   RootTaskExecutionAdapter,
@@ -122,8 +122,8 @@ const setup = (overrides: Partial<RootTaskExecutionAdapter<string>> = {}, grace 
   const fake = createFakeAdapter(overrides);
   let currentGrace = grace;
   // Production always binds the Task side; every delegated copy belongs to a Task.
-  const resources = new InMemoryTaskAgentResources();
-  const lifecycle = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => currentGrace, timers, taskAgentResources: resources });
+  const resources = new InMemoryTaskExecutionResources();
+  const lifecycle = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => currentGrace, timers, taskExecutionResources: resources });
   return { ...fake, timers, lifecycle, resources, setGrace: (value: number) => { currentGrace = value; } };
 };
 
@@ -136,7 +136,7 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
     await expect(lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
       .resolves.toEqual({ target_agent_run_id: "child-run", target_kind: "agent", task_id: "ad_hoc_task_1" });
     expect(resources.links).toEqual([expect.objectContaining({ role: "assigned", assignedBy: "coordinator-run",
-      adHocTask: { description: "Do it", referenceFiles: [] }, agentRun: { agentRunId: "child-run" } })]);
+      adHocTask: { description: "Do it", referenceFiles: [] }, execution: { agentRunId: "child-run" } })]);
     expect(resources.tasks.get("ad_hoc_task_1")).toEqual({ description: "Do it", referenceFiles: [], done: false, adHoc: true });
   });
 

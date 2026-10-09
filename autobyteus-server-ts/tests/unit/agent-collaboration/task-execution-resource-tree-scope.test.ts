@@ -14,8 +14,8 @@ import { StandaloneRootExecutionIndex } from '../../../src/standalone-agent-run-
 import { TeamTaskExecutionAdapter } from '../../../src/agent-team-execution/task-delegation/team-task-execution-adapter.js';
 import { AgentOrgTaskExecutionAdapter } from '../../../src/agent-org-execution/services/agent-org-task-execution-adapter.js';
 import { StandaloneRootTaskExecutionAdapter } from '../../../src/standalone-agent-run-root/services/standalone-root-task-execution-adapter.js';
-import { RootTaskAgentResourceScope } from '../../../src/agent-collaboration/execution/task/root-task-agent-resource-scope.js';
-import { InMemoryTaskAgentResources } from '../../fixtures/task-agent-resource-fixtures.js';
+import { RootTaskExecutionResourceScope } from '../../../src/agent-collaboration/execution/task/root-task-execution-resource-scope.js';
+import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 const now = '2026-10-03T00:00:00.000Z';
 const launch = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: 'test', llmConfig: null, autoExecuteTools: true, workspaceRootPath: null };
 /** Dev data written by unshipped ticket builds may still carry a `taskLifetime` field; it is ignored and dropped. */
@@ -101,8 +101,8 @@ function adapterFor(kind: Kind, h: ReturnType<typeof subject>, teams: { getManag
     : new StandaloneRootTaskExecutionAdapter(common as never);
 }
 
-const scopeOver = (adapter: object, resources = new InMemoryTaskAgentResources()) =>
-  ({ resources, scope: new RootTaskAgentResourceScope(adapter as never, resources) });
+const scopeOver = (adapter: object, resources = new InMemoryTaskExecutionResources()) =>
+  ({ resources, scope: new RootTaskExecutionResourceScope(adapter as never, resources) });
 
 it('invokes every retained exact authority regardless of liveness; one failed target never blocks its sibling (AR9-F02b)', async () => {
   let resolve!: () => void;
@@ -116,18 +116,18 @@ it('invokes every retained exact authority regardless of liveness; one failed ta
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: physical, containsTaskExecution: () => true, publishTaskExecutionsClosed: vi.fn() };
   const { resources, scope } = scopeOver(adapter);
   resources.addTask('A');
-  await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, agentRun: { agentRunId: 'owned-A' } });
-  await resources.linkAgentRun({ role: 'broughtIn', creator: { agentRunId: 'owned-A' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, agentRun: { agentRunId: 'helper-A' } });
+  await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'owned-A' } });
+  await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { agentRunId: 'owned-A' }, hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'helper-A' } });
   let finished = false;
-  const result = scope.releaseTaskAgentResources(resources.close('A')).then(r => { finished = true; return r; });
+  const result = scope.releaseTaskExecutions(resources.close('A')).then(r => { finished = true; return r; });
   expect([...registrations.values()].every(r => r.operation.cancel.mock.calls.length === 1)).toBe(true);
   expect(adapter.cancelOwnedExecution).toHaveBeenCalledTimes(2);
   for (let n = 0; n < 12; n++) await Promise.resolve();
   expect(finished).toBe(false); expect(physical).toHaveBeenCalledTimes(2);
   resolve();
   expect(await result).toEqual([
-    { agentRun: { agentRunId: 'owned-A' }, stopped: false, error: { code: 'TASK_RELEASE_FAILED', message: 'private release failed' } },
-    { agentRun: { agentRunId: 'helper-A' }, stopped: true }]);
+    { execution: { agentRunId: 'owned-A' }, stopped: false, error: { code: 'TASK_RELEASE_FAILED', message: 'private release failed' } },
+    { execution: { agentRunId: 'helper-A' }, stopped: true }]);
 });
 
 it('reports stopped when the root holds no authority at all, and refuses runs that are not closed', async () => {
@@ -135,11 +135,11 @@ it('reports stopped when the root holds no authority at all, and refuses runs th
     releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: 'EXACT_RELEASE_AUTHORITY_UNAVAILABLE' })) };
   const { resources, scope } = scopeOver(adapter);
   resources.addTask('A');
-  await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, agentRun: { agentRunId: 'gone' } });
-  expect(await scope.releaseTaskAgentResources([{ agentRunId: 'gone' }])).toEqual([
-    { agentRun: { agentRunId: 'gone' }, stopped: false, error: expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' }) }]);
+  await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: { rootSubjectKind: 'agent', rootRunId: 'root' }, execution: { agentRunId: 'gone' } });
+  expect(await scope.releaseTaskExecutions([{ agentRunId: 'gone' }])).toEqual([
+    { execution: { agentRunId: 'gone' }, stopped: false, error: expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' }) }]);
   expect(adapter.releaseOwnedExecution).not.toHaveBeenCalled();
-  expect(await scope.releaseTaskAgentResources(resources.close('A'))).toEqual([{ agentRun: { agentRunId: 'gone' }, stopped: true }]);
+  expect(await scope.releaseTaskExecutions(resources.close('A'))).toEqual([{ execution: { agentRunId: 'gone' }, stopped: true }]);
 });
 
 it('retains verified quiet Team cleanup authority across directory eviction, then replaces it only on a new publication', async () => {
@@ -164,15 +164,15 @@ it('retains verified quiet Team cleanup authority across directory eviction, the
 });
 
 it('fences owned input and messages in every root from the Task side alone, with no per-root state', async () => {
-  const resources = new InMemoryTaskAgentResources();
+  const resources = new InMemoryTaskExecutionResources();
   resources.addTask('A'); resources.addTask('B');
   const hostRoot = { rootSubjectKind: 'agent' as const, rootRunId: 'root' };
-  await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot, agentRun: { teamRunId: 'A-team' }, coordinatorAgentRunId: 'A-lead' });
-  await resources.linkAgentRun({ role: 'assigned', taskId: 'B', assignedBy: 'manager', hostRoot, agentRun: { agentRunId: 'B-worker' } });
+  await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot, execution: { teamRunId: 'A-team' }, teamCoordinatorAgentRunId: 'A-lead' });
+  await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'B', assignedBy: 'manager', hostRoot, execution: { agentRunId: 'B-worker' } });
   const chains: Record<string, object[]> = { 'A-lead': [{ teamRunId: 'A-team' }], 'B-worker': [{ agentRunId: 'B-worker' }], borrowed: [{ agentRunId: 'borrowed' }] };
   const rootAdapter = { ownershipChainFor: (id: string) => chains[id] ?? [] };
-  const first = new RootTaskAgentResourceScope(rootAdapter as never, resources);
-  const second = new RootTaskAgentResourceScope(rootAdapter as never, resources);
+  const first = new RootTaskExecutionResourceScope(rootAdapter as never, resources);
+  const second = new RootTaskExecutionResourceScope(rootAdapter as never, resources);
   expect(() => first.assertInputAllowed('A-lead')).not.toThrow();
   expect(() => first.assertMessageScope('A-lead', 'B-worker')).toThrow(expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_CONFLICT' }));
   expect(() => first.assertMessageScope('A-lead', 'borrowed')).not.toThrow();
@@ -188,7 +188,7 @@ it('fences owned input and messages in every root from the Task side alone, with
   expect(() => first.assertInputAllowed('borrowed')).toThrow(expect.objectContaining({ code: 'TASK_AGENT_RESOURCES_UNAVAILABLE' }));
   expect(() => first.assertInputAllowed('B-worker')).not.toThrow();
   expect(() => first.assertInputAllowed('manager')).not.toThrow();
-  const unbound = new RootTaskAgentResourceScope(rootAdapter as never);
+  const unbound = new RootTaskExecutionResourceScope(rootAdapter as never);
   expect(() => unbound.assertInputAllowed('A-lead')).not.toThrow();
   expect(unbound.ownerOf('A-lead')).toBeNull();
 });
@@ -208,44 +208,44 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: Task clos
     const published = () => kind === 'agent_team'
       ? publish.mock.calls.map(([event]: any) => { expect(event.eventSourceType).toBe('TASK_EXECUTIONS_CLOSED'); return event.taskExecutions; })
       : publishTaskExecutionsClosed.mock.calls.map(([references]: any) => references);
-    const resources = new InMemoryTaskAgentResources();
+    const resources = new InMemoryTaskExecutionResources();
     resources.addTask('A'); resources.addTask('B');
     const hostRoot = { rootSubjectKind: kind, rootRunId: 'root' };
-    await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot, agentRun: { teamRunId: 'A-team' }, coordinatorAgentRunId: 'A-lead' });
-    await resources.linkAgentRun({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-child' } });
-    await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-helper' } });
+    await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot, execution: { teamRunId: 'A-team' }, teamCoordinatorAgentRunId: 'A-lead' });
+    await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-child' } });
+    await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
     // Linked but never committed to this tree (e.g. its start failed): closed, yet not a node to hide.
-    await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-never-committed' } });
-    await resources.linkAgentRun({ role: 'assigned', taskId: 'B', assignedBy: 'manager', hostRoot, agentRun: { agentRunId: 'B-worker' } });
-    const scope = new RootTaskAgentResourceScope(adapter as never, resources);
+    await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-never-committed' } });
+    await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'B', assignedBy: 'manager', hostRoot, execution: { agentRunId: 'B-worker' } });
+    const scope = new RootTaskExecutionResourceScope(adapter as never, resources);
     expect(scope.closedTaskExecutions()).toEqual([]);
 
     const closedA = [{ teamRunId: 'A-team' }, { agentRunId: 'A-child' }, { agentRunId: 'A-helper' }];
-    const results = await scope.releaseTaskAgentResources([...resources.close('A'), { agentRunId: 'B-worker' }]);
+    const results = await scope.releaseTaskExecutions([...resources.close('A'), { agentRunId: 'B-worker' }]);
     expect(published()).toEqual([closedA]);
     expect(order[0]).toBe('publish');
-    expect(results.find(r => 'agentRunId' in r.agentRun && r.agentRun.agentRunId === 'A-child')).toMatchObject({ stopped: false, error: { code: 'TASK_RELEASE_FAILED' } });
-    expect(results.find(r => 'agentRunId' in r.agentRun && r.agentRun.agentRunId === 'B-worker')).toMatchObject({ error: { code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' } });
+    expect(results.find(r => 'agentRunId' in r.execution && r.execution.agentRunId === 'A-child')).toMatchObject({ stopped: false, error: { code: 'TASK_RELEASE_FAILED' } });
+    expect(results.find(r => 'agentRunId' in r.execution && r.execution.agentRunId === 'B-worker')).toMatchObject({ error: { code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' } });
     // Snapshots read the root's cumulative closure; other Tasks' runs stay open.
     expect(scope.closedTaskExecutions()).toEqual(closedA);
 
-    await scope.releaseTaskAgentResources(resources.close('A'));
+    await scope.releaseTaskExecutions(resources.close('A'));
     expect(published()).toEqual([closedA, closedA]);
     // Only open work released: nothing is published.
-    await scope.releaseTaskAgentResources([{ agentRunId: 'B-worker' }]);
+    await scope.releaseTaskExecutions([{ agentRunId: 'B-worker' }]);
     expect(published()).toHaveLength(2);
   });
 });
 
 it('listClosedTaskExecutions keeps only the port refs present in the tree, and is empty without a Task side', async () => {
   const { listClosedTaskExecutions } = await import('../../../src/agent-collaboration/execution/task/task-execution-closure.js');
-  const resources = new InMemoryTaskAgentResources();
+  const resources = new InMemoryTaskExecutionResources();
   resources.addTask('A');
   const root = { rootSubjectKind: 'agent' as const, rootRunId: 'root' };
   const other = { rootSubjectKind: 'agent_org' as const, rootRunId: 'org' };
-  await resources.linkAgentRun({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: root, agentRun: { agentRunId: 'in-tree' } });
-  await resources.linkAgentRun({ role: 'delegated', creator: { agentRunId: 'in-tree' }, hostRoot: root, agentRun: { agentRunId: 'not-in-tree' } });
-  await resources.linkAgentRun({ role: 'delegated', creator: { agentRunId: 'in-tree' }, hostRoot: other, agentRun: { agentRunId: 'other-root' } });
+  await resources.linkNewTaskExecution({ role: 'assigned', taskId: 'A', assignedBy: 'manager', hostRoot: root, execution: { agentRunId: 'in-tree' } });
+  await resources.linkNewTaskExecution({ role: 'delegated', creator: { agentRunId: 'in-tree' }, hostRoot: root, execution: { agentRunId: 'not-in-tree' } });
+  await resources.linkNewTaskExecution({ role: 'delegated', creator: { agentRunId: 'in-tree' }, hostRoot: other, execution: { agentRunId: 'other-root' } });
   const contains = (ref: { agentRunId?: string }) => ref.agentRunId !== 'not-in-tree';
   expect(listClosedTaskExecutions({ port: resources, root, contains: contains as never })).toEqual([]);
   resources.close('A');

@@ -5,7 +5,7 @@ import { TaskDelegationError } from "../../../src/agent-collaboration/execution/
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
-import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
 const latch = () => { let resolve!: () => void; const promise = new Promise<void>(done => { resolve = done; }); return { promise, resolve }; };
 const root = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
@@ -21,7 +21,7 @@ const ingress: Record<string, string> = { "agent:worker": "worker", "team:review
  * after DONE, as the real registries do: restoring it fails until that authority is discarded.
  */
 function fixture() {
-  const resources = new InMemoryTaskAgentResources();
+  const resources = new InMemoryTaskExecutionResources();
   resources.addTask("task-A");
   const authority = new Map<string, "live" | "fenced">();
   const log: string[] = [];
@@ -71,15 +71,15 @@ function fixture() {
     },
     tryShutDownIfQuiet: async () => false,
   };
-  const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskAgentResources: resources, gracePeriodMs: () => 600_000 });
+  const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskExecutionResources: resources, gracePeriodMs: () => 600_000 });
   const assign = async (agentRun: TaskExecutionReference, coordinatorAgentRunId?: string) => {
-    await resources.linkAgentRun({ role: "assigned", taskId: "task-A", assignedBy: "manager", hostRoot: root, agentRun,
-      ...(coordinatorAgentRunId ? { coordinatorAgentRunId } : {}) });
+    await resources.linkNewTaskExecution({ role: "assigned", taskId: "task-A", assignedBy: "manager", hostRoot: root, execution: agentRun,
+      ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
     await resources.markStarted(agentRun);
     authority.set(key(agentRun), "live");
   };
   /** DONE: the Task side closes every entry, then this root stops (fences) exactly those runs. */
-  const done = async () => { await lifecycle.releaseTaskAgentResources(resources.close("task-A")); log.length = 0; };
+  const done = async () => { await lifecycle.releaseTaskExecutions(resources.close("task-A")); log.length = 0; };
   /** `send_message_to(run ID)` as the root facades bind it: the target is woken and the message delivered. */
   const message = (sender: string, target: string) => lifecycle.deliverToExactTarget(sender, target,
     () => lifecycle.withLiveLease(target, async () => { log.push(`deliver:${target}`); return { accepted: true, message: `Delivered message to ${target}.` }; }));
@@ -90,7 +90,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
   it("after the agent reopens the Task, the assigner's message discards the released copy, reopens only its entry, restores and delivers (AC-001, REQ-001..004/007)", async () => {
     const f = fixture();
     await f.assign(worker);
-    await f.resources.linkAgentRun({ role: "delegated", creator: worker, hostRoot: root, agentRun: helper });
+    await f.resources.linkNewTaskExecution({ role: "delegated", creator: worker, hostRoot: root, execution: helper });
     await f.resources.markStarted(helper);
     await f.done();
     f.resources.setTaskOpen("task-A");
@@ -118,7 +118,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     expect(await f.message("manager", "lead")).toMatchObject({ accepted: true, message: "Delivered message to lead. lead was reactivated." });
     expect(f.log).toEqual(["release:team:review-team:fenced", "discard:team:review-team", "restorable:lead", "reopened:team:review-team",
       "restorable:lead", "restore:team:review-team", "deliver:lead"]);
-    expect(f.resources.reopenRequests).toEqual([{ agentRun: team, requestedBy: "manager" }]);
+    expect(f.resources.reopenRequests).toEqual([{ execution: team, requestedBy: "manager" }]);
   });
 
   it.each([
@@ -130,7 +130,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
     const f = fixture();
     await f.assign(worker);
     await f.assign(team, "lead");
-    await f.resources.linkAgentRun({ role: "delegated", creator: worker, hostRoot: root, agentRun: helper });
+    await f.resources.linkNewTaskExecution({ role: "delegated", creator: worker, hostRoot: root, execution: helper });
     await f.resources.markStarted(helper);
     await f.done();
     if (reopenTask) f.resources.setTaskOpen("task-A");
@@ -143,7 +143,7 @@ describe("reactivation of a closed assignment by its assigner (DS-L1)", () => {
   it("refuses a deleted Task and a never-started assignment with their reasons before touching runtime state (AC-008/009)", async () => {
     const f = fixture();
     await f.assign(worker);
-    await f.resources.linkAgentRun({ role: "assigned", taskId: "task-A", assignedBy: "manager", hostRoot: root, agentRun: team, coordinatorAgentRunId: "lead" });
+    await f.resources.linkNewTaskExecution({ role: "assigned", taskId: "task-A", assignedBy: "manager", hostRoot: root, execution: team, teamCoordinatorAgentRunId: "lead" });
     await f.resources.markFailed(team);
     await f.done();
     f.resources.setTaskOpen("task-A");

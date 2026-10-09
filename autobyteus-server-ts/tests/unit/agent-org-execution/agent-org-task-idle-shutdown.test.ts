@@ -18,7 +18,7 @@ import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/loca
 import type { FlatTeamExecutionCallbacks } from "../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import { RootEventPublisher } from "../../../src/agent-collaboration/execution/services/root-event-publisher.js";
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
@@ -93,7 +93,7 @@ const buildOrg = async (kind: "agent" | "team") => {
     } as never,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
-    taskAgentResources: new InMemoryTaskAgentResources(),
+    taskExecutionResources: new InMemoryTaskExecutionResources(),
   });
   run.activate();
   const owner = run;

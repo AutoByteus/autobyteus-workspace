@@ -24,7 +24,7 @@ import type { MemberExecutionContext } from "../../../src/agent-collaboration/ex
 import { flushMicrotasks, observeConfiguredHandles } from "../agent-org-execution/helpers/task-publication-handles.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
-import { InMemoryTaskAgentResources } from "../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
@@ -100,7 +100,7 @@ const hostRun = () => {
 };
 
 /** Production always binds the Task side; every delegated copy belongs to a Task. */
-const buildManager = async (taskAgentResources: InMemoryTaskAgentResources = new InMemoryTaskAgentResources()) => {
+const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources()) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
@@ -132,9 +132,9 @@ const buildManager = async (taskAgentResources: InMemoryTaskAgentResources = new
       readMetadata: async () => currentMetadata,
       recordCollaborationPackageCreated: catalogFlag,
     },
-    taskAgentResources,
+    taskExecutionResources,
     rootDependencies: {
-      taskAgentResources,
+      taskExecutionResources,
       flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new RootedAgentMemoryLocator({ memoryDir }) }),
       taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
       teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
@@ -629,7 +629,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
   });
 
   it("Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read", async () => {
-    const resources = new InMemoryTaskAgentResources();
+    const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A"); resources.addTask("B");
     const f = await buildManager(resources);
     const root = (await f.manager.resolveRoot(HOST))!;
@@ -643,7 +643,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(before.snapshot.closedTaskExecutions).toEqual([]);
     before.close();
 
-    const stopped = root.releaseTaskAgentResources(resources.close("A"));
+    const stopped = root.releaseTaskExecutions(resources.close("A"));
     // Published synchronously, before any stop settles (visibility follows closure, not stop success).
     const closedEvent = events.find((entry) => entry.event.kind === "task_executions_closed")!;
     expect(closedEvent.event).toEqual({ kind: "task_executions_closed", taskExecutions: [closedA] });
@@ -668,7 +668,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
   });
 
   it("reactivation: once the agent reopens the Task, the assigner's run-ID message restores the copy, delivers, and lists it again (AC-001/004/015, REQ-007/008)", async () => {
-    const resources = new InMemoryTaskAgentResources();
+    const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A");
     const f = await buildManager(resources);
     const root = (await f.manager.resolveRoot(HOST))!;
@@ -679,7 +679,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     await flushMicrotasks();
     const copy = { agentRunId: assigned.target_agent_run_id! };
     const original = f.handles.get(copy.agentRunId)!;
-    await root.releaseTaskAgentResources(resources.close("A"));
+    await root.releaseTaskExecutions(resources.close("A"));
     const send = () => root.deliverExactAgentMessage({ sender: { kind: "agent", identity: f.hostIdentity, displayName: "research_assistant" },
       targetAgentRunId: copy.agentRunId, content: "Next round", messageType: "agent_message", referenceFiles: [] });
     // Still DONE: refused with the reopen-first hint; nothing is published.
@@ -702,7 +702,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
   });
 
   it("forwards only a delegated copy's ended background tasks to the task-execution lifecycle (hybrid idle shutdown)", async () => {
-    const resources = new InMemoryTaskAgentResources();
+    const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A");
     const f = await buildManager(resources);
     const root = (await f.manager.resolveRoot(HOST))!;

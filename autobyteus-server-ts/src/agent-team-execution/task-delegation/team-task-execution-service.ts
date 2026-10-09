@@ -1,6 +1,6 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { RootTaskExecutionLifecycle, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type {
@@ -18,7 +18,7 @@ export class TeamTaskExecutionService {
   private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
-    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskAgentResources: options.taskAgentResources });
+    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskExecutionResources: options.taskExecutionResources });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
@@ -28,8 +28,8 @@ export class TeamTaskExecutionService {
     return this.lifecycle.ensureTaskHelper(context, address, placement);
   }
   helperPlacement(id: string, address: string) { return this.lifecycle.helperPlacement(id, address); }
-  releaseTaskAgentResources(refs: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
-    return this.lifecycle.releaseTaskAgentResources(refs);
+  releaseTaskExecutions(refs: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
+    return this.lifecycle.releaseTaskExecutions(refs);
   }
   taskExecutionStatus(ref: TaskExecutionReference): AgentExecutionStatus { return this.lifecycle.taskExecutionStatus(ref); }
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.lifecycle.closedTaskExecutions(); }

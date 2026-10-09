@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { RootTaskExecutionLifecycle } from '../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js';
 import { createRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import type { RootTaskExecutionAdapter, TaskExecutionActivationPlan, TaskExecutionActivationOperation, RegisteredTaskActivation } from '../../../src/agent-collaboration/execution/task/root-task-execution-adapter.js';
-import { InMemoryTaskAgentResources } from '../../fixtures/task-agent-resource-fixtures.js';
+import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 
 const latch = () => { let resolve!: () => void; const promise = new Promise<void>(done => { resolve = done; }); return { promise, resolve }; };
 type RootKind = 'agent' | 'agent_team' | 'agent_org';
@@ -11,7 +11,7 @@ type RootKind = 'agent' | 'agent_team' | 'agent_org';
 function fixture(kind: RootKind) {
   const root = createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: 'exact-root' });
   const member = (agentRunId: string, memberAddress = `/${agentRunId}`) => createCollaborationMemberExecutionIdentity({ root, memberAddress, agentRunId });
-  const resources = new InMemoryTaskAgentResources();
+  const resources = new InMemoryTaskExecutionResources();
   resources.addTask('task-A');
   const planned = latch(), preparation = latch(), seed = latch();
   const wait = { plan: false, prepare: false, seed: false };
@@ -60,10 +60,10 @@ function fixture(kind: RootKind) {
     publishTaskExecutionsReopened: vi.fn(),
     isLive: () => false, assertRestorableChain: () => undefined, restoreChain: async () => undefined, tryShutDownIfQuiet: async () => false,
   };
-  const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskAgentResources: resources });
+  const lifecycle = new RootTaskExecutionLifecycle(adapter, { taskExecutionResources: resources });
   const manager = member('manager', '/manager');
   /** DONE: the Task side commits closure, then asks this root to stop exactly the closed agent runs. */
-  const done = async () => lifecycle.releaseTaskAgentResources(resources.close('task-A'));
+  const done = async () => lifecycle.releaseTaskExecutions(resources.close('task-A'));
   return { root, member, resources, linkAtRegistration, adapter, lifecycle, operations, planned, preparation, seed, wait, done,
     assign: () => lifecycle.delegate({ identity: manager }, { recipient_address: '/worker', task_id: 'task-A' }, 'placement') };
 }
@@ -75,7 +75,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     expect(result).toEqual({ target_agent_run_id: 'copy-1', target_kind: 'agent' });
     // The assignment records the address it was delegated to (the Task root's name).
     expect(h.resources.links[0]).toMatchObject({ role: 'assigned', taskId: 'task-A', assignedBy: 'manager', recipientAddress: '/placement',
-      hostRoot: { rootSubjectKind: kind, rootRunId: 'exact-root' }, agentRun: { agentRunId: 'copy-1' } });
+      hostRoot: { rootSubjectKind: kind, rootRunId: 'exact-root' }, execution: { agentRunId: 'copy-1' } });
     expect(h.linkAtRegistration).toEqual(['starting']);
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ start: 'started', open: true });
   });
@@ -90,8 +90,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
 
   it('DONE after the link but before registration: closed by DONE, never registered', async () => {
     const h = fixture(kind);
-    const original = h.resources.linkAgentRun.bind(h.resources);
-    h.resources.linkAgentRun = async input => { const linked = await original(input); await h.done(); return linked; };
+    const original = h.resources.linkNewTaskExecution.bind(h.resources);
+    h.resources.linkNewTaskExecution = async input => { const linked = await original(input); await h.done(); return linked; };
     expect((await h.assign()).target_agent_run_id).toBeNull();
     expect(h.adapter.beginActivation).not.toHaveBeenCalled();
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ open: false, start: 'failed' });
@@ -103,10 +103,10 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     await vi.waitFor(() => expect(h.operations[0]?.prepare).toHaveBeenCalledOnce());
     const stop = h.done();
     expect(h.operations[0]!.cancel).toHaveBeenCalled();
-    expect(await stop).toEqual([{ agentRun: { agentRunId: 'copy-1' }, stopped: false, error: expect.objectContaining({ code: expect.any(String) }) }]);
+    expect(await stop).toEqual([{ execution: { agentRunId: 'copy-1' }, stopped: false, error: expect.objectContaining({ code: expect.any(String) }) }]);
     h.preparation.resolve();
     expect((await dispatch).target_agent_run_id).toBeNull();
-    expect(await h.done()).toEqual([{ agentRun: { agentRunId: 'copy-1' }, stopped: true }]);
+    expect(await h.done()).toEqual([{ execution: { agentRunId: 'copy-1' }, stopped: true }]);
     expect(h.adapter.taskExecutionChainFor('copy-1')).toEqual([]);
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ open: false, start: 'failed' });
   });
@@ -115,7 +115,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const h = fixture(kind); h.wait.seed = true;
     const dispatch = h.assign();
     await vi.waitFor(() => expect(h.adapter.taskExecutionChainFor('copy-1')).toHaveLength(1));
-    expect(await h.done()).toEqual([{ agentRun: { agentRunId: 'copy-1' }, stopped: true }]);
+    expect(await h.done()).toEqual([{ execution: { agentRunId: 'copy-1' }, stopped: true }]);
     h.seed.resolve();
     expect((await dispatch).target_agent_run_id).toBeNull();
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ open: false, start: 'failed' });
@@ -139,7 +139,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const result = await h.lifecycle.delegate(manager, { recipient_address: '/reviewer', description: 'Review it' }, 'placement');
     expect(result).toEqual({ target_agent_run_id: 'copy-1', target_kind: 'agent', task_id: 'ad_hoc_task_1' });
     expect(h.resources.links[0]).toMatchObject({ role: 'assigned', assignedBy: 'manager', adHocTask: { description: 'Review it', referenceFiles: [] },
-      hostRoot: { rootSubjectKind: kind, rootRunId: 'exact-root' }, agentRun: { agentRunId: 'copy-1' } });
+      hostRoot: { rootSubjectKind: kind, rootRunId: 'exact-root' }, execution: { agentRunId: 'copy-1' } });
     expect(h.linkAtRegistration).toEqual(['starting']);
     expect(h.resources.entry({ agentRunId: 'copy-1' })).toMatchObject({ taskId: 'ad_hoc_task_1', start: 'started', open: true });
     // The copy is Task work now: its own description-only sub-work stays in that Task and carries no task_id (REQ-010).
@@ -147,8 +147,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     expect(await h.lifecycle.delegate(copy, { recipient_address: '/sub', description: 'sub-work' }, 'placement')).toEqual({ target_agent_run_id: 'copy-2', target_kind: 'agent' });
     expect(h.resources.entry({ agentRunId: 'copy-2' })).toMatchObject({ taskId: 'ad_hoc_task_1', role: 'delegated' });
     // DONE on that Task stops exactly its runs, and the closed copy no longer takes input.
-    expect(await h.lifecycle.releaseTaskAgentResources(h.resources.close('ad_hoc_task_1'))).toEqual([
-      { agentRun: { agentRunId: 'copy-1' }, stopped: true }, { agentRun: { agentRunId: 'copy-2' }, stopped: true }]);
+    expect(await h.lifecycle.releaseTaskExecutions(h.resources.close('ad_hoc_task_1'))).toEqual([
+      { execution: { agentRunId: 'copy-1' }, stopped: true }, { execution: { agentRunId: 'copy-2' }, stopped: true }]);
     expect(h.adapter.publishTaskExecutionsClosed).toHaveBeenCalledWith([{ agentRunId: 'copy-1' }, { agentRunId: 'copy-2' }]);
     expect(() => h.lifecycle.assertInputAllowed('copy-1')).toThrow(expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_CLOSED' }));
     expect(h.lifecycle.closedTaskExecutions()).toEqual([{ agentRunId: 'copy-1' }, { agentRunId: 'copy-2' }]);
@@ -227,10 +227,10 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     await h.assign();
     const release = h.adapter.releaseOwnedExecution as ReturnType<typeof vi.fn>;
     release.mockResolvedValueOnce({ accepted: false, code: 'EXACT_CLOSE_FAILED', message: 'provider still running' });
-    expect(await h.done()).toEqual([{ agentRun: { agentRunId: 'copy-1' }, stopped: false, error: { code: 'EXACT_CLOSE_FAILED', message: 'provider still running' } }]);
-    expect(await h.done()).toEqual([{ agentRun: { agentRunId: 'copy-1' }, stopped: true }]);
+    expect(await h.done()).toEqual([{ execution: { agentRunId: 'copy-1' }, stopped: false, error: { code: 'EXACT_CLOSE_FAILED', message: 'provider still running' } }]);
+    expect(await h.done()).toEqual([{ execution: { agentRunId: 'copy-1' }, stopped: true }]);
     expect(release).toHaveBeenCalledTimes(2);
-    expect(await h.lifecycle.releaseTaskAgentResources([{ agentRunId: 'never-linked' }])).toEqual([
-      { agentRun: { agentRunId: 'never-linked' }, stopped: false, error: expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' }) }]);
+    expect(await h.lifecycle.releaseTaskExecutions([{ agentRunId: 'never-linked' }])).toEqual([
+      { execution: { agentRunId: 'never-linked' }, stopped: false, error: expect.objectContaining({ code: 'TASK_AGENT_RESOURCE_NOT_CLOSED' }) }]);
   });
 });

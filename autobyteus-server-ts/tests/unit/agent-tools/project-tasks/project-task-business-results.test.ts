@@ -12,7 +12,7 @@ import { ProjectTaskContextStore } from "../../../../src/projects/context/projec
 import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-store.js";
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity, type RootSubjectKind } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskAgentResourceReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { CreateOrUpdateTaskTool, ListProjectTasksTool } from "../../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 
@@ -24,7 +24,7 @@ const mcp = async (name: string, args: Record<string, unknown>) => {
 };
 const root = (kind: RootSubjectKind) => createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: `root-${kind}` });
 let dir: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
-let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
+let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
 const service = async (storeOverride?: object) => {
   const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: release,
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) });
@@ -37,7 +37,7 @@ beforeEach(async () => {
   store = new ProjectStore(layout);
   context = new ProjectTaskContextStore(layout);
   projectId = (await new ProjectService({ store }).createProject({ name: "Business fixture" })).projectId;
-  release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
+  release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
   tasks = await service();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
 });
@@ -50,7 +50,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const task = await tasks.createTask({ projectId, description: "Full saved work description",
       contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
     const assigned = (agentRun: { agentRunId: string } | { teamRunId: string }, kind: RootSubjectKind, coordinatorAgentRunId?: string) =>
-      tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: `manager-${kind}`, hostRoot: root(kind), agentRun, ...(coordinatorAgentRunId ? { coordinatorAgentRunId } : {}) });
+      tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: `manager-${kind}`, hostRoot: root(kind), execution: agentRun, ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
     await assigned({ agentRunId: "closed-worker" }, "agent");
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "TODO" });
@@ -58,8 +58,8 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     await assigned({ teamRunId: "failed-team" }, "agent_team", "failed-team-lead");
     await tasks.markFailed({ teamRunId: "failed-team" }, { code: "TASK_DISPATCH_FAILED", message: "Internal dispatch detail" });
     await assigned({ agentRunId: "starting-agent" }, "agent_org");
-    await tasks.linkAgentRun({ role: "delegated", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), agentRun: { agentRunId: "internal-delegate" } });
-    await tasks.linkAgentRun({ role: "broughtIn", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), agentRun: { agentRunId: "owned-helper" } });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "internal-delegate" } });
+    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "accepted-agent" }, hostRoot: root("agent"), execution: { agentRunId: "owned-helper" } });
 
     const native = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
     expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(native);
@@ -124,8 +124,8 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
   it("marks a Task whose agent run resources can't be read as assignments unavailable, never as an empty list", async () => {
     const a = await tasks.createTask({ projectId, description: "A" });
     await tasks.createTask({ projectId, description: "B" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot: root("agent"), agentRun: { agentRunId: "w" } });
-    await fs.writeFile(layout.agentRunResourcesFile(projectId, a.taskId), "[]");
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: a.taskId, assignedBy: "manager", hostRoot: root("agent"), execution: { agentRunId: "w" } });
+    await fs.writeFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "[]");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     tasks = await service();
     const listed = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId }));
@@ -142,11 +142,11 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const created = JSON.parse(await new CreateOrUpdateTaskTool().execute(null, { project_id: projectId, description: "A" }));
     expect(created).toEqual({ task: { projectId, taskId: expect.any(String), status: "TODO" } });
     const taskId = created.task.taskId;
-    await tasks.linkAgentRun({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root(kind), agentRun: { teamRunId: "A" }, coordinatorAgentRunId: "A-lead" });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root(kind), execution: { teamRunId: "A" }, teamCoordinatorAgentRunId: "A-lead" });
     const b = await tasks.createTask({ projectId, description: "B protected" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot: root(kind), agentRun: { agentRunId: "B" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: b.taskId, assignedBy: "manager", hostRoot: root(kind), execution: { agentRunId: "B" } });
     const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    release.mockResolvedValueOnce([{ agentRun: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
+    release.mockResolvedValueOnce([{ execution: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
     const done = { task: { projectId, taskId, status: "DONE" } }, args = { task_id: taskId, status: "DONE" };
     expect(JSON.parse(await new CreateOrUpdateTaskTool().execute(null, args))).toEqual(done);
     await tasks.drainRuntimeReleases();
@@ -154,7 +154,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     expect((await mcp("create_or_update_task", args)).structuredContent).toEqual(done); await tasks.drainRuntimeReleases();
     expect(release).toHaveBeenCalledTimes(2);
     expect(release).toHaveBeenLastCalledWith(root(kind), [{ teamRunId: "A" }]);
-    expect(await fs.readFile(layout.agentRunResourcesFile(projectId, taskId), "utf8")).not.toContain("EXACT_CLOSE_FAILED");
+    expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8")).not.toContain("EXACT_CLOSE_FAILED");
     expect(tasks.isOpen({ agentRunId: "B" })).toBe(true);
     const listing = JSON.parse(await new ListProjectTasksTool().execute(null, { project_id: projectId, status: "DONE" }));
     expect(listing.tasks[0].assignments).toEqual([]);
@@ -177,7 +177,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
 
   it.each(["native", "mcp"] as const)("returns truthful DONE postcommit uncertainty through %s: runs closed, status recorded, stop requested", async mode => {
     const task = await tasks.createTask({ projectId, description: "Saved" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot: root("agent"), agentRun: { agentRunId: "owned" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot: root("agent"), execution: { agentRunId: "owned" } });
     tasks = await service(Object.assign(Object.create(store), {
       updateTask: async (...args: Parameters<ProjectStore["updateTask"]>) => { await store.updateTask(...args); throw new Error("private postcommit detail"); },
     }));

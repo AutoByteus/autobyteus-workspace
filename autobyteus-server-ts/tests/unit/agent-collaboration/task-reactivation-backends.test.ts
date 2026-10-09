@@ -12,10 +12,10 @@ async function fixture(kind: 'agent' | 'agent_team' | 'agent_org') {
   const f = await nestedReleaseScenario(kind);
   await f.resources.markStarted({ teamRunId: 'A-team' });
   await f.resources.markStarted({ agentRunId: 'B-worker' });
-  const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources, gracePeriodMs: () => 600_000 });
+  const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskExecutionResources: f.resources, gracePeriodMs: () => 600_000 });
   const done = async (taskId: 'A' | 'B') => {
     const closed = f.resources.close(taskId);
-    expect((await lifecycle.releaseTaskAgentResources(closed)).every(result => result.stopped)).toBe(true);
+    expect((await lifecycle.releaseTaskExecutions(closed)).every(result => result.stopped)).toBe(true);
   };
   /** `send_message_to(run ID)` from the assigner, bound as the root facades bind it. */
   const message = (target: string) => lifecycle.deliverToExactTarget(f.managerId, target, () => lifecycle.withLiveLease(target, async () => {

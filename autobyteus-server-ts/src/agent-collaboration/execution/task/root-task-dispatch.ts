@@ -1,17 +1,17 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { RootTaskExecutionAdapter, TaskExecutionActivationOperation, TaskExecutionActivationPlan } from "./root-task-execution-adapter.js";
 import type { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
-import type { TaskAgentResourceAssignmentTarget, TaskAgentResourcePort } from "./task-agent-resource-port.js";
+import type { TaskExecutionAssignmentTarget, TaskExecutionResourcePort } from "./task-execution-resource-port.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
-import { asTaskDelegationError } from "./root-task-agent-resource-scope.js";
+import { asTaskDelegationError } from "./root-task-execution-resource-scope.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError, TaskDispatchIndeterminateError, type TaskDelegationContext, type DelegateTaskResult } from "./task-delegation-command.js";
 
 /**
  * How the new copy joins a Task, decided by the lifecycle from the sender's ownership: an assignment
  * to an existing Task or to a new Task with no Project (`adHocTask`), or inherited sub-work.
  */
-export type TaskAgentResourceJoin =
-  | (Readonly<{ role: "assigned"; assignedBy: string }> & TaskAgentResourceAssignmentTarget)
+export type TaskExecutionJoin =
+  | (Readonly<{ role: "assigned"; assignedBy: string }> & TaskExecutionAssignmentTarget)
   | Readonly<{ role: "delegated" | "broughtIn"; creator: TaskExecutionReference }>;
 
 /**
@@ -22,7 +22,7 @@ export type TaskAgentResourceJoin =
 export async function dispatchTaskCopy<T>(input: {
   adapter: RootTaskExecutionAdapter<T>; queue: RootTaskExecutionCommandQueue;
   context: TaskDelegationContext; placement: T; workPacket?: AgentInputUserMessage;
-  join: TaskAgentResourceJoin; resources: TaskAgentResourcePort;
+  join: TaskExecutionJoin; resources: TaskExecutionResourcePort;
   assertAdmitting(): void;
 }): Promise<DelegateTaskResult> {
   let plan: TaskExecutionActivationPlan<T> | null = null;
@@ -44,8 +44,8 @@ export async function dispatchTaskCopy<T>(input: {
     const target = exact.target;
     // An assignment records the address it was delegated to (the root's display name).
     const join = input.join.role === "assigned" ? { ...input.join, recipientAddress: exact.recipientAddress } : input.join;
-    const link = await input.resources.linkAgentRun({ ...join, hostRoot: target.root, agentRun: target.execution,
-      ...("teamRunId" in target.execution ? { coordinatorAgentRunId: target.ingressAgentRunId } : {}) })
+    const link = await input.resources.linkNewTaskExecution({ ...join, hostRoot: target.root, execution: target.execution,
+      ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) })
       .catch(error => { throw asTaskDelegationError(error); });
     linked = true;
     // The join variant decides, not the returned id: a link to an existing Task returns its id too.
