@@ -466,8 +466,8 @@ describe("agent-initiated collaborators of a standalone run", () => {
   it("a delegated copy member sees the host: `@` offers and resolves it as the run agent, it is listed, and messaging its address reaches the existing host (REQ-001..004, REQ-006)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: "Ship it" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: "Ship it" }))
+      .resolves.toMatchObject({ delegated: true, copy: { kind: "team" } });
     await flushMicrotasks();
     const [copy] = root.getExecutionTreeSnapshot().taskExecutions as unknown as Parameters<typeof memberRun>[0][];
     const designer = childIdentity("/product_team/designer", memberRun(copy!, "/product_team/designer"));
@@ -498,8 +498,8 @@ describe("agent-initiated collaborators of a standalone run", () => {
       .resolves.toMatchObject({ accepted: true });
     expect(f.restores).toHaveBeenCalledOnce();
     expect(f.host.reserved.at(-1)).toContain("Please create ticket X");
-    await expect(root.delegateTask({ identity: designer }, { recipient_address: "/research_assistant", description: "Do it" }))
-      .resolves.toMatchObject({ target_agent_run_id: null });
+    await expect(root.delegateToNewCopy({ identity: designer }, { recipient_address: "/research_assistant", description: "Do it" }))
+      .resolves.toEqual({ delegated: false, message: expect.any(String) });
     expect(root.getExecutionTreeSnapshot().collaborators).toEqual([]);
     expect(root.getExecutionTreeSnapshot().taskExecutions).toHaveLength(1);
   });
