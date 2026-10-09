@@ -1,0 +1,2700 @@
+[
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "initializing",
+      "trigger": "member_command",
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 1,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 1,
+      "entries": [],
+      "recoverableBlock": null,
+      "change_sequence": 2,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "initializing",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 3,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 2,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": null,
+          "state": "queued",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 4,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 6,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TURN_STARTED",
+    "payload": {
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "change_sequence": 7,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 3,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "queued",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 8,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 9,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 10,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 11,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "payload": {
+      "invocation_id": "agy-tool-8330530d-4cfd-49f0-9be1-67c3f6827eb5-2",
+      "tool_name": "view_file",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-qnOGnV/memory/agent_teams/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context_files/ctx_d389f46af574__chart.png"
+      },
+      "change_sequence": 12,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 13,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 14,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "payload": {
+      "invocation_id": "agy-tool-8330530d-4cfd-49f0-9be1-67c3f6827eb5-2",
+      "tool_name": "view_file",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-qnOGnV/memory/agent_teams/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context_files/ctx_d389f46af574__chart.png"
+      },
+      "result": {
+        "provider_state": "DONE",
+        "output": null
+      },
+      "change_sequence": 15,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 16,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 17,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "payload": {
+      "invocation_id": "agy-tool-8330530d-4cfd-49f0-9be1-67c3f6827eb5-3",
+      "tool_name": "view_file",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-qnOGnV/memory/agent_teams/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context_files/ctx_eeb2001d5699__note.txt"
+      },
+      "change_sequence": 18,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 19,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 20,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "payload": {
+      "invocation_id": "agy-tool-8330530d-4cfd-49f0-9be1-67c3f6827eb5-3",
+      "tool_name": "view_file",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "arguments": {
+        "AbsolutePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-context-files-live-qnOGnV/memory/agent_teams/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context_files/ctx_eeb2001d5699__note.txt"
+      },
+      "result": {
+        "provider_state": "DONE",
+        "output": "2 lines, 40 bytes"
+      },
+      "change_sequence": 21,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 22,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 23,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_START",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "metadata": null,
+      "change_sequence": 24,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 25,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "-",
+      "change_sequence": 26,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 27,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 28,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": " The attached image ([chart.png](file:///private",
+      "change_sequence": 29,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 30,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 31,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "/var/folders/7w",
+      "change_sequence": 32,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 33,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 34,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "/9r4_s1_s42z3f7c136bpjf0r0",
+      "change_sequence": 35,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 36,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 37,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "000gn/T/agy-context-files-live-qnOGn",
+      "change_sequence": 38,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 39,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 40,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "V/memory/age",
+      "change_sequence": 41,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 42,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 43,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "nt_teams",
+      "change_sequence": 44,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 45,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 46,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "/agy_context_files_live_team_b51e7a1d_492d",
+      "change_sequence": 47,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 48,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 49,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "_4e21_9_0ddff6c070d0495da97",
+      "change_sequence": 50,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 51,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 52,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "382d05db6617a/agy_context_files_live",
+      "change_sequence": 53,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 54,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 55,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "_080",
+      "change_sequence": 56,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 57,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 58,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "d6082_fb24_48f7_a5e2_0_4",
+      "change_sequence": 59,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 60,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 61,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "2",
+      "change_sequence": 62,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 63,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 64,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "fda3bd86d44615a407a1e3a5",
+      "change_sequence": 65,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 66,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 67,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "bd156f/conte",
+      "change_sequence": 68,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 69,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 70,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "xt_",
+      "change_sequence": 71,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 72,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 73,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "files/ctx_d389f46af574__",
+      "change_sequence": 74,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 75,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 76,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "chart.png)) ",
+      "change_sequence": 77,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 78,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 79,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "is **blue**.",
+      "change_sequence": 80,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 81,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 82,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "\n- The marker in the attached note (",
+      "change_sequence": 83,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 84,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 85,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "[note.txt](file:///priva",
+      "change_sequence": 86,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 87,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 88,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "te/var/folders/7w/",
+      "change_sequence": 89,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 90,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 91,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "9r4_s1_s42z3f7c136bpjf0r",
+      "change_sequence": 92,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 93,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 94,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "00",
+      "change_sequence": 95,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 96,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 97,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "00gn/T/agy-context-files",
+      "change_sequence": 98,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 99,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 100,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "-live-qnOGnV/memory/agen",
+      "change_sequence": 101,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 102,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 103,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "t_teams/",
+      "change_sequence": 104,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 105,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 106,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "agy_context_files_live_team_b51e7a1d",
+      "change_sequence": 107,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 108,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 109,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "_492d_",
+      "change_sequence": 110,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 111,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 112,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "4e21_9_0ddff6c070d0495da973",
+      "change_sequence": 113,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 114,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 115,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "82d05db6617a/agy_context",
+      "change_sequence": 116,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 117,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 118,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "_files_live_080d",
+      "change_sequence": 119,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 120,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 121,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "6082_fb24_48f7_a5e2_0_42fda3bd86d",
+      "change_sequence": 122,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 123,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 124,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "44615a407a1e3a5bd156f/context_files/",
+      "change_sequence": 125,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 126,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 127,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "ctx_eeb",
+      "change_sequence": 128,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 129,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 130,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_CONTENT",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "segment_type": "text",
+      "delta": "2001d5699__note.txt#L1)) is **`NOTE-MARKER-6612`**.\n",
+      "change_sequence": 131,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 132,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "SEGMENT_END",
+    "payload": {
+      "segment_id": "agy-text-8330530d-4cfd-49f0-9be1-67c3f6827eb5-4",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "metadata": null,
+      "interrupted": false,
+      "reason": null,
+      "failed": false,
+      "error": null,
+      "change_sequence": 133,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 4,
+      "entries": [
+        {
+          "sequence": 1,
+          "message_id": "e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "dedupe_key": "agent_run_input:e2e:e2e-2ea43d0f-795c-466d-ad3f-83c25b4a3208",
+          "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+          "state": "forwarded",
+          "content": "What colour is the attached image, and what marker is in the attached note? Answer briefly.",
+          "sender_type": "user",
+          "file_attachments": [
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_eeb2001d5699__note.txt",
+              "file_type": "text",
+              "file_name": "ctx_eeb2001d5699__note.txt"
+            },
+            {
+              "uri": "/rest/team-runs/agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a/agent-runs/agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f/context-files/ctx_d389f46af574__chart.png",
+              "file_type": "image",
+              "file_name": "ctx_d389f46af574__chart.png"
+            }
+          ]
+        }
+      ],
+      "recoverableBlock": null,
+      "change_sequence": 134,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "running",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 135,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TOKEN_USAGE_UPDATED",
+    "payload": {
+      "usage_event_id": "e030dd12-9314-4908-8817-15b5daabf179",
+      "idempotency_key": "agy:0d238328-1dba-4ac7-bbaf-4a9a7a256efc:1",
+      "observed_at": "2026-10-08T20:06:50.255Z",
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "llm_call_id": null,
+      "model_provider": "GEMINI",
+      "model_identifier": "gemini-3.8-flash-low",
+      "model_value": "gemini-3.8-flash-low",
+      "usage_scope": "cumulative_snapshot",
+      "input_token_semantic": "gross_includes_cache",
+      "standard_input_tokens": 22917,
+      "cache_miss_input_tokens": 22917,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "cache_state": "zero_reported",
+      "reasoning_output_tokens": 0,
+      "billable_output_tokens": 917,
+      "meter_delta_input_tokens": 22917,
+      "meter_delta_output_tokens": 917,
+      "meter_delta_total_tokens": 23834,
+      "input_price_per_million": null,
+      "output_price_per_million": null,
+      "cached_input_read_price_per_million": null,
+      "cached_input_write_price_per_million": null,
+      "cached_input_write_5m_price_per_million": null,
+      "cached_input_write_1h_price_per_million": null,
+      "estimated_api_input_cost": null,
+      "estimated_api_standard_input_cost": null,
+      "estimated_api_cache_read_input_cost": null,
+      "estimated_api_cache_creation_input_cost": null,
+      "estimated_api_cache_creation_5m_input_cost": null,
+      "estimated_api_cache_creation_1h_input_cost": null,
+      "estimated_api_output_cost": null,
+      "estimated_api_reasoning_output_cost": null,
+      "estimated_api_total_cost": null,
+      "currency": null,
+      "api_cost_status": "price_missing",
+      "missing_price_dimensions": [
+        "model_not_found"
+      ],
+      "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash-low",
+      "selected_pricing_tier_id": null,
+      "latest_prompt_tokens": null,
+      "effective_context_window_tokens": null,
+      "context_window_usage_percent": null,
+      "run_summary_after_event": {
+        "run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f",
+        "root_team_run_id": "agy_context_files_live_team_b51e7a1d_492d_4e21_9_0ddff6c070d0495da97382d05db6617a",
+        "agent_definition_id": "agy-context-files-live-080d6082-fb24-48f7-a5e2-0620628f2334",
+        "workspace_id": "agent_ws_7fd403f8399de72572e7c9efd5887998c18eb5a1547465806d19b0c65ab553ad",
+        "gross_input_tokens": 22917,
+        "standard_input_tokens": 22917,
+        "cache_miss_input_tokens": 22917,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0,
+        "cache_creation_5m_input_tokens": 0,
+        "cache_creation_1h_input_tokens": 0,
+        "output_tokens": 917,
+        "reasoning_output_tokens": 0,
+        "billable_output_tokens": 917,
+        "total_tokens": 23834,
+        "cache_read_input_token_rate": 0,
+        "standard_input_token_rate": 1,
+        "cache_creation_input_token_rate": 0,
+        "cache_state": "zero_reported",
+        "estimated_api_input_cost": null,
+        "estimated_api_standard_input_cost": null,
+        "estimated_api_cache_read_input_cost": null,
+        "estimated_api_cache_creation_input_cost": null,
+        "estimated_api_cache_creation_5m_input_cost": null,
+        "estimated_api_cache_creation_1h_input_cost": null,
+        "estimated_api_output_cost": null,
+        "estimated_api_reasoning_output_cost": null,
+        "estimated_api_total_cost": null,
+        "currency": null,
+        "api_cost_status": "price_missing",
+        "missing_price_dimensions": [
+          "model_not_found"
+        ],
+        "pricing_policy_key": "autobyteus_model_catalog:GEMINI:gemini-3.8-flash-low",
+        "selected_pricing_tier_id": null,
+        "unit_prices": {
+          "standard_input": {
+            "status": "missing",
+            "price_per_million": null
+          },
+          "cache_read_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "cache_creation_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "cache_creation_5m_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "cache_creation_1h_input": {
+            "status": "not_applicable",
+            "price_per_million": null
+          },
+          "output": {
+            "status": "missing",
+            "price_per_million": null
+          },
+          "reasoning_output": {
+            "status": "not_applicable",
+            "price_per_million": null
+          }
+        },
+        "latest_prompt_tokens": null,
+        "effective_context_window_tokens": null,
+        "context_window_usage_percent": null,
+        "latest_model_provider": "GEMINI",
+        "latest_model_identifier": "gemini-3.8-flash-low",
+        "latest_selected_raw_model_id": null,
+        "has_cache_write_rate_assumption": false,
+        "latest_runtime_kind": "antigravity_cli",
+        "usage_report_count": 1,
+        "updated_at": "2026-10-08T20:06:50.255Z"
+      },
+      "quality_flags": [
+        "agy_provider_reported_cumulative_usage",
+        "first_cumulative_snapshot_assumed_run_origin"
+      ],
+      "change_sequence": 136,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "TURN_COMPLETED",
+    "payload": {
+      "turn_id": "8330530d-4cfd-49f0-9be1-67c3f6827eb5",
+      "reason": null,
+      "change_sequence": 137,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_STATUS",
+    "payload": {
+      "recoverableBlock": null,
+      "status": "idle",
+      "trigger": null,
+      "tool_name": null,
+      "error_message": null,
+      "error_details": null,
+      "change_sequence": 138,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  },
+  {
+    "type": "AGENT_INPUT_STATE",
+    "payload": {
+      "run_instance_id": "4f8c605e-da9d-4f80-ab78-fb9cb944f982",
+      "revision": 5,
+      "entries": [],
+      "recoverableBlock": null,
+      "change_sequence": 139,
+      "agent_run_id": "agy_context_files_live_080d6082_fb24_48f7_a5e2_0_42fda3bd86d44615a407a1e3a5bd156f"
+    }
+  }
+]

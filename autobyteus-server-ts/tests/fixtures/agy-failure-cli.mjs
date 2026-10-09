@@ -30,8 +30,9 @@ if (arg === "--version") {
   const nativeArguments = process.env.AGY_FAKE_CASE === "native_arguments";
   const autoCompaction = process.env.AGY_FAKE_CASE === "auto_compaction";
   const interruptResend = process.env.AGY_FAKE_CASE === "interrupt_resend";
+  const contextFiles = process.env.AGY_FAKE_CASE === "context_files";
   // These independent fixtures all model exact conversation binding on resume.
-  const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction || interruptResend
+  const conversation_id = runtimeError || linkedSkills || nativeArguments || autoCompaction || interruptResend || contextFiles
     ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
@@ -182,6 +183,28 @@ if (arg === "--version") {
       }
       reply(turns * 10, `REPLY:${content}`);
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `REPLY:${content}` } });
+      return;
+    }
+    if (contextFiles) {
+      // Records each raw user input line (AGY_FAKE_INPUT_LOG), then, as an AGY agent does with attached files,
+      // opens every absolute path listed as `- /…` with view_file (output `sha256:<hex>`, or the error code)
+      // and replies `VIEWED:<count>`.
+      const content = JSON.parse(line)?.message?.content;
+      if (process.env.AGY_FAKE_INPUT_LOG) appendFileSync(process.env.AGY_FAKE_INPUT_LOG,
+        JSON.stringify({ conversation_id, turns, line: JSON.parse(line) }) + "\n");
+      const files = typeof content === "string" ? [...content.matchAll(/^- (\/.*)$/gm)].map(([, file]) => file) : [];
+      files.forEach((AbsolutePath, index) => {
+        const step = { conversation_id, step_index: turns * 100 + index + 1, step_type: "tool", tool_name: "view_file" };
+        emit({ event: "step_update", step_update: { ...step, state: "ACTIVE", tool_info: { parameters: { AbsolutePath } } } });
+        try {
+          const output = `sha256:${createHash("sha256").update(readFileSync(AbsolutePath)).digest("hex")}`;
+          emit({ event: "step_update", step_update: { ...step, state: "DONE", tool_info: { output } } });
+        } catch (error) {
+          emit({ event: "step_update", step_update: { ...step, state: "ERROR", tool_info: { error: String(error.code) } } });
+        }
+      });
+      reply(turns * 100, `VIEWED:${files.length}`);
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: `VIEWED:${files.length}` } });
       return;
     }
     if (autoCompaction) {
