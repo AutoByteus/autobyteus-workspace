@@ -126,6 +126,12 @@ their size. Send is disabled with the shared launch readiness reason as its
 label (see [Agent Orgs](./agent_orgs.md#readiness)): the target is gone, a
 scope's runtime is unavailable, or a scope has no model ("Choose a model to
 start."). For a Team every member's effective settings are checked too.
+Send and Enter also need something to send: typed text or a skill tag.
+Context files alone never enable Send; they go with a message. The one rule
+is `hasSendableDraft` (`services/runSubmission/agentPrimaryAction.ts`), used
+by this composer, the New chat surface, the run-view composer
+(`AgentUserInputTextArea.vue`) and `activeContextStore`. It matches the
+server, which rejects run input with empty text.
 
 - `/` opens the skill menu. For an `ALL_INSTALLED` agent it lists enabled
   installed skills; otherwise the agent's configured `skillNames`. Chosen
