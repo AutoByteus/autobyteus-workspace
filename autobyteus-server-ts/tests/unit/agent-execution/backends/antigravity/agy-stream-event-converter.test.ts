@@ -8,6 +8,8 @@ import { AgentSegmentLifecycleEventTransformer } from "../../../../../src/agent-
 import { AgentSegmentLifecycleState } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { AgentTurnLifecycleState } from "../../../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import { LifecycleStatusEventTransformer } from "../../../../../src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.js";
+import { createTokenUsageUpdatedPayload } from "../../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { TokenUsageComponentBasisResolver } from "../../../../../src/token-usage/projections/token-usage-component-basis-resolver.js";
 
 const fixture = (name: string, directory = "agy-tool-event-capture") => fs.readFileSync(path.resolve(process.cwd(), `../tickets/done/antigravity-cli-runtime-redesign-20260924/${directory}/${name}.stdout.jsonl`), "utf8")
   .split("\n").filter(Boolean).map((line) => parseAgyStreamMessage(line)).filter((event) => event !== null);
@@ -159,6 +161,19 @@ describe("AGY canonical stream conversion", () => {
     expect(usage?.payload).not.toHaveProperty("accounting_input_tokens");
     expect(usage?.payload).not.toHaveProperty("cache_miss_input_tokens");
     expect(usage?.payload).not.toHaveProperty("standard_input_tokens");
+  });
+  it("leaves gross input at the reported input and the cache state not reported when AGY omits cache reads", () => {
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini-3.8-flash-high");
+    converter.startTurn("turn");
+    const usage = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS",
+      num_turns: 1, usage: { input_tokens: 6_110, output_tokens: 1, total_tokens: 6_111 } } })
+      .find((item) => item.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED);
+    const resolved = new TokenUsageComponentBasisResolver().resolve(
+      createTokenUsageUpdatedPayload({ runId: "run", payload: usage!.payload }));
+    expect(resolved).toMatchObject({
+      input_token_semantic: "base_excludes_cache", cache_state: "not_reported", cache_read_input_tokens: null,
+      accounting_input_tokens: 6_110, standard_input_tokens: 6_110,
+    });
   });
   describe("background tool steps AGY never finishes", () => {
     const BACKGROUND = "Started as a background task; still running when the turn ended.";
