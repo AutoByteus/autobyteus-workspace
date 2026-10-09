@@ -10,17 +10,18 @@
   - Code review: CRR-001 Pass.
   - API/E2E: API-REV-001 Pass (95%).
   - Test-code review: CRR-002 Pass.
-- One repository: `codex/anthropic-prompt-caching` → `origin/personal`. A release (for example a new beta) is decided at user verification.
-- Current state: **waiting for user verification (DR-002)**.
+- One repository: `codex/anthropic-prompt-caching` → `origin/personal`.
+- Release: the user asked for a new beta, published as **`v1.4.99-beta.9`**.
+- Current state: **Delivery Completed (DR-003)**: user verified, finalized, released and cleaned up.
   - DR-001 was held because the API/E2E desktop round was reopened at the user's request.
   - That round finished as API-REV-002 Pass (96%), with no test-code change, and was routed directly to delivery.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/tickets/in-progress/anthropic-prompt-caching/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/anthropic-prompt-caching/ (on `personal`) handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/tickets/in-progress/anthropic-prompt-caching/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
+- Delivery revision record: `tickets/done/anthropic-prompt-caching/ (on `personal`) delivery-revision-record.md`
+- Current delivery revision ID: `DR-003` (finalization and release)
 
 ## Initial Delivery Integration Refresh
 
@@ -70,14 +71,17 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`. Requested at DR-002 with `handoff-summary.md`.
+- Initial explicit user completion/verification received: `Yes`.
+- Initial verification / acceptance reference: the user on 2026-10-09: "finalize and release a new beta." Recorded in `handoff-summary.md` § User Verification.
+- Renewed verification required after later re-integration: `No`. `origin/personal` was still `033a6d780` after verification.
+- Renewed verification received: `Not needed`
 - Pending user checks:
   - AC-007: the Anthropic Console shows prompt caching active and tokens reused, and the Token Meter total matches the Console. For restored runs, see DEF-B.
   - The release decision.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/tickets/in-progress/anthropic-prompt-caching/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/anthropic-prompt-caching/ (on `personal`) docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `TESTING.md` (delivery; uncommitted until finalization);
@@ -85,27 +89,67 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/anthropic-prompt-caching`: `No` (pending user verification)
+- Ticket moved to `tickets/done/anthropic-prompt-caching`: `Yes` (`9fbe0bfbb`)
+- Archived ticket path: `tickets/done/anthropic-prompt-caching/`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision. The current workspace version on base is `1.4.99-beta.8`.
+- Helper: `scripts/desktop-release.sh beta --branch release-tmp-apc --no-push`.
+  - It ran in a temporary clean worktree (`autobyteus-worktrees/release-tmp-apc`, at merge `4e55cae2b`), because the ticket worktree held the untracked SDK `dist/` output.
+  - The pushes happened only after confirming that `origin/personal` was still `4e55cae2b`.
+- **`v1.4.99-beta.9`**: release commit `d7029b90a` on top of merge `4e55cae2b`. It changes `autobyteus-web/package.json` from 1.4.99-beta.8 to 1.4.99-beta.9.
+- Pushes: `4e55cae2b..d7029b90a HEAD -> personal` and the new tag `v1.4.99-beta.9` (`delivery-evidence/beta9-release.log`).
+- Content since beta.8: gemini-native-cache-hit (merged without a release) and this ticket.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (base and finalization target `origin/personal`)
-- Ticket branch: `codex/anthropic-prompt-caching` @ `b7e318107` (local only)
+- Ticket branch: `codex/anthropic-prompt-caching` @ `9fbe0bfbb`.
+  - Final commits: `b684a8963` checkpoint, `a89fe62cc` merge, `328630c0a` checkpoint, `b7e318107` merge, `9fbe0bfbb` archive.
+- Ticket branch commit result: `Completed`
+- Ticket branch push result: `Completed` (`[new branch] codex/anthropic-prompt-caching`)
 - Finalization target: `origin` / `personal`
-- Repository finalization status: `Blocked`. Waiting for user verification.
+- Target advanced after verification / acceptance: `No` (`033a6d780`)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The ticket worktree was detached at the fetched `origin/personal`, and the main checkout was not touched.
+- Merge into target result: `Completed`, a `--no-ff` merge, `4e55cae2b`.
+  - `check_licensing.py` and `check_repository_artifact_hygiene.py` both exit 0 (`delivery-evidence/finalization-hygiene.log`).
+  - The longest new path is 113 characters.
+- Push target branch result: `Completed` (`033a6d780..4e55cae2b HEAD -> personal`, after re-checking that the target had not moved)
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user at verification.
-- Release notes: `release-notes.md` (prepared)
+- Applicable: `Yes` (the user asked for a new beta)
+- Method: `Release Script` (tag-triggered GitHub workflows)
+- Method reference / command: `scripts/desktop-release.sh beta` (see above)
+- Workflows: all 4 succeeded on attempt 1 (`delivery-evidence/workflows-beta9.json`):
+  - Desktop `37930604625`
+  - iOS `37930604641`
+  - Server Docker `37930604539`
+  - Android `37930604649`
+- GitHub release `v1.4.99-beta.9` (`delivery-evidence/github-release-beta9.json`): a **pre-release**, not a draft, published 2026-10-09T12:35:53Z, with 17 assets.
+- Updater metadata: `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` all report `version: 1.4.99-beta.9` (`delivery-evidence/updater-metadata/`). GitHub `releases/latest` stays on stable `v1.4.98`.
+- Docker `autobyteus/autobyteus-server` (`delivery-evidence/docker-tags.txt`):
+  - `:1.4.99-beta.9` and `:beta` share digest `sha256:5766dcb8…ad8c` (amd64, arm64).
+  - `:latest` is unchanged at `sha256:8aa17b23…5187` (1.4.98).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Beta mode publishes generated notes, and the archived `release-notes.md` stays as the ticket's user-facing summary for the next stable release.
+- Blocker: none
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching`. Cleanup is pending finalization. The API/E2E desktop instance has already been stopped and its data removed (API-REV-002).
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching`
+  - The API/E2E desktop instance had already been stopped and its data removed (API-REV-002).
+  - Before removal, the worktree held only the untracked SDK `dist/` build output and `finalization-hygiene.log`, which was copied into this commit.
+- Worktree cleanup result: `Completed` (`git worktree remove --force`)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`codex/anthropic-prompt-caching` deleted at `9fbe0bfbb`; it is contained in `origin/personal`)
+- Remote branch cleanup result: `Not required`. `origin/codex/anthropic-prompt-caching` is kept as the review reference, as on earlier tickets.
+- Release helper worktree `autobyteus-worktrees/release-tmp-apc` and branch `release-tmp-apc`: removed after this delivery record is pushed.
+- Full desktop recordings (outside the repo): `/Users/normy/autobyteus_org/ticket-media/anthropic-prompt-caching/`
 
 ## Escalation / Reroute (DR-001, resolved at DR-002)
 
@@ -119,7 +163,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/tickets/in-progress/anthropic-prompt-caching/release-notes.md`
+- Release notes artifact created before verification: `tickets/done/anthropic-prompt-caching/ (on `personal`) release-notes.md`
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
@@ -150,10 +194,10 @@
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (undecided)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: explicit user verification (AC-007) and the release/recording decisions.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.4.99-beta.9` published)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes`, after this record is pushed (DR-003)
