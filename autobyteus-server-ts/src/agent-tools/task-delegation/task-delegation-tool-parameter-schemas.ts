@@ -12,6 +12,8 @@ import {
   DELEGATE_TASK_ID_DESCRIPTION,
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
   DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
+  DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION,
+  DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
 } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 
 export const buildDelegateTaskParameterSchema = (): ParameterSchema => new ParameterSchema([
@@ -19,8 +21,10 @@ export const buildDelegateTaskParameterSchema = (): ParameterSchema => new Param
     name: "recipient_address",
     type: ParameterType.STRING,
     description: DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
-    required: true,
+    required: false,
   }),
+  new ParameterDefinition({ name: "target_team_run_id", type: ParameterType.STRING, description: DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION, required: false }),
+  new ParameterDefinition({ name: "target_agent_run_id", type: ParameterType.STRING, description: DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION, required: false }),
   new ParameterDefinition({ name: "task_id", type: ParameterType.STRING, description: DELEGATE_TASK_ID_DESCRIPTION, required: false }),
   new ParameterDefinition({
     name: "description",

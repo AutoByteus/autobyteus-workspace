@@ -9,8 +9,8 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore, readAdHocTaskFile } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskAgentResourceService } from "../../../src/projects/services/task-agent-resource-service.js";
-import { TaskAgentResourceStore } from "../../../src/projects/stores/task-agent-resource-store.js";
+import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
+import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import {
   PROJECT_TASK_STATUSES, isProjectTaskStatus, isTerminalTaskStatus, validateTaskStatus, type ProjectTaskStatus,
@@ -19,7 +19,7 @@ import { ProjectChangeMessageSchema } from "../../../src/projects/changes/projec
 import { ProjectTaskStatus as GraphqlProjectTaskStatus } from "../../../src/api/graphql/types/project-tasks.js";
 import { readReleasedTaskFileV1 } from "../../../src/app-data-migrations/migrations/projects-per-folder-v1/released-project-folder-v1.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskAgentResourceReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
@@ -66,11 +66,11 @@ describe("Task status vocabulary (CANCELLED)", () => {
 
 describe("CANCELLED ends a Task's work exactly like DONE", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
-  let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
+  let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tasks: ProjectTaskService;
-  const resourcesFile = (taskId: string) => fs.readFile(layout.agentRunResourcesFile(projectId, taskId), "utf8");
+  const resourcesFile = (taskId: string) => fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8");
   const assign = (taskId: string, agentRunId: string, root = hostRoot) =>
-    tasks.linkAgentRun({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root, agentRun: { agentRunId } });
+    tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root, execution: { agentRunId } });
   const setStatus = (taskId: string, status: ProjectTaskStatus) => tasks.updateTaskById({ taskId, status });
   const settle = () => tasks.drainRuntimeReleases();
 
@@ -80,9 +80,9 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
-    release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-      requestRelease: release, taskAgentResources: new TaskAgentResourceService(new TaskAgentResourceStore(layout, adHocLayout)) });
+      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });
   afterEach(async () => { await settle(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
@@ -94,7 +94,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     const observed: string[] = [];
     release.mockImplementation(async (root, agentRuns) => {
       observed.push(`${root.rootRunId}:${(await store.readTask(projectId, a.taskId))!.status}:${tasks.isOpen({ agentRunId: "worker-a" })}`);
-      return agentRuns.map(agentRun => ({ agentRun, stopped: true }));
+      return agentRuns.map(execution => ({ execution, stopped: true }));
     });
     const writes = vi.spyOn(store, "updateTask");
     writes.mockImplementationOnce(async (...args) => {
@@ -148,25 +148,25 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
 
   it("refuses reactivation while CANCELLED with the reopen-first hint; after a reopen the assigner reactivates as after DONE (AC-005)", async () => {
     const task = await tasks.createTask({ projectId, description: "A" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, agentRun: worker });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: worker });
     await tasks.markStarted(worker);
     await setStatus(task.taskId, "CANCELLED");
     const closedFile = await resourcesFile(task.taskId);
-    for (const call of [() => tasks.assertReopenable({ agentRun: worker, requestedBy: "manager" }),
-      () => tasks.reopenAssignment({ agentRun: worker, requestedBy: "manager" })]) {
+    for (const call of [() => tasks.assertReopenable({ execution: worker, requestedBy: "manager" }),
+      () => tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })]) {
       await expect(call()).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED",
         message: "This Task is CANCELLED. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again." });
     }
     expect(await resourcesFile(task.taskId)).toBe(closedFile);
     await setStatus(task.taskId, "IN_PROGRESS");
     expect(tasks.isOpen(worker)).toBe(false);
-    await expect(tasks.reopenAssignment({ agentRun: worker, requestedBy: "someone-else" })).rejects.toMatchObject({ code: expect.any(String) });
-    expect(await tasks.reopenAssignment({ agentRun: worker, requestedBy: "manager" })).toEqual({ taskId: task.taskId, reopened: true });
+    await expect(tasks.reopenAssignment({ execution: worker, requestedBy: "someone-else" })).rejects.toMatchObject({ code: expect.any(String) });
+    expect(await tasks.reopenAssignment({ execution: worker, requestedBy: "manager" })).toEqual({ taskId: task.taskId, reopened: true });
     expect(tasks.isOpen(worker)).toBe(true);
   });
 
   it("a Task with no Project: CANCELLED closes and stops its copy like DONE; delegation by its ID stays refused (AC-004)", async () => {
-    const { taskId } = await tasks.linkAgentRun({ role: "assigned", assignedBy: "delegator", hostRoot, agentRun: { agentRunId: "copy-1" },
+    const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot, execution: { agentRunId: "copy-1" },
       adHocTask: { description: "Review the plan", referenceFiles: [] } });
     expect(await setStatus(taskId, "CANCELLED")).toEqual({ projectId: null, taskId, status: "CANCELLED" });
     await settle();

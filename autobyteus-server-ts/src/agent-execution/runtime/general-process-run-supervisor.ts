@@ -68,7 +68,7 @@ import {
 } from "../services/standalone-run-ports.js";
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
   bindProcessCollaboratorAdmission,
   createCollaboratorAdmission,
@@ -88,7 +88,7 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
-  taskAgentResources: TaskAgentResourcePort;
+  taskExecutionResources: TaskExecutionResourcePort;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -113,7 +113,7 @@ const requireGeneralProcessRunSupervisorInput = (
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
     || typeof input.modelSelectionValidator.listOptions !== "function"
-    || !input.taskAgentResources
+    || !input.taskExecutionResources
   ) {
     throw new Error("Complete GeneralProcessRunSupervisor input is required.");
   }
@@ -247,7 +247,7 @@ export class GeneralProcessRunSupervisor {
       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
         memoryDir,
         taskExecutionIdentity,
-        taskAgentResources: input.taskAgentResources,
+        taskExecutionResources: input.taskExecutionResources,
         modelSelectionValidator: input.modelSelectionValidator,
         flatTeamExecutionFactory,
         memberExecutionContextBuilder,
@@ -255,12 +255,12 @@ export class GeneralProcessRunSupervisor {
       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
         workspaces: workspaceManager,
         memoryDir,
-        taskAgentResources: input.taskAgentResources,
+        taskExecutionResources: input.taskExecutionResources,
         modelSelectionValidator: input.modelSelectionValidator,
         scopeBuilder: new AgentOrgExecutionScopeBuilder({
           flatTeamExecutionFactory,
           taskExecutionIdentity,
-          taskAgentResources: input.taskAgentResources,
+          taskExecutionResources: input.taskExecutionResources,
           orgDefinitions: input.agentOrgDefinitionService,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
@@ -297,11 +297,11 @@ export class GeneralProcessRunSupervisor {
           readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
           recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
         },
-        taskAgentResources: input.taskAgentResources,
+        taskExecutionResources: input.taskExecutionResources,
         rootDependencies: {
           flatTeamExecutionFactory,
           taskExecutionIdentity,
-          taskAgentResources: input.taskAgentResources,
+          taskExecutionResources: input.taskExecutionResources,
           teamDefinitions: input.agentTeamDefinitionService,
           agentRunManager: generalAgentRunManager,
           memoryLocator,

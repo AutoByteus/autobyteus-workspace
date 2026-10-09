@@ -10,7 +10,7 @@ afterEach(() => vi.restoreAllMocks());
 describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: a task execution\'s own live status for the Task side', kind => {
   it('reports the live worker status, the folded team status, and offline once stopped or not admitting (DEC-006)', async () => {
     const f = await nestedReleaseScenario(kind);
-    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources, gracePeriodMs: () => 600_000 });
+    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskExecutionResources: f.resources, gracePeriodMs: () => 600_000 });
     // The live Agent copy reports its handle's status; the quiet-shut-down Team copy reports offline.
     expect(lifecycle.taskExecutionStatus({ agentRunId: 'B-worker' })).toBe('idle');
     expect(lifecycle.taskExecutionStatus({ teamRunId: 'A-team' })).toBe('offline');
@@ -24,7 +24,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: a task ex
     // Reading never wakes anything: an unknown or stopped copy is offline.
     expect(lifecycle.taskExecutionStatus({ agentRunId: 'never-delegated' })).toBe('offline');
     f.resources.close('B');
-    await lifecycle.releaseTaskAgentResources([{ agentRunId: 'B-worker' }]);
+    await lifecycle.releaseTaskExecutions([{ agentRunId: 'B-worker' }]);
     expect(lifecycle.taskExecutionStatus({ agentRunId: 'B-worker' })).toBe('offline');
     lifecycle.closeExternalAdmission();
     expect(lifecycle.taskExecutionStatus({ teamRunId: 'A-team' })).toBe('offline');
@@ -32,7 +32,7 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s root: a task ex
 
   it('forwards every status change of an agent in a copy to the Task side, and announces all copies when it stops admitting', async () => {
     const f = await nestedReleaseScenario(kind);
-    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskAgentResources: f.resources, gracePeriodMs: () => 600_000 });
+    const lifecycle = new RootTaskExecutionLifecycle(f.adapter, { taskExecutionResources: f.resources, gracePeriodMs: () => 600_000 });
     lifecycle.onAgentStatus('A-child', 'running');
     expect(f.resources.statusChanges.at(-1)).toEqual({ hostRoot: f.root, references: [{ agentRunId: 'A-child' }, { teamRunId: 'A-team' }] });
     lifecycle.onAgentStatus('not-in-a-copy', 'running');

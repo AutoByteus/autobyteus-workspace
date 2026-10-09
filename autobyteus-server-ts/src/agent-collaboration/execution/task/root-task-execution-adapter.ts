@@ -98,6 +98,8 @@ export interface RootTaskExecutionAdapter<TPlacement> {
   ownershipChainFor(agentRunId: string): readonly TaskExecutionReference[];
   /** The committed copy at `address` among the given references, with its ingress. */
   taskExecutionAt(address: string, among: readonly TaskExecutionReference[]): TaskExecutionTarget | null;
+  /** The copy with exactly this reference in this root's current tree (any depth), with its ingress; `null` otherwise. */
+  taskExecutionTargetOf(reference: TaskExecutionReference): TaskExecutionTarget | null;
   cancelOwnedExecution(reference: TaskExecutionReference): void;
   /** Exact release of a committed copy; `EXACT_RELEASE_AUTHORITY_UNAVAILABLE` when the root holds none. */
   releaseOwnedExecution(reference: TaskExecutionReference): Promise<AgentOperationResult>;

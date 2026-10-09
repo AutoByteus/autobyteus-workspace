@@ -105,7 +105,7 @@ async function harness(kind: RootSubjectKind, saved: { bindings?: Partial<Record
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange,
     buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-      tasks: { root: identity.root, delegateTask: async () => { throw Error('Not a dispatch witness.'); } } as never }) };
+      tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a dispatch witness.'); } } as never }) };
   const factory = new FlatTeamExecutionFactory({ agentRunManager: manager as never,
     activityInspector: { inspect: ({ agentRunId }: { agentRunId: string }) => ({ kind: conversations.has(agentRunId) ? 'present' : 'none' }) } as never,
     memoryLocator: { getLocation: (_scope: unknown, id: string) => ({ memoryDir: `/tmp/test-lazy-${id}` }) } as never });

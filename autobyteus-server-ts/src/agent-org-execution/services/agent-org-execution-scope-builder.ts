@@ -1,4 +1,4 @@
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
@@ -36,7 +36,7 @@ export class AgentOrgExecutionScopeBuilder {
   constructor(private readonly dependencies: Readonly<{
     flatTeamExecutionFactory: FlatTeamExecutionFactory;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskAgentResources?: TaskAgentResourcePort;
+    taskExecutionResources?: TaskExecutionResourcePort;
     orgDefinitions: Pick<AgentOrgDefinitionService, "getDefinitionById">;
     teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
     agentRunManager?: AgentRunManager;
@@ -61,7 +61,8 @@ export class AgentOrgExecutionScopeBuilder {
     }>> = [];
     const taskCommands: MemberTaskCommandCapability = Object.freeze({
       root,
-      delegateTask: (caller, command) => this.requireActive(run).delegateTask({ identity: caller }, command),
+      delegateToNewCopy: (caller, command) => this.requireActive(run).delegateToNewCopy({ identity: caller }, command),
+      assignToExistingCopy: (caller, command) => this.requireActive(run).assignToExistingCopy({ identity: caller }, command),
     });
     // Collaborators join after launch, so member contexts read the live tree.
     const liveTree = (): AgentOrgRunExecutionTreeSnapshot => run?.getExecutionTreeSnapshot() ?? input.state.executionTree;
@@ -187,7 +188,7 @@ export class AgentOrgExecutionScopeBuilder {
         persistence: input.persistence,
         publisher,
         taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
-        taskAgentResources: this.dependencies.taskAgentResources,
+        taskExecutionResources: this.dependencies.taskExecutionResources,
         memoryLocator: this.dependencies.memoryLocator,
         activityInspector: this.dependencies.activityInspector,
         prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),

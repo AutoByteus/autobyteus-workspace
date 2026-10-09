@@ -1,4 +1,4 @@
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
@@ -19,7 +19,7 @@ import type { TaskExecutionIdentityCapabilities } from "./task-execution-identit
 /** Host capabilities required by the Team task-execution adapter and lifecycle. */
 export type TeamTaskExecutionServiceOptions = Readonly<{
   rootTeamRunId: string;
-  taskAgentResources?: TaskAgentResourcePort;
+  taskExecutionResources?: TaskExecutionResourcePort;
   config: TeamRunConfig;
   getTree(): TeamRunExecutionTreeSnapshot;
   getIndex(): TeamExecutionIndex;

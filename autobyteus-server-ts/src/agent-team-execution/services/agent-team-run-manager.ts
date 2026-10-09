@@ -33,7 +33,7 @@ import {
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import { materializeTeamRoot } from "./team-root-materializer.js";
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { TeamExecutionIndex } from "./team-execution-index.js";
@@ -49,7 +49,7 @@ export type AgentTeamRunManagerOptions = Readonly<{
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskAgentResources?: TaskAgentResourcePort;
+  taskExecutionResources?: TaskExecutionResourcePort;
   executionTreeStore?: TeamRunExecutionTreeStore;
   communicationStore?: TeamCommunicationV1Store;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
@@ -66,7 +66,7 @@ export class AgentTeamRunManager {
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  private readonly taskAgentResources?: TaskAgentResourcePort;
+  private readonly taskExecutionResources?: TaskExecutionResourcePort;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
   private readonly managedRoots = new Map<string, RootTeamRun>();
@@ -115,7 +115,7 @@ export class AgentTeamRunManager {
     this.factory = options.flatTeamExecutionFactory;
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskExecutionIdentity = options.taskExecutionIdentity;
-    this.taskAgentResources = options.taskAgentResources;
+    this.taskExecutionResources = options.taskExecutionResources;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
     this.modelSelectionValidator = options.modelSelectionValidator;
@@ -218,7 +218,7 @@ export class AgentTeamRunManager {
   /** Closed (Task DONE or CANCELLED) task executions of the given (stored) tree of this root Team. */
   closedTaskExecutionsFor(rootTeamRunIdInput: string, tree: TeamRunExecutionTreeSnapshot): readonly TaskExecutionReference[] {
     const index = new TeamExecutionIndex(tree);
-    return listClosedTaskExecutions({ port: this.taskAgentResources, root: createTeamRootExecutionIdentity(required(rootTeamRunIdInput, "rootTeamRunId")),
+    return listClosedTaskExecutions({ port: this.taskExecutionResources, root: createTeamRootExecutionIdentity(required(rootTeamRunIdInput, "rootTeamRunId")),
       contains: (reference) => index.getTaskExecution(reference) !== null });
   }
 
@@ -400,7 +400,7 @@ export class AgentTeamRunManager {
       factory: this.factory,
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
       taskExecutionIdentity: this.taskExecutionIdentity,
-      taskAgentResources: this.taskAgentResources,
+      taskExecutionResources: this.taskExecutionResources,
       executionTreeStore: this.executionTreeStore,
       communicationStore: this.communicationStore,
     } as const;

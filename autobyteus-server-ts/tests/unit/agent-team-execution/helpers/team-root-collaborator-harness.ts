@@ -23,7 +23,7 @@ import { TokenUsageMigrationReadiness } from "../../../../src/token-usage/provid
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testTeamRunConfig } from "../../../fixtures/current-team-run-fixtures.js";
 import { observeConfiguredHandles } from "../../agent-org-execution/helpers/task-publication-handles.js";
-import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 
 /** A Team root (`/coordinator`) with a shared catalog of Code Reviewer, Lead, Designer and Product Team. */
 export const ROOT = "team-root-collaborators";
@@ -68,7 +68,7 @@ export const harness = async (options: { runnable?: boolean } = {}) => {
     communicationStore: new TeamCommunicationV1Store(),
     collaboratorAdmission: admission(options.runnable ?? true),
     // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskAgentResources: new InMemoryTaskAgentResources(),
+    taskExecutionResources: new InMemoryTaskExecutionResources(),
     onTerminated: vi.fn(),
   };
   const config = testTeamRunConfig({

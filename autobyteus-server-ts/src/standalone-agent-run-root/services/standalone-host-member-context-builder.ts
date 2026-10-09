@@ -61,11 +61,13 @@ export class StandaloneHostMemberContextBuilder {
       }),
       tasks: Object.freeze({
         root,
-        delegateTask: async (caller, input) => {
+        delegateToNewCopy: async (caller, input) => {
           const active = this.options.getActiveRoot(metadata.runId);
-          return active
-            ? active.delegateTask({ identity: caller }, input)
-            : { target_agent_run_id: null, message: ROOT_NOT_ACTIVE };
+          return active ? active.delegateToNewCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE };
+        },
+        assignToExistingCopy: async (caller, input) => {
+          const active = this.options.getActiveRoot(metadata.runId);
+          return active ? active.assignToExistingCopy({ identity: caller }, input) : { delegated: false, message: ROOT_NOT_ACTIVE };
         },
       }),
     });

@@ -193,6 +193,35 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(deliverExactAgentMessage).toHaveBeenCalledOnce();
   });
 
+  it("refuses a Team copy's team run ID with its coordinator's agent run ID, for same-root and cross-root senders (AC-012, REQ-009)", async () => {
+    const memberExecutionContext = testMemberExecutionContext({ rootTeamRunId: "root-team-run", memberAddress: "/sender", agentRunId: "sender-run" });
+    const sameRootSender = buildAgentRunMessageSenderContext({ senderRunId: "sender-run", senderName: "Sender",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER, memberExecutionContext });
+    const deliverExactAgentMessage = vi.fn(async () => ({ accepted: true }));
+    const activeRootDirectory = new ActiveCollaborationRootDirectory();
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, {
+      hasAgentExecution: (agentRunId: string) => agentRunId === "copy-lead",
+      teamCoordinatorOf: (teamRunId: string) => teamRunId === "copy-team" ? "copy-lead" : null,
+      deliverExactAgentMessage,
+    }).commit();
+    const getActiveRun = vi.fn(() => null);
+    const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun }, activeRootDirectory });
+    const refusal = { accepted: false, code: "TARGET_IS_TEAM_RUN",
+      message: "copy-team is a Team run; send_message_to reaches agents. Message its coordinator agent run copy-lead." };
+
+    // Same root as the copy, and an unrelated sender (another root, or none).
+    await expect(router.deliver({ sender: sameRootSender, targetAgentRunId: "copy-team", content: "Hi." })).resolves.toEqual(refusal);
+    await expect(router.deliver({ sender, targetAgentRunId: "copy-team", content: "Hi." })).resolves.toEqual(refusal);
+    expect(deliverExactAgentMessage).not.toHaveBeenCalled();
+    expect(getActiveRun).not.toHaveBeenCalled();
+    // The coordinator's agent run ID is delivered as before.
+    await expect(router.deliver({ sender: sameRootSender, targetAgentRunId: "copy-lead", content: "Hi." }))
+      .resolves.toMatchObject({ accepted: true, agentRunId: "copy-lead" });
+    // A team run in no active root gets the usual not-active refusal, like an agent run ID there.
+    await expect(router.deliver({ sender, targetAgentRunId: "stopped-team", content: "Hi." }))
+      .resolves.toMatchObject({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
+  });
+
   it("rejects unknown, inactive, preallocated, or recoverable-only targets via the same not-active result", async () => {
     const { router, agentRunManager } = createRouter(null);
 
