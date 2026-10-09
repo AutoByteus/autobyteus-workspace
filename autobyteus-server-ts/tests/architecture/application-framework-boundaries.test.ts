@@ -2026,6 +2026,7 @@ describe("application framework architecture boundaries", () => {
     checker.assertNamedAssemblySelections();
   });
 
+  // Scans the whole source tree: well under a second alone, but slower under full-suite load (baseline timing fix).
   it("keeps required tool registration behind the single lifecycle readiness owner", () => {
     type ToolSpec = Readonly<{
       key?: string;
@@ -2143,7 +2144,7 @@ describe("application framework architecture boundaries", () => {
     expect(identifierLocations.filter(({ filePath, name }) =>
       forbiddenCoreOwnerFiles.includes(filePath) && name === "registerTools",
     )).toEqual([]);
-  });
+  }, 30_000);
 
   it("extracts every governed import form without reading comments or arbitrary strings", () => {
     const root = createFixtureRepository();
