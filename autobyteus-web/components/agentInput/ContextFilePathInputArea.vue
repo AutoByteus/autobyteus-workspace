@@ -11,7 +11,7 @@
       type="file"
       multiple
       class="hidden"
-      :disabled="!target"
+      :disabled="!target || !canUpload"
       @change="onFileSelect"
     />
 
@@ -44,9 +44,11 @@
 
       <button
         class="text-blue-500 hover:text-white hover:bg-blue-500 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
-        :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')"
+        :title="canUpload
+          ? $t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')
+          : $t('agentInput.components.agentInput.ContextFilePathInputArea.uploads_unavailable')"
         :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')"
-        :disabled="!target"
+        :disabled="!target || !canUpload"
         @click.stop="triggerFileInput"
       >
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,6 +56,15 @@
         </svg>
       </button>
     </div>
+
+    <p
+      v-if="attachmentErrorMessage"
+      role="alert"
+      data-testid="context-file-error"
+      class="mb-2 px-1 text-xs text-red-600 break-words"
+    >
+      {{ attachmentErrorMessage }}
+    </p>
 
     <div v-if="isContextListExpanded && displayedItems.length > 0" id="context-file-list" class="space-y-2">
       <div v-if="thumbnailItems.length > 0" class="thumbnail-row-container">
@@ -157,6 +168,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useContextAttachmentComposer } from '~/composables/useContextAttachmentComposer';
+import { useLocalization } from '~/composables/useLocalization';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -172,6 +184,7 @@ const props = defineProps<{
   target: ComposerTarget | null;
 }>();
 
+const { t } = useLocalization();
 const contextFileUploadStore = useContextFileUploadStore();
 const fileExplorerStore = useFileExplorerStore();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -214,6 +227,8 @@ const {
   displayedItems,
   thumbnailItems,
   regularItems,
+  attachmentError,
+  canUpload,
   appendLocatorAttachments,
   appendWorkspaceLocators,
   uploadFiles,
@@ -246,6 +261,23 @@ const {
   },
   getWorkspaceId: () => workspaceId.value,
   getIsEmbeddedElectronRuntime: () => isEmbeddedElectronRuntime.value,
+});
+
+const attachmentErrorMessage = computed((): string | null => {
+  const error = attachmentError.value;
+  if (!error) {
+    return null;
+  }
+  if (error.kind === 'uploads_unavailable') {
+    return t('agentInput.components.agentInput.ContextFilePathInputArea.uploads_unavailable');
+  }
+  const message = t(
+    error.kind === 'upload_failed'
+      ? 'agentInput.components.agentInput.ContextFilePathInputArea.upload_failed'
+      : 'agentInput.components.agentInput.ContextFilePathInputArea.remove_failed',
+    { name: error.fileNames.join(', ') },
+  );
+  return error.detail ? `${message} ${error.detail}` : message;
 });
 
 const toggleContextList = (): void => {
@@ -285,7 +317,7 @@ const clearAllContextFilePaths = async (): Promise<void> => {
 };
 
 const triggerFileInput = (): void => {
-  if (activeContext.value) {
+  if (activeContext.value && canUpload.value) {
     fileInputRef.value?.click();
   }
 };

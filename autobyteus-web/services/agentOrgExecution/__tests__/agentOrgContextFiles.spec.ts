@@ -10,14 +10,17 @@ import { useActiveContextStore } from '~/stores/activeContextStore'
 import { taskBearingView } from './taskBearingOrgFixture'
 
 const mocks = vi.hoisted(() => ({
-  post: vi.fn(), delete: vi.fn(), query: vi.fn(), mutate: vi.fn(), historyRefresh: vi.fn(), navigation: vi.fn(),
+  post: vi.fn(), fetch: vi.fn(), query: vi.fn(), mutate: vi.fn(), historyRefresh: vi.fn(), navigation: vi.fn(),
   route: { query: { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'active' } },
 }))
 vi.mock('vue-router', async (original) => ({ ...await original<typeof import('vue-router')>(), useRoute: () => mocks.route }))
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ initialized: true, nodeBaseUrl: 'http://example.test', getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org', rest: 'http://example.test/rest' }) }),
 }))
-vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
+vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({
+  getActiveRemoteAccessCredential: () => null,
+  authorizedFetch: (input: string, init?: RequestInit) => mocks.fetch(input, init),
+}))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
@@ -46,7 +49,7 @@ class Socket {
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
 
-vi.mock('~/services/api', () => ({ default: { post: mocks.post, delete: mocks.delete } }))
+vi.mock('~/services/api', () => ({ default: { post: mocks.post } }))
 
 const mounted: ReturnType<typeof mount>[] = []
 let activeView: ReturnType<typeof taskBearingView>
@@ -103,7 +106,7 @@ beforeEach(() => {
     }) } }
     throw new Error(`Unexpected HTTP write ${url}`)
   })
-  mocks.delete.mockResolvedValue({ status: 204 })
+  mocks.fetch.mockResolvedValue(new Response(null, { status: 204 }))
 })
 afterEach(() => {
   for (const wrapper of mounted.splice(0)) wrapper.unmount()
@@ -126,7 +129,8 @@ describe('actual shared Org file input -> active target -> attachment upload own
     expect(await uploaded.get(url)!.text()).toBe('Exact selected Agent file contents')
     await files.find('button[aria-label="Remove file"]').trigger('click'); await flushPromises()
     expect(context.contextFilePaths).toEqual([])
-    expect(mocks.delete).toHaveBeenCalledWith(ownerPath({ orgRunId: 'org-run', agentRunId: id }, true).replace('/rest', '') + '1-notes.txt')
+    expect(mocks.fetch).toHaveBeenCalledWith('http://example.test' + ownerPath({ orgRunId: 'org-run', agentRunId: id }, true) + '1-notes.txt',
+      expect.objectContaining({ method: 'DELETE' }))
     await choose()
     expect(context.contextFilePaths).toHaveLength(1)
     await files.findAll('button').find((button) => /clear.all/i.test(button.text()))!.trigger('click'); await flushPromises()
@@ -167,7 +171,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
     expect(await uploaded.get(opened.mock.calls[0]![0] as string)!.text()).toBe('Exact selected Agent file contents')
     expect(mocks.historyRefresh).toHaveBeenCalledTimes(4); // Inspection, Restore, synchronized snapshot, accepted Send.
     expect(mocks.historyRefresh.mock.calls.every(([id]) => id === 'org-run')).toBe(true); expect(mocks.navigation).not.toHaveBeenCalled()
-    expect(mocks.delete).not.toHaveBeenCalled()
+    expect(mocks.fetch).not.toHaveBeenCalled()
   })
   it('captures upload ownership across focus switches and does not acquire draft ownership for stopped tasks', async () => {
     const original = await open()
@@ -220,7 +224,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
     await files.find('button[title="notes.txt"]').trigger('click')
     expect(await uploaded.get(opened.mock.calls[0]![0] as string)!.text()).toBe('Exact selected Agent file contents')
     await files.find('button[aria-label="Remove file"]').trigger('click'); await flushPromises()
-    expect(mocks.delete).not.toHaveBeenCalled(); expect(context.contextFilePaths).toEqual([]); expect(socket.sent).toHaveLength(1)
+    expect(mocks.fetch).not.toHaveBeenCalled(); expect(context.contextFilePaths).toEqual([]); expect(socket.sent).toHaveLength(1)
   })
   it('hydrates and opens an inactive retained member image through the same UserMessage preview, without Restore or upload', async () => {
     const locator = '/rest/agent-org-runs/org-run/agent-runs/agent-team-worker-configured/context-files/retained.png'

@@ -180,10 +180,12 @@ service (`StandaloneRootLocationService`) resolves a child through the third roo
   `getStandaloneRunTokenUsageSummary(runId)` rolls the run's token usage up over its children
   (see [Token Usage](./token_usage.md#standalone-run-roll-up)).
 - **Context files.** Children use the owner kinds `agent_collaboration_member_draft` /
-  `agent_collaboration_member_final` (`{hostRunId, agentRunId}`), with routes
-  `/rest/drafts/agent-collaborations/:host/agent-runs/:agent/context-files/:file` and
-  `/rest/agent-collaborations/:host/agent-runs/:agent/context-files/:file`. The host keeps the
-  ordinary standalone owners.
+  `agent_collaboration_member_final` (`{hostRunId, agentRunId}`). Draft locators have the form
+  `/rest/drafts/agent-collaborations/:host/agent-runs/:agent/context-files/:file` and are read
+  and deleted through the universal `GET`/`DELETE /rest/drafts/*` routes (see
+  [File Rendering And Media Pipeline](../FILE_RENDERING_AND_MEDIA_PIPELINE.md#url--serving-strategy)).
+  Final files are served from `/rest/agent-collaborations/:host/agent-runs/:agent/context-files/:file`.
+  The host keeps the ordinary standalone owners.
 - **Message references.** `/rest/agent-collaborations/:host/communication/messages/:messageId/references/:referenceId/content`.
 
 ## Native Compaction, Live Input And Whole-Host Stop

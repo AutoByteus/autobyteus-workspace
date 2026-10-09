@@ -25,9 +25,25 @@ const createContext = (runId: string): MockAgentContext => ({
 
 const activeContextStoreMock = reactive({
   activeAgentContext: createContext('temp-agent-1') as MockAgentContext | null,
+  /** A delegated child of a standalone run (Agent copy or Team-copy member), when set. */
+  delegatedChild: null as null | {
+    kind: 'agent_run_task_agent' | 'agent_run_task_team_member';
+    hostRunId: string;
+    access: 'live' | 'read_only';
+  },
   get activeWorkspaceTarget(): any {
     const context = this.activeAgentContext;
     if (!context) return null;
+    if (this.delegatedChild) {
+      return {
+        kind: this.delegatedChild.kind,
+        context,
+        access: this.delegatedChild.access,
+        host: { hostRunId: this.delegatedChild.hostRunId },
+        address: '/software_engineering_team/implementation_engineer',
+        agentRunId: context.state.runId,
+      };
+    }
     if (agentSelectionStoreMock.selectedType === 'agent' && agentContextsStoreMock.activeRun === context) {
       return { kind: 'standalone_agent', context, access: 'live' };
     }
@@ -144,6 +160,9 @@ describe('ContextFilePathInputArea', () => {
     );
 
     selectContext(createContext('temp-agent-1'));
+    activeContextStoreMock.delegatedChild = null;
+    contextFileUploadStoreMock.deleteDraftAttachment.mockReset();
+    contextFileUploadStoreMock.uploadAttachment.mockReset();
     agentSelectionStoreMock.selectedType = 'agent';
     agentTeamContextsStoreMock.activeTeamContext = null;
     agentTeamContextsStoreMock.activeExecutionFocusedMemberContext = null;
@@ -256,10 +275,7 @@ describe('ContextFilePathInputArea', () => {
     await removeButtons[0]?.trigger('click');
     await flushPromises();
 
-    expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith({
-      owner: { kind: 'agent_draft', draftRunId: 'temp-agent-delete' },
-      attachment: draftAttachment,
-    });
+    expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith(draftAttachment);
     expect(context.contextFilePaths).toEqual([]);
   });
 
@@ -268,12 +284,12 @@ describe('ContextFilePathInputArea', () => {
     const implementationContext = createContext('team-1::implementation_engineer');
     const retainedAfterFailure = createUploadedContextAttachment({
       storedFilename: 'ctx_keep__retained.txt',
-      locator: '/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_keep__retained.txt',
+      locator: '/rest/drafts/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_keep__retained.txt',
       displayName: 'retained.txt', phase: 'draft', type: 'Text',
     });
     const removable = createUploadedContextAttachment({
       storedFilename: 'ctx_remove__removable.txt',
-      locator: '/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_remove__removable.txt',
+      locator: '/rest/drafts/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_remove__removable.txt',
       displayName: 'removable.txt', phase: 'draft', type: 'Text',
     });
     solutionContext.contextFilePaths.push(retainedAfterFailure, removable);
@@ -288,7 +304,7 @@ describe('ContextFilePathInputArea', () => {
     };
     agentTeamContextsStoreMock.activeExecutionFocusedMemberContext = solutionContext;
     contextFileUploadStoreMock.deleteDraftAttachment.mockImplementation(
-      async ({ attachment }: { attachment: ContextAttachment }) => {
+      async (attachment: ContextAttachment) => {
         if (attachment.id === retainedAfterFailure.id) throw new Error('draft delete unavailable');
       },
     );
@@ -300,6 +316,7 @@ describe('ContextFilePathInputArea', () => {
     await wrapper.findAll('button[aria-label="Remove file"]')[0]?.trigger('click');
     await flushPromises();
     expect(solutionContext.contextFilePaths).toEqual([retainedAfterFailure, removable]);
+    expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove retained.txt. draft delete unavailable");
 
     const clearAll = wrapper.findAll('button').find((button) => button.text().includes('Clear all'));
     expect(clearAll).toBeTruthy();
@@ -308,9 +325,8 @@ describe('ContextFilePathInputArea', () => {
 
     expect(solutionContext.contextFilePaths).toEqual([retainedAfterFailure]);
     expect(implementationContext.contextFilePaths).toEqual([]);
-    expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith(expect.objectContaining({
-      attachment: removable,
-    }));
+    expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith(removable);
+    expect(wrapper.find('[role="alert"]').text()).toContain("Couldn't remove retained.txt.");
     expect(consoleError).toHaveBeenCalledTimes(2);
     consoleError.mockRestore();
   });
@@ -394,5 +410,259 @@ describe('ContextFilePathInputArea', () => {
     ]);
     expect(solutionContext.contextFilePaths[0]?.locator).not.toContain('/implementation_engineer/');
     expect(implementationContext.contextFilePaths).toEqual([]);
+  });
+
+  describe('delegated child of a standalone run (19.png)', () => {
+    const mountComposer = () => mount(withActiveComposerTarget(ContextFilePathInputArea), {
+      global: { stubs: { FullScreenImageModal: true } },
+    });
+    const collaborationDraft = (storedFilename: string, displayName: string, agentRunId = 'child-run') =>
+      createUploadedContextAttachment({
+        storedFilename,
+        locator: `/rest/drafts/agent-collaborations/host-run/agent-runs/${agentRunId}/context-files/${storedFilename}`,
+        displayName,
+        phase: 'draft',
+        type: displayName.endsWith('.png') ? 'Image' : 'Text',
+      });
+    const selectDelegatedChild = (
+      kind: 'agent_run_task_agent' | 'agent_run_task_team_member',
+      access: 'live' | 'read_only' = 'live',
+    ) => {
+      const context = createContext('child-run');
+      selectContext(context);
+      activeContextStoreMock.delegatedChild = { kind, hostRunId: 'host-run', access };
+      return context;
+    };
+    const pasteFiles = async (wrapper: ReturnType<typeof mountComposer>, files: File[], text = '') => {
+      const pasteEvent = new Event('paste', { bubbles: true }) as Event & { clipboardData?: unknown };
+      Object.defineProperty(pasteEvent, 'clipboardData', {
+        value: {
+          items: files.map((file) => ({ kind: 'file', getAsFile: () => file })),
+          getData: (type: string) => (type === 'text/plain' ? text : ''),
+        },
+        configurable: true,
+      });
+      wrapper.find('[data-file-drop-target="true"]').element.dispatchEvent(pasteEvent);
+      await flushPromises();
+    };
+
+    it.each(['agent_run_task_agent', 'agent_run_task_team_member'] as const)(
+      '%s: × deletes the server draft at its locator and removes the item',
+      async (kind) => {
+        const context = selectDelegatedChild(kind);
+        const pasted = collaborationDraft('ctx_paste__image.png', 'image.png');
+        context.contextFilePaths.push(pasted);
+        contextFileUploadStoreMock.deleteDraftAttachment.mockResolvedValue(undefined);
+        const wrapper = mountComposer();
+
+        await wrapper.find('button[aria-label="Remove file"]').trigger('click');
+        await flushPromises();
+
+        expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith(pasted);
+        expect(context.contextFilePaths).toEqual([]);
+        expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+      },
+    );
+
+    it('uploads with + under the delegated child owner, then Clear All deletes every own draft and keeps nothing', async () => {
+      const context = selectDelegatedChild('agent_run_task_team_member');
+      const uploaded = collaborationDraft('ctx_plus__notes.txt', 'notes.txt');
+      contextFileUploadStoreMock.uploadAttachment.mockResolvedValue(uploaded);
+      contextFileUploadStoreMock.deleteDraftAttachment.mockResolvedValue(undefined);
+      const pasted = collaborationDraft('ctx_paste__image.png', 'image.png');
+      const pathAttachment = createWorkspaceContextAttachment('/tmp/design.md', 'Text');
+      context.contextFilePaths.push(pasted, pathAttachment);
+      const wrapper = mountComposer();
+
+      const input = wrapper.find('input[type="file"]');
+      const file = new File(['notes'], 'notes.txt', { type: 'text/plain' });
+      Object.defineProperty(input.element, 'files', { value: [file], configurable: true });
+      await input.trigger('change');
+      await flushPromises();
+      expect(contextFileUploadStoreMock.uploadAttachment).toHaveBeenCalledWith({
+        owner: { kind: 'agent_collaboration_member_draft', hostRunId: 'host-run', agentRunId: 'child-run' },
+        file,
+      });
+      expect(context.contextFilePaths).toHaveLength(3);
+
+      const clearAll = wrapper.findAll('button').find((button) => button.text().includes('Clear all'));
+      await clearAll!.trigger('click');
+      await flushPromises();
+
+      expect(contextFileUploadStoreMock.deleteDraftAttachment.mock.calls.map(([attachment]) => attachment))
+        .toEqual([pasted, uploaded]);
+      expect(context.contextFilePaths).toEqual([]);
+    });
+
+    it('removes a delegated child draft while the child is offline or after restart (no runtime status involved)', async () => {
+      const context = selectDelegatedChild('agent_run_task_agent');
+      (context.state as Record<string, unknown>).currentStatus = 'shutdown_complete';
+      const restored = collaborationDraft('ctx_restored__old.txt', 'old.txt');
+      context.contextFilePaths.push(restored);
+      contextFileUploadStoreMock.deleteDraftAttachment.mockResolvedValue(undefined);
+      const wrapper = mountComposer();
+
+      await wrapper.find('button[aria-label="Remove file"]').trigger('click');
+      await flushPromises();
+
+      expect(contextFileUploadStoreMock.deleteDraftAttachment).toHaveBeenCalledWith(restored);
+      expect(context.contextFilePaths).toEqual([]);
+    });
+
+    it('removes a foreign draft locally and never deletes another composer\'s file', async () => {
+      const context = selectDelegatedChild('agent_run_task_agent');
+      const foreign = collaborationDraft('ctx_foreign__other.txt', 'other.txt', 'sibling-run');
+      const own = collaborationDraft('ctx_own__mine.txt', 'mine.txt');
+      context.contextFilePaths.push(foreign, own);
+      contextFileUploadStoreMock.deleteDraftAttachment.mockResolvedValue(undefined);
+      const wrapper = mountComposer();
+
+      await wrapper.findAll('button[aria-label="Remove file"]')[0]!.trigger('click');
+      await flushPromises();
+      expect(contextFileUploadStoreMock.deleteDraftAttachment).not.toHaveBeenCalled();
+      expect(context.contextFilePaths).toEqual([own]);
+
+      context.contextFilePaths.unshift(foreign);
+      const clearAll = wrapper.findAll('button').find((button) => button.text().includes('Clear all'));
+      await clearAll!.trigger('click');
+      await flushPromises();
+      expect(contextFileUploadStoreMock.deleteDraftAttachment.mock.calls).toEqual([[own]]);
+      expect(context.contextFilePaths).toEqual([]);
+    });
+
+    it('keeps an item whose delete fails, names it, and clears the error on the next successful removal', async () => {
+      const context = selectDelegatedChild('agent_run_task_team_member');
+      const first = collaborationDraft('ctx_first__first.txt', 'first.txt');
+      const second = collaborationDraft('ctx_second__second.txt', 'second.txt');
+      context.contextFilePaths.push(first, second);
+      contextFileUploadStoreMock.deleteDraftAttachment.mockRejectedValueOnce(new Error('Failed to fetch'));
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const wrapper = mountComposer();
+
+      await wrapper.findAll('button[aria-label="Remove file"]')[0]!.trigger('click');
+      await flushPromises();
+      expect(context.contextFilePaths).toEqual([first, second]);
+      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't remove first.txt. Failed to fetch");
+
+      contextFileUploadStoreMock.deleteDraftAttachment.mockResolvedValue(undefined);
+      await wrapper.findAll('button[aria-label="Remove file"]')[0]!.trigger('click');
+      await flushPromises();
+      expect(context.contextFilePaths).toEqual([second]);
+      expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+      consoleError.mockRestore();
+    });
+
+    it('shows a failed upload by file name instead of silently dropping it', async () => {
+      selectDelegatedChild('agent_run_task_agent');
+      contextFileUploadStoreMock.uploadAttachment.mockRejectedValue({ response: { data: { detail: 'File too large.' } } });
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const wrapper = mountComposer();
+
+      await pasteFiles(wrapper, [new File(['x'], 'huge.png', { type: 'image/png' })]);
+
+      expect(wrapper.find('[role="alert"]').text()).toBe("Couldn't attach huge.png. File too large.");
+      expect(wrapper.text()).not.toContain('Uploading');
+      consoleError.mockRestore();
+    });
+
+    it('reports a pasted foreign draft that cannot be cloned as a failed attach', async () => {
+      const context = selectDelegatedChild('agent_run_task_agent');
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(null, { status: 404 })));
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const wrapper = mountComposer();
+
+      await pasteFiles(wrapper, [], '/rest/drafts/agent-runs/other/context-files/ctx_gone__gone.png');
+
+      expect(contextFileUploadStoreMock.uploadAttachment).not.toHaveBeenCalled();
+      expect(context.contextFilePaths).toEqual([]);
+      expect(wrapper.find('[role="alert"]').text()).toContain("Couldn't attach gone.png.");
+      consoleError.mockRestore();
+    });
+
+    it('offers no upload where the target has no upload owner, but still accepts path attachments', async () => {
+      const context = selectDelegatedChild('agent_run_task_agent', 'read_only');
+      const ownDraft = collaborationDraft('ctx_kept__kept.txt', 'kept.txt');
+      context.contextFilePaths.push(ownDraft);
+      const wrapper = mountComposer();
+
+      const plus = wrapper.find('button[aria-label="Upload files"]');
+      expect(plus.attributes('disabled')).toBeDefined();
+      expect(plus.attributes('title')).toBe('Uploads unavailable');
+      expect(wrapper.find('input[type="file"]').attributes('disabled')).toBeDefined();
+
+      await pasteFiles(wrapper, [new File(['x'], 'image.png', { type: 'image/png' })]);
+      expect(contextFileUploadStoreMock.uploadAttachment).not.toHaveBeenCalled();
+      expect(wrapper.find('[role="alert"]').text()).toBe("This agent can't receive uploaded files right now.");
+
+      const browserDrop = new Event('drop', { bubbles: true, cancelable: true }) as Event & { dataTransfer?: unknown };
+      windowNodeContextStoreMock.isEmbeddedWindow = false;
+      Object.defineProperty(browserDrop, 'dataTransfer', {
+        value: { getData: () => '', files: [new File(['x'], 'dropped.txt')] },
+      });
+      wrapper.find('[data-file-drop-target="true"]').element.dispatchEvent(browserDrop);
+      await flushPromises();
+      expect(contextFileUploadStoreMock.uploadAttachment).not.toHaveBeenCalled();
+
+      await pasteFiles(wrapper, [], '/tmp/spec.md');
+      expect(context.contextFilePaths.map((attachment) => attachment.locator)).toEqual([ownDraft.locator, '/tmp/spec.md']);
+      expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+
+      // Without an upload owner, removing a draft leaves its file to the owner (24h draft cleanup).
+      await wrapper.findAll('button[aria-label="Remove file"]')[0]!.trigger('click');
+      await flushPromises();
+      expect(contextFileUploadStoreMock.deleteDraftAttachment).not.toHaveBeenCalled();
+      expect(context.contextFilePaths.map((attachment) => attachment.locator)).toEqual(['/tmp/spec.md']);
+    });
+
+    it('keeps the Electron native file drop as path attachments without an upload owner', async () => {
+      const context = selectDelegatedChild('agent_run_task_agent', 'read_only');
+      windowNodeContextStoreMock.isEmbeddedWindow = true;
+      (window as any).electronAPI = { getPathForFile: vi.fn().mockResolvedValue('/Users/me/diagram.png') };
+      const wrapper = mountComposer();
+
+      const nativeDrop = new Event('drop', { bubbles: true, cancelable: true }) as Event & { dataTransfer?: unknown };
+      Object.defineProperty(nativeDrop, 'dataTransfer', {
+        value: { getData: () => '', files: [new File(['x'], 'diagram.png', { type: 'image/png' })] },
+      });
+      wrapper.find('[data-file-drop-target="true"]').element.dispatchEvent(nativeDrop);
+      await flushPromises();
+
+      expect(context.contextFilePaths.map((attachment) => attachment.locator)).toEqual(['/Users/me/diagram.png']);
+      expect(contextFileUploadStoreMock.uploadAttachment).not.toHaveBeenCalled();
+      expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+    });
+
+    it('does not show a failure from an upload started on another target', async () => {
+      selectDelegatedChild('agent_run_task_agent');
+      let rejectUpload: ((error: Error) => void) | null = null;
+      contextFileUploadStoreMock.uploadAttachment.mockImplementation(
+        () => new Promise((_, reject) => { rejectUpload = reject; }),
+      );
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const wrapper = mountComposer();
+      await pasteFiles(wrapper, [new File(['x'], 'late.png', { type: 'image/png' })]);
+
+      activeContextStoreMock.delegatedChild = null;
+      selectContext(createContext('temp-other-agent'));
+      await flushPromises();
+      (rejectUpload as unknown as (error: Error) => void)(new Error('network down'));
+      await flushPromises();
+
+      expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+      expect(consoleError).toHaveBeenCalled();
+      consoleError.mockRestore();
+    });
+
+    it('clears a shown error when the composer target changes', async () => {
+      selectDelegatedChild('agent_run_task_agent', 'read_only');
+      const wrapper = mountComposer();
+      await pasteFiles(wrapper, [new File(['x'], 'image.png', { type: 'image/png' })]);
+      expect(wrapper.find('[role="alert"]').exists()).toBe(true);
+
+      activeContextStoreMock.delegatedChild = null;
+      selectContext(createContext('temp-other-agent'));
+      await flushPromises();
+      expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+    });
   });
 });

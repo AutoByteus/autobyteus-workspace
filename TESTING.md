@@ -853,6 +853,48 @@ failure paths run but the server-side causes are not reproduced. Inspect
 `chat-draft-rows-live-evidence.json`, the screenshots and the cleanup receipts.
 This is a web-equivalent check, not packaged Electron proof.
 
+### Composer Context-File Removal Regression
+
+Run from the repository root with installed workspace dependencies and Chrome
+(no model credentials):
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-web test:e2e:composer-context-file-removal --output-dir <fresh-dir> [--ledger <initialized absolute path>] [--cases CF-001,CF-002]
+```
+
+The probe owns a built backend (`dist/app.js`) with the scripted AGY CLI, Nuxt
+dev, a disposable data root on free ports and a fresh headless Chrome; it never
+touches a running desktop app or the user's data. A standalone Manager calls the
+real `delegate_task` to create a delegated Agent copy and Team copy, and a Team
+run and an Org run (configured team, delegated task agent) cover the other draft
+owner kinds. Cases:
+
+- CF-001: the universal `GET`/`DELETE /rest/drafts/*` routes over raw HTTP for
+  every owner kind (upload → GET 200 → DELETE 204 → GET 404 → DELETE 204), the
+  400/404 mapping, traversal-shaped paths that the Fastify `inject` tests cannot
+  express, and a paired mobile bearer credential (forged → 401).
+- CF-002/CF-003/CF-006: real clipboard paste of an image, the `+` file chooser and
+  a pasted workspace path, then × and Clear All, in a delegated Agent copy, a
+  delegated Team-copy member and every other run kind. Each removal is checked
+  in the tray, on the wire and on disk.
+- CF-007: a pasted draft URL from another composer is cloned; removing the clone
+  never deletes the source.
+- CF-008: one injected DELETE/upload 5xx shows an error naming the file; the item
+  stays and the retry clears it. CF-004 does the same with the backend stopped.
+- CF-009: an Org task agent while its message is pending (finalize held while the
+  Manager delegates another task): `+` disabled with its reason, a pasted image
+  shows the message and uploads nothing, a pasted path still attaches.
+- CF-005: the delegated children after their root is stopped, a real backend
+  restart and a reload.
+
+CF-004 stops the backend and CF-005 stops the root run, so keep both last when
+you pass a custom `--cases` order.
+
+Inspect `evidence.json`, the screenshots and the cleanup receipts. This is a
+web-equivalent check; Electron native file drop is covered by the component spec.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the

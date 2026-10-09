@@ -4,8 +4,10 @@ import {
   buildFinalContextFileLocator,
   getDisplayNameFromStoredFilename,
   getStoredFilenameFromLocator,
+  parseDraftContextFileLocator,
   parseDraftContextFileOwnerDescriptor,
   parseFinalContextFileOwnerDescriptor,
+  type ContextFileDraftOwnerDescriptor,
 } from '../../../src/context-files/domain/context-file-owner-types.js';
 
 describe('context-file-owner-types', () => {
@@ -53,4 +55,60 @@ describe('context-file-owner-types', () => {
     expect(() => parseFinalContextFileOwnerDescriptor({ kind: 'team_member_final', teamRunId: 'team', ...input })).toThrow();
   });
 
+
+  describe('draft locator codec', () => {
+    const storedFilename = 'ctx_deadbeef__my notes (1).txt';
+    const owners: ContextFileDraftOwnerDescriptor[] = [
+      { kind: 'agent_draft', draftRunId: 'temp-run-1' },
+      { kind: 'team_member_draft', teamDraftId: 'team-1', memberAddress: '/C/D' as never },
+      { kind: 'org_member_draft', orgRunId: 'org-1', agentRunId: 'agent-1' },
+      { kind: 'agent_collaboration_member_draft', hostRunId: 'host-1', agentRunId: 'child-1' },
+    ];
+
+    it('covers every draft owner kind', () => {
+      expect(owners.map((owner) => owner.kind).sort()).toEqual([
+        'agent_collaboration_member_draft', 'agent_draft', 'org_member_draft', 'team_member_draft',
+      ]);
+    });
+
+    it.each(owners)('parses exactly what it builds for $kind', (owner) => {
+      const locator = buildDraftContextFileLocator(owner, storedFilename);
+      expect(parseDraftContextFileLocator(locator)).toEqual({ owner, storedFilename });
+    });
+
+    it('keeps the established locator strings', () => {
+      expect(owners.map((owner) => buildDraftContextFileLocator(owner, 'ctx_a__b.txt'))).toEqual([
+        '/rest/drafts/agent-runs/temp-run-1/context-files/ctx_a__b.txt',
+        '/rest/drafts/team-runs/team-1/members/%2FC%2FD/context-files/ctx_a__b.txt',
+        '/rest/drafts/agent-org-runs/org-1/agent-runs/agent-1/context-files/ctx_a__b.txt',
+        '/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_a__b.txt',
+      ]);
+    });
+
+    it.each([
+      '/rest/runs/run-1/context-files/ctx_a__b.txt',
+      '/rest/agent-collaborations/host/agent-runs/child/context-files/ctx_a__b.txt',
+      '/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/x/context-files',
+      '/rest/drafts/agent-runs/x/files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/x/context-files/ctx_a__b.txt/extra',
+      '/rest/drafts/team-runs/team-1/members/C/D/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-org-runs/org/members/a/context-files/ctx_a__b.txt',
+      'rest/drafts/agent-runs/x/context-files/ctx_a__b.txt',
+    ])('returns null for a path that is not a draft locator: %s', (pathname) => {
+      expect(parseDraftContextFileLocator(pathname)).toBeNull();
+    });
+
+    it.each([
+      '/rest/drafts/agent-runs/x/context-files/..',
+      '/rest/drafts/agent-runs/x/context-files/%2E%2E%2Fsecret',
+      '/rest/drafts/agent-runs/%20/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/x/context-files/%E0%A4%A',
+      '/rest/drafts/team-runs/team-1/members/no-root/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-org-runs/org/agent-runs/%2E%2E/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-collaborations/host/agent-runs/a%2Fb/context-files/ctx_a__b.txt',
+    ])('rejects a draft locator with an invalid owner or file: %s', (pathname) => {
+      expect(() => parseDraftContextFileLocator(pathname)).toThrow();
+    });
+  });
 });

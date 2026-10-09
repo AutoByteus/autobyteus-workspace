@@ -70,6 +70,12 @@ describe('ContextFileLocalPathResolver', () => {
     expect(
       resolver.resolve('/rest/drafts/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_token__notes.txt'),
     ).toBe(filePath);
+    expect(resolver.resolve('/rest/drafts/agent-org-runs/org-1/agent-runs/agent-1/context-files/ctx_token__notes.txt')).toBe(filePath);
+    expect(resolver.resolve('/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_token__notes.txt?v=1')).toBe(filePath);
+    expect(resolver.resolve('http://localhost:8000/rest/drafts/agent-runs/temp-run/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(resolver.resolve('https://example.com/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/agent-runs/temp-run/context-files/%E0%A4%A')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/team-runs/team-1/members/no-root/context-files/ctx_token__notes.txt')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/team-runs/team-1/members/C/D/context-files/ctx_token__notes.txt')).toBeNull();
   });
 });
