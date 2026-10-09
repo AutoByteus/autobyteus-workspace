@@ -485,7 +485,7 @@ suite("Reactivating a DONE Task's worker by run ID in every root (real HTTP/WS/s
     const resourcesB = await readBytes(path.join(bDir, "agent_run_resources.json"));
     const toMember = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: mate, content: "Member?" }));
     expect(toMember).toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
-    expect(toMember.message).toMatch(/for a Team, its coordinator/);
+    expect(toMember.message).toMatch(/for a Team copy, its coordinator's/);
     expect(await readBytes(path.join(bDir, "agent_run_resources.json"))).toBe(resourcesB);
     view = root.state.view; from = view.frames.length;
     const teamReactivated = await root.managerCalls(callTool("send_message_to", { target_agent_run_id: coordinator, content: "Team, second round. Marker TEAM-REOPEN-5150." }));

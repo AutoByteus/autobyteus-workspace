@@ -633,7 +633,7 @@ describe("Project Task production HTTP boundaries", () => {
       expect(tool(name).inputSchema.properties.status.enum).toEqual(["TODO", "IN_PROGRESS", "DONE", "CANCELLED"]);
     }
     expect(tool("list_project_tasks").description).toContain("TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed)");
-    expect(tool("create_or_update_task").description).toContain("CANCELLED means the Task was dropped as not needed (not completed). Both stop the Task's delegated copies");
+    expect(tool("create_or_update_task").description).toContain("CANCELLED means the Task was dropped as not needed (not completed). Both stop the copies whose current Task this is");
     expect(tool("create_or_update_task").description).toContain("set the Task to TODO or IN_PROGRESS first");
     // REQ-001 / AC-002: the GraphQL enum carries CANCELLED (read-only: no status input anywhere).
     const enumValues = (await gql<{ __type: { enumValues: Array<{ name: string }> } }>(

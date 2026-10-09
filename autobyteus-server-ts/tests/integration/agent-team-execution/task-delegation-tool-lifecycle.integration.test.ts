@@ -489,7 +489,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       description: "Solve the assigned classroom exercise and return evidence.",
       reference_files: [],
     });
-    expect(created).toEqual({ target_agent_run_id: expect.any(String), target_kind: "agent", task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(created).toEqual({ delegated: true, target_kind: "agent", target_agent_run_id: expect.any(String), task_id: expect.stringMatching(/^ad_hoc_task_/) });
     const taskAgentRunId = (created as { target_agent_run_id: string }).target_agent_run_id;
     expect(harness.backend.preparedAgents[0]).toMatchObject({
       address: "/worker",
@@ -623,7 +623,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     })).resolves.toEqual({
-      target_agent_run_id: null,
+      delegated: false,
       message: expect.stringContaining("is not a mounted Agent or Agent Team, a collaborator or an available agent"),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
@@ -640,7 +640,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     for (const recipient_address of ["/missing", "/worker/child"]) {
       await expect(delegate(harness.service, coordinator, {
         recipient_address, description: "must not start", reference_files: [],
-      })).resolves.toMatchObject({ target_agent_run_id: null });
+      })).resolves.toMatchObject({ delegated: false });
     }
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator", "foreign-root"), {
       recipient_address: "/worker", description: "foreign", reference_files: [],
