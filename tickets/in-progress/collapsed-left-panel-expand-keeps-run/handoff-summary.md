@@ -96,5 +96,8 @@ pnpm --silent isolated-app start --build
 
 ## Outcome
 
-- User verification: pending
-- Finalization / release: pending user verification
+- **Halted (DR-002, 2026-10-09).** After trying the build, the user rejected the separate Workspaces tree icon. They want one control to fold and unfold the panel.
+  - The Solution Designer classified this as a Requirement Gap (`investigation-notes.md`, "User Change Request (2026-10-09)").
+  - The verification steps above are void for this design.
+- User verification: not requested for this design
+- Finalization / release: halted. Nothing archived, pushed, merged or released.

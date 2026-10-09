@@ -10,8 +10,8 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: awaiting user verification
+- Current delivery revision ID: `DR-002`
+- Notes: halted on 2026-10-09 by the Solution Designer. The user rejected the Workspaces icon design (Requirement Gap). Delivery restarts on the revised package.
 
 ## Initial Delivery Integration Refresh
 
@@ -118,6 +118,12 @@
 
 - See "Initial Delivery Integration Refresh" above, and the API/E2E report `api-e2e-execution-coverage-report.md` (API-REV-002).
 
+## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+
+- Classification: `Requirement Gap` (classified by the Solution Designer)
+- Recommended recipient: `/software_engineering_team/solution_designer` (already owning it)
+- Why final handoff could not complete: after trying the build on 2026-10-09, the user rejected the separate Workspaces tree icon. They want the same control to fold and unfold the left panel. See `investigation-notes.md`, "User Change Request (2026-10-09)".
+
 ## Rollback Criteria
 
 - If the Workspaces icon navigates, loses the open run, or reveals or focuses a stale row in the desktop app, revert merge commit(s) of this ticket on `personal`. The change is client-only, with no data to roll back.
@@ -128,7 +134,7 @@
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No`
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None (awaiting user verification)
+- Unresolved blocker: Requirement Gap (DR-002). The user rejected the current design, and finalization is halted until a revised, re-validated package returns.
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
 - Terminal message/reference: —
