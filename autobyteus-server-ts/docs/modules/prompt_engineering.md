@@ -203,7 +203,8 @@ On receiving a work request, follow your own agent instructions and applicable s
 
 Choose the collaboration mode based on your primary intent.
 `send_message_to` reaches the one instance at an address, brought in on first use.
-`delegate_task` always spawns a new copy of an Agent or AgentTeam for new work.
+`delegate_task` with an address spawns a new copy of an Agent or AgentTeam for new work;
+with a copy's own ID it gives a new saved Task to that existing copy.
 Never use both to deliver the same work.
 
 ### Work Requests and Results
@@ -226,37 +227,49 @@ at an address.
 
 A successful call returns the exact AgentRun that accepted the message as
 `target_agent_run_id`. For an AgentTeam recipient, this is its coordinator
-AgentRun.
+AgentRun. `target_agent_run_id` takes agent run IDs only: a team run ID is
+refused with its coordinator's agent run ID to use.
 
 ### Delegated Agents
 
-Use `delegate_task` to spawn a new copy of an Agent or AgentTeam for new work.
-The `recipient_address` identifies what to copy (a mounted Agent or AgentTeam,
-a collaborator, or an available agent or team); it is not an alias for the new
-copy. Every call spawns another copy, so copies can work in parallel.
+Use `delegate_task` with `recipient_address` to spawn a new copy of an Agent or
+AgentTeam for new work. The `recipient_address` identifies what to copy (a mounted
+Agent or AgentTeam, a collaborator, or an available agent or team); it is not an
+alias for the new copy. Every call with an address spawns another copy, so copies
+can work in parallel.
 
 - Supply task_id alone for saved Task text/files, or description and optional reference_files without task_id.
 - The work description and reference files become the copy's first message,
   together with your address and AgentRun ID.
-- On success, `target_agent_run_id` is the new copy (for an AgentTeam, its
-  coordinator) and `target_kind` says whether it is an `agent` or a `team`.
-  If `target_agent_run_id` is null, nothing was started and
-  `message` explains why; correct the problem and delegate again, or report
-  the failure.
+- On success, `delegated` is true and `target_kind` says whether the copy is an
+  `agent` or a `team`. An Agent copy is named by `target_agent_run_id`. A Team
+  copy is named by `target_team_run_id` (the copy itself) and
+  `target_team_coordinator_agent_run_id` (its coordinator, which receives the
+  work). If `delegated` is false, nothing was started and `message` explains
+  why; correct the problem and delegate again, or report the failure.
 - A description-only delegation that creates a Task also returns its
   `task_id`. When the work is finished, call `create_or_update_task` with that
   `task_id` and status `DONE` (or `CANCELLED` if the work turned out not to be
   needed); this stops the copy and removes it from the run.
+- While you work on a Task yourself, a description-only delegation is sub-work
+  of your Task: it returns no `task_id` and closes only with your Task.
 
-Follow up on a copy only through `send_message_to` with its
-`target_agent_run_id`, in both directions. A copy that stays quiet is shut
-down after a while, but not while it has a running background task; a
-message to its run ID restores it with its
+To give a follow-up Task to a copy you delegated, call `delegate_task` with its
+`target_team_run_id` (a Team copy) or `target_agent_run_id` (an Agent copy) and
+the new `task_id`. The copy resumes with its conversation and receives the Task's
+work from you. A copy has one current Task at a time: this works only when you
+made its most recent assignment and its current Task is `DONE` or `CANCELLED`;
+that earlier Task stays closed, and closing it again never stops the copy.
+
+Message a copy only through `send_message_to` with an agent run ID: its
+`target_agent_run_id`, or for a Team copy its `target_team_coordinator_agent_run_id`,
+in both directions. A copy that stays quiet is shut down after a while, but not
+while it has a running background task; a message to it restores it with its
 conversation. A copy whose Task is `DONE` or `CANCELLED` is stopped. To continue
-with it, the run that assigned the work first moves the Task out of `DONE` or
-`CANCELLED` (for example to `IN_PROGRESS`) with `create_or_update_task`, then
-messages the copy's run ID; that reactivates it with its conversation. Setting
-the status alone starts nothing.
+that same Task with it, the run that assigned the work first moves the Task out of
+`DONE` or `CANCELLED` (for example to `IN_PROGRESS`) with `create_or_update_task`,
+then messages the copy; that reactivates it with its conversation. Setting the
+status alone starts nothing.
 
 ### Rule-Based Handoffs
 

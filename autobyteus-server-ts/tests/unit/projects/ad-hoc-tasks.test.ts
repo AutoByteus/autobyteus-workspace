@@ -61,8 +61,8 @@ describe("ad-hoc Tasks (no Project)", () => {
     expect((await fs.readdir(adHocLayout.taskDir(taskId))).sort()).toEqual(["agent_run_resources.json", "task.json"]);
     expect(await fs.readFile(adHocLayout.taskFile(taskId), "utf8")).not.toContain("secret bytes");
     expect(tasks.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, execution: { agentRunId: "copy-1" }, open: true });
-    expect(await tasks.currentAssignments([taskId])).toEqual(new Map([[taskId, [
-      { targetAgentRunId: "copy-1", kind: "agent", assignedBy: "delegator", outcome: "not_confirmed" }]]]));
+    expect(await tasks.assignments([taskId])).toEqual(new Map([[taskId, { closed: [],
+      open: [{ kind: "agent", agentRunId: "copy-1", assignedBy: "delegator", outcome: "not_confirmed" }] }]]));
     // Not Project work: it is not listed under any Project, and the Projects root holds no trace of it.
     expect(await tasks.listTasks(projectId)).toEqual([]);
     expect(await store.findTask(taskId)).toEqual([]);

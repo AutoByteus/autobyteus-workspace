@@ -50,7 +50,7 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange: async () => undefined,
     buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-      tasks: { root: identity.root, delegateTask: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
+      tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a business dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
   const dependencies = { agentRunManager: manager as never, activityInspector: { inspect: () => ({ kind: 'present' }) } as never,
     memoryLocator: { getLocation: (_scope: unknown, id: string) => ({ memoryDir: `/tmp/test-unused-${id}` }) } as never };
   const factory = new FlatTeamExecutionFactory(dependencies);

@@ -2,11 +2,12 @@ import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-cont
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { RootTaskExecutionLifecycle, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+import { RootTaskExecutionLifecycle, type DeliverTaskWork, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type {
-  DelegateTaskInput,
-  DelegateTaskResult,
+  AssignToExistingCopyInput,
+  SpawnTaskInput,
   TaskDelegationContext,
+  TaskDelegationOutcome,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
@@ -47,13 +48,13 @@ export class TeamTaskExecutionService {
     }
   }
 
-  delegateTask(
-    context: TaskDelegationContext,
-    input: DelegateTaskInput,
-    placement: TeamDelegationPlacement,
-  ): Promise<DelegateTaskResult> {
-    return this.lifecycle.delegate(context, input, placement);
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput, placement: TeamDelegationPlacement): Promise<TaskDelegationOutcome> {
+    return this.lifecycle.delegateToNewCopy(context, input, placement);
   }
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
+    return this.lifecycle.assignToExistingCopy(context, input, deliverWork);
+  }
+  teamCoordinatorOf(teamRunId: string): string | null { return this.lifecycle.teamCoordinatorOf(teamRunId); }
 
   withLiveLease(id: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     return this.lifecycle.withLiveLease(id, operation);

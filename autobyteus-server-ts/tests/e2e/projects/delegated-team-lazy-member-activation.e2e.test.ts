@@ -372,7 +372,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     return { result, ...(await copyOf(root, result, known)) };
   };
   const copyOf = async (root: Root, result: Record<string, any>, known: readonly string[]) => {
-    const lead = result.target_agent_run_id as string;
+    const lead = result.target_team_coordinator_agent_run_id as string;
     expect(lead, JSON.stringify(result)).toBeTruthy();
     expect(result.target_kind).toBe("team");
     let copy: ReturnType<typeof teamCopies>[number] | undefined;
@@ -590,7 +590,7 @@ suite("Delegated Team copies start only the members that work reaches, in every 
     const root = await startRoot(kind);
     const from = (await launches()).length;
     const failed = await root.managerCalls(callTool("delegate_task", { recipient_address: "/broken", description: "Work for a broken Team." }));
-    expect(failed.target_agent_run_id ?? null, JSON.stringify(failed)).toBeNull();
+    expect(failed.delegated ?? false, JSON.stringify(failed)).toBe(false);
     expect(JSON.stringify(failed)).toMatch(/AGY_MODEL_UNAVAILABLE/);
     await wait(2_000);
     const after = (await launches()).slice(from).filter((entry) => entry.runId !== root.managerRunId);

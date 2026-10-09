@@ -75,6 +75,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     executionTreeStore, communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
   await persistence.commitInitial({ tree, messages });
   let run: AgentOrgRun | undefined;
+  const resources = new InMemoryTaskExecutionResources();
   const callbacks: FlatTeamExecutionCallbacks = {
     buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
     publishAgentEvent: (identity, event) => run?.onAgentExecutionEvent(identity, event),
@@ -104,10 +105,10 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
     collaboratorAdmission: admission(options.runnable ?? true),
     prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
     // Production always binds the Task side; every delegated copy belongs to a Task.
-    taskExecutionResources: new InMemoryTaskExecutionResources(),
+    taskExecutionResources: resources,
   });
   run.activate();
-  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher };
+  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher, resources };
 };
 
 /**

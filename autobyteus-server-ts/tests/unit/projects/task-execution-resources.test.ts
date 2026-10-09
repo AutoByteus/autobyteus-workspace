@@ -57,14 +57,19 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     ] });
     expect(tasks.ownerOf([{ agentRunId: "helper-1" }])).toEqual({ taskId: task.taskId, execution: { agentRunId: "helper-1" }, open: true });
     expect(tasks.openTaskExecutions(task.taskId, "broughtIn")).toEqual([{ agentRunId: "helper-1" }]);
-    expect(await tasks.currentAssignments([task.taskId])).toEqual(new Map([[task.taskId, [
-      { targetAgentRunId: "lead-1", kind: "team", assignedBy: "manager", outcome: "accepted" }]]]));
+    expect(await tasks.assignments([task.taskId])).toEqual(new Map([[task.taskId, { open: [
+      { kind: "team", teamRunId: "team-1", teamCoordinatorAgentRunId: "lead-1", assignedBy: "manager", outcome: "accepted" }], closed: [] }]]));
   });
 
-  it("schema invariants reject a mismatched taskId, a duplicate agent run, and misplaced assignedBy/startError", () => {
+  it("schema invariants reject a mismatched taskId, an open entry that is not the copy's last, and misplaced assignedBy/startError", () => {
     const entry = { role: "delegated", hostRoot: { kind: "agent", runId: "r" }, agentRun: { kind: "agent", agentRunId: "a" }, linkedAt: "t", start: "starting", closedAt: null };
+    const closed = { ...entry, closedAt: "t2" };
     expect(() => parseTaskExecutionResourceFile({ taskId: "x", agentRunResources: [] }, "y")).toThrow("taskId");
-    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [entry, entry] }, "y")).toThrow("more than once");
+    // AR-001: one entry per assignment period; a copy has at most one open entry, and only its last entry may be open.
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [entry, entry] }, "y")).toThrow("is open but is not its agent run's last entry");
+    expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [entry, closed] }, "y")).toThrow("is open but is not its agent run's last entry");
+    expect(parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [closed, closed, entry] }, "y").executionResources).toHaveLength(3);
+    expect(parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [closed, closed] }, "y").executionResources).toHaveLength(2);
     expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, assignedBy: "m" }] }, "y")).toThrow("assignedBy");
     expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, role: "assigned" }] }, "y")).toThrow("assignedBy");
     expect(() => parseTaskExecutionResourceFile({ taskId: "y", agentRunResources: [{ ...entry, startError: { code: "C", message: "m" } }] }, "y")).toThrow("startError");
@@ -153,8 +158,9 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" });
     await tasks.updateTask({ projectId, taskId: a.taskId, status: "TODO" });
     await assign(a.taskId, "new-worker");
-    expect((await tasks.currentAssignments([a.taskId])).get(a.taskId)).toEqual([
-      { targetAgentRunId: "new-worker", kind: "agent", assignedBy: "manager", outcome: "not_confirmed" }]);
+    expect((await tasks.assignments([a.taskId])).get(a.taskId)).toEqual({
+      open: [{ kind: "agent", agentRunId: "new-worker", assignedBy: "manager", outcome: "not_confirmed" }],
+      closed: [{ kind: "agent", agentRunId: "old-worker", assignedBy: "manager", outcome: "not_confirmed" }] });
     await tasks.deleteTask({ projectId, taskId: a.taskId });
     const restarted = await boot();
     expect(restarted.ownerOf([{ agentRunId: "old-worker" }])).toMatchObject({ taskId: a.taskId, open: false });
@@ -176,9 +182,9 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     expect(() => restarted.assertResourceDataReadable()).toThrow(expect.objectContaining({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" }));
     expect(() => restarted.ownerOf([{ agentRunId: "unknown-copy" }])).toThrow(expect.objectContaining({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" }));
     expect(restarted.ownerOf([{ agentRunId: "worker-b" }])).toMatchObject({ taskId: b.taskId, open: true });
-    const listed = await restarted.currentAssignments([a.taskId, b.taskId]);
+    const listed = await restarted.assignments([a.taskId, b.taskId]);
     expect(listed.get(a.taskId)).toBe("unavailable");
-    expect(listed.get(b.taskId)).toHaveLength(1);
+    expect(listed.get(b.taskId)).toMatchObject({ open: [{ agentRunId: "worker-b" }], closed: [] });
     await restarted.updateTask({ projectId, taskId: a.taskId, description: "editing still works" });
     await restarted.updateTask({ projectId, taskId: b.taskId, status: "DONE" });
     expect(restarted.isOpen({ agentRunId: "worker-b" })).toBe(false);

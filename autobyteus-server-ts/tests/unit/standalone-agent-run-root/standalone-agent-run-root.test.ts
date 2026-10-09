@@ -24,7 +24,7 @@ import type { MemberExecutionContext } from "../../../src/agent-collaboration/ex
 import { flushMicrotasks, observeConfiguredHandles } from "../agent-org-execution/helpers/task-publication-handles.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { projectAgentCollaborationEvent } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
-import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { InMemoryTaskExecutionResources, ingressOfOutcome } from "../../fixtures/task-execution-resource-fixtures.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
@@ -164,8 +164,8 @@ describe("Agent root of a standalone run", () => {
     expect(context?.identity).toMatchObject({ memberAddress: "/research_assistant", agentRunId: HOST, root: { rootSubjectKind: "agent" } });
     expect(automaticCollaborationToolNames(context)).toEqual(["send_message_to", "delegate_task", "create_or_update_task"]);
     await f.manager.stopRoot(HOST);
-    expect(await context!.tasks.delegateTask(context!.identity, { recipient_address: "/x", description: "d" }))
-      .toEqual({ target_agent_run_id: null, message: "The collaboration root of this run is not active." });
+    expect(await context!.tasks.delegateToNewCopy(context!.identity, { recipient_address: "/x", description: "d" }))
+      .toEqual({ delegated: false, message: "The collaboration root of this run is not active." });
     f.setMetadata({ launchPurpose: "server_helper" });
     expect(await f.manager.resolveRoot(HOST)).toBeNull();
     f.setMetadata({
@@ -207,8 +207,8 @@ describe("Agent root of a standalone run", () => {
     expect(await f.store.readTree(dir, HOST)).toBeNull();
 
     // An address that is neither in the run nor in the catalog starts nothing.
-    expect(await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/nobody", description: "Review" }))
-      .toEqual({ target_agent_run_id: null, message: "'/nobody' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run." });
+    expect(await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/nobody", description: "Review" }))
+      .toEqual({ delegated: false, message: "'/nobody' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run." });
     const policy = createCollaboratorAdmission(definitions().catalog, runnable).policy;
     expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
@@ -280,12 +280,12 @@ describe("Agent root of a standalone run", () => {
     expect(root.getExecutionTreeSnapshot().taskExecutions).toEqual([]);
 
     // delegate_task to a collaborator address starts an extra copy (REQ-013).
-    const copy = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review it too" });
+    const copy = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review it too" });
     // The copy belongs to its own Task with no Project, which the host can mark DONE (REQ-003/004).
-    expect(copy).toEqual({ target_agent_run_id: "code-reviewer-run-4", target_kind: "agent", task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(copy).toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "code-reviewer-run-4" }, taskId: expect.stringMatching(/^ad_hoc_task_/) });
     // A collaborator Team member's copy of a teammate stays in that Team's entry (host rule).
-    await expect(root.delegateTask({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
-      .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
+    await expect(root.delegateToNewCopy({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
+      .resolves.toMatchObject({ delegated: true, copy: { agentRunId: "designer-run-5" } });
     await flushMicrotasks();
     for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
     const tree = root.getExecutionTreeSnapshot();
@@ -467,8 +467,8 @@ describe("agent-initiated collaborators of a standalone run", () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
     for (let index = 0; index < 3; index += 1) {
-      await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: `Page ${index}` }))
-        .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+      await expect(root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: `Page ${index}` }))
+        .resolves.toMatchObject({ delegated: true });
     }
     await flushMicrotasks();
     const copies = root.getExecutionTreeSnapshot().taskExecutions as unknown as Parameters<typeof memberRun>[0][] & { source?: unknown }[];
@@ -496,10 +496,10 @@ describe("agent-initiated collaborators of a standalone run", () => {
       .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
     // A copy member delegates to the catalog: the top-level copy goes to the root (REQ-012) with its
     // delegator and source; its own teammate copy stays inside the copy.
-    await expect(root.delegateTask({ identity: leadOne }, { recipient_address: "/code_reviewer", description: "Review" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
-    await expect(root.delegateTask({ identity: leadOne }, { recipient_address: "/product_team/designer", description: "Mock" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(root.delegateToNewCopy({ identity: leadOne }, { recipient_address: "/code_reviewer", description: "Review" }))
+      .resolves.toMatchObject({ delegated: true });
+    await expect(root.delegateToNewCopy({ identity: leadOne }, { recipient_address: "/product_team/designer", description: "Mock" }))
+      .resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     const tasks = root.getExecutionTreeSnapshot().taskExecutions as unknown as { address: string; delegatorAgentRunId?: string; agentRunId?: string; source?: unknown; taskExecutions?: readonly { address: string }[] }[];
     expect(tasks[0]!.taskExecutions!.map((task) => task.address)).toEqual(["/product_team/designer"]);
@@ -533,8 +533,8 @@ describe("agent-initiated collaborators of a standalone run", () => {
     const [product] = root.getExecutionTreeSnapshot().collaborators;
     if (product?.kind !== "agent_team") throw new Error("not added");
     const lead = childIdentity("/product_team/lead", product.members[0]!.agentRunId);
-    await expect(root.delegateTask({ identity: lead }, { recipient_address: "/code_reviewer", description: "Review" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(root.delegateToNewCopy({ identity: lead }, { recipient_address: "/code_reviewer", description: "Review" }))
+      .resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     const [reviewerCopy] = root.getExecutionTreeSnapshot().taskExecutions as unknown as { address: string; agentRunId: string; delegatorAgentRunId: string }[];
     expect(reviewerCopy).toMatchObject({ address: "/code_reviewer", delegatorAgentRunId: lead.agentRunId });
@@ -635,10 +635,10 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const root = (await f.manager.resolveRoot(HOST))!;
     const events: { event: { kind: string }; changeSequence: number }[] = [];
     root.subscribeToEvents((sequenced) => { events.push(sequenced as never); });
-    const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
-    const other = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "B" });
+    const assigned = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    const other = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "B" });
     await flushMicrotasks();
-    const closedA = { agentRunId: assigned.target_agent_run_id };
+    const closedA = { agentRunId: ingressOfOutcome(assigned) };
     const before = await root.openPackageSnapshotConnection();
     expect(before.snapshot.closedTaskExecutions).toEqual([]);
     before.close();
@@ -658,7 +658,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
     // The tree is never filtered: both copies stay recorded.
     expect(root.getExecutionTreeSnapshot().taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId))
-      .toEqual([assigned.target_agent_run_id, other.target_agent_run_id]);
+      .toEqual([ingressOfOutcome(assigned), ingressOfOutcome(other)]);
 
     await f.manager.stopRoot(HOST);
     const stored = (await f.manager.getInspection(HOST))!;
@@ -674,10 +674,10 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const root = (await f.manager.resolveRoot(HOST))!;
     const events: { event: { kind: string }; changeSequence: number }[] = [];
     root.subscribeToEvents((sequenced) => { events.push(sequenced as never); });
-    const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
-    expect(assigned).toMatchObject({ target_kind: "agent" });
+    const assigned = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    expect(assigned).toMatchObject({ delegated: true, copy: { kind: "agent" } });
     await flushMicrotasks();
-    const copy = { agentRunId: assigned.target_agent_run_id! };
+    const copy = { agentRunId: ingressOfOutcome(assigned) };
     const original = f.handles.get(copy.agentRunId)!;
     await root.releaseTaskExecutions(resources.close("A"));
     const send = () => root.deliverExactAgentMessage({ sender: { kind: "agent", identity: f.hostIdentity, displayName: "research_assistant" },
@@ -701,15 +701,46 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions).toEqual([]);
   });
 
+  it("existing-copy assignment: after A is DONE the assigner gives the copy Task B by its agent run ID; it is restored, listed again and receives B's work from the host (AC-003, REQ-003/008)", async () => {
+    const resources = new InMemoryTaskExecutionResources();
+    resources.addTask("A"); resources.addTask("B", "Follow-up cleanup");
+    const f = await buildManager(resources);
+    const root = (await f.manager.resolveRoot(HOST))!;
+    const events: { event: { kind: string } }[] = [];
+    root.subscribeToEvents((sequenced) => { events.push(sequenced as never); });
+    const assigned = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    await flushMicrotasks();
+    const copy = { agentRunId: ingressOfOutcome(assigned) };
+    const original = f.handles.get(copy.agentRunId)!;
+    await root.releaseTaskExecutions(resources.close("A"));
+    // The coordinator-style mistakes are refused before anything changes.
+    expect(await root.assignToExistingCopy({ identity: f.hostIdentity }, { copy: { teamRunId: copy.agentRunId }, taskId: "B" }))
+      .toEqual({ delegated: false, message: `${copy.agentRunId} is an Agent copy's agent run ID; use target_agent_run_id "${copy.agentRunId}".` });
+    expect(await root.assignToExistingCopy({ identity: f.hostIdentity }, { copy, taskId: "B" }))
+      .toEqual({ delegated: true, copy: { kind: "agent", agentRunId: copy.agentRunId } });
+    expect(f.handles.get(copy.agentRunId)).not.toBe(original);
+    expect(events.find((entry) => entry.event.kind === "task_executions_reopened")?.event).toEqual({ kind: "task_executions_reopened", taskExecutions: [copy] });
+    const live = await root.openPackageSnapshotConnection();
+    expect(live.snapshot.closedTaskExecutions).toEqual([]);
+    live.close();
+    const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
+    const work = (await f.store.readMessages(dir, HOST))!.messages.at(-1)!;
+    expect(work).toEqual(expect.objectContaining({ senderAgentRunId: HOST, receiverAgentRunId: copy.agentRunId, messageType: "task_assignment" }));
+    expect(work.content).toContain("New Task assigned to you: B.");
+    expect(work.content).toContain("Follow-up cleanup");
+    expect(resources.entry(copy)).toMatchObject({ taskId: "B", open: true, start: "started" });
+    await f.manager.stopRoot(HOST);
+  });
+
   it("forwards only a delegated copy's ended background tasks to the task-execution lifecycle (hybrid idle shutdown)", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A");
     const f = await buildManager(resources);
     const root = (await f.manager.resolveRoot(HOST))!;
     const ended = vi.spyOn(RootTaskExecutionLifecycle.prototype, "onAgentBackgroundTaskEnded");
-    const assigned = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
+    const assigned = await root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", task_id: "A" });
     await flushMicrotasks();
-    const childId = assigned.target_agent_run_id!;
+    const childId = ingressOfOutcome(assigned);
     const child = f.handles.get(childId)!;
     const backgroundTask = (status: AgentBackgroundTaskStatus) => child.input.callbacks.publishAgentEvent(child.input.identity, {
       kind: "agent_run", event: { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId: childId, statusHint: null,
@@ -727,14 +758,14 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
   it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED (REQ-004)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
-    await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/research_assistant", description: "Do it" }))
+    await expect(root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/research_assistant", description: "Do it" }))
       .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: "An Agent cannot delegate a task to its own logical placement." });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     const reviewer = f.handles.get("code-reviewer-run-1")!.input.identity;
-    await expect(root.delegateTask({ identity: reviewer }, { recipient_address: "/code_reviewer", description: "Copy me" }))
+    await expect(root.delegateToNewCopy({ identity: reviewer }, { recipient_address: "/code_reviewer", description: "Copy me" }))
       .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED" });
     // Another agent may still copy the collaborator.
-    await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Copy it" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Copy it" }))
+      .resolves.toMatchObject({ delegated: true });
   });
 });

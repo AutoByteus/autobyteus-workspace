@@ -1,21 +1,17 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type { ZodType } from "zod";
-import type {
-  DelegateTaskInput,
-  DelegateTaskResult,
-} from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { DelegateTaskResultSchema } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
+import { DelegateTaskResultSchema, type DelegateTaskResult } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
 import { DELEGATE_TASK_LLM_DESCRIPTION } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
   type TaskDelegationToolContext,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
-import { parseDelegateTaskInput } from "./task-delegation-tool-input-parsers.js";
+import { parseDelegateTaskInput, type DelegateTaskToolInput } from "./task-delegation-tool-input-parsers.js";
 import { buildTaskDelegationToolParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
 import type { TaskDelegationToolService } from "./task-delegation-tool-service.js";
 
-type TaskDelegationToolParsedInput = DelegateTaskInput;
+type TaskDelegationToolParsedInput = DelegateTaskToolInput;
 type TaskDelegationToolExecutionResult = DelegateTaskResult;
 
 export type TaskDelegationToolManifestEntry = {

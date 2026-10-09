@@ -34,13 +34,15 @@ import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import {
   TaskDelegationError,
-  type DelegateTaskInput,
-  type DelegateTaskResult,
+  type AssignToExistingCopyInput,
+  type SpawnTaskInput,
+  type TaskDelegationOutcome,
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
@@ -310,7 +312,7 @@ export class RootTeamRun {
     }
   }
 
-  delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
@@ -320,10 +322,21 @@ export class RootTeamRun {
             "An Agent cannot delegate a task to its own logical placement.",
           );
         }
-        return this.taskExecutions.delegateTask(context, input, placement);
+        return this.taskExecutions.delegateToNewCopy(context, input, placement);
       });
     });
   }
+
+  /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
+    return this.materializationGate.run(async () => {
+      this.authorizeIdentity(context.identity);
+      return this.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
+        this.delivery.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
+    });
+  }
+  /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
+  teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {

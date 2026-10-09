@@ -1,28 +1,38 @@
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionRole } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
+import type {
+  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionRole,
+} from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { ProjectError } from "../domain/project-errors.js";
 import {
-  assertTaskExecutionReopenable, closeTaskExecutionResources, currentAssignments, linkNewTaskExecution,
-  reopenTaskExecution, settleTaskExecutionStart, type TaskExecutionResource, type TaskExecutionResourceFile, type TaskAssignment,
+  assertTaskExecutionReopenable, closedAssignments, closeTaskExecutionResources, latestEntryOf, linkExistingTaskExecution, linkNewTaskExecution,
+  openAssignments, reopenTaskExecution, settleTaskExecutionStart, type TaskAssignmentView, type TaskExecutionHistory, type TaskExecutionResource,
+  type TaskExecutionResourceFile,
 } from "../domain/task-execution-resources.js";
 import type { TaskLocation } from "../domain/models.js";
 import { TaskExecutionResourceStore } from "../stores/task-execution-resource-store.js";
 import { latestAssignedEntry } from "./task-root-view-builder.js";
 
 type Loaded = { location: TaskLocation; file: TaskExecutionResourceFile };
+type Current = Readonly<{ taskId: string; entry: TaskExecutionResource }>;
 export type TaskExecutionGroup = Readonly<{ hostRoot: RootExecutionIdentity; executions: readonly TaskExecutionReference[] }>;
+export type TaskAssignmentViews = Readonly<{ open: TaskAssignmentView[]; closed: TaskAssignmentView[] }>;
 
 /**
  * The sole authority over every Task's `agent_run_resources.json` and the process in-memory view of
- * them (agent run → Task, per-Task entries, and the damaged set). Write preconditions are evaluated
- * on the content read under the file's lock; the view is swapped only by the committing write.
+ * them (per-Task entries, each copy's entries across Tasks, and the damaged set). It alone owns the
+ * current-entry rule: a copy's current entry is its open entry, else its latest linked entry; every
+ * ownership, closure and visibility answer reads it. Write preconditions are evaluated on the content
+ * read under the file's lock; the view is swapped only by the committing write.
  */
 export class TaskExecutionResourceService {
   private readonly files = new Map<string, Loaded>();
-  private readonly owners = new Map<string, string>();
-  /** Closed agent runs per host root key (then by agent run key); derived only in `swap()`, like `owners`. */
-  private readonly closedRunsByHostRootKey = new Map<string, Map<string, TaskExecutionReference>>();
+  /** Per copy (task execution key): its last entry in each Task file that has one. Derived only in `swap()`/`forget()`. */
+  private readonly entriesByExecution = new Map<string, Map<string, TaskExecutionResource>>();
+  /** Per copy: its current entry and that Task. */
+  private readonly currentByExecution = new Map<string, Current>();
+  /** Copies whose current entry is closed, per host root key (then by copy key). */
+  private readonly closedByHostRootKey = new Map<string, Map<string, TaskExecutionReference>>();
   private readonly damaged = new Map<string, string>();
   private readonly chains = new Map<string, Promise<unknown>>();
   private loading: Promise<void> | null = null;
@@ -51,14 +61,25 @@ export class TaskExecutionResourceService {
     return this.loading;
   }
 
-  /** In-process ordering of assignment linking and DONE or CANCELLED closure for one Task. */
-  serialize<T>(taskId: string, operation: () => Promise<T>): Promise<T> {
-    const previous = this.chains.get(taskId) ?? Promise.resolve();
+  /** In-process ordering per key: a Task ID (linking, closure) or a copy's key (see `serializeCopyInTask`). */
+  serialize<T>(key: string, operation: () => Promise<T>): Promise<T> {
+    const previous = this.chains.get(key) ?? Promise.resolve();
     const next = previous.catch(() => undefined).then(operation);
     const settled = next.then(() => undefined, () => undefined);
-    this.chains.set(taskId, settled);
-    void settled.then(() => { if (this.chains.get(taskId) === settled) this.chains.delete(taskId); });
+    this.chains.set(key, settled);
+    void settled.then(() => { if (this.chains.get(key) === settled) this.chains.delete(key); });
     return next;
+  }
+  /**
+   * Ordering of a change to one copy in one Task (existing-copy assignment, reopen): always the copy's
+   * key first, then the Task ID. Closure takes only the Task ID, so no cycle exists. Copy keys
+   * (`agent:…`, `team:…`) never equal a Task ID.
+   */
+  serializeCopyInTask<T>(execution: TaskExecutionReference, taskId: () => string, operation: (taskId: string) => Promise<T>): Promise<T> {
+    return this.serialize(taskExecutionReferenceKey(execution), () => {
+      const resolved = taskId();
+      return this.serialize(resolved, () => operation(resolved));
+    });
   }
 
   async linkAssigned(location: TaskLocation, link: Extract<NewTaskExecutionLinkInput, { role: "assigned" }>): Promise<void> {
@@ -66,13 +87,25 @@ export class TaskExecutionResourceService {
     this.assertTaskReadable(location.taskId);
     await this.link(location, link);
   }
-  /** Joins the creator's Task; the creator's openness is decided under that Task file's lock. */
+  /** Joins the creator's current Task; the creator's openness is decided under that Task file's lock. */
   async linkInherited(link: Extract<NewTaskExecutionLinkInput, { role: "delegated" | "broughtIn" }>): Promise<string> {
     await this.load();
-    const taskId = this.owners.get(taskExecutionReferenceKey(link.creator));
+    const taskId = this.currentOf(link.creator)?.taskId;
     if (!taskId) throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", "The creating agent run is not open Task work.");
     await this.link(this.files.get(taskId)!.location, link);
     return taskId;
+  }
+  /**
+   * Existing-copy assignment commit (call under `serializeCopyInTask`): appends the copy's new
+   * `starting` entry to the Task file. The address is the one of the copy's previous assignment.
+   */
+  async assignExisting(location: TaskLocation, input: ExistingTaskExecutionAssignInput): Promise<void> {
+    const recipientAddress = this.currentOf(input.execution)?.entry.recipientAddress;
+    await this.store.update(location, file => linkExistingTaskExecution(file, {
+      assignedBy: input.assignedBy, hostRoot: input.hostRoot, execution: input.execution,
+      ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}),
+      ...(recipientAddress ? { recipientAddress } : {}),
+    }, this.now().toISOString()), next => this.commit(location, next));
   }
   async markStarted(execution: TaskExecutionReference): Promise<void> {
     await this.settle(execution, { start: "started" });
@@ -94,20 +127,37 @@ export class TaskExecutionResourceService {
     });
   }
 
-  /** The Task location of an agent run, from the view; `null` when the run belongs to no Task. */
+  /** The location of the copy's current Task, from the view; `null` when the copy belongs to no Task. */
   locationOf(execution: TaskExecutionReference): TaskLocation | null {
     this.assertLoaded();
-    const taskId = this.owners.get(taskExecutionReferenceKey(execution));
-    return taskId ? this.files.get(taskId)!.location : null;
+    const current = this.currentOf(execution);
+    return current ? this.files.get(current.taskId)!.location : null;
   }
-  /** Read-only reactivation preconditions against the view (advisory; `reopenAssignment` re-checks under the lock). */
+  locationOfTask(taskId: string): TaskLocation | null { return this.files.get(taskId)?.location ?? null; }
+  /** The copy's current entry and Task, and whether any of its entries ever started; `null` when it has none. */
+  historyOf(execution: TaskExecutionReference): TaskExecutionHistory | null {
+    this.assertLoaded();
+    const current = this.currentOf(execution);
+    if (!current) return null;
+    const key = taskExecutionReferenceKey(execution);
+    const everStarted = [...this.entriesByExecution.get(key)!.keys()].some(taskId => this.files.get(taskId)!.file.executionResources
+      .some(entry => entry.start === "started" && taskExecutionReferenceKey(entry.execution) === key));
+    return { currentTaskId: current.taskId, current: current.entry, everStarted };
+  }
+  /** The other Tasks this copy has entries in (its earlier assignment periods), from the view. */
+  earlierTaskLocationsOf(execution: TaskExecutionReference): TaskLocation[] {
+    const current = this.currentOf(execution)?.taskId;
+    return [...this.entriesByExecution.get(taskExecutionReferenceKey(execution))?.keys() ?? []]
+      .filter(taskId => taskId !== current).map(taskId => this.files.get(taskId)!.location);
+  }
+  /** Read-only reactivation preconditions on the copy's last entry in the Task (advisory; `reopenAssignment` re-checks under the lock). */
   assertReopenable(location: TaskLocation, execution: TaskExecutionReference, requestedBy: string): void {
     this.assertTaskReadable(location.taskId);
     assertTaskExecutionReopenable(this.files.get(location.taskId)!.file, execution, requestedBy);
   }
   /**
-   * Reactivation of one assigned entry (call under the Task's `serialize`): `closedAt` returns to
-   * `null` on that entry only. `false` when it was already open (nothing is written).
+   * Reactivation of the copy's last entry in its current Task (call under `serializeCopyInTask`):
+   * `closedAt` returns to `null` on that entry only. `false` when it was already open (nothing is written).
    */
   async reopenAssignment(location: TaskLocation, execution: TaskExecutionReference, requestedBy: string): Promise<boolean> {
     this.assertReopenable(location, execution, requestedBy);
@@ -121,21 +171,26 @@ export class TaskExecutionResourceService {
     return reopened;
   }
 
-  /** Every closed agent run of the Task, grouped by host root (a repeated DONE or CANCELLED re-requests all of them). */
-  closedByHostRoot(taskId: string): TaskExecutionGroup[] {
-    const groups = new Map<string, { hostRoot: RootExecutionIdentity; executions: TaskExecutionReference[] }>();
+  /**
+   * The Task's closed entries that are still their copy's current entry, grouped by host root, one per
+   * copy (a repeated DONE or CANCELLED re-requests them). A copy that moved to another Task is never included.
+   */
+  releasableByHostRoot(taskId: string): TaskExecutionGroup[] {
+    const groups = new Map<string, { hostRoot: RootExecutionIdentity; executions: Map<string, TaskExecutionReference> }>();
     for (const entry of this.files.get(taskId)?.file.executionResources ?? []) {
-      if (entry.closedAt === null) continue;
-      const key = rootExecutionIdentityKey(entry.hostRoot);
-      const group = groups.get(key) ?? { hostRoot: entry.hostRoot, executions: [] };
-      group.executions.push(entry.execution);
-      groups.set(key, group);
+      const key = taskExecutionReferenceKey(entry.execution);
+      const current = this.currentByExecution.get(key);
+      if (current?.taskId !== taskId || current.entry.closedAt === null) continue;
+      const rootKey = rootExecutionIdentityKey(current.entry.hostRoot);
+      const group = groups.get(rootKey) ?? { hostRoot: current.entry.hostRoot, executions: new Map() };
+      group.executions.set(key, current.entry.execution);
+      groups.set(rootKey, group);
     }
-    return [...groups.values()];
+    return [...groups.values()].map(({ hostRoot, executions }) => ({ hostRoot, executions: [...executions.values()] }));
   }
-  /** Closed agent runs hosted by the root, from the per-root index (damaged Tasks never reach `swap()`). Never throws. */
+  /** Copies hosted by the root whose current entry is closed, from the per-root index (damaged Tasks never reach `swap()`). Never throws. */
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
-    return [...this.closedRunsByHostRootKey.get(rootExecutionIdentityKey(hostRoot))?.values() ?? []];
+    return [...this.closedByHostRootKey.get(rootExecutionIdentityKey(hostRoot))?.values() ?? []];
   }
   /**
    * Ad-hoc Tasks (no Project) with an agent run hosted by the root, from the view. Every entry of an
@@ -153,43 +208,40 @@ export class TaskExecutionResourceService {
     if (!this.loaded || this.damaged.has(taskId)) return null;
     return latestAssignedEntry(this.files.get(taskId)?.file ?? null);
   }
-  /** The Task whose root is exactly this agent run (its latest `assigned` entry); null otherwise. Never throws. */
+  /** The copy's current Task when its root is exactly this copy (its latest `assigned` entry); null otherwise. Never throws. */
   rootTaskLocationOf(execution: TaskExecutionReference): TaskLocation | null {
-    const taskId = this.owners.get(taskExecutionReferenceKey(execution));
-    const loaded = taskId ? this.files.get(taskId) : undefined;
+    const current = this.currentOf(execution);
+    const loaded = current ? this.files.get(current.taskId) : undefined;
     const root = latestAssignedEntry(loaded?.file ?? null);
     return loaded && root && taskExecutionReferenceKey(root.execution) === taskExecutionReferenceKey(execution) ? loaded.location : null;
   }
-  /** Drops a Task whose files were removed from the view (owners and closed runs included). Call under `serialize`. */
+  /** Drops a Task whose files were removed from the view (indexes included). Call under `serialize`. */
   forget(location: TaskLocation): void {
-    this.unindex(location.taskId);
+    const affected = this.unindex(location.taskId);
     this.files.delete(location.taskId);
+    affected.forEach(key => this.deriveCurrent(key));
   }
-  async currentAssignments(taskId: string): Promise<TaskAssignment[] | "unavailable"> {
+  /** The Task's open and closed assignment views; `unavailable` when its data can't be read. */
+  async assignments(taskId: string): Promise<TaskAssignmentViews | "unavailable"> {
     await this.load();
     if (this.damaged.has(taskId)) return "unavailable";
     const loaded = this.files.get(taskId);
-    return loaded ? currentAssignments(loaded.file) : [];
+    return loaded ? { open: openAssignments(loaded.file), closed: closedAssignments(loaded.file) } : { open: [], closed: [] };
   }
 
+  /** The innermost linked element of a containment chain (innermost first) decides, by its current entry. */
   ownerOf(chain: readonly TaskExecutionReference[]): TaskExecutionOwner | null {
     this.assertLoaded();
-    const known = chain.flatMap(execution => {
-      const taskId = this.owners.get(taskExecutionReferenceKey(execution));
-      return taskId ? [{ taskId, execution }] : [];
-    });
-    if (!known.length) {
-      this.assertAllReadable();
-      return null;
+    for (const execution of chain) {
+      const current = this.currentOf(execution);
+      if (current) return { taskId: current.taskId, execution, open: current.entry.closedAt === null };
     }
-    if (known.some(entry => entry.taskId !== known[0]!.taskId)) {
-      throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "Agent run containment crosses Tasks.");
-    }
-    return { ...known[0]!, open: this.isOpen(known[0]!.execution) };
+    this.assertAllReadable();
+    return null;
   }
   isOpen(execution: TaskExecutionReference): boolean {
     this.assertLoaded();
-    return this.entryOf(execution)?.closedAt === null;
+    return this.currentOf(execution)?.entry.closedAt === null;
   }
   openTaskExecutions(taskId: string, role: TaskExecutionRole): TaskExecutionReference[] {
     this.assertLoaded();
@@ -204,56 +256,81 @@ export class TaskExecutionResourceService {
     if (!first.done) throw new ProjectError("TASK_AGENT_RESOURCES_UNAVAILABLE", first.value);
   }
 
+  /** A new copy is new everywhere: it has no entry in any Task. */
   private async link(location: TaskLocation, link: NewTaskExecutionLinkInput): Promise<void> {
-    const owner = this.owners.get(taskExecutionReferenceKey(link.execution));
-    if (owner) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run already belongs to a Task.");
+    if (this.entriesByExecution.has(taskExecutionReferenceKey(link.execution))) {
+      throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run already belongs to a Task.");
+    }
     await this.store.update(location, file => linkNewTaskExecution(file, link, this.now().toISOString()), next => this.commit(location, next));
   }
+  /** Settles the start of the copy's last entry in its current Task. */
   private async settle(execution: TaskExecutionReference, outcome: Parameters<typeof settleTaskExecutionStart>[2]): Promise<void> {
     await this.load();
-    const taskId = this.owners.get(taskExecutionReferenceKey(execution));
+    const taskId = this.currentOf(execution)?.taskId;
     if (!taskId) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run is not linked to a Task.");
     const { location } = this.files.get(taskId)!;
     await this.store.update(location, file => settleTaskExecutionStart(file, execution, outcome), next => this.commit(location, next));
   }
-  private entryOf(execution: TaskExecutionReference) {
-    const taskId = this.owners.get(taskExecutionReferenceKey(execution));
-    return taskId ? this.files.get(taskId)?.file.executionResources.find(e => taskExecutionReferenceKey(e.execution) === taskExecutionReferenceKey(execution)) : undefined;
+  private currentOf(execution: TaskExecutionReference): Current | undefined {
+    return this.currentByExecution.get(taskExecutionReferenceKey(execution));
   }
   /** A committed write: swap the view, then tell the listener (marks only; it never fails the write). */
   private commit(location: TaskLocation, file: TaskExecutionResourceFile): void {
     this.swap(location, file);
     try { this.onCommitted(location); } catch (error) { console.warn("TASK_AGENT_RESOURCE_COMMIT_LISTENER_FAILED", error); }
   }
-  /** View swap for one committed Task file: synchronous, never before commit. */
+  /** View swap for one committed Task file: synchronous, never before commit. Re-derives the affected copies' current entries. */
   private swap(location: TaskLocation, file: TaskExecutionResourceFile): void {
-    this.unindex(location.taskId);
+    const affected = this.unindex(location.taskId);
     for (const entry of file.executionResources) {
       const key = taskExecutionReferenceKey(entry.execution);
-      const other = this.owners.get(key);
-      if (other && other !== location.taskId) console.error("TASK_AGENT_RESOURCE_CONFLICT", { execution: entry.execution, tasks: [other, location.taskId] });
-      this.owners.set(key, location.taskId);
-      if (entry.closedAt !== null) {
-        const rootKey = rootExecutionIdentityKey(entry.hostRoot);
-        const closed = this.closedRunsByHostRootKey.get(rootKey) ?? new Map<string, TaskExecutionReference>();
-        closed.set(key, entry.execution);
-        this.closedRunsByHostRootKey.set(rootKey, closed);
-      }
+      const perTask = this.entriesByExecution.get(key) ?? new Map<string, TaskExecutionResource>();
+      perTask.set(location.taskId, latestEntryOf(file, entry.execution)!);
+      this.entriesByExecution.set(key, perTask);
+      affected.add(key);
     }
     this.files.set(location.taskId, { location, file });
+    affected.forEach(key => this.deriveCurrent(key));
   }
-  /** Removes the Task's current file content from the derived indexes (owners, closed runs per host root). */
-  private unindex(taskId: string): void {
+  /** Removes the Task's current file content from the per-copy entries; returns the affected copy keys. */
+  private unindex(taskId: string): Set<string> {
+    const affected = new Set<string>();
     for (const entry of this.files.get(taskId)?.file.executionResources ?? []) {
-      this.owners.delete(taskExecutionReferenceKey(entry.execution));
-      if (entry.closedAt !== null) this.forgetClosed(entry.hostRoot, entry.execution);
+      const key = taskExecutionReferenceKey(entry.execution);
+      const perTask = this.entriesByExecution.get(key);
+      perTask?.delete(taskId);
+      if (perTask?.size === 0) this.entriesByExecution.delete(key);
+      affected.add(key);
+    }
+    return affected;
+  }
+  /**
+   * The current-entry rule for one copy: its open entry, else its latest `linkedAt` (tie: the greater
+   * Task ID). Two open entries can only come from damaged data: the latest is picked and it is logged.
+   */
+  private deriveCurrent(key: string): void {
+    const previous = this.currentByExecution.get(key);
+    if (previous && previous.entry.closedAt !== null) this.unmarkClosed(previous.entry.hostRoot, key);
+    const candidates = [...this.entriesByExecution.get(key)?.entries() ?? []].map(([taskId, entry]) => ({ taskId, entry }));
+    const open = candidates.filter(candidate => candidate.entry.closedAt === null);
+    if (open.length > 1) console.error("TASK_AGENT_RESOURCE_CONFLICT", { execution: key, openTasks: open.map(candidate => candidate.taskId) });
+    const latest = (open.length ? open : candidates).reduce<Current | null>((best, candidate) => !best
+      || candidate.entry.linkedAt > best.entry.linkedAt
+      || (candidate.entry.linkedAt === best.entry.linkedAt && candidate.taskId > best.taskId) ? candidate : best, null);
+    if (!latest) { this.currentByExecution.delete(key); return; }
+    this.currentByExecution.set(key, latest);
+    if (latest.entry.closedAt !== null) {
+      const rootKey = rootExecutionIdentityKey(latest.entry.hostRoot);
+      const closed = this.closedByHostRootKey.get(rootKey) ?? new Map<string, TaskExecutionReference>();
+      closed.set(key, latest.entry.execution);
+      this.closedByHostRootKey.set(rootKey, closed);
     }
   }
-  private forgetClosed(hostRoot: RootExecutionIdentity, execution: TaskExecutionReference): void {
+  private unmarkClosed(hostRoot: RootExecutionIdentity, key: string): void {
     const rootKey = rootExecutionIdentityKey(hostRoot);
-    const closed = this.closedRunsByHostRootKey.get(rootKey);
-    closed?.delete(taskExecutionReferenceKey(execution));
-    if (closed?.size === 0) this.closedRunsByHostRootKey.delete(rootKey);
+    const closed = this.closedByHostRootKey.get(rootKey);
+    closed?.delete(key);
+    if (closed?.size === 0) this.closedByHostRootKey.delete(rootKey);
   }
   private assertLoaded(): void {
     if (!this.loaded) throw new Error("Task agent run resources are not loaded.");

@@ -44,7 +44,7 @@ beforeEach(async () => {
 afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
 describe("shared native/MCP business Task result boundary (Q-2)", () => {
-  it("lists saved work/context and only current (open) assignments, never workers' internal runs or platform detail", async () => {
+  it("lists saved work/context, open and closed assignments with explicit copy IDs, never workers' internal runs or platform detail (REQ-010, AC-013)", async () => {
     const draft = await tasks.beginContextDraft(projectId);
     const upload = await tasks.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never);
     const task = await tasks.createTask({ projectId, description: "Full saved work description",
@@ -65,12 +65,16 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     expect((await mcp("list_project_tasks", { project_id: projectId })).structuredContent).toEqual(native);
     expect(native).toEqual({ projectId, tasks: [{ projectId, taskId: task.taskId, description: task.description, status: "TODO",
       contextFiles: task.contextFiles, assignments: [
-        { targetAgentRunId: "accepted-agent", kind: "agent", assignedBy: "manager-agent", outcome: "accepted" },
-        { targetAgentRunId: "failed-team-lead", kind: "team", assignedBy: "manager-agent_team", outcome: "failed" },
-        { targetAgentRunId: "starting-agent", kind: "agent", assignedBy: "manager-agent_org", outcome: "not_confirmed" },
+        { kind: "agent", agentRunId: "accepted-agent", assignedBy: "manager-agent", outcome: "accepted" },
+        { kind: "team", teamRunId: "failed-team", teamCoordinatorAgentRunId: "failed-team-lead", assignedBy: "manager-agent_team", outcome: "failed" },
+        { kind: "agent", agentRunId: "starting-agent", assignedBy: "manager-agent_org", outcome: "not_confirmed" },
+      ], closedAssignments: [
+        // The copy that did the earlier (now reopened) work stays findable after its Task closed.
+        { kind: "agent", agentRunId: "closed-worker", assignedBy: "manager-agent", outcome: "not_confirmed" },
       ] }] });
+    expect(JSON.stringify(native)).not.toContain("targetAgentRunId");
     expect(await fs.readFile(native.tasks[0].contextFiles[0].localPath, "utf8")).toBe("saved context");
-    for (const privateDetail of ["closed-worker", "internal-delegate", "owned-helper", "hostRoot", "closedAt", "Internal dispatch detail", "linkedAt"]) {
+    for (const privateDetail of ["internal-delegate", "owned-helper", "hostRoot", "closedAt", "Internal dispatch detail", "linkedAt"]) {
       expect(JSON.stringify(native)).not.toContain(privateDetail);
     }
     const patch = { task_id: task.taskId, description: "Revised saved work" };

@@ -350,7 +350,8 @@ const createHarness = async (linked = false) => {
   });
   const commands: MemberTaskCommandCapability = Object.freeze({
     root: createTeamRootExecutionIdentity(rootTeamRunId),
-    delegateTask: (caller, command) => root!.delegateTask({ identity: caller }, command),
+    delegateToNewCopy: (caller, command) => root!.delegateToNewCopy({ identity: caller }, command),
+    assignToExistingCopy: (caller, command) => root!.assignToExistingCopy({ identity: caller }, command),
   });
   const emitStatus = (memberAddress: string, agentRunId: string, status: "idle" | "running") => publisher.publish({
     eventSourceType: TeamRunEventSourceType.AGENT,

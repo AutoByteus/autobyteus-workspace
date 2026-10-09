@@ -236,7 +236,8 @@ describe("standalone collaboration section (Agent-root host)", () => {
     collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
     tasks: {
       root: createAgentRootExecutionIdentity("daily-assistant-run"),
-      delegateTask: async () => ({ target_agent_run_id: null, message: "none" }),
+      delegateToNewCopy: async () => ({ delegated: false, message: "none" }),
+      assignToExistingCopy: async () => ({ delegated: false, message: "none" }),
     },
   });
 
@@ -279,7 +280,7 @@ describe.each([
       identity: createCollaborationMemberExecutionIdentity({ root, memberAddress, agentRunId: "member-run" }),
       teamScoped,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-      tasks: { root, delegateTask: async () => ({ target_agent_run_id: null, message: "none" }) },
+      tasks: { root, delegateToNewCopy: async () => ({ delegated: false, message: "none" }), assignToExistingCopy: async () => ({ delegated: false, message: "none" }) },
     });
     const prompt = compose({
       agentDefinition: definition(), memberExecutionContext: context, workspaceRootPath: "/tmp/workspace",

@@ -68,7 +68,8 @@ describe("Task agent run resource reactivation", () => {
     // AC-014: the agent's own status change opens and lists nothing.
     await setStatus(taskId, "IN_PROGRESS");
     expect(tasks.isOpen(worker)).toBe(false);
-    expect((await tasks.currentAssignments([taskId])).get(taskId)).toEqual([]);
+    expect((await tasks.assignments([taskId])).get(taskId)).toEqual({ open: [],
+      closed: [{ kind: "agent", agentRunId: "worker", assignedBy: "manager", outcome: "accepted" }] });
     const statusFile = await taskJson(taskId);
 
     await tasks.assertReopenable({ execution: worker, requestedBy: "manager" });
@@ -76,8 +77,8 @@ describe("Task agent run resource reactivation", () => {
     expect(tasks.isOpen(worker)).toBe(true);
     expect(tasks.isOpen(helper)).toBe(false);
     expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([helper]);
-    expect((await tasks.currentAssignments([taskId])).get(taskId)).toEqual([
-      { targetAgentRunId: "worker", kind: "agent", assignedBy: "manager", outcome: "accepted" }]);
+    expect((await tasks.assignments([taskId])).get(taskId)).toEqual({ closed: [],
+      open: [{ kind: "agent", agentRunId: "worker", assignedBy: "manager", outcome: "accepted" }] });
     // The status is exactly what the agent set; task.json is not written.
     expect(await taskJson(taskId)).toBe(statusFile);
     const entries = JSON.parse(await resourcesFile(taskId)).agentRunResources;

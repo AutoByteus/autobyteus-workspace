@@ -84,7 +84,7 @@ const createFakeAdapter = (overrides: Partial<RootTaskExecutionAdapter<string>> 
     beginActivation: vi.fn(() => ({ prepare: async () => ({ targetAgentRunId: "child-run",
       commit: async () => ({ committed: true }), acceptSeed: async guard => { guard(); return { accepted: true }; } }),
       cancel: vi.fn(), release: vi.fn(async () => ({ accepted: true })), })),
-    registrationFor: () => null, taskExecutionAt: () => null,
+    registrationFor: () => null, taskExecutionAt: () => null, taskExecutionTargetOf: () => null,
     ownershipChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
     cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: false, code: "UNAVAILABLE" })),
     taskExecutionChainFor: (agentRunId) => state.chains.get(agentRunId) ?? [],
@@ -133,8 +133,8 @@ const team: TaskExecutionReference = { teamRunId: "task-team-run" };
 describe("RootTaskExecutionLifecycle delegation result", () => {
   it("returns the spawned ingress run ID and the task_id of the Task with no Project it created (REQ-003/004)", async () => {
     const { lifecycle, resources } = setup();
-    await expect(lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
-      .resolves.toEqual({ target_agent_run_id: "child-run", target_kind: "agent", task_id: "ad_hoc_task_1" });
+    await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
+      .resolves.toEqual({ delegated: true, copy: { kind: "agent", agentRunId: "child-run" }, taskId: "ad_hoc_task_1" });
     expect(resources.links).toEqual([expect.objectContaining({ role: "assigned", assignedBy: "coordinator-run",
       adHocTask: { description: "Do it", referenceFiles: [] }, execution: { agentRunId: "child-run" } })]);
     expect(resources.tasks.get("ad_hoc_task_1")).toEqual({ description: "Do it", referenceFiles: [], done: false, adHoc: true });
@@ -143,29 +143,29 @@ describe("RootTaskExecutionLifecycle delegation result", () => {
   it("rejects description-only delegation before any planning when no Task side is bound", async () => {
     const fake = createFakeAdapter();
     const unbound = new RootTaskExecutionLifecycle(fake.adapter, { gracePeriodMs: () => GRACE, timers: new ManualTimers() });
-    await expect(unbound.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
+    await expect(unbound.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCES_UNAVAILABLE" });
     expect(fake.adapter.planActivation).not.toHaveBeenCalled();
   });
 
-  it("returns a null run ID with a message when nothing started, aborting the preparation", async () => {
+  it("returns delegated: false with a message when nothing started, aborting the preparation", async () => {
     const abort = vi.fn(async () => undefined);
     const { lifecycle } = setup({
       beginActivation: () => ({ prepare: async () => ({ targetAgentRunId: "child-run",
         commit: async () => ({ committed: false, message: "tree write failed" }), acceptSeed: async () => ({ accepted: true }) }),
         cancel: () => undefined, release: async () => { await abort(); return { accepted: true }; } }),
     });
-    await expect(lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
-      .resolves.toEqual({ target_agent_run_id: null, message: "tree write failed" });
+    await expect(lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Do it" }, "placement"))
+      .resolves.toEqual({ delegated: false, message: "tree write failed" });
 
     const failing = setup({ planActivation: async () => { throw new Error("Agent '/missing' was not found."); } });
-    await expect(failing.lifecycle.delegate({ identity: caller }, { recipient_address: "/missing", description: "Do it" }, "placement"))
-      .resolves.toEqual({ target_agent_run_id: null, message: "Agent '/missing' was not found." });
+    await expect(failing.lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/missing", description: "Do it" }, "placement"))
+      .resolves.toEqual({ delegated: false, message: "Agent '/missing' was not found." });
   });
 
   it("builds the first message with the delegator address and run ID", async () => {
     const { lifecycle, adapter } = setup();
-    await lifecycle.delegate({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
+    await lifecycle.delegateToNewCopy({ identity: caller }, { recipient_address: "/worker", description: "Review the plan" }, "placement");
     const packet = vi.mocked(adapter.planActivation).mock.calls[0]![0].workPacket as AgentInputUserMessage;
     expect(packet.content).toContain("Task delegator address: /coordinator");
     expect(packet.content).toContain("Task delegator AgentRun ID: coordinator-run");

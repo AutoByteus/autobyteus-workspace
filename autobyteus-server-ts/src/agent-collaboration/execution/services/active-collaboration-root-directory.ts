@@ -33,6 +33,8 @@ export interface ActiveRootMessageBoundary {
   /** Stops exactly these closed Task agent runs hosted in this root. */
   releaseTaskExecutions?(agentRuns: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]>;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
+  /** The coordinator agent run of this root's Team copy with that team run ID; `null` when it hosts none. Reads only. */
+  teamCoordinatorOf?(teamRunId: string): string | null;
 }
 
 export type ActiveRootRegistrationReservation = Readonly<{
@@ -84,6 +86,18 @@ export class ActiveCollaborationRootDirectory {
   resolve(root: RootExecutionIdentity): ActiveRootMessageBoundary | null {
     const entry = this.active.get(rootExecutionIdentityKey(root));
     return entry && sameRootExecutionIdentity(entry.root, root) ? entry.boundary : null;
+  }
+
+  /**
+   * The coordinator agent run of the Team copy with this team run ID in any active root, for
+   * `send_message_to` guidance (it reaches agents only); `null` when no active root hosts it.
+   */
+  findTeamCoordinator(teamRunId: string): string | null {
+    for (const { boundary } of this.active.values()) {
+      const coordinator = boundary.teamCoordinatorOf?.(teamRunId) ?? null;
+      if (coordinator) return coordinator;
+    }
+    return null;
   }
 
   unregister(root: RootExecutionIdentity, expected: ActiveRootMessageBoundary): boolean {

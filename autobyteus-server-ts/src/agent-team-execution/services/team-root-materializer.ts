@@ -62,7 +62,8 @@ export const materializeTeamRoot = async (
   };
   const taskCommands: MemberTaskCommandCapability = Object.freeze({
     root: rootIdentity,
-    delegateTask: (caller, command) => requireActiveRoot().delegateTask({ identity: caller }, command),
+    delegateToNewCopy: (caller, command) => requireActiveRoot().delegateToNewCopy({ identity: caller }, command),
+    assignToExistingCopy: (caller, command) => requireActiveRoot().assignToExistingCopy({ identity: caller }, command),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
     assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),

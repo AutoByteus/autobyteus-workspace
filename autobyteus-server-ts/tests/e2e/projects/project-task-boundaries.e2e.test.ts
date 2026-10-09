@@ -408,7 +408,8 @@ describe("Project Task production HTTP boundaries", () => {
     await fs.mkdir(historyDir, {recursive: true}); await fs.writeFile(path.join(historyDir, "raw_traces_active.jsonl"), '{"sentinel":"owned history bytes"}\n');
     reset();
     const businessBefore = (await call("list_project_tasks", {project_id: old.projectId})).structuredContent;
-    expect(businessBefore.tasks[0].assignments).toEqual([{targetAgentRunId: "fixture-worker", kind: "agent", assignedBy: "fixture-manager", outcome: "accepted"}]);
+    expect(businessBefore.tasks[0].assignments).toEqual([{kind: "agent", agentRunId: "fixture-worker", assignedBy: "fixture-manager", outcome: "accepted"}]);
+    expect(businessBefore.tasks[0].closedAssignments).toEqual([]);
     const protectedDirs = [path.join(root, "projects", old.projectId, "tasks"), path.join(root, "projects", otherId), historyDir, workspace.workspaceRootPath];
     const before = await Promise.all(protectedDirs.map(snapshot));
     const registry = await fs.readFile(path.join(root, "workspaces.json"), "utf8");

@@ -176,7 +176,8 @@ export class StandaloneRootBuilder {
       }),
       tasks: Object.freeze({
         root: input.identity.root,
-        delegateTask: (caller, command) => input.requireRun().delegateTask({ identity: caller }, command),
+        delegateToNewCopy: (caller, command) => input.requireRun().delegateToNewCopy({ identity: caller }, command),
+        assignToExistingCopy: (caller, command) => input.requireRun().assignToExistingCopy({ identity: caller }, command),
       }),
     });
   }

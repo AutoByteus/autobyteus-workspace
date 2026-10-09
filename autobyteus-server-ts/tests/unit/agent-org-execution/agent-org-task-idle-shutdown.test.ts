@@ -114,9 +114,10 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
     expect(session).toBeTruthy();
     const treeWrites = vi.spyOn(f.executionTreeStore, "write");
 
-    const delegated = await f.owner.delegateTask(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Complete the task" });
+    const delegated = await f.owner.delegateToNewCopy(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Complete the task" });
     const childId = kind === "agent" ? "task-agent-1" : "task-team-1-lead";
-    expect(delegated).toEqual({ target_agent_run_id: childId, target_kind: kind === "agent" ? "agent" : "team", task_id: expect.stringMatching(/^ad_hoc_task_/) });
+    expect(delegated).toEqual({ delegated: true, copy: kind === "agent" ? { kind: "agent", agentRunId: childId } : { kind: "team", teamRunId: "task-team-1", teamCoordinatorAgentRunId: childId },
+      taskId: expect.stringMatching(/^ad_hoc_task_/) });
     await f.drain();
 
     // One durable tree write carries the execution and its delegator; no records sidecar exists.
@@ -188,7 +189,7 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
   it("rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing", async () => {
     const f = await buildOrg("agent");
     const director = { identity: f.handles.get("director")!.input.identity };
-    await f.owner.delegateTask(director, { recipient_address: "/worker", description: "Complete the task" });
+    await f.owner.delegateToNewCopy(director, { recipient_address: "/worker", description: "Complete the task" });
     await f.drain();
     f.handles.get("task-agent-1")!.emit("idle");
     f.clock.fireAll();
@@ -211,7 +212,7 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
   it.each(["agent", "team"] as const)("treats an errored delegated %s as quiet: no root open work, shut down after the grace period (AC-015)", async (kind) => {
     const f = await buildOrg(kind);
     const director = { identity: f.handles.get("director")!.input.identity };
-    await f.owner.delegateTask(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Complete the task" });
+    await f.owner.delegateToNewCopy(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Complete the task" });
     await f.drain();
     const childId = kind === "agent" ? "task-agent-1" : "task-team-1-lead";
     const child = f.handles.get(childId)!;
@@ -242,7 +243,7 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
   it.each(["agent", "team"] as const)("keeps a delegated %s with a running background task past the grace period; the task's end re-arms it (AC-002/003/004)", async (kind) => {
     const f = await buildOrg(kind);
     const director = { identity: f.handles.get("director")!.input.identity };
-    await f.owner.delegateTask(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Start the dev server" });
+    await f.owner.delegateToNewCopy(director, { recipient_address: kind === "agent" ? "/worker" : "/target", description: "Start the dev server" });
     await f.drain();
     const childId = kind === "agent" ? "task-agent-1" : "task-team-1-lead";
     const child = f.handles.get(childId)!;
@@ -280,7 +281,7 @@ describe("Org-root delegated executions: pure spawn, idle shutdown, and wake-on-
   it("disposes pending idle timers when the root terminates", async () => {
     const f = await buildOrg("agent");
     const director = { identity: f.handles.get("director")!.input.identity };
-    await f.owner.delegateTask(director, { recipient_address: "/worker", description: "Complete the task" });
+    await f.owner.delegateToNewCopy(director, { recipient_address: "/worker", description: "Complete the task" });
     await f.drain();
     f.handles.get("task-agent-1")!.emit("idle");
     expect(f.clock.pendingCount()).toBe(1);

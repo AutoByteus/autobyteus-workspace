@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 import type {
-  NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
+  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
   TaskExecutionReopenResult, TaskExecutionRole,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
@@ -14,12 +14,12 @@ import { AD_HOC_TASK_ID_PREFIX, type AdHocTask } from "../domain/ad-hoc-task.js"
 import { projectTaskFileLocator, type ProjectTaskContextFile } from "../domain/project-task-context.js";
 import { ProjectError } from "../domain/project-errors.js";
 import { isTerminalTaskStatus, validateTaskStatus } from "../domain/task-status.js";
-import type { TaskAssignment } from "../domain/task-execution-resources.js";
+import { assertTaskExecutionAssignable, notCurrentTaskMessage } from "../domain/task-execution-resources.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 import { AdHocTaskStore } from "../stores/ad-hoc-task-store.js";
 import { getProjectTaskContextStore, type ProjectTaskContextStore, type PreparedTaskContext } from "../context/project-task-context-store.js";
 import { TaskExecutionResourceRelease } from "../runtime/task-execution-resource-release.js";
-import { TaskExecutionResourceService } from "./task-execution-resource-service.js";
+import { TaskExecutionResourceService, type TaskAssignmentViews } from "./task-execution-resource-service.js";
 import { TaskExecutionResourceStore } from "../stores/task-execution-resource-store.js";
 import { getProjectChangePublisher, type ProjectChangeMarks } from "../changes/project-change-publisher.js";
 import type { TaskChangeView } from "../changes/project-change-messages.js";
@@ -90,9 +90,9 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return Promise.all((await this.store.listTasks(projectId))
       .filter((t) => status === undefined || t.status === status).sort(compareTasks).map((t) => this.toView(projectId, t)));
   }
-  /** The Manager's read of current assignments per Task; `unavailable` when a Task's data can't be read. */
-  async currentAssignments(taskIds: readonly string[]): Promise<Map<string, TaskAssignment[] | "unavailable">> {
-    return new Map(await Promise.all(taskIds.map(async (taskId) => [taskId, await this.resources.currentAssignments(taskId)] as const)));
+  /** The Manager's read of open and closed assignments per Task; `unavailable` when a Task's data can't be read. */
+  async assignments(taskIds: readonly string[]): Promise<Map<string, TaskAssignmentViews | "unavailable">> {
+    return new Map(await Promise.all(taskIds.map(async (taskId) => [taskId, await this.resources.assignments(taskId)] as const)));
   }
   /** UI/GraphQL create: context comes from an upload draft. */
   async createTask(command: CreateProjectTaskCommand): Promise<ProjectTaskView> {
@@ -278,15 +278,39 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const location = await this.reopenLocation(input.execution);
     this.resources.assertReopenable(location, input.execution, input.requestedBy);
-    await this.assertTaskNotTerminal(location);
+    await this.assertReopenTaskNotTerminal(location, input.execution);
   }
-  /** The reactivation commit: re-validated under the Task's serialization, so a DONE or CANCELLED is entirely before or after. Status is never written. */
+  /**
+   * The reactivation commit: re-validated under the copy's and then its current Task's serialization,
+   * so a DONE or CANCELLED (or an assignment of the copy) is entirely before or after. Status is never written.
+   */
   async reopenAssignment(input: TaskExecutionReopenInput): Promise<TaskExecutionReopenResult> {
-    const location = await this.reopenLocation(input.execution);
-    return this.resources.serialize(location.taskId, async () => {
+    await this.reopenLocation(input.execution);
+    // The copy's current Task is read under the copy's ordering (an assignment of the copy cannot move it meanwhile).
+    return this.resources.serializeCopyInTask(input.execution, () => this.resources.locationOf(input.execution)?.taskId ?? "", async () => {
+      const location = await this.reopenLocation(input.execution);
       this.resources.assertReopenable(location, input.execution, input.requestedBy);
-      await this.assertTaskNotTerminal(location);
+      await this.assertReopenTaskNotTerminal(location, input.execution);
       return { taskId: location.taskId, reopened: await this.resources.reopenAssignment(location, input.execution, input.requestedBy) };
+    });
+  }
+  /** Advisory existing-copy eligibility (the design's complete list), before any runtime step. */
+  async assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+    await this.resources.load();
+    this.resources.assertAllReadable();
+    const { projectId } = await this.uniqueTask(input.taskId);
+    await this.assertAssignableTask(projectId, input.taskId);
+    await this.assertCopyAssignable(input);
+  }
+  /** The existing-copy commit: every condition re-checked under the copy's and then the Task's serialization. */
+  async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
+    await this.resources.load();
+    const { projectId } = await this.uniqueTask(input.taskId);
+    await this.resources.serializeCopyInTask(input.execution, () => input.taskId, async () => {
+      this.resources.assertAllReadable();
+      await this.assertAssignableTask(projectId, input.taskId);
+      await this.assertCopyAssignable({ execution: input.execution, requestedBy: input.assignedBy, taskId: input.taskId });
+      await this.resources.assignExisting({ projectId, taskId: input.taskId }, input);
     });
   }
 
@@ -309,7 +333,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
         written = await write();
       });
     } finally {
-      if (closed) this.release.release(location.taskId, this.resources.closedByHostRoot(location.taskId));
+      if (closed) this.release.release(location.taskId, this.resources.releasableByHostRoot(location.taskId));
     }
     return written!;
   }
@@ -319,18 +343,44 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     if (!location) throw new ProjectError("TASK_AGENT_RESOURCE_CONFLICT", "The agent run belongs to no Task.");
     return location;
   }
-  /** Reactivation needs the Task to exist and be TODO or IN_PROGRESS; only the agent changes that status. */
-  private async assertTaskNotTerminal(location: TaskLocation): Promise<void> {
-    const task = location.projectId === null
+  /**
+   * Reactivation needs the copy's current Task to exist and be TODO or IN_PROGRESS; only the agent changes
+   * that status. When it is closed but an earlier Task of the copy was reopened, the refusal names the
+   * current Task and the working next step (REQ-007).
+   */
+  private async assertReopenTaskNotTerminal(location: TaskLocation, execution: TaskExecutionReference): Promise<void> {
+    const task = await this.readTaskAt(location);
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
+    if (!isTerminalTaskStatus(task.status)) return;
+    for (const earlier of this.resources.earlierTaskLocationsOf(execution)) {
+      const reopened = await this.readTaskAt(earlier);
+      if (reopened && !isTerminalTaskStatus(reopened.status)) {
+        throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED", notCurrentTaskMessage(execution, { taskId: location.taskId, status: task.status }, earlier.taskId));
+      }
+    }
+    throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
+      `This Task is ${task.status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`);
+  }
+  /** A Task's metadata (with or without a Project); null when it (or its Project) was deleted. */
+  private async readTaskAt(location: TaskLocation): Promise<{ status: ProjectTaskStatus } | null> {
+    return location.projectId === null
       ? await this.adHocTasks.read(location.taskId)
       // A deleted Project took its Tasks with it.
       : await this.store.readTask(location.projectId, location.taskId)
         .catch((error: unknown) => { if ((error as { code?: unknown }).code === "PROJECT_NOT_FOUND") return null; throw error; });
-    if (!task) throw new ProjectError("TASK_NOT_FOUND", "The Task was deleted; its work cannot be reactivated.");
-    if (isTerminalTaskStatus(task.status)) {
-      throw new ProjectError("TASK_AGENT_RESOURCE_CLOSED",
-        `This Task is ${task.status}. Move it to TODO or IN_PROGRESS with create_or_update_task first, then message this run ID again.`);
-    }
+  }
+  /** Assignment target rules for a Project Task: it exists and is not DONE or CANCELLED. */
+  private async assertAssignableTask(projectId: string, taskId: string): Promise<void> {
+    const task = await this.store.readTask(projectId, taskId);
+    if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${taskId}' was not found.`);
+    if (isTerminalTaskStatus(task.status)) throw terminalAssignment(task.status);
+  }
+  /** The copy-side rules of an existing-copy assignment, on the copy's history across Tasks. */
+  private async assertCopyAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void> {
+    const history = this.resources.historyOf(input.execution);
+    const currentLocation = history && history.current.closedAt === null ? this.resources.locationOfTask(history.currentTaskId) : null;
+    const currentTask = currentLocation ? await this.readTaskAt(currentLocation) : null;
+    assertTaskExecutionAssignable(history, { requestedBy: input.requestedBy, taskId: input.taskId, ...(currentTask ? { currentTaskStatus: currentTask.status } : {}) });
   }
   /** Shared create body: input and owner checks, then the context step, then the in-lock commit that publishes it. */
   private async create(projectId: string, rawDescription: string, prepareContext: (taskId: string) => Promise<PreparedTaskContext>): Promise<ProjectTaskView> {

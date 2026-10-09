@@ -445,7 +445,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         systemPrompt: expect.stringContaining(
-          "Use `delegate_task` to spawn a new copy of an Agent or AgentTeam for new work.",
+          "Use `delegate_task` with `recipient_address` to spawn a new copy of an Agent or",
         ),
         allowedTools: [
           "delegate_task",

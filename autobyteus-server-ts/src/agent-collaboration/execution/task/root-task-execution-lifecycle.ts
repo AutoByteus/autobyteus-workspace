@@ -1,22 +1,26 @@
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { messagePlacement } from "../../collaborators/message-recipient-resolution.js";
 import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
+import { resolveExistingCopy } from "./existing-copy-target.js";
 import { RootTaskExecutionResourceScope, asTaskDelegationError } from "./root-task-execution-resource-scope.js";
 import { taskReactivationRejectionCode, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
-import type {
-  RootTaskExecutionAdapter,
-} from "./root-task-execution-adapter.js";
+import type { RootTaskExecutionAdapter, TaskExecutionTarget } from "./root-task-execution-adapter.js";
 import { RootTaskExecutionCommandQueue } from "./root-task-execution-command-queue.js";
 import {
   TaskDelegationError,
-  type DelegateTaskInput,
-  type DelegateTaskResult,
+  TaskDispatchIndeterminateError,
+  copyTargetOf,
+  delegatedCopyOf,
+  type AssignToExistingCopyInput,
+  type SpawnTaskInput,
   type TaskDelegationContext,
+  type TaskDelegationOutcome,
 } from "./task-delegation-command.js";
 import {
+  buildExistingCopyTaskMessage,
   buildTaskAssigneeWorkPacket,
   requireTaskString,
   validateTaskReferenceFiles,
@@ -36,6 +40,12 @@ export type TaskExecutionLiveLease = Readonly<{ assertOpen(): void; release(): v
 export type TaskExecutionAgentStatus = "offline" | "initializing" | "idle" | "running" | "error";
 
 /**
+ * The root's exact delivery of an existing copy's new Task: a message from the delegator to the copy's
+ * ingress (wakes or restores it like `send_message_to`).
+ */
+export type DeliverTaskWork = (ingressAgentRunId: string, content: string, referenceFiles: readonly string[]) => Promise<AgentOperationResult>;
+
+/**
  * Root-neutral resource lifecycle for delegated children (task executions) of
  * one root. It owns delegation admission, the serialized activation / wake /
  * shutdown FIFO, idle-shutdown scheduling and live leases. It owns no subject
@@ -47,7 +57,7 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   private readonly leases = new Map<string, number>();
   private accepting = true;
   private readonly resourceScope: RootTaskExecutionResourceScope<TPlacement>;
-  private readonly helperAttempts = new Map<string, Promise<DelegateTaskResult>>();
+  private readonly helperAttempts = new Map<string, Promise<TaskExecutionTarget>>();
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -90,11 +100,12 @@ export class RootTaskExecutionLifecycle<TPlacement> {
 
   drain(): Promise<void> { return this.queue.drain(); }
 
-  async delegate(
+  /** `delegate_task` with an address: a new copy for a saved Task or for described work. */
+  async delegateToNewCopy(
     context: TaskDelegationContext,
-    input: DelegateTaskInput,
+    input: SpawnTaskInput,
     placement: TPlacement,
-  ): Promise<DelegateTaskResult> {
+  ): Promise<TaskDelegationOutcome> {
     this.assertAdmitting(context.identity);
     this.adapter.assertCurrentSchemaReady();
     const linked = Object.prototype.hasOwnProperty.call(input, "task_id");
@@ -128,6 +139,55 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     });
   }
 
+  /**
+   * DS-002, `delegate_task` with a copy's own ID: finds the copy in this root, asks the Task side whether
+   * this sender may give it Task `taskId`, settles its previous stop and checks it can be restored, commits
+   * the new assignment, publishes it as reopened, then delivers the Task's work through the root's exact
+   * delivery (which wakes or restores it with its conversation). Every refusal before the commit changes nothing.
+   */
+  async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
+    const sender = context.identity.agentRunId;
+    let target: TaskExecutionTarget, taskId: string, description: string, referenceFiles: readonly string[];
+    try {
+      this.assertAdmitting(context.identity);
+      this.adapter.assertCurrentSchemaReady();
+      if (this.resourceScope.ownerOf(sender)) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "Task workers delegate sub-work without task_id.");
+      taskId = requireTaskString(input.taskId, "task_id");
+      target = resolveExistingCopy(this.adapter, input.copy);
+      const port = this.resourceScope.port();
+      const saved = await port.resolveAssignment(taskId);
+      ({ description } = saved);
+      referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
+      await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
+      await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
+      await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
+        ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
+    } catch (error) {
+      if (refusalCode(error)) return { delegated: false, message: errorMessage(error) };
+      throw error;
+    }
+    this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
+    const content = buildExistingCopyTaskMessage({ taskId, delegator: context.identity, description });
+    let delivered: AgentOperationResult;
+    try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
+    catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
+    const port = this.resourceScope.port();
+    if (!delivered.accepted) {
+      const reason = delivered.message ?? delivered.code ?? "delivery was not accepted";
+      try { await port.markFailed(target.execution, { code: delivered.code ?? "TASK_WORK_NOT_DELIVERED", message: reason }); }
+      catch (recordError) { throw new TaskDispatchIndeterminateError(target.execution, recordError); }
+      return { delegated: false, message: `Task ${taskId} was assigned to the copy but its work was not delivered (${reason}). `
+        + `Message the copy's ingress ${target.ingressAgentRunId}, or mark Task ${taskId} CANCELLED or delegate it to a new copy.` };
+    }
+    try { await port.markStarted(target.execution); }
+    catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }
+    return { delegated: true, copy: delegatedCopyOf(target) };
+  }
+  /** `send_message_to` guidance: the coordinator agent run of the Team copy with this team run ID in this root, or `null`. */
+  teamCoordinatorOf(teamRunId: string): string | null {
+    return this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId ?? null;
+  }
+
   assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
   assertMessageScope(sender: string, recipient: string): void { this.resourceScope.assertMessageScope(sender, recipient); }
   /** The Task owning the copy that contains the agent, as an opaque key; `null` when unowned. */
@@ -141,19 +201,22 @@ export class RootTaskExecutionLifecycle<TPlacement> {
   /** Closed (Task DONE or CANCELLED) task executions of the root's current tree, for its package snapshot. */
   closedTaskExecutions(): readonly TaskExecutionReference[] { return this.resourceScope.closedTaskExecutions(); }
 
-  /** One seedless brought-in copy per Task/address among the Task's open helpers. */
-  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<DelegateTaskResult> {
+  /** One seedless brought-in copy per Task/address among the Task's open helpers; rejects when it could not be started. */
+  async ensureTaskHelper(context: TaskDelegationContext, address: string, placement: TPlacement): Promise<TaskExecutionTarget> {
     const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
     if (!owner) throw new TaskDelegationError("TASK_AGENT_RESOURCES_UNAVAILABLE", "Helper bring-in requires a Task-owned sender.");
     if (!owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "The Task work for this agent run is closed (its Task is DONE or CANCELLED).");
-    const existing = this.helperPlacement(owner.taskId, address);
-    if (existing) return { target_agent_run_id: existing.receiver.agentRunId, target_kind: existing.kind === "agent" ? "agent" : "team" };
+    const existing = this.adapter.taskExecutionAt(address, this.resourceScope.port().openTaskExecutions(owner.taskId, "broughtIn"));
+    if (existing) return existing;
     const key = `${owner.taskId}:${address}`;
     const pending = this.helperAttempts.get(key);
     if (pending) return pending;
     const attempt = dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
       join: { role: "broughtIn", creator: owner.execution }, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
+    }).then((outcome) => {
+      if (!outcome.delegated) throw new Error(outcome.message);
+      return Object.freeze({ root: this.adapter.root, ...copyTargetOf(outcome.copy) });
     });
     this.helperAttempts.set(key, attempt);
     try { return await attempt; } finally { if (this.helperAttempts.get(key) === attempt) this.helperAttempts.delete(key); }
@@ -208,21 +271,27 @@ export class RootTaskExecutionLifecycle<TPlacement> {
     const execution = this.adapter.taskExecutionWithIngress(targetAgentRunId);
     if (!execution) {
       throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "This run is part of closed Task work. Only the run that assigned the work "
-        + "can reactivate it: move the Task to TODO or IN_PROGRESS, then message the run ID delegate_task returned (for a Team, its coordinator).");
+        + "can reactivate it: move the Task to TODO or IN_PROGRESS, then message the copy's agent run ID (for a Team copy, its coordinator's).");
     }
     const port = this.resourceScope.port();
     const request = { execution, requestedBy: senderAgentRunId };
     await port.assertReopenable(request);
-    await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
-      if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
-      // A concurrent reactivation already reopened (and may have restored) it: never release that copy.
-      if (port.isOpen(execution)) return;
-      await this.resourceScope.discardReleasedExecution(execution);
-      this.adapter.assertRestorableChain(targetAgentRunId);
-    } });
+    await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(execution, targetAgentRunId) });
     const { reopened } = await port.reopenAssignment(request);
     if (reopened) this.adapter.publishTaskExecutionsReopened(Object.freeze([execution]));
     return reopened;
+  }
+
+  /**
+   * Queue-head step shared by reactivation and existing-copy assignment: settles the copy's previous
+   * stop, drops its released authority so restore builds a fresh one, and checks its conversation can be
+   * restored. A copy already open (a concurrent reopen or assignment) is never released.
+   */
+  private async prepareClosedCopyForResume(execution: TaskExecutionReference, ingressAgentRunId: string): Promise<void> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "The collaboration root is not accepting deliveries.");
+    if (this.resourceScope.port().isOpen(execution)) return;
+    await this.resourceScope.discardReleasedExecution(execution);
+    this.adapter.assertRestorableChain(ingressAgentRunId);
   }
 
   /**
@@ -343,3 +412,9 @@ export class RootTaskExecutionLifecycle<TPlacement> {
 }
 
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
+/** A coded refusal from the runtime or the Task side (as opposed to an infrastructure fault). */
+const refusalCode = (error: unknown): string | null => {
+  if (error instanceof TaskDelegationError) return error.code;
+  const code = (error as { code?: unknown } | null)?.code;
+  return typeof code === "string" && error instanceof Error ? code : null;
+};

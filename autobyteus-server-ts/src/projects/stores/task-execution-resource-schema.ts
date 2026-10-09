@@ -64,8 +64,15 @@ export const parseTaskExecutionResourceFile = (raw: unknown, taskId: string): Ta
   if (v!.taskId !== taskId) invalid(`taskId does not match its Task folder '${taskId}'`);
   if (!Array.isArray(v!.agentRunResources)) invalid("agentRunResources is not an array");
   const executionResources = (v!.agentRunResources as unknown[]).map(parseEntry);
-  const keys = executionResources.map(r => taskExecutionReferenceKey(r.execution));
-  if (new Set(keys).size !== keys.length) invalid("an agent run appears more than once");
+  // One entry per assignment period: a copy may appear several times, but it has at most one open
+  // entry and only its last entry in the file may be open (entries are only ever appended).
+  const lastIndex = new Map<string, number>();
+  executionResources.forEach((r, index) => lastIndex.set(taskExecutionReferenceKey(r.execution), index));
+  executionResources.forEach((r, index) => {
+    if (r.closedAt === null && lastIndex.get(taskExecutionReferenceKey(r.execution)) !== index) {
+      invalid(`agentRunResources[${index}] is open but is not its agent run's last entry`);
+    }
+  });
   return { taskId, executionResources };
 };
 

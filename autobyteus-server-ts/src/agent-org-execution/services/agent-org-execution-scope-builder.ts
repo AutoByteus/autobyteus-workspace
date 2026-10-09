@@ -61,7 +61,8 @@ export class AgentOrgExecutionScopeBuilder {
     }>> = [];
     const taskCommands: MemberTaskCommandCapability = Object.freeze({
       root,
-      delegateTask: (caller, command) => this.requireActive(run).delegateTask({ identity: caller }, command),
+      delegateToNewCopy: (caller, command) => this.requireActive(run).delegateToNewCopy({ identity: caller }, command),
+      assignToExistingCopy: (caller, command) => this.requireActive(run).assignToExistingCopy({ identity: caller }, command),
     });
     // Collaborators join after launch, so member contexts read the live tree.
     const liveTree = (): AgentOrgRunExecutionTreeSnapshot => run?.getExecutionTreeSnapshot() ?? input.state.executionTree;
