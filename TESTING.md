@@ -357,10 +357,23 @@ What these suites cover:
   payloads, compact business results, DONE close-then-stop, retry by repeated
   DONE with nothing about the stop persisted, and reopen. Reactivation (reopen
   the Task, then the assigner messages the run ID) is covered on the Task side by
-  `tests/unit/projects/task-agent-resource-reactivation.test.ts` and in the
+  `tests/unit/projects/task-execution-resource-reactivation.test.ts` and in the
   runtime by `tests/unit/agent-collaboration/root-task-reactivation.test.ts`
   (sequencing and refusals) and `task-reactivation-backends.test.ts` (actual
   registries for all three root kinds).
+- **Follow-up Task to an existing copy** (`delegate_task` with
+  `target_team_run_id` / `target_agent_run_id`). Task side:
+  `tests/unit/projects/task-execution-existing-copy-assignment.test.ts`
+  (eligibility, appended periods, A → B → A, DONE of the earlier Task never
+  stopping the copy, the reopen hint, QR-001 orders) and
+  `task-execution-current-entry.test.ts` (the current-entry rule). Runtime:
+  `tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts`
+  (sequencing, every refusal, delivery failure, DONE racing the assignment in
+  each order), the existing-copy cases in `task-reactivation-backends.test.ts`
+  (actual registries, all three root kinds), and one case per root in the
+  Team, Org and standalone root suites. Tool contract:
+  `tests/unit/agent-tools/task-delegation/` and
+  `tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts`.
 - **RootTeam/catalog helper integration.** Same-address helpers isolated per
   Task, borrowed advisers that are never adopted, exact stop sets, and closed
   ingress.

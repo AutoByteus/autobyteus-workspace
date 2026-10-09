@@ -165,16 +165,22 @@ address grammar and the member's exact address. The second explains universal
 collaboration through an intent-first distinction (REQ-009 wording):
 `send_message_to` reaches the one instance at an address, and an available
 agent or team that is not yet in the run is brought in on first use;
-`delegate_task` always spawns a new copy of an Agent or AgentTeam and delivers
-its complete assignment as the first message. A "Work Requests and Results"
+`delegate_task` with an address spawns a new copy of an Agent or AgentTeam and
+delivers its complete assignment as the first message; with a copy's own ID it
+gives a new saved Task to that existing copy. A "Work Requests and Results"
 subsection covers Agent and AgentTeam (coordinator) addresses, teammates inside
 the sender's own team instance, first-use bring-in, and run-ID selection, which
 never brings anything in. A "Delegated Agents" subsection explains that every
-call spawns another copy (copies can work in parallel), the returned
-`target_agent_run_id` (or null plus `message` when nothing started), follow-up
-on a copy only through `send_message_to` with its run ID, and that a quiet copy
-is shut down (but not while it has a running background task) and restored with
-its conversation on the next message. The section also
+call with an address spawns another copy (copies can work in parallel), the
+explicitly named result (`target_agent_run_id` for an Agent copy;
+`target_team_run_id` and `target_team_coordinator_agent_run_id` for a Team copy;
+`delegated: false` plus `message` when nothing started), that a worker's
+description-only delegation is sub-work of its Task, giving a follow-up Task to
+a copy by its `target_team_run_id` / `target_agent_run_id` (one current Task per
+copy; only its most recent assigner; only once its current Task is DONE or
+CANCELLED), messaging a copy only through `send_message_to` with an agent run
+ID, and that a quiet copy is shut down (but not while it has a running
+background task) and restored with its conversation on the next message. The section also
 covers duplicate-dispatch prohibition, Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
 the single rule whose condition most specifically applies, notification of only
 that rule's recipient, requester-return when no rule applies to incoming work, and delivery confirmation. The
@@ -378,9 +384,12 @@ delegate_task({
 delegated agent, or a currently active AgentRun elsewhere). `recipient_address` is a canonical absolute
 non-root logical address; relative addresses and `/` are invalid. Accepted
 messaging returns the exact existing receiver as flat `target_agent_run_id`,
-while rejection returns null identity. Successful delegation returns only the
-fresh child ingress as `target_agent_run_id`; if nothing started,
-`target_agent_run_id` is null and `message` explains why. Delegation references are absolute local paths.
+while rejection returns null identity; a Team copy's team run ID is refused
+(`TARGET_IS_TEAM_RUN`) with its coordinator's agent run ID. Successful
+delegation returns `delegated: true`, `target_kind` and the copy's own IDs
+(`target_agent_run_id` for an Agent copy; `target_team_run_id` and
+`target_team_coordinator_agent_run_id` for a Team copy); if nothing started,
+`delegated` is false and `message` explains why. Delegation references are absolute local paths.
 The runtime exposes native AutoByteus schemas locally and routes Codex/Claude
 through the session-scoped `autobyteus_agent_tools` MCP descriptor. Provider
 wire names are normalized back to canonical application tool names.

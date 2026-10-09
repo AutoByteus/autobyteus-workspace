@@ -154,11 +154,19 @@ wakes a shut-down delegated child in `restore` mode (rejecting with
 that is impossible), and delivers as ordinary root communication. An unknown
 run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never
 use this path. When the target belongs to closed Task work, the root first
-reactivates it if the sender is the run that assigned it, the target is the run
-ID `delegate_task` returned (a Team's coordinator) and the Task is not DONE or CANCELLED;
+reactivates it if the sender is the run that assigned it, the target is the
+copy's agent run ID (a Team copy's coordinator) and the copy's current Task is
+not DONE or CANCELLED;
 the accepted `message` then ends with "<run ID> was reactivated." Otherwise it
 refuses with `TASK_AGENT_RESOURCE_CLOSED` and guidance. See
 [Reactivation](projects.md#reactivation).
+
+**Team run IDs.** `send_message_to` reaches agents only. Before the live-only
+path, the router asks every active root (`ActiveCollaborationRootDirectory.findTeamCoordinator`,
+each root's `teamCoordinatorOf`) whether the ID is one of its Team copies' team
+run IDs; if so it refuses with `TARGET_IS_TEAM_RUN` and the coordinator's agent
+run ID to use, for same-root and cross-root senders alike. A team run in no
+active root gets the ordinary not-active refusal, like an agent run ID there.
 
 **Global live-only path.** Every other target must be the canonical
 server-side `AgentRun.runId` of a run that is active at delivery time.
@@ -436,9 +444,9 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   allowed. The task DTOs (`task_execution_started` and the views) carry `source`.
 - **Task closure (DONE or CANCELLED).** Every root view (Agent, Team, Org; live snapshot and
   stored read) carries `closed_task_executions` beside the unfiltered tree: the
-  task executions whose Task is DONE or CANCELLED, read through the Task port
-  (`closedAgentRunsIn`) and the shared `listClosedTaskExecutions`. When DONE or
-  CANCELLED asks an active root to stop a Task's runs, `RootTaskAgentResourceScope` first
+  task executions whose current Task is DONE or CANCELLED, read through the Task port
+  (`closedTaskExecutionsIn`) and the shared `listClosedTaskExecutions`. When DONE or
+  CANCELLED asks an active root to stop a Task's runs, `RootTaskExecutionResourceScope` first
   publishes the released runs that are closed and in the tree as the sequenced
   `task_executions_closed` (Team: `TASK_EXECUTIONS_CLOSED`). A repeated DONE or
   CANCELLED re-publishes them. The Workspaces tree leaves those executions and their
