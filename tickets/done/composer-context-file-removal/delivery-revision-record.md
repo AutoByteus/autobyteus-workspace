@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-002 Pass → delivery | N/A | Integrated (already current), docs synced, held for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr1-*.log` |
 | DR-002 | User: "Finalize and release a new beta." | DR-001 (held for verification) | Delivery Completed: finalized into `personal`, `v1.4.99-beta.10` released, cleaned up | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/{finalization-hygiene.log,beta10-release.log,workflows-beta10.json,github-release-beta10.json,updater-metadata/,docker-tags.txt}` |
+| DR-003 | User: "lets do a stable version release thanks" (after "i tested its working") | DR-002 (Delivery Completed, beta.10) | Stable `v1.4.99` released | `release-notes-v1.4.99.md`, `release-deployment-report.md` § Stable Release v1.4.99, `delivery-evidence/{v1.4.99-*,workflows-v1.4.99.json,github-release-v1.4.99.json}` |
 
 ## Revision Entries
 
@@ -63,3 +64,20 @@
   - Rollback: revert `a0d8f06e6` and publish the next beta.
   - Untested: Electron native drop live and a packaged-app restart.
   - Recommended separate tickets: OBS-001 (`agent_draft.draftRunId` traversal) and OBS-002 (non-reactive `submissions` Map in `agentOrgContextsStore.accessFor`). The `agent-status-websocket` cadence failure also occurs on the base.
+
+### DR-003 — Stable release `v1.4.99`
+
+- Delivery round and trigger: the user tested the fix in the desktop app ("i tested its working"), then asked for a stable release ("lets do a stable version release thanks").
+- Prior authoritative result: DR-002 (Delivery Completed; `v1.4.99-beta.10`).
+- Current authoritative result: stable **`v1.4.99`** published. It contains this ticket and the 10 other tickets merged since `v1.4.98`.
+- Curated notes: `release-notes-v1.4.99.md` (commit `106ff69ae`), synced to `.github/release-notes/release-notes.md`.
+- Release commit `bd45af839` changes the version from 1.4.99-beta.10 to 1.4.99. It and the tag `v1.4.99` were pushed after re-checking that `personal` was still `5458f270d`.
+- Checks on the tagged tree: licensing and hygiene both exit 0.
+- Publication:
+  - 4/4 workflows succeeded on attempt 1.
+  - The GitHub release is **Latest**, not a pre-release, not a draft, with 17 assets.
+  - All 4 updater files report 1.4.99.
+  - Docker `:1.4.99`, `:latest` and `:beta` share digest `sha256:fd503795…30d0` (amd64, arm64).
+- Cleanup: the release worktree `release-v1.4.99` and its branch are removed after this record is pushed.
+- Terminal return to `/solution_designer`: not re-sent. DR-002 already delivered the terminal package; this is a later release of already-finalized work.
+- Remaining: none for this ticket. OBS-001 and OBS-002 remain recommended separate tickets.
