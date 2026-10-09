@@ -131,3 +131,13 @@ export class Message {
     };
   }
 }
+
+/**
+ * The consecutive SYSTEM-role messages at the start of a conversation (the system prompt
+ * and, after compaction, the carried system notes). A SYSTEM message after the first
+ * non-system message is a late note and is not part of this run.
+ */
+export const leadingSystemMessages = (messages: readonly Message[]): Message[] => {
+  const end = messages.findIndex((message) => message.role !== MessageRole.SYSTEM);
+  return messages.slice(0, end === -1 ? messages.length : end);
+};

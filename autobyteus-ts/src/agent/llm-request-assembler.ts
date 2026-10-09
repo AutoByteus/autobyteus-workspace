@@ -1,6 +1,6 @@
-import { BasePromptRenderer } from '../llm/prompt-renderers/base-prompt-renderer.js';
 import { LLMUserMessage } from '../llm/user-message.js';
-import { Message, MessageRole } from '../llm/utils/messages.js';
+import { Message, MessageRole, leadingSystemMessages } from '../llm/utils/messages.js';
+import { computeLlmRequestPrefixDigest } from './llm-request-prefix-digest.js';
 import { MemoryManager } from '../memory/memory-manager.js';
 import { PendingCompactionExecutor } from '../memory/compaction/pending-compaction-executor.js';
 import {
@@ -24,7 +24,8 @@ export type LlmRequestAssemblyIdentity = Readonly<{
 export type RequestPackage = {
   canonicalMessages: Message[];
   outboundMessages: Message[];
-  renderedPayload: unknown;
+  /** The exact tool schemas to send; they are part of the prefix the request is bound to. */
+  tools: ReadonlyArray<Record<string, unknown>>;
   mediaDiagnostics: MediaInputDiagnostic[];
   didCompact: boolean;
   recoverySnapshot: LlmRequestRecoverySnapshot;
@@ -33,7 +34,6 @@ export type RequestPackage = {
 export class LLMRequestAssembler {
   constructor(
     private readonly memoryManager: MemoryManager,
-    private readonly renderer: BasePromptRenderer,
     private readonly pendingCompactionExecutor: PendingCompactionExecutor | null = null,
     private readonly multimodalCapabilities: MultimodalCapabilities = UNKNOWN_MULTIMODAL_CAPABILITIES,
   ) {}
@@ -41,14 +41,13 @@ export class LLMRequestAssembler {
   async prepareRequest(
     additionalUserMessage: LLMUserMessage | null,
     identity: LlmRequestAssemblyIdentity,
-    systemPrompt?: string | null,
+    systemPrompt: string | null | undefined,
+    requestTools: ReadonlyArray<Record<string, unknown>>,
   ): Promise<RequestPackage> {
     this.ensureSystemPrompt(systemPrompt ?? undefined);
     this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
       recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
     });
-
-    if (!identity.isToolContinuation) this.memoryManager.resetAnthropicSignedHistory();
 
     const didCompact = this.pendingCompactionExecutor && !identity.isToolContinuation
       ? await this.pendingCompactionExecutor.executeIfAuthorized({
@@ -58,6 +57,13 @@ export class LLMRequestAssembler {
           signal: identity.signal,
         })
       : false;
+
+    // Runs on tool continuations too: tool definitions can change mid tool cycle. Any
+    // removal is persisted before the checkpoint, so a failed request cannot restore it.
+    this.memoryManager.bindRetainedReasoningToRequestPrefix(computeLlmRequestPrefixDigest({
+      leadingSystem: leadingSystemMessages(this.memoryManager.getWorkingContextMessages()),
+      tools: requestTools,
+    }));
 
     const recoverySnapshot = this.captureRecoverySnapshot(identity);
     try {
@@ -71,7 +77,7 @@ export class LLMRequestAssembler {
         recoverySourceEvent: 'LLMRequestAssembler.preRender',
       });
       const finalMessages = this.memoryManager.getWorkingContextMessages();
-      return await this.buildRequestPackage(finalMessages, didCompact, recoverySnapshot);
+      return await this.buildRequestPackage(finalMessages, requestTools, didCompact, recoverySnapshot);
     } catch (error) {
       this.memoryManager.restoreLlmRequestRecoverySnapshot(recoverySnapshot, {
         reason: 'request assembly failed after the stable-base checkpoint',
@@ -81,12 +87,9 @@ export class LLMRequestAssembler {
     }
   }
 
-  async renderPayload(messages: Message[]): Promise<unknown> {
-    return this.renderer.render(messages);
-  }
-
   private async buildRequestPackage(
     canonicalMessages: Message[],
+    tools: ReadonlyArray<Record<string, unknown>>,
     didCompact: boolean,
     recoverySnapshot: LlmRequestRecoverySnapshot,
   ): Promise<RequestPackage> {
@@ -97,7 +100,7 @@ export class LLMRequestAssembler {
     return {
       canonicalMessages,
       outboundMessages: sanitized.outboundMessages,
-      renderedPayload: await this.renderPayload(sanitized.outboundMessages),
+      tools,
       mediaDiagnostics: sanitized.diagnostics,
       didCompact,
       recoverySnapshot,

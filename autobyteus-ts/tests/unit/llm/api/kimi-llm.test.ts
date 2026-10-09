@@ -52,7 +52,7 @@ describe('KimiLLM K3 request policy', () => {
     const llm = new KimiLLM(buildModel(), new LLMConfig(), providerApiKeyResolver());
     await llm.sendMessages([
       new Message(MessageRole.USER, { content: 'Say pong.' }),
-    ], null, { reasoning_effort: 'medium' });
+    ], { reasoning_effort: 'medium' });
 
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k3',

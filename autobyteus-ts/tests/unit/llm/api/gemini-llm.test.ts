@@ -131,7 +131,7 @@ describe('GeminiLLM Gemini 3.8 request configuration', () => {
     const captured = captureGenerateContent(llm);
     const tools = [{ name: 'lookup', description: 'Look up a value', parameters: { type: 'object' } }];
 
-    await llm.sendMessages(userMessages, null, { tools }, { signal: callerAbortController.signal });
+    await llm.sendMessages(userMessages, { tools }, { signal: callerAbortController.signal });
 
     expect(captured().config).toEqual({
       responseMimeType: 'text/plain',

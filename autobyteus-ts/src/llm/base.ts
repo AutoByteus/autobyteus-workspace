@@ -7,6 +7,12 @@ import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
 
 export type LLMInvocationOptions = {
+  /**
+   * `'conversation'`: this call is a step of a growing conversation whose next call
+   * resends this call's prefix, so providers with explicit prompt caching may cache it.
+   * Absent: a one-shot call; providers must not request caching.
+   */
+  promptCacheScope?: 'conversation';
   retryMode?: 'single_attempt';
   signal?: AbortSignal | null;
   turnId?: string | null;
@@ -68,11 +74,10 @@ export abstract class BaseLLM {
 
   protected async executeBeforeHooks(
     messages: Message[],
-    renderedPayload: unknown,
     kwargs: Record<string, unknown>
   ): Promise<void> {
     for (const ext of this.extensionRegistry.getAll()) {
-      await ext.beforeInvoke(messages, renderedPayload, kwargs);
+      await ext.beforeInvoke(messages, kwargs);
     }
   }
 
@@ -88,11 +93,10 @@ export abstract class BaseLLM {
 
   async sendMessages(
     messages: Message[],
-    renderedPayload: unknown = null,
     kwargs: Record<string, unknown> = {},
     options: LLMInvocationOptions = {}
   ): Promise<CompleteResponse> {
-    await this.executeBeforeHooks(messages, renderedPayload, kwargs);
+    await this.executeBeforeHooks(messages, kwargs);
     const response = await this._sendMessagesToLLM(messages, kwargs, options);
     await this.executeAfterHooks(messages, response, kwargs);
     return response;
@@ -100,11 +104,10 @@ export abstract class BaseLLM {
 
   async *streamMessages(
     messages: Message[],
-    renderedPayload: unknown = null,
     kwargs: Record<string, unknown> = {},
     options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
-    await this.executeBeforeHooks(messages, renderedPayload, kwargs);
+    await this.executeBeforeHooks(messages, kwargs);
 
     let accumulatedContent = "";
     let accumulatedReasoning = "";
@@ -135,7 +138,7 @@ export abstract class BaseLLM {
       messages.push(systemMessage);
     }
     messages.push(this.buildUserMessage(userMessage));
-    return this.sendMessages(messages, null, kwargs, options);
+    return this.sendMessages(messages, kwargs, options);
   }
 
   async *streamUserMessage(
@@ -149,7 +152,7 @@ export abstract class BaseLLM {
       messages.push(systemMessage);
     }
     messages.push(this.buildUserMessage(userMessage));
-    for await (const chunk of this.streamMessages(messages, null, kwargs, options)) {
+    for await (const chunk of this.streamMessages(messages, kwargs, options)) {
       yield chunk;
     }
   }

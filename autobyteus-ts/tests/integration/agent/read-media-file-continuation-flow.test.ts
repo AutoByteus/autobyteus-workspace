@@ -93,13 +93,13 @@ describe('read_media_file continuation flow (integration)', () => {
 
     const request = await new LLMRequestAssembler(
       memoryManager,
-      new GeminiPromptRenderer(),
       null,
       geminiDefinition!.staticMetadata.multimodalCapabilities,
     ).prepareRequest(
       pipelineResult.llmUserMessage,
-      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` },
-      'System prompt'
+      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` } as any,
+      'System prompt',
+      [],
     );
 
     const toolResultTraces = memoryManager
@@ -119,7 +119,7 @@ describe('read_media_file continuation flow (integration)', () => {
     expect(outboundCurrentMessage?.audio_urls).toEqual([audioPath]);
     expect(outboundCurrentMessage?.video_urls).toEqual([videoPath]);
 
-    const renderedMessages = request.renderedPayload as Array<{
+    const renderedMessages = await new GeminiPromptRenderer().render(request.outboundMessages) as Array<{
       role?: string;
       parts?: Array<Record<string, unknown>>;
     }>;

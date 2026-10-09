@@ -46,8 +46,7 @@ const internalRuntimeKwargs = {
   conversationId: 'conversation-1',
   agentId: 'agent-1',
   turnId: 'turn-1',
-  requestId: 'request-1',
-  renderedPayload: { internal: true }
+  requestId: 'request-1'
 };
 
 const expectNoInternalRuntimeKwargs = (params: Record<string, unknown>) => {
@@ -79,10 +78,10 @@ describe('AnthropicLLM', () => {
     await opus55.sendMessages(userMessages);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({ model: 'claude-opus-5-5', thinking: { type: 'adaptive' } });
     expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('temperature');
-    await expect(opus55.sendMessages(userMessages, null, { thinking: { type: 'disabled' } })).rejects.toThrow('adaptive thinking only');
-    await expect(opus55.sendMessages(userMessages, null, { thinking: { type: 'enabled', budget_tokens: 1024 } })).rejects.toThrow('adaptive thinking only');
-    await expect(opus55.sendMessages(userMessages, null, { temperature: 0.5 })).rejects.toThrow('explicit sampling');
-    await expect(opus55.sendMessages(userMessages, null, { tool_choice: { type: 'any' } })).rejects.toThrow('forced tool choice');
+    await expect(opus55.sendMessages(userMessages, { thinking: { type: 'disabled' } })).rejects.toThrow('adaptive thinking only');
+    await expect(opus55.sendMessages(userMessages, { thinking: { type: 'enabled', budget_tokens: 1024 } })).rejects.toThrow('adaptive thinking only');
+    await expect(opus55.sendMessages(userMessages, { temperature: 0.5 })).rejects.toThrow('explicit sampling');
+    await expect(opus55.sendMessages(userMessages, { tool_choice: { type: 'any' } })).rejects.toThrow('forced tool choice');
     expect(mockCreate).toHaveBeenCalledTimes(1);
   });
 
@@ -219,7 +218,7 @@ describe('AnthropicLLM', () => {
       })
     );
 
-    await opus47.sendMessages(userMessages, null, {
+    await opus47.sendMessages(userMessages, {
       thinking: { type: 'adaptive', display: 'omitted' }
     });
 
@@ -237,7 +236,7 @@ describe('AnthropicLLM', () => {
     ];
     const opus47 = new AnthropicLLM(buildModel('claude-opus-4.7', 'claude-opus-4-7'));
 
-    await opus47.sendMessages(userMessages, null, {
+    await opus47.sendMessages(userMessages, {
       ...internalRuntimeKwargs,
       metadata: { user_id: 'test-user' },
       tools,
@@ -272,7 +271,7 @@ describe('AnthropicLLM', () => {
   it('drops provider-invalid manual thinking and sampling overrides for Sonnet 5', async () => {
     const sonnet5 = new AnthropicLLM(buildModel('claude-sonnet-5', 'claude-sonnet-5'));
 
-    await sonnet5.sendMessages(userMessages, null, {
+    await sonnet5.sendMessages(userMessages, {
       thinking: { type: 'enabled', budget_tokens: 32000 },
       temperature: 0.2,
       top_p: 0.9,
@@ -293,7 +292,7 @@ describe('AnthropicLLM', () => {
   ])('does not send manual thinking or unsupported sampling parameters to %s', async (modelId) => {
     const fable = new AnthropicLLM(buildModel(modelId, modelId));
 
-    await fable.sendMessages(userMessages, null, {
+    await fable.sendMessages(userMessages, {
       thinking: { type: 'disabled' },
       temperature: 0,
       top_p: 1,
@@ -311,7 +310,7 @@ describe('AnthropicLLM', () => {
   it('drops fixed-budget thinking for Fable 5.1', async () => {
     const fable = new AnthropicLLM(buildModel('claude-fable-5-1'));
 
-    await fable.sendMessages(userMessages, null, {
+    await fable.sendMessages(userMessages, {
       thinking: { type: 'enabled', budget_tokens: 32_000 },
     });
 
@@ -323,7 +322,7 @@ describe('AnthropicLLM', () => {
   it('passes invocation AbortSignal to sync message requests', async () => {
     const controller = new AbortController();
 
-    await llm.sendMessages(userMessages, null, {}, { signal: controller.signal });
+    await llm.sendMessages(userMessages, {}, { signal: controller.signal });
 
     expect(mockCreate.mock.calls[0]?.[1]).toEqual({ signal: controller.signal });
   });
@@ -396,7 +395,7 @@ describe('AnthropicLLM', () => {
       })
     );
 
-    for await (const _chunk of llm.streamMessages(userMessages, null, {
+    for await (const _chunk of llm.streamMessages(userMessages, {
       temperature: 0,
       top_p: 1
     })) {
@@ -423,7 +422,7 @@ describe('AnthropicLLM', () => {
     ];
     const opus47 = new AnthropicLLM(buildModel('claude-opus-4.7', 'claude-opus-4-7'));
 
-    for await (const _chunk of opus47.streamMessages(userMessages, null, {
+    for await (const _chunk of opus47.streamMessages(userMessages, {
       ...internalRuntimeKwargs,
       metadata: { user_id: 'stream-user' },
       tools,
@@ -444,7 +443,7 @@ describe('AnthropicLLM', () => {
     mockCreate.mockResolvedValueOnce(emptyStream());
     const controller = new AbortController();
 
-    for await (const _chunk of llm.streamMessages(userMessages, null, {}, { signal: controller.signal })) {
+    for await (const _chunk of llm.streamMessages(userMessages, {}, { signal: controller.signal })) {
       // consume stream
     }
 

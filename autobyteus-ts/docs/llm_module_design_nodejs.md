@@ -15,7 +15,30 @@ under the same provider-centered model contract.
 
 - **`BaseLLM`** (`src/llm/base.ts`): message history, system prompt,
   extensions, and the abstract `_sendUserMessageToLLM` /
-  `_streamUserMessageToLLM` hooks.
+  `_streamUserMessageToLLM` hooks. The call surface is
+  `sendMessages(messages, kwargs?, options?)` / `streamMessages(messages,
+  kwargs?, options?)`; extension hooks receive `beforeInvoke(messages, kwargs)`.
+  Each provider adapter is the only builder and renderer of its own requests:
+  callers pass `Message[]`, never a pre-rendered payload, and never read a
+  provider's private `_renderer`.
+- **`LLMInvocationOptions`**: per-call `signal`, `turnId`, `retryMode` and
+  `promptCacheScope`. `promptCacheScope: 'conversation'` declares that the call
+  is one step of a growing agent conversation whose next call resends its
+  prefix (set by the agent loop). Absent means a one-shot call (for example the
+  compaction summarizer); providers with explicit prompt caching must not
+  request caching for it.
+- **Provider-native assistant turns** (`src/llm/provider-native/`): a provider's
+  own record of one assistant response, stored on the assistant message under
+  `metadata.provider_native_assistant_turn` as an opaque `{ provider, ... }`
+  value. Memory and agent code handle it only through the neutral operations in
+  `provider-native-history.ts` (`nativeTurnMetadata`, `readProviderNativeTurn`,
+  `messageHasPrefixBoundReasoning`, `messageWithoutPrefixBoundReasoning`), which
+  resolve the owning `ProviderNativeHistoryPolicy` by the `provider` tag. Each
+  policy lives next to its adapter in `src/llm/api/` (Anthropic:
+  `anthropic-native-history-policy.ts` over `anthropic-native-assistant-turn.ts`,
+  where `thinking`/`redacted_thinking` blocks are prefix-bound reasoning). An
+  unknown provider tag fails closed. Adapter files import only the contract type
+  files, never the registry.
 - **`LLMModel`** (`src/llm/models.ts`): model metadata including:
   - `model_identifier`
   - `provider_id`
@@ -94,7 +117,7 @@ Two OpenAI-style paths coexist:
 - `src/llm/api/provider-request-kwargs.ts` owns shared external-provider
   filtering for internal invocation fields such as `logicalConversationId`,
   `logical_conversation_id`, `conversationId`, `agentId`, `turnId`,
-  `requestId`, and `renderedPayload`. Provider adapters name their own
+  and `requestId`. Provider adapters name their own
   controlled fields; the sanitizer must not own provider-specific model policy.
 - Provider adapters keep provider-specific request legality local before
   delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
@@ -287,6 +310,17 @@ Provider adapters own request-shape differences:
   including signed or redacted thinking and tool-use blocks, and retains it
   privately for an active tool continuation rather than exposing it as an
   outward assistant event.
+- Anthropic prompt caching: for a `promptCacheScope: 'conversation'` call
+  (sync and streaming alike) `AnthropicLLM` sends the leading system run as one
+  top-level `system` text block carrying `cache_control: { type: 'ephemeral',
+  ttl: '1h' }` and adds top-level automatic caching with the same 1h TTL (two
+  breakpoints; tools are covered by the system breakpoint). One-shot calls send
+  no `cache_control` and keep `system` as a plain string. Only the leading run
+  of SYSTEM messages becomes the top-level `system`; a SYSTEM message after the
+  conversation started (such as the interruption boundary note) stays in place
+  and is rendered as user-role text, so the cached system prefix never changes
+  mid-conversation. `cache_control` is adapter-owned: it is dropped from
+  invocation kwargs and config `extraParams`.
 - The `claude-fable-5-1` definition exposes no manual thinking schema because
   adaptive thinking is always on. Its exact 1M context/input and 128k output
   limits plus Standard `10/50/0.25/12.5/20`
@@ -445,9 +479,9 @@ The direct-Gemini `.m4a` path has an opt-in live proof in
 `tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
 runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
 fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
-sample; the live test renders the exact local file bytes as Gemini
-`inlineData`, verifies `mimeType: 'audio/mp4'`, calls direct Gemini through
-`sendMessages(request.messages, request.renderedPayload)`, and asserts the
+sample; the live test renders the assembled request's exact local file bytes
+with the Gemini renderer as `inlineData`, verifies `mimeType: 'audio/mp4'`,
+calls direct Gemini through `sendMessages(request.outboundMessages)`, and asserts the
 response contains the spoken word `hello`. `AUTOBYTEUS_GEMINI_M4A_LIVE_MODEL`
 can override the default live model for targeted provider compatibility checks.
 The test is a provider-acceptance and simple transcription-signal guard; token

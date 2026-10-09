@@ -149,7 +149,7 @@ describe('OpenAICompatibleLLM', () => {
     });
     const controller = new AbortController();
 
-    await llm.sendMessages([], null, {}, { signal: controller.signal });
+    await llm.sendMessages([], {}, { signal: controller.signal });
 
     expect(mockCreate.mock.calls[0]?.[1]).toEqual({ signal: controller.signal });
   });
@@ -318,7 +318,7 @@ describe('OpenAICompatibleLLM', () => {
     mockCreate.mockResolvedValue(createStream([]));
     const controller = new AbortController();
 
-    for await (const _chunk of llm.streamMessages([], null, {}, { signal: controller.signal })) {
+    for await (const _chunk of llm.streamMessages([], {}, { signal: controller.signal })) {
       // consume stream
     }
 
@@ -408,7 +408,7 @@ describe('OpenAICompatibleLLM', () => {
       }
     ];
 
-    await configured.sendMessages([], null, {
+    await configured.sendMessages([], {
       logicalConversationId: 'agent-1',
       tools,
       tool_choice: 'required'

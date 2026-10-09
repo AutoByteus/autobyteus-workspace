@@ -38,11 +38,9 @@ describe('memory-to-render tool continuation reasoning spine', () => {
       expect(snapshotMessages[0].reasoning_content).toBe('Need the workspace path before answering.');
       expect(snapshotMessages[0].tool_payload).toBeInstanceOf(ToolCallPayload);
 
-      const defaultRequest = await new LLMRequestAssembler(
-        manager,
-        new OpenAIChatRenderer()
-      ).prepareRequest(null, { turnId, requestId: `${turnId}:llm:1` });
-      const defaultRendered = defaultRequest.renderedPayload as any[];
+      const defaultRequest = await new LLMRequestAssembler(manager)
+        .prepareRequest(null, { turnId, requestId: `${turnId}:llm:1` } as any, undefined, []);
+      const defaultRendered = await new OpenAIChatRenderer().render(defaultRequest.outboundMessages) as any[];
 
       expect(defaultRendered[0]).toMatchObject({
         role: 'assistant',
@@ -60,11 +58,9 @@ describe('memory-to-render tool continuation reasoning spine', () => {
       });
       expect(defaultRendered[0]).not.toHaveProperty('reasoning_content');
 
-      const deepSeekRequest = await new LLMRequestAssembler(
-        manager,
-        new DeepSeekChatRenderer()
-      ).prepareRequest(null, { turnId, requestId: `${turnId}:llm:2` });
-      const deepSeekRendered = deepSeekRequest.renderedPayload as any[];
+      const deepSeekRequest = await new LLMRequestAssembler(manager)
+        .prepareRequest(null, { turnId, requestId: `${turnId}:llm:2` } as any, undefined, []);
+      const deepSeekRendered = await new DeepSeekChatRenderer().render(deepSeekRequest.outboundMessages) as any[];
 
       expect(deepSeekRendered[0]).toMatchObject({
         role: 'assistant',

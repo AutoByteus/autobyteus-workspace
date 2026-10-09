@@ -2,16 +2,16 @@ import { countCompactedMemoryRegions, collectMessageRawTraceIds } from '../worki
 import type { MessageCompactionPlan } from './working-context-message-unit.js';
 import { WorkingContextFinalizer } from '../working-context-finalizer.js';
 import { WorkingContextMessageUnitBuilder } from './working-context-message-unit-builder.js';
-import { withoutAnthropicThinkingInMessage } from '../../llm/utils/provider-native-assistant-turn.js';
+import { messageHasPrefixBoundReasoning, messageWithoutPrefixBoundReasoning } from '../../llm/provider-native/provider-native-history.js';
 import { isDeepStrictEqual } from 'node:util';
 import {
   Message,
   MessageRole,
   ToolCallPayload,
   ToolResultPayload,
+  leadingSystemMessages,
 } from '../../llm/utils/messages.js';
 import { ProviderNativeToolCallContextSchema } from '../../llm/utils/tool-call-delta.js';
-import { ANTHROPIC_ASSISTANT_TURN_KEY, parseAnthropicAssistantTurn } from '../../llm/utils/provider-native-assistant-turn.js';
 import { WorkingContext } from '../working-context.js';
 import type { AcceptedWorkingContextCompaction } from './working-context-compaction-proposal.js';
 
@@ -69,14 +69,11 @@ export class WorkingContextCompactionOutputValidator {
     }
     const nextMessages = next.buildMessages();
     assertWorkingContextMessagesStructurallyValid(nextMessages);
-    if (nextMessages.some((message) => {
-      const native = message.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY];
-      return native !== undefined && parseAnthropicAssistantTurn(native).blocks.some((block) => block.type === 'thinking' || block.type === 'redacted_thinking');
-    })) {
-      throw new WorkingContextCompactionOutputValidationError('invalid-message-shape', 'Compacted context retains stale Anthropic thinking blocks.');
+    if (nextMessages.some(messageHasPrefixBoundReasoning)) {
+      throw new WorkingContextCompactionOutputValidationError('invalid-message-shape', 'Compacted context retains stale prefix-bound provider reasoning.');
     }
 
-    const requiredHead = takeLeadingSystemMessages(baselineMessages);
+    const requiredHead = leadingSystemMessages(baselineMessages);
     const returnedHead = nextMessages.slice(0, requiredHead.length);
     if (
       returnedHead.length !== requiredHead.length
@@ -95,7 +92,7 @@ export class WorkingContextCompactionOutputValidator {
     }
     const units = new WorkingContextMessageUnitBuilder().build(nextMessages);
     const retained = units.filter((unit) => unit.kind !== 'system' && unit.kind !== 'compacted_memory').flatMap((unit) => unit.messages);
-    const expected = new WorkingContextFinalizer().markNaturalUserMessagesRetained(plan.retainedMessages).map(withoutAnthropicThinkingInMessage);
+    const expected = new WorkingContextFinalizer().markNaturalUserMessagesRetained(plan.retainedMessages).map(messageWithoutPrefixBoundReasoning);
     const natural = (messages: Message[]) => new WorkingContextMessageUnitBuilder().build(messages).flatMap((unit) => unit.messages).map((message) => message.toDict());
     if (!isDeepStrictEqual(natural(retained), natural(expected))) {
       throw new WorkingContextCompactionOutputValidationError('changed-retained-context', 'Protected retained content changed.');
@@ -129,15 +126,6 @@ export const assertWorkingContextMessagesStructurallyValid = (
 // Safe snapshot decode admits unfinished batches; dispatch validation above does not.
 export const assertWorkingContextMessageShapesValid = (messages: readonly Message[]): void => {
   messages.forEach((message, index) => assertValidMessage(message, index));
-};
-
-const takeLeadingSystemMessages = (messages: Message[]): Message[] => {
-  const leading: Message[] = [];
-  for (const message of messages) {
-    if (message.role !== MessageRole.SYSTEM) break;
-    leading.push(message);
-  }
-  return leading;
 };
 
 const assertValidMessage = (message: Message, index: number): void => {

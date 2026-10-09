@@ -225,14 +225,32 @@ The active JSONL reader preserves complete earlier records and truncates only a
 malformed final physical record from a partial append. Earlier malformed records
 remain integrity errors; relaxing root-version handling does not relax raw facts.
 
-Anthropic native assistant-turn metadata remains private working context. Within
-an active tool cycle, ordered blocks including signed/redacted thinking replay
-with matching tool results. Before a new independent turn the request assembler
-removes earlier replayable thinking atomically while retaining text/tool-use/
-results. Compaction is deferred while continuation needs that signed history;
-accepted client-authored compaction removes stale thinking and validates protocol.
-Outward events must not project private metadata. This does not add a root
-snapshot version.
+Provider-native assistant-turn metadata (`provider_native_assistant_turn`, for
+example Anthropic's ordered text/thinking/redacted-thinking/`tool_use` blocks)
+remains private working context. Memory stores it as an opaque provider-tagged
+value after the provider's policy validated it against the executable tool calls
+(`nativeTurnMetadata` in `src/llm/provider-native/`); memory code contains no
+provider-specific rules. The native history is append-only between compactions:
+earlier turns, including their signed reasoning, are replayed unchanged across
+tool continuations and new independent turns so provider prompt caches read the
+whole previous history. Text-only replies are stored without a native turn.
+
+Reasoning that a provider binds to the request prefix is removed only when the
+request would otherwise be rejected. `LLMRequestAssembler` computes a digest of
+the leading system run and the exact tool schemas it will send, after compaction
+and before the request recovery checkpoint, and calls
+`MemoryManager.bindRetainedReasoningToRequestPrefix(digest)`. When the digest
+differs from the previous request of this in-memory agent (a tool definition or
+the leading system prompt changed, for example after a Settings or tool-schema
+reload), or on the first request after the agent was created or restored (the
+digest is not persisted), all prefix-bound reasoning is removed once through
+`messageWithoutPrefixBoundReasoning` and the stripped context is persisted before
+the checkpoint, so a failed request cannot restore it. Otherwise nothing is
+rewritten. The guard also runs on tool continuations. Compaction is deferred
+while a tool continuation is active; accepted client-authored compaction removes
+stale prefix-bound reasoning and validates protocol. Outward events must not
+project private metadata. This does not add a root snapshot version; stored
+snapshots keep the same key and value shape.
 
 ## 7. Files And Frozen Historical Migration
 

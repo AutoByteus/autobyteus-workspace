@@ -7,6 +7,7 @@ import { createGeminiTokenUsageObservation } from '../../../../src/llm/api/gemin
 import { createOllamaTokenUsageObservation } from '../../../../src/llm/api/ollama-llm.js';
 import {
   createAnthropicUsageAccumulator,
+  createAnthropicTokenUsageObservation,
   createAnthropicTokenUsageObservationFromAccumulator,
   foldAnthropicUsage,
 } from '../../../../src/llm/api/anthropic-token-usage-normalizer.js';
@@ -198,6 +199,28 @@ describe('provider token usage normalizers', () => {
       billable_output_tokens: 115,
       raw_usage_json: usage,
       quality_flags: [],
+    }));
+  });
+
+  it('records Anthropic 1h cache writes and cache reads from a cached conversation request', () => {
+    const model = buildModel(LLMProvider.ANTHROPIC, 'claude-opus-5-5');
+    const usage = {
+      input_tokens: 12,
+      cache_read_input_tokens: 9100,
+      cache_creation_input_tokens: 640,
+      cache_creation: { ephemeral_5m_input_tokens: 0, ephemeral_1h_input_tokens: 640 },
+      output_tokens: 80,
+    };
+
+    const observation = createAnthropicTokenUsageObservation(usage, model);
+
+    expect(observation).toEqual(expect.objectContaining({
+      input_tokens: 12,
+      cache_read_input_tokens: 9100,
+      cache_creation_input_tokens: 640,
+      cache_creation_5m_input_tokens: 0,
+      cache_creation_1h_input_tokens: 640,
+      cache_state: 'positive',
     }));
   });
 
