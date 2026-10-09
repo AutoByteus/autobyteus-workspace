@@ -1,0 +1,120 @@
+{
+  "backendUrl": "http://127.0.0.1:49869",
+  "runtimeKind": "codex_app_server",
+  "modelIdentifier": "gpt-5.6-luna",
+  "runId": "tma_api_e2e_codex_app_server_6ef9e7a5_444b6d0239e242f78766964cf4ba9142",
+  "idleIndex": 26,
+  "idleAt": 3093,
+  "usage": [
+    {
+      "index": 22,
+      "t": 2987,
+      "ingestion": "codex_thread_token_usage",
+      "call": null,
+      "model": "gpt-5.6-luna",
+      "input": 11251,
+      "cacheRead": 5888,
+      "cacheCreation": null,
+      "output": 8,
+      "accountingTotal": 11259,
+      "prompt": 11251,
+      "window": 258400,
+      "percent": 4.3541021671826625,
+      "threshold": null,
+      "flags": [
+        "first_cumulative_snapshot_baselined_from_provider_delta"
+      ],
+      "summaryCount": 1,
+      "summaryRevision": null
+    }
+  ],
+  "midTurnSummaries": [
+    {
+      "t": 415,
+      "summary": {
+        "runId": "tma_api_e2e_codex_app_server_6ef9e7a5_444b6d0239e242f78766964cf4ba9142",
+        "grossInputTokens": 0,
+        "standardInputTokens": 0,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "outputTokens": 0,
+        "totalTokens": 0,
+        "usageReportCount": 0,
+        "latestPromptTokens": null,
+        "effectiveContextWindowTokens": null,
+        "contextWindowUsagePercent": null,
+        "latestModelIdentifier": null,
+        "latestRuntimeKind": null,
+        "estimatedApiTotalCost": null,
+        "apiCostStatus": "price_missing"
+      }
+    },
+    {
+      "t": 1921,
+      "summary": {
+        "runId": "tma_api_e2e_codex_app_server_6ef9e7a5_444b6d0239e242f78766964cf4ba9142",
+        "grossInputTokens": 0,
+        "standardInputTokens": 0,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "outputTokens": 0,
+        "totalTokens": 0,
+        "usageReportCount": 0,
+        "latestPromptTokens": null,
+        "effectiveContextWindowTokens": null,
+        "contextWindowUsagePercent": null,
+        "latestModelIdentifier": null,
+        "latestRuntimeKind": null,
+        "estimatedApiTotalCost": null,
+        "apiCostStatus": "price_missing"
+      }
+    }
+  ],
+  "finalSummary": {
+    "runId": "tma_api_e2e_codex_app_server_6ef9e7a5_444b6d0239e242f78766964cf4ba9142",
+    "grossInputTokens": 11251,
+    "standardInputTokens": 5363,
+    "cacheReadInputTokens": 5888,
+    "cacheCreationInputTokens": 0,
+    "outputTokens": 8,
+    "totalTokens": 11259,
+    "usageReportCount": 1,
+    "latestPromptTokens": 11251,
+    "effectiveContextWindowTokens": 258400,
+    "contextWindowUsagePercent": 4.354102167182663,
+    "latestModelIdentifier": "gpt-5.6-luna",
+    "latestRuntimeKind": "codex_app_server",
+    "estimatedApiTotalCost": 0.00119996,
+    "apiCostStatus": "estimated"
+  },
+  "messageTypes": [
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "TURN_STARTED",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_START",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_CONTENT",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_CONTENT",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_CONTENT",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_CONTENT",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_END",
+    "AGENT_INPUT_STATE",
+    "TOKEN_USAGE_UPDATED",
+    "AGENT_INPUT_STATE",
+    "AGENT_INPUT_STATE",
+    "TURN_COMPLETED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE"
+  ]
+}

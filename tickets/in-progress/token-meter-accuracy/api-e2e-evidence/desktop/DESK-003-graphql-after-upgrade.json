@@ -1,0 +1,37 @@
+{
+ "data": {
+  "claude": {
+   "runId": "tma_api_e2e_claude_agent_sdk_67f3d3e6_29d8520ced7240bfbaebda81569785f1",
+   "latestRuntimeKind": "claude_agent_sdk",
+   "latestModelIdentifier": "claude-haiku-5-5",
+   "usageReportCount": 1,
+   "revision": 1,
+   "totalTokens": 85092,
+   "grossInputTokens": 84846,
+   "outputTokens": 246,
+   "latestPromptTokens": null,
+   "effectiveContextWindowTokens": null,
+   "contextWindowUsagePercent": null,
+   "contextCompactionThresholdTokens": null,
+   "estimatedApiTotalCost": null,
+   "apiCostStatus": "price_missing"
+  },
+  "codex": {
+   "runId": "tma_api_e2e_codex_app_server_6ef9e7a5_444b6d0239e242f78766964cf4ba9142",
+   "latestRuntimeKind": "codex_app_server",
+   "latestModelIdentifier": "gpt-5.6-luna",
+   "usageReportCount": 1,
+   "revision": 1,
+   "totalTokens": 11259,
+   "grossInputTokens": 11251,
+   "outputTokens": 8,
+   "latestPromptTokens": 11251,
+   "effectiveContextWindowTokens": 258400,
+   "contextWindowUsagePercent": 4.354102167182663,
+   "contextCompactionThresholdTokens": null,
+   "estimatedApiTotalCost": 0.00119996,
+   "apiCostStatus": "estimated"
+  }
+ }
+}
+{"data":{"restoreAgentRun":{"success":true,"message":"Agent run restored successfully."}}}
