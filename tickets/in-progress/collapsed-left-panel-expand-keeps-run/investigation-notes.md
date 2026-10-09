@@ -240,3 +240,36 @@ No closer `DESIGN*.md` exists under `autobyteus-web` (`find autobyteus-web -maxd
 - Map SCN-001..SCN-005 to: strip control → `redockLeftPanel` (no route change); panel mount → reveal selected ancestry → scroll selected row into view after rows render.
 - Verify U-001/U-002 with a probe before deciding whether reveal needs extension.
 - Keep strip icons' navigation contract unless DEC-002 says otherwise.
+
+## Post-Design User Question (2026-10-08, via API/E2E Engineer)
+
+- The user asked whether the strip Chat icon could just open the panel and stay on the current page, with the pencil opening New chat, so the Workspaces icon would not be needed. API/E2E relayed it from run `api_e2e_engineer_53e11486789946d7b9ab010d9972431b`. The implementation is validated (API-REV-002) and delivery DR-001 is in progress on `e0ee0ce99`.
+- Assessment (Solution Designer): it is feasible, but not recommended. The reasons are in my reply to the user.
+- Status: not a requirement change unless the user chooses it. Requirements stay `Approved` at SR-003, and no artifacts were changed.
+- User decision (2026-10-08): "Yeah, I think you're right. It becomes inconsistent." Keep the Workspaces icon. The Chat-only-expands alternative is rejected. Requirements are unchanged (SR-003 `Approved`), and the design and delivery continue as they are.
+
+## User Change Request (2026-10-09): one control should fold and unfold
+
+- The user, after trying the build, wrote: "I don't like this approach ... after I click the collapse button on the chat row ... we got the tree icon and I click the tree icon, then it comes out again ... normally the same icon is controlling the folding and unfolding ... if we introduce a tree icon, the folding and unfolding are happening from two different icons. This is where things get strange."
+- Facts checked in source (`efc2bfd0f`+):
+  - Docked left collapse: panel glyph (`M9 3v18`) at the right end of the Chat row (`AppLeftPanel.vue`).
+  - Right side, run views: collapse with the panel glyph (`M15 3v18`) in the tab row (`RightSideTabs.vue`). Reopen from the right strip's tab icons, which never navigate (`RightSidebarStrip.vue`). The right strip has no toggle glyph.
+  - Right side, start surfaces: one panel glyph opens the tools (`StartSurfaceToolsToggle.vue`: "the same icon, in the same corner, as the panel's own close button").
+- History: round 1 of the Product review built exactly a same-glyph expand toggle at the top of the strip (`review-evidence/round-1/R1-01`, `R1-02`). The user rejected it then as looking "really strange". The new feedback is about the fold/unfold principle, not the look.
+- Classification: `Requirement Gap` (user change to intended behavior: DEC-001, REQ-001, REQ-008, REQ-009 and the confirmed UI/UX spec). It needs the user's direction, then revised requirements and renewed approval. Delivery DR-001 must not finalize the current design.
+- Delivery halt confirmed (2026-10-09), DR-002 Blocked (Requirement Gap). Local commit `d61ae654d` records the halt. No merge, push, release or cleanup was done. Facts for the revision:
+  - DR-001 merged `origin/personal@ebf68c4af` as `f8b1fb4ec`. This ticket's probe cases were renumbered PMU-017 → PMU-018 and PMU-018 (A–H) → PMU-019. Revised probe work starts from these IDs.
+  - Docs that describe the rejected Workspaces design and must be revised or reverted:
+    - `TESTING.md` (PMU-018/019)
+    - `autobyteus-web/docs/projects.md`
+    - `autobyteus-web/docs/workspace_layout.md`
+    - `autobyteus-web/docs/chat.md`
+    - ticket `release-notes.md` and `docs-sync-report.md`
+  - Delivery restarts on the revised package with a base refresh, full docs sync, new release notes and new user verification.
+- Alternatives discussed with the user (2026-10-09):
+  - the same panel icon in the strip
+  - the panel icon in the page's top row
+  - a hover swap
+  - every strip icon only unfolds (two-click page navigation)
+- User decision (2026-10-09), verbatim: "After thinking for a long time, seems like the best option is still the tree option." The user also asked to have delivery resume.
+- Result: the change request is withdrawn. Requirements stay `Approved` at SR-003, the design at SR-004 is unchanged, and the validated build stands. Delivery is asked to resume from DR-002.

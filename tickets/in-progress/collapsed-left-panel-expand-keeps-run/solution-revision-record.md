@@ -8,6 +8,7 @@
 | SR-002 | Requirements | Product `Design Completed` (user-confirmed UI/UX spec, 2026-10-08) | DEC-001 → D; DEC-005 new | Ready for Approval (SR-001) | Ready for Approval | REQ-001, REQ-003, REQ-006, REQ-007 revised; REQ-008..REQ-010 new; BEH-008 new; AC-001, AC-004, AC-007, AC-009, AC-010 revised; AC-011, AC-012 new; SCN-006 new | Presented to user for approval with DEC-005 |
 | SR-003 | Requirements | User approval 2026-10-08 ("Like your suggestion. Let's do it.") | DEC-003, DEC-004, DEC-005 | Ready for Approval | Approved | REQ-008, AC-011 (DEC-005 wording); DEC-003/004/005 decided | Requirements Approved |
 | SR-004 | Design | Architecture design after SR-003 approval | AF-001..AF-010 | N/A (no design) | Design Ready; Medium/Low | All REQ/AC mapped; D-1..D-7 | Architecture Design Complete |
+| SR-005 | Evidence | User change request after trying the build (2026-10-09), withdrawn the same day | Requirement Gap raised, then withdrawn | Approved (SR-003); Design Ready (SR-004) | Approved (SR-003, unchanged); Design unchanged | None | Delivery asked to resume |
 
 ## Revision Entries
 
@@ -114,3 +115,19 @@
 - Applied handoff-rule outcome: see `handoff-architecture-design-complete.md`.
 - Remaining gaps: U-001 / R-003 (Team- and Org-hosted Task-card entries) are to be proven in production validation.
 - Next action: implementation (direct route per handoff rules).
+
+### SR-005 — Change request raised and withdrawn; tree option kept
+
+- Phase and classification: Evidence. A `Requirement Gap` was raised and then withdrawn by the user, so the net result is no change.
+- Trigger, 2026-10-09: after trying the build, the user objected that the panel folds with one icon (the panel icon on the Chat row) but unfolds with another (the tree).
+- Delivery was halted (DR-002, Blocked). Alternatives were discussed:
+  - the same panel icon in the strip (round-1 shape, previously rejected)
+  - the panel icon in the page's top row
+  - a hover swap
+  - every strip icon only unfolds the panel
+- User decision: "After thinking for a long time, seems like the best option is still the tree option." The user asked to have delivery resume.
+- Intended behavior changed: `No`. Requirements stay `Approved` at SR-003, and the design is unchanged at SR-004.
+- Approval impact: none.
+- Downstream impact: delivery resumes from its DR-002 halt; the user's own request is the authority for it.
+- Applied route: `send_message_to` → `/software_engineering_team/delivery_engineer`, at the user's explicit request. No handoff rule covers this.
+- Next action: delivery continues with its completion gates (base refresh as needed, docs sync, user verification).
