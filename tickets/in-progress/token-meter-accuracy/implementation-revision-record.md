@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer pass, `design-review-report.md`, round 3 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003 | Implementation complete; local checks green; ready for Code Review |
+| IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review |
 
 ## Revision Entries
 
@@ -40,3 +41,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: contracts 17 + 10 pass; server unit 5,118 pass / 7 skipped; server token-usage integration 24 pass; core related 75 pass; web Nuxt suite 4,009 pass / 5 skipped; typecheck clean; rendered panel inspected in a browser; RR-2 verified with a real resumed AGY conversation. Full server integration suite: 338 pass / 68 skipped / 2 known-exception failures (TESTING.md content-cadence cases).
 - Next recipient or routing: Code Reviewer (Large/High route), per `get_handoff_rules`.
 - Remaining limitations or risks: see `implementation-handoff.md` § Known Risks.
+
+### IR-002 — DEC-005 clear at the ledger-consolidation boundary
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/code-review-report.md`, CRR-001 round 1.
+- Triggering finding IDs: CR-F-001 (Medium, blocking).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-001. On a direct upgrade from a ledger-era release (v1.3.77–v1.4.52), the Prisma clear ran against an empty run-record table. The later `token-usage-run-records-v1` consolidation then stored each Claude run's last ledger reading, a turn-level sum. IR-001 recorded this as a "no machinery" risk.
+- Current authoritative result: the migration-owned `legacyRowToCurrentPayload` passes null `latest_prompt_tokens`, `effective_context_window_tokens` and `context_window_usage_percent` for `claude_agent_sdk` ledger rows. Totals, costs, counts and non-Claude readings are unchanged.
+- Related solution revision IDs: SR-005.
+- Related architecture-review revision IDs: ARCH-REV-003.
+- Related code-review revision IDs: CRR-001.
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: it applies the approved DEC-005 (a) clear at the second migration boundary that produces run records. The data-migration guideline keeps released source shapes supported, and no minimum upgrade-from version is declared.
+- Approved behavior or requirement IDs affected: DEC-005 (a), REQ-009 / AC-002, BEH-008.
+- Implementation delta: `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts` (a `claudeSdkReading` guard on the three reading fields). Test: a new case in `autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts`. Handoff: the "skip-version" risk was removed and the second disposition point recorded under the Persisted Data Transition Check. No runtime code changed.
+- Local validation and result:
+  - The new consolidation test passes, and a mutation that disables the guard fails it.
+  - `vitest run tests/unit/app-data-migrations tests/unit/token-usage tests/unit/startup`: 70 files, 470 pass.
+  - Server typecheck clean.
+- Next recipient or routing: Code Reviewer (targeted delta review), per `get_handoff_rules`.
+- Remaining limitations or risks: non-blocking C-02 (the accumulator imports `tokenUsageObservationContributes` from record-state) is left as is to keep this a minimal Local Fix. `tokenUsageMeterStore.ts` is at 499 effective lines, unchanged here.
+

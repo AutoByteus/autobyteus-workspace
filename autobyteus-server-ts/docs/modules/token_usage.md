@@ -351,7 +351,10 @@ checkpoints, treats a missing live-sum list as empty and ignores fields it no
 longer uses. The `20261009120000_token_meter_context_readings` migration cleared
 the latest prompt, window and percentage of every Claude SDK row written before
 this change. Those values summed every call of a turn (up to 6,759 %) and cannot
-be recomputed; totals and costs were left untouched.
+be recomputed; totals and costs were left untouched. A direct upgrade from a
+ledger-era release consolidates Claude SDK ledger rows the same way: the
+`token-usage-run-records-v1` consolidation keeps their totals and drops their
+readings.
 
 Claude/Anthropic input uses `base_excludes_cache`: gross input is base input
 plus cache-read and cache-creation buckets. Per-call cache writes carry the exact

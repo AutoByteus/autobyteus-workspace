@@ -34,15 +34,15 @@ Other runtimes and the meter:
 - **Meter** shows the threshold marker and label, and marks a genuine over-window reading.
 - **Pre-fix Claude readings** are cleared by one Prisma migration.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 Local Fix for CR-F-001; IR-001 initial baseline)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-meter-accuracy/tickets/in-progress/token-meter-accuracy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-005` (cumulative SR-001–SR-005)
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-F-001`
 
 ## Routing Classification (Mandatory)
 
@@ -98,7 +98,6 @@ Other runtimes and the meter:
 - RR-1 (accepted): per-call Claude pricing uses the API response model's exact Anthropic catalog identity. Checked: Opus 5.5, Sonnet 5 and Fable 5.1 resolve to trusted prices. Haiku 4.5 calls stay `price_missing` because the catalog has no entry (AF-10).
 - RR-4 (accepted): a dated API response model id would split per-call identity from the turn-end canonical identity.
 - A Claude process that crashes mid-turn leaves its live sums pending. The next resume-opened result re-anchors and consumes them. Compaction-call tokens inside that crashed turn are not admitted (bounded undercount; same class as the existing restart approximation).
-- Skip-version upgrade from a ledger-era release: the Prisma clear runs before the `token-usage-run-records-v1` app-data consolidation. That consolidation could rebuild a Claude row's latest reading from old ledger rows. Those rows hold per-turn result readings (multi-call sums), so such a row shows one stale reading until its next model call. Technically possible but rare; no machinery added.
 - The legacy consolidation reuses the current `applyTokenUsageContribution`. It now keeps the previous reading when a later ledger row has none, where it used to erase it. Totals and the report-count validation are unchanged.
 - Codex `cacheWriteInputTokens` stays unmapped (out of scope).
 
@@ -140,10 +139,12 @@ Other runtimes and the meter:
 
 - Approved decision: `Migration Required` for pre-fix Claude SDK readings; `Directly Usable — No Migration` for the new column and the reconciler state.
 - Design-spec decision reference: § Persisted Data / State Transition Decision (1) and (2).
-- Implementation follows the approved decision: `Yes`. One Prisma SQL migration (`ALTER TABLE` plus `UPDATE` of `latest_runtime_kind = 'claude_agent_sdk'` rows) runs through the existing deploy step. No runtime code knows about pre-fix rows.
+- Implementation follows the approved decision: `Yes`. The DEC-005 clear has two migration-owned disposition points; no runtime code knows about pre-fix rows:
+  1. Released run records: one Prisma SQL migration (`ALTER TABLE` plus `UPDATE` of `latest_runtime_kind = 'claude_agent_sdk'` rows) runs through the existing deploy step.
+  2. Ledger-era direct upgrades (releases v1.3.77–v1.4.52, CR-F-001): the Prisma deploy runs before the `token-usage-run-records-v1` app-data consolidation, which builds run records from ledger rows. Its migration-owned `legacyRowToCurrentPayload` (`legacy-token-usage-row.ts`) now passes null prompt, window and percent for `claude_agent_sdk` ledger rows. Totals, costs and report counts are unchanged; other runtimes keep their readings.
 - Direct-use evidence: the tolerant reconciler decoder reads a released state (`version`, `selectedDetails`, no `live`), drops the unused keys on re-encode, and treats missing live sums as empty (unit test).
-- Migration checks: `tests/unit/startup/token-meter-context-readings-migration.test.ts` applies every released migration to a temp SQLite DB and seeds a released-shape Claude row (402.5 %) and a Codex row. After the migration the Claude readings are null, the count query is 0, the Codex reading and all totals, counts and revisions are untouched, and the current repository and summary read the migrated row. The readiness test fails closed without the new column. The migration-list fixtures in three migration test helpers include the new migration.
-- Deviation from the reviewed transition decision: `None`.
+- Migration checks: `tests/unit/startup/token-meter-context-readings-migration.test.ts` applies every released migration to a temp SQLite DB and seeds a released-shape Claude row (402.5 %) and a Codex row. After the migration the Claude readings are null, the count query is 0, the Codex reading and all totals, counts and revisions are untouched, and the current repository and summary read the migrated row. The readiness test fails closed without the new column. `token-usage-run-records-v1-app-data-migration.test.ts` "consolidates released Claude SDK ledger readings as unavailable…" consolidates a released ledger with a Claude turn (reading 4,025,193 / 1,000,000 / 402.5 %) and a Codex call. The Claude row has null readings with exact totals and one report; the Codex row keeps 92,942 / 258,400 / 35.97. A mutation that disables the null fails the test. The migration-list fixtures in three migration test helpers include the new migration.
+- Deviation from the reviewed transition decision: `None` in intent. The second disposition point (ledger consolidation) applies the same approved DEC-005 (a) clear at the other migration boundary that produces run records; the design named only the Prisma SQL step.
 
 ## Environment Or Dependency Notes
 
