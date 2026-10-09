@@ -10,6 +10,10 @@
 // BR-008..BR-011 cover reactivation (reactivate-done-task-runs): after DONE the agent reopens the Task and its
 // run-ID message brings the worker (or a Task Team via its coordinator) back into the tree, live, after reload and
 // across real backend restarts. BR-011 needs BR-008..BR-010 in the same run.
+// BR-012..BR-016 cover follow-up Tasks to an existing copy (delegate-to-existing-copy): `delegate_task` with the copy's
+// target_team_run_id / target_agent_run_id brings its row back live (tree and board), a repeated close of the earlier Task
+// never removes it, real backend restarts keep the assignment (BR-015), and damaged Task data detected at load refuses the
+// assignment until the file is restored (BR-016). BR-015 and BR-016 need BR-012..BR-014 in the same run.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
 // them in finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -38,7 +42,8 @@ const ledger = getArg('ledger');
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['BR-001', 'BR-002', 'BR-003', 'BR-004', 'BR-005', 'BR-006', 'BR-007', 'BR-008', 'BR-009', 'BR-010', 'BR-011'];
+const ALL_CASES = ['BR-001', 'BR-002', 'BR-003', 'BR-004', 'BR-005', 'BR-006', 'BR-007', 'BR-008', 'BR-009', 'BR-010', 'BR-011',
+  'BR-012', 'BR-013', 'BR-014', 'BR-015', 'BR-016'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 const SELECTED_BG = 'rgb(238, 242, 255)';
 
@@ -264,7 +269,8 @@ const newPage = async ({ reducedMotion = 'no-preference', initScript } = {}) => 
   return { context, page, errors };
 };
 const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
-const openRoot = async (page, root, names) => {
+/** Opens a root's run in the Workspaces tree. `requireTaskTree: false` when an Agent run may have no task rows (no tree). */
+const openRoot = async (page, root, names, { requireTaskTree = true } = {}) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
   await until('workspace rows', async () => (await page.locator('[data-test="workspace-row"]').count()) >= 2, 60000);
   await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
@@ -273,7 +279,7 @@ const openRoot = async (page, root, names) => {
     const runRow = page.locator('[data-test="workspace-agent-run-row"]');
     await until('agent run row', async () => (await runRow.count()) === 1, 30000);
     await runRow.click();
-    await until('agent task tree', async () => (await page.locator('[data-test="workspace-agent-run-task-tree"]').count()) === 1, 30000);
+    if (requireTaskTree) await until('agent task tree', async () => (await page.locator('[data-test="workspace-agent-run-task-tree"]').count()) === 1, 30000);
     return runRow;
   }
   if (root.kind === 'team') {
@@ -701,6 +707,230 @@ const reactivationAcrossRestart = async () => {
   return { firstRestart, afterRestart, secondRestart, afterSecond };
 };
 
+// ---------------------------------------------------------------- follow-up Task to an existing copy (delegate-to-existing-copy)
+const assignedCopies = {};
+/** The board's root line of one Task on its Project page: its state (`offline` when closed, else the live status) and name. */
+const boardRoot = async (page, taskId) => {
+  const row = page.locator(`[data-testid="project-task-row-${taskId}"]`);
+  const line = row.locator('[data-testid^="project-task-root-"][data-openable]');
+  if (!(await line.count())) return null;
+  return { state: (await line.getAttribute('data-testid')).replace('project-task-root-', ''),
+    name: (await row.locator('[data-testid="project-task-root-name"]').innerText()).trim() };
+};
+const LIVE = ['idle', 'running'];
+const graphqlRoot = async (projectId, taskId) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root { kind teamRunId ingressAgentRunId closed status start }}}',
+  { id: projectId })).projectTasks.find((t) => t.taskId === taskId);
+/** Records whether any of the given rows is ever absent while the page is watched (a row that must never leave). */
+const watchPresence = (page, selectors) => page.evaluate((sels) => {
+  window.__absent = [];
+  const check = () => { for (const s of sels) if (!document.querySelector(s)) window.__absent.push(s); };
+  window.__presenceObserver?.disconnect();
+  window.__presenceObserver = new MutationObserver(check);
+  window.__presenceObserver.observe(document, { subtree: true, childList: true, attributes: true });
+  check();
+}, selectors);
+/** The Manager's own conversation of a standalone Agent root (the scripted actor replies `CALLED:<tool result>`). */
+const managerConversation = async (root) => JSON.stringify((await gql('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: root.rootId })).getRunProjection?.conversation ?? []);
+/**
+ * REQ-008 / AC-002 / AC-003 / AC-004 / AC-005 in the tree and on the board. The Task Team copy finishes Task B (its row
+ * leaves), then the Manager gives it follow-up Task B2 by its team run ID: the row comes back live without reload, the
+ * conversation continues, B2's board root is that copy and B's root stays closed; DONE of B again never removes the row;
+ * DONE of B2 does. The Agent copy does the same with its agent run ID (A → A2); its helpers stay hidden.
+ */
+const existingCopyAssignment = async (kind, label) => {
+  const s = await setupRoot(kind, label, { withPlain: false });
+  const { page, errors, context } = await newPage();
+  const board = await newPage();
+  try {
+    await openRoot(page, s.root, s.names);
+    const task = async (description) => (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
+      { input: { projectId: s.projectId, description } })).createProjectTask.taskId;
+    const taskB2 = await task('Tidy the docs-site review wording you proposed.');
+    const taskA2 = await task('Follow up on the release-notes draft.');
+    const teamSel = rowSelector(kind, s.bRef);
+    const worker = { agentRunId: s.aAssigned.agentRunId };
+    const workerSel = rowSelector(kind, worker);
+    const helperSel = s.aRefs.filter((r) => r.agentRunId !== worker.agentRunId).map((r) => rowSelector(kind, r));
+    for (const sel of [teamSel, workerSel, ...helperSel]) await page.locator(sel).waitFor({ state: 'visible', timeout: 30000 });
+    const members = teamMembersOf(await storedTree(s.root), s.bRef.teamRunId);
+    const coordinator = members.find((m) => /\/reviewer$/.test(m.address));
+    assert(coordinator, 'task Team coordinator not found', { members });
+    s.input.send(callTool('send_message_to', { target_agent_run_id: coordinator.agentRunId, content: 'Docs review notes. PRE-B-6610' }));
+    s.input.send(callTool('send_message_to', { target_agent_run_id: worker.agentRunId, content: 'Release notes draft. PRE-A-6620' }));
+    await sleep(2500);
+    // Task B DONE: the Task Team row leaves.
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status: 'DONE' }));
+    await until('Task B Team row gone', goneAll(page, [teamSel]), 60000);
+    // The follow-up Task to the same Team copy: the row returns live, without reload.
+    const sentAt = Date.now();
+    s.input.send(callTool('delegate_task', { target_team_run_id: s.bRef.teamRunId, task_id: taskB2 }));
+    await page.locator(teamSel).waitFor({ state: 'visible', timeout: 60000 });
+    const reappearMs = Date.now() - sentAt;
+    await expandTaskTeam(page, kind, s.bRef);
+    for (const m of members) await page.locator(rowSelector(kind, { agentRunId: m.agentRunId })).waitFor({ state: 'visible', timeout: 30000 });
+    await until('coordinator row live', async () => LIVE.includes(await memberRowStatus(page, kind, coordinator.agentRunId)), 30000);
+    assert(JSON.stringify(teamMembersOf(await storedTree(s.root), s.bRef.teamRunId).map((m) => m.agentRunId).sort()) === JSON.stringify(members.map((m) => m.agentRunId).sort()),
+      'task Team members changed');
+    await shot(page, `${kind}-existing-copy-team-back`);
+    // The board: B2's root is the reused copy, live; B is DONE with that copy closed.
+    await board.page.goto(`${stack.frontendUrl}/projects/${s.projectId}`, { waitUntil: 'networkidle', timeout: 120000 });
+    let b2Root; let bRoot;
+    await until('board: B2 root live, B root closed', async () => { b2Root = await boardRoot(board.page, taskB2); bRoot = await boardRoot(board.page, s.taskB);
+      return LIVE.includes(b2Root?.state) && bRoot?.state === 'offline'; }, 30000).catch((e) => { throw Object.assign(e, { details: { b2Root, bRoot } }); });
+    assert(b2Root.name === bRoot.name, 'B2 root is not the same copy as B', { b2Root, bRoot });
+    const g = await graphqlRoot(s.projectId, taskB2);
+    assert(g.root.teamRunId === s.bRef.teamRunId && g.root.ingressAgentRunId === coordinator.agentRunId && g.root.closed === false, 'B2 GraphQL root', g);
+    await shot(board.page, `${kind}-existing-copy-board`);
+    // AC-004: DONE of B again (and CANCELLED) never removes the row or closes B2's root.
+    await watchPresence(page, [teamSel]);
+    for (const status of ['DONE', 'CANCELLED', 'DONE']) {
+      s.input.send(callTool('create_or_update_task', { task_id: s.taskB, status }));
+      await until(`Task B ${status}`, async () => (await taskStatus(s.projectId, s.taskB)) === status, 30000);
+      await sleep(1500);
+    }
+    const absent = await page.evaluate(() => window.__absent);
+    assert(absent.length === 0, 'Team copy row left on a repeated close of its earlier Task', { absent });
+    assert(LIVE.includes((await boardRoot(board.page, taskB2))?.state), 'B2 board root no longer live after a repeated close of B');
+    // The conversation continues: the earlier exchange, then the new Task from the Manager.
+    await page.locator(rowSelector(kind, { agentRunId: coordinator.agentRunId })).click();
+    await until('continued coordinator conversation', async () => { const t = await centerText(page); return t.includes('PRE-B-6610') && t.includes(`New Task assigned to you: ${taskB2}`); }, 30000);
+    const text = await centerText(page);
+    assert(text.indexOf('PRE-B-6610') < text.indexOf(`New Task assigned to you: ${taskB2}`), 'earlier conversation not before the new Task');
+    await shot(page, `${kind}-existing-copy-conversation`);
+    // A fresh page load keeps the row.
+    const fresh = await newPage();
+    try {
+      await openRoot(fresh.page, s.root, s.names);
+      await fresh.page.locator(teamSel).waitFor({ state: 'visible', timeout: 30000 });
+      assert(fresh.errors.length === 0, 'browser errors after reload', fresh.errors);
+    } finally { await fresh.context.close(); }
+    // AC-005: DONE of B2 closes the copy: the row leaves and B2's root goes offline.
+    s.input.send(callTool('create_or_update_task', { task_id: taskB2, status: 'DONE' }));
+    await until('Team row gone at B2 DONE', goneAll(page, [teamSel]), 60000);
+    await until('B2 board root offline', async () => (await boardRoot(board.page, taskB2))?.state === 'offline', 30000);
+    // AC-003: the Agent copy. A DONE removes the worker and its helpers; A2 by its agent run ID brings back only the worker.
+    s.input.send(callTool('create_or_update_task', { task_id: s.taskA, status: 'DONE' }));
+    await until('Task A rows gone', goneAll(page, [workerSel, ...helperSel]), 60000);
+    s.input.send(callTool('delegate_task', { target_agent_run_id: worker.agentRunId, task_id: taskA2 }));
+    await page.locator(workerSel).waitFor({ state: 'visible', timeout: 60000 });
+    await sleep(1500);
+    for (const sel of helperSel) assert(await page.locator(sel).count() === 0, `helper row reappeared: ${sel}`);
+    await until('board: A2 root live', async () => LIVE.includes((await boardRoot(board.page, taskA2))?.state), 30000);
+    await page.locator(workerSel).click();
+    await until('continued worker conversation', async () => { const t = await centerText(page); return t.includes('PRE-A-6620') && t.includes(`New Task assigned to you: ${taskA2}`); }, 30000);
+    await shot(page, `${kind}-existing-copy-agent-back`);
+    s.input.send(callTool('create_or_update_task', { task_id: taskA2, status: 'DONE' }));
+    await until('worker row gone at A2 DONE', goneAll(page, [workerSel]), 60000);
+    assert(errors.length === 0 && board.errors.length === 0, 'browser errors', [...errors, ...board.errors]);
+    assignedCopies[kind] = { root: s.root, names: s.names, projectId: s.projectId, teamRef: s.bRef, coordinator: coordinator.agentRunId,
+      coordinatorAddress: coordinator.address, members: members.map((m) => m.agentRunId), worker, taskB: s.taskB, taskB2, taskA2 };
+    return { root: s.root, teamRef: s.bRef, coordinator: coordinator.agentRunId, taskB2, taskA2, reappearMs, b2Root, bRoot };
+  } finally { s.input.close(); await context.close(); await board.context.close(); }
+};
+/**
+ * AC-011 (+ REQ-008, REQ-013): after a real backend restart, the Manager gives the stopped Team copy a new Task by its team
+ * run ID: the row comes back live and the conversation continues. After a second restart the assignment and the row persist
+ * and the board's root is still that copy.
+ */
+const existingCopyAcrossRestart = async () => {
+  const kinds = ['agent', 'team', 'org'].filter((k) => assignedCopies[k]);
+  assert(kinds.length === 3, 'BR-015 needs BR-012..BR-014 in the same run');
+  const firstRestart = await restartBackend();
+  assert(firstRestart.before !== firstRestart.after, 'backend did not restart');
+  const out = {};
+  for (const kind of kinds) {
+    const r = assignedCopies[kind];
+    const taskB3 = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
+      { input: { projectId: r.projectId, description: 'After the restart: one more docs-site pass.' } })).createProjectTask.taskId;
+    r.taskB3 = taskB3;
+    const { page, errors, context } = await newPage();
+    await restoreRoot(r.root);
+    const input = await managerInput(r.root);
+    try {
+      // Every Task copy of this root is closed now: an Agent run shows no task tree until the copy is assigned again.
+      await openRoot(page, r.root, r.names, { requireTaskTree: false });
+      await sleep(1500);
+      assert(await page.locator(rowSelector(kind, r.teamRef)).count() === 0, `${kind}: closed Team copy listed after restart`);
+      input.send(callTool('delegate_task', { target_team_run_id: r.teamRef.teamRunId, task_id: taskB3 }));
+      await page.locator(rowSelector(kind, r.teamRef)).waitFor({ state: 'visible', timeout: 90000 });
+      await expandTaskTeam(page, kind, r.teamRef);
+      await page.locator(rowSelector(kind, { agentRunId: r.coordinator })).click();
+      await until(`${kind}: conversation continues after restart`, async () => { const t = await centerText(page);
+        return t.includes('PRE-B-6610') && t.includes(`New Task assigned to you: ${r.taskB2}`) && t.includes(`New Task assigned to you: ${taskB3}`); }, 90000);
+      // The entry is committed `starting`, the work delivered, then marked `started`: the message can show first.
+      let g;
+      await until(`${kind}: B3 root started`, async () => (g = await graphqlRoot(r.projectId, taskB3))?.root?.start === 'started', 30000)
+        .catch((e) => { throw Object.assign(e, { details: g }); });
+      assert(g.root.teamRunId === r.teamRef.teamRunId && g.root.closed === false, `${kind}: B3 root`, g);
+      await shot(page, `${kind}-existing-copy-after-restart`);
+      assert(errors.length === 0, `${kind}: browser errors after restart`, errors);
+      out[kind] = { taskB3, root: g.root };
+    } finally { input.close(); await context.close(); }
+  }
+  const secondRestart = await restartBackend();
+  assert(secondRestart.before !== secondRestart.after, 'backend did not restart');
+  for (const kind of kinds) {
+    const r = assignedCopies[kind];
+    const { page, errors, context } = await newPage();
+    try {
+      await openRoot(page, r.root, r.names);
+      await page.locator(rowSelector(kind, r.teamRef)).waitFor({ state: 'visible', timeout: 30000 });
+      const g = await graphqlRoot(r.projectId, r.taskB3);
+      assert(g.root.teamRunId === r.teamRef.teamRunId && g.root.closed === false, `${kind}: B3 assignment lost after restart`, g);
+      await page.goto(`${stack.frontendUrl}/projects/${r.projectId}`, { waitUntil: 'networkidle', timeout: 120000 });
+      // The root is not restored yet, so the open copy reads Offline (its host is inactive); it is still B3's root.
+      let b3; let b2;
+      await until(`${kind}: board after second restart`, async () => { b3 = await boardRoot(page, r.taskB3); b2 = await boardRoot(page, r.taskB2); return b3 && b2; }, 30000);
+      assert(b3.name === b2.name, `${kind}: B3 board root is not the same copy`, { b3, b2 });
+      await shot(page, `${kind}-existing-copy-board-after-second-restart`);
+      assert(errors.length === 0, `${kind}: browser errors after the second restart`, errors);
+      out[kind] = { ...out[kind], afterSecondRestart: { root: g.root, board: { b3, b2 } } };
+    } finally { await context.close(); }
+  }
+  return { firstRestart, secondRestart, ...out };
+};
+/**
+ * AC-013 / REQ-005 (damaged Task data, detected when the backend loads): one Task's assignment file is unreadable. The
+ * Manager's list_project_tasks marks only that Task assignments-unavailable; giving a copy a follow-up Task is refused and
+ * changes nothing. After the file is restored and the backend restarts, the same follow-up is accepted.
+ */
+const damagedTaskData = async () => {
+  const r = assignedCopies.agent; assert(r, 'BR-016 needs BR-012 in the same run');
+  const file = path.join(stack.dataRoot, 'projects', encodeURIComponent(r.projectId), 'tasks', encodeURIComponent(r.taskB), 'agent_run_resources.json');
+  const original = await fsp.readFile(file, 'utf8');
+  const taskA3 = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}',
+    { input: { projectId: r.projectId, description: 'A third pass on the release notes.' } })).createProjectTask.taskId;
+  const a3Dir = path.join(stack.dataRoot, 'projects', encodeURIComponent(r.projectId), 'tasks', encodeURIComponent(taskA3));
+  await stopGroup(stack.backend);
+  await fsp.writeFile(file, '{"agentRunResources": [ {"broken": ');
+  await startBackend(stack.backendPort);
+  await restoreRoot(r.root);
+  let input = await managerInput(r.root);
+  let conversation = '';
+  try {
+    input.send(callTool('list_project_tasks', { project_id: r.projectId }));
+    await until('list with a damaged Task', async () => (conversation = await managerConversation(r.root)).includes('assignmentsUnavailable'), 60000);
+    const before = conversation.length;
+    input.send(callTool('delegate_task', { target_agent_run_id: r.worker.agentRunId, task_id: taskA3 }));
+    await until('refusal while Task data is unreadable', async () => /could not be read/.test((conversation = await managerConversation(r.root)).slice(before)), 60000);
+    assert(!(await fsp.readdir(a3Dir)).includes('agent_run_resources.json'), 'a refused assignment wrote Task data');
+    assert((await fsp.readFile(file, 'utf8')) === '{"agentRunResources": [ {"broken": ', 'damaged file was rewritten');
+  } finally { input.close(); }
+  const refusal = conversation.slice(conversation.lastIndexOf('CALLED:')).slice(0, 600);
+  await stopGroup(stack.backend);
+  await fsp.writeFile(file, original);
+  await startBackend(stack.backendPort);
+  await restoreRoot(r.root);
+  input = await managerInput(r.root);
+  try {
+    input.send(callTool('delegate_task', { target_agent_run_id: r.worker.agentRunId, task_id: taskA3 }));
+    await until('accepted after the file is restored', async () => (await graphqlRoot(r.projectId, taskA3))?.root?.start === 'started', 90000);
+    const g = await graphqlRoot(r.projectId, taskA3);
+    assert(g.root.ingressAgentRunId === r.worker.agentRunId && g.root.closed === false, 'A3 root after recovery', g);
+    return { damagedTask: r.taskB, refusal, recovered: g.root };
+  } finally { input.close(); }
+};
+
 const CASES = {
   'BR-001': ['Agent root live DONE: rows fade, fallback to the run row, focus, Team tab, reopen, Task Team via composer', () => liveDone('agent', 'BrAgent')],
   'BR-002': ['Agent Team root live DONE (same journey; fallback to the delegating Manager)', () => liveDone('team', 'BrTeam')],
@@ -713,6 +943,11 @@ const CASES = {
   'BR-009': ['Agent Team root reactivation (same journey)', () => liveReactivation('team', 'RaTeam')],
   'BR-010': ['Agent Org root reactivation (same journey)', () => liveReactivation('org', 'RaOrg')],
   'BR-011': ['Real backend restart: reactivated rows stay; DONE, restart, reopen and message reactivate the worker again', reactivationAcrossRestart],
+  'BR-012': ['Agent root follow-up Task to an existing copy: Team and Agent copy rows return live, board roots, repeated close of the earlier Task keeps them', () => existingCopyAssignment('agent', 'ExAgent')],
+  'BR-013': ['Agent Team root follow-up Task to an existing copy (same journey)', () => existingCopyAssignment('team', 'ExTeam')],
+  'BR-014': ['Agent Org root follow-up Task to an existing copy (same journey)', () => existingCopyAssignment('org', 'ExOrg')],
+  'BR-015': ['Real backend restart: a stopped copy takes a follow-up Task live with its conversation; the assignment and row persist across another restart', existingCopyAcrossRestart],
+  'BR-016': ['Damaged Task data at load: assignments unavailable, follow-up refused and nothing written; accepted after restore and restart', damagedTaskData],
 };
 
 let result = 'Pass';

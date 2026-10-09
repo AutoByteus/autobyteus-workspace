@@ -8,7 +8,7 @@ import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/dom
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { taskExecutionsClosedEvent, taskExecutionsReopenedEvent } from "../../../../src/agent-team-execution/task-delegation/task-execution-event-factory.js";
 import { AgentTeamRunManager } from "../../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { InMemoryTaskAgentResources } from "../../../fixtures/task-agent-resource-fixtures.js";
+import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
 import {
@@ -54,14 +54,14 @@ describe("Team execution view strict projection", () => {
   });
 
   it("the Team manager reads a root's closed task executions of a given tree through the Task port", async () => {
-    const resources = new InMemoryTaskAgentResources();
+    const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A");
     const hostRoot = createTeamRootExecutionIdentity("team-run-root");
-    await resources.linkAgentRun({ role: "assigned", taskId: "A", assignedBy: "agent-run-product-manager", hostRoot, agentRun: { teamRunId: "task-team-run-qa-001" } });
-    await resources.linkAgentRun({ role: "delegated", creator: { teamRunId: "task-team-run-qa-001" }, hostRoot, agentRun: { agentRunId: "not-in-tree" } });
+    await resources.linkNewTaskExecution({ role: "assigned", taskId: "A", assignedBy: "agent-run-product-manager", hostRoot, execution: { teamRunId: "task-team-run-qa-001" } });
+    await resources.linkNewTaskExecution({ role: "delegated", creator: { teamRunId: "task-team-run-qa-001" }, hostRoot, execution: { agentRunId: "not-in-tree" } });
     resources.close("A");
     const closedFor = AgentTeamRunManager.prototype.closedTaskExecutionsFor;
-    expect(closedFor.call({ taskAgentResources: resources } as never, "team-run-root", tree)).toEqual([{ teamRunId: "task-team-run-qa-001" }]);
+    expect(closedFor.call({ taskExecutionResources: resources } as never, "team-run-root", tree)).toEqual([{ teamRunId: "task-team-run-qa-001" }]);
     expect(closedFor.call({} as never, "team-run-root", tree)).toEqual([]);
   });
 

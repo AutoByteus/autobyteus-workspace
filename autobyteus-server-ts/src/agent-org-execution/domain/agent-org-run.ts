@@ -1,5 +1,5 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
@@ -10,7 +10,7 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExecutionIdentity, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import type { DelegateTaskInput, DelegateTaskResult, TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -118,7 +118,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskAgentResources: options.taskAgentResources });
+    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       identities: options.taskExecutionIdentity,
@@ -166,8 +166,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.assertAdmitting();
     this.taskExecutions.assertInputAllowed(agentRunId);
   }
-  releaseTaskAgentResources(executions: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
-    return this.taskExecutions.releaseTaskAgentResources(executions);
+  releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
+    return this.taskExecutions.releaseTaskExecutions(executions);
   }
   /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
   taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
@@ -241,9 +241,14 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       () => this.delivery.deliverToRunId(input)));
   }
 
-  delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
-    return this.operationGate.run(() => this.delivery.delegateTask(context, input));
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
+    return this.operationGate.run(() => this.delivery.delegateToNewCopy(context, input));
   }
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
+    return this.operationGate.run(() => this.delivery.assignToExistingCopy(context, input));
+  }
+  /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
+  teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
 
   async commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.operationGate.run(async () => {

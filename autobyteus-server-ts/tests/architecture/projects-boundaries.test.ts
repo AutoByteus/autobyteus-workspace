@@ -37,7 +37,7 @@ describe("projects subsystem boundaries", () => {
   it("keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021/SR-023)", () => {
     // Projects may import only the neutral lifetime contracts, never runtime implementations.
     const neutralContracts = new Set([
-      "agent-collaboration/execution/task/task-agent-resource-port.js",
+      "agent-collaboration/execution/task/task-execution-resource-port.js",
       "agent-collaboration/execution/task/task-execution-reference.js",
       "agent-collaboration/execution/domain/root-execution-identity.js",
     ]);
@@ -65,7 +65,7 @@ describe("projects subsystem boundaries", () => {
         .toEqual(["../../projects/services/project-task-service.js"]);
     }
     // Only the one composition binding knows both sides.
-    expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//)).toEqual(["compositions/project-task-agent-resource-composition.ts"]);
+    expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//)).toEqual(["compositions/project-task-execution-resource-composition.ts"]);
     expect(filesImporting(join(SRC, "api", "graphql", "types"), /projects\/services\/project-task-service/))
       .toEqual(["api/graphql/types/project-tasks.ts"]);
   });

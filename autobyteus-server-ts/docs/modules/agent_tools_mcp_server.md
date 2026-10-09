@@ -359,9 +359,10 @@ serialize it once, parse that serialization into object `structuredContent`, and
 return the same JSON in MCP text. `send_message_to` exposes
 `{accepted,code,message,target_agent_run_id}`: success contains the exact
 existing AgentRun receiver, while rejection uses `target_agent_run_id:null` and
-sets `isError:true`. `delegate_task` exposes a strict `anyOf` union: either
-`{target_agent_run_id}` naming the fresh child ingress, or
-`{target_agent_run_id:null,message}` when nothing was started. Input and
+sets `isError:true`. `delegate_task` exposes a strict `anyOf` union:
+`{delegated:true,target_kind:"agent",target_agent_run_id,task_id?}`,
+`{delegated:true,target_kind:"team",target_team_run_id,target_team_coordinator_agent_run_id,task_id?}`,
+or `{delegated:false,message}` when nothing was started. Input and
 admission failures are tool errors with `{error:{code,message}}`.
 `get_handoff_rules` retains its own `{handoffs}` object. The removed generic
 communication-result envelope/mapper is not retained as a compatibility path,

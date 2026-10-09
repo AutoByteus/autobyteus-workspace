@@ -1,0 +1,232 @@
+{
+  "startedAt": "2026-10-09T07:41:47.580Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-012": {
+      "result": "Pass",
+      "description": "Agent root follow-up Task to an existing copy: Team and Agent copy rows return live, board roots, repeated close of the earlier Task keeps them",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_exagent_b985_783cb25cc0204d5ab0204ee311650e5f",
+          "managerRunId": "manager_exagent_b985_783cb25cc0204d5ab0204ee311650e5f"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exagent_b985_7394ba9c19e4490f80d1e59302a14a58"
+        },
+        "coordinator": "release_notes_writer_exagent_b985_6155d324f9df42409282ed14c86070bc",
+        "taskB2": "project_task_d3b6c9d5-1e7e-41c1-adbe-1f99f6f07c72",
+        "taskA2": "project_task_8a87b229-f77b-417e-b22a-f39c8a6b1bb4",
+        "reappearMs": 82,
+        "b2Root": {
+          "state": "idle",
+          "name": "docs review team exagent b985"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "docs review team exagent b985"
+        }
+      }
+    },
+    "BR-013": {
+      "result": "Pass",
+      "description": "Agent Team root follow-up Task to an existing copy (same journey)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_exteam_53d3_625b503726ab47a4bad56772874c1ec0",
+          "managerRunId": "manager_exteam_53d3_0b5bcf47dd0c4d9abae4cb5e32f9cf7e"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exteam_53d3_0d4db71614c247dab46d2b054e7b74b1"
+        },
+        "coordinator": "release_notes_writer_exteam_53d3_6bfa331e5b8d48e8b7e20d2b07718f9b",
+        "taskB2": "project_task_92dae5da-2bb0-43af-992f-1a240c96bde0",
+        "taskA2": "project_task_1f1ced2e-7db9-42b7-b3b5-722f56a9a648",
+        "reappearMs": 49,
+        "b2Root": {
+          "state": "idle",
+          "name": "docs review team exteam 53d3"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "docs review team exteam 53d3"
+        }
+      }
+    },
+    "BR-014": {
+      "result": "Pass",
+      "description": "Agent Org root follow-up Task to an existing copy (same journey)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_exorg_3638_89b22cbae30b456c9017224094b32406",
+          "managerRunId": "manager_exorg_3638_10e29c0fb7ae41c1b5a533fe89f1a8c9"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exorg_3638_54bfeec129274198a20a835368dcb5f6"
+        },
+        "coordinator": "release_notes_writer_exorg_3638_eb894c2e473f4fc894e4633de920ac53",
+        "taskB2": "project_task_eec63982-6343-480a-bbd8-73ae4d02d6fc",
+        "taskA2": "project_task_d8fc7311-b362-448c-99cd-faa6d8001754",
+        "reappearMs": 79,
+        "b2Root": {
+          "state": "idle",
+          "name": "squad"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "squad"
+        }
+      }
+    },
+    "BR-015": {
+      "result": "Pass",
+      "description": "Real backend restart: a stopped copy takes a follow-up Task live with its conversation; the assignment and row persist across another restart",
+      "details": {
+        "firstRestart": {
+          "before": 61132,
+          "after": 83692,
+          "starts": 2
+        },
+        "secondRestart": {
+          "before": 83692,
+          "after": 89195,
+          "starts": 3
+        },
+        "agent": {
+          "taskB3": "project_task_10a28e64-4a47-4a5e-bea5-1430268812d0",
+          "root": {
+            "kind": "team",
+            "teamRunId": "docs_review_team_exagent_b985_7394ba9c19e4490f80d1e59302a14a58",
+            "ingressAgentRunId": "release_notes_writer_exagent_b985_6155d324f9df42409282ed14c86070bc",
+            "closed": false,
+            "status": "idle",
+            "start": "started"
+          },
+          "afterSecondRestart": {
+            "root": {
+              "kind": "team",
+              "teamRunId": "docs_review_team_exagent_b985_7394ba9c19e4490f80d1e59302a14a58",
+              "ingressAgentRunId": "release_notes_writer_exagent_b985_6155d324f9df42409282ed14c86070bc",
+              "closed": false,
+              "status": "offline",
+              "start": "started"
+            },
+            "board": {
+              "b3": {
+                "state": "offline",
+                "name": "docs review team exagent b985"
+              },
+              "b2": {
+                "state": "offline",
+                "name": "docs review team exagent b985"
+              }
+            }
+          }
+        },
+        "team": {
+          "taskB3": "project_task_8c3be5b8-4d3d-447a-b4a6-e6d0cab68925",
+          "root": {
+            "kind": "team",
+            "teamRunId": "docs_review_team_exteam_53d3_0d4db71614c247dab46d2b054e7b74b1",
+            "ingressAgentRunId": "release_notes_writer_exteam_53d3_6bfa331e5b8d48e8b7e20d2b07718f9b",
+            "closed": false,
+            "status": "idle",
+            "start": "started"
+          },
+          "afterSecondRestart": {
+            "root": {
+              "kind": "team",
+              "teamRunId": "docs_review_team_exteam_53d3_0d4db71614c247dab46d2b054e7b74b1",
+              "ingressAgentRunId": "release_notes_writer_exteam_53d3_6bfa331e5b8d48e8b7e20d2b07718f9b",
+              "closed": false,
+              "status": "offline",
+              "start": "started"
+            },
+            "board": {
+              "b3": {
+                "state": "offline",
+                "name": "docs review team exteam 53d3"
+              },
+              "b2": {
+                "state": "offline",
+                "name": "docs review team exteam 53d3"
+              }
+            }
+          }
+        },
+        "org": {
+          "taskB3": "project_task_50a20623-66f4-4872-a260-2366e9903a75",
+          "root": {
+            "kind": "team",
+            "teamRunId": "docs_review_team_exorg_3638_54bfeec129274198a20a835368dcb5f6",
+            "ingressAgentRunId": "release_notes_writer_exorg_3638_eb894c2e473f4fc894e4633de920ac53",
+            "closed": false,
+            "status": "idle",
+            "start": "started"
+          },
+          "afterSecondRestart": {
+            "root": {
+              "kind": "team",
+              "teamRunId": "docs_review_team_exorg_3638_54bfeec129274198a20a835368dcb5f6",
+              "ingressAgentRunId": "release_notes_writer_exorg_3638_eb894c2e473f4fc894e4633de920ac53",
+              "closed": false,
+              "status": "offline",
+              "start": "started"
+            },
+            "board": {
+              "b3": {
+                "state": "offline",
+                "name": "squad"
+              },
+              "b2": {
+                "state": "offline",
+                "name": "squad"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BR-016": {
+      "result": "Pass",
+      "description": "Damaged Task data at load: assignments unavailable, follow-up refused and nothing written; accepted after restore and restart",
+      "details": {
+        "damagedTask": "project_task_799d3cfd-7dd7-4987-8e21-4c3d17d800f5",
+        "refusal": "CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\n  \\\\\\\"delegated\\\\\\\": false,\\\\n  \\\\\\\"message\\\\\\\": \\\\\\\"Agent run resource data could not be read (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN/projects/project_78add7f9-b1a0-4aa3-b091-7a2bbcbb7325/tasks/project_task_799d3cfd-7dd7-4987-8e21-4c3d17d800f5/agent_run_resources.json: Unexpected end of JSON input). Fix or restore the file and restart the app; other features keep working.\\\\\\\"\\\\n}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":false,\\\"message\\\":\\\"Agent run resource data could not be read (/var/folders/7w/9r4_s1",
+        "recovered": {
+          "kind": "agent",
+          "teamRunId": null,
+          "ingressAgentRunId": "release_notes_writer_exagent_b985_a1d925ddccf94e1194e021db6e5729b9",
+          "closed": false,
+          "status": "idle",
+          "start": "started"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 61159,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 93501,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:65308",
+    "frontendUrl": "http://127.0.0.1:65309",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-cPY5gN"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Pass",
+  "finishedAt": "2026-10-09T07:43:13.897Z"
+}

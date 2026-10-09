@@ -433,7 +433,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const scope = { kind: "project", projectId };
     const taskId = await createTask(projectId, "Review the docs.");
     const failed = await root.managerCalls(callTool("delegate_task", { recipient_address: "/worker", task_id: taskId }));
-    expect(failed.target_agent_run_id ?? null).toBeNull();
+    expect(failed.delegated ?? false).toBe(false);
     let task = await settledTask(scope, taskId, "failed start", (t) => t.root?.start === "failed");
     expect(task.status).toBe("TODO");
     expect(task.root).toMatchObject({ kind: "agent", recipientAddress: "/worker", start: "failed", closed: false, status: "offline",
@@ -451,7 +451,7 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     const teamDelegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.squad)}`, task_id: teamTaskId }));
     expect(teamDelegated.target_kind).toBe("team");
     const teamTask = await settledTask(scope, teamTaskId, "team root", (t) => t.root?.start === "started" && t.root?.status === "idle");
-    expect(teamTask.root).toMatchObject({ kind: "team", ingressAgentRunId: teamDelegated.target_agent_run_id, closed: false,
+    expect(teamTask.root).toMatchObject({ kind: "team", ingressAgentRunId: teamDelegated.target_team_coordinator_agent_run_id, closed: false,
       hostRoot: { kind: "agent_team", runId: root.rootId } });
     expect(teamTask.root.teamRunId).toBeTruthy();
     // DONE closes the Team root: Offline.

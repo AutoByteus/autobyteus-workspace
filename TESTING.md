@@ -357,10 +357,24 @@ What these suites cover:
   payloads, compact business results, DONE close-then-stop, retry by repeated
   DONE with nothing about the stop persisted, and reopen. Reactivation (reopen
   the Task, then the assigner messages the run ID) is covered on the Task side by
-  `tests/unit/projects/task-agent-resource-reactivation.test.ts` and in the
+  `tests/unit/projects/task-execution-resource-reactivation.test.ts` and in the
   runtime by `tests/unit/agent-collaboration/root-task-reactivation.test.ts`
   (sequencing and refusals) and `task-reactivation-backends.test.ts` (actual
   registries for all three root kinds).
+- **Follow-up Task to an existing copy** (`delegate_task` with
+  `target_team_run_id` / `target_agent_run_id`). Task side:
+  `tests/unit/projects/task-execution-existing-copy-assignment.test.ts`
+  (eligibility, appended periods, A → B → A, DONE of the earlier Task never
+  stopping the copy, the reopen hint, QR-001 orders) and
+  `task-execution-current-entry.test.ts` (the current-entry rule). Runtime:
+  `tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts`
+  (sequencing, every refusal, delivery failure, DONE racing the assignment in
+  each order), the existing-copy cases in `task-reactivation-backends.test.ts`
+  (actual registries, all three root kinds), and one case per root in the
+  Team, Org and standalone root suites. Tool contract:
+  `tests/unit/agent-tools/task-delegation/` and
+  `tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts`.
+  Real wire and rendering: the gated server E2E and browser cases below.
 - **RootTeam/catalog helper integration.** Same-address helpers isolated per
   Task, borrowed advisers that are never adopted, exact stop sets, and closed
   ingress.
@@ -459,6 +473,69 @@ pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-008,BR-009,BR-010,B
   rows survive the first; then DONE, a restart, reopen and a message reactivate
   the worker live with its whole conversation. Before sending to a stopped
   root, the probe calls the root's restore mutation, as the app does.
+
+A follow-up Task to an existing copy (`delegate_task` with the copy's
+`target_team_run_id` / `target_agent_run_id`) has the same two layers:
+
+```bash
+env -u AUTOBYTEUS_AGENT_PACKAGE_ROOTS -u AUTOBYTEUS_SKILLS_PATHS -u AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS \
+  RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
+  pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts --no-watch
+pnpm -C autobyteus-web test:e2e:task-closure-tree --cases BR-012,BR-013,BR-014,BR-015,BR-016 --output-dir <fresh evidence dir>
+```
+
+- **`task-existing-copy-assignment.e2e.test.ts`** (about 4 minutes, no model
+  calls). Real HTTP/WS/scoped MCP with the scripted AGY actor, for all three
+  roots (EXC-E2E-001..003):
+  - the explicit result IDs and their exact keys, for a Team copy and an Agent
+    copy;
+  - refusals that change no file of the Project and publish nothing: the copy
+    still on an open Task (named, with its status); a coordinator, member or
+    team run ID passed as the wrong field; sub-work; an unknown ID; mixed or
+    missing inputs; a sender that is not the copy's assigner; a DONE,
+    CANCELLED or unknown Task; the copy's most recent assignment already being
+    that Task;
+  - the Team copy given Task B by its team run ID: the same IDs back, one
+    reopened event, the saved conversation resumed (`--conversation`) and
+    continued with `New Task assigned to you: <B>`, B's root (GraphQL and the
+    live feed) is the copy, and Task A's files are byte-identical;
+  - DONE, CANCELLED and DONE again of Task A never stop it (no closure frame,
+    the same process, no relaunch); DONE of B does;
+  - the reopen hint naming B, then A → B → A: A's file keeps the earlier
+    period and appends a new open one;
+  - `list_project_tasks` `assignments` / `closedAssignments` with explicit IDs;
+    `send_message_to` with a team run ID (`TARGET_IS_TEAM_RUN`);
+  - the Agent copy given Task D by its agent run ID: only it reopens, its
+    sub-work stays closed.
+
+  EXC-E2E-004 issues `create_or_update_task(DONE)` and `delegate_task` as
+  parallel tool calls in one Manager turn (the fixture's `CALL_TOOLS:[…]`
+  route) at offsets on both sides, for a Team and an Agent copy. Each round
+  ends with at most one open entry for the copy. An accepted assignment leaves
+  the copy live and receiving the next Task. A refused one names the open Task,
+  and the copy then stops with it. EXC-E2E-005 covers a sender in another root:
+  the team run ID hint, and another root's copy refused. EXC-E2E-006/007 cover
+  a copy whose start failed (found through `list_project_tasks`) and a copy
+  whose saved conversation is gone. With `RUN_CLAUDE_E2E=1` and a logged-in
+  `claude`, EXC-E2E-008 gives an Org copy a real Claude model (haiku). After
+  its Task is DONE, the follow-up Task asks for a codeword from that earlier
+  Task, and the copy must recall it. `TASK_EXISTING_COPY_E2E_EVIDENCE_DIR`
+  keeps a JSON receipt.
+- **`test:e2e:task-closure-tree` BR-012..BR-016.** Rendering and a real
+  backend:
+  - BR-012..BR-014 (Agent, Team, Org): a Task Team row returns live when its
+    copy is given a follow-up Task, with its members and continued
+    conversation; the board shows the new Task's root as that copy and the
+    earlier Task's root closed; a repeated DONE/CANCELLED of the earlier Task
+    never removes the row; the Agent copy returns without its helpers.
+  - BR-015: after a real restart the stopped Team copy takes a new Task live,
+    and after another restart the assignment, row and board root persist.
+  - BR-016: a damaged Task file (detected at load) makes
+    `list_project_tasks` mark only that Task unavailable and refuses the
+    follow-up with nothing written. Restoring the file and restarting accepts
+    it.
+
+  BR-015 and BR-016 need BR-012..BR-014 in the same run.
 
 Live Projects pages, Task roots and Temp tasks (the per-node `/ws/projects`
 feed) have a gated server E2E and a browser probe. Rebuild the server first.

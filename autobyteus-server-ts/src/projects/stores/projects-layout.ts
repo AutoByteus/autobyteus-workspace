@@ -45,7 +45,7 @@ export class ProjectsLayout {
   taskDir(projectId: string, taskId: string): string { return path.join(this.tasksDir(projectId), segment(taskId)); }
   taskFile(projectId: string, taskId: string): string { return path.join(this.taskDir(projectId, taskId), "task.json"); }
   contextDir(projectId: string, taskId: string): string { return path.join(this.taskDir(projectId, taskId), "context"); }
-  agentRunResourcesFile(projectId: string, taskId: string): string {
+  taskExecutionResourcesFile(projectId: string, taskId: string): string {
     return path.join(this.taskDir(projectId, taskId), "agent_run_resources.json");
   }
   /** The id a folder name stands for, when it is a valid encoded segment. */

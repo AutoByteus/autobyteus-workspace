@@ -308,7 +308,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
       agentToolMcpSessionAuthority: mocks.generalAuthority,
       modelSelectionValidator: expect.anything(),
-      taskAgentResources: expect.objectContaining({ ownerOf: expect.any(Function), linkAgentRun: expect.any(Function) }),
+      taskExecutionResources: expect.objectContaining({ ownerOf: expect.any(Function), linkNewTaskExecution: expect.any(Function) }),
     });
     expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledWith(expect.objectContaining({
       agentDefinitionService: mocks.hostDefinitionServices.agentDefinitionService,

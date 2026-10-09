@@ -25,7 +25,7 @@ import {
 } from "../domain/standalone-root-tree.js";
 import { StandaloneHostMemberContextBuilder } from "./standalone-host-member-context-builder.js";
 import { StandaloneRootExecutionIndex } from "./standalone-root-execution-index.js";
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { createAgentRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -86,7 +86,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     definitions: Pick<AgentDefinitionService, "getAgentDefinitionById">;
     rootDependencies: Omit<StandaloneRootBuilderDependencies, "packageStore">;
     /** The Task side's neutral port; the manager reads closure for stored inspections. */
-    taskAgentResources?: TaskAgentResourcePort;
+    taskExecutionResources?: TaskExecutionResourcePort;
     packageStore?: StandaloneRootPackageStore;
     activeRootDirectory?: ActiveCollaborationRootDirectory;
   }>) {
@@ -227,7 +227,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   /** Closed (Task DONE or CANCELLED) task executions of a stored tree of this root. */
   private closedTaskExecutionsFor(hostRunId: string, tree: StandaloneRootTreeSnapshot): readonly TaskExecutionReference[] {
     const index = new StandaloneRootExecutionIndex(tree);
-    return listClosedTaskExecutions({ port: this.options.taskAgentResources, root: createAgentRootExecutionIdentity(hostRunId),
+    return listClosedTaskExecutions({ port: this.options.taskExecutionResources, root: createAgentRootExecutionIdentity(hostRunId),
       contains: (reference) => index.getTaskExecution(reference) !== null });
   }
 
