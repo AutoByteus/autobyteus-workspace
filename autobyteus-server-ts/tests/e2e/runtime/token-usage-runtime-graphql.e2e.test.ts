@@ -1,23 +1,22 @@
 import "reflect-metadata";
 import path from "node:path";
 import os from "node:os";
-import { createRequire } from "node:module";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-import fastify from "fastify";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
+import { rootPrismaClient } from "repository_prisma";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
-import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
+// Opt-in real-runtime token usage through the Studio server (public GraphQL + agent WebSocket).
+// Run: RUN_RUNTIME_TOKEN_USAGE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts --no-watch
+// (add -t "codex-app-server|claude|Claude" without an LM Studio server; optional CLAUDE_E2E_MODEL, CODEX_E2E_TOOL_MODEL).
 const runRealRuntimeTokenUsageE2e = process.env.RUN_RUNTIME_TOKEN_USAGE_E2E === "1"
   ? describe
   : describe.skip;
@@ -58,9 +57,11 @@ type RunSummary = {
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;
+  contextCompactionThresholdTokens: number | null;
   latestModelIdentifier: string | null;
   latestRuntimeKind: string | null;
   usageReportCount: number;
+  revision: number;
 };
 
 type UsageStatisticsRow = {
@@ -260,16 +261,47 @@ const resolveAutoByteusLmStudioQwenModelIdentifier = async (): Promise<string> =
   return selected.model_identifier;
 };
 
+/**
+ * Each runtime's own context reading on a model-call observation (token-meter-accuracy REQ-001):
+ * Claude reports the SDK's getContextUsage after the call, which equals that call's prompt
+ * (input + cache read + cache creation, probes P2/P4), never the turn's sum; Codex reports its own
+ * `last.totalTokens`, which never exceeds the cumulative total.
+ */
+const expectRuntimeContextReading = (runtimeKind: RuntimeKindUnderTest, payload: Record<string, unknown>): void => {
+  const prompt = asNumber(payload.latest_prompt_tokens);
+  const window = asNumber(payload.effective_context_window_tokens);
+  const percent = asNumber(payload.context_window_usage_percent);
+  if (runtimeKind === "claude_agent_sdk") {
+    const callPrompt = (asNumber(payload.reported_input_tokens) ?? 0)
+      + (asNumber(payload.cache_read_input_tokens) ?? 0)
+      + (asNumber(payload.cache_creation_input_tokens) ?? 0);
+    expect(payload.quality_flags).not.toContain("claude_sdk_context_usage_unavailable");
+    expect(prompt).toBe(callPrompt);
+    expect(window).toBeGreaterThan(0);
+    expect(percent).toBeCloseTo((100 * prompt!) / window!, 8);
+    const threshold = payload.context_compaction_threshold_tokens;
+    if (threshold !== null) {
+      expect(asNumber(threshold)).toBeGreaterThan(0);
+      expect(asNumber(threshold)).toBeLessThanOrEqual(window!);
+    }
+  } else if (runtimeKind === "codex_app_server") {
+    expect(prompt).toBeGreaterThan(0);
+    expect(prompt).toBeLessThanOrEqual(asNumber(payload.reported_total_tokens)!);
+    expect(window).toBeGreaterThan(0);
+    expect(percent).toBeCloseTo((100 * prompt!) / window!, 8);
+    expect(payload.context_compaction_threshold_tokens).toBeNull();
+  }
+};
+
 runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
-  let schema: GraphQLSchema;
-  let graphql: typeof graphqlFn;
+  // The real Studio composition: public GraphQL over HTTP and the server's own agent WebSocket.
+  let studio: FastifyInstance | null = null;
+  let serverUrl: URL;
   let testDataDir: string | null = null;
   const createdWorkspaceRoots = new Set<string>();
   const createdRunIds = new Set<string>();
 
   beforeAll(async () => {
-    await shutdownPrisma();
-    await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "runtime-token-usage-e2e-"));
     await writeFile(
       path.join(testDataDir, ".env"),
@@ -277,12 +309,9 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    schema = await buildGraphqlSchema();
-    const require = createRequire(import.meta.url);
-    const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
-    const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
-    const graphqlModule = await import(graphqlPath);
-    graphql = graphqlModule.graphql as typeof graphqlFn;
+    const started = await startStudioE2eRuntimeServer();
+    studio = started.fastify;
+    serverUrl = started.mainUrl;
   }, REAL_RUNTIME_TIMEOUT_MS);
 
   afterEach(async () => {
@@ -293,7 +322,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     for (const workspaceRoot of createdWorkspaceRoots) {
@@ -304,22 +333,20 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
     }
-    await shutdownPrisma();
+    if (studio) await studio.close();
   });
 
   const execGraphql = async <T>(
     query: string,
     variables?: Record<string, unknown>,
   ): Promise<T> => {
-    const result = await graphql({
-      schema,
-      source: query,
-      variableValues: variables,
-    });
-    if (result.errors?.length) {
-      throw result.errors[0];
+    const response = await fetch(new URL("/graphql", serverUrl), { method: "POST",
+      headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+    const result = await response.json() as { data?: T; errors?: Array<{ message: string }> };
+    if (!response.ok || result.errors?.length || !result.data) {
+      throw new Error(JSON.stringify(result.errors ?? result));
     }
-    return result.data as T;
+    return result.data;
   };
 
   const fetchRuntimeModelIdentifier = async (
@@ -353,7 +380,10 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
     return chooser(modelIdentifiers);
   };
 
-  const createAgentDefinition = async (runtimeId: string): Promise<string> => {
+  const createAgentDefinition = async (
+    runtimeId: string,
+    instructions = "Reply directly and briefly. Do not use tools. If asked for a word, output that word plainly.",
+  ): Promise<string> => {
     const mutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
         createAgentDefinition(input: $input) {
@@ -369,8 +399,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
         name: `token-usage-runtime-${runtimeId}-${randomUUID()}`,
         role: "assistant",
         description: "real runtime token usage e2e agent",
-        instructions:
-          "Reply directly and briefly. Do not use tools. If asked for a word, output that word plainly.",
+        instructions,
         category: "runtime-e2e",
         toolNames: [],
         skillNames: [],
@@ -450,9 +479,11 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           latestPromptTokens
           effectiveContextWindowTokens
           contextWindowUsagePercent
+          contextCompactionThresholdTokens
           latestModelIdentifier
           latestRuntimeKind
           usageReportCount
+          revision
         }
       }
     `;
@@ -494,21 +525,13 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
     );
 
   const openAgentSocket = async (runId: string): Promise<{
-    app: Awaited<ReturnType<typeof fastify>>;
+    app: { close(): Promise<void> };
     socket: WebSocket;
     messages: WsMessage[];
   }> => {
-    const app = fastify();
-    await app.register(websocket);
-    const dummyTeamHandler = {
-      connect: async () => null,
-      handleMessage: async () => {},
-      disconnect: async () => {},
-    } as unknown as Parameters<typeof registerAgentWebsocket>[2];
-    await registerAgentWebsocket(app, undefined, dummyTeamHandler);
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
+    // The socket belongs to the shared Studio server; closing the returned handle closes nothing else.
+    const app = { close: async () => undefined };
+    const socket = new WebSocket(`ws://${serverUrl.hostname}:${serverUrl.port}/ws/agent/${runId}`);
     const messages: WsMessage[] = [];
     socket.on("message", (raw) => {
       const parsed = parseWsMessage(raw);
@@ -539,7 +562,9 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
     {
       id: "claude-agent-sdk",
       runtimeKind: "claude_agent_sdk",
-      expectedIngestionKind: "claude_sdk_result",
+      // One observation per main-loop model call (token-meter-accuracy D-2); the turn-end
+      // claude_sdk_result is reconciliation only.
+      expectedIngestionKind: "claude_sdk_call",
       resolveModelIdentifier: () => fetchRuntimeModelIdentifier("claude_agent_sdk", chooseClaudeModelIdentifier),
       llmConfig: null,
     },
@@ -613,6 +638,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           expect(asNumber(tokenUsageMessage.payload.accounting_input_tokens)).toBeGreaterThan(0);
           expect(asNumber(tokenUsageMessage.payload.accounting_output_tokens)).toBeGreaterThan(0);
           expect(asNumber(tokenUsageMessage.payload.accounting_total_tokens)).toBeGreaterThan(0);
+          expect(tokenUsageMessage.payload.reports_model_call).toBe(true);
+          expectRuntimeContextReading(spec.runtimeKind, tokenUsageMessage.payload);
           const emittedModelIdentifier = typeof tokenUsageMessage.payload.model_identifier === "string" &&
             tokenUsageMessage.payload.model_identifier.trim().length > 0
             ? tokenUsageMessage.payload.model_identifier
@@ -639,6 +666,11 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           expect(summary.totalTokens).toBeGreaterThan(0);
           expect(summary.reasoningOutputTokens).toBeGreaterThanOrEqual(0);
           expect(summary.usageReportCount).toBeGreaterThan(0);
+          const lastCall = [...messages.slice(runStartIndex)].reverse().find((message) =>
+            message.type === "TOKEN_USAGE_UPDATED" && message.payload.run_id === runId
+            && message.payload.reports_model_call === true);
+          // The meter keeps the runtime's own reading for the latest model call.
+          expect(summary.latestPromptTokens).toBe(asNumber(lastCall?.payload.latest_prompt_tokens));
           expect(["positive", "zero_reported", "not_reported", "unsupported_or_local", "unknown"]).toContain(summary.cacheState);
           expect(["estimated", "price_missing", "partial_price_missing"]).toContain(summary.apiCostStatus);
 
@@ -660,10 +692,96 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           socket.close();
           await app.close();
           await terminateAgentRun(runId).catch(() => undefined);
-          await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId } });
+          await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId } });
         }
       },
       REAL_RUNTIME_TIMEOUT_MS,
     );
   }
+
+  it(
+    "publishes every Claude model call of a multi-call turn live, each with the SDK's own reading, and totals equal the calls plus the turn-end remainder",
+    async () => {
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-multi-call-token-usage-workspace-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+      const llmModelIdentifier = await fetchRuntimeModelIdentifier("claude_agent_sdk", chooseClaudeModelIdentifier);
+      const agentDefinitionId = await createAgentDefinition(
+        "claude-multi-call",
+        "You are a test agent. When asked to run shell commands, run each one with the Bash tool, one tool call per step, waiting for each result. Then answer briefly.",
+      );
+      const runId = await createAgentRun({ agentDefinitionId, llmModelIdentifier, workspaceRootPath,
+        runtimeKind: "claude_agent_sdk", llmConfig: null });
+      const { app, socket, messages } = await openAgentSocket(runId);
+      const expectedToken = `TOK_${randomUUID().replace(/-/g, "_")}`;
+      const start = messages.length;
+      try {
+        sendE2eSendMessageCommand(socket, {
+          content: "Use the Bash tool to run `echo first`. After you see its output, use the Bash tool again to run " +
+            `\`echo second\`. After you see that output, reply with exactly ${expectedToken} and nothing else.`,
+        });
+        await waitForMessageAfter(messages, start,
+          (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.accepted === true, "SEND_MESSAGE accepted", 30_000);
+        const firstCall = await waitForMessageAfter(messages, start, (message) => message.type === "TOKEN_USAGE_UPDATED"
+          && message.payload.run_id === runId && message.payload.ingestion_kind === "claude_sdk_call", "first live Claude call");
+        // Live: the first call is published while the turn is still running (AC-003).
+        const firstCallIndex = messages.indexOf(firstCall);
+        expect(messages.slice(start, firstCallIndex).some((message) =>
+          message.type === "AGENT_STATUS" && message.payload.status === "idle")).toBe(false);
+        const midTurnSummary = await getRunSummary(runId);
+        await waitForMessageAfter(messages, start,
+          (message) => message.type === "AGENT_STATUS" && message.payload.status === "idle", "AGENT_STATUS idle");
+        const turn = messages.slice(start);
+        const calls = turn.filter((message) => message.type === "TOKEN_USAGE_UPDATED" && message.payload.run_id === runId
+          && message.payload.ingestion_kind === "claude_sdk_call");
+        const results = turn.filter((message) => message.type === "TOKEN_USAGE_UPDATED" && message.payload.run_id === runId
+          && message.payload.ingestion_kind === "claude_sdk_result");
+        const idleIndex = turn.findIndex((message) => message.type === "AGENT_STATUS" && message.payload.status === "idle");
+        const resultIndex = results.length ? turn.indexOf(results[0]!) : -1;
+        console.info("[claude multi-call] calls:", JSON.stringify(calls.map((call) => ({
+          index: turn.indexOf(call), model: call.payload.model_identifier, input: call.payload.reported_input_tokens,
+          cacheRead: call.payload.cache_read_input_tokens, cacheCreation: call.payload.cache_creation_input_tokens,
+          output: call.payload.reported_output_tokens, prompt: call.payload.latest_prompt_tokens,
+          window: call.payload.effective_context_window_tokens, threshold: call.payload.context_compaction_threshold_tokens,
+          summary: (call.payload.run_summary_after_event as Record<string, unknown> | undefined)?.usage_report_count ?? null,
+        }))), "result:", JSON.stringify(results.map((result) => ({ index: turn.indexOf(result),
+          accounting: result.payload.accounting_total_tokens, flags: result.payload.quality_flags,
+          modelUsage: result.payload.claude_sdk_model_usage ?? null }))), "idleIndex:", idleIndex,
+          "midTurnSummary:", JSON.stringify(midTurnSummary));
+
+        expect(calls.length).toBeGreaterThanOrEqual(3);
+        for (const call of calls) {
+          expect(call.payload.reports_model_call).toBe(true);
+          expectRuntimeContextReading("claude_agent_sdk", call.payload);
+        }
+        // Every call reaches the meter before the turn's result (D-10) and before the run goes idle.
+        expect(results).toHaveLength(1);
+        expect(results[0]!.payload.reports_model_call).toBe(false);
+        expect(Math.max(...calls.map((call) => turn.indexOf(call)))).toBeLessThan(resultIndex);
+        expect(resultIndex).toBeLessThan(idleIndex);
+        expect(midTurnSummary.usageReportCount).toBeGreaterThanOrEqual(1);
+        expect(midTurnSummary.latestRuntimeKind).toBe("claude_agent_sdk");
+        expect(midTurnSummary.latestModelIdentifier).toBeTruthy();
+
+        const summary = await waitForPersistedRunSummary(runId);
+        const lastCall = calls.at(-1)!;
+        const callPrompts = calls.map((call) => asNumber(call.payload.latest_prompt_tokens)!);
+        expect(summary.usageReportCount).toBe(calls.length);
+        expect(summary.latestRuntimeKind).toBe("claude_agent_sdk");
+        // The latest call's own context, not a sum over the turn's calls (AC-001).
+        expect(summary.latestPromptTokens).toBe(asNumber(lastCall.payload.latest_prompt_tokens));
+        expect(summary.latestPromptTokens!).toBeLessThan(callPrompts.reduce((a, b) => a + b, 0));
+        expect(summary.contextCompactionThresholdTokens).toBe(lastCall.payload.context_compaction_threshold_tokens ?? null);
+        // Totals = every call + the result's remainder (the result carries the SDK modelUsage delta).
+        const callTotal = calls.reduce((total, call) => total + (asNumber(call.payload.accounting_total_tokens) ?? 0), 0);
+        expect(summary.totalTokens).toBe(callTotal + (asNumber(results[0]!.payload.accounting_total_tokens) ?? 0));
+        expect(results[0]!.payload.quality_flags).not.toContain("claude_sdk_live_exceeds_cumulative");
+      } finally {
+        socket.close();
+        await app.close();
+        await terminateAgentRun(runId).catch(() => undefined);
+        await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId } });
+      }
+    },
+    REAL_RUNTIME_TIMEOUT_MS,
+  );
 });
