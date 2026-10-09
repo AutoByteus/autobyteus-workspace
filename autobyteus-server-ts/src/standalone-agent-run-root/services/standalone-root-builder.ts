@@ -1,4 +1,4 @@
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
@@ -39,7 +39,7 @@ import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persiste
 export type StandaloneRootBuilderDependencies = Readonly<{
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  taskAgentResources?: TaskAgentResourcePort;
+  taskExecutionResources?: TaskExecutionResourcePort;
   teamDefinitions: Pick<AgentTeamDefinitionService, "getDefinitionById">;
   packageStore: StandaloneRootPackageStore;
   agentRunManager?: AgentRunManager;
@@ -131,7 +131,7 @@ export class StandaloneRootBuilder {
       persistence,
       publisher: new RootEventPublisher<StandaloneRootEvent>(),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
-      taskAgentResources: this.dependencies.taskAgentResources,
+      taskExecutionResources: this.dependencies.taskExecutionResources,
       memoryLocator: this.dependencies.memoryLocator,
       activityInspector: this.dependencies.activityInspector,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
@@ -176,7 +176,8 @@ export class StandaloneRootBuilder {
       }),
       tasks: Object.freeze({
         root: input.identity.root,
-        delegateTask: (caller, command) => input.requireRun().delegateTask({ identity: caller }, command),
+        delegateToNewCopy: (caller, command) => input.requireRun().delegateToNewCopy({ identity: caller }, command),
+        assignToExistingCopy: (caller, command) => input.requireRun().assignToExistingCopy({ identity: caller }, command),
       }),
     });
   }

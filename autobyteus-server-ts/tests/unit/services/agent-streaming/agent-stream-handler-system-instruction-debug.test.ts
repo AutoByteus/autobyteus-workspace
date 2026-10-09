@@ -7,6 +7,8 @@ describe("AgentStreamHandler system-instruction diagnostics", () => {
     vi.resetModules();
   });
 
+  // Cold-imports the agent-streaming module graph after resetModules (about 4 s here); the default
+  // 5 s timeout fails under full-suite load on the base as well (baseline timing fix).
   it("retains identifiers and derived length without serializing exact prompt content", async () => {
     vi.stubEnv("RUNTIME_RAW_EVENT_DEBUG", "1");
     vi.resetModules();
@@ -56,5 +58,5 @@ describe("AgentStreamHandler system-instruction diagnostics", () => {
     expect(sink.send).toHaveBeenCalledWith(expect.objectContaining({
       type: "SYSTEM_INSTRUCTIONS_SUPPLIED",
     }));
-  });
+  }, 30_000);
 });

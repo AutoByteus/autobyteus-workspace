@@ -9,7 +9,8 @@ export const LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION = [
   "List the shared agents and agent teams you can work with, each with its name, kind",
   "(agent or agent_team), address and description. send_message_to with an address reaches",
   "the one instance at that address and brings it into the run on first use; delegate_task",
-  "with an address always spawns a new copy; follow up on a copy by its run ID.",
+  "with an address spawns a new copy (with a copy's own ID it gives that copy a new Task);",
+  "message a copy by its agent run ID (a Team copy's coordinator).",
   "This read-only tool takes no arguments.",
 ].join(" ");
 

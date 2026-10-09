@@ -432,7 +432,7 @@ collaborator starts an extra copy. Task sources come from
 `TeamTaskSourceResolver`, which projects a collaborator entry into the same
 source shape a configured placement has. An Agent cannot delegate to its
 own logical placement. An address that is neither returns
-`{ target_agent_run_id: null, message }` rather than failing the call. Input and
+`{ delegated: false, message }` rather than failing the call. Input and
 admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
 `ROOT_RUN_NOT_ACTIVE`) are tool errors raised before any preparation.
 `resolveMessageRecipient` (used by `send_message_to`) resolves a configured
@@ -499,11 +499,26 @@ work packet is the child's first message: the delegator's address and AgentRun
 ID, the description, and any reference files. The result is a strict union:
 
 ```text
-{ target_agent_run_id: "<child ingress AgentRun ID>", target_kind: "agent" }   // started (an Agent copy)
-{ target_agent_run_id: "<coordinator AgentRun ID>", target_kind: "team" }      // started (a Team copy)
-{ target_agent_run_id: "<child ingress AgentRun ID>", target_kind: "agent", task_id: "ad_hoc_task_…" } // started; Task created
-{ target_agent_run_id: null, message: "<why nothing started>" }
+{ delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>" }            // an Agent copy
+{ delegated: true, target_kind: "team", target_team_run_id: "<Team copy run ID>",
+  target_team_coordinator_agent_run_id: "<its coordinator AgentRun ID>" }                         // a Team copy
+{ delegated: true, target_kind: "agent", target_agent_run_id: "…", task_id: "ad_hoc_task_…" }     // Task created
+{ delegated: false, message: "<why nothing started>" }
 ```
+
+The result names each ID for what it is: a Team copy's team run ID (to give it
+a later Task) and its coordinator's agent run ID (to message it), never one
+ambiguous `target_agent_run_id`. Internally the roots return a
+`TaskDelegationOutcome` (`{delegated, copy: DelegatedCopy, taskId?}`) and only
+the tool layer serializes it.
+
+`delegate_task` can also give a saved Task to an **existing** copy by its own ID
+(`{target_team_run_id | target_agent_run_id, task_id}`): each root's
+`assignToExistingCopy` hands it to `RootTaskExecutionLifecycle.assignToExistingCopy`
+together with the root's exact delivery, so the copy is woken or restored with
+its conversation and receives the Task's work as a `task_assignment` message
+from the delegator. The address path is `delegateToNewCopy`. See
+[Follow-up Task to an existing copy](projects.md#follow-up-task-to-an-existing-copy).
 
 `task_id` is present only when the delegation created a Task with no Project:
 a description-only `delegate_task` from an agent that is not working on a Task.
@@ -550,8 +565,9 @@ as execution resources, distinct from business Tasks. **The execution tree
 carries no Task information.** Which copies, Team members and helpers belong to
 a Project Task is recorded only on the Task side, in that Task's
 `agent_run_resources.json`. The in-memory view loaded from it is reached
-through `TaskAgentResourcePort`. That Task record, not the physical subtree or
-the definition/address, decides what DONE stops. The Manager, borrowed unowned
+through `TaskExecutionResourcePort`. That Task record, not the physical subtree or
+the definition/address, decides what DONE stops: a copy has one current Task,
+and DONE stops only copies whose current Task it is. The Manager, borrowed unowned
 runs and other Tasks are outside that set.
 
 The idle/wake rules below apply to unowned children and to Task-owned children
@@ -673,7 +689,9 @@ address brings that one instance in (see
 A successful `delegate_task` already
 starts the child and delivers the complete assignment to its fresh ingress.
 Callers must not resend the assignment through logical-address messaging; all
-later exchange with the child, in both directions, uses its run ID.
+later exchange with the child, in both directions, uses its agent run ID (a
+Team copy's coordinator). A Team copy's team run ID is refused by
+`send_message_to` (`TARGET_IS_TEAM_RUN`) with the coordinator's run ID to use.
 
 `target_agent_run_id` is the exact AgentRun route owned by
 `src/agent-communication`. `GlobalAgentRunMessageRouter` sends a run-ID target

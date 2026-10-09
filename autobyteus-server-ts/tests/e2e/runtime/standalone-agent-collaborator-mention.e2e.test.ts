@@ -151,9 +151,9 @@ const findInResult = (payload: Record<string, unknown>, key: string): unknown =>
   };
   return visit(payload.result ?? payload.error ?? null, 0);
 };
-/** The `target_agent_run_id` a delegate_task result carries, or null. */
+/** The ingress a delegate_task result names (an Agent copy, or a Team copy's coordinator), or null. */
 const delegatedRunId = (payload: Record<string, unknown>): string | null => {
-  const runId = findInResult(payload, "target_agent_run_id");
+  const runId = findInResult(payload, "target_agent_run_id") ?? findInResult(payload, "target_team_coordinator_agent_run_id");
   return typeof runId === "string" && runId ? runId : null;
 };
 const rejected = (message: WsMessage): boolean => message.type === "TOOL_EXECUTION_FAILED" || findInResult(message.payload, "accepted") === false;

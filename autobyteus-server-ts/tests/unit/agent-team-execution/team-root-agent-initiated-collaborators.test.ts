@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ingressOfOutcome } from "../../fixtures/task-execution-resource-fixtures.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { TaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { flushMicrotasks } from "../agent-org-execution/helpers/task-publication-handles.js";
@@ -78,14 +79,39 @@ describe("agent-initiated collaborators in a Team root", () => {
     expect(f.handles.size).toBe(0);
   });
 
+  it("gives a closed Team copy a follow-up Task by its team run ID; its coordinator gets B's work from the delegator (AC-002, REQ-002/003)", async () => {
+    const f = await harness();
+    vi.spyOn(AgentConversationActivityInspector.prototype, "inspect").mockReturnValue({ kind: "present" } as never);
+    const resources = f.dependencies.taskExecutionResources;
+    const first = await f.root.delegateToNewCopy({ identity: coordinatorOf(f) }, { recipient_address: "/product_team", description: "Build a page" });
+    await flushMicrotasks();
+    expect(first).toMatchObject({ delegated: true, copy: { kind: "team" } });
+    const [copy] = copiesOf(f);
+    const lead = memberOf(copy!, "/product_team/lead");
+    expect(first).toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead }, taskId: "ad_hoc_task_1" });
+    expect(f.root.teamCoordinatorOf(copy!.teamRunId)).toBe(lead);
+    expect(f.root.teamCoordinatorOf(lead)).toBeNull();
+    await f.root.releaseTaskExecutions(resources.close("ad_hoc_task_1"));
+    resources.addTask("task-B", "Clean up the page");
+    // The coordinator's agent run ID is not the copy's ID.
+    expect(await f.root.assignToExistingCopy({ identity: coordinatorOf(f) }, { copy: { agentRunId: lead }, taskId: "task-B" }))
+      .toEqual({ delegated: false, message: `${lead} is the coordinator of Team copy ${copy!.teamRunId}; use target_team_run_id "${copy!.teamRunId}".` });
+    expect(await f.root.assignToExistingCopy({ identity: coordinatorOf(f) }, { copy: { teamRunId: copy!.teamRunId }, taskId: "task-B" }))
+      .toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead } });
+    expect(resources.entry({ teamRunId: copy!.teamRunId })).toMatchObject({ taskId: "task-B", open: true, start: "started" });
+    const messages = (await f.dependencies.communicationStore.read(f.teamMemoryDir, ROOT))!.messages;
+    expect(messages.at(-1)).toEqual(expect.objectContaining({ senderAgentRunId: "run-coordinator", receiverAgentRunId: lead, messageType: "task_assignment",
+      content: expect.stringContaining("New Task assigned to you: task-B.") }));
+  });
+
   it("delegates parallel catalog copies with a source and no collaborator; each copy is one unit (AC-005, AC-007)", async () => {
     const f = await harness();
-    const delegate = () => f.root.delegateTask({ identity: coordinatorOf(f) }, { recipient_address: "/product_team", description: "Build a page" });
+    const delegate = () => f.root.delegateToNewCopy({ identity: coordinatorOf(f) }, { recipient_address: "/product_team", description: "Build a page" });
     const started = [await delegate(), await delegate(), await delegate()];
     await flushMicrotasks();
     const copies = copiesOf(f);
     expect(copies).toHaveLength(3);
-    expect(new Set(started.map((result) => result.target_agent_run_id)).size).toBe(3);
+    expect(new Set(started.map((result) => ingressOfOutcome(result))).size).toBe(3);
     expect(copies.map((copy) => copy.source)).toEqual(Array(3).fill(expect.objectContaining({
       kind: "agent_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/lead",
     })));
@@ -113,7 +139,7 @@ describe("agent-initiated collaborators in a Team root", () => {
   it("restores a catalog copy from its recorded source after Stop and reopen", async () => {
     const f = await harness();
     vi.spyOn(AgentConversationActivityInspector.prototype, "inspect").mockReturnValue({ kind: "present" } as never);
-    await f.root.delegateTask({ identity: coordinatorOf(f) }, { recipient_address: "/product_team", description: "Build a page" });
+    await f.root.delegateToNewCopy({ identity: coordinatorOf(f) }, { recipient_address: "/product_team", description: "Build a page" });
     await flushMicrotasks();
     const [copy] = copiesOf(f);
     const leadRunId = memberOf(copy!, "/product_team/lead");
@@ -140,7 +166,7 @@ describe("agent-initiated collaborators in a Team root", () => {
   it("a copy member and a collaborator member can each delegate to and bring in a listed agent (AC-006)", async () => {
     const f = await harness();
     // A catalog copy's member delegates to another catalog definition.
-    await f.root.delegateTask({ identity: coordinatorOf(f) }, { recipient_address: "/designer", description: "Sketch" });
+    await f.root.delegateToNewCopy({ identity: coordinatorOf(f) }, { recipient_address: "/designer", description: "Sketch" });
     await flushMicrotasks();
     const designerCopy = f.root.getExecutionTreeSnapshot().rootTeam.taskExecutions[0] as { agentRunId: string; source?: unknown };
     expect(designerCopy.source).toMatchObject({ kind: "agent", agentDefinitionId: "designer" });
@@ -149,8 +175,8 @@ describe("agent-initiated collaborators in a Team root", () => {
       authoredEnclosingScopeInstruction: null, collaboration: expect.objectContaining({ outgoingHandoffs: [] }),
     });
     const copyIdentity = f.identity("/designer", designerCopy.agentRunId);
-    await expect(f.root.delegateTask({ identity: copyIdentity }, { recipient_address: "/lead", description: "Plan" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(f.root.delegateToNewCopy({ identity: copyIdentity }, { recipient_address: "/lead", description: "Plan" }))
+      .resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     expect(f.root.getExecutionTreeSnapshot().rootTeam.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId]))
       .toEqual([["/designer", "run-coordinator"], ["/lead", designerCopy.agentRunId]]);

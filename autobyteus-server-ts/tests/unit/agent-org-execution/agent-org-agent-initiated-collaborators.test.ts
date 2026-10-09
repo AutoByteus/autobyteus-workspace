@@ -18,11 +18,30 @@ const memberRun = (copy: TaskTeamExecution, address: string) => {
 };
 
 describe("agent-initiated collaborators and team instances in an AgentOrg", () => {
+  it("gives a closed Team copy a follow-up Task by its team run ID; its coordinator gets B's work from the delegator (AC-002)", async () => {
+    const f = await buildOrg();
+    const director = identity(f, "/director", "director");
+    const first = await f.owner.delegateToNewCopy({ identity: director }, { recipient_address: "/target", description: "Copy one" });
+    await flushMicrotasks();
+    const [copy] = f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions as TaskTeamExecution[];
+    const lead = memberRun(copy!, "/target/lead");
+    expect(first).toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead }, taskId: "ad_hoc_task_1" });
+    expect(f.owner.teamCoordinatorOf(copy!.teamRunId)).toBe(lead);
+    await f.owner.releaseTaskExecutions(f.resources.close("ad_hoc_task_1"));
+    f.resources.addTask("task-B", "Polish the copy");
+    expect(await f.owner.assignToExistingCopy({ identity: director }, { copy: { teamRunId: copy!.teamRunId }, taskId: "task-B" }))
+      .toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead } });
+    const work = f.owner.getCommunicationSnapshot().messages.at(-1)!;
+    expect(work).toEqual(expect.objectContaining({ senderAgentRunId: "director", receiverAgentRunId: lead, messageType: "task_assignment",
+      content: expect.stringContaining("New Task assigned to you: task-B.") }));
+    expect(f.resources.entry({ teamRunId: copy!.teamRunId })).toMatchObject({ taskId: "task-B", open: true, start: "started" });
+  });
+
   it("a copy of a mounted Team reaches its own members, not the mounted Team's (REQ-007 behavior change)", async () => {
     const f = await buildOrg();
     const director = identity(f, "/director", "director");
-    await f.owner.delegateTask({ identity: director }, { recipient_address: "/target", description: "Copy one" });
-    await f.owner.delegateTask({ identity: director }, { recipient_address: "/target", description: "Copy two" });
+    await f.owner.delegateToNewCopy({ identity: director }, { recipient_address: "/target", description: "Copy one" });
+    await f.owner.delegateToNewCopy({ identity: director }, { recipient_address: "/target", description: "Copy two" });
     await flushMicrotasks();
     const [one, two] = f.owner.getExecutionTreeSnapshot().rootOrg.taskExecutions as TaskTeamExecution[];
     expect(one!.source).toBeUndefined(); // copies of a mounted Team keep reading the configured source
@@ -72,10 +91,10 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
   it("catalog copies record their source and add no collaborator; a mounted-Team member's catalog copy goes to the root (AC-005, AC-006, AC-013)", async () => {
     const f = await buildOrg();
     const lead = identity(f, "/target/lead", "configured-lead");
-    await expect(f.owner.delegateTask({ identity: lead }, { recipient_address: "/product_team", description: "Design" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
-    await expect(f.owner.delegateTask({ identity: identity(f, "/director", "director") }, { recipient_address: "/code_reviewer", description: "Review" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(f.owner.delegateToNewCopy({ identity: lead }, { recipient_address: "/product_team", description: "Design" }))
+      .resolves.toMatchObject({ delegated: true });
+    await expect(f.owner.delegateToNewCopy({ identity: identity(f, "/director", "director") }, { recipient_address: "/code_reviewer", description: "Review" }))
+      .resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     const tree = f.owner.getExecutionTreeSnapshot();
     expect(tree.rootOrg.collaborators).toEqual([]);
@@ -96,8 +115,8 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
   it("places copies by address from inside a mounted Team: teammate under the Team, Org-level placement at the root (REQ-012, AC-013)", async () => {
     const f = await buildOrg();
     const lead = { identity: identity(f, "/target/lead", "configured-lead") };
-    await f.owner.delegateTask(lead, { recipient_address: "/target/writer", description: "Draft" });
-    await f.owner.delegateTask(lead, { recipient_address: "/director", description: "Decide" });
+    await f.owner.delegateToNewCopy(lead, { recipient_address: "/target/writer", description: "Draft" });
+    await f.owner.delegateToNewCopy(lead, { recipient_address: "/director", description: "Decide" });
     await flushMicrotasks();
     const tree = f.owner.getExecutionTreeSnapshot();
     const mounted = tree.rootOrg.members.find((member) => member.address === "/target")!;

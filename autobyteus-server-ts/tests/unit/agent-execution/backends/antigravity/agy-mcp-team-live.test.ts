@@ -28,7 +28,7 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
         memberAddress: "/coordinator", agentRunId: "org-live-member" }),
       authoredEnclosingScopeInstruction: "You coordinate this organization.",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: deliver }),
-      tasks: { root, delegateTask: async () => { throw new Error("unused"); },
+      tasks: { root, delegateToNewCopy: async () => { throw new Error("unused"); }, assignToExistingCopy: async () => { throw new Error("unused"); },
         submitTaskResult: async () => { throw new Error("unused"); },
         reviewTaskResult: async () => { throw new Error("unused"); } } });
     })();

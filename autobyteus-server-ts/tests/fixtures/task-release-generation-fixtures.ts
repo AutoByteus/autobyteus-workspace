@@ -16,7 +16,7 @@ import { createRootExecutionIdentity, createRootExecutionPhysicalScope, type Roo
 import { projectTaskAgentExecution, projectTaskTeamExecution } from '../../src/agent-collaboration/execution/task/task-execution-tree-projection.js';
 import { taskExecutionReferenceKey } from '../../src/agent-collaboration/execution/task/task-execution-reference.js';
 import { testActivationManager } from './agent-run-preparation-fixtures.js';
-import { InMemoryTaskAgentResources } from './task-agent-resource-fixtures.js';
+import { InMemoryTaskExecutionResources } from './task-execution-resource-fixtures.js';
 import { testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from './current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from './current-agent-org-run-fixtures.js';
 
@@ -50,7 +50,7 @@ export function releaseGenerationFixture(kind: RootSubjectKind = 'agent_team', a
   const callbacks = { assertExecutionInputAllowed: () => undefined, publishAgentEvent: vi.fn(), commitPlatformBindingChange: async () => undefined,
     buildMemberExecutionContext: async ({ identity }: any) => new MemberExecutionContext({ identity, teamScoped: true,
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-      tasks: { root: identity.root, delegateTask: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
+      tasks: { root: identity.root, delegateToNewCopy: async () => { throw Error('Not a business dispatch witness.'); }, assignToExistingCopy: async () => { throw Error('Not a business dispatch witness.'); } } as never }) };
   const dependencies = { agentRunManager: manager as never, activityInspector: { inspect: () => ({ kind: 'present' }) } as never,
     memoryLocator: { getLocation: (_scope: unknown, id: string) => ({ memoryDir: `/tmp/test-unused-${id}` }) } as never };
   const factory = new FlatTeamExecutionFactory(dependencies);
@@ -156,15 +156,15 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     return control ? { target: { root: f.root, execution: control.execution, ingressAgentRunId: '' }, ownedAgentRunIds: [], operation: control.operation } : null;
   });
   // The Task side alone knows which runs belong to Task A (assigned Team, its delegated copies, helper) and Task B.
-  const resources = new InMemoryTaskAgentResources();
+  const resources = new InMemoryTaskExecutionResources();
   resources.addTask('A'); resources.addTask('B');
   const hostRoot = f.root, assigned = { role: 'assigned' as const, assignedBy: managerNode.agentRunId, hostRoot };
-  await resources.linkAgentRun({ ...assigned, taskId: 'A', agentRun: { teamRunId: 'A-team' }, coordinatorAgentRunId: 'A-lead' });
+  await resources.linkNewTaskExecution({ ...assigned, taskId: 'A', execution: { teamRunId: 'A-team' }, teamCoordinatorAgentRunId: 'A-lead' });
   for (const agentRun of [{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }, { agentRunId: 'A-grand' }]) {
-    await resources.linkAgentRun({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, agentRun });
+    await resources.linkNewTaskExecution({ role: 'delegated', creator: { teamRunId: 'A-team' }, hostRoot, execution: agentRun });
   }
-  await resources.linkAgentRun({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, agentRun: { agentRunId: 'A-helper' } });
-  await resources.linkAgentRun({ ...assigned, taskId: 'B', agentRun: { agentRunId: 'B-worker' } });
+  await resources.linkNewTaskExecution({ role: 'broughtIn', creator: { teamRunId: 'A-team' }, hostRoot, execution: { agentRunId: 'A-helper' } });
+  await resources.linkNewTaskExecution({ ...assigned, taskId: 'B', execution: { agentRunId: 'B-worker' } });
   const quiet = rootTeam ? await rootTeam.tryShutDownDirectTaskExecutionIfQuiet({ teamRunId: 'A-team' })
     : await f.teams.tryShutDownRootTaskTeamIfQuiet('A-team');
   if (!quiet) throw Error('Fixture must reach actual verified quiet shutdown');

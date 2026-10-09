@@ -139,6 +139,11 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     }
     return null;
   }
+  taskExecutionTargetOf(reference: TaskExecutionReference) {
+    // The index is keyed by run ID alone: the copy must also be of the requested kind.
+    const entry = this.options.getIndex().getTaskExecution(reference);
+    return entry && taskExecutionReferenceKey(referenceOf(entry)) === taskExecutionReferenceKey(reference) ? Object.freeze({ root: this.root, execution: referenceOf(entry), ingressAgentRunId: this.ingressOf(entry).agentRunId }) : null;
+  }
   cancelOwnedExecution(reference: TaskExecutionReference): void {
     const entry = this.options.getIndex().getTaskExecution(reference);
     if (entry) this.options.teamRunResolver.getManaged(entry.ownerTeamRunId)?.cancelDirectTaskExecution(reference);
