@@ -108,18 +108,66 @@ export const parseFinalContextFileOwnerDescriptor = (value: unknown): ContextFil
   };
   throw new ContextFileDescriptorError(`Unsupported final owner kind '${String(input.kind)}'.`);
 };
+type DraftOwnerKind = ContextFileDraftOwnerDescriptor["kind"];
+type DraftOwnerField<K extends DraftOwnerKind> = Exclude<keyof Extract<ContextFileDraftOwnerDescriptor, { kind: K }>, "kind">;
+/** Owner path of a draft locator: `<literal>/<field value>` pairs between `/rest/drafts/` and `/context-files/`. */
+type DraftLocatorShape<K extends DraftOwnerKind> = ReadonlyArray<readonly [literal: string, field: DraftOwnerField<K>]>;
+
+/** The one definition of every draft owner kind's locator path; build and parse both derive from it. */
+const DRAFT_LOCATOR_SHAPES: { readonly [K in DraftOwnerKind]: DraftLocatorShape<K> } = {
+  agent_draft: [["agent-runs", "draftRunId"]],
+  team_member_draft: [["team-runs", "teamDraftId"], ["members", "memberAddress"]],
+  org_member_draft: [["agent-org-runs", "orgRunId"], ["agent-runs", "agentRunId"]],
+  agent_collaboration_member_draft: [["agent-collaborations", "hostRunId"], ["agent-runs", "agentRunId"]],
+};
+const DRAFT_LOCATOR_PREFIX = "/rest/drafts/";
+const CONTEXT_FILES_SEGMENT = "context-files";
+
+const draftLocatorShape = (kind: DraftOwnerKind): ReadonlyArray<readonly [literal: string, field: string]> =>
+  DRAFT_LOCATOR_SHAPES[kind];
+
 export const buildDraftContextFileLocator = (owner: ContextFileDraftOwnerDescriptor, storedFilename: string): string => {
   const file = encodeURIComponent(filename(storedFilename));
-  switch (owner.kind) {
-    case "agent_draft":
-      return `/rest/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${file}`;
-    case "team_member_draft":
-      return `/rest/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${file}`;
-    case "org_member_draft":
-      return `/rest/drafts/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
-    case "agent_collaboration_member_draft":
-      return `/rest/drafts/agent-collaborations/${encodeURIComponent(owner.hostRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
+  const values = owner as unknown as Record<string, string>;
+  const ownerPath = draftLocatorShape(owner.kind)
+    .map(([literal, field]) => `${literal}/${encodeURIComponent(values[field]!)}`)
+    .join("/");
+  return `${DRAFT_LOCATOR_PREFIX}${ownerPath}/${CONTEXT_FILES_SEGMENT}/${file}`;
+};
+
+const decodeLocatorSegment = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    throw new ContextFileDescriptorError("Draft context-file locator is not validly encoded.");
   }
+};
+
+/**
+ * Inverse of `buildDraftContextFileLocator` for a `/rest/drafts/...` pathname (no query or fragment).
+ * Returns `null` when the path is not a draft locator; throws `ContextFileDescriptorError` (or the
+ * owner's own contract error) when it has a draft locator shape with an invalid owner or file.
+ */
+export const parseDraftContextFileLocator = (
+  pathname: string,
+): { owner: ContextFileDraftOwnerDescriptor; storedFilename: string } | null => {
+  if (!pathname.startsWith(DRAFT_LOCATOR_PREFIX)) return null;
+  const segments = pathname.slice(DRAFT_LOCATOR_PREFIX.length).split("/");
+  for (const kind of Object.keys(DRAFT_LOCATOR_SHAPES) as DraftOwnerKind[]) {
+    const shape = draftLocatorShape(kind);
+    if (segments.length !== shape.length * 2 + 2
+      || segments[shape.length * 2] !== CONTEXT_FILES_SEGMENT
+      || shape.some(([literal], index) => segments[index * 2] !== literal)) {
+      continue;
+    }
+    const descriptor: Record<string, string> = { kind };
+    shape.forEach(([, field], index) => { descriptor[field] = decodeLocatorSegment(segments[index * 2 + 1]!); });
+    return {
+      owner: parseDraftContextFileOwnerDescriptor(descriptor),
+      storedFilename: filename(decodeLocatorSegment(segments[segments.length - 1]!)),
+    };
+  }
+  return null;
 };
 export const buildFinalContextFileLocator = (owner: ContextFileFinalOwnerDescriptor, storedFilename: string): string => {
   const file = encodeURIComponent(filename(storedFilename));

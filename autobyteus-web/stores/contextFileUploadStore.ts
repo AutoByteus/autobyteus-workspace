@@ -7,11 +7,12 @@ import {
   inferContextAttachmentType,
   isDraftUploadedContextAttachment,
 } from '~/utils/contextFiles/contextAttachmentModel';
-import {
-  buildDraftContextFileEndpoint,
-  type DraftContextFileOwnerDescriptor,
-  type FinalContextFileOwnerDescriptor,
+import type {
+  DraftContextFileOwnerDescriptor,
+  FinalContextFileOwnerDescriptor,
 } from '~/utils/contextFiles/contextFileOwner';
+import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 interface UploadDraftResponse {
   storedFilename: string;
@@ -31,13 +32,20 @@ interface FinalizeDraftResponse {
 
 interface ContextFileUploadState {
   activeRequestCount: number;
-  error: string | null;
 }
+
+const readErrorDetail = async (response: Response): Promise<string | null> => {
+  try {
+    const body = await response.json() as { detail?: unknown };
+    return typeof body?.detail === 'string' && body.detail ? body.detail : null;
+  } catch {
+    return null;
+  }
+};
 
 export const useContextFileUploadStore = defineStore('contextFileUpload', {
   state: (): ContextFileUploadState => ({
     activeRequestCount: 0,
-    error: null,
   }),
 
   getters: {
@@ -50,7 +58,6 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
       file: File;
     }): Promise<UploadedContextAttachment> {
       this.activeRequestCount += 1;
-      this.error = null;
       const formData = new FormData();
       formData.append('owner', JSON.stringify(input.owner));
       formData.append('file', input.file);
@@ -66,29 +73,19 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
           phase: 'draft',
           type: inferContextAttachmentType(input.file),
         });
-      } catch (error: any) {
-        this.error = error?.response?.data?.detail || error?.message || 'Failed to upload context attachment.';
-        throw error;
       } finally {
         this.activeRequestCount -= 1;
       }
     },
 
-    async deleteDraftAttachment(input: {
-      owner: DraftContextFileOwnerDescriptor;
-      attachment: ContextAttachment;
-    }): Promise<void> {
-      if (!isDraftUploadedContextAttachment(input.attachment)) {
-        return;
-      }
-
+    /** Deletes a draft upload at its own locator, whichever owner kind it belongs to. */
+    async deleteDraftAttachment(attachment: UploadedContextAttachment): Promise<void> {
       this.activeRequestCount += 1;
-      this.error = null;
       try {
-        await apiService.delete(buildDraftContextFileEndpoint(input.owner, input.attachment.storedFilename));
-      } catch (error: any) {
-        this.error = error?.response?.data?.detail || error?.message || 'Failed to delete draft attachment.';
-        throw error;
+        const response = await authorizedFetch(resolveContextAttachmentUrl(attachment.locator), { method: 'DELETE' });
+        if (!response.ok) {
+          throw new Error(await readErrorDetail(response) ?? `Delete failed (${response.status}).`);
+        }
       } finally {
         this.activeRequestCount -= 1;
       }
@@ -111,7 +108,6 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
       }
 
       this.activeRequestCount += 1;
-      this.error = null;
       try {
         const response = await apiService.post<FinalizeDraftResponse>('/context-files/finalize', {
           draftOwner: input.draftOwner,
@@ -147,9 +143,6 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
             type: draftAttachment.type,
           });
         });
-      } catch (error: any) {
-        this.error = error?.response?.data?.detail || error?.message || 'Failed to finalize draft attachments.';
-        throw error;
       } finally {
         this.activeRequestCount -= 1;
       }
