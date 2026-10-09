@@ -18,6 +18,9 @@ import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/doma
 
 const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
+// Recording an observation also writes daily analytics facets (keyed by model, not run); remove them too so
+// they cannot leak into other suites' time ranges (e.g. token-usage-analytics-graphql).
+const createdModelIdentifiers = new Set<string>();
 
 const buildEvent = (input: {
   runId: string;
@@ -50,6 +53,7 @@ const buildEvent = (input: {
   pricingPolicyKey?: string | null;
 }) => {
   createdRunIds.add(input.runId);
+  createdModelIdentifiers.add(input.model ?? 'gpt-5.4-mini');
   const cacheReadTokens = input.cacheReadTokens ?? 0;
   const cacheCreationTokens = input.cacheCreationTokens ?? ((input.cacheCreation5mTokens ?? 0) + (input.cacheCreation1hTokens ?? 0));
   const standardInputTokens = input.standardInputTokens ?? Math.max(input.grossInputTokens - cacheReadTokens - cacheCreationTokens, 0);
@@ -135,6 +139,10 @@ describe('token usage ledger GraphQL provider semantics', () => {
       await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
+    await rootPrismaClient.tokenUsageAnalyticsDailyFacet.deleteMany({
+      where: { modelIdentifier: { in: Array.from(createdModelIdentifiers) } },
+    });
+    createdModelIdentifiers.clear();
     appConfigProvider.resetForTests();
     fs.rmSync(appDataDir, { recursive: true, force: true });
     await shutdownPrisma();

@@ -1,0 +1,84 @@
+{
+  "frames": [
+    {
+      "raw_usage_json": {
+        "input_tokens": 8919,
+        "output_tokens": 1,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 8920
+      },
+      "input_token_semantic": "base_excludes_cache",
+      "accounting_input_tokens": 8919,
+      "standard_input_tokens": 8919,
+      "cache_miss_input_tokens": 8919,
+      "cache_read_input_tokens": 0,
+      "cache_state": "zero_reported",
+      "quality_flags": [
+        "agy_provider_reported_cumulative_usage",
+        "first_cumulative_snapshot_assumed_run_origin"
+      ],
+      "idempotency_key": "agy:b9bcb5e8-633a-446d-9c98-8123fe72c609:1"
+    },
+    {
+      "raw_usage_json": {
+        "input_tokens": 17920,
+        "output_tokens": 2,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 17922
+      },
+      "input_token_semantic": "base_excludes_cache",
+      "accounting_input_tokens": 9001,
+      "standard_input_tokens": 9001,
+      "cache_miss_input_tokens": 9001,
+      "cache_read_input_tokens": 0,
+      "cache_state": "zero_reported",
+      "quality_flags": [
+        "agy_provider_reported_cumulative_usage",
+        "first_cumulative_snapshot_assumed_run_origin"
+      ],
+      "idempotency_key": "agy:b9bcb5e8-633a-446d-9c98-8123fe72c609:2"
+    },
+    {
+      "raw_usage_json": {
+        "input_tokens": 27003,
+        "output_tokens": 3,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 27006
+      },
+      "input_token_semantic": "base_excludes_cache",
+      "accounting_input_tokens": 9083,
+      "standard_input_tokens": 9083,
+      "cache_miss_input_tokens": 9083,
+      "cache_read_input_tokens": 0,
+      "cache_state": "zero_reported",
+      "quality_flags": [
+        "agy_provider_reported_cumulative_usage",
+        "first_cumulative_snapshot_assumed_run_origin"
+      ],
+      "idempotency_key": "agy:b9bcb5e8-633a-446d-9c98-8123fe72c609:3"
+    }
+  ],
+  "persisted": {
+    "grossInputTokens": 27003,
+    "standardInputTokens": 27003,
+    "cacheMissInputTokens": 27003,
+    "cacheReadInputTokens": 0,
+    "outputTokens": 3,
+    "totalTokens": 27006,
+    "cacheReadInputTokenRate": 0,
+    "cacheState": "zero_reported",
+    "apiCostStatus": "price_missing",
+    "estimatedApiTotalCost": null,
+    "latestRuntimeKind": "antigravity_cli",
+    "latestModelIdentifier": "gemini-3.8-flash-low",
+    "usageReportCount": 3
+  },
+  "runQualityFlags": [
+    "agy_provider_reported_cumulative_usage",
+    "first_cumulative_snapshot_assumed_run_origin"
+  ],
+  "errors": []
+}

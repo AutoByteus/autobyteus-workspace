@@ -14,6 +14,9 @@ import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost
 
 const { store } = createCurrentTokenUsageTestHarness(rootPrismaClient);
 const createdRunIds = new Set<string>();
+// Recording an observation also writes daily analytics facets (keyed by model, not run); remove them too so
+// they cannot leak into other suites' time ranges (e.g. token-usage-analytics-graphql).
+const createdModelIdentifiers = new Set<string>();
 
 type UnitPriceSummary = {
   status: string;
@@ -99,6 +102,7 @@ const buildEvent = (input: {
   memberName?: string | null;
 }) => {
   createdRunIds.add(input.runId);
+  createdModelIdentifiers.add(input.model ?? "gpt-unit-price-test");
   const status = input.status ?? "estimated";
   const trusted = status === "estimated" || status === "partial_price_missing";
   const local = status === "local_no_api_bill";
@@ -202,6 +206,10 @@ describe("token usage unit-price GraphQL hydration", () => {
       await rootPrismaClient.tokenUsageRunRecord.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
+    await rootPrismaClient.tokenUsageAnalyticsDailyFacet.deleteMany({
+      where: { modelIdentifier: { in: Array.from(createdModelIdentifiers) } },
+    });
+    createdModelIdentifiers.clear();
     await shutdownPrisma();
   });
 
@@ -483,6 +491,7 @@ describe("token usage unit-price GraphQL hydration", () => {
   it("persists a DeepSeek policy selected from observed_at through the real pricing boundary", async () => {
     const runId = `deepseek-observed-at-${randomUUID()}`;
     createdRunIds.add(runId);
+    createdModelIdentifiers.add("deepseek-v4-pro");
     const enriched = await new TokenCostCalculator().enrichCost(createTokenUsageUpdatedPayload({
       runId,
       payload: {

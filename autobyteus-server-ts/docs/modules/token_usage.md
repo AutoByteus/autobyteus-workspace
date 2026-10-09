@@ -243,6 +243,40 @@ are not retained in the cumulative database row. Multiple updates for one
 active turn are dispatched in arrival order rather than collapsed in a pending
 turn map.
 
+### Antigravity CLI (AGY)
+
+`AgyStreamEventConverter` emits one `TOKEN_USAGE_UPDATED` per AGY terminal
+`result` event that carries `usage`. AGY's `result.usage` is cumulative for the
+AGY process (verified live on AGY 1.3.2: input 8,919 → 17,920 → 27,003 over
+three turns, with `total_tokens = input_tokens + output_tokens`). The converter
+therefore sends a `cumulative_snapshot` with
+`snapshot_series_key=<conversation-id>` and the idempotency key
+`agy:<conversation-id>:<num_turns>`. The normal snapshot-delta fold derives each
+turn's contribution.
+
+AGY `input_tokens` **excludes** `cache_read_tokens`, so AGY input is
+`base_excludes_cache`, as for Claude:
+
+- gross input = `input_tokens` + `cache_read_tokens`;
+- cache miss = `input_tokens`;
+- cache read = `cache_read_tokens`;
+- `thinking_tokens` maps to reasoning output.
+
+The cache hit rate for AGY runs uses the same gross basis as the native Gemini
+runtime (`gross_includes_cache`), so the two are directly comparable. When
+`cache_read_tokens` is missing, gross input equals `input_tokens` and the cache
+state is `not_reported`. AGY reports no cache-write quantity.
+
+The semantic applies to every model run through AGY, not only Gemini. AGY model
+ids (for example `gemini-3.8-flash-high`) have no catalog price and stay
+`price_missing`. Before 2026-10 (ticket `gemini-native-cache-hit`) AGY input was
+marked `gross_includes_cache`. That over-stated the hit rate, under-counted
+gross input, and rejected as a regressed snapshot every AGY turn after the
+first whose cache reads grew faster than its input, so those turns are missing
+from older rows. The fix is fix-forward only: older AGY
+run rows and daily facets keep their stored values and are not rewritten. A run
+that continues after an upgrade folds new snapshots on the corrected basis.
+
 ### Claude Agent SDK
 
 Claude SDK accounting starts at terminal `result` events; thinking/text stream

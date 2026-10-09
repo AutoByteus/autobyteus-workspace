@@ -1,0 +1,9 @@
+ ✓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests) 3704ms
+ ✓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests) 10580ms
+ ✓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests) 6188ms
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 1 skipped) 19183ms
+ ✓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test) 1368ms
+ ✓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test) 3477ms
+ Test Files  6 passed (6)
+      Tests  37 passed | 1 skipped (38)
+   Duration  71.11s (transform 7.76s, setup 82ms, import 25.26s, tests 44.50s, environment 0ms)
