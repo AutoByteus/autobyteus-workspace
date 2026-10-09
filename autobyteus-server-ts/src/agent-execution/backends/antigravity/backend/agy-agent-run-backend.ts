@@ -6,6 +6,7 @@ import type { AgentRunBackendInputDispatch, AgentRunBackendInputDispatchResult }
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgyRunContext } from "./agy-agent-run-context.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
+import { buildAgyUserMessageText } from "../input/agy-user-message-text.js";
 import { AgyStreamEventConverter, type AgyStreamEventConverterOptions } from "../stream/agy-stream-event-converter.js";
 import { recordAgyProviderDiagnostic } from "../stream/agy-provider-diagnostic-sink.js";
 import { readAgyNativeImagePath } from "../stream/agy-step-output-reader.js";
@@ -73,7 +74,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
       this.enqueue(() => this.deliver(started));
       await this.eventQueue;
       if (!this.isActive() || this.cancelled) throw new Error("AGY_TURN_CANCELLED");
-      await this.process.sendUserMessage(dispatch.message.content);
+      await this.process.sendUserMessage(buildAgyUserMessageText(dispatch.message));
       return { forwarded: true, turnId, platformAgentRunId: this.getPlatformAgentRunId() };
     } catch {
       if (this.active) {

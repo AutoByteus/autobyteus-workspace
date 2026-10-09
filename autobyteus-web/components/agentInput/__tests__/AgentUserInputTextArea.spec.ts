@@ -9,6 +9,7 @@ type MockAgentContext = {
   contextId: string
   requirement: string
   contextFilePaths: Array<{ path: string; type: 'Text' | 'Image' | 'Audio' | 'Video' }>
+  requestedSkillNames: string[]
   submissionPending: boolean
   state: { runId: string; currentStatus: AgentStatus }
 }
@@ -18,6 +19,7 @@ const createContext = (contextId: string, requirement = ''): MockAgentContext =>
   contextId,
   requirement,
   contextFilePaths: [],
+  requestedSkillNames: [],
   get submissionPending() { return activeContextStoreMock.submissionPending },
   state: {
     runId: contextId,
@@ -211,6 +213,25 @@ describe('AgentUserInputTextArea', () => {
     await nextTick()
 
     expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
+  })
+
+  it('keeps send disabled for a context-file-only draft in the skill-tagging (standalone) box until text is typed', async () => {
+    const context = createContext('ctx-file-only', '')
+    context.contextFilePaths = [{ path: '/tmp/screenshot.png', type: 'Image' }]
+    selectContext(context)
+
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), {
+      attrs: { skillTagging: { placeholder: 'Use / skills', skills: [], allInstalled: true } },
+    })
+    await nextTick()
+    const send = () => wrapper.find('button[title="Send message"]')
+    expect(send().attributes('disabled')).toBeDefined()
+    await wrapper.find('textarea').trigger('keydown', { key: 'Enter' })
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+
+    await wrapper.find('textarea').setValue('what is in this screenshot?')
+    await nextTick()
+    expect(send().attributes('disabled')).toBeUndefined()
   })
 
   it('uses canonical running status to show and trigger stop even without a sendable draft', async () => {

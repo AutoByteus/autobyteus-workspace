@@ -137,9 +137,9 @@ const primaryAction = computed(() => resolveAgentPrimaryAction({
   status: targetContext.value?.state.currentStatus ?? AgentStatus.Offline,
   submissionPending: submissionPending.value,
   isUploading: contextFileUploadStore.isUploading,
-  // With skill tagging (a standalone run), a skill tag or a context file also makes a draft, as in Chat.
+  // With skill tagging (a standalone run), a skill tag also makes a draft, as in Chat. Context files alone never do.
   hasDraft: props.skillTagging && targetContext.value
-    ? Boolean(internalRequirement.value.trim()) || hasSendableDraft(targetContext.value, { attachmentsAreSendable: true })
+    ? Boolean(internalRequirement.value.trim()) || hasSendableDraft(targetContext.value)
     : Boolean(internalRequirement.value.trim()),
 }));
 const isActionDisabled = computed(() => !primaryAction.value.enabled

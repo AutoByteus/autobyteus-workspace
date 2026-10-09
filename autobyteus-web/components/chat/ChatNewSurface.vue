@@ -207,7 +207,7 @@ const membersLayout = ref({ open: false, width: 0, resizing: false })
 
 const sendBlockedReason = computed(() => {
   const current = draft.value
-  if (!current || !hasSendableDraft(current.context, { attachmentsAreSendable: true })) return null
+  if (!current || !hasSendableDraft(current.context)) return null
   const readiness = resolveChatLaunchReadiness(current)
   return readiness.ready ? null : readiness.reason
 })
