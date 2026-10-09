@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer pass, `design-review-report.md`, round 3 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003 | Implementation complete; local checks green; ready for Code Review |
-| IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review |
+| IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 round 1 (Fail — Local Fix) | CR-F-001 | `Local Fix` | SR-005, ARCH-REV-003, CRR-001 | Ledger-era consolidation nulls Claude SDK readings; consolidation test added; returned for targeted delta review; **Pass** in CRR-002 (round 2, targeted delta), forwarded by Code Reviewer to API/E2E |
 
 ## Revision Entries
 
