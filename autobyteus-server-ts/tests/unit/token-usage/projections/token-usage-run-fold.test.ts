@@ -64,6 +64,7 @@ const snapshot = (input: { event: string; series: string; total: number; provide
       runtime_kind: "codex_app_server",
       ingestion_kind: "codex_thread_token_usage",
       usage_scope: "cumulative_snapshot",
+      reports_model_call: true,
       snapshot_series_key: input.series,
       input_token_semantic: "gross_includes_cache",
       ...source,
@@ -95,6 +96,7 @@ const cacheObservation = (input: {
     runtime_kind: input.runtimeKind ?? "autobyteus",
     ingestion_kind: "autobyteus_llm_phase",
     usage_scope: "per_call",
+    reports_model_call: true,
     input_token_semantic: "gross_includes_cache",
     reported_input_tokens: 1,
     reported_output_tokens: 0,
@@ -194,6 +196,7 @@ describe("token usage current run fold", () => {
         runtime_kind: "codex_app_server",
         ingestion_kind: "codex_thread_token_usage",
         usage_scope: "per_call",
+        reports_model_call: true,
         accounting_input_tokens: unsafe,
       },
     });

@@ -91,6 +91,8 @@ export type AgentPresentationTokenUsageDetails = Readonly<{
   latestPromptTokens: number | null;
   effectiveContextWindowTokens: number | null;
   contextWindowUsagePercent: number | null;
+  contextCompactionThresholdTokens: number | null;
+  reportsModelCall: boolean;
   runSummaryAfterEvent: Omit<TokenUsageRunSummaryPayload, "root_team_run_id"> | null;
   qualityFlags: readonly string[];
 }>;

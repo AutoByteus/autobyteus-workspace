@@ -80,12 +80,14 @@ const emptyTeamAggregate = (teamRunId: string): TokenUsageRunSummary => ({
   latestPromptTokens: null,
   effectiveContextWindowTokens: null,
   contextWindowUsagePercent: null,
+  contextCompactionThresholdTokens: null,
   latestModelProvider: null,
   latestModelIdentifier: null,
   latestSelectedRawModelId: null,
   hasCacheWriteRateAssumption: false,
   latestRuntimeKind: null,
   usageReportCount: 0,
+  revision: 0,
   updatedAt: null,
 });
 
@@ -204,7 +206,8 @@ const applyPersistedEventToPartialTeamAggregate = (
           reasoningOutputTokens,
         })
       : mergedUnitPrices,
-    usageReportCount: summary.usageReportCount + 1,
+    // Reading-only and reconciliation events are not model calls (D-9).
+    usageReportCount: summary.usageReportCount + (details.reports_model_call ? 1 : 0),
     latestSelectedRawModelId: details.run_summary_after_event?.latest_selected_raw_model_id
       ?? summary.latestSelectedRawModelId,
     hasCacheWriteRateAssumption: Boolean(summary.hasCacheWriteRateAssumption
@@ -217,6 +220,9 @@ const normalizeRecordBackedSummary = (summary: TokenUsageRunSummary): TokenUsage
   if (!summary.runId?.trim()) throw new Error('Record-backed token summary requires a run ID.');
   if (!Number.isSafeInteger(summary.usageReportCount) || summary.usageReportCount < 0) {
     throw new Error('Record-backed token summary requires a non-negative safe-integer usage report count.');
+  }
+  if (!Number.isSafeInteger(summary.revision) || summary.revision < 0) {
+    throw new Error('Record-backed token summary requires a non-negative safe-integer revision.');
   }
   return { ...summary, unitPrices: unitPricesOrEmpty(summary.unitPrices) };
 };
@@ -285,7 +291,8 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       throw new Error('Standalone token summary returned a different AgentRun ID.');
     }
     const current = runSummaries[runId];
-    if (current && summary.usageReportCount <= current.usageReportCount) return false;
+    // Revision, not the model-call count, orders summaries: a reading-only save keeps the count (D-9).
+    if (current && summary.revision <= current.revision) return false;
     runSummaries[runId] = summary;
     return true;
   }
@@ -301,7 +308,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     }
     const key = memberCacheKey({ teamRunId, agentRunId });
     const current = teamMemberSummaries[key];
-    if (current && summary.usageReportCount <= current.usageReportCount) return false;
+    if (current && summary.revision <= current.revision) return false;
     teamMemberSummaries[key] = summary;
     return true;
   }
@@ -375,7 +382,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return id ? standaloneRunSummaries[id] ?? null : null;
   }
 
-  /** A standalone run's roll-up; a refetch never moves it back to fewer usage reports. */
+  /** A standalone run's roll-up; a refetch never moves it back to an older revision. */
   function upsertRecordBackedStandaloneRunSummary(input: {
     runId: string;
     summary: TokenUsageRunSummary;
@@ -386,7 +393,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       throw new Error('Standalone run token summary returned a different AgentRun ID.');
     }
     const current = standaloneRunSummaries[runId];
-    if (current && summary.usageReportCount < current.usageReportCount) return false;
+    if (current && summary.revision < current.revision) return false;
     standaloneRunSummaries[runId] = summary;
     return true;
   }

@@ -3,9 +3,6 @@ import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import type { ClaudeSdkQueryKind, ClaudeSdkSelectedBinding, ClaudeSdkSelectedMatchState } from "../../../domain/claude-sdk-usage.js";
 import { parseClaudeSdkResultUsage } from "./claude-sdk-result-usage-parser.js";
 
-const countOf = (value: unknown): number | null =>
-  typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
-
 /**
  * `modelUsage` is cumulative per streaming session. A crash/startup-error result may carry
  * zeroed totals (SDK doc); forwarding them would reset the reconciler baseline and make the
@@ -19,7 +16,10 @@ const isZeroedErrorResult = (
     row.inputTokens === 0 && row.outputTokens === 0 &&
     row.cacheReadInputTokens === 0 && row.cacheCreationInputTokens === 0);
 
-/** One sanitized, result-level observation. Main-loop usage is context only. */
+/**
+ * One sanitized turn-end observation: reconciliation only (D-3). It carries cumulative
+ * `modelUsage` for the fold's remainder; it is not a model call and carries no context reading.
+ */
 export const buildClaudeTokenUsageEvent = (input: {
   chunk: unknown;
   runId: string;
@@ -43,26 +43,6 @@ export const buildClaudeTokenUsageEvent = (input: {
     ? "ambiguous" : selectedRows.length === 1 ? "matched" : "missing";
   const selectedModel = selectedMatchState === "matched"
     ? selectedRows[0]!.canonicalModel ?? selectedRows[0]!.rawModelId : null;
-  const latestUsage = asObject(result.usage);
-  const cacheCreationDetail = asObject(latestUsage?.cache_creation);
-  const mainInput = countOf(latestUsage?.input_tokens ?? latestUsage?.inputTokens);
-  const mainOutput = countOf(latestUsage?.output_tokens ?? latestUsage?.outputTokens);
-  const cacheRead = countOf(latestUsage?.cache_read_input_tokens ?? latestUsage?.cacheReadInputTokens);
-  const cacheCreation = countOf(latestUsage?.cache_creation_input_tokens ?? latestUsage?.cacheCreationInputTokens);
-  const cacheCreation5m = countOf(cacheCreationDetail?.ephemeral_5m_input_tokens);
-  const cacheCreation1h = countOf(cacheCreationDetail?.ephemeral_1h_input_tokens);
-  const mainLoopUsage = { inputTokens: mainInput, outputTokens: mainOutput,
-    cacheReadInputTokens: cacheRead, cacheCreationInputTokens: cacheCreation,
-    cacheCreation5mInputTokens: cacheCreation5m, cacheCreation1hInputTokens: cacheCreation1h };
-  const promptSum = mainInput === null || cacheRead === null || cacheCreation === null
-    ? null : mainInput + cacheRead + cacheCreation;
-  const latestPromptTokens = promptSum !== null && Number.isSafeInteger(promptSum) ? promptSum : null;
-  const selectedSourceRow = selectedMatchState === "matched"
-    ? asObject(asObject(result.modelUsage ?? result.model_usage)?.[selectedRawId!]) : null;
-  const reportedCapacity = countOf(selectedSourceRow?.contextWindow ?? selectedSourceRow?.context_window);
-  const contextCapacity = reportedCapacity !== null && reportedCapacity > 0 ? reportedCapacity : null;
-  const contextPercent = latestPromptTokens !== null && contextCapacity !== null
-    ? 100 * (latestPromptTokens / contextCapacity) : null;
   const resultId = asString(result.uuid) ?? asString(result.id) ?? asString(result.result_id);
   const stableIdentity = resultId ?? `${input.runId}:${input.sessionId}:${input.turnId}`;
   const qualityFlags = [...parsed.qualityFlags];
@@ -77,6 +57,7 @@ export const buildClaudeTokenUsageEvent = (input: {
       runtime_kind: "claude_agent_sdk",
       ingestion_kind: "claude_sdk_result",
       usage_scope: "per_turn",
+      reports_model_call: false,
       model_provider: "ANTHROPIC",
       provider_name: null,
       selected_model_context: input.model,
@@ -86,15 +67,15 @@ export const buildClaudeTokenUsageEvent = (input: {
       selected_resolved_raw_model_id: selectedRawId,
       selected_match_state: selectedMatchState,
       claude_sdk_model_usage: parsed.models,
-      claude_sdk_main_loop_usage: mainLoopUsage,
       claude_sdk_session_id: input.sessionId,
       claude_sdk_query_kind: input.queryKind ?? "unknown",
       reported_input_tokens: null,
       reported_output_tokens: null,
       reported_total_tokens: null,
-      latest_prompt_tokens: latestPromptTokens,
-      effective_context_window_tokens: contextCapacity,
-      context_window_usage_percent: contextPercent,
+      latest_prompt_tokens: null,
+      effective_context_window_tokens: null,
+      context_window_usage_percent: null,
+      context_compaction_threshold_tokens: null,
       raw_usage_json: null,
       raw_event_json: null,
       quality_flags: qualityFlags,

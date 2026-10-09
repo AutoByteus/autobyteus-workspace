@@ -28,6 +28,34 @@ const convert = (name: string, directory?: string) => {
 };
 
 describe("AGY canonical stream conversion", () => {
+  describe("per-step model-call usage (REQ-005, P8)", () => {
+    const step = (stepIndex: number, usage: Record<string, unknown> | undefined, state = "DONE", delta?: string) =>
+      ({ event: "step_update" as const, step_update: { conversation_id: "conversation", step_index: stepIndex,
+        step_type: "agent_response", state, ...(delta ? { text_delta: delta } : {}), ...(usage ? { usage } : {}) } });
+
+    it("emits one base-excludes-cache model call per DONE agent_response step and none for the result", () => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini-3.8-flash-low");
+      converter.startTurn("turn");
+      const calls = [
+        ...converter.convert(step(1, { input_tokens: 11_903, output_tokens: 71, thinking_tokens: 0, cache_read_tokens: 0, total_tokens: 11_974 })),
+        ...converter.convert(step(3, undefined, "ACTIVE")),
+        // P8b step 3: input excludes the 90,059 cache-read tokens.
+        ...converter.convert(step(3, { input_tokens: 81_507, output_tokens: 40, thinking_tokens: 12, cache_read_tokens: 90_059, total_tokens: 81_547 })),
+      ].filter((event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED);
+      expect(calls.map((event) => event.payload)).toEqual([
+        expect.objectContaining({ idempotency_key: "agy_step:conversation:1", ingestion_kind: "agy_step", usage_scope: "per_call",
+          reports_model_call: true, input_token_semantic: "base_excludes_cache", reported_input_tokens: 11_903,
+          cache_read_input_tokens: 0, cache_state: "zero_reported", latest_prompt_tokens: 11_903,
+          effective_context_window_tokens: null, context_compaction_threshold_tokens: null, model_provider: "GEMINI" }),
+        expect.objectContaining({ idempotency_key: "agy_step:conversation:3", reported_input_tokens: 81_507,
+          cache_read_input_tokens: 90_059, cache_state: "positive", latest_prompt_tokens: 171_566, reasoning_output_tokens: 12 }),
+      ]);
+      const terminal = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS",
+        num_turns: 1, usage: { input_tokens: 93_410, output_tokens: 111, cache_read_tokens: 90_059, total_tokens: 93_521 } } });
+      expect(terminal.some((event) => event.eventType === AgentRunEventType.TOKEN_USAGE_UPDATED)).toBe(false);
+    });
+  });
+
   it("shows native image parameters, redacts native image denial, and does not classify an MCP image call as native", () => {
     const diagnostics: unknown[] = [];
     const resolver = vi.fn<AgyNativeImagePathResolver>();
@@ -168,8 +196,8 @@ describe("AGY canonical stream conversion", () => {
       expect(later.filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
         .map((item) => item.payload.invocation_id)).toEqual(["agy-tool-turn-3"]);
       expect(terminal.map((item) => item.eventType)).toEqual([
-        AgentRunEventType.SEGMENT_END, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-        AgentRunEventType.TOKEN_USAGE_UPDATED, AgentRunEventType.TURN_COMPLETED,
+        // The cumulative result usage is not mapped; usage arrives per DONE step (REQ-005).
+        AgentRunEventType.SEGMENT_END, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, AgentRunEventType.TURN_COMPLETED,
       ]);
       expect(terminal[1]).toMatchObject({ statusHint: null, payload: {
         turn_id: "turn", invocation_id: "agy-tool-turn-2", tool_name: "run_command",

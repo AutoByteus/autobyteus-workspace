@@ -26,6 +26,7 @@ const schemaMigrations = [
   "20260819090000_add_token_usage_run_records",
   // Normal startup expands the current target before app-data conversion.
   "20260923130000_add_claude_sdk_usage_state",
+  "20261009120000_token_meter_context_readings",
 ] as const;
 
 const readMigration = (migrationId: string): Promise<string> => fs.readFile(

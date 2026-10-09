@@ -120,7 +120,41 @@ export class AgyStreamEventConverter {
     }
     if (state === "DONE" && this.textOpen.delete(stepIndex))
       events.push(this.event(AgentRunEventType.SEGMENT_END, { id, turn_id: turnId }));
+    const usage = state === "DONE" ? agyRecord(payload.usage) : null;
+    if (usage) events.push(this.callUsage(usage, turnId, stepIndex));
     return events;
+  }
+
+  /**
+   * One model call per DONE `agent_response` step (REQ-005). AGY input excludes cache reads, so
+   * the call's prompt is input + cache read; AGY reports no window or threshold (DEC-003).
+   */
+  private callUsage(usage: Record<string, unknown>, turnId: string, stepIndex: number): AgentRunEvent {
+    const input = number(usage.input_tokens);
+    const cacheRead = number(usage.cache_read_tokens);
+    return this.event(AgentRunEventType.TOKEN_USAGE_UPDATED, {
+      turn_id: turnId,
+      idempotency_key: `agy_step:${this.conversationId}:${stepIndex}`,
+      call_sequence: stepIndex,
+      runtime_kind: "antigravity_cli", ingestion_kind: "agy_step",
+      usage_scope: "per_call",
+      reports_model_call: true,
+      model_identifier: this.model, model_value: this.model,
+      model_provider: this.model.startsWith("claude-") ? "ANTHROPIC" : this.model.startsWith("gpt-") ? "OPENAI" : "GEMINI",
+      provider_name: "Antigravity CLI",
+      reported_input_tokens: input,
+      reported_output_tokens: number(usage.output_tokens),
+      reported_total_tokens: number(usage.total_tokens),
+      input_token_semantic: "base_excludes_cache",
+      cache_read_input_tokens: cacheRead,
+      cache_state: cacheRead === null ? "not_reported" : cacheRead > 0 ? "positive" : "zero_reported",
+      reasoning_output_tokens: number(usage.thinking_tokens),
+      latest_prompt_tokens: input === null ? null : input + (cacheRead ?? 0),
+      effective_context_window_tokens: null,
+      context_window_usage_percent: null,
+      context_compaction_threshold_tokens: null,
+      raw_usage_json: usage,
+    });
   }
 
   private tool(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string,
@@ -215,25 +249,6 @@ export class AgyStreamEventConverter {
       events.push(this.event(AgentRunEventType.SEGMENT_CONTENT, { id, turn_id: turnId, delta: response }));
       events.push(this.event(AgentRunEventType.SEGMENT_END, { id, turn_id: turnId }));
     }
-    const usage = agyRecord(payload.usage);
-    if (usage) events.push(this.event(AgentRunEventType.TOKEN_USAGE_UPDATED, {
-      turn_id: turnId,
-      idempotency_key: `agy:${this.conversationId}:${number(payload.num_turns) ?? turnId}`,
-      runtime_kind: "antigravity_cli", ingestion_kind: "agy_result",
-      usage_scope: "cumulative_snapshot", snapshot_series_key: this.conversationId,
-      model_identifier: this.model, model_value: this.model,
-      model_provider: this.model.startsWith("claude-") ? "ANTHROPIC" : this.model.startsWith("gpt-") ? "OPENAI" : "GEMINI",
-      provider_name: "Antigravity CLI",
-      reported_input_tokens: number(usage.input_tokens),
-      reported_output_tokens: number(usage.output_tokens),
-      reported_total_tokens: number(usage.total_tokens),
-      input_token_semantic: "gross_includes_cache",
-      cache_read_input_tokens: number(usage.cache_read_tokens),
-      cache_state: number(usage.cache_read_tokens) === null ? "not_reported" : number(usage.cache_read_tokens)! > 0 ? "positive" : "zero_reported",
-      reasoning_output_tokens: number(usage.thinking_tokens),
-      raw_usage_json: usage,
-      quality_flags: ["agy_provider_reported_cumulative_usage"],
-    }));
     events.push(this.event(AgentRunEventType.TURN_COMPLETED, { turn_id: turnId, provider_status: "SUCCESS" }, "IDLE"));
     this.turnId = null;
     return events;

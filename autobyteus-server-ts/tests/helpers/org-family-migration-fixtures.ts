@@ -36,7 +36,7 @@ export const writeNestedRoot = async (memory: string, id = "org") => {
 export const createOrgMigrationFixture = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "org-token-implementation-")), memory = path.join(root, "memory");
   const client = new PrismaClient({ datasources: { db: { url: `file:${path.join(root, "tokens.sqlite")}` } } });
-  for (const name of ["20260819090000_add_token_usage_run_records", "20260822090000_add_token_usage_analytics", "20260923130000_add_claude_sdk_usage_state"]) {
+  for (const name of ["20260819090000_add_token_usage_run_records", "20260822090000_add_token_usage_analytics", "20260923130000_add_claude_sdk_usage_state", "20261009120000_token_meter_context_readings"]) {
     const ddl = await fs.readFile(path.resolve("prisma/migrations", name, "migration.sql"), "utf8");
     for (const statement of ddl.split(";").filter((part) => part.trim())) await client.$executeRawUnsafe(statement);
   }

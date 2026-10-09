@@ -11,18 +11,45 @@
           <section v-if="hasCurrentPrompt(primarySummary)" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div class="flex flex-wrap items-baseline justify-between gap-3">
               <h3 class="text-sm font-semibold text-slate-900" :title="t('shell.tokenUsage.latestPromptTooltip')">{{ $t('shell.tokenUsage.latestPrompt') }}</h3>
-              <span v-if="hasKnownContextCapacity(primarySummary)" class="text-sm font-semibold tabular-nums text-slate-900">{{ formatPercent(primarySummary.contextWindowUsagePercent ?? 0) }}</span>
+              <span
+                v-if="hasKnownContextCapacity(primarySummary)"
+                class="text-sm font-semibold tabular-nums"
+                :class="isOverContextWindow(primarySummary) ? 'text-amber-700' : 'text-slate-900'"
+                data-test="context-percent"
+              >{{ formatPercent(primarySummary.contextWindowUsagePercent ?? 0) }}</span>
             </div>
-            <div v-if="hasKnownContextCapacity(primarySummary)" class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-              <div class="h-full rounded-full bg-blue-500" :style="{ width: formatProgressWidth(primarySummary.contextWindowUsagePercent ?? 0) }" />
+            <div v-if="hasKnownContextCapacity(primarySummary)" class="relative mt-3" data-test="context-bar">
+              <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  class="h-full rounded-full"
+                  :class="isOverContextWindow(primarySummary) ? 'bg-amber-500' : 'bg-blue-500'"
+                  :style="{ width: formatProgressWidth(primarySummary.contextWindowUsagePercent ?? 0) }"
+                  data-test="context-bar-fill"
+                />
+              </div>
+              <div
+                v-if="compactionMarkerPosition(primarySummary) !== null"
+                class="pointer-events-none absolute -top-1 h-4 w-0.5 -translate-x-1/2 rounded-full bg-slate-600"
+                :style="{ left: compactionMarkerPosition(primarySummary) ?? undefined }"
+                aria-hidden="true"
+                data-test="context-compaction-marker"
+              />
             </div>
-            <p v-if="hasKnownContextCapacity(primarySummary)" class="mt-2 text-xs text-slate-500">
-              {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} /
-              {{ formatInteger(primarySummary.effectiveContextWindowTokens ?? 0) }}
-              {{ $t('shell.tokenUsage.contextTokens') }}
-            </p>
+            <div v-if="hasKnownContextCapacity(primarySummary)" class="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-xs text-slate-500">
+              <p>
+                {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} /
+                {{ formatInteger(primarySummary.effectiveContextWindowTokens ?? 0) }}
+                {{ $t('shell.tokenUsage.contextTokens') }}
+              </p>
+              <p v-if="primarySummary.contextCompactionThresholdTokens !== null" class="tabular-nums" data-test="context-compaction-label">
+                {{ t('shell.tokenUsage.autoCompactsAt', { tokens: formatInteger(primarySummary.contextCompactionThresholdTokens) }) }}
+              </p>
+            </div>
             <p v-else class="mt-2 text-sm text-slate-600" data-test="context-limit-unavailable">
               {{ formatInteger(primarySummary.latestPromptTokens ?? 0) }} · {{ $t('shell.tokenUsage.contextLimitUnavailable') }}
+            </p>
+            <p v-if="isOverContextWindow(primarySummary)" class="mt-1 text-xs font-medium text-amber-700" data-test="context-over-window">
+              {{ $t('shell.tokenUsage.overContextWindow') }}
             </p>
           </section>
 
@@ -240,6 +267,19 @@ const hasKnownContextCapacity = (summary: TokenUsageRunSummary): boolean => (
   && summary.effectiveContextWindowTokens > 0
   && summary.contextWindowUsagePercent !== null
 );
+
+/** Only the runtime's own reading can exceed its window (REQ-009); the bar stays clamped at 100 %. */
+const isOverContextWindow = (summary: TokenUsageRunSummary): boolean => (
+  hasKnownContextCapacity(summary) && (summary.contextWindowUsagePercent ?? 0) > 100
+);
+
+/** Marker position of the runtime-reported auto-compaction threshold on the context bar. */
+const compactionMarkerPosition = (summary: TokenUsageRunSummary): string | null => {
+  const threshold = summary.contextCompactionThresholdTokens;
+  const window = summary.effectiveContextWindowTokens;
+  if (threshold === null || window === null || window <= 0) return null;
+  return `${Math.min(Math.max((threshold / window) * 100, 0), 100)}%`;
+};
 
 const inputBreakdownRows = computed(() => {
   const summary = primarySummary.value;

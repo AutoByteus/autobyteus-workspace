@@ -71,7 +71,7 @@ export const projectTokenUsageAnalyticsContribution = (
     pricingSummary: pricingSummaryFromPayload(payload),
     tokenTotals,
     costTotals,
-    usageReportCount: 1n,
+    usageReportCount: payload.reports_model_call ? 1n : 0n,
     latestObservedAt: observedAt,
   };
 };

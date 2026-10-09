@@ -79,12 +79,14 @@ export const mapTokenUsageRunSummaryDto = (
     latestPromptTokens: summary.latest_prompt_tokens,
     effectiveContextWindowTokens: summary.effective_context_window_tokens,
     contextWindowUsagePercent: summary.context_window_usage_percent,
+    contextCompactionThresholdTokens: summary.context_compaction_threshold_tokens,
     latestModelProvider: summary.latest_model_provider,
     latestModelIdentifier: summary.latest_model_identifier,
     latestSelectedRawModelId: summary.latest_selected_raw_model_id ?? null,
     hasCacheWriteRateAssumption: summary.has_cache_write_rate_assumption ?? false,
     latestRuntimeKind: summary.latest_runtime_kind,
     usageReportCount: summary.usage_report_count,
+    revision: summary.revision,
     updatedAt: summary.updated_at,
   };
 };

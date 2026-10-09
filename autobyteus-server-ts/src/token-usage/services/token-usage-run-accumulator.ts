@@ -2,9 +2,8 @@ import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agen
 import { TokenCostCalculator } from "../pricing/token-cost-calculator.js";
 import { isSupportedClaudeSdkPricingProvider, isClaudeSdkResultIdentity } from "../../agent-execution/domain/claude-sdk-usage.js";
 import { buildTokenUsageRunSummaryFromRecords } from "../projections/token-usage-run-aggregate.js";
-import {
-  foldTokenUsageObservation,
-} from "../projections/token-usage-run-fold.js";
+import { foldTokenUsageObservation } from "../projections/token-usage-run-fold.js";
+import { tokenUsageObservationContributes } from "../projections/token-usage-run-record-state.js";
 import { SqlTokenUsageRunRepository } from "../repositories/sql/token-usage-run-repository.js";
 import { TokenUsageAnalyticsProjectionWriter } from "./token-usage-analytics-projection-writer.js";
 
@@ -51,7 +50,8 @@ export class TokenUsageRunAccumulator {
         const persisted = folded.kind === "CHANGED" && folded.record
           ? await this.repository.save(transaction, folded.record)
           : folded.record;
-        if (folded.kind === "CHANGED" && folded.record) {
+        // Reading-only and zero-remainder saves add nothing to the daily facets (D-4).
+        if (folded.kind === "CHANGED" && folded.record && tokenUsageObservationContributes(folded.authoritativePayload)) {
           await this.analyticsWriter.record(transaction, folded.authoritativePayload);
         }
         return { authoritativePayload: folded.authoritativePayload, persisted };

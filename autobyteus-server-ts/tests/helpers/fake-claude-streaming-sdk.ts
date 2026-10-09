@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 import type {
+  ClaudeSdkContextUsage,
   ClaudeSdkInterruptOutcome,
   ClaudeSdkStreamingSession,
   ClaudeSdkUserMessage,
@@ -29,6 +30,14 @@ export class FakeClaudeStreamingSession implements ClaudeSdkStreamingSession {
     resolution: (this.resolvedRawModelId ? "resolved" : "missing") as "resolved" | "missing",
   }));
   resolvedRawModelId: string | null = null;
+  /** Answers for successive `readContextUsage()` calls; null (unavailable) once exhausted. */
+  contextUsageAnswers: Array<ClaudeSdkContextUsage | null> = [];
+  /** Delay before each `readContextUsage()` answer, as the real local summary read takes ~4 ms (P4). */
+  contextUsageDelayMs = 0;
+  readonly readContextUsage = vi.fn(async (): Promise<ClaudeSdkContextUsage | null> => {
+    if (this.contextUsageDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, this.contextUsageDelayMs));
+    return this.contextUsageAnswers.shift() ?? null;
+  });
   interruptOutcomes: Array<ClaudeSdkInterruptOutcome | ((session: FakeClaudeStreamingSession) => ClaudeSdkInterruptOutcome)> = [];
   onSend: ((message: ClaudeSdkUserMessage, session: FakeClaudeStreamingSession) => void) | null = null;
   private readonly queue: unknown[] = [];

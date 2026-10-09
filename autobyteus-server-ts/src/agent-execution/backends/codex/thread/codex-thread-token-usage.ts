@@ -9,6 +9,7 @@ export type CodexReadyTokenUsageUpdate = {
   runtime_kind: "codex_app_server";
   ingestion_kind: "codex_thread_token_usage";
   usage_scope: "per_call" | "cumulative_snapshot";
+  reports_model_call: boolean;
   snapshot_series_key: string | null;
   idempotency_key: string;
   reported_input_tokens: number | null;
@@ -21,6 +22,7 @@ export type CodexReadyTokenUsageUpdate = {
   latest_prompt_tokens: number | null;
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;
+  context_compaction_threshold_tokens: null;
   model_provider: string | null;
   provider_name: string | null;
   model_identifier: string | null;
@@ -115,7 +117,11 @@ export const resolveCodexThreadTokenUsage = (input: {
 
   const selectedTokens = resolveUsageTokens(selected);
   const providerDeltaTokens = buildProviderDeltaTokens(last);
-  const latestPromptTokens = providerDeltaTokens?.reported_input_tokens ?? selectedTokens.reported_input_tokens;
+  // Codex's own context size after its latest call; a compaction update reports input 0 with the
+  // post-compaction size here (REQ-006, P6).
+  const latestPromptTokens = providerDeltaTokens?.reported_total_tokens ?? null;
+  const reportsModelCall = (providerDeltaTokens?.reported_input_tokens ?? 0) +
+    (providerDeltaTokens?.reported_output_tokens ?? 0) > 0;
   const effectiveContextWindowTokens = asNonNegativeInt(
     tokenUsage?.modelContextWindow ?? tokenUsage?.model_context_window,
   );
@@ -148,6 +154,8 @@ export const resolveCodexThreadTokenUsage = (input: {
     selectedTokens.reported_output_tokens ?? "x",
     selectedTokens.reasoning_output_tokens ?? "x",
     selectedTokens.reported_total_tokens ?? "x",
+    // A mid-turn compaction repeats the cumulative total; its last-call size tells it apart.
+    providerDeltaTokens?.reported_total_tokens ?? "x",
   ].join(":");
   const eventId = providerEventId ? `${providerEventId}:${snapshotIdentity}` : snapshotIdentity;
 
@@ -171,6 +179,7 @@ export const resolveCodexThreadTokenUsage = (input: {
     runtime_kind: "codex_app_server",
     ingestion_kind: "codex_thread_token_usage",
     usage_scope: scope,
+    reports_model_call: reportsModelCall,
     snapshot_series_key: scope === "cumulative_snapshot" ? `codex_thread:${threadKey}` : null,
     idempotency_key: `codex_token_usage:${eventId}`,
     reported_input_tokens: selectedTokens.reported_input_tokens,
@@ -185,6 +194,7 @@ export const resolveCodexThreadTokenUsage = (input: {
     latest_prompt_tokens: latestPromptTokens,
     effective_context_window_tokens: effectiveContextWindowTokens,
     context_window_usage_percent: contextWindowUsagePercent,
+    context_compaction_threshold_tokens: null,
     model_provider: "OPENAI",
     provider_name: null,
     model_identifier: input.model,

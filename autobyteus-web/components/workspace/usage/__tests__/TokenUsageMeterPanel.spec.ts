@@ -112,6 +112,8 @@ const messages: Record<string, string> = {
   'shell.tokenUsage.outputCost': 'Output cost',
   'shell.tokenUsage.outputCostShort': 'Out',
   'shell.tokenUsage.empty': 'No token usage has been reported for the active run yet.',
+  'shell.tokenUsage.autoCompactsAt': 'Auto-compacts at {tokens}',
+  'shell.tokenUsage.overContextWindow': "Over the runtime's window",
 };
 
 const translate = (key: string, params?: Record<string, unknown>) => {
@@ -174,10 +176,13 @@ const buildSummary = (overrides: Partial<TokenUsageRunSummary> = {}): TokenUsage
   latestPromptTokens: 1000,
   effectiveContextWindowTokens: 128000,
   contextWindowUsagePercent: 0.78125,
+  contextCompactionThresholdTokens: null,
   latestModelProvider: 'OPENAI',
   latestModelIdentifier: 'gpt-test',
   latestRuntimeKind: 'autobyteus',
   usageReportCount: 1,
+  // Each fixture's revision follows its call count unless a test sets it.
+  revision: overrides.usageReportCount ?? 1,
   updatedAt: '2026-06-25T00:00:00.000Z',
   ...overrides,
 });
@@ -234,10 +239,12 @@ const buildSummaryDto = (summary: TokenUsageRunSummary) => ({
   latest_prompt_tokens: summary.latestPromptTokens,
   effective_context_window_tokens: summary.effectiveContextWindowTokens,
   context_window_usage_percent: summary.contextWindowUsagePercent,
+  context_compaction_threshold_tokens: summary.contextCompactionThresholdTokens,
   latest_model_provider: summary.latestModelProvider,
   latest_model_identifier: summary.latestModelIdentifier,
   latest_runtime_kind: summary.latestRuntimeKind,
   usage_report_count: summary.usageReportCount,
+  revision: summary.revision,
   updated_at: summary.updatedAt,
 });
 
@@ -458,6 +465,55 @@ describe('TokenUsageMeterPanel', () => {
     expect(primary.get('.bg-blue-500').attributes('style')).toContain('width: 2.2135%');
     expect(primary.text()).toContain('claude-opus-5-5');
     expect(primary.text()).toContain('$0.0032');
+  });
+
+  it('marks the runtime-reported compaction threshold on the context bar (AC-008)', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Claude Agent'));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'claude_agent_sdk',
+      latestPromptTokens: 5_659, effectiveContextWindowTokens: 1_000_000, contextWindowUsagePercent: 0.5659,
+      contextCompactionThresholdTokens: 967_000 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const primary = mountPanel().get('[data-test="token-usage-primary"]');
+    expect(primary.get('[data-test="context-compaction-label"]').text()).toBe('Auto-compacts at 967,000');
+    expect(primary.get('[data-test="context-compaction-marker"]').attributes('style')).toContain('left: 96.7%');
+    expect(primary.find('[data-test="context-over-window"]').exists()).toBe(false);
+  });
+
+  it('shows no compaction marker when the runtime reports no threshold', () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Codex Agent'));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'codex_app_server',
+      latestPromptTokens: 68_630, effectiveContextWindowTokens: 258_400, contextWindowUsagePercent: 26.56 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const primary = mountPanel().get('[data-test="token-usage-primary"]');
+    expect(primary.find('[data-test="context-compaction-marker"]').exists()).toBe(false);
+    expect(primary.find('[data-test="context-compaction-label"]').exists()).toBe(false);
+    expect(primary.text()).toContain('68,630 / 258,400');
+  });
+
+  it("marks a genuine runtime-reported overflow and keeps the bar clamped (REQ-009, P7)", () => {
+    const agentContextsStore = useAgentContextsStore();
+    const selectionStore = useAgentSelectionStore();
+    const meterStore = useTokenUsageMeterStore();
+    agentContextsStore.runs.set('run-1', buildAgentContext('run-1', 'Codex Agent'));
+    upsertStandaloneRunSummary(meterStore, buildSummary({ latestRuntimeKind: 'codex_app_server',
+      latestPromptTokens: 259_056, effectiveContextWindowTokens: 258_400, contextWindowUsagePercent: 100.2539 }));
+    selectionStore.setRunSelection('run-1', 'agent');
+
+    const primary = mountPanel().get('[data-test="token-usage-primary"]');
+    expect(primary.get('[data-test="context-percent"]').text()).toBe('100.3%');
+    expect(primary.get('[data-test="context-percent"]').classes()).toContain('text-amber-700');
+    expect(primary.get('[data-test="context-over-window"]').text()).toBe("Over the runtime's window");
+    expect(primary.get('[data-test="context-bar-fill"]').attributes('style')).toContain('width: 100%');
+    expect(primary.get('[data-test="context-bar-fill"]').classes()).toContain('bg-amber-500');
+    expect(primary.text()).toContain('259,056 / 258,400');
   });
 
   it('shows prompt usage and an explicit unavailable context limit without a fake denominator', () => {

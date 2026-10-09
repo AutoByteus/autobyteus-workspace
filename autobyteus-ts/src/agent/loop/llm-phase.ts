@@ -261,7 +261,9 @@ export class LlmPhase {
           idempotency_key: `${agentId}:${llmCallId}`,
           latest_prompt_tokens: latestPromptTokens,
           effective_context_window_tokens: requestCapacity?.effectiveContextCapacity ?? null,
-          context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity)
+          context_window_usage_percent: percentOf(latestPromptTokens, requestCapacity?.effectiveContextCapacity),
+          // The prompt size at which this agent's automatic compaction triggers; null when it is off.
+          context_compaction_threshold_tokens: compactionTokenBudget?.triggerThresholdTokens ?? null
         });
       }
 

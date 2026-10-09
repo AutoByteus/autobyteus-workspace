@@ -349,7 +349,7 @@ describeLiveClaudeRuntime("Claude streaming session lifecycle (live E2E)", () =>
       const { harness: first, workspaceRoot } = await startHarness("usage");
       const runId = first.runContext.runId;
       const sessionId = first.session.sessionId;
-      type TurnUsage = { mainLoop: number; cumulative: number; seriesRestart: boolean };
+      type TurnUsage = { cumulative: number; seriesRestart: boolean };
       // Raw per-result usage from the Claude session (before the token-usage pipeline) ...
       const raw = new Map<string, TurnUsage>();
       // ... and the persisted, reconciled observation the production event pipeline publishes.
@@ -358,12 +358,11 @@ describeLiveClaudeRuntime("Claude streaming session lifecycle (live E2E)", () =>
         harness.session.subscribeRuntimeEvents((event) => {
           if (event.method !== ClaudeSessionEventName.TOKEN_USAGE_UPDATED) return;
           const params = event.params as Record<string, unknown>;
+          if (params.ingestion_kind !== "claude_sdk_result") return;
           const rows = (params.claude_sdk_model_usage ?? []) as Array<Record<string, number>>;
-          const main = (params.claude_sdk_main_loop_usage ?? {}) as Record<string, number>;
           const sum = (row: Record<string, number>) =>
             (row.inputTokens ?? 0) + (row.outputTokens ?? 0) + (row.cacheReadInputTokens ?? 0) + (row.cacheCreationInputTokens ?? 0);
           raw.set(String(params.turn_id), {
-            mainLoop: sum(main),
             cumulative: rows.reduce((total, row) => total + sum(row), 0),
             seriesRestart: params.claude_sdk_series_restart === true,
           });
@@ -375,8 +374,9 @@ describeLiveClaudeRuntime("Claude streaming session lifecycle (live E2E)", () =>
         });
         cleanups.push(async () => unsubscribe());
       };
-      // Expected: the first observation of every resume-opened process generation is a series
-      // restart (admits its main-loop usage); every other turn is a cumulative delta.
+      // Expected: every main-loop call is counted live; the first result of every resume-opened
+      // process generation is a series restart (re-anchors, admits nothing); every other result
+      // adds only the remainder the calls could not see.
       const turns: Array<{ turnId: string; restartExpected: boolean }> = [];
       const completeTurn = async (harness: ClaudeLiveAgentHarness, content: string, restartExpected = false) => {
         const turn = await sendAndAwaitTurn(harness, content);
@@ -408,19 +408,27 @@ describeLiveClaudeRuntime("Claude streaming session lifecycle (live E2E)", () =>
       for (const { turnId, restartExpected } of turns) {
         const payloads = persisted.get(turnId)!;
         const rawUsage = raw.get(turnId)!;
-        const accounting = payloads[0]!.accounting_total_tokens;
-        expect(payloads, `one usage observation for turn ${turnId}`).toHaveLength(1);
-        expect(payloads[0]!.quality_flags).not.toContain("claude_sdk_selected_regressed");
+        const calls = payloads.filter((payload) => payload.ingestion_kind === "claude_sdk_call");
+        const results = payloads.filter((payload) => payload.ingestion_kind === "claude_sdk_result");
+        expect(calls.length, `live model calls for turn ${turnId}`).toBeGreaterThanOrEqual(1);
+        expect(calls.every((call) => call.reports_model_call && call.latest_prompt_tokens !== null)).toBe(true);
+        expect(results, `one turn-end result for turn ${turnId}`).toHaveLength(1);
+        // Every call reaches the fold before its turn's result (D-10).
+        expect(payloads.at(-1)?.ingestion_kind).toBe("claude_sdk_result");
+        const result = results[0]!;
+        expect(result.reports_model_call).toBe(false);
+        expect(result.quality_flags).not.toContain("claude_sdk_selected_regressed");
         expect(rawUsage.seriesRestart, `series-restart mark on turn ${turnId}`).toBe(restartExpected);
+        const callTokens = calls.reduce((total, call) => total + (call.accounting_total_tokens ?? 0), 0);
         if (restartExpected) {
-          // Unknown cumulative origin: the turn's own main-loop usage is admitted.
-          expect(payloads[0]!.quality_flags).toContain("claude_sdk_series_restart_main_loop_delta");
-          expect(accounting).toBe(rawUsage.mainLoop);
+          // Unknown cumulative origin: the result re-anchors and admits nothing.
+          expect(result.quality_flags).toContain("claude_sdk_series_restart_rebaselined");
+          expect(result.accounting_total_tokens).toBeNull();
         } else {
-          expect(payloads[0]!.quality_flags).not.toContain("claude_sdk_series_restart_main_loop_delta");
-          // A cumulative delta: at least the main loop, never more than the process total.
-          expect(accounting).toBeGreaterThanOrEqual(rawUsage.mainLoop);
-          expect(accounting).toBeLessThanOrEqual(rawUsage.cumulative);
+          expect(result.quality_flags).not.toContain("claude_sdk_series_restart_rebaselined");
+          expect(result.quality_flags).not.toContain("claude_sdk_live_exceeds_cumulative");
+          // Calls plus remainder never exceed the process's cumulative total.
+          expect(callTokens + (result.accounting_total_tokens ?? 0)).toBeLessThanOrEqual(rawUsage.cumulative);
         }
       }
     },
