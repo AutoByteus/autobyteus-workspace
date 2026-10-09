@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.99-beta.7 test:e2e:team-status-live /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/autobyteus-web
+> node tests/e2e/team-status-live-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-evidence/live-repeat2
+
+Team status live probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-team-aggregate-status/tickets/in-progress/delegated-team-aggregate-status/api-e2e-evidence/live-repeat2/evidence.json

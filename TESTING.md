@@ -937,3 +937,47 @@ preservation have colocated coverage. No real backend/model, full worker/page na
 Electron shell, physical mobile or explicit user acceptance is certified. Inspect
 `result.json`, screenshots and cleanup receipts; route, exact child group, browser
 and ports must be released, without touching the user app/data.
+
+### Universal Team status (live)
+
+Build the current server first, then run the probe from the repository root:
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-web test:e2e:team-status-live --output-dir <fresh dir> [--ledger-file <initialized absolute path>] [--cases TS-001,TS-002]
+```
+
+The probe owns a built backend (`dist/app.js`), a Nuxt dev server, a private
+data root on free ports and a fresh headless Chrome, and removes them all in
+`finally`. Agents run on the scripted AGY CLI (`AGY_FAKE_CASE=linked_skills`):
+
+- `CALL_TOOL:{…}` calls the real scoped MCP tool (`delegate_task`,
+  `send_message_to`);
+- `HOLD_TURN` keeps an agent's turn Running until it is stopped;
+- invalid tool JSON ends the turn with a provider error.
+
+No model is called and no route is mocked, so every Team dot comes from real
+`AGENT_STATUS` and lifecycle events. The cases are:
+
+- **TS-001: delegated Team under an Agent run.** Idle (green), then busy while
+  collapsed (blue, pulsing). It stays blue when a member errors, turns red after
+  the user's Stop generation on the coordinator, and turns gray when the run is
+  terminated.
+- **TS-002: TEAMS rows.** Three runs of one Team:
+  - an idle run is green;
+  - a busy run is blue;
+  - an alive run with no started member is gray and keeps Stop;
+  - the collapsed group row shows the highest run;
+  - the row's Stop button turns that run gray;
+  - all stopped → gray, with archive/delete shown.
+- **TS-003: Team run.** A member-delegated Team row, and the run and group rows,
+  read busy from the delegated coordinator alone. Stop → gray.
+- **TS-004: Org run.** The delegated Team row and the Org-internal Team row each
+  have one dot. The Org root row has no Team dot. A stopped Org → gray.
+
+Every check reads the dot's `data-status`, colour class, `aria-label`/`title`
+and its position before the people-group icon. Each Team dot is checked
+against the agent rows under it. Inspect `evidence.json`, the screenshots and
+the cleanup receipts. This is web-equivalent proof. It is not packaged
+Electron proof or explicit user verification.

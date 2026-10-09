@@ -119,6 +119,13 @@ if (arg === "--version") {
     try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
     const backgroundStep = /BACKGROUND_STEP:(\{[^}]*\})/.exec(content);
     if (backgroundStep && !content.includes("CALL_TOOL:")) { backgroundStepTurn(JSON.parse(backgroundStep[1])); return; }
+    // HOLD_TURN opens one long tool step and leaves the turn running (the agent reads Running) until the
+    // user stops it or its run is terminated. A message that also asks for a tool call is not held.
+    if (content.includes("HOLD_TURN") && !content.includes("CALL_TOOL:")) {
+      emit({ event: "step_update", step_update: { conversation_id, step_index: turns * 10, step_type: "tool",
+        state: "ACTIVE", tool_name: "run_command", tool_info: { parameters: { CommandLine: "sleep 600 # HOLD_TURN" } } } });
+      return;
+    }
     const requestedTool = /CALL_TOOL:(\{.*\})/s.exec(content);
     const delegation = /DELEGATE:(\{.*\})/s.exec(content);
     const call = requestedTool ? JSON.parse(requestedTool[1]) : null;
