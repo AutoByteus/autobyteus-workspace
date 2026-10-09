@@ -1,0 +1,93 @@
+[
+ {
+  "at": 1791546820784,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:1",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": 4,
+  "read": 48851,
+  "w1h": 6108,
+  "w5m": 0,
+  "out": 212,
+  "cost": 0.0628902,
+  "cacheState": "positive"
+ },
+ {
+  "at": 1791546828332,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:2",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": 2,
+  "read": 54959,
+  "w1h": 925,
+  "w5m": 0,
+  "out": 219,
+  "cost": 0.022779800000000003,
+  "cacheState": "positive"
+ },
+ {
+  "at": 1791546844311,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:3",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": 2,
+  "read": 55884,
+  "w1h": 930,
+  "w5m": 0,
+  "out": 146,
+  "cost": 0.0215448,
+  "cacheState": "positive"
+ },
+ {
+  "at": 1791546853213,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:4",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": 2,
+  "read": 56814,
+  "w1h": 857,
+  "w5m": 0,
+  "out": 599,
+  "cost": 0.030206800000000002,
+  "cacheState": "positive"
+ },
+ {
+  "at": 1791546867879,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:5",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": 2,
+  "read": 57671,
+  "w1h": 924,
+  "w5m": 0,
+  "out": 626,
+  "cost": 0.0314542,
+  "cacheState": "positive"
+ },
+ {
+  "at": 1791546935236,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:1",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": null,
+  "read": null,
+  "w1h": null,
+  "w5m": null,
+  "out": null,
+  "cost": null,
+  "cacheState": "positive"
+ },
+ {
+  "at": 1791546940487,
+  "key": "daily_assistant_474ce6f66da0459f9bd6d650bed9e064:turn_0001:llm:2",
+  "turn": "turn_0001",
+  "model": "claude-opus-5-5",
+  "uncached": null,
+  "read": null,
+  "w1h": null,
+  "w5m": null,
+  "out": null,
+  "cost": null,
+  "cacheState": "positive"
+ }
+]

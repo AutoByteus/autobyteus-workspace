@@ -1,0 +1,145 @@
+{
+  "startedAt": "2026-10-09T08:33:03.039Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "BR-012": {
+      "result": "Pass",
+      "description": "Agent root follow-up Task to an existing copy: Team and Agent copy rows return live, board roots, repeated close of the earlier Task keeps them",
+      "details": {
+        "root": {
+          "kind": "agent",
+          "rootId": "manager_exagent_6fea_3bec092a84d347c68e26ac3775a1b41d",
+          "managerRunId": "manager_exagent_6fea_3bec092a84d347c68e26ac3775a1b41d"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exagent_6fea_bb0895bdcde347c9b0cfe18c29aeac48"
+        },
+        "coordinator": "release_notes_writer_exagent_6fea_1f62cfcc5a79498392d55dd9e9d895a9",
+        "taskB2": "project_task_1b69ccdd-7ab4-4e16-ae30-8321ff43ba67",
+        "taskA2": "project_task_755dbc3a-9da7-4002-b922-d75e09e0b16f",
+        "reappearMs": 40,
+        "b2Root": {
+          "state": "idle",
+          "name": "docs review team exagent 6fea"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "docs review team exagent 6fea"
+        }
+      }
+    },
+    "BR-013": {
+      "result": "Pass",
+      "description": "Agent Team root follow-up Task to an existing copy (same journey)",
+      "details": {
+        "root": {
+          "kind": "team",
+          "rootId": "delivery_team_exteam_eaa4_95ee5ecab4ae4991b30f9d417be1ecdb",
+          "managerRunId": "manager_exteam_eaa4_c60d4a5d395943299eb6f969f962ca8a"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exteam_eaa4_cc854c26eaa649b48578992cf81377e9"
+        },
+        "coordinator": "release_notes_writer_exteam_eaa4_11514d5bc5a74429ae025531983302d6",
+        "taskB2": "project_task_054d5234-b071-46e4-ac8b-ed957883a1ae",
+        "taskA2": "project_task_2672f0ee-cee2-488f-b2bb-704049415244",
+        "reappearMs": 43,
+        "b2Root": {
+          "state": "idle",
+          "name": "docs review team exteam eaa4"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "docs review team exteam eaa4"
+        }
+      }
+    },
+    "BR-014": {
+      "result": "Pass",
+      "description": "Agent Org root follow-up Task to an existing copy (same journey)",
+      "details": {
+        "root": {
+          "kind": "org",
+          "rootId": "delivery_org_exorg_1132_2e9d1defc8d243e2877c1a4fc3437719",
+          "managerRunId": "manager_exorg_1132_3b1b685588ce4a3a99d61da5b85dc8e1"
+        },
+        "teamRef": {
+          "teamRunId": "docs_review_team_exorg_1132_5aa018cb0ad449bda5bdb554cc38857c"
+        },
+        "coordinator": "release_notes_writer_exorg_1132_16f8cc3a614048dfa177c3cfc7cebb09",
+        "taskB2": "project_task_dfecf8a4-0c9a-4c35-b77c-faa82bfa2e4b",
+        "taskA2": "project_task_b9ae77f5-283b-4163-8968-192e8aebed28",
+        "reappearMs": 26,
+        "b2Root": {
+          "state": "idle",
+          "name": "squad"
+        },
+        "bRoot": {
+          "state": "offline",
+          "name": "squad"
+        }
+      }
+    },
+    "BR-015": {
+      "result": "Fail",
+      "description": "Real backend restart: a stopped copy takes a follow-up Task live with its conversation; the assignment and row persist across another restart",
+      "message": "agent: B3 root",
+      "details": {
+        "taskId": "project_task_840f4da0-2ebc-49a6-b8df-703e95c27922",
+        "status": "TODO",
+        "root": {
+          "kind": "team",
+          "teamRunId": "docs_review_team_exagent_6fea_bb0895bdcde347c9b0cfe18c29aeac48",
+          "ingressAgentRunId": "release_notes_writer_exagent_6fea_1f62cfcc5a79498392d55dd9e9d895a9",
+          "closed": false,
+          "status": "idle",
+          "start": "starting"
+        }
+      }
+    },
+    "BR-016": {
+      "result": "Pass",
+      "description": "Damaged Task data at load: assignments unavailable, follow-up refused and nothing written; accepted after restore and restart",
+      "details": {
+        "damagedTask": "project_task_ef959fb7-784d-498a-b1d8-c51d03ca25be",
+        "refusal": "CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\n  \\\\\\\"delegated\\\\\\\": false,\\\\n  \\\\\\\"message\\\\\\\": \\\\\\\"Agent run resource data could not be read (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-h5XEuM/projects/project_9485433b-d586-468d-bcea-db4b4f38fe5a/tasks/project_task_ef959fb7-784d-498a-b1d8-c51d03ca25be/agent_run_resources.json: Unexpected end of JSON input). Fix or restore the file and restart the app; other features keep working.\\\\\\\"\\\\n}\\\"}],\\\"structuredContent\\\":{\\\"delegated\\\":false,\\\"message\\\":\\\"Agent run resource data could not be read (/var/folders/7w/9r4_s1",
+        "recovered": {
+          "kind": "agent",
+          "teamRunId": null,
+          "ingressAgentRunId": "release_notes_writer_exagent_6fea_7bcb6136661a453386cf37be3a978be7",
+          "closed": false,
+          "status": "idle",
+          "start": "started"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 77172,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 2916,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "BR-015",
+      "message": "agent: B3 root"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:52770",
+    "frontendUrl": "http://127.0.0.1:52771",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-h5XEuM"
+  },
+  "browserVersion": "154.0.8037.98",
+  "result": "Fail",
+  "finishedAt": "2026-10-09T08:34:17.349Z"
+}

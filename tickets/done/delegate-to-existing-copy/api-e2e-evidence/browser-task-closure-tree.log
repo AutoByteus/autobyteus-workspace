@@ -1,0 +1,7 @@
+
+> autobyteus@1.4.99-beta.6 test:e2e:task-closure-tree /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/autobyteus-web
+> node tests/e2e/task-closure-tree-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/api-e2e-evidence/browser-task-closure-tree
+
+Task closure tree probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/delegate-to-existing-copy/tickets/in-progress/delegate-to-existing-copy/api-e2e-evidence/browser-task-closure-tree/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT 1

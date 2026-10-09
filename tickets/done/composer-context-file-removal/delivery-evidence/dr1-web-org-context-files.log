@@ -1,0 +1,51 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports upload failure without replay and preserves a newer real textarea draft
+Context file upload failed for 'notes.txt': Error: upload rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:197:40
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Failed to send message via activeContextStore: Error: finalize rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:209:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > reports finalize failure without replay and preserves a newer real textarea draft
+Error sending requirement: Error: finalize rejected
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts:209:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/node_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Failed to send message via activeContextStore: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:390:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:283:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:346:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts > actual shared Org file input -> active target -> attachment upload owner > restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file
+Error sending requirement: Error: Input rejected
+    at AgentOrgStreamingService.acknowledge [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:390:10[90m)[39m
+    at AgentOrgStreamingService.handleMessage [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:283:12[90m)[39m
+    at AgentOrgStreamingService.processFrame [90m(/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:346:18[90m)[39m
+    at [90m/Users/normy/autobyteus_org/autobyteus-worktrees/composer-context-file-removal/autobyteus-web/[39mservices/agentOrgExecution/agentOrgStreamingService.ts:117:26
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (9 tests) 418ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  17:48:06
+   Duration  6.04s (transform 3.24s, setup 4.94s, collect 181ms, tests 418ms, environment 128ms, prepare 118ms)
+

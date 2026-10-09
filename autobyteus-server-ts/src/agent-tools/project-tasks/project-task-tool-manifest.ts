@@ -1,7 +1,8 @@
 import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
 import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput, TaskAcknowledgementView } from "../../projects/domain/models.js";
-import type { TaskAssignment } from "../../projects/domain/task-agent-resources.js";
+import type { TaskAssignmentView } from "../../projects/domain/task-execution-resources.js";
+import type { TaskAssignmentViews } from "../../projects/services/task-execution-resource-service.js";
 import type { ProjectTaskContextFile } from "../../projects/domain/project-task-context.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import { PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
@@ -11,9 +12,12 @@ const projectAcknowledgement = ({projectId, name, description, workspaces}: Proj
   workspaces: workspaces.map(({workspaceRootPath, description}) => ({workspaceRootPath, description})),
 });
 
-/** Business read: current (open) assignments, or a marker when this Task's assignments can't be read. */
+/**
+ * Business read: open `assignments` and `closedAssignments` (explicit copy IDs: an Agent's `agentRunId`,
+ * a Team's `teamRunId` and `teamCoordinatorAgentRunId`), or a marker when this Task's assignments can't be read.
+ */
 type TaskBusinessRead = Pick<ProjectTaskView, "projectId" | "taskId" | "description" | "status" | "contextFiles">
-  & ({ assignments: TaskAssignment[] } | { assignmentsUnavailable: true });
+  & ({ assignments: TaskAssignmentView[]; closedAssignments: TaskAssignmentView[] } | { assignmentsUnavailable: true });
 /** `projectId` is null for a Task with no Project; `attachedContextFiles` only when this call attached files. */
 const taskAcknowledgement = ({ projectId, taskId, status }: Pick<TaskAcknowledgementView, "projectId" | "taskId" | "status">,
   attached: readonly ProjectTaskContextFile[] = []) => ({
@@ -21,9 +25,10 @@ const taskAcknowledgement = ({ projectId, taskId, status }: Pick<TaskAcknowledge
   ...(attached.length ? { attachedContextFiles: attached.map(({ storedFilename, displayName }) => ({ storedFilename, displayName })) } : {}),
 });
 const taskBusinessRead = ({ projectId, taskId, description, status, contextFiles }: ProjectTaskView,
-  assignments: TaskAssignment[] | "unavailable" | undefined): TaskBusinessRead => ({
+  assignments: TaskAssignmentViews | "unavailable" | undefined): TaskBusinessRead => ({
   projectId, taskId, description, status, contextFiles,
-  ...(assignments === "unavailable" ? { assignmentsUnavailable: true as const } : { assignments: assignments ?? [] }),
+  ...(assignments === "unavailable" ? { assignmentsUnavailable: true as const }
+    : { assignments: assignments?.open ?? [], closedAssignments: assignments?.closed ?? [] }),
 });
 
 class ProjectMutationUnconfirmed extends Error {
@@ -65,7 +70,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
   if (name === "list_project_tasks") {
     const projectId = input.project_id as string;
     const tasks = await getProjectTaskService().listTasks(projectId, input.status as ProjectTaskStatus | undefined);
-    const assignments = await getProjectTaskService().currentAssignments(tasks.map(task => task.taskId));
+    const assignments = await getProjectTaskService().assignments(tasks.map(task => task.taskId));
     return { projectId, tasks: tasks.map(task => taskBusinessRead(task, assignments.get(task.taskId))) };
   }
   // The service may fail while producing its view AFTER the write. Neither a

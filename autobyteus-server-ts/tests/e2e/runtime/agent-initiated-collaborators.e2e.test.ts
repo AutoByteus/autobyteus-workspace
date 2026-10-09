@@ -184,8 +184,9 @@ const findInResult = (payload: Record_, key: string): unknown => {
   return visit(payload.result ?? payload.error ?? null, 0);
 };
 const rejected = (message: WsMessage): boolean => message.type === "TOOL_EXECUTION_FAILED" || findInResult(message.payload, "accepted") === false;
+/** The agent run a result names: send_message_to's receiver, an Agent copy, or a Team copy's coordinator. */
 const resultRunId = (message: WsMessage): string | null => {
-  const runId = findInResult(message.payload, "target_agent_run_id");
+  const runId = findInResult(message.payload, "target_agent_run_id") ?? findInResult(message.payload, "target_team_coordinator_agent_run_id");
   return typeof runId === "string" && runId ? runId : null;
 };
 /** Root streams: Team frames are top-level; Org and Agent-root collaboration frames are ROOT_EXECUTION_EVENTs. */

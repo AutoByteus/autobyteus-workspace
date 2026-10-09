@@ -308,7 +308,8 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
   /** Delegates one copy (its own Task with no Project); returns its ingress run, Task and tree node. */
   const delegate = async (root: Awaited<ReturnType<typeof startRoot>>, recipient: string, description: string) => {
     const result = await root.managerCalls(callTool("delegate_task", { recipient_address: recipient, description }));
-    const ingress = result.target_agent_run_id as string;
+    // An Agent copy is named by its own run; a Team copy by its team run and coordinator (the ingress).
+    const ingress = (result.target_kind === "team" ? result.target_team_coordinator_agent_run_id : result.target_agent_run_id) as string;
     expect(ingress, JSON.stringify(result)).toBeTruthy();
     const taskId = AD_HOC_ID.exec(JSON.stringify(result))?.[0] as string;
     expect(taskId, JSON.stringify(result)).toBeTruthy();

@@ -4,6 +4,7 @@ import { lookup as lookupMime } from "mime-types";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import {
   ContextFileDescriptorError,
+  parseDraftContextFileLocator,
   parseDraftContextFileOwnerDescriptor,
   parseFinalContextFileOwnerDescriptor,
 } from "../../context-files/domain/context-file-owner-types.js";
@@ -54,6 +55,25 @@ const buildServices = () => {
     ),
     readService: new ContextFileReadService(layout, cleanupService, ownerResolver),
   };
+};
+
+/** A `/rest/drafts/` path that is not a draft context-file locator. */
+class DraftLocatorNotFoundError extends Error {}
+
+const isContextFileOwnerNotFound = (error: unknown): boolean =>
+  error instanceof DraftLocatorNotFoundError
+  || error instanceof StandaloneContextFileOwnerNotFoundError
+  || error instanceof TeamContextFileOwnerNotFoundError
+  || error instanceof OrgContextFileOwnerNotFoundError
+  || error instanceof AgentCollaborationContextFileOwnerNotFoundError;
+
+/** The single HTTP error mapping of the draft read and delete routes. */
+const sendDraftRouteError = (error: unknown, reply: { code(status: number): { send(body: unknown): unknown } }) => {
+  if (error instanceof ContextFileDescriptorError || error instanceof CollaborationContractError) {
+    return reply.code(400).send({ detail: error.message });
+  }
+  if (isContextFileOwnerNotFound(error)) return reply.code(404).send({ detail: "File not found." });
+  throw error;
 };
 
 const sendFile = async (filePath: string, reply: { type: (mimeType: string) => void; send: (data: unknown) => unknown }) => {
@@ -115,91 +135,29 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
     }
   });
 
-  app.get<{
-    Params: { draftRunId: string; storedFilename: string };
-  }>("/drafts/agent-runs/:draftRunId/context-files/:storedFilename", async (request, reply) => {
-    const owner = parseDraftContextFileOwnerDescriptor({
-      kind: "agent_draft",
-      draftRunId: request.params.draftRunId,
-    });
-    const filePath = await readService.getDraftFilePath(owner, request.params.storedFilename);
-    if (!filePath) {
-      return reply.code(404).send({ detail: "File not found." });
-    }
-    return sendFile(filePath, reply);
-  });
-
-  app.delete<{
-    Params: { draftRunId: string; storedFilename: string };
-  }>("/drafts/agent-runs/:draftRunId/context-files/:storedFilename", async (request, reply) => {
+  /** Every draft owner kind shares one read and one delete route; the codec owns the locator shape. */
+  const parseDraftRequest = (url: string) => {
+    const located = parseDraftContextFileLocator(url.split("?", 1)[0]!);
+    if (!located) throw new DraftLocatorNotFoundError();
+    return located;
+  };
+  app.get("/drafts/*", async (request, reply) => {
     try {
-      const owner = parseDraftContextFileOwnerDescriptor({
-        kind: "agent_draft",
-        draftRunId: request.params.draftRunId,
-      });
-      await readService.deleteDraftFile(owner, request.params.storedFilename);
-      return reply.code(204).send();
-    } catch (error) {
-      logger.error(`Failed to delete draft context file: ${String(error)}`);
-      return reply.code(400).send({ detail: error instanceof Error ? error.message : "Delete failed." });
-    }
-  });
-
-  const orgDraftRoute = "/drafts/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/:storedFilename";
-  type OrgFileParams = { orgRunId: string; agentRunId: string; storedFilename: string };
-  app.get<{ Params: OrgFileParams }>(orgDraftRoute, async (request, reply) => {
-    try {
-      const { orgRunId, agentRunId, storedFilename } = request.params;
-      const owner = parseDraftContextFileOwnerDescriptor({ kind: "org_member_draft", orgRunId, agentRunId });
+      const { owner, storedFilename } = parseDraftRequest(request.url);
       const filePath = await readService.getDraftFilePath(owner, storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
       return sendFile(filePath, reply);
     } catch (error) {
-      if (error instanceof OrgContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
-      if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
-      throw error;
+      return sendDraftRouteError(error, reply);
     }
   });
-  app.delete<{ Params: OrgFileParams }>(orgDraftRoute, async (request, reply) => {
+  app.delete("/drafts/*", async (request, reply) => {
     try {
-      const { orgRunId, agentRunId, storedFilename } = request.params;
-      const owner = parseDraftContextFileOwnerDescriptor({ kind: "org_member_draft", orgRunId, agentRunId });
+      const { owner, storedFilename } = parseDraftRequest(request.url);
       await readService.deleteDraftFile(owner, storedFilename);
       return reply.code(204).send();
     } catch (error) {
-      return reply.code(400).send({ detail: error instanceof Error ? error.message : "Delete failed." });
-    }
-  });
-
-  app.get<{
-    Params: { teamDraftId: string; memberAddress: string; storedFilename: string };
-  }>("/drafts/team-runs/:teamDraftId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
-    const owner = parseDraftContextFileOwnerDescriptor({
-      kind: "team_member_draft",
-      teamDraftId: request.params.teamDraftId,
-      memberAddress: request.params.memberAddress,
-    });
-    const filePath = await readService.getDraftFilePath(owner, request.params.storedFilename);
-    if (!filePath) {
-      return reply.code(404).send({ detail: "File not found." });
-    }
-    return sendFile(filePath, reply);
-  });
-
-  app.delete<{
-    Params: { teamDraftId: string; memberAddress: string; storedFilename: string };
-  }>("/drafts/team-runs/:teamDraftId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
-    try {
-      const owner = parseDraftContextFileOwnerDescriptor({
-        kind: "team_member_draft",
-        teamDraftId: request.params.teamDraftId,
-        memberAddress: request.params.memberAddress,
-      });
-      await readService.deleteDraftFile(owner, request.params.storedFilename);
-      return reply.code(204).send();
-    } catch (error) {
-      logger.error(`Failed to delete team draft context file: ${String(error)}`);
-      return reply.code(400).send({ detail: error instanceof Error ? error.message : "Delete failed." });
+      return sendDraftRouteError(error, reply);
     }
   });
 
@@ -249,6 +207,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
     }
   });
 
+  type OrgFileParams = { orgRunId: string; agentRunId: string; storedFilename: string };
   app.get<{ Params: OrgFileParams }>("/agent-org-runs/:orgRunId/agent-runs/:agentRunId/context-files/:storedFilename", async (request, reply) => {
     try {
       const { orgRunId, agentRunId, storedFilename } = request.params;
@@ -264,38 +223,22 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
   });
 
   type AgentCollaborationFileParams = { hostRunId: string; agentRunId: string; storedFilename: string };
-  const sendAgentCollaborationFile = async (
-    filePath: Promise<string | null>,
-    reply: Parameters<typeof sendFile>[1] & { code(status: number): { send(body: unknown): unknown } },
-  ) => {
-    try {
-      const resolved = await filePath;
-      if (!resolved) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(resolved, reply);
-    } catch (error) {
-      if (error instanceof AgentCollaborationContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
-      if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
-      throw error;
-    }
-  };
-  app.get<{ Params: AgentCollaborationFileParams }>(
-    "/drafts/agent-collaborations/:hostRunId/agent-runs/:agentRunId/context-files/:storedFilename",
-    async (request, reply) => sendAgentCollaborationFile((async () => {
-      const { hostRunId, agentRunId, storedFilename } = request.params;
-      return readService.getDraftFilePath(
-        parseDraftContextFileOwnerDescriptor({ kind: "agent_collaboration_member_draft", hostRunId, agentRunId }),
-        storedFilename,
-      );
-    })(), reply),
-  );
   app.get<{ Params: AgentCollaborationFileParams }>(
     "/agent-collaborations/:hostRunId/agent-runs/:agentRunId/context-files/:storedFilename",
-    async (request, reply) => sendAgentCollaborationFile((async () => {
-      const { hostRunId, agentRunId, storedFilename } = request.params;
-      return readService.getFinalFilePath(
-        parseFinalContextFileOwnerDescriptor({ kind: "agent_collaboration_member_final", hostRunId, agentRunId }),
-        storedFilename,
-      );
-    })(), reply),
+    async (request, reply) => {
+      try {
+        const { hostRunId, agentRunId, storedFilename } = request.params;
+        const filePath = await readService.getFinalFilePath(
+          parseFinalContextFileOwnerDescriptor({ kind: "agent_collaboration_member_final", hostRunId, agentRunId }),
+          storedFilename,
+        );
+        if (!filePath) return reply.code(404).send({ detail: "File not found." });
+        return sendFile(filePath, reply);
+      } catch (error) {
+        if (error instanceof AgentCollaborationContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
+        if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
+        throw error;
+      }
+    },
   );
 }

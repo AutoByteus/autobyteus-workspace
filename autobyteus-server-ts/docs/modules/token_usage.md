@@ -243,6 +243,40 @@ are not retained in the cumulative database row. Multiple updates for one
 active turn are dispatched in arrival order rather than collapsed in a pending
 turn map.
 
+### Antigravity CLI (AGY)
+
+`AgyStreamEventConverter` emits one `TOKEN_USAGE_UPDATED` per AGY terminal
+`result` event that carries `usage`. AGY's `result.usage` is cumulative for the
+AGY process (verified live on AGY 1.3.2: input 8,919 → 17,920 → 27,003 over
+three turns, with `total_tokens = input_tokens + output_tokens`). The converter
+therefore sends a `cumulative_snapshot` with
+`snapshot_series_key=<conversation-id>` and the idempotency key
+`agy:<conversation-id>:<num_turns>`. The normal snapshot-delta fold derives each
+turn's contribution.
+
+AGY `input_tokens` **excludes** `cache_read_tokens`, so AGY input is
+`base_excludes_cache`, as for Claude:
+
+- gross input = `input_tokens` + `cache_read_tokens`;
+- cache miss = `input_tokens`;
+- cache read = `cache_read_tokens`;
+- `thinking_tokens` maps to reasoning output.
+
+The cache hit rate for AGY runs uses the same gross basis as the native Gemini
+runtime (`gross_includes_cache`), so the two are directly comparable. When
+`cache_read_tokens` is missing, gross input equals `input_tokens` and the cache
+state is `not_reported`. AGY reports no cache-write quantity.
+
+The semantic applies to every model run through AGY, not only Gemini. AGY model
+ids (for example `gemini-3.8-flash-high`) have no catalog price and stay
+`price_missing`. Before 2026-10 (ticket `gemini-native-cache-hit`) AGY input was
+marked `gross_includes_cache`. That over-stated the hit rate, under-counted
+gross input, and rejected as a regressed snapshot every AGY turn after the
+first whose cache reads grew faster than its input, so those turns are missing
+from older rows. The fix is fix-forward only: older AGY
+run rows and daily facets keep their stored values and are not rewritten. A run
+that continues after an upgrade folds new snapshots on the corrected basis.
+
 ### Claude Agent SDK
 
 Claude SDK accounting starts at terminal `result` events; thinking/text stream
@@ -365,7 +399,23 @@ Future exact `ANTHROPIC` + `claude-opus-5-5` observations use Standard rates
 of `4` input, `20` output, `0.20` cache read, `5` five-minute cache write,
 and `8` one-hour cache write per million tokens. It has no inferred Fast,
 Batch, regional, or subscription tariff. The added exact-policy server tests
-exercise all three model identities and the OpenAI long-context/cache tiers.
+exercise all three model identities and the OpenAI long-context/cache tiers, and
+a calculator test prices each Opus 5.5 component (uncached input, cache read,
+5-minute and 1-hour cache write, output) at those rates.
+
+Native AutoByteus-runtime Anthropic conversations request prompt caching with
+the 1-hour TTL (see `autobyteus-ts/docs/llm_module_design_nodejs.md`), so their
+usage reports cache reads and 1-hour cache writes (`cache_creation.
+ephemeral_1h_input_tokens`). The normalizer records them as
+`cache_read_input_tokens` and `cache_creation_1h_input_tokens` with
+`cache_state = positive`, and the meter prices them with the catalog's 1-hour
+write and cache-read rates, so its estimate can match the Anthropic Console for
+the same calls. One-shot calls such as the compaction summarizer stay uncached.
+
+`ANTHROPIC` + `claude-sonnet-5` uses `2` input, `10` output, `0.20` cache read,
+`2.50` five-minute cache write and `4` one-hour cache write per million tokens
+for new observations (Anthropic's standard price since the cancelled 2026-09-01
+increase); stored records keep the price captured when they were observed.
 
 These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
 partner, subscription/credit, private, and negotiated variants are not inferred
@@ -378,7 +428,10 @@ and mocked request tests cover these entries. The new-model validation also
 completed three real Codex Astra/Sol/Luna turns and a bounded real Anthropic
 signed active tool-turn replay, but those are separate runtime evidence, not a
 provider invoice or live proof of every pricing dimension. Direct OpenAI live
-API and independent-turn signed reset or compaction were not exercised.
+API and compaction were not exercised. (The independent-turn signed-thinking
+reset referenced by that validation no longer exists: native Anthropic history is
+append-only, with a one-time removal only when the request prefix changes or a
+run is restored; see `autobyteus-ts/docs/agent_memory_design.md`.)
 
 ### Latest pricing schedule selection
 

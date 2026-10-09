@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-54380-fba9",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-fpk96G",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

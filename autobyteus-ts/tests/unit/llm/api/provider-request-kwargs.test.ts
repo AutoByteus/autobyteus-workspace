@@ -13,7 +13,6 @@ describe('provider request kwargs sanitizer', () => {
       agentId: 'agent-1',
       turnId: 'turn-1',
       requestId: 'request-1',
-      renderedPayload: { internal: true },
       stream: true,
       tools: [{ name: 'tool' }],
       nullable: null,

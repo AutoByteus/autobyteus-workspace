@@ -1,5 +1,5 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
@@ -34,13 +34,15 @@ import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
+import { buildTaskWorkMessageInput } from "../../agent-collaboration/execution/task/task-execution-input.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import {
   TaskDelegationError,
-  type DelegateTaskInput,
-  type DelegateTaskResult,
+  type AssignToExistingCopyInput,
+  type SpawnTaskInput,
+  type TaskDelegationOutcome,
   type TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
@@ -98,7 +100,7 @@ export class RootTeamRun {
     persistence: TeamRunPersistenceCoordinator;
     publisher: TeamRunEventPublisher<TeamRunEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskAgentResources?: TaskAgentResourcePort;
+    taskExecutionResources?: TaskExecutionResourcePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -139,7 +141,7 @@ export class RootTeamRun {
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
       idleShutdown: options.taskExecutionIdleShutdown,
-      taskAgentResources: options.taskAgentResources,
+      taskExecutionResources: options.taskExecutionResources,
     });
     this.communication = new TeamCommunicationService({
       rootTeamRunId: this.teamRunId,
@@ -193,8 +195,8 @@ export class RootTeamRun {
     this.assertAdmitting();
     this.taskExecutions.assertInputAllowed(agentRunId);
   }
-  releaseTaskAgentResources(executions: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
-    return this.taskExecutions.releaseTaskAgentResources(executions);
+  releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
+    return this.taskExecutions.releaseTaskExecutions(executions);
   }
   /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
   taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
@@ -310,7 +312,7 @@ export class RootTeamRun {
     }
   }
 
-  delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
@@ -320,10 +322,21 @@ export class RootTeamRun {
             "An Agent cannot delegate a task to its own logical placement.",
           );
         }
-        return this.taskExecutions.delegateTask(context, input, placement);
+        return this.taskExecutions.delegateToNewCopy(context, input, placement);
       });
     });
   }
+
+  /** `delegate_task` with a copy's own ID: its new Task's work is delivered by this root's exact delivery. */
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
+    return this.materializationGate.run(async () => {
+      this.authorizeIdentity(context.identity);
+      return this.taskExecutions.assignToExistingCopy(context, input, (targetAgentRunId, content, referenceFiles) =>
+        this.delivery.deliverToRunId(buildTaskWorkMessageInput(context.identity, targetAgentRunId, content, referenceFiles)));
+    });
+  }
+  /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
+  teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {

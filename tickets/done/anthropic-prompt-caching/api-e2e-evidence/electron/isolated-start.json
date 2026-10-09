@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-64203-6f86",
+    "pid": 89029,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-prompt-caching/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:64204",
+    "graphqlUrl": "http://127.0.0.1:64204/graphql",
+    "controlEndpoint": "http://127.0.0.1:64203",
+    "controlPort": 64203,
+    "serverPort": 64204,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-g1ZoQR",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-g1ZoQR/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-64203-6f86.log"
+  }
+}

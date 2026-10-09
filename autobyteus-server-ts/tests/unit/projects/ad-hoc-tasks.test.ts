@@ -8,11 +8,11 @@ import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layo
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
-import { TaskAgentResourceService } from "../../../src/projects/services/task-agent-resource-service.js";
-import { TaskAgentResourceStore } from "../../../src/projects/stores/task-agent-resource-store.js";
+import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
+import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-execution-resource-store.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskAgentResourceLinkInput, TaskAgentResourceReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { NewTaskExecutionLinkInput, TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "host-root" });
 const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", rootRunId: "team-root" });
@@ -20,17 +20,17 @@ const otherRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", r
 /** Tasks with no Project ("ad-hoc"), created only by described delegation of an unowned sender (SR-003). */
 describe("ad-hoc Tasks (no Project)", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
-  let release: ReturnType<typeof vi.fn<TaskAgentResourceReleaseRequest>>;
+  let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tasks: ProjectTaskService;
   const boot = async () => {
     const adHocTasks = new AdHocTaskStore(adHocLayout);
     const service = new ProjectTaskService({ store, adHocTasks, contextStore: new ProjectTaskContextStore(layout), requestRelease: release,
-      taskAgentResources: new TaskAgentResourceService(new TaskAgentResourceStore(layout, adHocLayout)) });
+      taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await service.load();
     return service;
   };
   const delegate = (agentRunId: string, input: { description?: string; referenceFiles?: string[]; root?: typeof hostRoot } = {}) =>
-    tasks.linkAgentRun({ role: "assigned", assignedBy: "delegator", hostRoot: input.root ?? hostRoot, agentRun: { agentRunId },
+    tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "delegator", hostRoot: input.root ?? hostRoot, execution: { agentRunId },
       adHocTask: { description: input.description ?? "Review the plan", referenceFiles: input.referenceFiles ?? [] } });
   const taskFile = (taskId: string) => fs.readFile(adHocLayout.taskFile(taskId), "utf8").then(JSON.parse);
   const exists = (file: string) => fs.access(file).then(() => true, () => false);
@@ -41,7 +41,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     adHocLayout = new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"));
     store = new ProjectStore(layout);
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
-    release = vi.fn<TaskAgentResourceReleaseRequest>(async (_root, agentRuns) => agentRuns.map(agentRun => ({ agentRun, stopped: true })));
+    release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
     tasks = await boot();
   });
   afterEach(async () => {
@@ -60,14 +60,14 @@ describe("ad-hoc Tasks (no Project)", () => {
     // Text only: the folder holds exactly the Task record and its run resources; no file is copied.
     expect((await fs.readdir(adHocLayout.taskDir(taskId))).sort()).toEqual(["agent_run_resources.json", "task.json"]);
     expect(await fs.readFile(adHocLayout.taskFile(taskId), "utf8")).not.toContain("secret bytes");
-    expect(tasks.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, agentRun: { agentRunId: "copy-1" }, open: true });
-    expect(await tasks.currentAssignments([taskId])).toEqual(new Map([[taskId, [
-      { targetAgentRunId: "copy-1", kind: "agent", assignedBy: "delegator", outcome: "not_confirmed" }]]]));
+    expect(tasks.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, execution: { agentRunId: "copy-1" }, open: true });
+    expect(await tasks.assignments([taskId])).toEqual(new Map([[taskId, { closed: [],
+      open: [{ kind: "agent", agentRunId: "copy-1", assignedBy: "delegator", outcome: "not_confirmed" }] }]]));
     // Not Project work: it is not listed under any Project, and the Projects root holds no trace of it.
     expect(await tasks.listTasks(projectId)).toEqual([]);
     expect(await store.findTask(taskId)).toEqual([]);
     // Sub-work of the copy stays that Task's (REQ-010).
-    await expect(tasks.linkAgentRun({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, agentRun: { agentRunId: "sub-1" } }))
+    await expect(tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "sub-1" } }))
       .resolves.toEqual({ taskId });
   });
 
@@ -81,16 +81,16 @@ describe("ad-hoc Tasks (no Project)", () => {
   it("DONE by task_id alone closes the copy and its sub-work, writes the status and asks its root to stop them (AC-004, AC-007)", async () => {
     const { taskId } = await delegate("copy-1");
     await tasks.markStarted({ agentRunId: "copy-1" });
-    await tasks.linkAgentRun({ role: "broughtIn", creator: { agentRunId: "copy-1" }, hostRoot, agentRun: { agentRunId: "helper-1" } });
+    await tasks.linkNewTaskExecution({ role: "broughtIn", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, status: "DONE" });
     await tasks.drainRuntimeReleases();
     expect((await taskFile(taskId)).status).toBe("DONE");
     expect(tasks.isOpen({ agentRunId: "copy-1" })).toBe(false);
     expect(tasks.isOpen({ agentRunId: "helper-1" })).toBe(false);
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
     expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "copy-1" }, { agentRunId: "helper-1" }]);
     // A closed copy takes no new sub-work (only its assigner's reactivation reopens it). Repeating DONE re-requests the stop and changes nothing else.
-    await expect(tasks.linkAgentRun({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, agentRun: { agentRunId: "late" } }))
+    await expect(tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "late" } }))
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     const before = await taskFile(taskId);
     await tasks.updateTaskById({ taskId, status: "DONE" });
@@ -105,8 +105,8 @@ describe("ad-hoc Tasks (no Project)", () => {
     await tasks.drainRuntimeReleases();
     const restarted = await boot();
     expect(restarted.isOpen({ agentRunId: "copy-1" })).toBe(false);
-    expect(restarted.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, agentRun: { agentRunId: "copy-1" }, open: false });
-    expect(restarted.closedAgentRunsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }]);
+    expect(restarted.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, execution: { agentRunId: "copy-1" }, open: false });
+    expect(restarted.closedTaskExecutionsIn(hostRoot)).toEqual([{ agentRunId: "copy-1" }]);
   });
 
   it("patches an ad-hoc description and a Project Task by task_id alone (AC-005); unknown IDs fail TASK_NOT_FOUND (AC-004)", async () => {
@@ -125,7 +125,7 @@ describe("ad-hoc Tasks (no Project)", () => {
 
   it("DONE on a Project Task by task_id alone behaves exactly like the Project-scoped update (AC-014)", async () => {
     const projectTask = await tasks.createTask({ projectId, description: "Project work" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot: otherRoot, agentRun: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot: otherRoot, execution: { agentRunId: "worker" } });
     await tasks.updateTaskById({ taskId: projectTask.taskId, status: "DONE" });
     await tasks.drainRuntimeReleases();
     expect((await store.readTask(projectId, projectTask.taskId))!.status).toBe("DONE");
@@ -135,8 +135,8 @@ describe("ad-hoc Tasks (no Project)", () => {
   it("linked delegation stays Project-only: an ad-hoc ID is TASK_NOT_FOUND for resolveAssignment and a linked assignment", async () => {
     const { taskId } = await delegate("copy-1");
     await expect(tasks.resolveAssignment(taskId)).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
-    const linked: TaskAgentResourceLinkInput = { role: "assigned", taskId, assignedBy: "manager", hostRoot: otherRoot, agentRun: { agentRunId: "other" } };
-    await expect(tasks.linkAgentRun(linked)).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
+    const linked: NewTaskExecutionLinkInput = { role: "assigned", taskId, assignedBy: "manager", hostRoot: otherRoot, execution: { agentRunId: "other" } };
+    await expect(tasks.linkNewTaskExecution(linked)).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
   });
 
   it("works while the Projects migration is pending; Project operations still report it (AC-013)", async () => {
@@ -150,19 +150,19 @@ describe("ad-hoc Tasks (no Project)", () => {
 
   it("a permanent run delete removes only that root's ad-hoc Tasks, from the view and from disk (AC-010)", async () => {
     const mine = await delegate("copy-1");
-    await tasks.linkAgentRun({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, agentRun: { agentRunId: "sub-1" } });
+    await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "sub-1" } });
     const closed = await delegate("copy-2");
     await tasks.updateTaskById({ taskId: closed.taskId, status: "DONE" });
     const theirs = await delegate("copy-3", { root: otherRoot });
     const projectTask = await tasks.createTask({ projectId, description: "Project work" });
-    await tasks.linkAgentRun({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot, agentRun: { agentRunId: "worker" } });
+    await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
 
     await tasks.deleteAdHocTasksHostedBy(hostRoot);
     expect(await exists(adHocLayout.taskDir(mine.taskId))).toBe(false);
     expect(await exists(adHocLayout.taskDir(closed.taskId))).toBe(false);
     expect(tasks.ownerOf([{ agentRunId: "copy-1" }])).toBeNull();
     expect(tasks.ownerOf([{ agentRunId: "sub-1" }])).toBeNull();
-    expect(tasks.closedAgentRunsIn(hostRoot)).toEqual([]);
+    expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([]);
     // Other roots' ad-hoc Tasks and every Project Task are untouched.
     expect(await exists(adHocLayout.taskFile(theirs.taskId))).toBe(true);
     expect(tasks.ownerOf([{ agentRunId: "copy-3" }])?.taskId).toBe(theirs.taskId);

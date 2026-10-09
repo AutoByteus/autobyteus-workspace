@@ -1,20 +1,39 @@
 import type { CollaborationMemberExecutionIdentity, RootSubjectKind } from "../domain/root-execution-identity.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
 
 export type TaskDelegationContext = Readonly<{ identity: CollaborationMemberExecutionIdentity }>;
 
-export type DelegateTaskInput =
+/** `delegate_task` with an address: spawns a new copy for a saved Task (`task_id`) or for described work. */
+export type SpawnTaskInput =
   | Readonly<{ recipient_address: string; task_id: string; description?: never; reference_files?: never }>
   | Readonly<{ recipient_address: string; description: string; reference_files?: string[]; task_id?: never }>;
 
+/** `delegate_task` with a copy's own ID: assigns saved Task `taskId` to that existing copy in the sender's root. */
+export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference; taskId: string }>;
+
+/** The copy a delegation reached, named for what it is: an Agent copy, or a Team copy and its coordinator. */
+export type DelegatedCopy =
+  | Readonly<{ kind: "agent"; agentRunId: string }>
+  | Readonly<{ kind: "team"; teamRunId: string; teamCoordinatorAgentRunId: string }>;
 /**
- * A delegation is a spawn: success names the child ingress and whether the copy is an Agent or a
- * Team (whose ingress is its coordinator); failure means nothing was started. `task_id` is present
- * only when the delegation created a Task with no Project for the copy.
+ * Internal result of both delegation commands. Success names the copy; `taskId` is present only when the
+ * delegation created a Task with no Project. Failure means nothing was started (or, after an existing-copy
+ * commit, that its work was not delivered) and carries the reason.
  */
-export type DelegateTaskTargetKind = "agent" | "team";
-export type DelegateTaskResult =
-  | Readonly<{ target_agent_run_id: string; target_kind: DelegateTaskTargetKind; task_id?: string }>
-  | Readonly<{ target_agent_run_id: null; message: string }>;
+export type TaskDelegationOutcome =
+  | Readonly<{ delegated: true; copy: DelegatedCopy; taskId?: string }>
+  | Readonly<{ delegated: false; message: string }>;
+
+/** The copy at a target: its reference and ingress (the Agent itself, or the Team's coordinator). */
+export const delegatedCopyOf = (target: Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }>): DelegatedCopy =>
+  "agentRunId" in target.execution
+    ? { kind: "agent", agentRunId: target.execution.agentRunId }
+    : { kind: "team", teamRunId: target.execution.teamRunId, teamCoordinatorAgentRunId: target.ingressAgentRunId };
+/** The reverse: a delegated copy's reference and ingress. */
+export const copyTargetOf = (copy: DelegatedCopy): Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }> =>
+  copy.kind === "agent"
+    ? { execution: { agentRunId: copy.agentRunId }, ingressAgentRunId: copy.agentRunId }
+    : { execution: { teamRunId: copy.teamRunId }, ingressAgentRunId: copy.teamCoordinatorAgentRunId };
 
 export type TaskDelegationErrorCode =
   | "TASK_AGENT_RESOURCE_CLOSED"
@@ -26,7 +45,8 @@ export type TaskDelegationErrorCode =
   | "ROOT_RUN_NOT_ACTIVE"
   | "TASK_EXECUTION_CONTEXT_UNAVAILABLE"
   | "TASK_EXECUTION_RESTORE_FAILED"
-  | "TASK_REACTIVATION_STOP_PENDING";
+  | "TASK_REACTIVATION_STOP_PENDING"
+  | "TASK_COPY_NOT_ASSIGNABLE";
 
 export class TaskDelegationError extends Error {
   constructor(readonly code: TaskDelegationErrorCode, message: string, options?: { cause?: unknown }) {
@@ -58,7 +78,7 @@ export class TaskExecutionTeardownIndeterminateError extends Error {
 /** Durable/publication/accepted-input uncertainty must not masquerade as a proven no-work failure. */
 export class TaskDispatchIndeterminateError extends Error {
   readonly code = "TASK_DISPATCH_INDETERMINATE";
-  constructor(readonly execution: import("./task-execution-reference.js").TaskExecutionReference, cause: unknown) {
+  constructor(readonly execution: TaskExecutionReference, cause: unknown) {
     super("Task dispatch has durable or accepted-work uncertainty; inspect its exact link before retrying.", { cause });
     this.name = "TaskDispatchIndeterminateError";
   }

@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
-import { ANTHROPIC_ASSISTANT_TURN_KEY, parseAnthropicAssistantTurn } from '../../../src/llm/utils/provider-native-assistant-turn.js';
+import { parseAnthropicAssistantTurn } from '../../../src/llm/api/anthropic-native-assistant-turn.js';
+import { PROVIDER_NATIVE_ASSISTANT_TURN_KEY } from '../../../src/llm/provider-native/provider-native-assistant-turn.js';
 import { AcceptedCompactionBuilder } from '../../../src/memory/compaction/accepted-compaction-builder.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
@@ -16,7 +17,7 @@ describe('AcceptedCompactionBuilder Anthropic retained tail', () => {
         content: 'Searching.',
         reasoning_content: 'synthetic display reasoning',
         tool_payload: new ToolCallPayload([{ id: 'toolu_1', name: 'search', arguments: { q: 'x' } }]),
-        metadata: { [ANTHROPIC_ASSISTANT_TURN_KEY]: { provider: 'anthropic', blocks: [
+        metadata: { [PROVIDER_NATIVE_ASSISTANT_TURN_KEY]: { provider: 'anthropic', blocks: [
           { type: 'thinking', thinking: 'synthetic private', signature: 'signed' },
           { type: 'redacted_thinking', data: 'synthetic-redacted' },
           { type: 'text', text: 'Searching.' },
@@ -44,7 +45,7 @@ describe('AcceptedCompactionBuilder Anthropic retained tail', () => {
       });
       const messages = accepted.finalizedContext.buildMessages();
       const retained = messages.find((message) => message.tool_payload instanceof ToolCallPayload)!;
-      expect(parseAnthropicAssistantTurn(retained.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks).toEqual([
+      expect(parseAnthropicAssistantTurn(retained.metadata?.[PROVIDER_NATIVE_ASSISTANT_TURN_KEY]).blocks).toEqual([
         { type: 'text', text: 'Searching.' },
         { type: 'tool_use', id: 'toolu_1', name: 'search', input: { q: 'x' } },
       ]);

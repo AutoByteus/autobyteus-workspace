@@ -56,17 +56,17 @@ which every agent with `delegate_task` gets automatically.
 
 ## Main Owners
 
-- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,task-agent-resources}.ts`
-- `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-agent-resource-store,task-agent-resource-schema}.ts`
-- `src/projects/services/{project-service,project-task-service,task-agent-resource-service,task-root-view-builder}.ts`
+- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,task-execution-resources}.ts`
+- `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-execution-resource-store,task-execution-resource-schema}.ts`
+- `src/projects/services/{project-service,project-task-service,task-execution-resource-service,task-root-view-builder}.ts`
 - `src/projects/changes/{project-change-messages,project-change-publisher,project-change-hub}.ts`
   (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))
-- `src/projects/runtime/task-agent-resource-release.ts` (DONE's stop request)
+- `src/projects/runtime/task-execution-resource-release.ts` (DONE's stop request)
 - `src/projects/context/project-task-context-store.ts`
-- `src/compositions/project-task-agent-resource-composition.ts`: the **single**
+- `src/compositions/project-task-execution-resource-composition.ts`: the **single**
   place where Projects and the collaboration runtime are bound
 - `src/agent-collaboration/execution/task/`: the root-neutral dispatch, fence
-  and release boundary, reached only through `TaskAgentResourcePort`
+  and release boundary, reached only through `TaskExecutionResourcePort`
 - `src/app-data-migrations/migrations/projects-per-folder-v1/`
 - `src/agent-tools/project-tasks/` (shared contract, manifest, native tools)
 - `src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts`
@@ -232,7 +232,12 @@ classifiers/fixtures unchanged and rerun migration/startup coverage.
 
 Each Task's `<projectId>/tasks/<taskId>/agent_run_resources.json` (for a Task
 with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
-**only** record of the agent runs started for that Task:
+**only** record of the task executions (delegated Agent and Team copies) that
+worked on that Task. In code these are *task execution resources*
+(`TaskExecutionResource`, `TaskExecutionResourceService`): the in-memory entry
+calls the copy `execution`, the Team coordinator `teamCoordinatorAgentRunId`,
+and the list `executionResources`. The persisted names below are unchanged and
+only `task-execution-resource-schema.ts` maps them; no migration is involved.
 
 ```jsonc
 { "taskId": "project_task_…",
@@ -254,18 +259,47 @@ with no Project, `ad-hoc-tasks/<taskId>/agent_run_resources.json`) is the
 | `agentRun` | `{kind: agent, agentRunId}` or `{kind: team, teamRunId, coordinatorAgentRunId}`. |
 | `linkedAt` | Written **before** any resource is acquired, so DONE always reaches work that is still starting. |
 | `start` | `starting`, then `started` or `failed` (with `startError`). Set once. |
-| `closedAt` | `null` while open. DONE sets it on every open entry. Only a [reactivation](#reactivation) sets it back to `null`, on one `assigned` entry. |
+| `closedAt` | `null` while open. DONE sets it on every open entry. Only a [reactivation](#reactivation) sets it back to `null`, on the copy's last `assigned` entry. |
+
+Each entry is one **assignment period** of one copy for this Task. Entries are
+only ever appended, so file order is link order.
 
 Rules for the file:
 - Its `taskId` matches its folder.
-- A run appears at most once and never belongs to two Tasks.
+- A copy may appear more than once (one entry per period, e.g. A → B → A), but
+  it has **at most one open entry, and only its last entry may be open**. Every
+  rule that acts on a copy within a file (start settle, reopen, the inherited
+  link's creator check) acts on the copy's last entry; earlier periods are never
+  rewritten.
+- A copy may have entries in several Task files: closed in all but its
+  **current Task**.
 - Write preconditions are evaluated from the content read under that file's
   lock, never from the in-memory view. These cover the creator being open,
-  uniqueness, and the open set that DONE closes.
+  the copy's open entries, and the open set that DONE closes.
 - At composition, the server loads every
   `projects/*/tasks/*/agent_run_resources.json` and
   `ad-hoc-tasks/*/agent_run_resources.json` into one in-memory view
-  (`TaskAgentResourceService`; locations are `{projectId: string | null, taskId}`).
+  (`TaskExecutionResourceService`; locations are `{projectId: string | null, taskId}`).
+- Existing files already satisfy these rules (each copy appears once in one
+  file), so they load unchanged. An older build that reads a file holding two
+  entries for one copy treats that Task's file as damaged and assumes one Task
+  per copy; downgrading after a copy was reused is not supported.
+
+### Current Task of a copy
+
+A copy has one **current Task**: the Task of its open entry, or, when every
+entry is closed, the Task of its entry with the latest `linkedAt` (a tie goes to
+the greater Task ID). `TaskExecutionResourceService` alone owns this rule;
+every ownership question reads it:
+- the owner of an agent is decided by the **innermost** copy of its containment
+  chain that belongs to a Task, by that copy's current Task (closed sub-work of
+  an earlier Task inside a reused Team copy stays closed);
+- a copy is open or closed by its current entry;
+- a root's closed task executions are the copies whose current entry is closed;
+- DONE or CANCELLED stops only copies whose current Task is the closing Task.
+
+Two open entries for one copy can only come from damaged data: the latest is
+used and `TASK_AGENT_RESOURCE_CONFLICT` is logged.
 
 ### Damaged file (Q-3)
 
@@ -318,20 +352,24 @@ availability or a work assessment.
 `list_project_tasks` stays global: it returns every Task in the Project, with
 an optional `status` filter. Each Task has `projectId`, `taskId`, the full
 `description`, `status` and `contextFiles`, plus **one** of:
-- `assignments`: the Task's **current** assignments. These are the `role:
-  assigned` entries with `closedAt: null`, from any Manager. Each is
-  `{targetAgentRunId, kind: agent | team, assignedBy, outcome}`.
-  - `targetAgentRunId` is the value `delegate_task` returned: the Agent's run,
-    or the Team's coordinator.
+- `assignments` and `closedAssignments`: the Task's open `role: assigned`
+  entries (`closedAt: null`), from any Manager, and every closed one (one per
+  earlier assignment period, in link order). Each names the copy for what it
+  is:
+  - an Agent copy: `{kind: "agent", agentRunId, assignedBy, outcome}`;
+  - a Team copy: `{kind: "team", teamRunId, teamCoordinatorAgentRunId, assignedBy, outcome}`.
   - `outcome` is `accepted` (started), `not_confirmed` (starting) or `failed`.
 - `assignmentsUnavailable: true`, when that Task's `agent_run_resources.json`
   is damaged. An empty list is never shown in its place.
 
-The result omits closed assignments, workers' internal `delegated`/`broughtIn`
-runs, timestamps and raw lifetime or stop diagnostics. Those runs stay visible
-in the app's run views. Acceptance is not completion. The purpose is continuity
-across chats and Managers (follow-up via `send_message_to`) and avoiding
-duplicate work.
+The result omits workers' internal `delegated`/`broughtIn` runs, timestamps and
+raw lifetime or stop diagnostics. Those runs stay visible in the app's run
+views. Acceptance is not completion. The purpose is continuity across chats and
+Managers and avoiding duplicate work: message a copy with `send_message_to` and
+an agent run ID (`agentRunId`, or a Team's `teamCoordinatorAgentRunId`), and
+give the copy that did a DONE Task a follow-up Task with `delegate_task` and its
+`teamRunId` / `agentRunId` (see [Follow-up Task to an existing
+copy](#follow-up-task-to-an-existing-copy)).
 
 `create_or_update_task` returns `{task: {projectId, taskId, status}}`, with
 `projectId: null` for a Task with no Project. When the call attached context
@@ -418,7 +456,9 @@ See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and acces
 
 ## Saved-ID Delegation And Agent Run Resources
 
-`delegate_task` has two strict, coequal input modes:
+`delegate_task` has three strict input modes. The first two spawn a new copy
+from an address; the third gives a saved Task to an existing copy (see
+[Follow-up Task to an existing copy](#follow-up-task-to-an-existing-copy)):
 
 - Described work: `{recipient_address, description, reference_files?}`. From
   an agent that is not working on a Task, the copy is assigned to a new Task
@@ -429,15 +469,26 @@ See [Agent Tools MCP](agent_tools_mcp_server.md) for session lifecycle and acces
   only (an ad-hoc Task ID is `TASK_NOT_FOUND`). No `project_id`, description or
   reference_files override is accepted. Blank, unknown or ambiguous Task IDs,
   DONE or CANCELLED Tasks and unavailable saved files fail without spawning anything as a
-  fallback. The result is exactly `{target_agent_run_id}`.
+  fallback.
+- Existing copy: `{target_team_run_id, task_id}` or `{target_agent_run_id, task_id}`,
+  exactly one copy ID and nothing else.
+
+The result names the copy for what it is (DEC-008, no alias):
+- an Agent copy: `{delegated: true, target_kind: "agent", target_agent_run_id, task_id?}`;
+- a Team copy: `{delegated: true, target_kind: "team", target_team_run_id, target_team_coordinator_agent_run_id, task_id?}`;
+- nothing started (or, for an existing copy, its work was not delivered): `{delegated: false, message}`.
+
+`task_id` is present only when the delegation created a Task with no Project.
 
 Linked dispatch resolves the unique current node-local Task and copies its saved
 description and the paths of its saved context files into the ordinary work
 packet (the files themselves are not copied). Later Task
 edits do not rewrite work that was already delivered. Each call allocates a
 fresh copy. The TeamRun identity and the coordinator's ingress AgentRun
-identity remain distinct. Follow-up uses the exact returned
-`target_agent_run_id`, not the definition address.
+identity remain distinct, and the result names both. Messages go to an agent
+run ID (`target_agent_run_id`, or a Team copy's
+`target_team_coordinator_agent_run_id`), never the definition address; a later
+Task goes to the copy by `target_team_run_id` / `target_agent_run_id`.
 
 ### Assignment and linking
 
@@ -481,9 +532,13 @@ both. DONE → CANCELLED and CANCELLED → DONE behave as a repeated DONE.
 
 1. Explicit DONE commits `closedAt` on every open entry of the Task's
    `agent_run_resources.json`, then writes the status to `task.json`.
-2. It then asks each host root to stop exactly the Task's closed runs. The root
-   invokes the exact release on every authority it still holds for each run,
-   whether or not the run looks live. It does not wait for work to become idle.
+2. It then asks each host root to stop exactly the Task's closed runs whose
+   **current Task** is this Task (one request per copy). A copy that has since
+   been given another Task is never stopped or hidden by this Task's DONE, a
+   repeated one included. The root re-checks the copy's current entry before it
+   stops anything, then invokes the exact release on every authority it still
+   holds for each run, whether or not the run looks live. It does not wait for
+   work to become idle.
 3. A closed run receives no input and is never woken or restored while its
    entry is closed, whatever happened to its stop. This holds after restart.
    Only a [reactivation](#reactivation) by the assigning run opens one
@@ -504,7 +559,8 @@ Stop failures and retries:
 ### Reopen and what DONE or CANCELLED never touches
 
 Reopening to TODO or IN_PROGRESS (from DONE or CANCELLED) starts nothing and does not reopen old runs. A
-later deliberate delegation adds a new open `assigned` entry. DONE never
+later deliberate delegation (to a new copy, or to an existing copy by its ID)
+adds a new open `assigned` entry. DONE never
 deletes outputs, conversations, workspaces, Git worktrees or uploaded
 originals. It never stops the Manager, the root, another Task's runs or
 borrowed runs.
@@ -517,21 +573,28 @@ continue with the same worker after DONE or CANCELLED:
 1. The agent moves the Task back to TODO or IN_PROGRESS with
    `create_or_update_task` (this alone reopens and starts nothing).
 2. The run that assigned the work (the entry's `assignedBy`) sends
-   `send_message_to(target_agent_run_id=<the run ID delegate_task returned>)`:
-   the Agent copy's run, or a Team copy's coordinator.
+   `send_message_to(target_agent_run_id=<the copy's agent run ID>)`: the Agent
+   copy's `target_agent_run_id`, or a Team copy's
+   `target_team_coordinator_agent_run_id`.
+
+Reactivation continues the **same** Task and applies only to the copy's current
+Task (its latest assignment). To give the copy a different Task, use
+[delegate_task with its ID](#follow-up-task-to-an-existing-copy).
 
 The sender's root reactivates exactly that `assigned` entry
 (`RootTaskExecutionLifecycle.deliverToExactTarget`):
 - **Eligibility** (`ProjectTaskService.assertReopenable`): the target is an
-  assignment's ingress, the sender is its assigner, the assignment `started`,
-  and the Task exists and is not DONE or CANCELLED.
+  assignment's ingress, the sender is its assigner, the copy's latest
+  assignment `started`, and the copy's current Task exists and is not DONE or
+  CANCELLED.
 - **Runtime step** (on the root's serialized queue): the previous exact release
   is settled (re-invoked, idempotent) and the released handle or TeamRun is
   discarded, so restore builds a fresh one; the saved conversation must exist.
   If another reactivation already reopened the entry, this step is skipped.
-- **Commit** (`ProjectTaskService.reopenAssignment`): under the Task's
-  serialization with DONE or CANCELLED, every condition is re-checked and `closedAt` of that
-  one entry returns to `null`. `task.json` is never written.
+- **Commit** (`ProjectTaskService.reopenAssignment`): under the copy's and then
+  the Task's serialization (DONE or CANCELLED takes only the Task's), every
+  condition is re-checked and `closedAt` of the copy's last entry returns to
+  `null`. `task.json` is never written.
 - The root publishes "task executions reopened" (`task_executions_reopened`,
   `TASK_EXECUTIONS_REOPENED`); clients list the copy again. Snapshots and stored
   reads leave it out of `closed_task_executions`.
@@ -544,8 +607,9 @@ closed; the reactivated worker may start new helpers. Refusals change nothing:
 | Case | Code | Message says |
 | --- | --- | --- |
 | Task still DONE or CANCELLED | `TASK_AGENT_RESOURCE_CLOSED` | This Task is DONE/CANCELLED (its actual status); move it to TODO or IN_PROGRESS first, then message the run ID again |
-| Not the assigner; a helper | `TASK_AGENT_RESOURCE_CLOSED` | Only the assigning run can reactivate, after reopening the Task, by messaging the run ID `delegate_task` returned |
-| A Team member that is not the coordinator | `TASK_AGENT_RESOURCE_CLOSED` | Message the run ID `delegate_task` returned (for a Team, its coordinator) |
+| An earlier Task of the copy was reopened, but its current Task is closed | `TASK_AGENT_RESOURCE_CLOSED` | The copy's current Task and its status; reopening the earlier Task does not reach it; call `delegate_task` with the copy's `target_*_run_id` and that Task's `task_id` |
+| Not the assigner; a helper | `TASK_AGENT_RESOURCE_CLOSED` | Only the assigning run can reactivate, after reopening the Task, by messaging the copy's agent run ID |
+| A Team member that is not the coordinator | `TASK_AGENT_RESOURCE_CLOSED` | Message the copy's agent run ID (for a Team copy, its coordinator's) |
 | Task deleted | `TASK_NOT_FOUND` | The Task was deleted; its work cannot be reactivated |
 | Assignment never started | `TASK_REACTIVATION_UNAVAILABLE` | Delegate the work again |
 | Saved conversation missing | `TASK_EXECUTION_CONTEXT_UNAVAILABLE` | It cannot be restored |
@@ -561,6 +625,81 @@ See [Team delegation](agent_team_execution.md#server-owned-task-delegation),
 [message resolution](agent_communication.md#task-linked-message-scope) and
 [public history](run_history.md#task-linked-history-and-public-projection).
 
+### Follow-up Task to an existing copy
+
+A follow-up Task is best done by the copy that did the earlier work: it knows
+the code, what it tried and why it proposed the follow-up. The earlier Task
+stays DONE; the delegator creates Task B and gives it to the same copy:
+
+```text
+delegate_task({recipient_address: "/review_team", task_id: "A"})
+  → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
+create_or_update_task({task_id: "A", status: "DONE"})
+delegate_task({target_team_run_id: "team_9f…", task_id: "B"})   // an Agent copy: target_agent_run_id
+  → {delegated: true, target_kind: "team", target_team_run_id: "team_9f…", target_team_coordinator_agent_run_id: "lead_1a…"}
+```
+
+**Rule.** A copy has one current Task at a time. It can be given Task B only
+by the run that made its most recent assignment, and only when its current
+Task is DONE or CANCELLED. The copy is hosted in the delegator's root and is
+named by its own ID: a Team copy by its team run ID, an Agent copy by its agent
+run ID.
+
+**Path** (`RootTaskExecutionLifecycle.assignToExistingCopy`, all three roots):
+1. The root's adapter finds the copy in its tree (`taskExecutionTargetOf`).
+2. The Task side checks eligibility (`ProjectTaskService.assertAssignable`), in
+   this order of concern: all Task resource data readable; Task B exists, is
+   unique and is not DONE or CANCELLED; the copy's current entry is a closed
+   `assigned` entry made by the sender; some entry of the copy ever started;
+   B is not already the copy's current Task.
+3. The shared resume step (the one reactivation uses) settles the copy's
+   previous stop, drops its released authority and checks its saved
+   conversation can be restored.
+4. The commit (`assignExistingTaskExecution`) re-checks every condition under
+   the copy's and then B's serialization (lock order: copy, then Task; DONE
+   takes only the Task's) and **appends** B's `starting` `assigned` entry, with
+   the address of the copy's previous assignment.
+5. The root publishes the copy as reopened; it is listed again.
+6. The root's exact delivery (the `send_message_to` path) wakes or restores the
+   copy with its conversation and delivers B's description and context files
+   to its ingress (the Agent, or the Team's coordinator) as a message from the
+   delegator (`messageType: "task_assignment"`). The entry becomes `started`.
+
+**Effect.** B's board root is the copy with its live status; A stays DONE with
+the copy shown closed. Closing A again never stops or hides the copy; closing B
+stops it like any DONE. `list_project_tasks` shows the copy under A's
+`closedAssignments` and B's `assignments`.
+
+**Back to an earlier Task (A → B → A).** After B is DONE and A is reopened, the
+same assigner can give A to the copy again with `delegate_task`. A's file then
+holds the copy's earlier, closed period and a new open one; nothing is
+rewritten. Messaging the copy instead is refused with a hint naming its current
+Task (see the reactivation table).
+
+**Refusals** start nothing and change nothing; the result is
+`{delegated: false, message}` with the specific reason:
+
+| Case | Message says |
+| --- | --- |
+| The copy's current Task is still open | It still works on Task A (status); mark it DONE or CANCELLED first, or delegate Task B to a new copy with `recipient_address` |
+| The sender did not make the copy's most recent assignment | Only that run can give it a new Task |
+| A sub-work or helper copy | Only an assigned copy can be given a new Task |
+| A Team coordinator passed as `target_agent_run_id` | It is the coordinator of Team copy X; use `target_team_run_id` "X" |
+| A team run ID as `target_agent_run_id`, an Agent copy as `target_team_run_id` | The field to use |
+| A Team member | The Team copy's `target_team_run_id` to use |
+| Unknown, or a copy of another root | Not a delegated copy in this run |
+| Task B unknown, ambiguous, DONE or CANCELLED | The Task's own reason |
+| B is already the copy's latest assignment | Reopen B and message the copy instead |
+| The copy never started | It has no conversation to resume |
+| Saved conversation unavailable, previous stop pending, any Task's data unreadable | The specific reason |
+
+If the work is not delivered after the commit, B's entry is marked `failed` and
+the result says the Task was assigned but not delivered (message the copy's
+ingress, or mark B CANCELLED / delegate it to a new copy).
+
+Data: existing files are used unchanged (no migration); see
+[Agent Run Resources](#agent-run-resources).
+
 ## Tasks With No Project (Ad-Hoc)
 
 A Task with no Project makes a description-only delegation closable. The user's
@@ -570,10 +709,10 @@ A Task with no Project makes a description-only delegation closable. The user's
    description, reference_files?})` from an agent that is not working on a Task
    joins the copy as `{role: "assigned", adHocTask: {description,
    referenceFiles}}`. Inside the existing link step (after identity planning,
-   before resources), `ProjectTaskService.linkAgentRun` writes
+   before resources), `ProjectTaskService.linkNewTaskExecution` writes
    `ad-hoc-tasks/<taskId>/task.json` and links the copy `starting` in that
    Task's `agent_run_resources.json`. The result is
-   `{target_agent_run_id, target_kind, task_id}`. A call rejected before the link creates no
+   `{delegated: true, target_kind, <the copy's IDs>, task_id}`. A call rejected before the link creates no
    Task; a dispatch failure after the link returns no `task_id` and leaves the
    Task with a `failed` assignment until its run is deleted.
    `create_or_update_task` never creates one.
@@ -621,7 +760,7 @@ The Projects pages follow changes live through one per-node WebSocket,
 There is no replay: a client re-reads what it shows on every `connected`.
 
 **Publication contract (AR-001).** Only `ProjectService`, `ProjectTaskService`
-and committed `TaskAgentResourceService` writes publish; `load()` never does.
+and committed `TaskExecutionResourceService` writes publish; `load()` never does.
 - A write's trigger only *marks* its subject (a Project, a Task, or a Task's
   worker status) on `ProjectChangePublisher`. Marking is synchronous, never
   throws and never reads. A Task mark also marks its Project (counts).
@@ -652,7 +791,7 @@ running), the one the left panel shows:
   the same rule as the web). A root that is not active, not admitting, or does
   not know the run answers `offline`. Reading never wakes or starts anything.
 - `RootTaskExecutionLifecycle` forwards every agent status change inside a task
-  execution to `TaskAgentResourcePort.taskExecutionsStatusChanged` (also after
+  execution to `TaskExecutionResourcePort.taskExecutionsStatusChanged` (also after
   the root stopped admitting), and announces all its task executions when it
   closes admission or fails. `ProjectTaskService` marks a worker-status change
   only for a Task whose root is that run.

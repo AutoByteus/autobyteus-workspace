@@ -338,7 +338,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
 
     // 3a. A rejected delegation (unknown address) returns no task_id and leaves no Task (AC-003 alternate).
     const rejectedDelegation = await managerCalls(callTool("delegate_task", { recipient_address: "/no_such_agent_aht", description: "Nothing." }));
-    expect(rejectedDelegation).toContain('"target_agent_run_id":null');
+    expect(rejectedDelegation).toContain('"delegated":false');
     expect(rejectedDelegation).not.toMatch(AD_HOC_ID);
     expect(await adHocTaskIds()).toEqual([...adHocBefore, adHocTaskId!].sort());
 

@@ -11,7 +11,7 @@ import {
 } from '~/utils/contextFiles/contextAttachmentModel';
 import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttachmentPresentation';
 import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 export type ContextAttachmentComposerTarget<TSubject> = {
@@ -28,6 +28,11 @@ type UploadPlaceholder = {
   type: ContextAttachmentType;
   previewUrl: string | null;
 };
+
+/** A failed attach/remove (or an attach the target cannot accept), shown in this composer only. */
+export type ContextAttachmentComposerError =
+  | { kind: 'upload_failed' | 'remove_failed'; fileNames: string[]; detail: string | null }
+  | { kind: 'uploads_unavailable' };
 
 export type ContextAttachmentComposerDisplayItem = {
   key: string;
@@ -51,23 +56,40 @@ const sameDraftOwner = (
   left: DraftContextFileOwnerDescriptor,
   right: DraftContextFileOwnerDescriptor,
 ): boolean => {
-  if (left.kind !== right.kind) {
+  switch (left.kind) {
+    case 'agent_draft':
+      return right.kind === left.kind && right.draftRunId === left.draftRunId;
+    case 'team_member_draft':
+      return right.kind === left.kind
+        && right.teamDraftId === left.teamDraftId
+        && right.memberAddress === left.memberAddress;
+    case 'org_member_draft':
+      return right.kind === left.kind && right.orgRunId === left.orgRunId && right.agentRunId === left.agentRunId;
+    case 'agent_collaboration_member_draft':
+      return right.kind === left.kind && right.hostRunId === left.hostRunId && right.agentRunId === left.agentRunId;
+    default: {
+      const unsupported: never = left;
+      throw new Error(`Unsupported draft owner kind '${(unsupported as { kind: string }).kind}'.`);
+    }
+  }
+};
+
+/** Only the composer whose upload owner created a draft deletes its server copy. */
+const isOwnDraftAttachment = (
+  attachment: ContextAttachment,
+  draftOwner: DraftContextFileOwnerDescriptor | null,
+): attachment is UploadedContextAttachment => {
+  if (!draftOwner || !isDraftUploadedContextAttachment(attachment)) {
     return false;
   }
-  if (left.kind === 'agent_draft' && right.kind === 'agent_draft') {
-    return left.draftRunId === right.draftRunId;
-  }
-  if (left.kind === 'team_member_draft' && right.kind === 'team_member_draft') {
-    return left.teamDraftId === right.teamDraftId
-      && left.memberAddress === right.memberAddress;
-  }
-  if (left.kind === 'org_member_draft' && right.kind === 'org_member_draft') {
-    return left.orgRunId === right.orgRunId && left.agentRunId === right.agentRunId;
-  }
-  if (left.kind === 'agent_collaboration_member_draft' && right.kind === 'agent_collaboration_member_draft') {
-    return left.hostRunId === right.hostRunId && left.agentRunId === right.agentRunId;
-  }
-  return false;
+  const parsedDraft = parseDraftUploadedContextAttachmentLocator(attachment.locator);
+  return parsedDraft !== null && sameDraftOwner(parsedDraft.owner, draftOwner);
+};
+
+const errorDetail = (error: unknown): string | null => {
+  const candidate = (error as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail
+    ?? (error instanceof Error ? error.message : null);
+  return typeof candidate === 'string' && candidate.trim() ? candidate : null;
 };
 
 export function useContextAttachmentComposer<TSubject>(options: {
@@ -81,19 +103,41 @@ export function useContextAttachmentComposer<TSubject>(options: {
   getIsEmbeddedElectronRuntime: () => boolean;
 }) {
   const contextFileUploadStore = useContextFileUploadStore();
-  const windowNodeContextStore = useWindowNodeContextStore();
   const failedPreviewKeys = ref(new Set<string>());
   const uploadPlaceholders = ref<UploadPlaceholder[]>([]);
+  /** The last attach/remove outcome error, kept with the target it happened on. */
+  const errorState = ref<{ targetKey: string; error: ContextAttachmentComposerError } | null>(null);
+  const attachmentError = computed<ContextAttachmentComposerError | null>(() =>
+    errorState.value && errorState.value.targetKey === options.getCurrentTarget()?.key ? errorState.value.error : null,
+  );
 
-  const resolveAttachmentFetchUrl = (locator: string): string => {
-    if (/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(locator)) {
-      return locator;
+  /** Uploads need the target's draft owner; path attachments do not. */
+  const canUpload = computed(() => Boolean(options.getCurrentTarget()?.draftOwner));
+
+  const setAttachmentError = (
+    target: ContextAttachmentComposerTarget<TSubject>,
+    error: ContextAttachmentComposerError | null,
+  ): void => {
+    if (error) {
+      errorState.value = { targetKey: target.key, error };
+    } else if (errorState.value?.targetKey === target.key) {
+      errorState.value = null;
     }
-    if (!windowNodeContextStore.initialized) {
-      throw new Error('Attachment fetch requested before window node binding.');
+  };
+
+  const reportFailure = (
+    target: ContextAttachmentComposerTarget<TSubject>,
+    kind: 'upload_failed' | 'remove_failed',
+    failures: Array<{ fileName: string; error: unknown }>,
+  ): void => {
+    for (const failure of failures) {
+      console.error(`Context file ${kind === 'upload_failed' ? 'upload' : 'removal'} failed for '${failure.fileName}':`, failure.error);
     }
-    const baseUrl = windowNodeContextStore.nodeBaseUrl.replace(/\/$/, '');
-    return locator.startsWith('/') ? `${baseUrl}${locator}` : `${baseUrl}/${locator}`;
+    setAttachmentError(target, {
+      kind,
+      fileNames: failures.map((failure) => failure.fileName),
+      detail: failures.map((failure) => errorDetail(failure.error)).find((detail) => detail !== null) ?? null,
+    });
   };
 
   const resolveAttachmentPreviewUrl = (attachment: ContextAttachment): string | null =>
@@ -165,6 +209,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
       return;
     }
 
+    setAttachmentError(target, null);
     commitTargetAttachments(target, (current) => {
       const nextAttachments = [...current];
       const existingKeys = new Set(nextAttachments.map((attachment) => contextAttachmentPresentation.getKey(attachment)));
@@ -190,7 +235,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
     attachment: UploadedContextAttachment,
     draftOwner: DraftContextFileOwnerDescriptor,
   ): Promise<UploadedContextAttachment> => {
-    const response = await authorizedFetch(resolveAttachmentFetchUrl(attachment.locator));
+    const response = await authorizedFetch(resolveContextAttachmentUrl(attachment.locator));
     if (!response.ok) {
       throw new Error(`Failed to fetch pasted draft attachment '${attachment.locator}' (${response.status}).`);
     }
@@ -213,6 +258,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
     }
 
     const attachmentsToAppend: ContextAttachment[] = [];
+    const failedClones: Array<{ fileName: string; error: unknown }> = [];
     for (const locator of locators.map((value) => value.trim()).filter(Boolean)) {
       const hydratedAttachment = hydrateContextAttachment({ locator });
 
@@ -223,11 +269,10 @@ export function useContextAttachmentComposer<TSubject>(options: {
             attachmentsToAppend.push(
               await cloneDraftAttachmentToTarget(hydratedAttachment, target.draftOwner),
             );
-            continue;
           } catch (error) {
-            console.error('Failed to clone pasted draft context file:', error);
-            continue;
+            failedClones.push({ fileName: contextAttachmentPresentation.getDisplayLabel(hydratedAttachment), error });
           }
+          continue;
         }
       }
 
@@ -235,6 +280,9 @@ export function useContextAttachmentComposer<TSubject>(options: {
     }
 
     appendAttachments(attachmentsToAppend, target);
+    if (failedClones.length > 0) {
+      reportFailure(target, 'upload_failed', failedClones);
+    }
   };
 
   const revokePreviewUrl = (previewUrl: string | null): void => {
@@ -253,10 +301,15 @@ export function useContextAttachmentComposer<TSubject>(options: {
     files: File[],
     target: ContextAttachmentComposerTarget<TSubject> | null = options.getCurrentTarget(),
   ): Promise<void> => {
-    if (!target || !target.draftOwner || files.length === 0) {
+    if (!target || files.length === 0) {
+      return;
+    }
+    if (!target.draftOwner) {
+      setAttachmentError(target, { kind: 'uploads_unavailable' });
       return;
     }
     const draftOwner = target.draftOwner;
+    const failedUploads: Array<{ fileName: string; error: unknown }> = [];
 
     await Promise.all(
       files.map(async (file) => {
@@ -284,12 +337,18 @@ export function useContextAttachmentComposer<TSubject>(options: {
             return [...current, attachment];
           });
         } catch (error) {
-          console.error('Error uploading context file:', error);
+          failedUploads.push({ fileName: file.name, error });
         } finally {
           removeUploadPlaceholder(key);
         }
       }),
     );
+
+    if (failedUploads.length > 0) {
+      reportFailure(target, 'upload_failed', failedUploads);
+    } else {
+      setAttachmentError(target, null);
+    }
   };
 
   const openAttachment = (attachment: ContextAttachment): void => {
@@ -307,31 +366,27 @@ export function useContextAttachmentComposer<TSubject>(options: {
     if (item.isUploading || !item.attachment || !target) {
       return;
     }
+    const removedAttachment = item.attachment;
 
-    if (isDraftUploadedContextAttachment(item.attachment)) {
-      if (!target.draftOwner) {
-        console.warn('Cannot delete draft context file without an active owner.');
-        return;
-      }
+    // A foreign or owner-less draft leaves this composer only; its owner keeps the file.
+    if (isOwnDraftAttachment(removedAttachment, target.draftOwner)) {
       try {
-        await contextFileUploadStore.deleteDraftAttachment({
-          owner: target.draftOwner,
-          attachment: item.attachment,
-        });
+        await contextFileUploadStore.deleteDraftAttachment(removedAttachment);
       } catch (error) {
-        console.error('Error deleting draft context file:', error);
+        reportFailure(target, 'remove_failed', [{ fileName: item.label, error }]);
         return;
       }
     }
 
     commitTargetAttachments(target, (current) => {
       const nextAttachments = [...current];
-      const targetIndex = nextAttachments.findIndex((attachment) => sameAttachment(attachment, item.attachment!));
+      const targetIndex = nextAttachments.findIndex((attachment) => sameAttachment(attachment, removedAttachment));
       if (targetIndex >= 0) {
         nextAttachments.splice(targetIndex, 1);
       }
       return nextAttachments;
     });
+    setAttachmentError(target, null);
   };
 
   const clearCurrentTargetAttachments = async (): Promise<void> => {
@@ -340,27 +395,27 @@ export function useContextAttachmentComposer<TSubject>(options: {
       return;
     }
 
-    const failedDeletionAttachments: ContextAttachment[] = [];
+    const retainedAttachments: ContextAttachment[] = [];
+    const failedRemovals: Array<{ fileName: string; error: unknown }> = [];
 
     for (const attachment of [...target.attachments]) {
-      if (!isDraftUploadedContextAttachment(attachment)) {
+      if (!isOwnDraftAttachment(attachment, target.draftOwner)) {
         continue;
       }
-
-      if (!target.draftOwner) {
-        failedDeletionAttachments.push(attachment);
-        continue;
-      }
-
       try {
-        await contextFileUploadStore.deleteDraftAttachment({ owner: target.draftOwner, attachment });
+        await contextFileUploadStore.deleteDraftAttachment(attachment);
       } catch (error) {
-        console.error('Error deleting draft context file during clear:', error);
-        failedDeletionAttachments.push(attachment);
+        retainedAttachments.push(attachment);
+        failedRemovals.push({ fileName: contextAttachmentPresentation.getDisplayLabel(attachment), error });
       }
     }
 
-    commitTargetAttachments(target, () => failedDeletionAttachments);
+    commitTargetAttachments(target, () => retainedAttachments);
+    if (failedRemovals.length > 0) {
+      reportFailure(target, 'remove_failed', failedRemovals);
+    } else {
+      setAttachmentError(target, null);
+    }
   };
 
   const markImagePreviewAsFailed = (key: string): void => {
@@ -382,6 +437,13 @@ export function useContextAttachmentComposer<TSubject>(options: {
     { deep: false },
   );
 
+  watch(
+    () => options.getCurrentTarget()?.key ?? null,
+    () => {
+      errorState.value = null;
+    },
+  );
+
   onBeforeUnmount(() => {
     for (const placeholder of uploadPlaceholders.value) {
       revokePreviewUrl(placeholder.previewUrl);
@@ -392,6 +454,8 @@ export function useContextAttachmentComposer<TSubject>(options: {
     displayedItems,
     thumbnailItems,
     regularItems,
+    attachmentError,
+    canUpload,
     appendAttachments,
     appendLocatorAttachments,
     appendWorkspaceLocators,

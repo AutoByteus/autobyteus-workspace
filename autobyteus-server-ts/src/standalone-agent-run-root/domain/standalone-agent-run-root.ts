@@ -1,5 +1,5 @@
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
-import type { TaskAgentResourcePort, TaskAgentResourceStopResult } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort, TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { taskScopedMessageRecipient } from "../../agent-collaboration/collaborators/task-scoped-message-recipient.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { collectStandaloneRootInputSnapshots } from "../services/standalone-root-input-snapshot.js";
@@ -22,7 +22,7 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { RootTaskExecutionLifecycle } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import type { DelegateTaskInput, DelegateTaskResult, TaskDelegationContext } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import type { AssignToExistingCopyInput, SpawnTaskInput, TaskDelegationContext, TaskDelegationOutcome } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
 import type { ActiveRootMessageBoundary, ExactAgentMessageInput } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
@@ -99,7 +99,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     persistence: StandaloneRootPersistenceCoordinator;
     publisher: RootEventPublisher<StandaloneRootEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskAgentResources?: TaskAgentResourcePort;
+    taskExecutionResources?: TaskExecutionResourcePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
@@ -153,7 +153,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskAgentResources: options.taskAgentResources });
+    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
     const recipients: StandaloneRootRecipientResolver = new StandaloneRootRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators,
       taskScope: sender => taskScopedMessageRecipient({ sender, lifecycle: this.taskExecutions,
         resolvePlacement: address => recipients.resolveDelegationPlacement(sender, address),
@@ -192,8 +192,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.assertAdmitting();
     this.taskExecutions.assertInputAllowed(agentRunId);
   }
-  releaseTaskAgentResources(executions: readonly TaskExecutionReference[]): Promise<readonly TaskAgentResourceStopResult[]> {
-    return this.taskExecutions.releaseTaskAgentResources(executions);
+  releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
+    return this.taskExecutions.releaseTaskExecutions(executions);
   }
   /** A task execution's own live status for the Task side (`offline` once this root stops admitting). */
   taskExecutionStatus(execution: TaskExecutionReference): AgentExecutionStatus {
@@ -272,9 +272,14 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   /** The root's collaborator facts as seen by one agent of the run (the `@` candidates query). */
   collaboratorPortFor(viewerAgentRunId: string): CollaboratorRootPort { return this.collaborators.portFor(viewerAgentRunId); }
 
-  delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
-    return this.operationGate.run(() => this.delivery.delegateTask(context, input));
+  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
+    return this.operationGate.run(() => this.delivery.delegateToNewCopy(context, input));
   }
+  assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput): Promise<TaskDelegationOutcome> {
+    return this.operationGate.run(() => this.delivery.assignToExistingCopy(context, input));
+  }
+  /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
+  teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
 
   /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {

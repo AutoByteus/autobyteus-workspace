@@ -34,7 +34,7 @@ const fixture=(family:string,reason:string|undefined)=>{
 };
 describe('effective isolated compactor provider requests',()=>{
  it.each(['chat','responses','anthropic','gemini','mistral','ollama'])('%s cannot reintroduce invocation controls from defaults or extraParams',async family=>{
-  const {llm,send}=fixture(family,undefined);await llm.sendMessages(messages,null,{logicalConversationId:'fresh'});
+  const {llm,send}=fixture(family,undefined);await llm.sendMessages(messages,{logicalConversationId:'fresh'});
   const payload=send.mock.calls[0][0];const flattened=JSON.stringify(payload);
   expect(payload.tools).toBeUndefined();expect(payload.tool_choice).toBeUndefined();
   expect(payload.response_format).toBeUndefined();expect(payload.stop).toBeUndefined();

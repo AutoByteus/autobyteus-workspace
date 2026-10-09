@@ -91,10 +91,10 @@ describe("`@` and collaborators of an AgentOrg run", () => {
     await bringIn(f.owner, "/code_reviewer", "configured-lead");
     const lead = { identity: createCollaborationMemberExecutionIdentity({ root: f.root, memberAddress: "/target/lead", agentRunId: "configured-lead" }) };
     const director = { identity: f.handles.get("director")!.input.identity };
-    await expect(f.owner.delegateTask(lead, { recipient_address: "/code_reviewer", description: "Review" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
-    await expect(f.owner.delegateTask(director, { recipient_address: "/code_reviewer", description: "Review too" }))
-      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(f.owner.delegateToNewCopy(lead, { recipient_address: "/code_reviewer", description: "Review" }))
+      .resolves.toMatchObject({ delegated: true });
+    await expect(f.owner.delegateToNewCopy(director, { recipient_address: "/code_reviewer", description: "Review too" }))
+      .resolves.toMatchObject({ delegated: true });
     const tree = f.owner.getExecutionTreeSnapshot();
     const team = tree.rootOrg.members.find((member) => member.address === "/target")!;
     expect("teamRunId" in team && team.taskExecutions).toEqual([]);
@@ -112,7 +112,7 @@ describe("`@` and collaborators of an AgentOrg run", () => {
     expect((await policy.listCandidates(f.owner.collaboratorPort())).candidates.map((candidate) => candidate.definitionId))
       .toEqual(["definition-director", "code-reviewer", "designer", "product-team"]);
     const director = { identity: f.handles.get("director")!.input.identity };
-    await expect(f.owner.delegateTask(director, { recipient_address: "/marketing_team", description: "x" }))
-      .resolves.toEqual({ target_agent_run_id: null, message: expect.stringContaining("is not a mounted Agent or Agent Team, a collaborator or an available agent") });
+    await expect(f.owner.delegateToNewCopy(director, { recipient_address: "/marketing_team", description: "x" }))
+      .resolves.toEqual({ delegated: false, message: expect.stringContaining("is not a mounted Agent or Agent Team, a collaborator or an available agent") });
   });
 });

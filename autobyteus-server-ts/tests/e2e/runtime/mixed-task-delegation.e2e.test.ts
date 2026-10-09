@@ -123,7 +123,7 @@ const toolResult = (payload: Record<string, unknown>): Record<string, unknown> |
       // Keep scanning remaining content items.
     }
   }
-  return "target_agent_run_id" in result || "accepted" in result ? result : null;
+  return "delegated" in result || "accepted" in result ? result : null;
 };
 
 const isStatus = (message: WsMessage, agentRunId: string, status: string) =>
@@ -497,8 +497,8 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       const { result, startIndex } = await callToolVia(connection, coordinatorRunId, "delegate_task", {
         recipient_address: `/${runtime}_worker`, description,
       }, `${runtime} spawn`);
-      // A spawn result: the ingress and its kind (plus task_id when the delegation created a Task); nothing else.
-      expect(Object.keys(result ?? {}).filter((key) => key !== "task_id")).toEqual(["target_agent_run_id", "target_kind"]);
+      // A spawn result names the Agent copy (plus task_id when the delegation created a Task); nothing else.
+      expect(Object.keys(result ?? {}).filter((key) => key !== "task_id")).toEqual(["delegated", "target_kind", "target_agent_run_id"]);
       expect(result!.target_kind).toBe("agent");
       const childRunId = String(result!.target_agent_run_id);
       expect(childRunId).not.toBe(root.runIdByAddress.get(`/${runtime}_worker`));
@@ -805,9 +805,11 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
         `Now call send_message_to exactly once with these exact JSON arguments: ${JSON.stringify({ recipient_address: "/coordinator", content: teamAck })}. ` +
         "Then reply with the single word DONE.",
     }, "task Team spawn");
-    expect(Object.keys(teamSpawn.result ?? {}).filter((key) => key !== "task_id")).toEqual(["target_agent_run_id", "target_kind"]);
+    // A Team copy is named by its team run and its coordinator, never by an ambiguous target_agent_run_id.
+    expect(Object.keys(teamSpawn.result ?? {}).filter((key) => key !== "task_id"))
+      .toEqual(["delegated", "target_kind", "target_team_run_id", "target_team_coordinator_agent_run_id"]);
     expect(teamSpawn.result!.target_kind).toBe("team");
-    const leadRunId = String(teamSpawn.result!.target_agent_run_id);
+    const leadRunId = String(teamSpawn.result!.target_team_coordinator_agent_run_id);
     expect(leadRunId).not.toBe(org.runIdByAddress.get("/squad/lead"));
     const teamStarted = await waitForMessageAfter(connection.messages, teamSpawn.startIndex, (message) =>
       message.type === "TASK_EXECUTION_STARTED" && typeof asRecord(message.payload.execution)?.teamRunId === "string",

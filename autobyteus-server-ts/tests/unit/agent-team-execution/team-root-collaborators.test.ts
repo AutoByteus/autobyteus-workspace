@@ -105,10 +105,10 @@ describe("collaborators hosted in a Team root (AR-006)", () => {
     await bringInBoth(f.root);
     const { product, lead } = entriesOf(f.root);
     const coordinator = { identity: f.identity("/coordinator", "run-coordinator") };
-    await expect(f.root.delegateTask(coordinator, { recipient_address: "/code_reviewer", description: "Review too" }))
-      .resolves.toMatchObject({ target_agent_run_id: "code-reviewer-run-4" });
-    await expect(f.root.delegateTask({ identity: f.identity("/product_team/lead", lead.agentRunId) }, { recipient_address: "/product_team/designer", description: "Mock it" }))
-      .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
+    await expect(f.root.delegateToNewCopy(coordinator, { recipient_address: "/code_reviewer", description: "Review too" }))
+      .resolves.toMatchObject({ delegated: true, copy: { agentRunId: "code-reviewer-run-4" } });
+    await expect(f.root.delegateToNewCopy({ identity: f.identity("/product_team/lead", lead.agentRunId) }, { recipient_address: "/product_team/designer", description: "Mock it" }))
+      .resolves.toMatchObject({ delegated: true, copy: { agentRunId: "designer-run-5" } });
     await flushMicrotasks();
     const tree = f.root.getExecutionTreeSnapshot();
     expect(tree.rootTeam.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);

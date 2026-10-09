@@ -1,0 +1,528 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:4165) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL projections
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL projections[2m > [22m[2mreturns expanded run/team/member summaries and settings statistics from ledger accounting fields
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 246[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:6010) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts[2m > [22m[2mtoken usage unit-price GraphQL hydration
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts[2m > [22m[2mtoken usage unit-price GraphQL hydration[2m > [22m[2mexposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 125[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:6621) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL provider semantics
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL provider semantics
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-dCsRkO/memory
+============================================================
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 235[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:7439) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts[2m > [22m[2mtoken usage analytics GraphQL E2E
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts[2m > [22m[2mtoken usage analytics GraphQL E2E[2m > [22m[2mreconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 240[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:9058) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts[2m > [22m[2mAstra and Fable 5.1 token usage accounting and GraphQL convergence
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:9060) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts[2m > [22m[2mGPT-5.6 token usage accounting and GraphQL convergence
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 163[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:10893) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage provider-name snapshot backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:11480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path[2m > [22m[2m'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 139[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts[2m > [22m[2mtoken usage current-record process restart[2m > [22m[2mreopens unchanged standalone and exact team-member records through built-server GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts[2m > [22m[2mtoken usage current-record process restart[2m > [22m[2mreopens unchanged standalone and exact team-member records through built-server GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 5056[2mms[22m[39m
+     [33m[2m✓[22m[39m reopens unchanged standalone and exact team-member records through built-server GraphQL [33m 5055[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:13910) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage custom-provider model-value backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:13913) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it[2m > [22m[2mAE-005 shape A: a cache-heavy pre-fix checkpoint is read unchanged; the miss catches up once
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 119[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:13914) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts[2m > [22m[2mClaude SDK selected-only result to SQL and GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 120[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:14355) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts[2m > [22m[2mtoken usage related model-list GraphQL coverage[2m > [22m[2mkeeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-model-list.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 84[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m13 passed[39m[22m[90m (13)[39m
+[2m      Tests [22m [1m[32m40 passed[39m[22m[90m (40)[39m
+[2m   Start at [22m 12:29:59
+[2m   Duration [22m 33.26s[2m (transform 4.99s, setup 130ms, import 24.41s, tests 6.80s, environment 1ms)[22m
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts[2m > [22m[2mtoken usage current-record process restart[2m > [22m[2mreopens unchanged standalone and exact team-member records through built-server GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts[2m > [22m[2mtoken usage current-record process restart[2m > [22m[2mreopens unchanged standalone and exact team-member records through built-server GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 5264[2mms[22m[39m
+     [33m[2m✓[22m[39m reopens unchanged standalone and exact team-member records through built-server GraphQL [33m 5263[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:18811) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL projections
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL projections[2m > [22m[2mreturns expanded run/team/member summaries and settings statistics from ledger accounting fields
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 189[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:21236) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts[2m > [22m[2mnative Gemini catalog pricing through the server cost path[2m > [22m[2m'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 139[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:21242) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts[2m > [22m[2mtoken usage analytics GraphQL E2E
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts[2m > [22m[2mtoken usage analytics GraphQL E2E[2m > [22m[2mreconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 190[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:22578) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL provider semantics
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts[2m > [22m[2mtoken usage ledger GraphQL provider semantics
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-token-usage-graphql-Y6l0PV/memory
+============================================================
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 144[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:23668) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts[2m > [22m[2mtoken usage unit-price GraphQL hydration
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts[2m > [22m[2mtoken usage unit-price GraphQL hydration[2m > [22m[2mexposes display-safe unit prices on hydrated run, team, member, and aggregate statistics summaries
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 146[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:23672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts[2m > [22m[2mAGY run record written before the semantic fix continues after it[2m > [22m[2mAE-005 shape A: a cache-heavy pre-fix checkpoint is read unchanged; the miss catches up once
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:23679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts[2m > [22m[2mGPT-5.6 token usage accounting and GraphQL convergence
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 116[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:23693) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts[2m > [22m[2mClaude SDK selected-only result to SQL and GraphQL
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 110[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:24628) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage custom-provider model-value backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 93[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:25550) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts[2m > [22m[2mAstra and Fable 5.1 token usage accounting and GraphQL convergence
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26125) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts[2m > [22m[2mtoken usage provider-name snapshot backfill startup e2e
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 104[2mms[22m[39m
+[90mstdout[2m | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26442) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/token-usage/token-usage-model-list.e2e.test.ts[2m > [22m[2mtoken usage related model-list GraphQL coverage[2m > [22m[2mkeeps removed MiniMax M2.7 absent from the settings-facing GraphQL model list
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-native-cache-hit/autobyteus-server-ts
+
+ [32m✓[39m tests/e2e/token-usage/token-usage-model-list.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m13 passed[39m[22m[90m (13)[39m
+[2m      Tests [22m [1m[32m40 passed[39m[22m[90m (40)[39m
+[2m   Start at [22m 12:30:34
+[2m   Duration [22m 29.02s[2m (transform 4.90s, setup 118ms, import 20.42s, tests 6.77s, environment 1ms)[22m
+

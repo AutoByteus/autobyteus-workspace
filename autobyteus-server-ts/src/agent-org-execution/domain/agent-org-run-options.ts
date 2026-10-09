@@ -8,7 +8,7 @@ import type { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-ru
 import type { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
-import type { TaskAgentResourcePort } from "../../agent-collaboration/execution/task/task-agent-resource-port.js";
+import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { TaskExecutionIdleTimers } from "../../agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
@@ -26,7 +26,7 @@ export type AgentOrgRunOptions = Readonly<{
     persistence: AgentOrgRunPersistenceCoordinator;
     publisher: RootEventPublisher<AgentOrgRunEvent>;
     taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-    taskAgentResources?: TaskAgentResourcePort;
+    taskExecutionResources?: TaskExecutionResourcePort;
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;

@@ -19,7 +19,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});
  const memberExecutionContext=new MemberExecutionContext({identity,teamScoped:true,
   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),
-  tasks:{root,delegateTask:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
+  tasks:{root,delegateToNewCopy:vi.fn(),assignToExistingCopy:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,
   commitPublication:()=>f.run,abort:async()=>({kind:'aborted'})}));
  const handle=new ConfiguredAgentExecutionHandle({identity,physicalScope:createRootExecutionPhysicalScope({root,ancestorTeamRunIds:[]}),
