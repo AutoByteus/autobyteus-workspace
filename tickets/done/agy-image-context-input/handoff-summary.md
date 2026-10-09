@@ -1,5 +1,9 @@
 # Handoff Summary — agy-image-context-input
 
+## User Verification
+
+- Verified by the user on 2026-10-09: "task is done. finalize and release a new beta".
+
 ## State For User Verification
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input`

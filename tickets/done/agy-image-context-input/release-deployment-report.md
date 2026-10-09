@@ -8,9 +8,9 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/in-progress/agy-image-context-input/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/done/agy-image-context-input/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/in-progress/agy-image-context-input/delivery-revision-record.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/done/agy-image-context-input/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: holding for explicit user verification.
 
@@ -32,14 +32,14 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: pending
-- Renewed verification required after later re-integration: pending
-- Renewed verification received: pending
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: the user, 2026-10-09: "task is done. finalize and release a new beta"
+- Renewed verification required after later re-integration: see Repository Finalization
+- Renewed verification received: see Repository Finalization
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/in-progress/agy-image-context-input/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/done/agy-image-context-input/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md`
@@ -49,7 +49,8 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/agy-image-context-input`: `No` (waits for user verification)
+- Ticket moved to `tickets/done/agy-image-context-input`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-image-context-input/tickets/done/agy-image-context-input`
 
 ## Version / Tag / Release Commit
 
@@ -74,7 +75,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `tickets/in-progress/agy-image-context-input/release-notes.md`
+- Release notes artifact created before verification: `tickets/done/agy-image-context-input/release-notes.md`
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
