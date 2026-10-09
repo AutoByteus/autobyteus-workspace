@@ -89,6 +89,7 @@ export type ActiveAgentWorkspaceTarget =
       kind: 'agent_run_task_agent'
       host: Readonly<{ hostRunId: string }>
       address: AgentTeamAddress
+      agentRunId: string
       collaborationMessages: CollaborationMessagesContextView
     }>)
   /** A member of a task Team brought into a standalone run. */
@@ -96,5 +97,6 @@ export type ActiveAgentWorkspaceTarget =
       kind: 'agent_run_task_team_member'
       host: Readonly<{ hostRunId: string }>
       address: AgentTeamAddress
+      agentRunId: string
       collaborationMessages: CollaborationMessagesContextView
     }>)

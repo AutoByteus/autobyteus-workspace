@@ -371,12 +371,20 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   (`resolveCollaboratorMentions` → `CollaboratorAdmission.resolveMentions`),
   inside its operation gate, before it is posted. Every mention is re-validated
   by the shared candidate policy (`requireEligible`: shared, not an Org, not a
-  built-in, not the run's own definition; it may already be in the run) and
-  answered with its name, kind, address and `inRun`: a definition already in the
-  run resolves to its collaborator entry's address, else its preferred in-run
-  placement address (a configured member, an Org mounted Team, a collaborator-Team
-  member); any other to its catalog address. **Nothing is written, allocated,
-  hosted or published.** The `@` caller
+  built-in, not the port's `ownDefinition()`; it may already be in the run) and
+  answered with its name, kind, address and `presence` (`not_in_run`, `in_run`
+  or `run_agent`): a definition already in the run resolves to its collaborator
+  entry's address, else its preferred in-run placement address (the standalone
+  host, a configured member, an Org mounted Team, a collaborator-Team member);
+  any other to its catalog address. `presence` is `run_agent` only when that
+  placement is the standalone host (rank `run_agent`, ranked first). **Nothing is
+  written, allocated, hosted or published.** `ownDefinition()` is a Team or Org
+  run's own definition. A standalone Agent root builds its port **per viewer**
+  (the focused or sending agent): its `ownDefinition()` is the host definition
+  only when the viewer is the host. The host is always an in-run placement at
+  its host address. So the host's own composer never offers the host, and a
+  member of a delegated copy can mention it. A host self-mention is still
+  rejected ("… is this run's own definition."). The `@` caller
   (Team, Org and collaboration stream handlers, and the standalone host path
   `AgentRunCommandCoordinator.post` → `StandaloneAgentRunRoot.postUserMessage` →
   `StandaloneRootMessageDelivery.postToHost`) appends a `[Mentioned collaborators]`
@@ -386,8 +394,14 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   finished. An entry already in the run reads `- Name (Agent) at /address, already
   in this run`, and the guidance then adds that such an agent or team can instead
   be messaged directly with `send_message_to` at its address, or `delegate_task`
-  used for a separate copy; a note with no in-run mention is unchanged.
-  Runnability is checked when the agent delegates. An ineligible
+  used for a separate copy; a note with no in-run mention is unchanged. A
+  `run_agent` entry (the standalone host, mentioned from a copy member) reads
+  `- Name (Agent) at /address, the run's own agent` and gets its own sentence,
+  `Use send_message_to with recipient_address /address to message Name;
+  delegate_task cannot target it.`. It gets no `delegate_task` alternative, and
+  the `delegate_task` sentence is left out when every entry is the run agent.
+  `delegate_task` to the host stays refused, and nothing ever brings in or
+  copies the host. Runnability is checked when the agent delegates. An ineligible
   mention returns `COLLABORATOR_ADD_FAILED` with its name and reason: nothing is
   posted and the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`,
   Team-stream `ERROR`, collaboration-stream ack; each carries
@@ -455,19 +469,27 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   [Agent Tools](./agent_tools.md)) asks the sender's root
   (`listAvailableAgents`), which returns `{name, kind, address, description}` for
   every eligible definition once, with the `@` eligibility (Q-2): an in-run
-  definition at its in-run address (configured placement or Org mounted Team,
-  then collaborator entry, then collaborator-Team member; ties go to the
-  smallest address), any other at its catalog address. Listing never writes, so
+  definition at its in-run address (the standalone host, then configured
+  placement or Org mounted Team, then collaborator entry, then collaborator-Team
+  member; ties go to the smallest address), any other at its catalog address.
+  In a standalone Agent run the sender is the viewer: a copy member's list holds
+  the host at its host address plus exactly the host's own list, and the host's
+  list never holds itself. Listing never writes, so
   a standalone run that only lists gets no `collaboration/` package.
-- **In the run.** Configured placements, every entry, and every member Agent of a
-  collaborator Team count as in the run: they are never brought in again, and
-  `@` addresses that instance. A failed add writes no entry.
+- **In the run.** Configured placements, every entry, every member Agent of a
+  collaborator Team, and a standalone run's host count as in the run: they are
+  never brought in again, and `@` addresses that instance. A failed add writes
+  no entry.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
-  rootRunId)` lists the `@` options of an active or stored root from the same
+  rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
   policy: shared Agents (minus built-ins such as the Daily Assistant), then
   shared Agent Teams, in catalog order, **including** definitions already in the
-  run; only the run's own definition (the standalone host Agent, or a Team run's
-  Team) is left out. Application-owned runs list none.
+  run; only the port's own definition is left out. That is a Team run's Team.
+  For an Agent root, `focusedAgentRunId` is required (omitting it is an error),
+  and the host definition is left out only when the focused agent is the host.
+  Team and Org roots ignore `focusedAgentRunId`. The ID is not
+  membership-checked (an unknown ID gets the non-host view of the menu; the
+  send-time re-check verifies). Application-owned runs list none.
 
 The shared policy, admission, runnability validator, identity allocator, entry
 builder, catalog address map, message-recipient resolution, catalog delegation

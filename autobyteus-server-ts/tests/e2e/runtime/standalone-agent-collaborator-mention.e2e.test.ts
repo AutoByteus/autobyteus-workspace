@@ -226,10 +226,11 @@ describeLive("Standalone Agent collaborators on real runtimes (SR-010)", () => {
     (await gql<{ getRunProjection: { conversation: ConversationEntry[] } }>(
       "query($runId: String!) { getRunProjection(runId: $runId) { conversation } }", { runId })).getRunProjection.conversation;
 
-  const candidates = async (runId: string) =>
+  /** The host composer's `@` candidates (the focused agent is the host). */
+  const candidates = async (runId: string, focusedAgentRunId: string = runId) =>
     (await gql<{ collaboratorMentionCandidates: { availability: string; candidates: Array<{ kind: string; definitionId: string; name: string }> } }>(
-      `query($k: String!, $id: String!) { collaboratorMentionCandidates(rootSubjectKind: $k, rootRunId: $id) {
-        availability candidates { kind definitionId name } } }`, { k: "agent", id: runId })).collaboratorMentionCandidates;
+      `query($k: String!, $id: String!, $f: String) { collaboratorMentionCandidates(rootSubjectKind: $k, rootRunId: $id, focusedAgentRunId: $f) {
+        availability candidates { kind definitionId name } } }`, { k: "agent", id: runId, f: focusedAgentRunId })).collaboratorMentionCandidates;
 
   const openSocket = async (urlPath: string): Promise<Connection> => {
     const socket = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}${urlPath}`);

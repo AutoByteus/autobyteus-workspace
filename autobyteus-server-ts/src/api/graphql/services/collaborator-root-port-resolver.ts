@@ -19,12 +19,15 @@ import { StandaloneRootPackageStore } from "../../../standalone-agent-run-root/p
 import { TeamRunExecutionTreeStore } from "../../../run-history/store/team-run-execution-tree-store.js";
 
 /**
- * Collaborator facts of an active or stored root of any kind, for the candidates query.
+ * Collaborator facts of an active or stored root of any kind, for the candidates query. An
+ * Agent root's facts depend on the focused agent (the host never offers itself), so
+ * `focusedAgentRunId` is required for `agent` and ignored for Team and Org roots.
  * `null` when the root does not exist or cannot host collaborators.
  */
 export const resolveCollaboratorRootPort = async (
   rootSubjectKind: RootSubjectKind,
   rootRunIdInput: string,
+  focusedAgentRunIdInput?: string | null,
 ): Promise<CollaboratorRootPort | null> => {
   const rootRunId = rootRunIdInput.trim();
   const memoryDir = appConfigProvider.config.getMemoryDir();
@@ -43,8 +46,10 @@ export const resolveCollaboratorRootPort = async (
       return tree ? agentOrgCollaboratorPortFor(tree) : null;
     }
     case "agent": {
+      const focusedAgentRunId = focusedAgentRunIdInput?.trim();
+      if (!focusedAgentRunId) throw new Error("focusedAgentRunId is required for an Agent run root.");
       const active = getStandaloneAgentRunRootManager().getActive(rootRunId);
-      if (active) return active.collaboratorPort();
+      if (active) return active.collaboratorPortFor(focusedAgentRunId);
       const metadata = await new AgentRunMetadataService(memoryDir).readMetadata(rootRunId);
       if (!metadata) return null;
       if (!isCollaborationEligibleStandaloneRun(metadata)) {
@@ -59,7 +64,7 @@ export const resolveCollaboratorRootPort = async (
         host: { address: createAgentTeamAddress([collaboratorSegmentForName(metadata.agentDefinitionId)]), agentRunId: rootRunId, agentDefinitionId: metadata.agentDefinitionId },
         createdAt: new Date().toISOString(),
       });
-      return standaloneRootCollaboratorPortFor(tree, launch);
+      return standaloneRootCollaboratorPortFor(tree, launch, focusedAgentRunId);
     }
   }
 };
@@ -68,7 +73,7 @@ const emptyPort = (agentDefinitionId: string): CollaboratorRootPort => Object.fr
   rootKind: "agent",
   isApplicationBound: false,
   rootLaunchConfiguration: () => { throw new Error("This run cannot host collaborators."); },
-  rootDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
+  ownDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
   inRunPlacementsByDefinition: () => new Map(),
   collaborators: () => [],
   addressesInUse: () => new Set<string>(),

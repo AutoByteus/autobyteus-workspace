@@ -1,0 +1,277 @@
+{
+  "hostRunId": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+  "hostAddress": "/dcm_manager_cffe49",
+  "teamCopy": {
+    "teamRunId": "dcm_squad_cffe49_1bf1d297ffb94e0699b807214a22d528",
+    "address": "/dcm_squad_cffe49",
+    "members": [
+      {
+        "address": "/dcm_squad_cffe49/lead",
+        "agentRunId": "dcm_lead_cffe49_43ec74ac3dd7432093f55194168dc7e8"
+      },
+      {
+        "address": "/dcm_squad_cffe49/reviewer",
+        "agentRunId": "dcm_reviewer_cffe49_ec050c682329429d9d55c4cfda11bda0"
+      }
+    ]
+  },
+  "soloCopy": {
+    "agentRunId": "dcm_solo_cffe49_4ca0ae6b4001462fbdccc097b8240bab",
+    "address": "/dcm_solo_cffe49",
+    "members": []
+  },
+  "DCM-001": {
+    "hostView": [
+      "dcm-lead-cffe49",
+      "dcm-reviewer-cffe49",
+      "dcm-solo-cffe49",
+      "dcm-outsider-cffe49",
+      "dcm-squad-cffe49"
+    ],
+    "reviewerView": [
+      "dcm-manager-cffe49",
+      "dcm-lead-cffe49",
+      "dcm-reviewer-cffe49",
+      "dcm-solo-cffe49",
+      "dcm-outsider-cffe49",
+      "dcm-squad-cffe49"
+    ],
+    "soloView": [
+      "dcm-manager-cffe49",
+      "dcm-lead-cffe49",
+      "dcm-reviewer-cffe49",
+      "dcm-solo-cffe49",
+      "dcm-outsider-cffe49",
+      "dcm-squad-cffe49"
+    ],
+    "missingFocusedErrors": [
+      {
+        "message": "focusedAgentRunId is required for an Agent run root.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 31
+          }
+        ],
+        "path": [
+          "collaboratorMentionCandidates"
+        ]
+      }
+    ]
+  },
+  "DCM-002": {
+    "runAgentEntry": "- DCM Manager cffe49 (Agent) at /dcm_manager_cffe49, the run's own agent",
+    "runAgentGuidance": "Use send_message_to with recipient_address /dcm_manager_cffe49 to message DCM Manager cffe49; delegate_task cannot target it.",
+    "reviewerConversation": "[{\"kind\":\"message\",\"role\":\"user\",\"content\":\"CALL_TOOL:{\\\"name\\\":\\\"send_message_to\\\",\\\"arguments\\\":{\\\"recipient_address\\\":\\\"/dcm_manager_cffe49\\\",\\\"content\\\":\\\"Please create the follow-up ticket CREATE_TICKET_2f927b51.\\\"}}\\n\\n[Mentioned collaborators]\\n- DCM Manager cffe49 (Agent) at /dcm_manager_cffe49, the run's own agent\\nUse send_message_to with recipient_address /dcm_manager_cffe49 to message DCM Manager cffe49; delegate_task cannot target it.\",\"media\":null,\"ts\":1791525906.429},{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"CALLED:{\\\"content\\\":[{\\\"type\\\":\\\"text\\\",\\\"text\\\":\\\"{\\\\\\\"accepted\\\\\\\":true,\\\\\\\"code\\\\\\\":\\\\\\\"DELIVERED\\\\\\\",\\\\\\\"message\\\\\\\":\\\\\\\"Delivered message to /dcm_manager_cffe49.\\\\\\\",\\\\\\\"target_agent_run_id\\\\\\\":\\\\\\\"dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a\\\\\\\"}\\\"}],\\\"structuredContent\\\":{\\\"accepted\\\":true,\\\"code\\\":\\\"DELIVERED\\\",\\\"message\\\":\\\"Delivered message to /dcm_manager_cffe49.\\\",\\\"target_agent_run_id\\\":\\\"dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a\\\"}}\",\"media\":null,\"ts\":1791525906.589}]"
+  },
+  "DCM-003": {
+    "reviewerSend": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /dcm_manager_cffe49.",
+      "target_agent_run_id": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+      "isError": false
+    },
+    "marker": "CREATE_TICKET_2f927b51",
+    "teamTabRecord": {
+      "messageId": "collabmsg_xfBu70-_uUDMWFf6QqT5eN2YHYAG16FJ",
+      "senderAgentRunId": "dcm_reviewer_cffe49_ec050c682329429d9d55c4cfda11bda0",
+      "receiverAgentRunId": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+      "content": "Please create the follow-up ticket CREATE_TICKET_2f927b51.",
+      "messageType": "agent_message",
+      "referenceFiles": [],
+      "createdAt": "2026-10-09T06:05:06.570Z"
+    }
+  },
+  "DCM-004": {
+    "reviewerList": {
+      "agents": [
+        {
+          "name": "DCM Manager cffe49",
+          "kind": "agent",
+          "address": "/dcm_manager_cffe49",
+          "description": "DCM Manager cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Lead cffe49",
+          "kind": "agent",
+          "address": "/dcm_lead_cffe49",
+          "description": "DCM Lead cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Reviewer cffe49",
+          "kind": "agent",
+          "address": "/dcm_reviewer_cffe49",
+          "description": "DCM Reviewer cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Solo cffe49",
+          "kind": "agent",
+          "address": "/dcm_solo_cffe49",
+          "description": "DCM Solo cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Outsider cffe49",
+          "kind": "agent",
+          "address": "/dcm_outsider_cffe49",
+          "description": "DCM Outsider cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Squad cffe49",
+          "kind": "agent_team",
+          "address": "/dcm_squad_cffe49",
+          "description": "Delegated Team"
+        }
+      ],
+      "isError": false
+    },
+    "soloList": {
+      "agents": [
+        {
+          "name": "DCM Manager cffe49",
+          "kind": "agent",
+          "address": "/dcm_manager_cffe49",
+          "description": "DCM Manager cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Lead cffe49",
+          "kind": "agent",
+          "address": "/dcm_lead_cffe49",
+          "description": "DCM Lead cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Reviewer cffe49",
+          "kind": "agent",
+          "address": "/dcm_reviewer_cffe49",
+          "description": "DCM Reviewer cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Solo cffe49",
+          "kind": "agent",
+          "address": "/dcm_solo_cffe49",
+          "description": "DCM Solo cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Outsider cffe49",
+          "kind": "agent",
+          "address": "/dcm_outsider_cffe49",
+          "description": "DCM Outsider cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Squad cffe49",
+          "kind": "agent_team",
+          "address": "/dcm_squad_cffe49",
+          "description": "Delegated Team"
+        }
+      ],
+      "isError": false
+    },
+    "hostList": {
+      "agents": [
+        {
+          "name": "DCM Lead cffe49",
+          "kind": "agent",
+          "address": "/dcm_lead_cffe49",
+          "description": "DCM Lead cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Reviewer cffe49",
+          "kind": "agent",
+          "address": "/dcm_reviewer_cffe49",
+          "description": "DCM Reviewer cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Solo cffe49",
+          "kind": "agent",
+          "address": "/dcm_solo_cffe49",
+          "description": "DCM Solo cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Outsider cffe49",
+          "kind": "agent",
+          "address": "/dcm_outsider_cffe49",
+          "description": "DCM Outsider cffe49 (delegated copy contact E2E)"
+        },
+        {
+          "name": "DCM Squad cffe49",
+          "kind": "agent_team",
+          "address": "/dcm_squad_cffe49",
+          "description": "Delegated Team"
+        }
+      ],
+      "isError": false
+    },
+    "soloSend": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /dcm_manager_cffe49.",
+      "target_agent_run_id": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+      "isError": false
+    }
+  },
+  "DCM-005": {
+    "refused": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"target_agent_run_id\\\": null,\\n  \\\"message\\\": \\\"'/dcm_manager_cffe49' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\\\"\\n}\"}],\"structuredContent\":{\"target_agent_run_id\":null,\"message\":\"'/dcm_manager_cffe49' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.\"}}"
+  },
+  "DCM-006": {
+    "hostSelfMentionAck": {
+      "command_type": "SEND_MESSAGE",
+      "run_id": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+      "message_id": "e2e-16674c4a-b60e-42a9-9975-cb55013a2131",
+      "dedupe_key": "agent_run_input:e2e:e2e-16674c4a-b60e-42a9-9975-cb55013a2131",
+      "state": "rejected",
+      "accepted": false,
+      "duplicate": false,
+      "code": "COLLABORATOR_ADD_FAILED",
+      "message": "DCM Manager cffe49 is this run's own definition.",
+      "collaborator_name": "DCM Manager cffe49",
+      "status": {
+        "status": "idle",
+        "recoverableBlock": null,
+        "agent_id": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a"
+      }
+    },
+    "ineligibleAck": {
+      "root_subject_kind": "agent",
+      "root_run_id": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+      "command_id": "c6048d8c-e4e0-430e-9799-d91012f4a90a",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "dcm_reviewer_cffe49_ec050c682329429d9d55c4cfda11bda0",
+      "state": "rejected",
+      "code": "COLLABORATOR_ADD_FAILED",
+      "message": "'dcm-org-cffe49' is not a shared Agent Team that can be mentioned.",
+      "collaborator_name": "dcm-org-cffe49"
+    }
+  },
+  "DCM-007": {
+    "storedHostView": [
+      "dcm-lead-cffe49",
+      "dcm-reviewer-cffe49",
+      "dcm-solo-cffe49",
+      "dcm-outsider-cffe49",
+      "dcm-squad-cffe49"
+    ],
+    "storedReviewerView": [
+      "dcm-manager-cffe49",
+      "dcm-lead-cffe49",
+      "dcm-reviewer-cffe49",
+      "dcm-solo-cffe49",
+      "dcm-outsider-cffe49",
+      "dcm-squad-cffe49"
+    ],
+    "restoredSend": {
+      "accepted": true,
+      "code": "DELIVERED",
+      "message": "Delivered message to /dcm_manager_cffe49.",
+      "target_agent_run_id": "dcm_manager_cffe49_e994de13e85d4d1c812a4fb94999a39a",
+      "isError": false
+    }
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "homeRemoved": true,
+    "serverClosed": true,
+    "rootActive": false,
+    "leftoverProcesses": [],
+    "errors": []
+  }
+}
