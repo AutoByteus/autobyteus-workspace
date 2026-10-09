@@ -8,6 +8,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-002 Pass from `/software_engineering_team/code_reviewer` | N/A | Integrated, checked and docs synced. Held before user verification: the API/E2E desktop round was reopened during delivery | `release-deployment-report.md`, `docs-sync-report.md`, `release-notes.md`, `TESTING.md`, `delivery-evidence/dr1-*.log` |
 | DR-002 | API-REV-002 Pass (desktop round, no test-code change) from `/software_engineering_team/api_e2e_engineer` | DR-001 held | Re-integrated (`b7e318107`), checked and docs re-checked. Handoff summary issued. Waiting for user verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr2-*.log` |
+| DR-003 | User verification: "finalize and release a new beta." | DR-002 waiting for verification | Delivery Completed: archived, merged to `personal`, `v1.4.99-beta.9` published, cleaned up | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/{finalization-hygiene.log,beta9-release.log,workflows-beta9.json,github-release-beta9.json,docker-tags.txt,updater-metadata/}` |
 
 ## Revision Entries
 
@@ -75,6 +76,36 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Remaining blockers, rollback concerns, or untested scope:
   - User verification.
   - DEF-A and DEF-B (pre-existing).
+  - CR-001 (optional).
+  - P-004.
+  - One cache rewrite per restore.
+  - `memory-manager.ts` at 498/500 lines.
+
+### DR-003 — Finalization and v1.4.99-beta.9 release
+
+- Delivery round and trigger: the user verified on 2026-10-09: "finalize and release a new beta."
+- Triggering upstream report, verification, or evidence: the user message; `handoff-summary.md` § User Verification.
+- Prior authoritative result: DR-002 (waiting for user verification).
+- Current authoritative result: Delivery Completed.
+  - `origin/personal` was unchanged (`033a6d780`), so no re-integration was needed.
+  - Recordings were trimmed; the full originals are kept outside the repo.
+  - The ticket was archived (`9fbe0bfbb`), and the ticket branch was pushed.
+  - `--no-ff` merge `4e55cae2b`, pushed to `personal`. Licensing and hygiene checks both pass.
+  - Release commit `d7029b90a` and tag `v1.4.99-beta.9`. All 4 workflows succeeded.
+  - The GitHub pre-release has 17 assets, and the updater metadata reports beta.9.
+  - Docker `:beta` points to beta.9, and `:latest` is unchanged.
+  - The ticket worktree and the local branch were removed.
+- Docs sync report: `docs-sync-report.md` (unchanged since DR-002)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: unchanged since DR-002 (`b7e318107`; the target had not moved).
+- User verification/finalization state: verified; finalized; released.
+- Terminal return to `/solution_designer`: `Sent` after this record is pushed.
+- Terminal return message/reference: the `send_message_to` handoff to `/software_engineering_team/solution_designer` (DR-003).
+- Why this delivery revision was recorded: completion of finalization, release and cleanup.
+- Next recipient/action: Solution Designer verifies the terminal receipt.
+- Remaining blockers, rollback concerns, or untested scope:
+  - Recommended separate tickets: DEF-A and DEF-B (pre-existing).
   - CR-001 (optional).
   - P-004.
   - One cache rewrite per restore.

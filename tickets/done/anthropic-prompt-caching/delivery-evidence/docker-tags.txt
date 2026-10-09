@@ -1,0 +1,3 @@
+:1.4.99-beta.9 sha256:5766dcb8d64bb92ef7ac58073d8a5ef7ea6a80e10f2b116ded6fdd91ef63ad8c amd64,arm64
+:beta sha256:5766dcb8d64bb92ef7ac58073d8a5ef7ea6a80e10f2b116ded6fdd91ef63ad8c amd64,arm64
+:latest sha256:8aa17b2307ac834408d4f7b691cf4d2bb9f4904ccc6aff25ffc3bb46cb375187 amd64,arm64
