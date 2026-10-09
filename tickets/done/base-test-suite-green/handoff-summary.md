@@ -2,7 +2,7 @@
 
 ## Status
 
-- Stage: Delivery — **user verified 2026-10-09** ("finalize, and no need to release a new version. thanks."); finalizing into `origin/personal`. PB-001 accepted as the documented exception by that instruction.
+- Stage: Delivery — **user verified 2026-10-09** ("finalize, and no need to release a new version. thanks."); **finalized**: merged into `origin/personal` as `c83ff1b4b`; worktree and local branch cleaned up. PB-001 accepted as the documented exception by that instruction.
 - Classification: `task_size=Medium`, `architectural_risk=Low`, route **direct** (architecture review, source review and test-code review are `Not Applicable`)
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/base-test-suite-green`, `codex/base-test-suite-green`
 - Candidate revision: `626ebee4cf17b6fbc92fbd635fc4d9ed9ae13a71`. This is the ticket head `0e56d0a9f` (28 labelled commits on `ebf68c4af`) with the latest `origin/personal` `048ea6cec` merged in. One delivery docs edit (`autobyteus-server-ts/AGENTS.md`) is not committed yet.
@@ -68,9 +68,11 @@ pnpm -C autobyteus-server-ts test:integration   # expect only the 2 PB-001 failu
 pnpm -C autobyteus-server-ts typecheck
 ```
 
-## After Verification
+## Finalization
 
-Delivery will: move the ticket to `tickets/done/`, commit, push `codex/base-test-suite-green`, refresh `origin/personal`, and re-run AC-001/003/005 if the base moved. It will then merge into `personal` and push, and clean up the worktree and local branch.
+- Archived to `tickets/done/base-test-suite-green` (`1cbdaa12c`). Ticket branch pushed to `origin/codex/base-test-suite-green`.
+- Merged into `personal` as `c83ff1b4b` and pushed. AC-001/003/005 were re-run on base `a573465d9` before the merge (AC-008).
+- Ticket worktree removed and local branch deleted. Remote ticket branch kept.
 
 ## Artifacts
 
