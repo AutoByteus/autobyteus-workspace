@@ -66,6 +66,9 @@ try {
   log = createWriteStream(path.join(out, 'nuxt-dev.log'))
   child = spawn('pnpm', ['exec', 'nuxt', 'dev', '--host', '127.0.0.1', '--port', String(port)], { cwd: web, detached: true, env: { ...process.env, BACKEND_NODE_BASE_URL: `http://127.0.0.1:${backendPort}` }, stdio: ['ignore', 'pipe', 'pipe'] })
   evidence.pid = child.pid; child.stdout.pipe(log); child.stderr.pipe(log)
+  // Counts Vite's dependency re-optimization reloads (see the warm-up below).
+  let devReloads = 0
+  for (const stream of [child.stdout, child.stderr]) stream.on('data', (d) => { devReloads += (String(d).match(/optimized dependencies changed/g) ?? []).length })
   await wait('Nuxt HTTP ready', async () => { assert(child.exitCode === null, 'Nuxt exited'); try { return (await fetch(`http://127.0.0.1:${port}${routes[0]}`)).ok } catch { return false } })
   browser = await chromium.launch({ executablePath, headless: true }); evidence.browser = browser.version()
   const context = await browser.newContext({ viewport: { width: 1512, height: 900 }, locale: 'en-US' })
@@ -90,6 +93,20 @@ try {
   const gotoFixture = async (mobile = false) => { await page.goto(`http://127.0.0.1:${port}${routes[mobile ? 1 : 0]}`); await page.getByTestId('navigation-probe-ready').waitFor(); await expanded().first().waitFor()
     // Projects is in the nav from the first paint now (no capability wait); click only after Nuxt finished its initial mount.
     await page.waitForFunction(() => window.useNuxtApp && !window.useNuxtApp().isHydrating) }
+  // Warm-up (as in the project-manager-ux probe): on a cold Vite cache, the dev server re-optimizes dependencies on
+  // first visits and reloads the page ("optimized dependencies changed. reloading"), which can wipe a case's step.
+  // Visit the routes the cases use (and /workspace, /chat, whose chunks pull in the heavy editor/terminal deps) and wait
+  // until the dev server has been quiet for 5 s.
+  {
+    const before = devReloads
+    for (const route of [...routes, '/projects', '/projects/new', '/workspace', '/chat', routes[0]]) await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: 'networkidle', timeout: 180000 }).catch(() => undefined)
+    let last = devReloads, quietSince = Date.now()
+    await wait('dev server quiet after dependency optimization', async () => {
+      if (devReloads !== last) { last = devReloads; quietSince = Date.now(); await page.reload({ waitUntil: 'networkidle' }).catch(() => undefined) }
+      return Date.now() - quietSince >= 5000
+    }, 180000)
+    evidence.warmup = { reloadsDuringWarmup: devReloads - before }
+  }
   await gotoFixture()
   await record('B-001', async () => {
     const observations = {}; observations.expandedOn = await checkOrder('expanded', labels); await screenshot('expanded-applications-on')
