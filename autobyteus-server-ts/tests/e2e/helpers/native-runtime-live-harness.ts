@@ -5,7 +5,8 @@
  *
  * The recorder never stores query strings or headers (they can carry keys). A test may install a one-shot response
  * rewrite for the next provider call to emulate a provider stream shape that real use produces but that cannot be
- * requested on demand (a network cut before `message_stop`, a refusal stop, a malformed tool-call argument). The
+ * requested on demand (a network cut before `message_stop`, a refusal stop, an OpenAI-compatible tool call whose arguments are not JSON;
+ * Anthropic validates buffered tool input, so it has no malformed-argument shape). The
  * rewrite only edits the real provider response text; the request still goes to the provider.
  */
 import "reflect-metadata";

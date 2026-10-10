@@ -126,16 +126,25 @@ At normal finalization, the handler:
 This ordering prevents execution publication before the visible segment is
 terminal. Parallel call state remains ordered by provider index/insertion order.
 
-If final native arguments are malformed or non-object, the defensive fallback
-produces an empty argument object; normal tool preparation and schema validation
-remain responsible for rejecting unusable arguments. The handler never repairs
-the call from assistant text or projected file content.
+If final native arguments are invalid JSON or not an object, the handler still
+publishes the invocation, with empty arguments as the history placeholder. It
+marks the invocation with `ToolInvocation.argumentsParseError`. Empty arguments
+from the provider are valid and are not marked. `ToolPhase` is the only
+admission point. It rejects a marked call before preprocessing, approval and
+execution, and returns the tool result "Your tool call was malformed and could
+not be parsed (<error>). Please retry." to the model, and the turn continues.
+The handler never repairs the call from assistant text or projected file
+content.
 
-### Interruption and failure
+### Interruption, failure and output limit
 
-`finalizeInterrupted(...)` and `finalizeFailed(...)` terminalize open text/tool
-segments with the corresponding status and clear active call state. They do not
-publish partially accumulated invocations.
+`finalizeInterrupted(...)`, `finalizeFailed(...)` and `finalizeOutputLimited(...)`
+share one abandonment path. It terminalizes open text/tool segments and clears
+active call state, and it never publishes partially accumulated invocations. On
+an `output_limit` finish, the text segment ends normally. Each open tool segment
+fails with "Discarded: the output limit was reached before this tool call was
+complete." and creates no invocation. The loop then recovers as described in
+`agent_memory_design.md` §8.1.
 
 ## Incremental File Projection
 
@@ -168,7 +177,7 @@ After the whole processed batch is ready, `AgentTurnRunner`:
    context-file/media rules remain active.
 
 For a text-only continuation, `AgentInputPipeline` returns
-`llmUserMessage: null`. The runner emits `ToolContinuationReadyEvent` as a
+`llmUserMessage: null`. The runner emits `TurnContinuationReadyEvent` as a
 runtime status projection, and `LlmPhase` calls the same
 `LLMRequestAssembler.prepareRequest(null, identity)` path used by every request.
 The provider therefore receives the already-ingested structured native history
