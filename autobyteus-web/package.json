@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.0-beta.1",
+  "version": "1.5.0",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",

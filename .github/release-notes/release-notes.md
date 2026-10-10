@@ -1,29 +1,23 @@
-## Added
-- **Cancelled Task status.** A Task that is no longer needed can be marked Cancelled instead of Done. Agents cancel or reopen it with `create_or_update_task`, and cancelling stops the Task's delegated agents and teams just as Done does. Cancelled Tasks are hidden on the Project board and in Temp tasks until you click **Cancelled (N)**.
-- **Follow-up Tasks can go to the same delegated copy.** After Task A is Done or Cancelled, the agent that assigned it can give Task B to the same team or agent copy by its ID. The copy resumes with its conversation. A busy copy is refused with a reason.
-- **Delegated agents can reach the agent that delegated them.** Members of a delegated team, or a delegated agent, can `@` mention and message the run's own agent, such as the Project Task Manager. The message arrives in that agent's existing conversation.
-- **Prompt caching for Anthropic models on the AutoByteus runtime** (for example Claude Opus 5.5). In validation, about 95% of input tokens were read from cache, where before nothing was. The Token Meter prices cache reads and writes separately, so its cost matches Anthropic's charge.
+## Fixes
+- **Claude no longer stops with "Anthropic content block is incomplete."** on long answers or long tool calls, such as writing a large file with `write_file`. Requests were capped at 8,192 output tokens; they now allow the model's full output limit (128,000 tokens for Claude Opus 5.5).
+- **Automatic recovery when a response hits the output limit.** A tool call that was cut off is discarded and never run, and the agent continues in smaller pieces. Text that was cut off is kept, and the agent picks up where it stopped. This happens up to 3 times in a row. After that, the turn stops with a clear error that names the limit, and your next message works normally.
+- A tool call whose arguments the model garbled is no longer run with empty arguments. The model is told the call was malformed and tries again.
+- **Security:** a crafted owner ID in a context-file request could reach another agent's attached files. Every context-file request now rejects such IDs and filenames, and a malformed request no longer touches any file.
+- With a Gemini model, memory compaction makes only one attempt again, as intended.
 
 ## Improvements
-- Delegated teams start only their coordinator. Other members stay Offline and use no runtime until work reaches them. If a member cannot start, the sender gets a clear "could not start" result naming the cause.
-- A delegated agent or team with a background task still running is no longer shut down when it goes idle. The task can finish and its result is reported back.
-- Claude keeps its earlier reasoning across new messages. The interrupt note after Stop is added at the end of the conversation, so the cache stays valid.
-- The Context Files tray shows an error naming the file when attaching or removing fails. A failed removal keeps the file so you can retry.
-- Where an agent can't accept uploads, `+` is disabled with the reason, and pasting or dropping a file shows a message. File paths can still be attached.
-
-## Fixes
-- Attached files can be removed (× and Clear All) in a delegated agent or delegated team member, for example under the Project Task Manager. The uploaded copy is deleted too.
-- Images and other files attached to a message for an Antigravity (AGY) agent now reach the agent.
-- After you stop an agent mid-turn, the next message is accepted in the same conversation. Before, it failed with "still owns retired cleanup" until an app restart. A standalone agent whose runtime stopped on its own also restarts on your next message.
-- Archiving or deleting the open agent or team run closes it to the workspace empty view. It no longer reappears in the sidebar or jumps to another run.
-- The Token Meter for AGY runs counts cache reads correctly, so the hit rate is no longer inflated to about 99%.
-- Prices for Gemini 3.1 Pro Preview and Claude Sonnet 5 now match the official prices for new usage.
+- If you don't set Max Tokens, every AutoByteus-runtime provider now uses the model's own maximum output limit. A value you set yourself is still sent unchanged. DeepSeek and GLM now receive it under the parameter name they support.
+- When the model refuses, a content filter stops a response, or the conversation is too long for the model's context window, the turn ends with a clear error that says which one happened. No tool is run.
+- Each automatic recovery attempt gets its own entry in the Token Meter.
+- **New Manage Skill Sources dialog** (Skills → Sources):
+  - Each source is one compact row with its skill count and a copy button for the path or URL.
+  - One **Add skill source** box takes a folder path or a GitHub URL.
+  - In the desktop app, **Browse…** fills in a folder path.
+  - GitHub sources are checked when the dialog opens, and **Update** appears only when an update is available.
+  - Focus stays inside the dialog, and Esc closes it.
 
 ## Changed
-- Send needs typed text or a skill tag. A message with only attached files can no longer be sent; this now works the same in every message box.
-- For integrations: a Team result from `delegate_task` now returns `target_team_run_id` and `target_team_coordinator_agent_run_id` instead of `target_agent_run_id`. Update the imported `autobyteus-agents` package, which contains the Project Task Manager skill, together with this release.
-- `@anthropic-ai/sdk` was upgraded to 0.132.1.
+- For integrations: malformed context-file requests (traversal or padded owner IDs, unknown descriptor fields, invalid filenames) now get `400` with a `detail` message instead of 200, 204, 404 or 500. The app's own requests are unaffected.
 
 ## Notes
-- No reset or data migration is needed. Existing usage records keep their recorded prices.
-- Downgrading is not recommended: an older version may not show Cancelled Tasks, and it treats a copy reused for a second Task as damaged.
+- No reset or data migration is needed.
