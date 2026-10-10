@@ -1,6 +1,6 @@
 # Docs Sync Report — anthropic-incomplete-content-block (Steps 1 and 2 of DEC-004)
 
-Current delivery revision: `DR-003`. DR-003 changes only the `TESTING.md` recovery row: it names the OpenAI and Gemini cases, their keys and their model overrides (`f1d169674`). Step 1 docs sync (DR-001) is kept below the Step 2 section and is still accurate.
+Current delivery revision: `DR-004`. DR-004 (release tooling, made during release at the user's request): `README.md` and `autobyteus-web/docs/github-actions-tag-build.md` now document the Android versionCode limits, the pre-tag refusal, and the next-minor default after X.Y.99 (`173098f2a`, `27cb8946f`). DR-003: DR-003 changes only the `TESTING.md` recovery row: it names the OpenAI and Gemini cases, their keys and their model overrides (`f1d169674`). Step 1 docs sync (DR-001) is kept below the Step 2 section and is still accurate.
 
 ## Scope
 

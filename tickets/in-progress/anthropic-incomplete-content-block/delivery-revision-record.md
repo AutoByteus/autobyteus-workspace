@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | DR-001 | CRR-002 delivery package (Step 1 of DEC-004) | N/A | Docs synced; held for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 | DR-002 | CRR-006 delivery package (Step 2 of DEC-004) | DR-001: Step 1 held for verification, never answered | Steps 1+2 integrated on the Step 2 branch with the latest base; docs synced; held for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
 | DR-003 | CRR-009 test update (OpenAI/Gemini recovery cases) | DR-002: held for verification | Tests committed; TESTING row updated; held for user verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-003/` |
+| DR-004 | User verification 2026-10-10: "finalize and release a new beta" | DR-003: held for verification | Finalized on `personal`; release tooling fixed; `v1.5.0-beta.1` released; archive and cleanup wait for AC-009 | `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md`, `delivery-evidence/dr-004/` |
 
 ## Revision Entries
 
@@ -75,3 +76,26 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Why this delivery revision was recorded: new durable test code entered the delivery candidate.
 - Next recipient/action: the user verifies and chooses.
 - Remaining blockers, rollback concerns, or untested scope: user verification. Residual risks are unchanged.
+
+### DR-004 — Finalized, release tooling fixed, v1.5.0-beta.1 released
+
+- Delivery round and trigger: user verification on 2026-10-10: "i tested. it works. now finalize and release a new beta. its working great". Revisits DR-003.
+- Triggering upstream report, verification, or evidence: the user's message; the user's follow-ups on the version ("the version should be 1.5.0"; fix the release script and release a 1.5.0 beta; roll to the next minor automatically after .99).
+- Prior authoritative result: DR-003, held for user verification at `f1d169674`.
+- Current authoritative result:
+  - **Ticket and merge.** `ecce4a192` commits the ticket package. The ticket branch is pushed. `26795afa0` is a `--no-ff` merge into `personal` with a tree identical to the verified branch; hygiene passed.
+  - **v1.4.100-beta.1.** The beta helper defaulted to 1.4.100, which Android cannot encode. Desktop, iOS and Docker published it; Android failed.
+  - **Release-tooling fix**, at the user's request: `173098f2a` validates versions against the Android formula before tagging and adds a drift test against the workflow. `27cb8946f` moves the default beta base to the next minor after X.Y.99. 51 tests pass.
+  - **v1.5.0-beta.1.** Release commit `12f92f057` plus the tag. All 4 workflows succeeded. The pre-release has 17 assets including the APK. Updater metadata reports 1.5.0-beta.1. Docker `:beta` = `:1.5.0-beta.1`, and `:latest` is unchanged.
+- Docs sync report: `docs-sync-report.md` (DR-004 note: release-tooling docs)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md` (DR-004)
+- Integration and post-integration verification: target unchanged after verification (`56530dfc6`); the merge tree equals the verified state.
+- User verification/finalization state: verified; finalized; released.
+- Terminal return to `/solution_designer`: `Not yet eligible`. The archive and cleanup wait for AC-009 confirmation.
+- Why this delivery revision was recorded: the finalization and release round, including the release-tooling fix and the superseded v1.4.100-beta.1.
+- Next recipient/action:
+  - The user confirms AC-009 on v1.5.0-beta.1, or says the earlier test already covered it.
+  - The user decides whether to delete v1.4.100-beta.1.
+  - Then delivery archives the ticket, cleans up and returns the terminal package.
+- Remaining blockers, rollback concerns, or untested scope: AC-009; the v1.4.100-beta.1 decision. Residual risks are unchanged.

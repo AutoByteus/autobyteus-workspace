@@ -9,6 +9,11 @@ Current delivery revision: `DR-003` (DR-002 plus the OpenAI/Gemini recovery case
   1. **What to finalize:** Steps 1 and 2 together from the Step 2 branch (`f1d169674`).
   2. **Release:** a new beta (`v1.4.100-beta.1`).
 - AC-009 (the stuck run `software_engineering_team_107698…` / `solution_designer_08a92ade…`): the user's message does not say whether the stuck run itself was part of the test. As agreed (CRR-007), the ticket stays in `tickets/in-progress/` until AC-009 is confirmed on the released beta.
+- **Finalization and release (DR-004):**
+  - merged to `personal` as `26795afa0`;
+  - release tooling fixed (`173098f2a`, `27cb8946f`);
+  - released `v1.5.0-beta.1` (`12f92f057`), with all 4 workflows green.
+  - `v1.4.100-beta.1` was published first by mistake (no Android build). See `release-deployment-report.md`.
 - The rest of this summary is the state handed over for verification (DR-003).
 
 ## State For User Verification

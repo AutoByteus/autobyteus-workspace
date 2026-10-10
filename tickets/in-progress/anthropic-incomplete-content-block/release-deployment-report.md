@@ -1,19 +1,18 @@
 # Delivery / Release / Deployment Report — anthropic-incomplete-content-block (Steps 1 and 2 of DEC-004)
 
-Current delivery revision: `DR-003`.
+Current delivery revision: `DR-004`.
 
 ## Release / Publication / Deployment Scope
-
-- Recommended: Steps 1 and 2 together from `codex/anthropic-incomplete-content-block-step2`, which contains Step 1. Step 1 alone is still possible from `codex/anthropic-incomplete-content-block` @ `2a395ee5f`.
+- Delivered: Steps 1 and 2 together from `codex/anthropic-incomplete-content-block-step2`, plus a release-tooling fix made during release at the user's request.
 - Classification preserved: `task_size=Large`, `architectural_risk=High`, reviewed route.
-- Candidate release method: `scripts/desktop-release.sh beta|release`. The next beta would be `v1.4.100-beta.1`; the current stable is `v1.4.99`.
+- Released: `v1.5.0-beta.1` (pre-release). `v1.4.100-beta.1` was published by mistake first (see Release / Publication / Deployment).
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block/tickets/in-progress/anthropic-incomplete-content-block/handoff-summary.md`
 - Handoff summary status: `Updated` (DR-002)
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block/tickets/in-progress/anthropic-incomplete-content-block/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Current delivery revision ID: `DR-004`
 - Notes: holding for user verification. The DR-001 Step 1 handoff was never verified.
 
 ## Initial Delivery Integration Refresh
@@ -81,47 +80,69 @@ Current delivery revision: `DR-003`.
   - `TESTING.md`
 
 ## Ticket State Transition
-
-- Ticket moved to `tickets/done/anthropic-incomplete-content-block`: `No` (pending verification)
-- Plan (revised after CRR-007, which says "Do not archive the ticket"): at finalization the ticket folder is copied from the Step 1 worktree and committed under `tickets/in-progress/anthropic-incomplete-content-block/` on the Step 2 branch. It is not archived. AC-009 needs a released build, so the move to `tickets/done/` is a later tickets-only delivery commit, made after the user has verified AC-009.
+- Ticket moved to `tickets/done/anthropic-incomplete-content-block`: `No`, by agreement (CRR-007). The ticket is committed under `tickets/in-progress/anthropic-incomplete-content-block/` (`ecce4a192`). It moves to `tickets/done/` in a tickets-only commit after the user confirms AC-009 (the stuck run) on the released beta.
+- Archived ticket path: pending AC-009.
 
 ## Version / Tag / Release Commit
-
-- Pending user verification.
+- **`v1.4.100-beta.1` (mistake, not withdrawn).**
+  - Release commit `35287da39`, made by `scripts/desktop-release.sh beta --branch release-tmp-aicb --no-push` in a temporary clean worktree at merge `26795afa0`.
+  - The helper's default "next patch after the highest stable" gave 1.4.100, which the Android versionCode cannot encode (patch <= 99).
+  - Desktop, iOS and Docker published; Android failed at "Resolve release metadata" (`38037773958`).
+  - Logs: `delivery-evidence/dr-004/v1.4.100-beta.1-release.log`.
+- **Release-tooling fix**, at the user's request (pushed to `personal`):
+  - `173098f2a`: `release_versions.py android-version-code` mirrors the workflow formula. `release` and `beta` refuse an unencodable version before committing or tagging. A drift test runs the Android workflow step against the helper.
+  - `27cb8946f`: after X.Y.99, the default beta base moves to the next minor, as the user asked (1.4.99 → 1.5.0-beta.1).
+  - Tests: 51 release-tooling tests pass (`delivery-evidence/dr-004/release-tooling-tests.log`). A mutation check confirmed the drift test fails when the helper and the workflow disagree.
+- **`v1.5.0-beta.1`.**
+  - Release commit `12f92f057`, made by plain `scripts/desktop-release.sh beta --branch release-tmp-aicb --no-push`, which selected 1.5.0-beta.1 itself. It changes `autobyteus-web/package.json` from 1.4.100-beta.1 to 1.5.0-beta.1.
+  - Pushes: `27cb8946f..12f92f057 HEAD -> personal` and the new tag `v1.5.0-beta.1`, after re-checking that `personal` had not moved.
+  - Log: `delivery-evidence/dr-004/v1.5.0-beta.1-release.log`.
 
 ## Repository Finalization
-
-- Bootstrap context source: CRR-002/CRR-006 packages; `investigation-notes.md` (finalization target `origin/personal`)
-- Ticket branch: `codex/anthropic-incomplete-content-block-step2` @ `f1d169674` (local)
-- Ticket branch commit/push, target update, merge, push: pending
-- Finalization target remote / branch: `origin` / `personal`
-- Repository finalization status: `Blocked` (waiting for user verification)
-- Blocker: user verification
+- Bootstrap context source: CRR-002/CRR-006/CRR-009 packages; `investigation-notes.md` (finalization target `origin/personal`).
+- Ticket branch: `codex/anthropic-incomplete-content-block-step2` @ `ecce4a192`. That commit adds the ticket package, on top of the verified `f1d169674`.
+- Ticket branch commit result: `Completed`. The untracked `*/dist/` folders were excluded.
+- Ticket branch push result: `Completed` (`[new branch] codex/anthropic-incomplete-content-block-step2`). The Step 1 branch `codex/anthropic-incomplete-content-block` was pushed too, as a review reference.
+- Finalization target remote / branch: `origin` / `personal`.
+- Target advanced after verification: `No` (`56530dfc6`). Delivery-owned edits protection and re-integration: `Not needed`.
+- Target branch update result: `Completed`. A temporary clean worktree `release-tmp-aicb` was created at the fetched `origin/personal`; the main checkout was not touched.
+- Merge into target result: `Completed`. A `--no-ff` merge, `26795afa0`, whose tree is identical to the verified ticket branch (`git diff --quiet ecce4a192 26795afa0`). Licensing and artifact hygiene both exit 0 (`delivery-evidence/dr-004/finalization-hygiene.log`); the longest new path is 111 characters.
+- Push target branch result: `Completed` (`56530dfc6..26795afa0 HEAD -> personal`, after re-checking that the target had not moved).
+- Repository finalization status: `Completed`.
+- Blocker: none.
 
 ## Release / Publication / Deployment
-
-- Applicable: pending the user's choice
-- Method: `Release Script`, `scripts/desktop-release.sh`, with tag-triggered workflows (Desktop, iOS, Server Docker, Android)
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending. Beta uses generated notes; a stable release uses curated notes from `release-notes.md`.
+- Applicable: `Yes`. The user asked for a new beta.
+- Method: `Release Script`, `scripts/desktop-release.sh beta`, with tag-triggered GitHub workflows.
+- **`v1.5.0-beta.1`.**
+  - Workflows: all 4 succeeded on attempt 1 (`delivery-evidence/dr-004/workflows.json`): Desktop `38039981212`, iOS `38039981209`, Server Docker `38039981217`, Android `38039981211`.
+  - GitHub release: a **pre-release**, not a draft, published 2026-10-10T09:07:14Z, with 17 assets including `AutoByteus_personal_android-1.5.0-beta.1-release.apk` (`github-release-v1.5.0-beta.1.json`). GitHub `releases/latest` stays on stable `v1.4.99`.
+  - Updater metadata: `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml` all report `version: 1.5.0-beta.1` (`updater-metadata/`).
+  - Docker `autobyteus/autobyteus-server`: `:1.5.0-beta.1` and `:beta` share `sha256:3e804d89…1853` (amd64, arm64). `:latest` is unchanged at `sha256:fd503795…30d0` (1.4.99) (`docker-tags.txt`).
+- **`v1.4.100-beta.1`** (superseded):
+  - GitHub pre-release with 15 assets: Desktop and iOS, no Android APK.
+  - Docker `:1.4.100-beta.1` = `sha256:b1414e6d…b1c`; `:beta` has moved on to 1.5.0-beta.1.
+  - Its release and tag are still published. Deleting them is irreversible, and the user has not yet chosen whether to do so.
+- Release/publication/deployment result: `Completed` for `v1.5.0-beta.1`.
+- Release notes handoff result: `Not required`. Beta mode publishes generated notes; `release-notes.md` stays as the ticket's user-facing summary for the next stable release.
+- Blocker: none.
 
 ## Post-Finalization Cleanup
-
-- Planned after finalization. The ticket stays open until AC-009, so both worktrees are kept until AC-009 is verified; if AC-009 fails, rework reuses them. Then:
-  - remove worktrees `…/anthropic-incomplete-content-block-step2` and `…/anthropic-incomplete-content-block`, after the ticket folder is committed on the Step 2 branch;
+- **Deferred until AC-009 is confirmed**, so that any rework can reuse the worktrees. Planned then:
+  - remove the ticket worktrees `…/anthropic-incomplete-content-block` (it holds only a now-stale untracked copy of the ticket folder plus `dist/`) and `…/anthropic-incomplete-content-block-step2`;
+  - remove the release worktree `…/release-tmp-aicb` and its branch `release-tmp-aicb`;
   - prune worktrees;
-  - delete the local branches `codex/anthropic-incomplete-content-block` and `-step2` once they are contained in `origin/personal`.
-- Remote branches are kept as review references.
-- Result: pending.
+  - delete the local branches `codex/anthropic-incomplete-content-block` and `-step2`, which are contained in `origin/personal`.
+- Remote branches: kept as review references.
+- Result: `Pending` (AC-009).
 
 ## Release Notes Summary
-
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/anthropic-incomplete-content-block/release-notes.md` (Steps 1 and 2)
-- Release notes status: `Updated`
+- Release notes artifact created before verification: `tickets/in-progress/anthropic-incomplete-content-block/release-notes.md` (Steps 1 and 2).
+- Archived release notes artifact used for release/publication: not used (beta generated notes).
+- Release notes status: `Updated`.
 
 ## Deployment Steps
-
-- Pending user verification.
+- Tag push → Desktop, iOS, Android and Server Docker workflows. There is no further deployment step.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -149,11 +170,10 @@ Current delivery revision: `DR-003`.
   - refusal or context-window errors appear on normal responses (finish misclassification).
 
 ## Final Status
-
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: waiting for user verification
-- Successful terminal package eligible for return: `No`
+- Explicit user testing/verification complete: `Yes` (2026-10-10)
+- Repository finalization complete: `Yes` (`26795afa0`, then release tooling `173098f2a`/`27cb8946f` and release `12f92f057` on `personal`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.5.0-beta.1`)
+- Applicable safe cleanup complete or not required: `No`. Deferred until AC-009 is confirmed.
+- Unresolved blocker: AC-009 confirmation (ticket archive and cleanup). Also undecided: whether to withdraw `v1.4.100-beta.1`.
+- Successful terminal package eligible for return: `No`, until the ticket is archived and cleanup is done.
 - Terminal package sent to `/solution_designer`: `No`
