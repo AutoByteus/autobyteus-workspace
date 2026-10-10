@@ -34,6 +34,9 @@
  * (`env -i PATH=… HOME=… TMPDIR=…`) so no live-app variable (memory/data dirs, compaction knobs) leaks in.
  * Optional: ANTHROPIC_CACHE_E2E_MODEL (default claude-opus-5-5), ANTHROPIC_CACHE_E2E_EVIDENCE_DIR (keeps the
  * per-call JSON, case results and frames), ANTHROPIC_CACHE_E2E_STEP_TIMEOUT_MS (default 600000).
+ * ANTHROPIC_CACHE_E2E_MODEL may be any model in CATALOG_PRICES (claude-opus-5-5, claude-sonnet-5-5, claude-haiku-5-5).
+ * The run is created with thinking On the way the app writes it for that model's schema: Opus 5.5 has no toggle
+ * (adaptive always), the others get `thinking_enabled: true`.
  */
 import "reflect-metadata";
 import { createHash, randomUUID } from "node:crypto";
@@ -61,8 +64,20 @@ const CASE_TIMEOUT_MS = 3 * STEP_TIMEOUT_MS;
 const EVIDENCE_DIR = process.env.ANTHROPIC_CACHE_E2E_EVIDENCE_DIR?.trim() || null;
 const STRICT_BETA = "thinking-binding-controls-2026-08-01";
 const CHANGED_IMAGE_MODEL = "imagen-4";
-// claude-opus-5-5 catalog prices per MTok (input, cache read, 5m write, 1h write, output).
-const OPUS_5_5_PRICE = { input: 4, read: 0.2, write5m: 5, write1h: 8, output: 20 } as const;
+type Price = { input: number; read: number; write5m: number; write1h: number; output: number };
+/** Catalog Standard prices per MTok; `tiers` are selected per call by gross input (input + cache read + cache write). */
+const CATALOG_PRICES: Record<string, { tiers: Array<{ maxGrossInput: number | null; price: Price }> }> = {
+  "claude-opus-5-5": { tiers: [{ maxGrossInput: null, price: { input: 4, read: 0.2, write5m: 5, write1h: 8, output: 20 } }] },
+  "claude-sonnet-5-5": { tiers: [{ maxGrossInput: null, price: { input: 2, read: 0.1, write5m: 2.5, write1h: 4, output: 10 } }] },
+  "claude-haiku-5-5": { tiers: [
+    { maxGrossInput: 100_000, price: { input: 0.1, read: 0.01, write5m: 0.125, write1h: 0.2, output: 0.5 } },
+    { maxGrossInput: null, price: { input: 0.5, read: 0.05, write5m: 0.625, write1h: 1, output: 2.5 } },
+  ] },
+};
+/** The thinking-On llmConfig the app writes for the model's schema (Opus 5.5 has no toggle). */
+const RUN_LLM_CONFIG: Json = MODEL === "claude-opus-5-5"
+  ? { thinking_display: "summarized" }
+  : { thinking_enabled: true, thinking_display: "summarized" };
 const CHUNK_COUNT = 30;
 const AUDIT = "After each file, carefully check whether any component depends on itself directly or through components "
   + "seen in earlier files, and keep a running list of such cycles.";
@@ -432,7 +447,7 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
     const run = await gql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId, workspaceRootPath, llmModelIdentifier: modelIdentifier, autoExecuteTools: false, runtimeKind: "autobyteus",
-        llmConfig: { thinking_display: "summarized" } } });
+        llmConfig: RUN_LLM_CONFIG } });
     expect(run.createAgentRun.success, run.createAgentRun.message).toBe(true);
     runId = run.createAgentRun.runId!;
     await openSocket();
@@ -581,8 +596,14 @@ describeLive("AutoByteus native Anthropic prompt caching (live, strict preserved
       input: sum((u) => u.input_tokens), read: sum((u) => u.cache_read_input_tokens), write5m: sum((u) => u.cache_creation_5m),
       write1h: sum((u) => u.cache_creation_1h), writeTotal: sum((u) => u.cache_creation_input_tokens), output: sum((u) => u.output_tokens),
     };
-    const expectedCost = (raw.input * OPUS_5_5_PRICE.input + raw.read * OPUS_5_5_PRICE.read + raw.write5m * OPUS_5_5_PRICE.write5m
-      + raw.write1h * OPUS_5_5_PRICE.write1h + raw.output * OPUS_5_5_PRICE.output) / 1_000_000;
+    const pricing = CATALOG_PRICES[MODEL];
+    expect(pricing, `catalog prices for ${MODEL} in the test's CATALOG_PRICES`).toBeDefined();
+    const expectedCost = ok.reduce((total, call) => {
+      const usage = call.usage!;
+      const { price } = pricing!.tiers.find((tier) => tier.maxGrossInput === null || grossInput(usage) <= tier.maxGrossInput)!;
+      return total + (usage.input_tokens * price.input + usage.cache_read_input_tokens * price.read
+        + usage.cache_creation_5m * price.write5m + usage.cache_creation_1h * price.write1h + usage.output_tokens * price.output) / 1_000_000;
+    }, 0);
     type Summary = { usageReportCount: number; standardInputTokens: number; cacheReadInputTokens: number; cacheCreationInputTokens: number;
       cacheCreation5mInputTokens: number; cacheCreation1hInputTokens: number; outputTokens: number; grossInputTokens: number;
       estimatedApiTotalCost: number | null; estimatedApiCacheReadInputCost: number | null; estimatedApiCacheCreation1hInputCost: number | null;
