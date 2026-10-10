@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — anthropic-incomplete-content-block (Steps 1 and 2 of DEC-004)
 
-Current delivery revision: `DR-004`.
+Current delivery revision: `DR-005`.
 
 ## Release / Publication / Deployment Scope
 - Delivered: Steps 1 and 2 together from `codex/anthropic-incomplete-content-block-step2`, plus a release-tooling fix made during release at the user's request.
@@ -12,7 +12,7 @@ Current delivery revision: `DR-004`.
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block/tickets/in-progress/anthropic-incomplete-content-block/handoff-summary.md`
 - Handoff summary status: `Updated` (DR-002)
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block/tickets/in-progress/anthropic-incomplete-content-block/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
+- Current delivery revision ID: `DR-005`
 - Notes: holding for user verification. The DR-001 Step 1 handoff was never verified.
 
 ## Initial Delivery Integration Refresh
@@ -80,8 +80,10 @@ Current delivery revision: `DR-004`.
   - `TESTING.md`
 
 ## Ticket State Transition
-- Ticket moved to `tickets/done/anthropic-incomplete-content-block`: `No`, by agreement (CRR-007). The ticket is committed under `tickets/in-progress/anthropic-incomplete-content-block/` (`ecce4a192`). It moves to `tickets/done/` in a tickets-only commit after the user confirms AC-009 (the stuck run) on the released beta.
-- Archived ticket path: pending AC-009.
+
+- Ticket moved to `tickets/done/anthropic-incomplete-content-block`: `Yes` (DR-005).
+- Archived ticket path: `tickets/done/anthropic-incomplete-content-block/`.
+- Basis: the user closed the ticket on 2026-10-10: "for this ticket, i think its finished that ticket i will work on that seprately". AC-009 (continuing the stuck run `solution_designer_08a92ade…`) was not exercised before closure. The user will resume that run's own task, Claude two-model support, separately on v1.5.0-beta.1. The same shape (a long `write_file` cut after a tool result, then finished) passed live as OLR-E2E-002.
 
 ## Version / Tag / Release Commit
 - **`v1.4.100-beta.1` (mistake, not withdrawn).**
@@ -133,13 +135,15 @@ Current delivery revision: `DR-004`.
 - Blocker: none.
 
 ## Post-Finalization Cleanup
-- **Deferred until AC-009 is confirmed**, so that any rework can reuse the worktrees. Planned then:
-  - remove the ticket worktrees `…/anthropic-incomplete-content-block` (it holds only a now-stale untracked copy of the ticket folder plus `dist/`) and `…/anthropic-incomplete-content-block-step2`;
-  - remove the release worktree `…/release-tmp-aicb` and its branch `release-tmp-aicb`;
-  - prune worktrees;
-  - delete the local branches `codex/anthropic-incomplete-content-block` and `-step2`, which are contained in `origin/personal`.
-- Remote branches: kept as review references.
-- Result: `Pending` (AC-009).
+
+- Dedicated ticket worktree paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block` and `…/anthropic-incomplete-content-block-step2`.
+  - Before removal, the Step 1 worktree held only a stale untracked copy of the ticket folder and SDK `dist/`. A diff against the committed copy showed only older versions of lines that were later updated.
+  - The Step 2 worktree held only `dist/`.
+- Worktree cleanup result: `Completed` (`git worktree remove --force`, both).
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed`. Deleted `codex/anthropic-incomplete-content-block` (`2a395ee5f`) and `codex/anthropic-incomplete-content-block-step2` (`ecce4a192`); both are contained in `origin/personal`. Log: `delivery-evidence/dr-004/cleanup.log`.
+- Remote branch cleanup result: `Not required`. Both `origin/codex/…` branches are kept as review references.
+- Release helper worktree `…/release-tmp-aicb` and branch `release-tmp-aicb`: removed after this delivery record is pushed.
 
 ## Release Notes Summary
 - Release notes artifact created before verification: `tickets/in-progress/anthropic-incomplete-content-block/release-notes.md` (Steps 1 and 2).
@@ -175,10 +179,11 @@ Current delivery revision: `DR-004`.
   - refusal or context-window errors appear on normal responses (finish misclassification).
 
 ## Final Status
-- Explicit user testing/verification complete: `Yes` (2026-10-10)
-- Repository finalization complete: `Yes` (`26795afa0`, then release tooling `173098f2a`/`27cb8946f` and release `12f92f057` on `personal`)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.5.0-beta.1`)
-- Applicable safe cleanup complete or not required: `No`. Deferred until AC-009 is confirmed.
-- Unresolved blocker: AC-009 confirmation (ticket archive and cleanup). `v1.4.100-beta.1` has been withdrawn from GitHub.
-- Successful terminal package eligible for return: `No`, until the ticket is archived and cleanup is done.
-- Terminal package sent to `/solution_designer`: `No`
+
+- Explicit user testing/verification complete: `Yes` (2026-10-10; ticket closed by the user, with AC-009 handled separately)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.5.0-beta.1`; `v1.4.100-beta.1` withdrawn from GitHub)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: see `delivery-revision-record.md` DR-005

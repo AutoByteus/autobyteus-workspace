@@ -10,6 +10,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | DR-002 | CRR-006 delivery package (Step 2 of DEC-004) | DR-001: Step 1 held for verification, never answered | Steps 1+2 integrated on the Step 2 branch with the latest base; docs synced; held for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
 | DR-003 | CRR-009 test update (OpenAI/Gemini recovery cases) | DR-002: held for verification | Tests committed; TESTING row updated; held for user verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-003/` |
 | DR-004 | User verification 2026-10-10: "finalize and release a new beta" | DR-003: held for verification | Finalized on `personal`; release tooling fixed; `v1.5.0-beta.1` released; archive and cleanup wait for AC-009 | `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md`, `delivery-evidence/dr-004/` |
+| DR-005 | User closed the ticket (2026-10-10) | DR-004: released; archive and cleanup waiting for AC-009 | Ticket archived; worktrees and branches cleaned up; terminal package eligible | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/dr-004/cleanup.log` |
 
 ## Revision Entries
 
@@ -99,3 +100,18 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - v1.4.100-beta.1: withdrawn from GitHub (release and tag deleted) at the user's request. The Docker Hub tag and the App Store Connect build remain.
   - Then delivery archives the ticket, cleans up and returns the terminal package.
 - Remaining blockers, rollback concerns, or untested scope: AC-009. Residual risks are unchanged.
+
+### DR-005 — Ticket closed by the user, archived and cleaned up
+
+- Delivery round and trigger: the user, 2026-10-10: "for this ticket, i think its finished that ticket i will work on that seprately". Revisits DR-004.
+- Prior authoritative result: DR-004. Released `v1.5.0-beta.1`; the archive and cleanup were waiting for AC-009.
+- Current authoritative result:
+  - AC-009 is closed by the user's decision and was not exercised: the user will resume the stuck run's own task (Claude two-model support) separately.
+  - The ticket is archived to `tickets/done/anthropic-incomplete-content-block/`.
+  - Both ticket worktrees are removed and pruned, and both local ticket branches are deleted (contained in `origin/personal`).
+  - The v1.4.100-beta.1 withdrawal was recorded in `55b061982`.
+  - Correction: the user had interrupted that recording step, and delivery told the user nothing was written. The step had in fact committed and pushed. Its content is the intended record and is kept.
+- Release/publication/deployment report: `release-deployment-report.md` (DR-005)
+- Terminal return to `/solution_designer`: eligible. It is sent after this record is pushed.
+- Next recipient/action: `/solution_designer` (terminal package).
+- Remaining: none blocking. Residual risks and follow-ups are listed in `handoff-summary.md`. Outside GitHub, the v1.4.100-beta.1 artifacts remain: the Docker Hub tag and the App Store Connect build.
