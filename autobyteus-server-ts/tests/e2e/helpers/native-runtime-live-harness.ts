@@ -44,6 +44,8 @@ export type CapturedCall = {
   maxReportedOutputTokens: number | null;
   /** The response streamed or returned at least one tool call (Anthropic `tool_use`, OpenAI `tool_calls`, Gemini `functionCall`). */
   responseHasToolCall: boolean;
+  /** The response streamed visible (non-reasoning) text: Anthropic `text_delta`, OpenAI chat `content`, Responses `output_text`, Gemini text parts. */
+  responseHasVisibleText: boolean;
   errorBody: string | null;
   settled: Promise<void>;
 };
@@ -76,30 +78,63 @@ export const readResponseSignals = (text: string) => {
   const stopSignals = new Set<string>();
   for (const match of text.matchAll(/"(?:stop_reason|finish_reason|finishReason)"\s*:\s*"([^"]+)"/g)) stopSignals.add(match[1]!);
   for (const match of text.matchAll(/"status"\s*:\s*"(incomplete|completed|failed)"/g)) stopSignals.add(`status:${match[1]}`);
+  for (const match of text.matchAll(/"incomplete_details"\s*:\s*\{\s*"reason"\s*:\s*"([^"]+)"/g)) stopSignals.add(match[1]!);
   let maxTokens: number | null = null;
   for (const match of text.matchAll(/"(?:output_tokens|completion_tokens|candidatesTokenCount)"\s*:\s*(\d+)/g)) {
     maxTokens = Math.max(maxTokens ?? 0, Number(match[1]));
   }
   const responseHasToolCall = /"type"\s*:\s*"tool_use"|"tool_calls"\s*:\s*\[\s*\{|"functionCall"\s*:|"type"\s*:\s*"function_call"/.test(text);
-  return { stopSignals: [...stopSignals], maxReportedOutputTokens: maxTokens, responseHasToolCall };
+  const responseHasVisibleText = /"type"\s*:\s*"text_delta"\s*,\s*"text"\s*:\s*"[^"]/.test(text)
+    || /"type"\s*:\s*"response\.output_text\.delta"[^\n]*"delta"\s*:\s*"[^"]/.test(text)
+    || /"delta"\s*:\s*\{[^}]*"content"\s*:\s*"[^"]/.test(text)
+    || /"parts"\s*:\s*\[\s*\{\s*"text"\s*:\s*"[^"]/.test(text);
+  return { stopSignals: [...stopSignals], maxReportedOutputTokens: maxTokens, responseHasToolCall, responseHasVisibleText };
 };
 
-/** The text of every content block / message content in a chat request, flattened per message (Anthropic and OpenAI shapes). */
-export const requestMessages = (body: Json): Array<{ role: string; text: string; toolUses: number; toolResults: string[] }> => {
-  const messages = Array.isArray(body.messages) ? body.messages as Json[] : [];
-  return messages.map((message) => {
-    const role = String(message.role);
-    const blocks = typeof message.content === "string" ? [{ type: "text", text: message.content }]
-      : Array.isArray(message.content) ? message.content as Json[] : [];
-    const text = blocks.filter((block) => block.type === "text" || typeof block.text === "string").map((block) => String(block.text ?? "")).join("\n");
-    const anthropicToolUses = blocks.filter((block) => block.type === "tool_use").length;
-    const openAiToolUses = Array.isArray(message.tool_calls) ? message.tool_calls.length : 0;
-    const toolResults = [
-      ...blocks.filter((block) => block.type === "tool_result").map((block) => JSON.stringify(block.content ?? "")),
-      ...(role === "tool" ? [typeof message.content === "string" ? message.content : JSON.stringify(message.content)] : []),
-    ];
-    return { role, text, toolUses: anthropicToolUses + openAiToolUses, toolResults };
-  });
+type RequestMessage = { role: string; text: string; toolUses: number; toolResults: string[] };
+const textOf = (value: unknown): string => typeof value === "string" ? value : JSON.stringify(value ?? "");
+
+/** Anthropic Messages / OpenAI chat `messages`. */
+const chatMessages = (messages: Json[]): RequestMessage[] => messages.map((message) => {
+  const role = String(message.role);
+  const blocks = typeof message.content === "string" ? [{ type: "text", text: message.content }]
+    : Array.isArray(message.content) ? message.content as Json[] : [];
+  const text = blocks.filter((block) => block.type === "text" || typeof block.text === "string").map((block) => String(block.text ?? "")).join("\n");
+  const anthropicToolUses = blocks.filter((block) => block.type === "tool_use").length;
+  const openAiToolUses = Array.isArray(message.tool_calls) ? message.tool_calls.length : 0;
+  const toolResults = [
+    ...blocks.filter((block) => block.type === "tool_result").map((block) => textOf(block.content)),
+    ...(role === "tool" ? [textOf(message.content)] : []),
+  ];
+  return { role, text, toolUses: anthropicToolUses + openAiToolUses, toolResults };
+});
+
+/** OpenAI Responses `input` items (messages, `function_call`, `function_call_output`). */
+const responsesInput = (items: Json[]): RequestMessage[] => items.map((item) => {
+  if (item.type === "function_call") return { role: "assistant", text: "", toolUses: 1, toolResults: [] };
+  if (item.type === "function_call_output") return { role: "tool", text: "", toolUses: 0, toolResults: [textOf(item.output)] };
+  if (item.type === "reasoning") return { role: "reasoning", text: "", toolUses: 0, toolResults: [] };
+  const parts = typeof item.content === "string" ? [{ text: item.content }] : Array.isArray(item.content) ? item.content as Json[] : [];
+  return { role: String(item.role), text: parts.filter((part) => typeof part.text === "string").map((part) => String(part.text)).join("\n"), toolUses: 0, toolResults: [] };
+});
+
+/** Gemini `contents` (`user` / `model` with text, `functionCall` and `functionResponse` parts; thought parts skipped). */
+const geminiContents = (contents: Json[]): RequestMessage[] => contents.map((content) => {
+  const parts = Array.isArray(content.parts) ? content.parts as Json[] : [];
+  return {
+    role: content.role === "model" ? "assistant" : String(content.role),
+    text: parts.filter((part) => typeof part.text === "string" && part.thought !== true).map((part) => String(part.text)).join("\n"),
+    toolUses: parts.filter((part) => isRecord(part.functionCall)).length,
+    toolResults: parts.filter((part) => isRecord(part.functionResponse)).map((part) => textOf(part.functionResponse)),
+  };
+});
+
+/** The conversation of a provider request, flattened per message, for Anthropic, OpenAI chat, OpenAI Responses and Gemini. */
+export const requestMessages = (body: Json): RequestMessage[] => {
+  if (Array.isArray(body.messages)) return chatMessages(body.messages as Json[]);
+  if (Array.isArray(body.input)) return responsesInput(body.input as Json[]);
+  if (Array.isArray(body.contents)) return geminiContents(body.contents as Json[]);
+  return [];
 };
 
 /** A compact, value-safe view of WebSocket frames for evidence and assertions. */
@@ -186,7 +221,7 @@ export class NativeRuntimeLiveHarness {
       const record: CapturedCall = {
         index: this.calls.length, phase: this.phase, host: parsedUrl.hostname, pathname: parsedUrl.pathname,
         stream: body.stream === true || parsedUrl.pathname.includes("streamGenerateContent"),
-        limits: readLimitFields(body), body, rewritten: false, status: null, stopSignals: [], maxReportedOutputTokens: null, responseHasToolCall: false,
+        limits: readLimitFields(body), body, rewritten: false, status: null, stopSignals: [], maxReportedOutputTokens: null, responseHasToolCall: false, responseHasVisibleText: false,
         errorBody: null, settled: Promise.resolve(),
       };
       this.calls.push(record);
@@ -214,7 +249,7 @@ export class NativeRuntimeLiveHarness {
     return {
       index: call.index, phase: call.phase, host: call.host, pathname: call.pathname, stream: call.stream, limits: call.limits,
       rewritten: call.rewritten, status: call.status, stopSignals: call.stopSignals, maxReportedOutputTokens: call.maxReportedOutputTokens,
-      responseHasToolCall: call.responseHasToolCall,
+      responseHasToolCall: call.responseHasToolCall, responseHasVisibleText: call.responseHasVisibleText,
       errorBody: call.errorBody,
     };
   }

@@ -30,6 +30,13 @@
  *                fine-grained tool streaming docs). If a later ticket enables eager input streaming, add an Anthropic case.
  *   OLR-E2E-011  Opus, `max_tokens: 400`: a write_file response cut mid tool call (whichever attempt it is) ends its segment as
  *                "Discarded", never executes, and is absent from the next request, which names the tool and the limit (AC-003)
+ *   OLR-E2E-012  OpenAI (Responses) and Gemini: the 100-line write_file request under `max_tokens: 1200` (reasoning/thinking
+ *                low), asked for in one call, is cut: the note matching the cut (tool call / kept text / nothing kept),
+ *                discarded segments never execute, no cut call in history; the turn recovers or ends exhausted after 3
+ *                attempts (AC-011). With the one-call instruction OpenAI keeps retrying one call and ends exhausted; without
+ *                it, OpenAI and Gemini both recovered to 100/100 lines (ticket evidence `olr-popular2`).
+ *   OLR-E2E-013  OpenAI and Gemini: a text-only cut keeps the partial text and resumes; reload shows only assistant
+ *                parts after the request and no note (AC-005, AC-011)
  *   OLR-E2E-010  Compaction summary under a small limit (DeepSeek, non-streaming): completion_status `incomplete` with
  *                the provider reason; the summary is rejected (AR-004)
  * OLR-E2E-006..008 and 009b use a one-shot rewrite of the REAL provider response text (the request still goes to the
@@ -65,6 +72,20 @@ const EVIDENCE_DIR = process.env.OUTPUT_LIMIT_E2E_EVIDENCE_DIR?.trim() || null;
 const ANTHROPIC_MODEL = process.env.OUTPUT_LIMIT_E2E_ANTHROPIC_MODEL?.trim() || "claude-opus-5-5";
 const DEEPSEEK_MODEL = process.env.OUTPUT_LIMIT_E2E_DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
 const CURRENT_MESSAGE_CONNECTOR = "The user's current message is:";
+/** Commonly used providers beyond Anthropic/DeepSeek; reasoning/thinking kept low so a small limit reaches visible output. */
+const POPULAR_PROVIDERS = [
+  { providerId: "OPENAI", keyAlias: "OPENAI_API_KEY", model: process.env.OUTPUT_LIMIT_E2E_OPENAI_MODEL?.trim() || "gpt-5.4-mini",
+    extraParams: { reasoning_effort: "low" }, geminiMode: null },
+  { providerId: "GEMINI", keyAlias: "VERTEX_AI_API_KEY", model: process.env.OUTPUT_LIMIT_E2E_GEMINI_MODEL?.trim() || "gemini-3.8-flash",
+    extraParams: { thinking_level: "low" }, geminiMode: "VERTEX_EXPRESS" },
+] as const;
+/** Provider stop signals that mean "hit the output limit" (Anthropic, OpenAI-compatible, OpenAI Responses, Gemini). */
+const OUTPUT_LIMIT_SIGNALS = ["max_tokens", "length", "max_output_tokens", "MAX_TOKENS"];
+const isOutputLimited = (call: CapturedCall) => call.stopSignals.some((signal) => OUTPUT_LIMIT_SIGNALS.includes(signal));
+type RecoveryVariant = "tool_call" | "kept_text" | "nothing_kept";
+/** The note variant the product must choose, decided from what the cut response actually streamed. */
+const expectedVariant = (cut: CapturedCall): RecoveryVariant =>
+  cut.responseHasToolCall ? "tool_call" : cut.responseHasVisibleText ? "kept_text" : "nothing_kept";
 const LINES_FILE = "sea-lines.md";
 const linesRequest = (lines: number) => [
   `Create the file ${LINES_FILE} with exactly ${lines} lines.`,
@@ -116,6 +137,32 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     if (!await stat(file).catch(() => null)) return null;
     return (await readFile(file, "utf-8")).split("\n").filter((line) => line.trim());
   };
+  /**
+   * Asserts the recovery request after `cut` carries the right hidden note. The note is found by content: on a first-call
+   * cut (or consecutive notes) the product merges it into the preceding user message ("The user's current message is:",
+   * CND-102), so its position is not fixed. Returns the variant exercised, for the evidence.
+   */
+  const assertRecoveryNote = (cut: CapturedCall, recovery: CapturedCall, limit: number, toolName = "write_file"): RecoveryVariant => {
+    const variant = expectedVariant(cut);
+    const conversation = requestMessages(recovery.body).filter((message) => message.role !== "system" && message.role !== "reasoning");
+    const noteIndex = conversation.map((message) => message.text.includes("System note:")).lastIndexOf(true);
+    expect(noteIndex, "the recovery request carries the hidden note").toBeGreaterThanOrEqual(0);
+    expect(noteIndex, "the note is in the last message").toBe(conversation.length - 1);
+    const note = conversation[noteIndex]!.text;
+    const before = conversation[noteIndex - 1];
+    if (variant === "tool_call") {
+      expect(note).toContain(`hit the output limit of ${limit} tokens while generating a \`${toolName}\` tool call`);
+    } else if (variant === "kept_text") {
+      expect(note).toContain("Resume directly from where your previous message stopped");
+      expect(before?.role, "the kept partial text precedes the note").toBe("assistant");
+      expect(before!.text.length, "the partial text is kept").toBeGreaterThan(0);
+    } else {
+      expect(note).toContain(`hit the output limit of ${limit} tokens before producing any visible output`);
+      expect(before === undefined || before.role !== "assistant" || before.toolUses > 0, "no kept assistant text before the note").toBe(true);
+    }
+    return variant;
+  };
+
   /** The first recovery request after `cut` in the same phase. */
   const nextCall = (phaseCalls: CapturedCall[], cut: CapturedCall) => phaseCalls.find((call) => call.index > cut.index);
 
@@ -309,6 +356,82 @@ describeLive("AutoByteus native runtime output-limit recovery (live)", () => {
     expect(error === null || error.payload.code === "LLM_OUTPUT_LIMIT_EXHAUSTED", `ERROR frame: ${JSON.stringify(error?.payload)}`).toBe(true);
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
+
+  for (const provider of POPULAR_PROVIDERS) {
+    const popularModel = async () => {
+      if (provider.geminiMode) {
+        await harness.gql("mutation($mode: GeminiSetupMode!) { useGeminiMode(mode: $mode) { setup { activeMode } } }", { mode: provider.geminiMode });
+      }
+      return harness.catalogModel(provider.providerId, provider.model);
+    };
+
+    it.skipIf(!hasKey(provider.keyAlias))(`OLR-E2E-012 (${provider.providerId}): an output-limited write_file response is recovered (or, after 3 attempts, exhausted) the same way (AC-011)`, async () => {
+      const model = await popularModel();
+      const casePhase = `OLR-012-${provider.providerId}`;
+      const session = await harness.startRun(writerDefinitionId, model.modelIdentifier, { max_tokens: RECOVERABLE_LIMIT, extra_params: provider.extraParams });
+      // Asking for one call makes the first attempt exceed the limit reliably (models otherwise sometimes split on their own).
+      const { error, frames } = await harness.runTurn(session, casePhase, `${linesRequest(RECOVERABLE_LINES)} Write the whole file with one write_file call.`);
+      const phaseCalls = harness.callsOf(casePhase);
+      const cut = phaseCalls.find(isOutputLimited);
+      const recovery = cut ? nextCall(phaseCalls, cut) : undefined;
+      const discardedIds = discardedSegments(frames).map((frame) => String(frame.payload.id));
+      const executedIds = frames.filter((frame) => frame.type.startsWith("TOOL_EXECUTION_"))
+        .map((frame) => String(frame.payload.invocation_id ?? frame.payload.id ?? ""));
+      const caseDetails = {
+        model: model.modelIdentifier, error: error?.payload ?? null, calls: phaseCalls.map((call) => harness.summarize(call)),
+        frames: frameDigest(frames), discardedIds, executedIds,
+        recoveryTail: recovery ? requestMessages(recovery.body).slice(-3).map((message) => ({ ...message, text: message.text.slice(0, 600) })) : null,
+        fileLineCount: (await fileLines(session, LINES_FILE))?.length ?? null,
+      };
+      harness.recordCase(`OLR-E2E-012-${provider.providerId}`, caseDetails);
+      harness.assertAccepted(phaseCalls, casePhase);
+      expect(cut, `a response hit the ${RECOVERABLE_LIMIT}-token output limit`).toBeTruthy();
+      expect(recovery, "the turn continued automatically").toBeTruthy();
+      const variant = assertRecoveryNote(cut!, recovery!, RECOVERABLE_LIMIT);
+      harness.recordCase(`OLR-E2E-012-${provider.providerId}`, { ...caseDetails, recoveryVariant: variant });
+      if (variant === "tool_call") expect(discardedIds.length, "the cut tool segment ends as discarded").toBeGreaterThanOrEqual(1);
+      for (const id of discardedIds) expect(executedIds, `discarded call ${id} never executes`).not.toContain(id);
+      expect(assistantToolUses(recovery!), "only executed tool calls are in history")
+        .toBe(phaseCalls.filter((call) => call.index < cut!.index && call.responseHasToolCall && !isOutputLimited(call)).length);
+      // Ordinary tool errors the model then corrects (e.g. a relative path) are fine; no other LLM-level failure ends the turn.
+      const llmErrors = frames.filter((frame) => frame.type === "ERROR" && String(frame.payload.code ?? "").startsWith("LLM_")
+        && frame.payload.code !== "LLM_OUTPUT_LIMIT_EXHAUSTED");
+      expect(llmErrors, JSON.stringify(llmErrors.map((frame) => frame.payload))).toHaveLength(0);
+      expect(has(frames, (frame) => frame.type === "TURN_COMPLETED")).toBe(true);
+      await harness.stopRun(session);
+    }, STEP_TIMEOUT_MS);
+
+    it.skipIf(!hasKey(provider.keyAlias))(`OLR-E2E-013 (${provider.providerId}): a text-only cut keeps the partial text and resumes; parts are consecutive after reload (AC-005, AC-011)`, async () => {
+      const model = await popularModel();
+      const casePhase = `OLR-013-${provider.providerId}`;
+      const session = await harness.startRun(chatDefinitionId, model.modelIdentifier, { max_tokens: 300, extra_params: provider.extraParams });
+      const { error, frames } = await harness.runTurn(session, casePhase,
+        "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.");
+      const phaseCalls = harness.callsOf(casePhase);
+      const cut = phaseCalls[0]!;
+      const recovery = nextCall(phaseCalls, cut);
+      const projection = await harness.projection(session.runId);
+      const recoveryMessages = recovery ? requestMessages(recovery.body).filter((message) => message.role !== "reasoning") : [];
+      const caseDetails = {
+        model: model.modelIdentifier, error: error?.payload ?? null, calls: phaseCalls.map((call) => harness.summarize(call)), frames: frameDigest(frames),
+        recoveryMessages: recoveryMessages.map((message) => ({ ...message, text: message.text.slice(0, 600) })), projection,
+      };
+      harness.recordCase(`OLR-E2E-013-${provider.providerId}`, caseDetails);
+      harness.assertAccepted(phaseCalls, casePhase);
+      expect(isOutputLimited(cut), `first response stop signals ${JSON.stringify(cut.stopSignals)}`).toBe(true);
+      expect(cut.responseHasToolCall).toBe(false);
+      expect(recovery, "the turn continued automatically").toBeTruthy();
+      // Visible text → kept + "Resume directly"; reasoning only → nothing kept + "answer again" (note found by content).
+      const variant = assertRecoveryNote(cut, recovery!, 300);
+      harness.recordCase(`OLR-E2E-013-${provider.providerId}`, { ...caseDetails, recoveryVariant: variant });
+      const entries = projection as Array<{ role?: string; content?: string }>;
+      const userIndex = entries.findIndex((entry) => entry.role === "user");
+      expect(entries.slice(userIndex + 1).every((entry) => entry.role === "assistant"), "reload: only assistant parts after the request").toBe(true);
+      expect(projectionText(projection)).not.toContain("System note:");
+      expect(error === null || error.payload.code === "LLM_OUTPUT_LIMIT_EXHAUSTED", `ERROR frame: ${JSON.stringify(error?.payload)}`).toBe(true);
+      await harness.stopRun(session);
+    }, STEP_TIMEOUT_MS);
+  }
 
   const rewriteStopReason = (from: string, to: string) => (text: string) =>
     text.replace(`"stop_reason":"${from}"`, `"stop_reason":"${to}"`);
