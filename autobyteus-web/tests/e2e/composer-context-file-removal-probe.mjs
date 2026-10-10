@@ -21,7 +21,11 @@
 //          `+` disabled with a reason, a pasted image shows the message and uploads nothing, a pasted path attaches.
 //   CF-004 the backend is stopped: × shows the error and keeps the item; after it returns the retry removes it.
 //   CF-005 the delegated children after the root is stopped, a real backend restart and a reload (AC-003).
+//   CF-011 / CF-012 `+` on the Manager run / a Team run opens New chat with the run's settings; a file attached
+//          there (owner `temp-chat-…`) is finalized by the first send and read back at its final locator.
 // Only CF-008 (one response each) and CF-009 (finalize held, then released) alter HTTP; nothing else is mocked.
+// CF-001 also sends malformed upload/finalize owners and an invalid final filename to the built server and checks
+// that no context file anywhere in the data root changed.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes
 // them in finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -51,7 +55,7 @@ const ledger = getArg('ledger');
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-009', 'CF-004', 'CF-005'];
+const ALL_CASES = ['CF-001', 'CF-002', 'CF-003', 'CF-006', 'CF-007', 'CF-008', 'CF-009', 'CF-011', 'CF-012', 'CF-004', 'CF-005'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 // A 2x2 opaque PNG (what a screenshot paste delivers, minus the size).
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8z8DAwMDAxMDAwMDAAAANHQEDasKb6QAAAABJRU5ErkJggg==', 'base64');
@@ -273,6 +277,27 @@ const uploadDraft = async (owner, name, bytes, headers = {}) => {
   assert(response.status === 200, `upload ${owner.kind} -> ${response.status}`, body);
   return body;
 };
+/** POST an upload without asserting success (for rejected owners). */
+const postUpload = async (owner, name, bytes) => {
+  const form = new FormData();
+  form.append('owner', JSON.stringify(owner));
+  form.append('file', new Blob([bytes], { type: 'text/plain' }), name);
+  const response = await fetch(`${stack.backendUrl}/rest/context-files/upload`, { method: 'POST', body: form });
+  return { status: response.status, body: await response.json().catch(() => null) };
+};
+/** Every context file (draft or final) in the data root, with its bytes. */
+const contextFileSnapshot = async () => {
+  const out = {};
+  const walk = async (dir) => {
+    for (const entry of await fsp.readdir(dir, { withFileTypes: true }).catch(() => [])) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { if (!['db', 'logs', 'node_modules'].includes(entry.name)) await walk(full); }
+      else if (full.split(path.sep).includes('context_files')) out[path.relative(stack.dataRoot, full)] = await fsp.readFile(full, 'utf8');
+    }
+  };
+  await walk(stack.dataRoot);
+  return out;
+};
 const ownerDir = (owner) => {
   if (owner.kind === 'agent_draft') return path.join(draftRoot(), 'agent-runs', owner.draftRunId, 'context_files');
   if (owner.kind === 'team_member_draft') return path.join(draftRoot(), 'team-runs', owner.teamDraftId, 'members', encodeURIComponent(owner.memberAddress), 'context_files');
@@ -317,6 +342,7 @@ const universalRoutes = async () => {
   const keeperOwner = owners[0];
   const keeper = await uploadDraft(keeperOwner, 'keeper.txt', 'keeper bytes');
   const keeperFile = path.join(ownerDir(keeperOwner), keeper.storedFilename);
+  const snapshotBefore = await contextFileSnapshot();
   const collab = `agent-collaborations/${world.agentRoot}/agent-runs`;
   const expectations = [
     // Invalid owner or file → 400 {detail}.
@@ -344,6 +370,7 @@ const universalRoutes = async () => {
     { path: '/rest/drafts/team-runs/%2E%2E/members/%2Fsquad%2Freviewer/context-files/ctx_s1__sentinel.txt', expect: [400] },
     // Final files are read-only (no DELETE route), so this row is GET only.
     { path: '/rest/runs/%2E%2E/context-files/ctx_s1__sentinel.txt', expect: [400], methods: ['GET'] },
+    { path: `/rest/runs/${world.agentRoot}/context-files/ctx_a%00.txt`, expect: [400], methods: ['GET'] },
     { path: `/rest/drafts/agent-runs/${world.agentRoot}/context-files/%2E`, expect: [400] },
   ];
   const mapping = [];
@@ -355,6 +382,33 @@ const universalRoutes = async () => {
     }
   }
   const wrong = mapping.filter((m) => !m.expected.includes(m.status) || (m.status === 400 && typeof m.detail !== 'string'));
+  // Upload and finalize with malformed owners (AC-003, AC-009): 400 with detail, nothing written or moved.
+  const rejected = [];
+  for (const owner of [
+    { kind: 'agent_draft', draftRunId: '../agent-runs/victim' },
+    { kind: 'agent_draft', draftRunId: '..' },
+    { kind: 'agent_draft', draftRunId: ` ${world.agentRoot}` },
+    { kind: 'agent_draft', draftRunId: world.agentRoot, extra: 1 },
+    { kind: 'team_member_draft', teamDraftId: '../agent-runs/victim', memberAddress: '/manager' },
+    { kind: 'team_member_draft', teamDraftId: world.teamRoot, memberAddress: '/manager', extra: 1 },
+  ]) {
+    const r = await postUpload(owner, 'should-not-exist.txt', 'should not be written');
+    rejected.push({ route: 'upload', owner, status: r.status, detail: r.body?.detail ?? null });
+  }
+  for (const draftOwner of [
+    { kind: 'agent_draft', draftRunId: '../agent-runs/victim' },
+    { kind: 'agent_draft', draftRunId: 'victim', extra: 1 },
+    { kind: 'team_member_draft', teamDraftId: '../agent-runs/victim', memberAddress: '/manager' },
+  ]) {
+    const response = await fetch(`${stack.backendUrl}/rest/context-files/finalize`, { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ draftOwner, finalOwner: { kind: 'agent_final', runId: world.agentRoot },
+        attachments: [{ storedFilename: 'ctx_s3__sentinel.txt', displayName: 'sentinel.txt' }] }) });
+    const body = await response.json().catch(() => null);
+    rejected.push({ route: 'finalize', owner: draftOwner, status: response.status, detail: body?.detail ?? null });
+  }
+  const wrongRejections = rejected.filter((r) => r.status !== 400 || typeof r.detail !== 'string');
+  const snapshotAfter = await contextFileSnapshot();
+  const snapshotUnchanged = JSON.stringify(snapshotAfter) === JSON.stringify(snapshotBefore);
   const sentinelState = {};
   for (const [k, file] of Object.entries(sentinels)) sentinelState[k] = await exists(file);
   sentinelState.keeperDraft = await exists(keeperFile) && (await fsp.readFile(keeperFile, 'utf8')) === 'keeper bytes';
@@ -377,8 +431,10 @@ const universalRoutes = async () => {
   const goneAfterBearer = !(await exists(path.join(ownerDir(collabOwner), viaBearer.storedFilename)));
   const bearer = { forgedDelete: forgedDelete.status, keptAfterForged, bearerDelete: bearerDelete.status, goneAfterBearer };
   for (const file of Object.values(sentinels)) await fsp.rm(file, { force: true });
-  const result = { perKind, mapping, sentinelState, bearer };
+  const result = { perKind, mapping, rejected, snapshotUnchanged, contextFilesChecked: Object.keys(snapshotBefore).length, sentinelState, bearer };
   assert(wrong.length === 0, 'status mapping mismatch over real HTTP', { wrong, result });
+  assert(wrongRejections.length === 0, 'a malformed upload/finalize owner was not rejected with 400 + detail', { wrongRejections, result });
+  assert(snapshotUnchanged, 'a malformed request changed a context file', { before: snapshotBefore, after: snapshotAfter });
   assert(Object.values(sentinelState).every(Boolean), 'a traversal or dot-only path touched a file outside its own draft', result);
   assert(forgedDelete.status === 401 || forgedDelete.status === 403, 'forged bearer was not rejected', result);
   assert(keptAfterForged && bearerDelete.status === 204 && goneAfterBearer, 'bearer DELETE did not delete the draft', result);
@@ -402,7 +458,13 @@ const newPage = async () => {
     const entry = { method: r.method(), path: u.pathname }; entries.set(r, entry); net.push(entry); } });
   page.on('response', (r) => { const entry = entries.get(r.request()); if (entry) entry.status = r.status(); });
   page.on('requestfailed', (r) => { const entry = entries.get(r); if (entry) entry.failed = r.failure()?.errorText ?? 'failed'; });
-  return { context, page, errors, net };
+  const finalized = [];
+  page.on('response', async (r) => {
+    if (new URL(r.url()).pathname === '/rest/context-files/finalize' && r.request().method() === 'POST' && r.ok()) {
+      finalized.push(await r.json().catch(() => null));
+    }
+  });
+  return { context, page, errors, net, finalized };
 };
 const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
 const openWorkspace = async (page) => {
@@ -778,6 +840,55 @@ const offlineAfterRestart = async () => {
   } finally { await context.close(); }
 };
 
+/**
+ * CF-011/CF-012: REQ-005/AC-006 on the real send path. `+` on a run opens New chat with that run's settings; the file
+ * attached there is a `temp-chat-…` draft, the first send launches the run and finalizes it, and the sent file is then
+ * read at its final locator (agent final for an Agent, team-member final for a Team).
+ */
+const firstSendFromNewChat = (label, openRun, finalLocatorPattern) => async () => {
+  const { page, errors, context, net, finalized } = await newPage();
+  try {
+    await openRun(page);
+    await page.locator('[data-test="workspace-header-new-run"]').first().click();
+    await page.waitForURL((u) => u.pathname === '/chat', { timeout: 30000 });
+    const tray = page.locator('[data-test="chat-composer"] [data-file-drop-target="true"]').first();
+    await tray.waitFor({ timeout: 60000 });
+    const before = await draftFiles();
+    await pickFiles(page, tray, ['spec-c.txt']);
+    await waitCount(tray, 1, `${label} attached`);
+    const draft = await until(`${label} draft on disk`, async () => (await draftFiles()).find((f) => !before.includes(f)), 10000);
+    const draftRunId = draft.split('/')[1];
+    assert(draft.startsWith('agent-runs/') && /^temp-chat-\d+-\d+$/.test(draftRunId), `${label}: draft not under a temp-chat owner`, { draft });
+    await page.locator('[data-test="chat-composer"] textarea').first().fill('Please review the attached spec.');
+    await shot(page, `${label}-before-send`);
+    await page.locator('[data-test="chat-primary-action"]').first().click();
+    const response = await until(`${label} finalized`, () => finalized.find((f) => f?.attachments?.length), 120000);
+    const attachment = response.attachments[0];
+    assert(finalLocatorPattern.test(attachment.locator), `${label}: unexpected final locator`, { attachment });
+    const read = await rawRequest('GET', attachment.locator);
+    assert(read.status === 200 && read.body === 'spec-c.txt bytes\n', `${label}: final file not readable at its locator`, { status: read.status });
+    assert(!(await exists(path.join(draftRoot(), draft))), `${label}: draft left behind after finalize`, { draft });
+    // The launched run opens with the sent message and its context-file chip (not the New chat composer).
+    const center = page.locator('[data-test="workspace-center-pane"]');
+    await until(`${label} run opened with the sent message`, async () => {
+      const text = (await center.count()) ? await center.first().innerText() : '';
+      return /Please review the attached spec\./.test(text) && /spec-c\.txt/.test(text);
+    }, 120000);
+    await shot(page, `${label}-after-send`);
+    const uploadsAndFinalize = net.filter((n) => n.path === '/rest/context-files/upload' || n.path === '/rest/context-files/finalize');
+    assert(uploadsAndFinalize.every((n) => n.status === 200), `${label}: upload/finalize not 200`, { net });
+    assert(errors.length === 0, `${label}: browser errors`, errors);
+    return { draftRunId, finalLocator: attachment.locator, finalRead: read.status, net: uploadsAndFinalize };
+  } finally { await context.close(); }
+};
+const openTeamRunMember = async (page) => {
+  await openWorkspace(page);
+  await page.locator(`[data-test="workspace-team-definition-row-${slug(world.names.team)}"]`).click();
+  await page.locator(`[data-test="workspace-team-row-${world.teamRoot}"]`).click();
+  await page.locator(`[data-test="workspace-team-member-${world.teamRoot}-/manager"]`).click();
+  await centerTray(page).waitFor({ timeout: 30000 });
+};
+
 const CASES = {
   'CF-001': ['Universal draft routes over real HTTP: every owner kind, status mapping, traversal, bearer', universalRoutes],
   'CF-002': ['Delegated Agent copy: paste, +, path, ×, Clear All; drafts leave the disk',
@@ -788,6 +899,12 @@ const CASES = {
   'CF-007': ['Pasted foreign draft URL is cloned; removing it keeps the source', foreignDraftClone],
   'CF-008': ['Injected DELETE/upload failure: visible error naming the file, item kept, retry clears', injectedFailures],
   'CF-009': ['Org task agent while its message is pending: + disabled, paste shows message, path still attaches', pendingWithoutUploadOwner],
+  'CF-011': ['+ on the Manager run → New chat → attach → send: temp-chat draft finalized, agent-final file readable',
+    firstSendFromNewChat('new-chat-agent-send', async (page) => { await openAgentRoot(page); await centerTray(page).waitFor(); },
+      /^\/rest\/runs\/[A-Za-z0-9_-]+\/context-files\/ctx_[A-Za-z0-9]+__spec-c\.txt$/)],
+  'CF-012': ['+ on a Team run → New chat for the team → attach → send: temp-chat draft finalized, team-member final file readable',
+    firstSendFromNewChat('new-chat-team-send', openTeamRunMember,
+      /^\/rest\/team-runs\/[A-Za-z0-9_-]+\/agent-runs\/[A-Za-z0-9_-]+\/context-files\/ctx_[A-Za-z0-9]+__spec-c\.txt$/)],
   'CF-004': ['Server unreachable during ×: visible error, item kept; retry after it returns', outageRetry],
   'CF-005': ['Delegated children after root stop + backend restart + reload', offlineAfterRestart],
 };
