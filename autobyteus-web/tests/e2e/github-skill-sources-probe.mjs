@@ -46,11 +46,13 @@ const gql = async (query, variables = {}) => {
 const fields = 'sourceId path skillCount github { installedRevision latestRevision status }';
 const source = async () => (await gql(`{skillSources {${fields}}}`)).skillSources.find(s => s.github);
 const card = name => page.locator('.skill-card').filter({ has: page.getByText(name, { exact: true }) });
-const row = () => page.locator('article').filter({ hasText: 'https://github.com/api-e2e/skills' });
+const row = () => page.locator('li[data-testid^="skill-source-row-"]').filter({ hasText: 'https://github.com/api-e2e/skills' });
 const dialog = () => page.getByRole('dialog', { name: 'Manage Skill Sources' });
 const sources = async () => { await page.getByRole('button', { name: 'Sources', exact: true }).click(); await dialog().waitFor(); await wait('source not busy', async () => !(await row().count()) || await row().getAttribute('aria-busy') === 'false'); };
 const done = () => dialog().getByRole('button', { name: 'Done', exact: true }).click();
-const confirm = async action => { await row().getByRole('button', { name: action, exact: true }).click(); await page.getByRole('button', { name: action, exact: true }).last().click(); };
+// The row's trash button is named after the source; the confirmation button keeps the plain action name.
+const rowActionName = action => action === 'Remove' ? 'Remove api-e2e/skills' : action;
+const confirm = async action => { await row().getByRole('button', { name: rowActionName(action), exact: true }).click();await page.getByRole('button', { name: action, exact: true }).last().click(); };
 const record = async (id, fn) => {
   evidence.cases[id] = { result: 'Running' }; await save();
   try { evidence.cases[id].observed = await fn(); evidence.cases[id].result = 'Pass'; await page.screenshot({ path: path.join(out, id + '.png') }); }
@@ -112,9 +114,9 @@ try {
   const resume = id => gql('query($id:String!){getAgentRunResumeConfig(runId:$id){isActive metadataConfig{workspaceRootPath runtimeKind}}}', { id });
 
   await record('WEB-001-import-explorer', async () => {
-    await sources(); await dialog().getByRole('button', { name: 'GitHub', exact: true }).click();
-    await dialog().getByPlaceholder('https://github.com/owner/repository').fill('https://github.com/api-e2e/skills');
-    await dialog().getByRole('button', { name: 'Import repository', exact: true }).click(); await row().waitFor();
+    await sources();
+    await dialog().getByRole('textbox', { name: 'Add skill source' }).fill('https://github.com/api-e2e/skills');
+    await dialog().getByRole('button', { name: 'Add', exact: true }).click(); await row().waitFor();
     await wait('imported', async () => (await source())?.skillCount === 2); old = await source(); await done();
     await card('web-writer').getByRole('button', { name: 'View', exact: true }).click();
     await page.locator('span:visible').filter({ hasText: /^version-1\.txt$/ }).waitFor();
