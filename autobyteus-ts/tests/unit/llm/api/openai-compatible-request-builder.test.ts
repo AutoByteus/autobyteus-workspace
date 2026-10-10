@@ -97,7 +97,7 @@ describe('OpenAICompatibleRequestBuilder', () => {
       config: new LLMConfig({ maxTokens: 999 }),
       maxOutputTokens: 384_000,
       outputLimitParameter: 'max_tokens',
-    }) as Record<string, unknown>;
+    }) as unknown as Record<string, unknown>;
 
     // The builder sends only the resolved value; it never reads config.maxTokens itself.
     expect(params.max_tokens).toBe(384_000);
