@@ -189,11 +189,19 @@ class AndroidVersionCodeTest(unittest.TestCase):
 
 
 class NextBetaAndroidLimitTest(unittest.TestCase):
-    def test_default_base_after_patch_ninety_nine_is_refused_with_next_minor_hint(self):
+    def test_default_base_after_patch_ninety_nine_is_the_next_minor(self):
         tags = REAL_TAGS + ["v1.4.99"]
-        with self.assertRaisesRegex(ReleaseVersionError, re.escape("--base 1.5.0")):
-            compute_next_beta(tags)
-        self.assertEqual(compute_next_beta(tags, "1.5.0"), "1.5.0-beta.1")
+        self.assertEqual(compute_next_beta(tags), "1.5.0-beta.1")
+        self.assertEqual(compute_next_beta(tags + ["v1.5.0-beta.1"]), "1.5.0-beta.2")
+        self.assertEqual(compute_next_beta(tags + ["v1.5.0"]), "1.5.1-beta.1")
+
+    def test_default_base_after_minor_nine_nine_nine_is_the_next_major(self):
+        self.assertEqual(compute_next_beta(["v1.999.99"]), "2.0.0-beta.1")
+
+    def test_default_beta_after_the_published_v1_4_100_beta_1(self):
+        # v1.4.100-beta.1 exists on origin but is not encodable; it must not pull the default to 1.4.100.
+        tags = REAL_TAGS + ["v1.4.99", "v1.4.100-beta.1"]
+        self.assertEqual(compute_next_beta(tags), "1.5.0-beta.1")
 
     def test_explicit_base_android_cannot_encode_is_refused(self):
         with self.assertRaisesRegex(ReleaseVersionError, re.escape("patch <= 99")):

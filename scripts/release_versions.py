@@ -11,11 +11,12 @@ Subcommands (read-only; this script never mutates git):
 
   next-beta [--base X.Y.Z] [--tags-file F]
       Print the next beta version ``X.Y.Z-beta.N``. The default base is the
-      next patch after the highest stable tag. Exits non-zero when the stable
+      next patch after the highest stable tag; after ``X.Y.99``, the last patch
+      the Android versionCode can encode, it is the next minor ``X.(Y+1).0``
+      (and after ``X.999.99`` the next major). Exits non-zero when the stable
       tag for the base already exists, when N would exceed 98, when --base is
       not a strict X.Y.Z, when no stable tag exists and no --base is given, or
-      when the Android versionCode cannot encode the result (for example the
-      default base after vX.Y.99; pass --base X.(Y+1).0 instead).
+      when the Android versionCode cannot encode the result.
 
   android-version-code <version>
       Print the Android versionCode for a release version (``X.Y.Z`` or
@@ -154,6 +155,17 @@ def android_version_code(version: str) -> int:
     return code
 
 
+def next_release_core(core: tuple[int, int, int]) -> tuple[int, int, int]:
+    """The next version after a stable core that Android can encode: the next patch,
+    else the next minor after patch 99, else the next major after minor 999."""
+    major, minor, patch = core
+    if patch < ANDROID_MAX_PATCH:
+        return (major, minor, patch + 1)
+    if minor < ANDROID_MAX_MINOR:
+        return (major, minor + 1, 0)
+    return (major + 1, 0, 0)
+
+
 def compute_next_beta(tags: Iterable[str], base: Optional[str] = None) -> str:
     versions = recognized_versions(tags)
     stable_cores = {version.core for version in versions if version.is_stable}
@@ -165,14 +177,7 @@ def compute_next_beta(tags: Iterable[str], base: Optional[str] = None) -> str:
             raise ReleaseVersionError(
                 "No stable release tag found; pass --base X.Y.Z to choose the beta base version."
             )
-        major, minor, patch = max(stable_cores)
-        if patch + 1 > ANDROID_MAX_PATCH:
-            raise ReleaseVersionError(
-                f"The next patch after v{major}.{minor}.{patch} would be {major}.{minor}.{patch + 1}, "
-                f"which the Android versionCode cannot encode (patch <= {ANDROID_MAX_PATCH}). "
-                f"Choose the next version line explicitly, for example --base {major}.{minor + 1}.0."
-            )
-        base_core = (major, minor, patch + 1)
+        base_core = next_release_core(max(stable_cores))
 
     base_label = ".".join(str(part) for part in base_core)
     if base_core in stable_cores:

@@ -24,8 +24,8 @@ Commands:
   beta      Release the next beta (vX.Y.Z-beta.N) without curated notes. The tag is published
             as a GitHub pre-release with generated notes and is offered only to desktop installs
             with "Receive beta updates" on. Base defaults to the next patch after the highest
-            stable tag; N is the next unused beta number (max 98). After X.Y.99 there is no
-            default: pass --base X.(Y+1).0. Other options as for release.
+            stable tag (after X.Y.99, the last patch Android can encode, the next minor
+            X.(Y+1).0); N is the next unused beta number (max 98). Other options as for release.
   Both release and beta refuse, before committing or tagging, a version the Android
   versionCode cannot encode (major <= 209, minor <= 999, patch <= 99).
   test      Trigger release-desktop workflow for build-only validation (no GitHub release publish).

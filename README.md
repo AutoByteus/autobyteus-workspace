@@ -655,8 +655,8 @@ pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.m
 # computes the next unused vX.Y.Z-beta.N (default base = next patch after the highest stable tag,
 # N capped at 98), bumps the package version, commits, tags and pushes. Starts the same tag-push workflows.
 # The Android versionCode allows patch <= 99, minor <= 999 and major <= 209. `release` and `beta` refuse
-# any other version before committing or tagging; after X.Y.99 there is no default base, so pass
-# --base X.(Y+1).0. `python3 scripts/release_versions.py android-version-code <version>` checks a version.
+# any other version before committing or tagging. After X.Y.99 the default beta base moves to the next
+# minor (1.4.99 -> 1.5.0-beta.1). `python3 scripts/release_versions.py android-version-code <version>` checks a version.
 bash scripts/desktop-release.sh beta
 bash scripts/desktop-release.sh beta --base 1.5.0
 
