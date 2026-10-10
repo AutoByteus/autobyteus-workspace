@@ -24,7 +24,10 @@ Commands:
   beta      Release the next beta (vX.Y.Z-beta.N) without curated notes. The tag is published
             as a GitHub pre-release with generated notes and is offered only to desktop installs
             with "Receive beta updates" on. Base defaults to the next patch after the highest
-            stable tag; N is the next unused beta number (max 98). Other options as for release.
+            stable tag; N is the next unused beta number (max 98). After X.Y.99 there is no
+            default: pass --base X.(Y+1).0. Other options as for release.
+  Both release and beta refuse, before committing or tagging, a version the Android
+  versionCode cannot encode (major <= 209, minor <= 999, patch <= 99).
   test      Trigger release-desktop workflow for build-only validation (no GitHub release publish).
   manual-dispatch
             Trigger release-desktop workflow manually for an existing tag.
@@ -88,6 +91,16 @@ const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
 pkg.version = nextVersion;
 fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
 NODE
+}
+
+# Refuses a version that a release platform cannot publish (today: the Android
+# versionCode limits), before anything is committed, tagged or pushed.
+ensure_publishable_version() {
+  local version="$1"
+  if ! (cd "$REPO_ROOT" && python3 "$RELEASE_VERSIONS_HELPER" android-version-code "$version" >/dev/null); then
+    echo "Error: version '$version' cannot be released on every platform; nothing was committed or tagged." >&2
+    exit 1
+  fi
 }
 
 ensure_tag_absent() {
@@ -160,6 +173,8 @@ run_release() {
   validate_version "$version"
   require_cmd git
   require_cmd node
+  require_cmd python3
+  ensure_publishable_version "$version"
   validate_release_notes_file "$release_notes_file"
   ensure_clean_worktree
   ensure_on_branch "$branch"
@@ -222,6 +237,7 @@ run_beta() {
   local version
   version="$(cd "$REPO_ROOT" && python3 "$RELEASE_VERSIONS_HELPER" "${next_beta_args[@]}")"
 
+  ensure_publishable_version "$version"
   local tag="v$version"
   ensure_tag_absent "$tag"
   bump_package_version "$version"

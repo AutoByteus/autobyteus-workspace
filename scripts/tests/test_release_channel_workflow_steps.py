@@ -5,7 +5,10 @@ exercise the exact shell that CI runs:
 
 - desktop "Resolve release metadata": which tags publish as GitHub pre-releases;
 - desktop and Android "Resolve release notes mode": pre-release tags use generated notes;
-- Docker "Move beta tag": `:beta` only moves forward (fake `docker`, sandbox origin).
+- Docker "Move beta tag": `:beta` only moves forward (fake `docker`, sandbox origin);
+- Android "Resolve release metadata": the versionCode it computes, or its refusal,
+  matches `release_versions.py android-version-code`, which `desktop-release.sh`
+  checks before tagging (so the two copies of the formula cannot drift apart).
 """
 
 import os
@@ -203,6 +206,55 @@ class ReleaseNotesModeStepTest(unittest.TestCase):
         for workflow in (DESKTOP_WORKFLOW, ANDROID_WORKFLOW):
             with self.subTest(workflow=workflow.name):
                 self.assertEqual("false", self.run_notes_step(workflow, "v1.4.91", None)["has_curated_notes"])
+
+
+class AndroidVersionCodeStepTest(unittest.TestCase):
+    VERSIONS = [
+        "1.4.99", "1.4.99-beta.10", "1.5.0-beta.1", "1.5.0", "1.2.26-rc3", "209.999.99",
+        "1.4.100-beta.1", "1.4.100", "1.1000.0", "210.0.0", "1.5.0-beta.99", "1.5.0-beta.0", "1.5.0-preview",
+    ]
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp(prefix="android-meta-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.step = extract_step(ANDROID_WORKFLOW, "Resolve release metadata")
+
+    def workflow_code(self, version: str) -> Optional[str]:
+        output = self.tmp / "output.txt"
+        output.write_text("", encoding="utf-8")
+        tag = f"v{version}"
+        env = {
+            **os.environ,
+            "GITHUB_REF": f"refs/tags/{tag}",
+            "GITHUB_REF_NAME": tag,
+            "GITHUB_OUTPUT": str(output),
+            "GITHUB_RUN_NUMBER": "1",
+            "INPUT_PUBLISH_RELEASE": "false",
+            "INPUT_RELEASE_TAG": "",
+            "INPUT_RELEASE_REF": "",
+            "INPUT_PRERELEASE": "true",
+        }
+        result = run_bash(substitute_expressions(self.step["run"], {}), self.tmp, env)
+        if result.returncode != 0:
+            return None
+        return read_outputs(output)["version_code"]
+
+    def helper_code(self, version: str) -> Optional[str]:
+        result = subprocess.run(
+            ["python3", str(RELEASE_VERSIONS_HELPER), "android-version-code", version],
+            capture_output=True, text=True, check=False,
+        )
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    def test_helper_matches_the_android_workflow(self) -> None:
+        for version in self.VERSIONS:
+            with self.subTest(version=version):
+                self.assertEqual(self.workflow_code(version), self.helper_code(version))
+
+    def test_the_matrix_covers_accepted_and_refused_versions(self) -> None:
+        codes = [self.helper_code(version) for version in self.VERSIONS]
+        self.assertIn(None, codes)
+        self.assertEqual("10050001", self.helper_code("1.5.0-beta.1"))
 
 
 class DockerMoveBetaTagStepTest(unittest.TestCase):

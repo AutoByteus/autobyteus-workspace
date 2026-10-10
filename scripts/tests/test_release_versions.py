@@ -1,4 +1,5 @@
 import importlib.util
+import re
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,7 @@ sys.modules["release_versions"] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 compute_next_beta = MODULE.compute_next_beta
+android_version_code = MODULE.android_version_code
 is_newest = MODULE.is_newest
 parse_release_tag = MODULE.parse_release_tag
 ReleaseVersionError = MODULE.ReleaseVersionError
@@ -153,6 +155,51 @@ class NextBetaTest(unittest.TestCase):
         self.assertEqual(compute_next_beta(NON_RELEASE_TAGS, "1.0.0"), "1.0.0-beta.1")
 
 
+class AndroidVersionCodeTest(unittest.TestCase):
+    def test_encodes_stable_and_prerelease_versions(self):
+        self.assertEqual(android_version_code("1.4.99"), 10049999)
+        self.assertEqual(android_version_code("1.4.99-beta.10"), 10049910)
+        self.assertEqual(android_version_code("1.5.0-beta.1"), 10050001)
+        self.assertEqual(android_version_code("1.2.26-rc3"), 10022603)
+        self.assertEqual(android_version_code("209.999.99"), 2099999999)
+
+    def test_every_next_version_line_sorts_above_the_last_patch(self):
+        self.assertLess(android_version_code("1.4.99"), android_version_code("1.5.0-beta.1"))
+        self.assertLess(android_version_code("1.5.0-beta.98"), android_version_code("1.5.0"))
+
+    def test_refuses_what_android_cannot_encode(self):
+        for version, reason in [
+            ("1.4.100-beta.1", "patch <= 99"),
+            ("1.4.100", "patch <= 99"),
+            ("1.1000.0", "minor <= 999"),
+            ("210.0.0", "major <= 209"),
+            ("1.5.0-beta.99", "1..98"),
+            ("1.5.0-beta.0", "1..98"),
+            ("1.5.0-preview", "must include a number"),
+            ("v1.5.0", "Invalid Android version"),
+            ("1.5", "Invalid Android version"),
+        ]:
+            with self.subTest(version=version):
+                with self.assertRaisesRegex(ReleaseVersionError, re.escape(reason)):
+                    android_version_code(version)
+
+    def test_patch_refusal_names_the_next_minor(self):
+        with self.assertRaisesRegex(ReleaseVersionError, re.escape("for example 1.5.0")):
+            android_version_code("1.4.100-beta.1")
+
+
+class NextBetaAndroidLimitTest(unittest.TestCase):
+    def test_default_base_after_patch_ninety_nine_is_refused_with_next_minor_hint(self):
+        tags = REAL_TAGS + ["v1.4.99"]
+        with self.assertRaisesRegex(ReleaseVersionError, re.escape("--base 1.5.0")):
+            compute_next_beta(tags)
+        self.assertEqual(compute_next_beta(tags, "1.5.0"), "1.5.0-beta.1")
+
+    def test_explicit_base_android_cannot_encode_is_refused(self):
+        with self.assertRaisesRegex(ReleaseVersionError, re.escape("patch <= 99")):
+            compute_next_beta(REAL_TAGS + ["v1.4.99"], "1.4.100")
+
+
 class CommandLineTest(unittest.TestCase):
     def run_cli(self, *args, tags=None):
         with tempfile.TemporaryDirectory() as tmp:
@@ -180,6 +227,20 @@ class CommandLineTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(result.stdout, "")
         self.assertIn("already exists", result.stderr)
+
+    def test_android_version_code_prints_code_or_refuses(self):
+        ok = subprocess.run(
+            [sys.executable, str(MODULE_PATH), "android-version-code", "1.5.0-beta.1"],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual((ok.returncode, ok.stdout), (0, "10050001\n"))
+        refused = subprocess.run(
+            [sys.executable, str(MODULE_PATH), "android-version-code", "1.4.100-beta.1"],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertNotEqual(refused.returncode, 0)
+        self.assertEqual(refused.stdout, "")
+        self.assertIn("patch <= 99", refused.stderr)
 
     def test_reads_git_tags_when_no_file_given(self):
         with tempfile.TemporaryDirectory() as tmp:

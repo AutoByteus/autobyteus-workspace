@@ -43,6 +43,14 @@ The tag decides who is offered a desktop build:
   `-beta.N`, default base = next patch after the highest stable tag, `N`
   capped at 98 by the Android versionCode). Promote to stable with
   `scripts/desktop-release.sh release <X.Y.Z> --release-notes <file>`.
+- The Android versionCode is `MAJOR*10000000 + MINOR*10000 + PATCH*100 +
+  SUFFIX` (SUFFIX is the beta number or 99 for stable), so it allows
+  patch <= 99, minor <= 999 and major <= 209. `release` and `beta` refuse any
+  other version before committing or tagging. After `X.Y.99` there is no
+  default beta base; pass `--base X.(Y+1).0`. `scripts/release_versions.py
+  android-version-code` holds the same formula as `release-android.yml`, and
+  `scripts/tests/test_release_channel_workflow_steps.py` checks that the two
+  agree.
 - The server Docker workflow publishes `:<version>` for every tag and `:latest`
   only for stable tags. After the version image is pushed, it moves `:beta` to
   that image only if the tag is the newest recognized release tag

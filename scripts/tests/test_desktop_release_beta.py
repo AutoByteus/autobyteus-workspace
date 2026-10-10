@@ -114,6 +114,29 @@ class DesktopReleaseBetaCommandTest(unittest.TestCase):
         self.assertIn("Switch to 'personal' first", wrong_branch.stderr)
         self.assertEqual({"v1.4.89", "v1.4.90", "v2026.02.26-personal-desktop-e2e.3", "v1.2.26-rc3"}, self.origin_tags())
 
+    def test_refuses_a_version_android_cannot_encode_before_committing_or_tagging(self) -> None:
+        self.git(self.repo, "tag", "v1.4.99")
+        self.git(self.repo, "push", "-q", "origin", "v1.4.99")
+        head_before = self.git(self.repo, "rev-parse", "HEAD")
+
+        default_beta = self.release("beta")
+        self.assertNotEqual(0, default_beta.returncode)
+        self.assertIn("--base 1.5.0", default_beta.stderr)
+
+        stable = self.release("release", "1.4.100", "--release-notes", CURATED_NOTES)
+        self.assertNotEqual(0, stable.returncode)
+        self.assertIn("patch <= 99", stable.stderr)
+        self.assertIn("nothing was committed or tagged", stable.stderr)
+
+        self.assertEqual(head_before, self.git(self.repo, "rev-parse", "HEAD"))
+        self.assertEqual("1.4.90", self.package_version())
+        self.assertEqual("", self.git(self.repo, "tag", "-l", "v1.4.100*"))
+        self.assertFalse(any(tag.startswith("v1.4.100") for tag in self.origin_tags()))
+
+        next_minor = self.release("beta", "--base", "1.5.0", "--no-push")
+        self.assertEqual(0, next_minor.returncode, next_minor.stdout + next_minor.stderr)
+        self.assertEqual("1.5.0-beta.1", self.package_version())
+
 
 if __name__ == "__main__":
     unittest.main()
