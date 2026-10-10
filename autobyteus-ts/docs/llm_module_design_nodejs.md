@@ -110,7 +110,9 @@ Two OpenAI-style paths coexist:
   provider credential resolver.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
-  merges provider-specific `extraParams`, uses the shared provider-request
+  sends the resolved output limit (configured, else the model maximum) under
+  the adapter's `outputLimitParameter` (`max_tokens` for DeepSeek/GLM,
+  `max_completion_tokens` otherwise), merges provider-specific `extraParams`, uses the shared provider-request
   kwarg sanitizer for framework-internal kwargs, owns `tools` placement, and
   preserves explicit lower-level `tool_choice` pass-through. The default
   agent/server path leaves `tool_choice` unset.

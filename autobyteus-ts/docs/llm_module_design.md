@@ -295,7 +295,21 @@ src/llm/
 `LLMConfig` controls model behavior:
 
 - **`temperature`**: Sampling randomness.
-- **`maxTokens`**: Output limit.
+- **`maxTokens`**: Configured output limit. When it is unset, requests use
+  the model's own maximum output tokens (`LLMModel.maxOutputTokens`, from the
+  catalog or live metadata), not a framework default. `BaseLLM.resolveMaxOutputTokens()`
+  (backed by `src/llm/utils/max-output-tokens.ts`) resolves this at request-build
+  time only: configured value, else model maximum, else `null`, in which case
+  the adapter omits the parameter and the provider default applies. It never
+  writes into `config.maxTokens`, so the input-token budget is unchanged. Each
+  adapter sends the resolved value under its provider's name: `max_tokens`
+  (Anthropic, Mistral), `max_output_tokens` (OpenAI Responses),
+  `maxOutputTokens` (Gemini), `num_predict` (Ollama), and the
+  OpenAI-compatible parameter described below. Anthropic exceptions: a
+  streaming request for a Claude model with no known maximum fails with an
+  error asking for a configured `max_tokens`, and non-streaming calls keep a
+  bounded 8192 default when unconfigured, because the Anthropic SDK refuses
+  large non-streaming limits.
 - **`systemMessage`**: Default system prompt.
 - **`pricingConfig`**: Built-in catalog API-price metadata. It can carry
   currency, trusted input/output/cache-read/cache-write prices, provider
@@ -337,8 +351,11 @@ semantics and lets standard fields reach the provider as accidental extras.
 For OpenAI-compatible Chat Completions providers, `OpenAICompatibleRequestBuilder`
 is the single request-body construction boundary. It maps `LLMConfig`
 generation controls to provider fields (`temperature`, `top_p`,
-`frequency_penalty`, `presence_penalty`, `stop`, and
-`max_completion_tokens`), merges `extraParams` for provider-specific extensions,
+`frequency_penalty`, `presence_penalty`, and `stop`). It also sends the
+resolved output limit (configured `maxTokens`, else the model maximum; omitted
+when neither is known) under the adapter-owned `outputLimitParameter`:
+`max_tokens` for DeepSeek and GLM, whose chat APIs document only that name,
+and `max_completion_tokens` for every other OpenAI-compatible adapter. It merges `extraParams` for provider-specific extensions,
 uses the shared provider-request kwarg sanitizer for framework-internal kwargs
 such as `logicalConversationId` and `requestId`, attaches `tools`, and passes
 `tool_choice` only when a lower-level direct caller explicitly supplies

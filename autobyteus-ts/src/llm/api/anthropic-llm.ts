@@ -69,7 +69,7 @@ const ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS = new Set([...ANTHROPIC_INTERNAL_EXTRA
 /** `@anthropic-ai/sdk` throws "Streaming is required" above ~21k `max_tokens` without a timeout. */
 const ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS = 8192;
 
-const ANTHROPIC_SAMPLING_PARAM_KEYS =new Set(['temperature', 'top_p', 'top_k']);
+const ANTHROPIC_SAMPLING_PARAM_KEYS = new Set(['temperature', 'top_p', 'top_k']);
 const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools', 'cache_control']);
 
 type AnthropicModelRequestPolicy = {
