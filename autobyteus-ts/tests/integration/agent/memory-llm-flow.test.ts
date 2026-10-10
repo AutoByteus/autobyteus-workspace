@@ -3,7 +3,6 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
-import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
@@ -28,16 +27,17 @@ runIntegration('Memory assembler with LM Studio', () => {
       const userMessage = new LLMUserMessage({ content: "Please respond with the word 'pong'." });
       memoryManager.ingestUserMessage(userMessage, turnId, 'LLMUserMessageReadyEvent', []);
 
-      const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
+      const assembler = new LLMRequestAssembler(memoryManager);
       const request = await assembler.prepareRequest(
         userMessage,
-        { turnId, requestId: `${turnId}:llm:1` },
+        { turnId, requestId: `${turnId}:llm:1` } as any,
         llm.config.systemMessage,
+        [],
       );
 
       let response;
       try {
-        response = await llm.sendMessages(request.outboundMessages, request.renderedPayload);
+        response = await llm.sendMessages(request.outboundMessages);
       } catch (error) {
         console.warn(`LM Studio request failed: ${String(error)}`);
         return;

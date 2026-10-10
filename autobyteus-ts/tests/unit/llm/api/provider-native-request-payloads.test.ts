@@ -359,7 +359,7 @@ describe('provider-native API request payloads', () => {
       runtimeInfo: { runtime: 'api_key', project: null, location: null },
     });
 
-    await llm.sendMessages(messagesFor('gemini'), null, { tools: geminiTools });
+    await llm.sendMessages(messagesFor('gemini'), { tools: geminiTools });
 
     const modelTurn = captured.contents.find((item: any) =>
       item.role === 'model' && item.parts?.some((part: any) => part.functionCall)
@@ -461,7 +461,7 @@ describe('provider-native API request payloads', () => {
       }
     };
 
-    await llm.sendMessages(messagesFor('ollama'), null, { tools: commonTools });
+    await llm.sendMessages(messagesFor('ollama'), { tools: commonTools });
 
     const assistant = captured.messages.find((msg: any) => Array.isArray(msg.tool_calls));
     const toolMessages = captured.messages.filter((msg: any) => msg.role === 'tool');
@@ -492,7 +492,7 @@ describe('provider-native API request payloads', () => {
       }
     });
 
-    await llm.sendMessages(messagesFor('anthropic'), null, { tools: commonTools });
+    await llm.sendMessages(messagesFor('anthropic'), { tools: commonTools });
 
     const assistantIndex = captured.messages.findIndex((msg: any) =>
       msg.role === 'assistant' &&
@@ -529,14 +529,13 @@ describe('provider-native API request payloads', () => {
       }
     });
 
-    await llm.sendMessages(messagesFor('mistral'), null, {
+    await llm.sendMessages(messagesFor('mistral'), {
       logicalConversationId: 'agent-1',
       logical_conversation_id: 'agent-1',
       conversationId: 'conversation-1',
       agentId: 'agent-1',
       turnId: 'turn-1',
       requestId: 'request-1',
-      renderedPayload: { internal: true },
       tools: commonTools
     });
 
@@ -555,7 +554,6 @@ describe('provider-native API request payloads', () => {
     expect(captured).not.toHaveProperty('agentId');
     expect(captured).not.toHaveProperty('turnId');
     expect(captured).not.toHaveProperty('requestId');
-    expect(captured).not.toHaveProperty('renderedPayload');
     expectNoLegacyProviderText(captured);
   });
 
@@ -582,7 +580,7 @@ describe('provider-native API request payloads', () => {
       }
     });
 
-    await llm.sendMessages(messagesFor('openai_responses'), null, {
+    await llm.sendMessages(messagesFor('openai_responses'), {
       tools: commonTools,
       tool_choice: 'auto'
     });
@@ -706,7 +704,7 @@ describe('provider-native API request payloads', () => {
     const sent = await llm.sendMessages([new Message(MessageRole.USER, 'Hello')]);
     expect(sent.content).toBe('ok');
     const streamed = [];
-    for await (const chunk of llm.streamMessages(messagesFor('openai_responses'), null, { tools: commonTools })) streamed.push(chunk);
+    for await (const chunk of llm.streamMessages(messagesFor('openai_responses'), { tools: commonTools })) streamed.push(chunk);
     expect(captures).toHaveLength(2);
     for (const capture of captures) {
       expect(capture).toMatchObject({ model: modelId, reasoning: { effort: 'medium' } });
@@ -744,7 +742,7 @@ describe('provider-native API request payloads', () => {
       }
     });
 
-    for await (const _chunk of llm.streamMessages(messagesFor('openai_responses'), null, {
+    for await (const _chunk of llm.streamMessages(messagesFor('openai_responses'), {
       tools: commonTools,
       tool_choice: 'auto'
     })) {

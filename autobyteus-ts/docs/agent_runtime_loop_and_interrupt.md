@@ -172,7 +172,13 @@ uses these collaborators:
     `LLMRequestAssembler`, which gives providers a sanitized outbound message
     copy and bounded invalid/unsupported-media diagnostics without mutating
     canonical memory;
-  - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
+  - builds the configured tool schemas and hands them to
+    `LLMRequestAssembler.prepareRequest(...)`, which binds retained provider
+    reasoning to the request prefix and returns the exact `tools` to send; it
+    then calls `BaseLLM.streamMessages(request.outboundMessages,
+    { logicalConversationId, tools: request.tools }, { promptCacheScope:
+    'conversation', signal, turnId })`. The agent never renders a request; the
+    provider adapter is the only request builder;
   - publishes streamed segment facts through `AgentExternalEventNotifier`;
   - creates one `LlmStreamingResponseHandler` for tool and no-tool streams,
     builds `ToolSchemaProvider` schemas only when configured tools exist, and

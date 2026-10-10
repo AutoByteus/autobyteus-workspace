@@ -1,0 +1,68 @@
+{
+  "C1": [
+    {
+      "step": 0,
+      "status": 200,
+      "stop": "tool_use",
+      "blocks": [
+        "thinking",
+        "tool_use"
+      ],
+      "error": null
+    },
+    {
+      "step": 1,
+      "status": 200,
+      "stop": "tool_use",
+      "blocks": [
+        "thinking",
+        "text",
+        "tool_use"
+      ],
+      "error": null
+    },
+    {
+      "step": 2,
+      "status": 200,
+      "stop": "tool_use",
+      "blocks": [
+        "thinking",
+        "thinking",
+        "tool_use"
+      ],
+      "error": null
+    }
+  ],
+  "C2": [
+    {
+      "step": 0,
+      "status": 200,
+      "stop": "tool_use",
+      "blocks": [
+        "thinking",
+        "tool_use"
+      ],
+      "error": null
+    },
+    {
+      "step": 1,
+      "status": 200,
+      "stop": "tool_use",
+      "blocks": [
+        "thinking",
+        "tool_use"
+      ],
+      "error": null
+    },
+    {
+      "step": 2,
+      "status": 200,
+      "stop": "tool_use",
+      "blocks": [
+        "thinking",
+        "tool_use"
+      ],
+      "error": null
+    }
+  ]
+}

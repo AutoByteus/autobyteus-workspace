@@ -54,7 +54,7 @@ const runToolCallContinuation = async (llm: GlmLLM): Promise<void> => {
     })
   ];
   const parser = new LlmStreamingResponseHandler({ turnId: TURN_ID, toolCallsEnabled: true });
-  for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
+  for await (const chunk of llm.streamMessages(toolPromptMessages, {
     tools: [TOOL_SCHEMA],
     tool_choice: 'required'
   })) {

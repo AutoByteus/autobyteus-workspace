@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { MessageRole } from '../../llm/utils/messages.js';
-import { withoutAnthropicThinkingInMessage } from '../../llm/utils/provider-native-assistant-turn.js';
+import { messageWithoutPrefixBoundReasoning } from '../../llm/provider-native/provider-native-history.js';
 import { createCompactedMemoryUserMessage, WorkingContextFinalizer } from '../working-context-finalizer.js';
 import type { WorkingContext } from '../working-context.js';
 import type { AcceptedWorkingContextCompaction, WorkingContextCompactionProposal } from './working-context-compaction-proposal.js';
@@ -22,7 +22,7 @@ export class AcceptedCompactionBuilder {
     const finalizedContext = this.finalizer.finalize({ messages: [
       ...input.baseline.buildMessages().filter((message) => message.role === MessageRole.SYSTEM),
       createCompactedMemoryUserMessage(proposal.summary),
-      ...this.finalizer.markNaturalUserMessagesRetained(proposal.retainedMessages).map(withoutAnthropicThinkingInMessage),
+      ...this.finalizer.markNaturalUserMessagesRetained(proposal.retainedMessages).map(messageWithoutPrefixBoundReasoning),
     ] });
     return {
       compactionId, baselineFingerprint: workingContextFingerprint(input.baseline),

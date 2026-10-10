@@ -12,7 +12,9 @@ import {
 } from '../../../src/memory/working-context-finalizer.js';
 import { MEMORY_MESSAGE_PROVENANCE_METADATA_KEY } from '../../../src/memory/working-context-provenance.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
-import { ANTHROPIC_ASSISTANT_TURN_KEY, parseAnthropicAssistantTurn, withoutAnthropicThinkingInMessage } from '../../../src/llm/utils/provider-native-assistant-turn.js';
+import { parseAnthropicAssistantTurn } from '../../../src/llm/api/anthropic-native-assistant-turn.js';
+import { PROVIDER_NATIVE_ASSISTANT_TURN_KEY } from '../../../src/llm/provider-native/provider-native-assistant-turn.js';
+import { messageWithoutPrefixBoundReasoning } from '../../../src/llm/provider-native/provider-native-history.js';
 
 const currentContext = () => new WorkingContextFinalizer().finalize({
   messages: [
@@ -54,13 +56,13 @@ const payload = () => WorkingContextSnapshotSerializer.serialize(currentContext(
 describe('WorkingContextSnapshotSerializer', () => {
   it('reads old v5 messages without a native turn and round-trips signed and reset native turns', () => {
     const old = WorkingContextSnapshotSerializer.deserialize({ schema_version: 5, ...payload() }).workingContext;
-    expect(old.buildMessages()[2]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).toBeUndefined();
+    expect(old.buildMessages()[2]!.metadata?.[PROVIDER_NATIVE_ASSISTANT_TURN_KEY]).toBeUndefined();
     const original = old.buildMessages()[2]!;
     const signed = new Message(MessageRole.ASSISTANT, {
       content: original.content,
       reasoning_content: original.reasoning_content,
       tool_payload: original.tool_payload,
-      metadata: { ...original.metadata, [ANTHROPIC_ASSISTANT_TURN_KEY]: {
+      metadata: { ...original.metadata, [PROVIDER_NATIVE_ASSISTANT_TURN_KEY]: {
         provider: 'anthropic', blocks: [
           { type: 'thinking', thinking: 'synthetic', signature: 'signed' },
           { type: 'tool_use', id: 'call-1', name: 'inspect', input: { nested: true } },
@@ -70,13 +72,13 @@ describe('WorkingContextSnapshotSerializer', () => {
     old.replaceMessage(2, signed);
     const saved = WorkingContextSnapshotSerializer.serialize(old, { agent_id: 'agent-1' });
     const restored = WorkingContextSnapshotSerializer.deserialize(saved).workingContext;
-    expect(parseAnthropicAssistantTurn(restored.buildMessages()[2]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks[0])
+    expect(parseAnthropicAssistantTurn(restored.buildMessages()[2]!.metadata?.[PROVIDER_NATIVE_ASSISTANT_TURN_KEY]).blocks[0])
       .toEqual({ type: 'thinking', thinking: 'synthetic', signature: 'signed' });
-    restored.replaceMessage(2, withoutAnthropicThinkingInMessage(restored.buildMessages()[2]!));
+    restored.replaceMessage(2, messageWithoutPrefixBoundReasoning(restored.buildMessages()[2]!));
     const reset = WorkingContextSnapshotSerializer.deserialize(WorkingContextSnapshotSerializer.serialize(restored, {
       agent_id: 'agent-1',
     })).workingContext;
-    expect(parseAnthropicAssistantTurn(reset.buildMessages()[2]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks)
+    expect(parseAnthropicAssistantTurn(reset.buildMessages()[2]!.metadata?.[PROVIDER_NATIVE_ASSISTANT_TURN_KEY]).blocks)
       .toEqual([{ type: 'tool_use', id: 'call-1', name: 'inspect', input: { nested: true } }]);
   });
   it('round-trips current messages, UTF-16 ranges, media, and native tool structures', () => {

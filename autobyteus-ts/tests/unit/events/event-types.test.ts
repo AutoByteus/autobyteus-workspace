@@ -38,6 +38,8 @@ describe('EventType', () => {
     expect(values).not.toContain('agent_data_todo_list_updated');
     expect(values).not.toContain('task_plan.tasks.created');
     expect(values).not.toContain('task_plan.status.updated');
-    expect(values.length).toBe(28);
+    expect(values).toContain('agent_compaction_blocked');
+    expect(values).toContain('agent_compaction_resumed');
+    expect(values.length).toBe(30);
   });
 });

@@ -39,7 +39,7 @@ describe('normalized nonstream provider completion',()=>{
  ['ollama','stop','complete'],['ollama','length','incomplete'],['ollama',undefined,'unknown'],['rpa','stop','unknown'],
  ])('%s %s becomes %s',async(family,reason,expected)=>{
   const {llm,send}=fixture(family!,reason);const signal=new AbortController().signal;
-  const result=await llm.sendMessages(messages,null,{logicalConversationId:'fresh-summary'},{signal});
+  const result=await llm.sendMessages(messages,{logicalConversationId:'fresh-summary'},{signal});
   expect(result.completionStatus).toBe(expected);expect(result.completionReason).toBe(family==='rpa'?null:reason??null);
   expect(result.content).toBe('ok');expect(send).toHaveBeenCalledOnce();
   const payload=send.mock.calls[0][0];
@@ -57,7 +57,7 @@ describe('normalized nonstream provider completion',()=>{
   expect((await llm.sendMessages(messages)).completionStatus).toBe('incomplete');
  });
  it('does not infer completion from RPA complete-looking text or cleanup',async()=>{
-  const {llm}=fixture('rpa','stop');await llm.sendMessages(messages,null,{logicalConversationId:'isolated'});
+  const {llm}=fixture('rpa','stop');await llm.sendMessages(messages,{logicalConversationId:'isolated'});
   const client=await llm.clientPromise;const signal=new AbortController().signal;
   await llm.cleanup({signal});expect(client.cleanup).toHaveBeenCalledExactlyOnceWith('isolated',{signal});
  });

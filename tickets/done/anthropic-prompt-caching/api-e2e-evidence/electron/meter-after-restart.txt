@@ -1,0 +1,2 @@
+usage_report_count|standard_input_tokens|cache_read_input_tokens|cache_creation_1h_input_tokens|cache_creation_5m_input_tokens|accounting_output_tokens|cost
+52|120|1871598|113472|0|12682|1.536216

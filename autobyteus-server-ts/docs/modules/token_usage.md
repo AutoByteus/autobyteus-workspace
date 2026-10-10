@@ -399,7 +399,23 @@ Future exact `ANTHROPIC` + `claude-opus-5-5` observations use Standard rates
 of `4` input, `20` output, `0.20` cache read, `5` five-minute cache write,
 and `8` one-hour cache write per million tokens. It has no inferred Fast,
 Batch, regional, or subscription tariff. The added exact-policy server tests
-exercise all three model identities and the OpenAI long-context/cache tiers.
+exercise all three model identities and the OpenAI long-context/cache tiers, and
+a calculator test prices each Opus 5.5 component (uncached input, cache read,
+5-minute and 1-hour cache write, output) at those rates.
+
+Native AutoByteus-runtime Anthropic conversations request prompt caching with
+the 1-hour TTL (see `autobyteus-ts/docs/llm_module_design_nodejs.md`), so their
+usage reports cache reads and 1-hour cache writes (`cache_creation.
+ephemeral_1h_input_tokens`). The normalizer records them as
+`cache_read_input_tokens` and `cache_creation_1h_input_tokens` with
+`cache_state = positive`, and the meter prices them with the catalog's 1-hour
+write and cache-read rates, so its estimate can match the Anthropic Console for
+the same calls. One-shot calls such as the compaction summarizer stay uncached.
+
+`ANTHROPIC` + `claude-sonnet-5` uses `2` input, `10` output, `0.20` cache read,
+`2.50` five-minute cache write and `4` one-hour cache write per million tokens
+for new observations (Anthropic's standard price since the cancelled 2026-09-01
+increase); stored records keep the price captured when they were observed.
 
 These are Standard estimates only. Fast, Batch, Flex, regional/data-residency,
 partner, subscription/credit, private, and negotiated variants are not inferred
@@ -412,7 +428,10 @@ and mocked request tests cover these entries. The new-model validation also
 completed three real Codex Astra/Sol/Luna turns and a bounded real Anthropic
 signed active tool-turn replay, but those are separate runtime evidence, not a
 provider invoice or live proof of every pricing dimension. Direct OpenAI live
-API and independent-turn signed reset or compaction were not exercised.
+API and compaction were not exercised. (The independent-turn signed-thinking
+reset referenced by that validation no longer exists: native Anthropic history is
+append-only, with a one-time removal only when the request prefix changes or a
+run is restored; see `autobyteus-ts/docs/agent_memory_design.md`.)
 
 ### Latest pricing schedule selection
 

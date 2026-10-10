@@ -1,0 +1,49 @@
+[
+  {
+    "index": 0,
+    "phase": "T1",
+    "sdkVersion": "0.132.1",
+    "status": 200,
+    "stopReason": "refusal",
+    "responseBlockTypes": [],
+    "usage": {
+      "input_tokens": 4,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 7678,
+      "cache_creation_5m": 0,
+      "cache_creation_1h": 7678,
+      "output_tokens": 0
+    },
+    "errorBody": null,
+    "systemSha": "754c99e8a6fdc892",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 1,
+    "blockEntryCount": 1,
+    "thinkingBlocksInRequest": 0,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  },
+  {
+    "index": 1,
+    "phase": "T2",
+    "sdkVersion": "0.132.1",
+    "status": null,
+    "stopReason": null,
+    "responseBlockTypes": [],
+    "usage": null,
+    "errorBody": null,
+    "systemSha": "754c99e8a6fdc892",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 1,
+    "blockEntryCount": 1,
+    "thinkingBlocksInRequest": 0,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  }
+]

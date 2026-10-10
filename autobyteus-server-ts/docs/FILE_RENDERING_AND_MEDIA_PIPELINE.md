@@ -62,6 +62,25 @@ The actual artifact/output files remain where the runtime wrote them.
 
 - Managed media URLs are based on `AppConfig.getBaseUrl()` and are typically served from `/rest/files/...`.
 - Draft uploaded context files are served from `/rest/drafts/.../context-files/:storedFilename` until send-time finalization.
+  A draft locator is the attachment's identity and its address. One draft locator codec in
+  `context-files/domain/context-file-owner-types.ts` (`buildDraftContextFileLocator` plus its
+  exact inverse `parseDraftContextFileLocator`) owns the path shape of every draft owner kind
+  (`agent_draft`, `team_member_draft`, `org_member_draft`,
+  `agent_collaboration_member_draft`). The REST layer registers exactly one
+  `GET /rest/drafts/*` and one `DELETE /rest/drafts/*`, which parse the raw request path
+  with that codec. `ContextFileLocalPathResolver` resolves draft locators through the same
+  codec. Every draft owner kind is therefore both readable and deletable. A new owner kind
+  added to the codec gets both routes, and no route or resolver may hold per-kind draft path
+  patterns. Both routes share one error mapping:
+  - a path that is not a draft locator → `404`
+  - an invalid descriptor (`ContextFileDescriptorError`, `CollaborationContractError`) →
+    `400 {detail}`
+  - an unknown owner → `404`
+  - a GET for a missing file → `404`
+  - a DELETE → `204` whether or not the file existed
+  - any other fault → `500`
+
+  Finalized-file routes are still registered per owner kind; they have no delete operation.
 - Finalized uploaded context files are served from
   `/rest/runs/:runId/context-files/:storedFilename` or
   `/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename`.

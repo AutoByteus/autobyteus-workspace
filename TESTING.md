@@ -25,6 +25,7 @@ package's script from its own directory.
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
 | Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
 | Grok Build compaction live E2E | Real `grok` CLI automatic compaction (interrupted, then completed) and `/compact` through the server, with raw-trace rotation | `RUN_GROK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts --no-watch` (temporary `GROK_HOME` with a symlinked `auth.json` and a 10% auto-compaction threshold; never writes `~/.grok`; one four-turn run on the user's Grok credits; set `GROK_E2E_EVIDENCE_DIR` to keep evidence on failure, never `auth.json`). Zero-credit replay of the same flows (automatic, Stop, `/compact`) through the real server with the fake Grok CLI, no gate: `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts --no-watch` |
+| Anthropic prompt-caching live E2E | Native AutoByteus-runtime Anthropic prompt caching through the real server (send, tool approval, Stop generation, Settings change, Stop and restore): run-level cache hit with two 1h markers, append-only prefixes that keep earlier thinking, interrupt note after history with an unchanged system prompt, Token Meter equal to Anthropic's raw usage, one thinking strip on restore. Every request is sent with Anthropic's strict preserved-thinking check, so a changed prefix behind kept thinking fails with a 400 (case APC-E2E-008 proves the check is enforcing) | From `autobyteus-server-ts`: `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_ANTHROPIC_CACHE_E2E=1 ANTHROPIC_API_KEY=<key> ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts --no-watch` (clean environment so no live-app variable leaks in; the key is saved into the test-owned vault and never logged; about 40 Opus calls, mostly cache reads, on the user's Anthropic credits; optional `ANTHROPIC_CACHE_E2E_MODEL`, `ANTHROPIC_CACHE_E2E_EVIDENCE_DIR`, `ANTHROPIC_CACHE_E2E_STEP_TIMEOUT_MS`). Skips without the gate |
 | Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run`; the interrupted-compaction cases alone (interrupt, terminate and app-server crash during an automatic compaction): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts --no-watch` (lowers the test app server's auto-compaction limit; a few turns of Codex quota per case); a send after the Codex app server crashed (the previous runtime is released, then the same thread is restored): `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts --no-watch` |
 | Claude compaction live E2E | Real Claude CLI/SDK `/compact`, Stop and CLI process exit during compaction, raw-trace rotation and reopened history, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts --no-watch`; add `RUN_CLAUDE_AUTO_COMPACTION_E2E=1` for the costly auto-compaction case (~300K input tokens) |
 | Claude background-task live E2E | Real Claude CLI/SDK background Bash tasks for a standalone agent and a team member: `BACKGROUND_TASK_UPDATED` snapshots with the shell `command` (explicit background and CLI auto-background, which the test enables itself), completion, failure, Stop+terminate and CLI crash, on every installed Claude CLI (PATH and SDK-bundled) | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-background-task.e2e.test.ts tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts --no-watch` |
@@ -865,6 +866,48 @@ Failed sends are injected as GraphQL error responses, so the real client
 failure paths run but the server-side causes are not reproduced. Inspect
 `chat-draft-rows-live-evidence.json`, the screenshots and the cleanup receipts.
 This is a web-equivalent check, not packaged Electron proof.
+
+### Composer Context-File Removal Regression
+
+Run from the repository root with installed workspace dependencies and Chrome
+(no model credentials):
+
+```bash
+pnpm -C autobyteus-server-ts prebuild
+pnpm -C autobyteus-server-ts build
+pnpm -C autobyteus-web test:e2e:composer-context-file-removal --output-dir <fresh-dir> [--ledger <initialized absolute path>] [--cases CF-001,CF-002]
+```
+
+The probe owns a built backend (`dist/app.js`) with the scripted AGY CLI, Nuxt
+dev, a disposable data root on free ports and a fresh headless Chrome; it never
+touches a running desktop app or the user's data. A standalone Manager calls the
+real `delegate_task` to create a delegated Agent copy and Team copy, and a Team
+run and an Org run (configured team, delegated task agent) cover the other draft
+owner kinds. Cases:
+
+- CF-001: the universal `GET`/`DELETE /rest/drafts/*` routes over raw HTTP for
+  every owner kind (upload → GET 200 → DELETE 204 → GET 404 → DELETE 204), the
+  400/404 mapping, traversal-shaped paths that the Fastify `inject` tests cannot
+  express, and a paired mobile bearer credential (forged → 401).
+- CF-002/CF-003/CF-006: real clipboard paste of an image, the `+` file chooser and
+  a pasted workspace path, then × and Clear All, in a delegated Agent copy, a
+  delegated Team-copy member and every other run kind. Each removal is checked
+  in the tray, on the wire and on disk.
+- CF-007: a pasted draft URL from another composer is cloned; removing the clone
+  never deletes the source.
+- CF-008: one injected DELETE/upload 5xx shows an error naming the file; the item
+  stays and the retry clears it. CF-004 does the same with the backend stopped.
+- CF-009: an Org task agent while its message is pending (finalize held while the
+  Manager delegates another task): `+` disabled with its reason, a pasted image
+  shows the message and uploads nothing, a pasted path still attaches.
+- CF-005: the delegated children after their root is stopped, a real backend
+  restart and a reload.
+
+CF-004 stops the backend and CF-005 stops the root run, so keep both last when
+you pass a custom `--cases` order.
+
+Inspect `evidence.json`, the screenshots and the cleanup receipts. This is a
+web-equivalent check; Electron native file drop is covered by the component spec.
 
 ## Choosing the path
 

@@ -1,8 +1,5 @@
-import { Message } from './messages.js';
-import type { ToolCallSpec } from './messages.js';
+import type { ToolCallSpec } from '../utils/messages.js';
 import { isDeepStrictEqual } from 'node:util';
-
-export const ANTHROPIC_ASSISTANT_TURN_KEY = 'provider_native_assistant_turn';
 
 export type AnthropicAssistantBlock =
   | { type: 'text'; text: string }
@@ -42,9 +39,13 @@ export const parseAnthropicAssistantTurn = (value: unknown): AnthropicAssistantT
   return { provider: 'anthropic', blocks };
 };
 
+/** Thinking and redacted thinking are bound to the request prefix they were produced under. */
+export const isAnthropicThinkingBlock = (block: AnthropicAssistantBlock): boolean =>
+  block.type === 'thinking' || block.type === 'redacted_thinking';
+
 export const withoutThinkingBlocks = (turn: AnthropicAssistantTurn): AnthropicAssistantTurn => ({
   provider: 'anthropic',
-  blocks: turn.blocks.filter((block) => block.type !== 'thinking' && block.type !== 'redacted_thinking').map((block) => structuredClone(block)),
+  blocks: turn.blocks.filter((block) => !isAnthropicThinkingBlock(block)).map((block) => structuredClone(block)),
 });
 
 export const assertAnthropicTurnMatchesToolCalls = (turn: AnthropicAssistantTurn, calls: readonly ToolCallSpec[]): void => {
@@ -53,19 +54,4 @@ export const assertAnthropicTurnMatchesToolCalls = (turn: AnthropicAssistantTurn
     block.id !== calls[index]!.id || block.name !== calls[index]!.name || !isDeepStrictEqual(block.input, calls[index]!.arguments))) {
     throw new Error('Anthropic native assistant turn does not match executable tool calls.');
   }
-};
-
-export const withoutAnthropicThinkingInMessage = (message: Message): Message => {
-  const raw = message.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY];
-  if (raw === undefined) return message;
-  const turn = parseAnthropicAssistantTurn(raw);
-  return new Message(message.role, {
-    content: message.content,
-    reasoning_content: message.reasoning_content,
-    image_urls: message.image_urls,
-    audio_urls: message.audio_urls,
-    video_urls: message.video_urls,
-    tool_payload: message.tool_payload,
-    metadata: { ...message.metadata, [ANTHROPIC_ASSISTANT_TURN_KEY]: withoutThinkingBlocks(turn) },
-  });
 };

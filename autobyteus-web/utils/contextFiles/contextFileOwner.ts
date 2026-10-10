@@ -82,20 +82,3 @@ export const buildAgentCollaborationMemberFinalContextFileOwner = (
   hostRunId: normalizeRequiredString(hostRunId, 'hostRunId'),
   agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
 });
-
-export const buildDraftContextFileEndpoint = (
-  owner: DraftContextFileOwnerDescriptor,
-  storedFilename: string,
-): string => {
-  const encodedStoredFilename = encodeURIComponent(normalizeRequiredString(storedFilename, 'storedFilename'));
-  if (owner.kind === 'agent_draft') {
-    return `/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${encodedStoredFilename}`;
-  }
-  if (owner.kind === 'org_member_draft') {
-    return `/drafts/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodedStoredFilename}`;
-  }
-  if (owner.kind === 'agent_collaboration_member_draft') {
-    return `/drafts/agent-collaborations/${encodeURIComponent(owner.hostRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodedStoredFilename}`;
-  }
-  return `/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodedStoredFilename}`;
-};

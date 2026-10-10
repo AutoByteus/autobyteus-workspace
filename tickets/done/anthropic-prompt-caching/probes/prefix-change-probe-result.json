@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-09T08:58:23.788Z",
+  "results": [
+    {
+      "label": "P1 system string -> TextBlockParam[] (+cache_control)",
+      "ok": true,
+      "stop": "end_turn",
+      "transformations": [],
+      "read": 0
+    },
+    {
+      "label": "P2 tool description changed, thinking kept",
+      "ok": false,
+      "status": 400,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"messages.1.content.2: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to \\\"drop_block\\\". The `tools` list differs from the one this block was created with.\"},\"request_id\":\"req_011CfrPRH2xFZo6KwMUsbZwJ\"}"
+    },
+    {
+      "label": "P3 tool description changed, all thinking stripped once",
+      "ok": true,
+      "stop": "end_turn",
+      "transformations": [],
+      "read": 0
+    },
+    {
+      "label": "P4 control: unchanged prefix, thinking kept",
+      "ok": true,
+      "stop": "end_turn",
+      "transformations": [],
+      "read": 0
+    }
+  ],
+  "historyHasThinking": true
+}

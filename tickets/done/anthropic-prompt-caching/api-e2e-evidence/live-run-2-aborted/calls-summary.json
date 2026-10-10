@@ -1,0 +1,147 @@
+[
+  {
+    "index": 0,
+    "phase": "T1",
+    "sdkVersion": "0.132.1",
+    "status": 200,
+    "stopReason": "tool_use",
+    "responseBlockTypes": [
+      "tool_use"
+    ],
+    "usage": {
+      "input_tokens": 4,
+      "cache_read_input_tokens": 0,
+      "cache_creation_input_tokens": 7603,
+      "cache_creation_5m": 0,
+      "cache_creation_1h": 7603,
+      "output_tokens": 112
+    },
+    "errorBody": null,
+    "systemSha": "7b82a21194ea0ff5",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 1,
+    "blockEntryCount": 1,
+    "thinkingBlocksInRequest": 0,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  },
+  {
+    "index": 1,
+    "phase": "T1",
+    "sdkVersion": "0.132.1",
+    "status": 200,
+    "stopReason": "tool_use",
+    "responseBlockTypes": [
+      "thinking",
+      "text",
+      "tool_use"
+    ],
+    "usage": {
+      "input_tokens": 2,
+      "cache_read_input_tokens": 7603,
+      "cache_creation_input_tokens": 906,
+      "cache_creation_5m": 0,
+      "cache_creation_1h": 906,
+      "output_tokens": 202
+    },
+    "errorBody": null,
+    "systemSha": "7b82a21194ea0ff5",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 3,
+    "blockEntryCount": 3,
+    "thinkingBlocksInRequest": 0,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  },
+  {
+    "index": 2,
+    "phase": "T1",
+    "sdkVersion": "0.132.1",
+    "status": 200,
+    "stopReason": "tool_use",
+    "responseBlockTypes": [
+      "thinking",
+      "text",
+      "tool_use"
+    ],
+    "usage": {
+      "input_tokens": 4,
+      "cache_read_input_tokens": 8509,
+      "cache_creation_input_tokens": 1036,
+      "cache_creation_5m": 0,
+      "cache_creation_1h": 1036,
+      "output_tokens": 313
+    },
+    "errorBody": null,
+    "systemSha": "7b82a21194ea0ff5",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 5,
+    "blockEntryCount": 8,
+    "thinkingBlocksInRequest": 1,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  },
+  {
+    "index": 3,
+    "phase": "T1",
+    "sdkVersion": "0.132.1",
+    "status": 200,
+    "stopReason": "refusal",
+    "responseBlockTypes": [],
+    "usage": {
+      "input_tokens": 4,
+      "cache_read_input_tokens": 9545,
+      "cache_creation_input_tokens": 1204,
+      "cache_creation_5m": 0,
+      "cache_creation_1h": 1204,
+      "output_tokens": 0
+    },
+    "errorBody": null,
+    "systemSha": "7b82a21194ea0ff5",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 7,
+    "blockEntryCount": 13,
+    "thinkingBlocksInRequest": 2,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  },
+  {
+    "index": 4,
+    "phase": "T2",
+    "sdkVersion": "0.132.1",
+    "status": 200,
+    "stopReason": "refusal",
+    "responseBlockTypes": [],
+    "usage": {
+      "input_tokens": 4,
+      "cache_read_input_tokens": 10749,
+      "cache_creation_input_tokens": 47,
+      "cache_creation_5m": 0,
+      "cache_creation_1h": 47,
+      "output_tokens": 0
+    },
+    "errorBody": null,
+    "systemSha": "7b82a21194ea0ff5",
+    "toolsSha": "00f08e4b13076bb9",
+    "messageCount": 8,
+    "blockEntryCount": 14,
+    "thinkingBlocksInRequest": 2,
+    "cacheControlCount": 2,
+    "topLevelCacheControl": {
+      "type": "ephemeral",
+      "ttl": "1h"
+    }
+  }
+]
