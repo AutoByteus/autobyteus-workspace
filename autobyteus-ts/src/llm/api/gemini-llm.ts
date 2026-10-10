@@ -55,6 +55,16 @@ const splitGeminiParts = (parts: Array<Record<string, unknown>> = []): { content
   return { content, reasoning };
 };
 
+/**
+ * Request-level `httpOptions` (e.g. from config extra params) replace the client's
+ * retry options in `@google/genai`, so a single-attempt call must also pin them here.
+ */
+const applySingleAttemptRetry = (config: Record<string, unknown>): void => {
+  const httpOptions = isRecord(config.httpOptions) ? config.httpOptions : {};
+  const retryOptions = isRecord(httpOptions.retryOptions) ? httpOptions.retryOptions : {};
+  config.httpOptions = { ...httpOptions, retryOptions: { ...retryOptions, attempts: 1 } };
+};
+
 export class GeminiLLM extends BaseLLM {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
@@ -208,6 +218,9 @@ export class GeminiLLM extends BaseLLM {
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }
+    if (options.retryMode === 'single_attempt') {
+      applySingleAttemptRetry(config);
+    }
 
     const response = await client.models.generateContent({
       model: runtimeAdjustedModel,
@@ -247,6 +260,9 @@ export class GeminiLLM extends BaseLLM {
     const config = this.buildGenerationConfig(tools);
     if (options.signal) {
       (config as any).abortSignal = options.signal;
+    }
+    if (options.retryMode === 'single_attempt') {
+      applySingleAttemptRetry(config);
     }
 
     const stream = await client.models.generateContentStream({
