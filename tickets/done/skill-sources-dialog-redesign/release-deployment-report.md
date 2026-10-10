@@ -56,7 +56,16 @@ A web renderer change (Skills → Sources dialog), shipped in the desktop app. T
 - Bootstrap context source: the ticket package (`origin/personal` base; branch `codex/skill-sources-dialog-redesign`)
 - Ticket branch: `codex/skill-sources-dialog-redesign`
 - Finalization target remote / branch: `origin` / `personal`
-- Repository finalization status: `Blocked`, waiting for user verification (expected hold)
+- Ticket branch commit result: `Completed`. `ab73def8c` archives the ticket, adds the delivery docs and records verification.
+- Ticket branch push result: `Completed` (`origin/codex/skill-sources-dialog-redesign` @ `ab73def8c`)
+- Target advanced after verification / acceptance: `No`. `origin/personal` was still `d28c56d5d` at fetch time.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The local `personal` in the main checkout was `d28c56d5d`, equal to `origin/personal`.
+- Merge into target result: `Completed`. `git merge --ff-only` was a fast-forward to `ab73def8c`. Unrelated uncommitted edits from other tickets in the main checkout were left untouched.
+- Push target branch result: `Completed`. `d28c56d5d..ab73def8c personal -> personal`, confirmed with `git ls-remote`.
+- Repository finalization status: `Completed`
+- Follow-up delivery-record commit: this DR-002 record, committed directly on `personal`.
 
 ## Release / Publication / Deployment
 
@@ -67,7 +76,12 @@ A web renderer change (Skills → Sources dialog), shipped in the desktop app. T
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign`
-- Worktree, branch and remote-branch cleanup: after finalization
+  - Before removal it held only untracked SDK `dist/` folders and git-ignored build outputs, including `electron-dist/`.
+  - No isolated instance from it was running (`isolated-app list`).
+- Worktree cleanup result: `Completed` (`git worktree remove --force`)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/skill-sources-dialog-redesign` was deleted at `ab73def8c`, which `origin/personal` contains.
+- Remote branch cleanup result: `Not required`. `origin/codex/skill-sources-dialog-redesign` is kept as the review reference, as on earlier tickets.
 
 ## Release Notes Summary
 
@@ -94,9 +108,9 @@ If the dialog breaks a source operation, revert the two product commits `a7d2fc8
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes`
-- Repository finalization complete: in progress at this commit (see DR-002 in `delivery-revision-record.md` for the final state)
+- Repository finalization complete: `Yes` (`personal` @ `ab73def8c`, plus the DR-002 record commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
-- Applicable safe cleanup complete or not required: after finalization (see DR-002)
+- Applicable safe cleanup complete or not required: `Yes`
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record is pushed (see the delivery message)

@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-002 Pass (direct route) | N/A | Ready for user verification; finalization on hold | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `autobyteus-web/docs/skills.md`, `TESTING.md` |
+| DR-002 | User verification (AC-008), no release | DR-001: waiting for verification | Finalized into `personal` @ `ab73def8c`; no release; cleanup completed | `handoff-summary.md`, `release-deployment-report.md`, ticket archived to `tickets/done/` |
 
 ## Revision Entries
 
@@ -32,3 +33,24 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Remaining blockers, rollback concerns, or untested scope:
   - The native OS folder picker selection (Browse… → choose a folder) is left to the user.
   - O-001 (`ConfirmationModal` focus/Esc) is out of scope.
+
+### DR-002 — Finalization after user verification, no release
+
+- Delivery round and trigger: Round 2. The user verified on 2026-10-10: "i tested. lets finalize, no need to release" / "no need to release a new version i meant".
+- Prior authoritative result: DR-001 (waiting for verification).
+- Current authoritative result:
+  - AC-008 passed.
+  - The ticket was archived to `tickets/done/skill-sources-dialog-redesign/`.
+  - The ticket branch was committed (`ab73def8c`) and pushed.
+  - `personal` was fast-forwarded to `ab73def8c` and pushed.
+  - No version bump, tag or release (the user's decision).
+  - The worktree and local branch were removed. The remote ticket branch is kept.
+- Integration and post-integration verification: `origin/personal` was unchanged (`d28c56d5d`) after verification. No re-integration or renewed verification was needed.
+- User verification/finalization state: `Completed`
+- Terminal return to `/solution_designer`: `Sent` after this record is pushed (see the delivery message)
+- Why this delivery revision was recorded: completion of the finalization gates after the user's verification.
+- Next recipient/action: `/solution_designer` verifies the terminal package.
+- Remaining blockers, rollback concerns, or untested scope:
+  - None blocking.
+  - `release-notes.md` should go into the next release.
+  - O-001 (`ConfirmationModal` focus/Esc) is recommended as a separate ticket.
