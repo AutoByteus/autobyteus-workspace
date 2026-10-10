@@ -11,14 +11,15 @@
   - API/E2E: API-REV-001 Pass (96%).
   - Test-code review: CRR-002 Pass.
 - One repository: `codex/draft-run-id-validation` → `origin/personal`.
-- Current state: **DR-001: held for user verification.** Nothing has been pushed, merged or released.
+- Release: none. The user asked to finalize without a new version.
+- Current state: **Delivery Completed (DR-002)**. The ticket is user verified, finalized, not released, and cleaned up.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/draft-run-id-validation/tickets/in-progress/draft-run-id-validation/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `.../tickets/in-progress/draft-run-id-validation/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002` (finalization)
 
 ## Initial Delivery Integration Refresh
 
@@ -44,9 +45,13 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Requested check: normal attach, preview, remove and send flows are unchanged; an optional traversal curl returns 400 (`handoff-summary.md` § How To Verify).
-- Release decision requested: beta `v1.4.100-beta.1`, or merge without a release.
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: the user on 2026-10-10: "i checked. finalize no need tog release a new version". Recorded in `handoff-summary.md` § User Verification.
+- Renewed verification required after later re-integration: `No`.
+  - The target advanced to `92de64600` after verification. It contains skill-sources-dialog-redesign: web skills UI, localization, one server e2e test and `TESTING.md`.
+  - It shares no context-file, server source or route files with this change. The only shared file, `TESTING.md`, auto-merged in a separate section.
+  - The user-facing behavior handed over for verification did not change.
+- Renewed verification received: `Not needed`
 
 ## Docs Sync Result
 
@@ -58,29 +63,54 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/draft-run-id-validation`: `No`. This waits for user verification.
+- Ticket moved to `tickets/done/draft-run-id-validation`: `Yes` (`9efa96310`)
+- Archived ticket path: `tickets/done/draft-run-id-validation/`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision. The current version is `1.4.99`. If a beta is requested, the next is `v1.4.100-beta.1` (`scripts/release_versions.py next-beta`).
+- Not applicable. The user asked for no new version; `autobyteus-web/package.json` stays `1.4.99`.
 
 ## Repository Finalization
 
-- Ticket branch: `codex/draft-run-id-validation` @ `36a444f0e` (plus uncommitted test, docs and artifacts)
+- Bootstrap context source: `investigation-notes.md` / the CRR-002 package (base and finalization target `origin/personal`)
+- Ticket branch: `codex/draft-run-id-validation` @ `444f8ab50`. Commits:
+  - `a9c9a65f2` baseline test fix
+  - `36a444f0e` the change
+  - `9efa96310` archive, probe, docs and artifacts
+  - `444f8ab50` merge of `origin/personal` @ `92de64600`
+- Ticket branch commit result: `Completed`. The untracked `*/dist/` folders were excluded.
+- Ticket branch push result: `Completed` (`[new branch] codex/draft-run-id-validation`)
 - Finalization target: `origin` / `personal`
-- Repository finalization status: `Not started`. This waits for user verification.
+- Target advanced after verification / acceptance: `Yes` (`d28c56d5d` → `92de64600`, skill-sources-dialog-redesign)
+- Delivery-owned edits protected before re-integration: `Completed`. The archive commit `9efa96310` was made before the merge.
+- Re-integration before final merge result: `Completed`. Merge `444f8ab50` had no conflicts; `TESTING.md` auto-merged.
+  - Rerun on `444f8ab50`:
+
+    | Check | Result | Log |
+    | --- | --- | --- |
+    | Server typecheck | exit 0 | `delivery-evidence/dr2-server-typecheck.log` |
+    | Unit tests | 141/141 pass | `delivery-evidence/dr2-server-unit.log` |
+    | REST integration | 28/28 pass | `delivery-evidence/dr2-server-integration.log` |
+    | Licensing and hygiene | both exit 0 | `delivery-evidence/finalization-hygiene.log` |
+- Target branch update result: `Completed`. The ticket worktree was detached at the fetched `origin/personal`; the main checkout was not touched.
+- Merge into target result: `Completed`, a `--no-ff` merge, `e0f84506a`. Licensing and hygiene both exit 0 on the merged tree.
+- Push target branch result: `Completed` (`92de64600..e0f84506a HEAD -> personal`, after re-checking that the target had not moved)
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
-- Applicable: `Pending user decision`
-- Method (if a beta is requested): `scripts/desktop-release.sh beta`, with tag-triggered GitHub workflows
+- Applicable: `No`. The user asked for no new version.
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required`. The archived `release-notes.md` is kept for the next release, and it lists the status-code changes.
 
 ## Post-Finalization Cleanup
 
-- Planned after finalization:
-  - remove the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/draft-run-id-validation` and prune;
-  - delete the local branch once it is contained in `origin/personal`;
-  - keep the remote branch.
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/draft-run-id-validation`. It is removed right after this record is pushed; it holds only the untracked `*/dist/` build output.
+- Worktree cleanup result: `Completed` (after this record's push)
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (it is contained in `origin/personal`)
+- Remote branch cleanup result: `Not required`. The remote branch is kept as the review reference.
 
 ## Release Notes Summary
 
@@ -98,10 +128,10 @@
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (decision pending)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: user verification pending (expected hold)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record is pushed (see `delivery-revision-record.md` DR-002)
