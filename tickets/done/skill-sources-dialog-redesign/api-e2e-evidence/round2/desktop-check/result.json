@@ -1,0 +1,58 @@
+{
+  "startedAt": "2026-10-10T05:23:38.593Z",
+  "endpoint": "http://127.0.0.1:52227",
+  "cases": {
+    "D-01a-browse-eligible-in-electron": {
+      "result": "Pass",
+      "observed": {
+        "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+        "hasShowFolderDialog": true,
+        "focusOnOpen": "skill-sources-dialog",
+        "order": [
+          "INPUT:",
+          "BUTTON:Browse…",
+          "BUTTON:Add"
+        ],
+        "rows": 1
+      }
+    },
+    "D-01b-keyboard-add-remove-electron": {
+      "result": "Pass",
+      "observed": {
+        "count": "1 skill",
+        "focusAfterAdd": {
+          "tag": "INPUT",
+          "text": "",
+          "insidePanel": true
+        },
+        "focusAfterRemove": {
+          "tag": "INPUT",
+          "text": "",
+          "insidePanel": true
+        },
+        "tabAfterRemove": {
+          "tag": "BUTTON",
+          "text": "Browse…",
+          "insidePanel": true
+        },
+        "returned": "Sources"
+      }
+    },
+    "D-01c-browse-invokes-native-dialog-without-submit": {
+      "result": "Pass",
+      "observed": {
+        "bridgeWrapped": false,
+        "browseDisabled": true,
+        "value": "keep-me",
+        "calls": 0,
+        "alerts": [],
+        "rowsBefore": 1,
+        "rowsAfter": 1,
+        "note": "The native sheet is left open and closed by stopping the isolated instance (no OS-level tool to answer it)."
+      }
+    }
+  },
+  "pageErrors": [],
+  "scratchRemoved": true,
+  "finishedAt": "2026-10-10T05:23:43.498Z"
+}

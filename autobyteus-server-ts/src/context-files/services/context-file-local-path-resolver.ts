@@ -5,7 +5,6 @@ import {
   parseDraftContextFileLocator,
   parseFinalContextFileOwnerDescriptor,
   type ContextFileDraftOwnerDescriptor,
-  type ContextFileFinalOwnerDescriptor,
 } from "../domain/context-file-owner-types.js";
 import { ContextFileLayout } from "../store/context-file-layout.js";
 import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
@@ -87,31 +86,31 @@ export class ContextFileLocalPathResolver {
     const teamMatch = pathname.match(TEAM_MEMBER_FINAL_ROUTE);
     if (teamMatch?.[1] && teamMatch?.[2] && teamMatch?.[3]) {
       return this.resolveExistingFinalPath(
-        parseFinalContextFileOwnerDescriptor({
+        {
           kind: "team_member_final",
           teamRunId: decodePathSegment(teamMatch[1]),
           agentRunId: decodePathSegment(teamMatch[2]),
-        }),
+        },
         decodePathSegment(teamMatch[3]),
       );
     }
 
     const orgMatch = pathname.match(ORG_MEMBER_FINAL_ROUTE);
     if (orgMatch?.[1] && orgMatch?.[2] && orgMatch?.[3]) {
-      return this.resolveExistingFinalPath(parseFinalContextFileOwnerDescriptor({
+      return this.resolveExistingFinalPath({
         kind: "org_member_final",
         orgRunId: decodePathSegment(orgMatch[1]),
         agentRunId: decodePathSegment(orgMatch[2]),
-      }), decodePathSegment(orgMatch[3]));
+      }, decodePathSegment(orgMatch[3]));
     }
 
     const collaborationMatch = pathname.match(AGENT_COLLABORATION_MEMBER_FINAL_ROUTE);
     if (collaborationMatch?.[1] && collaborationMatch?.[2] && collaborationMatch?.[3]) {
-      return this.resolveExistingFinalPath(parseFinalContextFileOwnerDescriptor({
+      return this.resolveExistingFinalPath({
         kind: "agent_collaboration_member_final",
         hostRunId: decodePathSegment(collaborationMatch[1]),
         agentRunId: decodePathSegment(collaborationMatch[2]),
-      }), decodePathSegment(collaborationMatch[3]));
+      }, decodePathSegment(collaborationMatch[3]));
     }
 
     return null;
@@ -146,12 +145,13 @@ export class ContextFileLocalPathResolver {
     }
   }
 
+  /** Parses the locator's owner through the codec; any malformed owner or file leaves the locator unresolved. */
   private resolveExistingFinalPath(
-    owner: ContextFileFinalOwnerDescriptor,
+    ownerInput: Record<string, string>,
     storedFilename: string,
   ): string | null {
     try {
-      const resolvedOwner = this.ownerResolver.resolveFinalOwnerSync(owner);
+      const resolvedOwner = this.ownerResolver.resolveFinalOwnerSync(parseFinalContextFileOwnerDescriptor(ownerInput));
       const filePath = this.layout.getFinalFilePath(resolvedOwner, storedFilename);
       const resolvedPath = path.resolve(filePath);
       assertContainedContextFileSync(this.layout.getMemoryRootDirPath(), resolvedPath);

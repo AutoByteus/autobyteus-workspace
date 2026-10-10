@@ -1,16 +1,18 @@
 import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export class ContextFileDescriptorError extends Error {}
+/** A resolved context-file path that would leave its owner folder (defence in depth behind the codec rules). */
+export class ContextFilePathContainmentError extends ContextFileDescriptorError {}
 
-const required = (value: string, field: string): string => {
-  const normalized = value.trim();
-  if (!normalized) throw new ContextFileDescriptorError(`${field} is required.`);
-  return normalized;
-};
+/**
+ * Stored filenames are server-generated (`ctx_<token>__<stem>.<ext>`), so only that character set is accepted.
+ * Dot-only names are rejected: `.` would resolve to the owner folder itself.
+ */
 const filename = (value: string): string => {
-  const normalized = required(value, "storedFilename");
-  if (normalized.includes("..") || normalized.includes("/") || normalized.includes("\\")) throw new ContextFileDescriptorError("storedFilename is invalid.");
-  return normalized;
+  if (typeof value !== "string" || !/^[A-Za-z0-9._-]+$/.test(value) || /^\.+$/.test(value) || value.includes("..")) {
+    throw new ContextFileDescriptorError("storedFilename is invalid.");
+  }
+  return value;
 };
 
 export type StandaloneDraftContextFileOwner = { kind: "agent_draft"; draftRunId: string };
@@ -58,26 +60,33 @@ const safeIdentity = (value: unknown, field: string): string => {
   return value;
 };
 
-const exactOrgIdentity = (input: Record<string, unknown>): { orgRunId: string; agentRunId: string } => {
-  if (Object.keys(input).some((key) => !["kind", "orgRunId", "agentRunId"].includes(key))) {
-    throw new ContextFileDescriptorError("Org context-file owner has unsupported fields.");
+const assertExactFields = (input: Record<string, unknown>, fields: readonly string[], ownerLabel: string): void => {
+  if (Object.keys(input).some((key) => key !== "kind" && !fields.includes(key))) {
+    throw new ContextFileDescriptorError(`${ownerLabel} context-file owner has unsupported fields.`);
   }
+};
+const exactOrgIdentity = (input: Record<string, unknown>): { orgRunId: string; agentRunId: string } => {
+  assertExactFields(input, ["orgRunId", "agentRunId"], "Org");
   return { orgRunId: safeIdentity(input.orgRunId, "orgRunId"), agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
 };
 const exactAgentCollaborationIdentity = (input: Record<string, unknown>): { hostRunId: string; agentRunId: string } => {
-  if (Object.keys(input).some((key) => !["kind", "hostRunId", "agentRunId"].includes(key))) {
-    throw new ContextFileDescriptorError("Agent collaboration context-file owner has unsupported fields.");
-  }
+  assertExactFields(input, ["hostRunId", "agentRunId"], "Agent collaboration");
   return { hostRunId: safeIdentity(input.hostRunId, "hostRunId"), agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
 };
 export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFileDraftOwnerDescriptor => {
   const input = record(value);
-  if (input.kind === "agent_draft") return { kind: "agent_draft", draftRunId: required(String(input.draftRunId ?? ""), "draftRunId") };
-  if (input.kind === "team_member_draft") return {
-    kind: "team_member_draft",
-    teamDraftId: required(String(input.teamDraftId ?? ""), "teamDraftId"),
-    memberAddress: assertAgentTeamAddress(String(input.memberAddress ?? "")),
-  };
+  if (input.kind === "agent_draft") {
+    assertExactFields(input, ["draftRunId"], "Standalone draft");
+    return { kind: "agent_draft", draftRunId: safeIdentity(input.draftRunId, "draftRunId") };
+  }
+  if (input.kind === "team_member_draft") {
+    assertExactFields(input, ["teamDraftId", "memberAddress"], "Team draft");
+    return {
+      kind: "team_member_draft",
+      teamDraftId: safeIdentity(input.teamDraftId, "teamDraftId"),
+      memberAddress: assertAgentTeamAddress(String(input.memberAddress ?? "")),
+    };
+  }
   if (input.kind === "org_member_draft") return {
     kind: "org_member_draft",
     ...exactOrgIdentity(input),
@@ -90,11 +99,9 @@ export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFil
 };
 export const parseFinalContextFileOwnerDescriptor = (value: unknown): ContextFileFinalOwnerDescriptor => {
   const input = record(value);
-  if (input.kind === "agent_final") return { kind: "agent_final", runId: required(String(input.runId ?? ""), "runId") };
+  if (input.kind === "agent_final") return { kind: "agent_final", runId: safeIdentity(input.runId, "runId") };
   if (input.kind === "team_member_final") {
-    if (Object.keys(input).some((key) => !["kind", "teamRunId", "agentRunId"].includes(key))) {
-      throw new ContextFileDescriptorError("Team context-file owner has unsupported fields.");
-    }
+    assertExactFields(input, ["teamRunId", "agentRunId"], "Team");
     return { kind: "team_member_final", teamRunId: safeIdentity(input.teamRunId, "teamRunId"),
       agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
   }
@@ -182,11 +189,4 @@ export const buildFinalContextFileLocator = (owner: ContextFileFinalOwnerDescrip
       return `/rest/agent-collaborations/${encodeURIComponent(owner.hostRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
   }
 };
-export const getStoredFilenameFromLocator = (locator: string): string | null => {
-  const raw = locator.trim(); if (!raw) return null;
-  const pathname = raw.startsWith("http://") || raw.startsWith("https://") ? new URL(raw).pathname : raw;
-  const match = pathname.match(/\/context-files\/([^/?#]+)$/); if (!match?.[1]) return null;
-  try { return filename(decodeURIComponent(match[1])); } catch { return null; }
-};
-export const getDisplayNameFromStoredFilename = (storedFilename: string): string => filename(storedFilename).match(/^ctx_[^_]+__([^]+)$/)?.[1] || filename(storedFilename);
 export const assertStoredFilename = filename;

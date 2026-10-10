@@ -1,0 +1,318 @@
+{
+  "startedAt": "2026-10-10T05:09:32.140Z",
+  "cases": {
+    "J-01-open-overview": {
+      "result": "Pass",
+      "observed": {
+        "focusOnOpen": {
+          "tag": "SECTION",
+          "text": "Manage Skill Sourcesdata/skillsDefaultNo skillsLocal folder/",
+          "insidePanel": true,
+          "isPanel": true,
+          "isBody": false
+        },
+        "rowCount": 18,
+        "names": [
+          "data/skills",
+          "api-e2e/skills",
+          "empty-folder",
+          "extra-source-01",
+          "extra-source-02",
+          "extra-source-03",
+          "extra-source-04",
+          "extra-source-05",
+          "extra-source-06",
+          "extra-source-07",
+          "extra-source-08",
+          "extra-source-09",
+          "extra-source-10",
+          "extra-source-11",
+          "extra-source-12",
+          "one-skill",
+          "skills-library",
+          ".codex/skills"
+        ],
+        "checkRequestsSeen": 1,
+        "tooltip": "Installed aaaaaaaaaa · main\nLatest aaaaaaaaaa\nChecked 10.10.2026, 07:09",
+        "upstreamLatestCheckedPresent": true
+      }
+    },
+    "J-02-scroll-short-window-1024x700": {
+      "result": "Pass",
+      "observed": {
+        "before": {
+          "viewportH": 700,
+          "panel": {
+            "top": 35,
+            "bottom": 665
+          },
+          "header": {
+            "top": 35,
+            "bottom": 100
+          },
+          "add": {
+            "top": 484,
+            "bottom": 604
+          },
+          "footer": {
+            "top": 604,
+            "bottom": 665
+          },
+          "listScrollH": 1135,
+          "listClientH": 384,
+          "listScrollTop": 0,
+          "panelScrollable": false,
+          "docScrollY": 0
+        },
+        "after": {
+          "viewportH": 700,
+          "panel": {
+            "top": 35,
+            "bottom": 665
+          },
+          "header": {
+            "top": 35,
+            "bottom": 100
+          },
+          "add": {
+            "top": 484,
+            "bottom": 604
+          },
+          "footer": {
+            "top": 604,
+            "bottom": 665
+          },
+          "listScrollH": 1135,
+          "listClientH": 384,
+          "listScrollTop": 751,
+          "panelScrollable": false,
+          "docScrollY": 0
+        },
+        "narrow": {
+          "panelW": 358,
+          "inputW": 326,
+          "addTop": 641,
+          "inputTop": 597,
+          "tileDisplay": "none",
+          "docOverflowX": false
+        }
+      }
+    },
+    "J-03-add-folder-success": {
+      "result": "Pass",
+      "observed": {
+        "dir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-journey-xFJhwm/added/my-skills",
+        "apiCount": 19
+      }
+    },
+    "J-04-add-missing-folder-error-kept": {
+      "result": "Pass",
+      "observed": {
+        "alert": "Directory not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-journey-xFJhwm/does-not-exist",
+        "box": {
+          "alertBottom": 579.5,
+          "inputTop": 619,
+          "inAddSection": true
+        }
+      }
+    },
+    "J-05-duplicate-name-conflict": {
+      "result": "Pass",
+      "observed": {
+        "conflictText": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nsolo\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE/sources/one-skill/solo\nNew:\n/var/folders/7w/9r4_s1",
+        "sourcesBefore": 19,
+        "sourcesAfter": 19,
+        "addedDespiteConflict": false,
+        "z": {
+          "okOnTop": true
+        }
+      }
+    },
+    "J-06-url-detection-and-import-error": {
+      "result": "Pass",
+      "observed": {
+        "https://github.com/acme/x": "Import only sources you trust. Public re",
+        "github.com/acme/x": "Import only sources you trust. Public re",
+        "WWW.github.com/acme/x": "Import only sources you trust. Public re",
+        "  http://example.com/a": "Import only sources you trust. Public re",
+        "gitlab.com/x/y": "A folder on this computer that contains ",
+        "/Users/me/skills": "A folder on this computer that contains ",
+        "~/skills": "A folder on this computer that contains ",
+        "importError": "Use a public HTTPS github.com repository-root URL (no branch or subfolder)."
+      }
+    },
+    "J-07-update-text-only-chip-and-confirm": {
+      "result": "Pass",
+      "observed": {
+        "tooltip": "Installed aaaaaaaaaa · main\nLatest bbbbbbbbbb\nChecked 10.10.2026, 07:09",
+        "confirmText": "Update entire skill source? Replace the entire downloaded source with the latest default-branch revision? Local edits will be overwritten and upstream deletions will be applied. This does not refresh active agent contexts. api-e2e/skills https://github.com/api-e2e/skills main aaaaaaaaaa bbbbbbbbbb C",
+        "installed": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    },
+    "J-08-check-failed-try-again": {
+      "result": "Pass",
+      "observed": {
+        "status": "Check failed — installed skills retained",
+        "errorLine": "Error: Fixture GitHub temporarily unavailable"
+      }
+    },
+    "J-09-remove-local-cancel-and-confirm": {
+      "result": "Pass",
+      "observed": {
+        "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE/sources/empty-folder",
+        "confirmText": "Remove Skill Source Unlink this local source? Its skills will no longer be available. Files on disk will not be deleted. empty-folder /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE/sources/empty-folder Cancel Remove"
+      }
+    },
+    "J-10-keyboard-focus-trap-esc": {
+      "result": "Pass",
+      "trace": {
+        "tabCycleLength": 39,
+        "ring": {
+          "label": "Remove one-skill",
+          "focusVisible": true,
+          "boxShadow": "rgb(59, 130, 246) 0px 0px 0px 2px"
+        },
+        "focusInConfirmation": {
+          "tag": "BODY",
+          "text": "ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork",
+          "insidePanel": false,
+          "isPanel": false,
+          "isBody": true
+        },
+        "confirmationStillOpenAfterEsc": true,
+        "focusAfterCancel": {
+          "tag": "BODY",
+          "text": "ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork",
+          "insidePanel": false,
+          "isPanel": false,
+          "isBody": true
+        },
+        "focusAfterCancelTab": {
+          "tag": "BUTTON",
+          "text": "Close",
+          "insidePanel": true,
+          "isPanel": false,
+          "isBody": false
+        },
+        "escAfterCancelClosed": true,
+        "returned": "Sources"
+      },
+      "observed": {
+        "tabCycleLength": 39,
+        "ring": {
+          "label": "Remove one-skill",
+          "focusVisible": true,
+          "boxShadow": "rgb(59, 130, 246) 0px 0px 0px 2px"
+        },
+        "focusInConfirmation": {
+          "tag": "BODY",
+          "text": "ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork",
+          "insidePanel": false,
+          "isPanel": false,
+          "isBody": true
+        },
+        "confirmationStillOpenAfterEsc": true,
+        "focusAfterCancel": {
+          "tag": "BODY",
+          "text": "ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork",
+          "insidePanel": false,
+          "isPanel": false,
+          "isBody": true
+        },
+        "focusAfterCancelTab": {
+          "tag": "BUTTON",
+          "text": "Close",
+          "insidePanel": true,
+          "isPanel": false,
+          "isBody": false
+        },
+        "escAfterCancelClosed": true,
+        "returned": "Sources"
+      }
+    },
+    "J-11-close-paths-and-copy": {
+      "result": "Pass",
+      "observed": {
+        "closeX": true,
+        "overlay": true,
+        "directWrite": "ok",
+        "clipboard": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE/sources/team/skills-library",
+        "done": true
+      }
+    },
+    "J-12-zh-CN-render": {
+      "result": "Pass",
+      "observed": {
+        "sample": "管理技能来源\ndata/skills\n默认\n无技能\n本地文件夹\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE/data/skills\nmy-skills\n2 个技能\n本地文件夹\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-journey-xFJhwm/added/my-skills\napi-e2e/skills\n2 个技能\nGitHub\nhttps://github.com/api-e2e/skills\n已是最新\nextra-source-01\n1 个技能\n本地文件夹\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-rende",
+        "trust": "请仅导入您信任的来源。仅支持公开仓库根 URL 和默认分支。更新会替换整个托管副",
+        "overflowingButtons": []
+      }
+    },
+    "J-13-keyboard-focus-after-operations": {
+      "result": "Fail",
+      "trace": {
+        "a-enter-add": {
+          "focusAfterOperation": {
+            "tag": "INPUT",
+            "text": "",
+            "insidePanel": true,
+            "isPanel": false,
+            "isBody": false
+          },
+          "afterTab": {
+            "tag": "BUTTON",
+            "text": "Done",
+            "insidePanel": true,
+            "isPanel": false,
+            "isBody": false
+          }
+        },
+        "focusOnConfirmationOpen": {
+          "tag": "BODY",
+          "text": "ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork",
+          "insidePanel": false,
+          "isPanel": false,
+          "isBody": true
+        },
+        "tabsToReachConfirmation": [
+          {
+            "text": "Cancel",
+            "inConfirm": true
+          }
+        ],
+        "b-keyboard-remove-confirmed": {
+          "focusAfterOperation": {
+            "tag": "BODY",
+            "text": "ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork",
+            "insidePanel": false,
+            "isPanel": false,
+            "isBody": true
+          },
+          "afterTab": {
+            "tag": "BUTTON",
+            "text": "Chat",
+            "insidePanel": false,
+            "isPanel": false,
+            "isBody": false
+          }
+        },
+        "escAfterRemoveFromInputClosed": false
+      },
+      "error": "AssertionError [ERR_ASSERTION]: focus stays in the panel after a keyboard remove: {\"focusAfterOperation\":{\"tag\":\"BODY\",\"text\":\"ChatAgentsAgent TeamsAgent OrgsProjectsSkillsMemoryNodesWork\",\"insidePanel\":false,\"isPanel\":false,\"isBody\":true},\"afterTab\":{\"tag\":\"BUTTON\",\"text\":\"Chat\",\"insidePanel\":false,\"isPanel\":false,\"isBody\":false}}\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/tickets/in-progress/skill-sources-dialog-redesign/api-e2e-evidence/skill-sources-dialog-journey.mjs:478:12\n    at async record (file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/tickets/in-progress/skill-sources-dialog-redesign/api-e2e-evidence/skill-sources-dialog-journey.mjs:77:39)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources-dialog-redesign/tickets/in-progress/skill-sources-dialog-redesign/api-e2e-evidence/skill-sources-dialog-journey.mjs:436:3"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "stack": "cleaned /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE",
+    "ownedRemoved": true,
+    "scratchRemoved": true
+  },
+  "stack": {
+    "frontend": "http://127.0.0.1:51352/skills",
+    "backend": "http://127.0.0.1:51351",
+    "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-sources-render-cSvOWE"
+  },
+  "finishedAt": "2026-10-10T05:10:13.807Z"
+}

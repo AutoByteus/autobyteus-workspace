@@ -793,7 +793,7 @@ Run from the repository root with installed workspace dependencies and Chrome:
 pnpm -C autobyteus-server-ts prebuild
 pnpm -C autobyteus-server-ts build
 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/skills tests/integration/skills tests/unit/skills --no-watch
-pnpm -C autobyteus-web test:nuxt components/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
+pnpm -C autobyteus-web test:nuxt components/skills utils/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
 node autobyteus-web/tests/e2e/github-skill-sources-probe.mjs <fresh-output-directory>
 ```
 
@@ -875,7 +875,13 @@ owner kinds. Cases:
 - CF-001: the universal `GET`/`DELETE /rest/drafts/*` routes over raw HTTP for
   every owner kind (upload → GET 200 → DELETE 204 → GET 404 → DELETE 204), the
   400/404 mapping, traversal-shaped paths that the Fastify `inject` tests cannot
-  express, and a paired mobile bearer credential (forged → 401).
+  express, and a paired mobile bearer credential (forged → 401). Traversal-shaped
+  owner IDs on `agent-runs`, `team-runs` and `/rest/runs/` (`%2E%2E`, `..%2F…`)
+  and a dot-only filename (`%2E`) against an existing owner folder must return
+  400 with `detail` and leave every sentinel (draft-root level, another owner,
+  app data, the owner's own draft) intact. Malformed upload/finalize owners
+  (traversal, untrimmed, extra fields) and an invalid agent-final filename also
+  return 400 with `detail`, and no context file in the data root changes.
 - CF-002/CF-003/CF-006: real clipboard paste of an image, the `+` file chooser and
   a pasted workspace path, then × and Clear All, in a delegated Agent copy, a
   delegated Team-copy member and every other run kind. Each removal is checked
@@ -887,6 +893,10 @@ owner kinds. Cases:
 - CF-009: an Org task agent while its message is pending (finalize held while the
   Manager delegates another task): `+` disabled with its reason, a pasted image
   shows the message and uploads nothing, a pasted path still attaches.
+- CF-011/CF-012: `+` on the Manager run and on a Team run opens New chat with the
+  run's settings; a file attached there (a `temp-chat-…` draft) is finalized by
+  the first send and read back at its agent-final or team-member final locator,
+  and the launched run shows the message with its file.
 - CF-005: the delegated children after their root is stopped, a real backend
   restart and a reload.
 

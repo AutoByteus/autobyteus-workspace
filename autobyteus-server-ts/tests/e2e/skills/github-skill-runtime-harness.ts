@@ -26,10 +26,10 @@ export async function runtimeFixture(root: string, adapter: "codex" | "claude" |
   const cleanups: Array<() => Promise<void>> = [];
   let discoverCurrent = false;
   const boot = adapter === "codex" ? new CodexThreadBootstrapper(mcpSessions as never, getCodexWorkspaceSkillMaterializer(), workspaces as never, definitions as never, skills, {
-    acquireClient: async () => ({ request: async (method: string) => {
+    beginAcquire: () => ({ acquire: async () => ({ request: async (method: string) => {
       if (method !== "skills/list") throw new Error("Unexpected external Codex call " + method);
       return { data: [{ skills: discoverCurrent ? [{ name: "api-writer", enabled: true, path: skills.getSkill("api-writer")!.rootPath }] : [] }] };
-    } }), releaseClient: async () => {},
+    } }), release: async () => {} }),
   } as never) : adapter === "claude" ? new ClaudeSessionBootstrapper(workspaces as never, getClaudeWorkspaceSkillMaterializer(), definitions as never, skills) : null;
   const envKeys = ["GROK_BUILD_COMMAND", "FAKE_ACP_FIXTURE", "FAKE_ACP_RECORD"];
   const saved = envKeys.map(key => process.env[key]);
@@ -48,11 +48,13 @@ export async function runtimeFixture(root: string, adapter: "codex" | "claude" |
     setDiscoverCurrent: () => { discoverCurrent = true; },
     async start(id: string) {
       if (factory) {
-        const backend = await factory.createBackend(config(), id);
+        const backend = await factory.beginPreparation({ kind: "new", config: config(), runId: id }).prepare();
         const cleanup = () => backend.terminate(); cleanups.push(cleanup);
         return { cleanup, root: fs.realpathSync(path.join(workspace, ".grok", "skills", "api-writer")) };
       }
-      const result = await boot!.bootstrapForCreate(new AgentRunContext({ runId: id, config: config(), runtimeContext: null }));
+      // No preparation is cancelled here; materialized skills are released through the cleanup below.
+      const guard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
+      const result = await boot!.bootstrapForCreate(new AgentRunContext({ runId: id, config: config(), runtimeContext: null }), guard);
       const materializer = adapter === "codex" ? getCodexWorkspaceSkillMaterializer() : getClaudeWorkspaceSkillMaterializer();
       const cleanup = () => materializer.cleanupMaterializedWorkspaceSkills(result.runtimeContext.materializedConfiguredSkills);
       cleanups.push(cleanup);
