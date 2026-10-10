@@ -27,6 +27,10 @@ import {
   applySafeProviderRequestKwargs,
   cloneSafeProviderRequestKwargs,
 } from './provider-request-kwargs.js';
+import {
+  resolveAnthropicModelRequestPolicy,
+  type AnthropicModelRequestPolicy,
+} from './anthropic-model-request-policy.js';
 import type {
   CacheControlEphemeral,
   ContentBlock,
@@ -94,52 +98,8 @@ const ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS = 8192;
 const ANTHROPIC_SAMPLING_PARAM_KEYS = new Set(['temperature', 'top_p', 'top_k']);
 const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools', 'cache_control']);
 
-type AnthropicModelRequestPolicy = {
-  usesAdaptiveThinking: boolean;
-  supportsThinkingDisabled: boolean;
-  rejectsSamplingParameters: boolean;
-};
-
-const matchesAnthropicModelFamily = (modelValue: string, familyValue: string): boolean =>
-  modelValue === familyValue || modelValue.startsWith(`${familyValue}-`);
-
-const resolveAnthropicModelRequestPolicy = (modelValue: string): AnthropicModelRequestPolicy => {
-  const isCurrentAdaptiveModel = [
-    'claude-opus-5',
-    'claude-opus-4-8',
-    'claude-opus-4-7',
-    'claude-sonnet-5',
-    'claude-fable-5',
-  ].some((familyValue) => matchesAnthropicModelFamily(modelValue, familyValue));
-
-  return {
-    usesAdaptiveThinking: isCurrentAdaptiveModel,
-    supportsThinkingDisabled: matchesAnthropicModelFamily(modelValue, 'claude-sonnet-5'),
-    rejectsSamplingParameters: isCurrentAdaptiveModel,
-  };
-};
-
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-
-const sanitizeThinkingParam = (
-  thinking: unknown,
-  policy: AnthropicModelRequestPolicy
-): unknown | undefined => {
-  if (!policy.usesAdaptiveThinking || !isObjectRecord(thinking)) {
-    return thinking;
-  }
-
-  if (thinking.type === 'enabled') {
-    return undefined;
-  }
-
-  if (thinking.type === 'disabled' && !policy.supportsThinkingDisabled) {
-    return undefined;
-  }
-
-  return thinking;
-};
 
 const filterInternalExtraParams = (
   extraParams: Record<string, unknown> | null | undefined
@@ -147,26 +107,82 @@ const filterInternalExtraParams = (
   return cloneSafeProviderRequestKwargs(extraParams, { controlledKeys: ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS });
 };
 
-const buildThinkingParam = (
+const isForcedToolChoice = (toolChoice: unknown): boolean =>
+  toolChoice !== undefined &&
+  (!isObjectRecord(toolChoice) || (toolChoice.type !== 'auto' && toolChoice.type !== 'none'));
+
+/** Fails locally on request shapes the model's provider contract rejects outright. */
+const validateStrictRequestRules = (
+  request: Record<string, unknown>,
+  modelValue: string,
   policy: AnthropicModelRequestPolicy,
-  extraParams: Record<string, unknown> | null | undefined
-): Record<string, unknown> | null => {
-  if (!extraParams) return null;
-  const enabled = extraParams.thinking_enabled;
-  if (enabled === false && policy.supportsThinkingDisabled) {
-    return { type: 'disabled' };
-  }
-  if (enabled !== true) return null;
-  if (policy.usesAdaptiveThinking) {
-    const thinking: Record<string, unknown> = { type: 'adaptive' };
-    if (extraParams.thinking_display === 'summarized') {
-      thinking.display = 'summarized';
+  configExtraParams: Record<string, unknown> | null | undefined,
+  explicitThinking: unknown
+): void => {
+  if (policy.thinkingMode === 'adaptive_required') {
+    if (configExtraParams?.thinking_enabled === false || configExtraParams?.thinking_budget_tokens !== undefined ||
+        (explicitThinking !== undefined && (!isObjectRecord(explicitThinking) || explicitThinking.type !== 'adaptive'))) {
+      throw new Error('Claude Opus 5.5 supports adaptive thinking only; disabled and manual thinking are unavailable.');
     }
+    if ([...ANTHROPIC_SAMPLING_PARAM_KEYS].some((key) => request[key] !== undefined)) {
+      throw new Error('Claude Opus 5.5 does not support explicit sampling parameters.');
+    }
+  }
+  if (policy.rejectsForcedToolChoice && isForcedToolChoice(request.tool_choice)) {
+    throw new Error(`Anthropic model ${modelValue} does not support forced tool choice.`);
+  }
+};
+
+const adaptiveThinking = (
+  configExtraParams: Record<string, unknown> | null | undefined
+): Record<string, unknown> =>
+  configExtraParams?.thinking_display === 'summarized'
+    ? { type: 'adaptive', display: 'summarized' }
+    : { type: 'adaptive' };
+
+/**
+ * Keeps an explicit `thinking` param only in a shape the model accepts. Adaptive models
+ * accept `adaptive` or their own off shape (`between_tools` is reduced to `{ type }`).
+ */
+const sanitizeExplicitThinking = (
+  thinking: unknown,
+  policy: AnthropicModelRequestPolicy
+): unknown | undefined => {
+  if (policy.thinkingMode !== 'adaptive') {
     return thinking;
   }
-  const budgetRaw = extraParams.thinking_budget_tokens;
-  const budget = typeof budgetRaw === 'number' ? budgetRaw : Number(budgetRaw ?? 1024);
-  return { type: 'enabled', budget_tokens: Number.isFinite(budget) ? budget : 1024 };
+  if (!isObjectRecord(thinking)) {
+    return undefined;
+  }
+  if (thinking.type === 'adaptive') {
+    return thinking;
+  }
+  if (policy.thinkingOffShape !== 'omit' && thinking.type === policy.thinkingOffShape) {
+    return policy.thinkingOffShape === 'between_tools' ? { type: 'between_tools' } : thinking;
+  }
+  return undefined;
+};
+
+/** Builds `thinking` from the schema toggle when the caller sent no explicit thinking. */
+const buildThinkingFromToggle = (
+  policy: AnthropicModelRequestPolicy,
+  configExtraParams: Record<string, unknown> | null | undefined
+): Record<string, unknown> | null => {
+  const enabled = configExtraParams?.thinking_enabled;
+  switch (policy.thinkingMode) {
+    case 'adaptive_required':
+      return adaptiveThinking(configExtraParams);
+    case 'adaptive':
+      if (enabled === true) return adaptiveThinking(configExtraParams);
+      if (enabled === false && policy.thinkingOffShape !== 'omit') return { type: policy.thinkingOffShape };
+      return null;
+    case 'legacy_budget': {
+      if (enabled !== true) return null;
+      const budgetRaw = configExtraParams?.thinking_budget_tokens;
+      const budget = typeof budgetRaw === 'number' ? budgetRaw : Number(budgetRaw ?? 1024);
+      return { type: 'enabled', budget_tokens: Number.isFinite(budget) ? budget : 1024 };
+    }
+  }
 };
 
 const applyAnthropicRequestParams = (
@@ -182,29 +198,15 @@ const applyAnthropicRequestParams = (
   applySafeProviderRequestKwargs(request, providerExtraParams);
   applySafeProviderRequestKwargs(request, kwargs, { controlledKeys: ANTHROPIC_CONTROLLED_KWARG_KEYS });
 
-  if (modelValue === 'claude-opus-5-5') {
-    const explicitThinking = kwargs.thinking ?? providerExtraParams.thinking;
-    const internalEnabled = configExtraParams?.thinking_enabled;
-    if (internalEnabled === false || configExtraParams?.thinking_budget_tokens !== undefined ||
-        (explicitThinking !== undefined && (!isObjectRecord(explicitThinking) || explicitThinking.type !== 'adaptive'))) {
-      throw new Error('Claude Opus 5.5 supports adaptive thinking only; disabled and manual thinking are unavailable.');
-    }
-    if ([...ANTHROPIC_SAMPLING_PARAM_KEYS].some((key) => request[key] !== undefined)) {
-      throw new Error('Claude Opus 5.5 does not support explicit sampling parameters.');
-    }
-    const toolChoice = request.tool_choice;
-    if (toolChoice !== undefined && (!isObjectRecord(toolChoice) || (toolChoice.type !== 'auto' && toolChoice.type !== 'none'))) {
-      throw new Error('Claude Opus 5.5 does not support forced tool choice.');
-    }
-  }
+  const explicitThinking = kwargs.thinking ?? providerExtraParams.thinking;
+  validateStrictRequestRules(request, modelValue, policy, configExtraParams, explicitThinking);
 
   if (Array.isArray(kwargs.tools)) {
     request.tools = kwargs.tools as ToolUnion[];
   }
 
-  const explicitThinking = providerExtraParams.thinking !== undefined || kwargs.thinking !== undefined;
   if (request.thinking !== undefined) {
-    const sanitizedThinking = sanitizeThinkingParam(request.thinking, policy);
+    const sanitizedThinking = sanitizeExplicitThinking(request.thinking, policy);
     if (sanitizedThinking === undefined) {
       delete request.thinking;
     } else {
@@ -212,20 +214,14 @@ const applyAnthropicRequestParams = (
     }
   }
 
-  if (!explicitThinking) {
-    const thinkingParam = buildThinkingParam(policy, configExtraParams);
+  if (kwargs.thinking === undefined && providerExtraParams.thinking === undefined) {
+    const thinkingParam = buildThinkingFromToggle(policy, configExtraParams);
     if (thinkingParam) {
       request.thinking = thinkingParam;
     }
   }
 
-  if (modelValue === 'claude-opus-5-5' && request.thinking === undefined) {
-    request.thinking = configExtraParams?.thinking_display === 'summarized'
-      ? { type: 'adaptive', display: 'summarized' }
-      : { type: 'adaptive' };
-  }
-
-  if (policy.rejectsSamplingParameters) {
+  if (policy.thinkingMode !== 'legacy_budget') {
     for (const key of ANTHROPIC_SAMPLING_PARAM_KEYS) {
       delete request[key];
     }

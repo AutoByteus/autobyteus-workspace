@@ -276,7 +276,8 @@ The current latest-model support set is summarized in
 - Anthropic `claude-opus-5-5` (verified 2026-09-23),
   `claude-opus-5` (verified 2026-07-31; standard pricing effective
   2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
-  `claude-opus-4.8`, and `claude-sonnet-5`
+  `claude-opus-4.8`, `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
+  2026-10-09), and `claude-sonnet-5`
   with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
   or fallback.
@@ -300,14 +301,20 @@ Provider adapters own request-shape differences:
 - `OpenAILLM` keeps Astra, Sol, Luna and GPT-5.6 on the official Responses path. The
   shared OpenAI usage normalizer preserves gross input while mapping documented
   `cache_write_tokens` detail fields into generic cache-creation input usage.
+- `AnthropicLLM` shapes requests from one exact-value per-model table,
+  `anthropic-model-request-policy.ts` (thinking mode, toggle-off shape, forced
+  `tool_choice` rejection); unknown values use the legacy fixed-budget policy.
+  Sonnet 5.5 with thinking off sends `{ type: "between_tools" }` and rejects a
+  forced `tool_choice` locally; Haiku 5.5 and Sonnet 5 send `{ type: "disabled" }`.
 - `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
-  Opus 4.8, Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
+  Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Haiku 5.5, and Fable 5 without sending fixed thinking budgets,
   manual-budget overrides, or unsupported sampling fields (`temperature`,
   `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
   before Anthropic Messages API calls. Older Claude rows keep the legacy
   fixed-budget path unless a separate provider migration changes them.
-- Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking and
-  unsupported sampling parameters are rejected before the Messages SDK call.
+- Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking,
+  unsupported sampling parameters and forced `tool_choice` are rejected before
+  the Messages SDK call.
   Its streaming adapter assembles the complete ordered native assistant turn,
   including signed or redacted thinking and tool-use blocks, and retains it
   privately for an active tool continuation rather than exposing it as an
