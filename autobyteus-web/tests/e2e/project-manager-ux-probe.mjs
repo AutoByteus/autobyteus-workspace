@@ -1242,7 +1242,11 @@ const cancelledTasksJourney = async () => {
     details.lanesNarrow = await until('lanes stacked at 390 px', async () => { const l = await laneBoxes(page, 'project-task-column-'); return stacked(l) ? l : null; }, 5000)
       .catch(async () => { throw Object.assign(new Error('lanes not stacked at 390 px'), { details: await laneBoxes(page, 'project-task-column-') }); });
     assert(details.lanesNarrow.at(-1).id === 'project-task-column-CANCELLED', 'Cancelled is the last stacked lane at 390 px', details.lanesNarrow);
-    details.narrowOverflow = await noHorizontalOverflow(page);
+    // The lanes can already stack while the shell still shows the docked left panel (a 70 px board stacks too); the
+    // panel turns into the strip a frame later. Measure once the layout has settled; overflow that persists still fails.
+    details.narrowOverflow = await until('no horizontal overflow at 390 px once the layout settles', async () => {
+      const o = await noHorizontalOverflow(page); return o.ok ? o : null;
+    }, 5000).catch(async () => noHorizontalOverflow(page));
     assert(details.narrowOverflow.ok, 'no horizontal overflow at 390 px with Cancelled shown', details.narrowOverflow);
     await page.getByTestId('project-task-column-CANCELLED').scrollIntoViewIfNeeded();
     await shot(page, 'pmu-017-board-cancelled-lane-narrow');
