@@ -26,7 +26,8 @@ interface CompressionStrategy {
 ```
 
 `PendingCompactionExecutor` captures the live baseline, plans a detached message
-window, and builds the complete input **before** calling the strategy once.
+window, and builds the transcript input **before** asking `CompactionSummarizer`
+for the summary once.
 `CompactionContentBuilder` renders the selected natural conversation, including
 any prior compacted-memory region and new settled raw-backed units. Its plain
 START/END target-history separators enclose the renderer's XML history boundary.
@@ -41,20 +42,45 @@ facts. Literal U+FFFD and valid emoji are not globally forbidden. A completed
 input-construction failure is typed `input_construction_failure` before any
 summary generation; it is not a reason to sanitize canonical history.
 
-`DirectLlmCompressionStrategy` owns the provider envelope and bounded generation:
+Compaction always summarizes on the **agent's own model**. `CompactionSummarizer`
+(`src/memory/compaction/compaction-summarizer.ts`) owns summary production and talks
+only to a `ConversationSummaryPort` (`conversation-summary-port.ts`) that the agent
+loop implements (`LlmPhaseSummaryPort` in `src/agent/loop/`); memory never holds the
+LLM, the tools or the notifier, and there is no compaction-model setting.
 
-- each attempt creates an isolated LLM using current compaction model settings
-  (or the then-current parent model identifier when no model is selected);
-- it sets the bundled `COMPACTION_SUMMARY_PROMPT` and sends the prepared content
-  as the user message with no tools or child Agent/Team runtime;
-- provider capacity is checked before dispatch;
-- one `compress` execution has at most **three** generation attempts with
-  abortable 1s/2s backoffs; each provider call requests `single_attempt` transport
-  so SDK retries cannot multiply those attempts;
-- abort ends the operation rather than authorizing another attempt;
-- known incomplete output, provider errors and invalid summary content do not
-  become accepted memory; cleanup is bounded and cannot reverse a success;
-- it returns only the validated, untagged summary body.
+- **Cached summary request first.** The agent's own conversation request for the
+  compaction baseline — same LLM and settings, same tools, same leading system run,
+  same sanitized messages in the same order (built with the shared
+  `conversation-request.ts` arguments), sent with `promptCacheScope: 'conversation'`
+  — plus one appended user message, `COMPACTION_SUMMARY_INSTRUCTION`
+  (`COMPACTION_SUMMARY_PROMPT` plus a suffix: summarize the entire conversation so
+  far, do not restate the system instructions, do not call tools or continue the
+  task). The provider reads nearly the whole history from its prompt cache. The
+  summary covers the whole conversation while the planned recent tail is still kept
+  word for word. Up to **two** attempts; skipped when the request plus the model's
+  output reservation would not fit the input budget.
+- **Transcript fallback.** Otherwise, or after two cached attempts without a valid
+  summary (tool calls, a task answer, invalid format, provider error), the agent's
+  own LLM receives `COMPACTION_SUMMARY_PROMPT` as system plus the prepared transcript
+  as the user message, without tools or caching: up to **three** attempts with
+  abortable 1s/2s backoffs. Provider capacity is checked before dispatch.
+- Every attempt is exactly one provider call (`single_attempt` transport) on its own
+  provider conversation `compaction_<operationId>_<attempt>`, never the agent's id.
+  The port releases it afterwards through `BaseLLM.releaseConversation` (default
+  no-op; `AutobyteusLLM` ends that remote session), on its own 10 s-bounded
+  controller, whatever the attempt outcome (including abort). The agent's LLM is
+  never cleaned up by compaction.
+- Each attempt's usage is reported to the agent run as a token-usage event
+  (`ingestion_kind: 'autobyteus_compaction'`, `llm_call_id:
+  <executionTurnId>:compaction:<operationId>:<attempt>`, latest prompt null), so the
+  Token Meter includes compaction cost with its cache reads and writes.
+- Before compaction, `LLMRequestAssembler` (and `LlmPhase` before the after-final
+  compaction) binds retained provider reasoning to the current request prefix, so
+  the cached request never replays reasoning bound to a changed prefix; it binds
+  again after compaction.
+- Abort ends the operation rather than authorizing another attempt; known
+  incomplete output, provider errors and invalid summary content do not become
+  accepted memory; it returns only the validated, untagged summary body.
 
 The parser accepts exactly one `<compaction_summary>...</compaction_summary>`
 block, ignores exterior prose, and requires these exact `##` headings in order:
@@ -378,20 +404,18 @@ imported corpora native continuation state.
 
 | Setting | Meaning |
 | --- | --- |
-| `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` | Optional JSON tuple `{modelIdentifier, llmConfig}`. Null model uses the then-current parent identifier; null config uses selected-model defaults. |
 | `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Optional post-response threshold ratio override. |
 | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Optional effective context budget override. |
 | `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Detailed diagnostics. |
 
-Absent model settings select defaults without writing a setting. The server
-clones selected-model defaults and applies permitted generation overrides, then
-forces the approved system prompt, no stop sequences, controlled request fields
-and tool-free single-attempt transport. The hard output cap is a positive
-configured/default cap (fallback 8192), clamped to advertised model capacity.
-Credential-bearing and request-control values are not arbitrary model overrides.
-The active-context token override has an explicit public numeric-setting exception
-to server credential-name protection; the remaining credential checks stay in force. No parent LLM instance, tools,
-conversation state or parent retry policy is mutated.
+There is no compaction-model setting: compaction always uses the agent's own model
+and LLM settings, because a different model or configuration can never read the
+agent's prompt cache. A value saved earlier under the removed
+`AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` key is inert (not read; listed only as a
+deletable custom setting). The active-context token override has an explicit public
+numeric-setting exception to server credential-name protection; the remaining
+credential checks stay in force. Compaction never mutates the agent's LLM instance,
+tools, conversation state or retry policy.
 
 See [server memory ownership](../../autobyteus-server-ts/docs/modules/agent_memory.md),
 [settings](../../autobyteus-web/docs/settings.md#server-settings-working-context-compaction)
@@ -399,8 +423,10 @@ and [frontend recovery/activity](../../autobyteus-web/docs/agent_execution_archi
 
 ## 12. Key Source Owners
 
-- `src/memory/compaction/compression-strategy.ts`
-- `src/memory/compaction/direct-llm-compression-strategy.ts`
+- `src/memory/compaction/compaction-summarizer.ts`
+- `src/memory/compaction/conversation-summary-port.ts`
+- `src/agent/loop/llm-phase-summary-port.ts`
+- `src/agent/loop/conversation-request.ts`
 - `src/memory/compaction/compaction-content-builder.ts`
 - `src/memory/compaction/compaction-summary-prompt.ts`
 - `src/memory/compaction/compaction-summary-parser.ts`
@@ -414,6 +440,6 @@ and [frontend recovery/activity](../../autobyteus-web/docs/agent_execution_archi
 - `src/memory/migration/native-working-context-snapshot-shapes.ts`
 - `src/memory/presentation/unicode-safe-text.ts`
 
-Server composition is in
-`autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts`;
-startup conversion and its ledger remain in `src/app-data-migrations/` there.
+The server enables compaction with the policy only
+(`createEnabledMemoryCompactionConfiguration(new CompactionPolicy())`); startup
+conversion and its ledger remain in `src/app-data-migrations/` there.

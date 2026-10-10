@@ -198,6 +198,12 @@ export abstract class BaseLLM {
     options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown>;
 
+  /**
+   * Releases one provider-side conversation of this LLM (for example a remote session keyed
+   * by `logicalConversationId`) without cleaning up the LLM itself. Default: nothing to release.
+   */
+  async releaseConversation(_conversationId: string, _options: { signal?: AbortSignal } = {}): Promise<void> {}
+
   async cleanup(_options: { signal?: AbortSignal } = {}): Promise<void> {
     for (const ext of this.extensionRegistry.getAll()) {
       await ext.cleanup();

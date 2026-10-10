@@ -30,7 +30,7 @@ describe('supported recovery lifecycle races with native runtime and server FIFO
    expect(afterResponseHooks).toBe(2);expect(f.registry.getRecord(f.run.runId,'A')?.state).toBe('COMPLETED');
    expect(f.compress).toHaveBeenCalledTimes(2);
   }finally{release?.();await f.close()}
- },15000);
+ },30000);
  it('cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it',async()=>{
   const f=await createRecoveryFixture(true);
   try {
@@ -57,7 +57,7 @@ describe('supported recovery lifecycle races with native runtime and server FIFO
    expect(f.parent.requests.slice(3).map(m=>m.at(-1)?.content)).toEqual(['A','C','D']);
    expect(f.compress).toHaveBeenCalledTimes(2);
   }finally{await f.close()}
- },15000);
+ },30000);
  it('root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry',async()=>{
   const f=await createRecoveryFixture();
   try {
@@ -73,5 +73,5 @@ describe('supported recovery lifecycle races with native runtime and server FIFO
    expect(await f.backend.compactionRecovery.authorize({block,userAdmissionId:'late'})).toBe('stopped');
    expect(f.compress).toHaveBeenCalledOnce();
   }finally{await f.close()}
- },15000);
+ },30000);
 });

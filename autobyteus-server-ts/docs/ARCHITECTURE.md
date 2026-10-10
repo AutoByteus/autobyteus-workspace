@@ -171,9 +171,10 @@ replaying work. Root termination and client terminal activity reconciliation are
 identity-scoped, retain facts and reject late output. Native in-memory terminal
 retention is not native cold replay or a general immediate shutdown guarantee.
 
-Server composition uses the optional `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` tuple,
-falling back to the then-current parent model identifier and selected-model
-defaults. Old strategy/compactor-agent settings are inert. Ordinary parent and
+Server composition enables compaction with the policy only; the core summarizer
+always uses the agent's own model (cached summary request first, transcript
+fallback). A value saved under the removed `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS`
+key is inert, as are old strategy/compactor-agent settings. Ordinary parent and
 external-provider request/session policies are not replaced.
 
 See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md),

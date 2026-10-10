@@ -1353,7 +1353,7 @@ other); choosing another model resets both. Thinking semantics stay in
 `llmThinkingConfigAdapter`; `service_tier` is not a thinking key.
 
 `ModelConfigSection` / `RuntimeModelConfigFields` remain only for mobile run
-setup, definition launch preferences and compaction model settings.
+setup and definition launch preferences.
 
 
 ### Skill Improvement Manual Composer Action

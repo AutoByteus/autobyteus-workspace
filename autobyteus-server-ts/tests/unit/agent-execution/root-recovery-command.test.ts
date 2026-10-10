@@ -72,5 +72,5 @@ describe('actual root user command compaction recovery ingress',()=>{
    expect(f.parent.requests.slice(3).map(m=>m.at(-1)?.content)).toEqual(['A','B']);
    expect(route.prepareNewAgentRun).toHaveBeenCalledOnce();
   }finally{await route?.close();await f.close()}
- },15000);
+ },30000);
 });

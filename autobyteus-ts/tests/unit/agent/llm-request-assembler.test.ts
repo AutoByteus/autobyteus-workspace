@@ -9,6 +9,10 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { OpenAIChatRenderer } from '../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
+import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
+import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
+import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -69,7 +73,7 @@ describe('LLMRequestAssembler', () => {
     expect(memoryManager.bindRetainedReasoningToRequestPrefix).toHaveBeenCalledTimes(1);
   });
 
-  it('binds retained reasoning to the post-compaction prefix digest before the recovery checkpoint', async () => {
+  it('binds retained reasoning to the request prefix before compaction and again before the recovery checkpoint', async () => {
     const memoryManager = new FakeMemoryManager();
     const executor = {
       executeIfAuthorized: vi.fn(async () => {
@@ -91,18 +95,53 @@ describe('LLMRequestAssembler', () => {
       tools,
     );
 
-    expect(memoryManager.bindRetainedReasoningToRequestPrefix).toHaveBeenCalledWith(computeLlmRequestPrefixDigest({
-      leadingSystem: [
-        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
-        new Message(MessageRole.SYSTEM, { content: 'Carried note' }),
-      ],
-      tools,
-    }));
-    const guardOrder = memoryManager.bindRetainedReasoningToRequestPrefix.mock.invocationCallOrder[0]!;
+    const bind = memoryManager.bindRetainedReasoningToRequestPrefix;
+    expect(bind.mock.calls.map(([digest]) => digest)).toEqual([
+      computeLlmRequestPrefixDigest({ leadingSystem: [new Message(MessageRole.SYSTEM, { content: 'System prompt' })], tools }),
+      computeLlmRequestPrefixDigest({
+        leadingSystem: [
+          new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+          new Message(MessageRole.SYSTEM, { content: 'Carried note' }),
+        ],
+        tools,
+      }),
+    ]);
+    const [beforeCompaction, afterCompaction] = bind.mock.invocationCallOrder;
+    const compaction = executor.executeIfAuthorized.mock.invocationCallOrder[0]!;
     expect(request.tools).toBe(tools);
-    expect(executor.executeIfAuthorized.mock.invocationCallOrder[0]).toBeLessThan(guardOrder);
-    expect(guardOrder).toBeLessThan(memoryManager.captureLlmRequestRecoverySnapshot.mock.invocationCallOrder[0]!);
+    expect(beforeCompaction).toBeLessThan(compaction);
+    expect(compaction).toBeLessThan(afterCompaction!);
+    expect(afterCompaction).toBeLessThan(memoryManager.captureLlmRequestRecoverySnapshot.mock.invocationCallOrder[0]!);
   });
+  it('removes thinking bound to a changed prefix before compaction captures its baseline (AC-006)', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-request-assembler-guard-'));
+    try {
+      const memoryManager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'agent_guard') });
+      const toolsV1 = [{ name: 'run_bash', description: 'Run a command.' }];
+      const toolsV2 = [{ name: 'run_bash', description: 'Run a shell command (schema reloaded).' }];
+      const identity = (turnId: string, isToolContinuation = false) => ({ turnId, requestId: `${turnId}:llm`, isToolContinuation, signal: new AbortController().signal });
+      await new LLMRequestAssembler(memoryManager).prepareRequest(new LLMUserMessage({ content: 'Start' }), identity('turn_1'), 'System prompt', toolsV1);
+      memoryManager.ingestAssistantToolResponse(new CompleteResponse({ content: '', providerNativeAssistantTurn: { provider: 'anthropic', blocks: [
+        { type: 'thinking', thinking: 'bound to toolsV1', signature: 'sig' },
+        { type: 'tool_use', id: 'toolu_1', name: 'run_bash', input: { command: 'pwd' } },
+      ] } }), [new ToolInvocation('run_bash', { command: 'pwd' }, 'toolu_1', 'turn_1')], 'turn_1');
+      memoryManager.ingestToolResult(new ToolResultEvent('run_bash', { stdout: '/tmp' }, 'toolu_1', undefined, { command: 'pwd' }, 'turn_1'), 'turn_1');
+      memoryManager.ingestAssistantResponse(new CompleteResponse({ content: 'Done.' }), 'turn_1', 'test');
+
+      let compactionSawThinking: boolean | null = null;
+      const executor = { executeIfAuthorized: vi.fn(async () => {
+        compactionSawThinking = JSON.stringify(memoryManager.getWorkingContextMessages()).includes('"type":"thinking"');
+        return false;
+      }) };
+      await new LLMRequestAssembler(memoryManager, executor as any)
+        .prepareRequest(new LLMUserMessage({ content: 'Next' }), identity('turn_2'), 'System prompt', toolsV2);
+      expect(executor.executeIfAuthorized).toHaveBeenCalledOnce();
+      expect(compactionSawThinking).toBe(false);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('appends the system prompt and user message without compaction', async () => {
     const memoryManager = new FakeMemoryManager();
     const assembler = new LLMRequestAssembler(memoryManager as any);
@@ -157,7 +196,7 @@ describe('LLMRequestAssembler', () => {
       {
         turnId: 'turn_0002',
 
-        executionSite: 'before_parent_request', getParentModelIdentifier: undefined, signal: undefined,
+        executionSite: 'before_parent_request', signal: undefined,
       }
     ]);
     expect(request.canonicalMessages.map((message) => message.role)).toEqual([

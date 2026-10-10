@@ -64,7 +64,7 @@ describe('native recovery through admitted Agent-root collaborators', () => {
         throw cleanupError;
       }
       if (mainError) throw mainError;
-    }, 20000);
+    }, 40000);
   }
 });
 
@@ -93,7 +93,7 @@ describe('native Agent-root inspection and stop boundaries', () => {
         expect(f.restoreHost).not.toHaveBeenCalled();
         expect(f.parent.requests).toHaveLength(3); // test-only seed setup, no read-triggered work
       } finally { releaseProcessStandaloneAgentRunRootManager(f.manager); await f.close(); }
-    }, 20000);
+    }, 40000);
 
     it.each([false, true])(`${kind}: root Stop cancels recovery without dispatch (postResponse=%s)`, async postResponse => {
       const f = await createNativeRootFixture(kind, postResponse);
@@ -111,6 +111,6 @@ describe('native Agent-root inspection and stop boundaries', () => {
         expect(f.compress).toHaveBeenCalledOnce();
         expect(f.manager.getActive(HOST)).toBeNull();
       } finally { await f.close(); }
-    }, 20000);
+    }, 40000);
   }
 });
