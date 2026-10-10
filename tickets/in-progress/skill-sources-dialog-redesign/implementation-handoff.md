@@ -19,18 +19,23 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-sources
   - `handoff-to-implementation.md`, `product-design-request.md`, `design-reference/00-current-user-screenshot.png`.
 - Design review report: `N/A — not applicable`.
 - Architecture review revision record: `N/A — not applicable`.
-- Triggering rework report: N/A (initial round).
+- Triggering rework report:
+  - `code-review-report.md` + `code-review-revision-record.md` (CRR-001, CR-001: failure-origin review of API/E2E F-001);
+  - `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-001), `api-e2e-test-case-ledger.md`, and `api-e2e-evidence/dialog-journey/result.json` (J-10, J-13).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework`. IR-002 is a Local Fix for CR-001; see `implementation-revision-record.md` for the delta.
 - Implementation revision record: `implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002` (IR-001 is the initial baseline).
 - Related solution revision IDs:
   - SR-002: approved baseline.
   - SR-003: GitHub row chips are text-only. The user decided this during implementation, I raised it as a Requirement Gap, and the Solution Designer resolved it.
-- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`.
-- Triggering finding IDs: `N/A`.
+- Related architecture-review revision IDs: `N/A`.
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `API-REV-001`.
+- Related delivery revision IDs: `N/A`.
+- Triggering finding IDs: `CR-001` (= API/E2E `F-001`; J-10, J-13).
 
 The popup is replaced by the approved design:
 - a fixed header, add area and footer, with only the list scrolling;
@@ -39,7 +44,8 @@ The popup is replaced by the approved design:
 - the revision details in the status tooltip and in the Update confirmation;
 - one add input that imports a URL and adds anything else as a folder, with the trust hint for a URL and **Browse…** where the desktop folder picker is available;
 - a source card in the confirmation body;
-- focus moved in on open, trapped on Tab and returned on close; Esc is ignored while a confirmation is open.
+- focus moved in on open, trapped on Tab and returned on close; Esc is ignored while a confirmation is open;
+- IR-002: Esc and the Tab cycle are handled at the document level, so they also work when focus has left the panel. Focus is brought back into the panel when a confirmation, an operation or a skill-name conflict ends: to the originating control if it is still usable, otherwise to the add input or the panel.
 
 Store calls are identical to before.
 
@@ -62,7 +68,9 @@ Store calls are identical to before.
   - file sizes;
   - the dead-key re-grep;
   - mutation checks that the tests fail when DC-017 detection, the Esc guard or the SR-003 chip icon are changed.
-- New design impact or escalation trigger: `None`. The SR-003 Requirement Gap is resolved.
+- New design impact or escalation trigger: `None`.
+  - The SR-003 Requirement Gap is resolved.
+  - IR-002 is confined to `SkillSourcesModal.vue` and its spec, with no `ConfirmationModal`, store or design change. The classification was rechecked and stays Medium/Low.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -73,19 +81,19 @@ Store calls are identical to before.
 | BEH-004 | Trash (`Remove {name}`), never on Default or on a REMOVING row → danger confirmation with a source card → `removeSkillSource(path)` / `githubOperation('remove', id)`, then refresh | `SkillSourceRow.vue`, `SkillSourcesModal.vue` `confirmAction` (unchanged) | Done; R05, R06 + retry |
 | BEH-005 | Status line for every status. Update chip on UPDATE_AVAILABLE/UPDATE_FAILED. Try again on CHECK_FAILED only. Retry removal on REMOVING. Version details in the tooltip and the Update confirmation. Automatic check on open. **SR-003: text-only chips** | `SkillSourceRow.vue` (`statusLabel`, `canUpdate`, `canCheck`, `versionDetails`), modal confirmation body | Done; R02, R06; Update → *Updating…* → *Up to date* observed |
 | BEH-006 | Same busy rules (`loading` / `scanning` / any `pending` disables all actions and the add form). Alerts directly above the add form | `SkillSourcesModal.vue` `busy`, alert block | Done; R04 |
-| BEH-007 | ×, Done, overlay and Esc close; Esc is ignored while confirming. Focus in on open, Tab trap, focus returned on unmount. Dialog labelled, `aria-busy`, `inert` while confirming | `SkillSourcesModal.vue` `handleKeydown`, `onMounted`/`onBeforeUnmount` | Done; browser: Esc closed the dialog and focus returned to **Sources** |
+| BEH-007 | ×, Done, overlay and Esc close; Esc is ignored while confirming. Focus in on open, Tab trap, focus returned on unmount. Dialog labelled, `aria-busy`, `inert` while confirming. IR-002: Esc and the Tab cycle also work when focus has left the panel, and focus returns into the panel after confirmations, operations and conflicts | `SkillSourcesModal.vue` document-level `handleKeydown` (inactive while `overlayOpen`), the blocked-state `watch` focus restore, `onMounted`/`onBeforeUnmount` | Done; browser: Esc closed the dialog and focus returned to **Sources**; IR-002 journey J-10/J-13 Pass |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`. The SR-003 change was routed as a Requirement Gap and approved.
 
 ## Key Files Or Areas
 
-- `autobyteus-web/components/skills/SkillSourcesModal.vue` (rewritten; 225 non-empty lines)
+- `autobyteus-web/components/skills/SkillSourcesModal.vue` (rewritten; 253 non-empty lines after IR-002)
 - `autobyteus-web/components/skills/SkillSourceRow.vue` (rewritten; 130 non-empty lines; SR-003 chips)
 - `autobyteus-web/utils/skills/skillSourceDisplay.ts` (new)
 - `autobyteus-web/localization/messages/{en,zh-CN}/skills.ts` (new keys added; unused keys removed)
 - `autobyteus-web/localization/messages/{en,zh-CN}/skills.generated.ts` (dead keys removed)
 - Tests:
-  - `autobyteus-web/components/skills/SkillSourcesModal.spec.ts` (rewritten, 34 tests)
+  - `autobyteus-web/components/skills/SkillSourcesModal.spec.ts` (rewritten; 41 tests after IR-002 added 7 focus-lifecycle tests)
   - `autobyteus-web/components/skills/SkillSourceRow.spec.ts` (new, 27 tests; colocated per the folder's convention)
   - `autobyteus-web/utils/skills/__tests__/skillSourceDisplay.spec.ts` (new, 11 tests)
 - `autobyteus-web/tests/e2e/github-skill-sources-probe.mjs`: selectors only. The rows are now `li[data-testid^="skill-source-row-"]`, the single input + **Add** replaces the GitHub mode / Import repository controls, and the row trash button is named `Remove api-e2e/skills`.
@@ -101,6 +109,7 @@ Store calls are identical to before.
 - The new Iconify names (`mdi:github`, `heroicons:shield-exclamation`) load online, like every icon in the app (accepted).
 - `gitlab.com/x` without a scheme is treated as a folder path (accepted). A tested case confirms this.
 - The version tooltip is a native `title` and works with a pointer only; the same details are in the Update confirmation.
+- O-001 (out of scope; shared component): `ConfirmationModal` neither moves focus into itself nor handles Esc. While a confirmation is open, Esc is ignored, as AC-007 requires, and the keyboard user must Tab to its buttons. The popup's own focus is restored when the confirmation closes (IR-002).
 - Server behavior, unchanged by this work: after a real permission-denied GitHub removal, the server reports `REMOVING` with `lastError: null`. The error therefore appears as the dialog's red alert, not as a row error line. The row renders `lastError` whenever the server provides it (unit-tested).
 
 ## Task Design Health Assessment Implementation Check
@@ -144,7 +153,21 @@ Store calls are identical to before.
 
 ## Local Implementation Checks Run
 
-These are implementation-scoped checks, not API/E2E sign-off. Run from the worktree:
+These are implementation-scoped checks, not API/E2E sign-off. Run from the worktree.
+
+IR-002, current:
+- `pnpm -C autobyteus-web test:nuxt components/skills utils/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts localization --run` → 25 files, 149 tests pass. `SkillSourcesModal.spec.ts` has 41 tests.
+- Mutation checks of the IR-002 fix, each reverted:
+  - no focus restore → 5 tests fail;
+  - keydown listener on the panel only → 1 test fails;
+  - no overlay guard → 3 tests fail;
+  - a stray check for `<body>` only → 3 tests fail.
+- Localization guard and literal audit pass. 0 type errors in the touched files (design repo `vue-tsc`, as below).
+- `node tickets/in-progress/skill-sources-dialog-redesign/api-e2e-evidence/skill-sources-dialog-journey.mjs <ticket>/implementation-evidence/ir-002-dialog-journey` (the API/E2E temporary journey) → J-01..J-13 all Pass, 0 page errors, browser closed and stack cleaned.
+  - The first IR-002 attempt (`ir-002-dialog-journey-run1/`) failed J-13. It is kept as evidence of the `ConfirmationModal` fade-out focus case that the final fix handles.
+- Not re-run for IR-002: the GitHub skill sources probe. Its selectors are untouched, and API/E2E round 2 owns the re-run.
+
+IR-001 checks (initial baseline):
 - `pnpm -C autobyteus-web test:nuxt components/skills utils/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts localization --run` → 25 files, 142 tests pass.
 - Mutation checks, each reverted after the run:
   - dropping `github.com/` from DC-017 fails the import case;

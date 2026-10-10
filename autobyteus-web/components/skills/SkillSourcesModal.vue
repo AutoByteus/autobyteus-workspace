@@ -2,7 +2,7 @@
   <div class="dialog-overlay fixed inset-0 z-40 flex items-center justify-center bg-slate-900/40 p-4" @click.self="close">
     <section ref="panelRef" class="dialog flex max-h-[min(48rem,90vh)] w-full max-w-[45rem] flex-col overflow-hidden rounded-2xl bg-white shadow-xl focus:outline-none"
       :inert="confirmation ? true : undefined" role="dialog" aria-modal="true" aria-labelledby="skill-sources-title" :aria-busy="busy" tabindex="-1"
-      data-testid="skill-sources-dialog" @keydown="handleKeydown">
+      data-testid="skill-sources-dialog">
       <header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-100 py-4 pl-4 pr-3 sm:pl-6 sm:pr-4">
         <h2 id="skill-sources-title" class="text-lg font-semibold text-slate-900">{{ t('skills.components.skills.SkillSourcesModal.manage_skill_sources') }}</h2>
         <button type="button" :aria-label="t('skills.sources.close')" :title="t('skills.sources.close')"
@@ -93,7 +93,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Icon } from '@iconify/vue'
 import { useSkillSourcesStore, type SkillSource } from '~/stores/skillSourcesStore'
@@ -139,28 +139,58 @@ const pickerEligible = computed(() => canUseLocalFolderPicker({
 function close() { if (!confirming.value) emit('close') }
 
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+// Another layer owns the keyboard: the remove/update confirmation (the panel is inert) or the shared
+// skill-name conflict dialog, which handles its own Esc.
+const overlayOpen = computed(() => !!confirmation.value || skillNames.conflicts.length > 0)
+// With no other layer open, focus outside this modal panel is stray: a focused control was disabled, made
+// inert or removed (focus fell to <body>), or it is still on the fading-out confirmation's button.
+const focusOutsidePanel = () => !panelRef.value?.contains(document.activeElement)
+
+// Listens on the document so that Esc and the Tab cycle keep working when focus is stray.
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    if (!confirmation.value) { event.preventDefault(); close() }
-    return
-  }
-  if (event.key !== 'Tab' || !panelRef.value) return
-  const items = Array.from(panelRef.value.querySelectorAll<HTMLElement>(FOCUSABLE))
+  const panel = panelRef.value
+  const active = document.activeElement
+  if (!panel || overlayOpen.value) return
+  if (event.key === 'Escape') { event.preventDefault(); close(); return }
+  if (event.key !== 'Tab') return
+  const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE))
   if (!items.length) return
   const first = items[0]!, last = items[items.length - 1]!
-  const active = document.activeElement
-  if (event.shiftKey && (active === first || active === panelRef.value)) { event.preventDefault(); last.focus() }
+  if (focusOutsidePanel()) { event.preventDefault(); (event.shiftKey ? last : first).focus() }
+  else if (event.shiftKey && (active === first || active === panel)) { event.preventDefault(); last.focus() }
   else if (!event.shiftKey && active === last) { event.preventDefault(); first.focus() }
 }
+
+// While a confirmation, an operation or a conflict blocks the panel, its focused control is made inert,
+// disabled or removed. Remember it when the block starts (before the DOM update) and return focus into the
+// panel when the block ends: to that control if it is still usable, otherwise to the add input or the panel.
+let focusBeforeBlock: HTMLElement | null = null
+watch(() => overlayOpen.value || busy.value, async (blocked) => {
+  const panel = panelRef.value
+  if (!panel) return
+  if (blocked) {
+    const active = document.activeElement
+    focusBeforeBlock = active instanceof HTMLElement && active !== panel && panel.contains(active) ? active : null
+    return
+  }
+  await nextTick()
+  const target = [focusBeforeBlock, inputRef.value].find(el => el?.isConnected && panel.contains(el) && !el.matches(':disabled'))
+  focusBeforeBlock = null
+  if (focusOutsidePanel()) (target ?? panel).focus()
+})
 
 let returnFocus: HTMLElement | null = null
 onMounted(async () => {
   returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  document.addEventListener('keydown', handleKeydown)
   await nextTick()
   panelRef.value?.focus()
   try { await store.fetchSkillSources(); await store.checkGitHubSources() } catch { /* visible store error */ }
 })
-onBeforeUnmount(() => { if (returnFocus?.isConnected) returnFocus.focus() })
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleKeydown)
+  if (returnFocus?.isConnected) returnFocus.focus()
+})
 
 async function browse() {
   if (picking.value || busy.value) return

@@ -406,6 +406,144 @@ describe('SkillSourcesModal', () => {
       expect(wrapper.emitted('close')).toHaveLength(1)
     })
 
+    // Keys go to the focused element and bubble, as in a browser. The browser moves focus to <body> when the
+    // focused control becomes inert, disabled or removed; `dropFocus` reproduces that where happy-dom does not.
+    const press = (key: string, init: KeyboardEventInit = {}) =>
+      (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init }))
+    const dropFocus = () => (document.activeElement as HTMLElement | null)?.blur()
+    const panelOf = (wrapper: VueWrapper) => wrapper.get('[role="dialog"]').element as HTMLElement
+    const clickFocused = async (wrapper: VueWrapper, label: string) => {
+      const target = byLabel(wrapper, label)!
+      ;(target.element as HTMLElement).focus()
+      await target.trigger('click')
+    }
+    // In the browser the confirmation fades out (ConfirmationModal's <Transition>), so focus is still on its
+    // button, outside the panel, when the confirmation closes. An element outside the panel stands in for it.
+    const focusOutside = () => {
+      const outside = document.createElement('button')
+      outside.textContent = 'Outside'
+      document.body.appendChild(outside)
+      outside.focus()
+      return outside
+    }
+    const cancelConfirmation = async (wrapper: VueWrapper) => {
+      const leaving = focusOutside()
+      await wrapper.get('[data-testid="cancel"]').trigger('click')
+      await flushPromises()
+      leaving.remove()
+    }
+
+    it('returns focus to the trash button after a cancelled confirmation, and Esc then closes', async () => {
+      const { wrapper } = await mountComponent()
+      await clickFocused(wrapper, 'Remove custom/skills')
+      expect(confirmation(wrapper).exists()).toBe(true)
+      press('Escape')
+      expect(wrapper.emitted('close')).toBeUndefined()
+
+      await cancelConfirmation(wrapper)
+      expect(document.activeElement).toBe(byLabel(wrapper, 'Remove custom/skills')!.element)
+      press('Escape')
+      expect(wrapper.emitted('close')).toHaveLength(1)
+    })
+
+    it('moves focus to the add input when the confirmed source is gone, and Esc then closes', async () => {
+      const { wrapper, sourcesStore } = await mountComponent()
+      sourcesStore.removeSkillSource = vi.fn(async (path: string) => {
+        sourcesStore.skillSources = sourcesStore.skillSources.filter(source => source.path !== path)
+      })
+      await clickFocused(wrapper, 'Remove custom/skills')
+      const leaving = focusOutside()
+      await wrapper.get('[data-testid="confirm"]').trigger('click')
+      await flushPromises()
+      leaving.remove()
+
+      expect(byLabel(wrapper, 'Remove custom/skills')).toBeUndefined()
+      expect(document.activeElement).toBe(input(wrapper).element)
+      press('Escape')
+      expect(wrapper.emitted('close')).toHaveLength(1)
+    })
+
+    it('returns focus to the add input after an Enter-add disabled it, and Esc then closes', async () => {
+      const { wrapper, sourcesStore } = await mountComponent()
+      let finish!: () => void
+      sourcesStore.addSkillSource = vi.fn(() => new Promise<void>(resolve => { finish = resolve }))
+      ;(input(wrapper).element as HTMLInputElement).focus()
+      await input(wrapper).setValue('/extra/skills')
+      await wrapper.get('form').trigger('submit')
+      await flushPromises()
+      expect(input(wrapper).attributes('disabled')).toBeDefined()
+      dropFocus()
+
+      finish()
+      await flushPromises()
+      expect(document.activeElement).toBe(input(wrapper).element)
+      expect(panelOf(wrapper).contains(document.activeElement)).toBe(true)
+      press('Escape')
+      expect(wrapper.emitted('close')).toHaveLength(1)
+    })
+
+    it('falls back to the add input when Try again disappears after the check', async () => {
+      const { wrapper, sourcesStore } = await mountComponent({ extraSources: [githubSource('CHECK_FAILED')] })
+      let finish!: () => void
+      sourcesStore.githubOperation = vi.fn(async () => {
+        sourcesStore.pending = { remote: 'check' }
+        await new Promise<void>(resolve => { finish = resolve })
+        sourcesStore.skillSources = sourcesStore.skillSources.map(source =>
+          source.github ? { ...source, github: { ...source.github, status: 'UP_TO_DATE' as const } } : source)
+        sourcesStore.pending = {}
+      }) as typeof sourcesStore.githubOperation
+      await clickFocused(wrapper, 'Check acme/skills again')
+      await flushPromises()
+      expect(wrapper.text()).toContain('Checking…')
+      dropFocus()
+      finish()
+      await flushPromises()
+      expect(byLabel(wrapper, 'Check acme/skills again')).toBeUndefined()
+      expect(document.activeElement).toBe(input(wrapper).element)
+    })
+
+    it('brings a stray Tab back into the panel and closes on a stray Esc', async () => {
+      const { wrapper } = await mountComponent()
+      dropFocus()
+      press('Tab')
+      expect(document.activeElement?.getAttribute('aria-label')).toBe('Close')
+      dropFocus()
+      press('Tab', { shiftKey: true })
+      expect(document.activeElement?.textContent?.trim()).toBe('Done')
+      const outside = focusOutside()
+      press('Tab')
+      expect(document.activeElement?.getAttribute('aria-label')).toBe('Close')
+      outside.focus()
+      press('Escape')
+      expect(wrapper.emitted('close')).toHaveLength(1)
+      outside.remove()
+    })
+
+    it('leaves Esc and Tab to the skill-name conflict dialog while it is open, then returns focus', async () => {
+      const { wrapper, skillNames } = await mountComponent()
+      ;(input(wrapper).element as HTMLInputElement).focus()
+      skillNames.conflicts = [{ name: 'dup', existingPath: '/a/dup', incomingPath: '/b/dup' }] as typeof skillNames.conflicts
+      await flushPromises()
+      dropFocus()
+      press('Escape')
+      press('Tab')
+      expect(wrapper.emitted('close')).toBeUndefined()
+      expect(document.activeElement).toBe(document.body)
+
+      skillNames.conflicts = []
+      await flushPromises()
+      expect(document.activeElement).toBe(input(wrapper).element)
+    })
+
+    it('stops listening on the document after unmount', async () => {
+      const { wrapper } = await mountComponent()
+      mounted.splice(mounted.indexOf(wrapper), 1)
+      wrapper.unmount()
+      dropFocus()
+      press('Escape')
+      expect(wrapper.emitted('close')).toBeUndefined()
+    })
+
     it('moves focus into the dialog, traps Tab, and returns focus to the opener', async () => {
       const opener = document.createElement('button')
       opener.textContent = 'Sources'
