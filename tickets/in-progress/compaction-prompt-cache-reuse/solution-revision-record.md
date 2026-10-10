@@ -8,6 +8,7 @@
 | SR-002 | Requirements | User 2026-10-09: always use the agent's model; approval of the recommendations | N/A | Ready for Approval | Approved | BEH-002, REQ-001, REQ-002, REQ-004, REQ-005 (replaced), AC-005, AC-008; DEC-001..004 resolved | Approved basis for design |
 | SR-003 | Design | Architecture design completed | N/A | Approved; no design | Approved; design Ready (Large/High) | All REQ/AC mapped | Routed to architecture review |
 | SR-004 | Mixed (Requirements editorial + Design) | Architecture review ARCH-REV-001 (Fail) | ARCH-001, ARCH-002, ARCH-003 | Approved; design Ready | Approved; design Ready (revised) | BEH-001 (preserved isolation), BEH-002, UC-001, REQ-001, REQ-004, AC-001, AC-009 (new), SCN-002 | Returned to architecture review |
+| SR-005 | Requirements | User 2026-10-10: summary quality must be tested | N/A | Approved | Approved | AC-003 (strengthened) | Validation scope increased; no design change |
 
 ## Revision Entries
 
@@ -61,3 +62,11 @@
 - Non-blocking N-1 (given to the implementer by the reviewer): release each attempt's compaction conversation in a `finally`, using its own bounded controller rather than the possibly aborted operation signal, and test the abort case.
 - DEC-001's option text still mentions "when the compaction model equals the agent model". It is historical and non-governing; REQ-001, REQ-002 and REQ-005 govern.
 - No requirement or design change.
+
+### SR-005 — Summary-quality validation strengthened
+
+- Trigger: the user asked about summary quality ("I'm just wondering whether the effect, the summarization effect is good or not … I think this should be tested, right?") after reviewing the exact instruction text.
+- Change: AC-003 now requires a side-by-side comparison of the cached summary and today's transcript summary on the same large real conversation (≥ 200k tokens) against a checklist, plus user review before release. A worse cached summary goes back to the Solution Designer.
+- Intended behavior unchanged; validation scope increased with the user's explicit request. No design change.
+- Follow-up (same round, user 2026-10-10: the summary "will directly influence the next agent run … the continuation"): AC-003 also requires a continuation check. From each compacted context the agent gets the same next message(s); it is evaluated on state awareness, kept decisions, no repeated or lost work, and correct references.
+- Downstream: the implementation engineer is informed so the handoff carries the strengthened AC-003 to API/E2E.

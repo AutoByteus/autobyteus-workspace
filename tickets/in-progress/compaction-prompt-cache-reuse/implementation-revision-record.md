@@ -17,7 +17,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
 - Current authoritative result: implementation complete. Local checks pass, except for documented base-identical failures.
-- Related solution revision IDs: SR-004.
+- Related solution revision IDs: SR-004 (design); SR-005 (AC-003 requirements strengthening, carried into the handoff for API/E2E).
 - Related architecture-review revision IDs: ARCH-REV-002.
 - Related code-review revision IDs: N/A.
 - Related API/E2E revision IDs: N/A.
@@ -37,5 +37,6 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - tests in all three packages;
   - docs.
 - Local validation and result: see `implementation-handoff.md` § Local Implementation Checks Run.
+- Base update before handoff: merged `origin/personal@e50826755` (commit `846fff306`), resolved against `isTurnContinuation` and the new stream `finish`, and re-ran all suites on the merged code.
 - Next recipient or routing: Code Review, because the route is Large/High (`get_handoff_rules`).
-- Remaining limitations or risks: live provider validation (AC-002/003/006/008); the latest-prompt reading clears after a compaction event; a leftover setting value is listed as a generic custom setting; the Gemini single-attempt product issue (base-identical, reported earlier). Details are in the handoff.
+- Remaining limitations or risks: live provider validation (AC-002/003/006/008); the latest-prompt reading clears after a compaction event; a leftover setting value is listed as a generic custom setting; AC-003 strengthened in SR-005 (side-by-side comparison plus continuation check on a large real run, user review) is live API/E2E work, and the handoff gives the recipe. Details are in the handoff.

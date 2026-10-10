@@ -148,7 +148,7 @@ describe('LLMRequestAssembler', () => {
 
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
-      { turnId: 'turn_0001', requestId: 'turn_0001:llm:1' },
+      { turnId: 'turn_0001', requestId: 'turn_0001:llm:1', signal: new AbortController().signal },
       'System prompt',
       [],
     );
@@ -183,7 +183,7 @@ describe('LLMRequestAssembler', () => {
     const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'new input' }),
-      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
+      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1', signal: new AbortController().signal },
       'System prompt',
       [],
     );
@@ -196,7 +196,7 @@ describe('LLMRequestAssembler', () => {
       {
         turnId: 'turn_0002',
 
-        executionSite: 'before_parent_request', signal: undefined,
+        executionSite: 'before_parent_request', signal: expect.any(AbortSignal),
       }
     ]);
     expect(request.canonicalMessages.map((message) => message.role)).toEqual([
@@ -240,7 +240,7 @@ describe('LLMRequestAssembler', () => {
 
     const request = await assembler.prepareRequest(
       null,
-      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2' },
+      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2', signal: new AbortController().signal },
       'System prompt',
       [],
     );
@@ -298,7 +298,7 @@ describe('LLMRequestAssembler', () => {
         memoryManager,
       ).prepareRequest(
         new LLMUserMessage({ content: 'please continue there was a shutdown' }),
-        { turnId: 'turn_new', requestId: 'turn_new:llm:1' },
+        { turnId: 'turn_new', requestId: 'turn_new:llm:1', signal: new AbortController().signal },
         'System prompt',
         [],
       );
@@ -336,7 +336,7 @@ describe('LLMRequestAssembler', () => {
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
-      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
+      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1', signal: new AbortController().signal },
       'System prompt',
       [],
     )).rejects.toBeInstanceOf(
@@ -367,7 +367,7 @@ describe('LLMRequestAssembler', () => {
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'transient user input' }),
-      { turnId: 'turn_restore', requestId: 'turn_restore:llm:1' },
+      { turnId: 'turn_restore', requestId: 'turn_restore:llm:1', signal: new AbortController().signal },
       'System prompt',
       [],
     )).rejects.toThrow('append failed');

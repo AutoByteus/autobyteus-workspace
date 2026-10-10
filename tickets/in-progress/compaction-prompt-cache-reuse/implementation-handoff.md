@@ -3,7 +3,7 @@
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result: Independent architecture review was selected (Large/High) and passed (ARCH-REV-002). The handoff route is decided by `get_handoff_rules` (Large/High → Code Review).
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/requirements-doc.md` (SR-004; approved baseline SR-002)
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/requirements-doc.md` (SR-005; approved baseline SR-002; SR-005 strengthens AC-003 only: side-by-side summary comparison plus continuation check, user review before release)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/solution-revision-record.md` (SR-001..004)
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/design-spec.md` (SR-004)
@@ -53,7 +53,7 @@
 - Implementation cycle: `Initial`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse/tickets/in-progress/compaction-prompt-cache-reuse/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-004`
+- Related solution revision IDs: `SR-004` (design), `SR-005` (AC-003 requirements update; no design change)
 - Related architecture-review revision IDs: `ARCH-REV-002`
 - Related code-review revision IDs: `N/A`
 - Related API/E2E revision IDs: `N/A`
@@ -113,7 +113,7 @@
 
 - **Optional summarizer seam.** `PendingCompactionExecutorOptions` keeps an optional `summarizer?: CompactionSummarizer`, following the existing optional `planner` and `outputValidator`. The executor lifecycle tests stay focused and fast (the real summarizer waits 1 s and 2 s between transcript retries); summary production has its own tests. Production always uses `new CompactionSummarizer(summaryPort)`.
 - **`SummaryAttemptResult` has no separate `completion` field.** The design listed one, but it would duplicate `metadata.completionStatus`, so it was left out to keep the shared structure tight.
-- **Streamed attempts report completion `'unknown'`.** `ChunkResponse` carries no completion status. A truncated summary still fails the parser (missing closing marker) and counts as a failed attempt. Streaming is needed because the agent's own `maxTokens` would break non-streaming SDK calls.
+- **Streamed attempts report completion from the terminal chunk's `finish`** (added upstream). Unreported means `unknown`. Streaming is needed because the agent's own `maxTokens` would break non-streaming SDK calls.
 - **No backoff between the 2 cached attempts.** The fallback is the recovery path. The transcript path keeps today's 1 s and 2 s backoffs.
 - **The "before" bind runs only when compaction can run** (not on tool continuations). This avoids a redundant digest on every continuation. The "after" bind always runs, as before.
 - **A user retry of a failed compaction reuses the operation id**, so conversation ids `compaction_<op>_<n>` can repeat across executions. This is harmless: each is released after its attempt, and `llm_call_id` and `idempotency_key` include the new execution turn.
@@ -122,7 +122,7 @@
 
 - **The latest-prompt reading clears after a compaction event.** The server projection treats the newest observation as authoritative for the latest-prompt and context-fill fields. A compaction event, with a null latest prompt, therefore sets them to null until the agent's next request reports again. Totals and cost are correct (REQ-007). The meter does not reject the events, so this is not the design's escalation trigger. Changing the projection is outside the designed scope. The behavior is pinned by the server fold test; Solution Designer and API/E2E can decide whether to keep it.
 - **Leftover setting value.** The design says the server "neither lists nor accepts" the key, and also allows generic listing as long as it is not shown as a compaction setting. A value saved before the removal is therefore listed only as a "Custom user-defined setting" (deletable, no effect, not on the Compaction card). The project's `retiredSettingNames` mechanism would delete it at startup, which the design explicitly rejected. If it should be hidden instead, that needs a small non-deleting retirement guard; this is a designer call.
-- **Gemini single-attempt product issue (base-identical; reported in the previous ticket).** `GeminiLLM.buildGenerationConfig` copies user `extraParams.httpOptions.retryOptions` into each request, so it overrides the isolated client's `attempts: 1`. Compaction on Gemini agents now runs on the agent's own `GeminiLLM`, so a user-configured retry count could multiply summary attempts there. `compaction-single-attempt-transport.test.ts` still fails on base `46e94fdea` and on this branch.
+- **Gemini single-attempt:** the previously reported `compaction-single-attempt-transport` failure passes on the merged base `e50826755`, so it appears to have been fixed upstream. Compaction on Gemini agents relies on that single-attempt path.
 - **Provider instruction-following** (design risk): handled by the parser plus the fallback. Validate one non-Anthropic provider live.
 - **Transcript path on adapters that also send `config.systemMessage`** (for example Gemini's `systemInstruction`): the fallback carries the summary prompt as a SYSTEM message on the agent's LLM, which still has its own system instruction. The cached path matches normal requests exactly. Live validation should cover one non-Anthropic provider.
 - **Summary overlap with the kept tail** (DEC-002): the existing `post_compaction_target_exceeded` handling applies.
@@ -166,28 +166,39 @@
 
 ## Environment Or Dependency Notes
 
-- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse`, branch `codex/compaction-prompt-cache-reuse`, base `origin/personal@46e94fdea`.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-prompt-cache-reuse`, branch `codex/compaction-prompt-cache-reuse`. Started on `origin/personal@46e94fdea`; **merged `origin/personal@e50826755`** (43 commits, including the anthropic-incomplete-content-block fix and Step 2), per the Solution Designer.
+- Merge resolution:
+  - took upstream's `isTurnContinuation` (tool-result or recovery continuation) in place of `isToolContinuation`; the before-compaction bind uses it;
+  - kept `getParentModelIdentifier` removed;
+  - used upstream's new terminal-chunk `finish` in the port, so summary attempts now report real `completionStatus`/`completionReason` (`completionStatusOf(finish)`), and a truncated (`output_limit`) cached summary is classified `incomplete_summary`;
+  - merged upstream's AR-002 call-id assertions with the compaction usage event (the agent-call filter is `:llm:`; the compaction call id is asserted separately);
+  - used `getPendingCompactionGate()` (upstream removed `isCompactionAwaitingUserRetry`);
+  - kept the strategy test deleted (upstream had only adapted it to `finish`).
+- Commits: `cec24ca48` (implementation), `846fff306` (merge), plus a follow-up commit for post-merge test fixes and this handoff.
 - `nuxt prepare`, `prisma generate` and `prepare:shared` were run for tests.
 - `test:integration:prepare` creates untracked build outputs (SDK, devkit and Brief Studio `dist/`). They are never staged.
 - Baseline comparisons used a temporary detached base worktree at `/tmp/ccr-base`, which is removed after use.
 
 ## Local Implementation Checks Run
 
-All are implementation-scoped. No API/E2E or live-provider checks were run.
+All are implementation-scoped. No API/E2E or live-provider checks were run. Results are on the **merged** code (`846fff306` plus follow-up), unless marked pre-merge.
 
-- autobyteus-ts production typecheck (`tsc -p tsconfig.build.json`): pass.
-- autobyteus-ts test-config typecheck: no new errors compared with base `46e94fdea`. The 6 remaining assembler-test identity errors exist on base too; only their message text changed with the identity type.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`: pass.
-- autobyteus-ts `vitest run tests/unit`: 1867 passed, 1 failed. The failure is the base-identical Gemini product issue above.
-- autobyteus-ts `vitest run tests/integration`: CORE_INTEGRATION_PLACEHOLDER
-- Server `test:unit`: SERVER_UNIT_PLACEHOLDER (summary `implementation-evidence/server-test-unit.summary.log`).
-- Server `test:integration:prepare` + `test:integration`: SERVER_INTEGRATION_PLACEHOLDER (summary `implementation-evidence/server-test-integration.summary.log`).
-- Web `vitest run components/settings localization`: 56 files, 247 tests passed. WEB_FULL_PLACEHOLDER
-- Focused: summarizer 11/11, port 9/9, prompt 16/16, executor and lifecycle 29/29, runtime compaction integration 6/6, memory and agent unit 778/778, server fixture-dependent compaction tests 39/39, settings and builder 77/77, compaction ingestion 1/1, live-boundary unit 10/10.
-- Mutation checks:
+- autobyteus-ts production typecheck: pass.
+- autobyteus-ts test-config typecheck: 276 error lines against 282 on base `e50826755`; no file gained errors. The six pre-existing assembler identity errors are fixed.
+- Server production typecheck: pass.
+- autobyteus-ts `vitest run tests/unit`: 305 files, 1955 tests, **all passed**.
+- autobyteus-ts `vitest run tests/integration`: 47 failed, 215 passed, 28 skipped. The set of failing tests is **identical to base `e50826755`** (diffed). These are live-provider tests without credentials, MCP server tests and the older suite failures recorded in the previous ticket.
+- Server `test:unit`: 666 files passed, 4 skipped; 5232 tests passed (`implementation-evidence/server-test-unit.summary.log`).
+- Server `test:integration:prepare` + `test:integration`: 356 passed, 2 failed, 68 skipped. The 2 failures are the documented TESTING.md known exception (`agent-status-websocket` content-cadence cases) (`implementation-evidence/server-test-integration.summary.log`).
+- Web `test:nuxt`: 592 files, 4094 tests passed. Web `test:electron`: 36 files, 191 tests passed.
+- Focused (pre-merge, re-covered by the suites above): summarizer 11/11, port 10/10 (including the post-merge finish test), prompt 16/16, executor and lifecycle 29/29, runtime compaction integration 6/6.
+- Mutation checks (pre-merge):
   - removing the before-compaction bind fails the AC-006 and order tests;
-  - releasing on the attempt's signal instead of a fresh controller fails the abort and bounded-release tests.
-  Both files were restored.
+  - releasing on the attempt's signal fails the abort and bounded-release tests.
+- **Test robustness fix (server).** `agent-run-compaction-recovery.test.ts` › "finishes answered A once…" read A's command-registry state right after the turn ended. The record settles asynchronously, and the longer failed-compaction path (retries plus 3 s backoff) exposed the race in about 1 of 3 full runs.
+  - The test now waits for `COMPLETED` within its `eventually`.
+  - Per-test timeouts in the fixture-dependent compaction tests were raised to cover the summarizer backoff.
+  - After the fix: 4 of 4 folder runs green, and the full suite green.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -210,7 +221,23 @@ All are implementation-scoped. No API/E2E or live-provider checks were run.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Run through the test vault, using `probes/fork-summary-probe.mjs` as the recipe:
+Run through the test vault, using `probes/fork-summary-probe.mjs` as the recipe.
+
+**AC-003, strengthened in SR-005 (user review before release):**
+- **Large real conversation.** Use ≥ 200k tokens on Claude Opus 5.5, for example a long native agent or team-member run. Build the compaction baseline from its working context.
+- **Both summaries on the same history.** `LlmPhaseSummaryPort` (`autobyteus-ts/src/agent/loop/llm-phase-summary-port.ts`) exposes both requests publicly, so a test-only harness needs no production change:
+  - construct the port on the agent's own LLM (`{ agentId, llm, tools: <the agent's tool schemas>, requestCapacity: resolveLlmRequestCapacity(llm.model, llm.config), notifier: null }`);
+  - call `requestCachedSummary(baselineMessages, COMPACTION_SUMMARY_INSTRUCTION, identity, signal)`;
+  - call `requestTranscriptSummary(COMPACTION_SUMMARY_PROMPT, new CompactionContentBuilder().build(plan.compactableUnits), identity, signal)`, using `WorkingContextMessageWindowPlanner.plan(...)` on the same baseline;
+  - parse each with `parseCompactionSummary`;
+  - use distinct `attempt` values, which gives distinct isolated conversations.
+- **Side-by-side checklist.** Goal and constraints; user decisions and preferences; the latest unresolved request; completed vs open work; exact paths, identifiers, commands and errors; next steps; no invented facts.
+- **Continuation check.** Build both compacted contexts from the same baseline and plan, using each summary:
+  - via `memoryManager.prepareCompaction(baseline, { selectedNewRawTraceIds: plan.rawTraceIdsToArchive, retainedMessages: plan.retainedMessages, summary, budgetAssessment: plan.budgetAssessment })`, on two separate `MemoryManager` copies of the run (or `AcceptedCompactionBuilder` directly), then commit each;
+  - give both the same next user message(s) and let each continue for a few calls;
+  - evaluate: knows the current state; keeps earlier decisions and constraints; no redone work and no lost open items; correct paths and identifiers.
+- **Report.** Summaries, continuation transcripts and checklist verdicts, for user review. A worse cached result on any item goes back to the Solution Designer.
+- The reworked `real-e2e-compaction-quality.e2e.test.ts` currently runs the summarizer (cached first, transcript fallback) on a small scripted history. It is a starting point, not the AC-003 comparison.
 
 - **AC-002/AC-003, Anthropic Opus 5.5.**
   - Set up a native run that reaches compaction (lower the trigger ratio). Use the strict preserved-thinking check (`thinking.block_binding.prefix_mismatch_behavior: "error"`, beta `thinking-binding-controls-2026-08-01`, validation only).
