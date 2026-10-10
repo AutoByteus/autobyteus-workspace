@@ -24,8 +24,7 @@ import {
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
-import { MemoryStore } from '../../../../src/memory/store/base-store.js';
-import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
 import { BaseTool, type ToolExecutionOptions } from '../../../../src/tools/base-tool.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
@@ -452,30 +451,6 @@ class FailingModeExternalResultTool extends ExternalResultTool {
   }
 }
 
-class InMemoryStore extends MemoryStore {
-  private items: any[] = [];
-
-  add(items: Iterable<any>): void {
-    for (const item of items) {
-      this.items.push(item);
-    }
-  }
-
-  list(memoryType: MemoryType, limit?: number): any[] {
-    const filtered = this.items.filter((item) => item?.memoryType === memoryType);
-    return typeof limit === 'number' ? filtered.slice(-limit) : filtered;
-  }
-
-  listTurnRawTracesOrdered(limit?: number): any[] {
-    return this.list(MemoryType.RAW_TRACE, limit);
-  }
-
-  pruneRawTracesById(traceIdsToRemove: Iterable<string>): void {
-    const ids = new Set(Array.from(traceIdsToRemove));
-    this.items = this.items.filter((item) => item?.memoryType !== MemoryType.RAW_TRACE || !ids.has(item.id));
-  }
-}
-
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const waitForStatus = async (
@@ -525,8 +500,12 @@ const createDummyConfig = () => {
   return new AgentConfig('RuntimeTestAgent', 'Tester', 'Runtime integration test agent', llm);
 };
 
+// Bootstrap records the system instruction, which needs a store that supports that capture.
+const memoryDirs: string[] = [];
 const attachMemory = (state: AgentRuntimeState) => {
-  state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-runtime-memory-'));
+  memoryDirs.push(dir);
+  state.memoryManager = new MemoryManager({ store: new FileMemoryStore(dir, state.agentId) });
 };
 
 describe('Agent runtime integration', () => {
@@ -539,6 +518,7 @@ describe('Agent runtime integration', () => {
   afterEach(() => {
     SkillRegistry.getInstance().clear();
     resetFactory();
+    for (const dir of memoryDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
   });
 
   it('starts and stops AgentRuntime cleanly without legacy handler registry wiring', async () => {
