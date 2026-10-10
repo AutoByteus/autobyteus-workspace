@@ -30,7 +30,6 @@ export class OpenAIResponsesLLM extends BaseLLM {
   private readonly apiKeyResolver: ProviderApiKeyResolver;
   private readonly apiKeyProviderId: string;
   private readonly baseUrl: string;
-  protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
   constructor(
@@ -44,7 +43,6 @@ export class OpenAIResponsesLLM extends BaseLLM {
     this.apiKeyResolver = apiKeyResolver;
     this.apiKeyProviderId = apiKeyProviderId;
     this.baseUrl = baseUrl;
-    this.maxTokens = config.maxTokens ?? null;
     this._renderer = new OpenAIResponsesRenderer();
   }
 
@@ -171,8 +169,9 @@ export class OpenAIResponsesLLM extends BaseLLM {
       input: formattedMessages
     };
 
-    if (this.maxTokens !== null) {
-      params.max_output_tokens = this.maxTokens;
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) {
+      params.max_output_tokens = maxOutputTokens;
     }
 
     const reasoningParam = this.buildReasoningParam();
@@ -225,8 +224,9 @@ export class OpenAIResponsesLLM extends BaseLLM {
       stream: true
     };
 
-    if (this.maxTokens !== null) {
-      params.max_output_tokens = this.maxTokens;
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) {
+      params.max_output_tokens = maxOutputTokens;
     }
 
     const reasoningParam = this.buildReasoningParam();

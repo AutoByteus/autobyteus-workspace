@@ -18,7 +18,7 @@ const ONE_HOUR = { type: 'ephemeral', ttl: '1h' };
 const tools = [{ name: 'read_file', description: 'Read a file', input_schema: { type: 'object', properties: {} } }];
 
 const buildLlm = (value = 'claude-opus-5-5', config = new LLMConfig()) => new AnthropicLLM(
-  new LLMModel({ name: value, value, canonicalName: value, provider: LLMProvider.ANTHROPIC }),
+  new LLMModel({ name: value, value, canonicalName: value, provider: LLMProvider.ANTHROPIC, maxOutputTokens: 128_000 }),
   config,
   providerApiKeyResolver('synthetic-anthropic-key'),
 );

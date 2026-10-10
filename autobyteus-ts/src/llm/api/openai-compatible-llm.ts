@@ -8,7 +8,10 @@ import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { Message } from '../utils/messages.js';
 import { convertOpenAIToolCalls } from '../converters/openai-tool-call-converter.js';
 import { OpenAIChatRenderer } from '../prompt-renderers/openai-chat-renderer.js';
-import { OpenAICompatibleRequestBuilder } from './openai-compatible-request-builder.js';
+import {
+  OpenAICompatibleRequestBuilder,
+  type OpenAICompatibleOutputLimitParameter,
+} from './openai-compatible-request-builder.js';
 import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 
@@ -27,6 +30,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
   private readonly clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>;
   private readonly allowUnauthenticated: boolean;
   protected _renderer: OpenAIChatRenderer;
+  /** OpenAI's current name; providers that document only `max_tokens` override it. */
+  protected readonly outputLimitParameter: OpenAICompatibleOutputLimitParameter = 'max_completion_tokens';
 
   constructor(
     model: LLMModel,
@@ -127,6 +132,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
       model: this.model.value,
       messages: formattedMessages,
       config: this.getRequestConfig(kwargs),
+      maxOutputTokens: this.resolveMaxOutputTokens(),
+      outputLimitParameter: this.outputLimitParameter,
       kwargs
     });
 
@@ -158,6 +165,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
       messages: formattedMessages,
       stream: true,
       config: this.getRequestConfig(kwargs),
+      maxOutputTokens: this.resolveMaxOutputTokens(),
+      outputLimitParameter: this.outputLimitParameter,
       kwargs
     });
 

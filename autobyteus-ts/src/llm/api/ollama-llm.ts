@@ -69,8 +69,9 @@ export class OllamaLLM extends BaseLLM {
       Object.assign(request, this.config.extraParams);
     }
 
-    if (this.config.maxTokens !== null) {
-      request.options = { ...(request.options as Record<string, unknown> ?? {}), num_predict: this.config.maxTokens };
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) {
+      request.options = { ...(request.options as Record<string, unknown> ?? {}), num_predict: maxOutputTokens };
     }
     return request;
   }

@@ -66,7 +66,10 @@ const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
 // `cache_control`, which only the adapter decides (from the invocation's cache scope).
 const ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS = new Set([...ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS, 'cache_control']);
 
-const ANTHROPIC_SAMPLING_PARAM_KEYS = new Set(['temperature', 'top_p', 'top_k']);
+/** `@anthropic-ai/sdk` throws "Streaming is required" above ~21k `max_tokens` without a timeout. */
+const ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS = 8192;
+
+const ANTHROPIC_SAMPLING_PARAM_KEYS =new Set(['temperature', 'top_p', 'top_k']);
 const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools', 'cache_control']);
 
 type AnthropicModelRequestPolicy = {
@@ -233,13 +236,11 @@ const splitClaudeContentBlocks = (blocks: ContentBlock[] | null | undefined): { 
 export class AnthropicLLM extends BaseLLM {
   private clientPromise: Promise<Anthropic> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
-  protected maxTokens: number;
   protected _renderer: BasePromptRenderer;
 
   constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
-    this.maxTokens = config.maxTokens ?? 8192;
     this._renderer = new AnthropicPromptRenderer();
   }
 
@@ -262,12 +263,13 @@ export class AnthropicLLM extends BaseLLM {
     messages: Message[],
     kwargs: Record<string, unknown>,
     options: LLMInvocationOptions,
+    maxTokens: number,
   ): Promise<MessageCreateParamsBase> {
     const { systemPrompt, remaining } = splitLeadingSystemMessages(messages);
     const cachesConversation = options.promptCacheScope === 'conversation';
     const params: MessageCreateParamsBase = {
       model: this.model.value,
-      max_tokens: this.maxTokens,
+      max_tokens: maxTokens,
       messages: await this._renderer.render(remaining) as MessageParam[],
     };
 
@@ -286,7 +288,9 @@ export class AnthropicLLM extends BaseLLM {
   }
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
-    const { stream: _stream, ...base } = await this.buildRequestParams(messages, kwargs, options);
+    // Non-streaming keeps a bounded default: the SDK refuses large non-streaming limits.
+    const maxTokens = this.config.maxTokens ?? ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS;
+    const { stream: _stream, ...base } = await this.buildRequestParams(messages, kwargs, options, maxTokens);
     const params: MessageCreateParamsNonStreaming = base;
 
     try {
@@ -318,8 +322,12 @@ export class AnthropicLLM extends BaseLLM {
   }
 
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
+    const maxTokens = this.resolveMaxOutputTokens();
+    if (maxTokens === null) {
+      throw new Error(`Anthropic model '${this.model.value}' has no known maximum output tokens; configure max_tokens for it.`);
+    }
     const params: MessageCreateParamsStreaming = {
-      ...(await this.buildRequestParams(messages, kwargs, options)),
+      ...(await this.buildRequestParams(messages, kwargs, options, maxTokens)),
       stream: true,
     };
 

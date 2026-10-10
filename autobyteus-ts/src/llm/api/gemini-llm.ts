@@ -99,7 +99,7 @@ export class GeminiLLM extends BaseLLM {
       systemInstruction: this.systemMessage,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxOutputTokens: this.config.maxTokens ?? undefined,
+      maxOutputTokens: this.resolveMaxOutputTokens() ?? undefined,
       stopSequences: this.config.stopSequences ?? undefined,
       presencePenalty: this.config.presencePenalty ?? undefined,
       frequencyPenalty: this.config.frequencyPenalty ?? undefined
@@ -141,7 +141,8 @@ export class GeminiLLM extends BaseLLM {
       // Google documents lower-case wire values; the generated SDK enum is upper-case.
       thinkingConfig: { thinkingLevel, includeThoughts } as unknown as ThinkingConfig
     };
-    if (this.config.maxTokens !== null) config.maxOutputTokens = this.config.maxTokens;
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) config.maxOutputTokens = maxOutputTokens;
     if (this.config.stopSequences !== null) config.stopSequences = this.config.stopSequences;
     if (tools && tools.length > 0) config.tools = tools;
 

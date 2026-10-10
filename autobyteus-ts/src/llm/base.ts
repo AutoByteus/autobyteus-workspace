@@ -5,6 +5,7 @@ import { LLMExtension } from './extensions/base-extension.js';
 import { Message, MessageRole } from './utils/messages.js';
 import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
+import { resolveRequestMaxOutputTokens } from './utils/max-output-tokens.js';
 
 export type LLMInvocationOptions = {
   /**
@@ -54,6 +55,11 @@ export abstract class BaseLLM {
 
     this.systemMessage = newSystemPrompt;
     this.config.systemMessage = newSystemPrompt;
+  }
+
+  /** The request's output limit (configured, else the model maximum); `null` means omit. */
+  protected resolveMaxOutputTokens(): number | null {
+    return resolveRequestMaxOutputTokens(this.model, this.config);
   }
 
   protected buildUserMessage(userMessage: LLMUserMessage): Message {

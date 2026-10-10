@@ -19,13 +19,11 @@ const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 export class MistralLLM extends BaseLLM {
   private clientPromise: Promise<Mistral> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
-  protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
   constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
-    this.maxTokens = config.maxTokens ?? null;
     this._renderer = new MistralPromptRenderer();
   }
 
@@ -51,7 +49,7 @@ export class MistralLLM extends BaseLLM {
       messages: formattedMessages,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxTokens: this.maxTokens ?? undefined,
+      maxTokens: this.resolveMaxOutputTokens() ?? undefined,
     };
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
 
@@ -91,7 +89,7 @@ export class MistralLLM extends BaseLLM {
       messages: formattedMessages,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxTokens: this.maxTokens ?? undefined,
+      maxTokens: this.resolveMaxOutputTokens() ?? undefined,
       stream: true,
     };
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });

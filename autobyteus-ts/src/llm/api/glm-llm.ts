@@ -29,6 +29,9 @@ function normalizeGlmExtraParams(extraParams?: Record<string, unknown>): Record<
 }
 
 export class GlmLLM extends OpenAICompatibleLLM {
+  /** The provider's chat API documents `max_tokens` only (no `max_completion_tokens`). */
+  protected override readonly outputLimitParameter = 'max_tokens' as const;
+
   constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, 'https://open.bigmodel.cn/api/coding/paas/v4/', config, apiKeyResolver, LLMProvider.GLM);
 

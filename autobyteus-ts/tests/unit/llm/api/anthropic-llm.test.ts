@@ -22,7 +22,8 @@ const buildModel = (name: string, value = name): LLMModel =>
     name,
     value,
     canonicalName: name,
-    provider: LLMProvider.ANTHROPIC
+    provider: LLMProvider.ANTHROPIC,
+    maxOutputTokens: 128_000
   });
 
 class AnthropicLLM extends ProductionAnthropicLLM {

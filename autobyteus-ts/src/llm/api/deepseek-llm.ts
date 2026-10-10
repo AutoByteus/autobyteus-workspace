@@ -50,6 +50,9 @@ function normalizeDeepSeekExtraParams(extraParams?: Record<string, unknown>): Re
 }
 
 export class DeepSeekLLM extends OpenAICompatibleLLM {
+  /** The provider's chat API documents `max_tokens` only (no `max_completion_tokens`). */
+  protected override readonly outputLimitParameter = 'max_tokens' as const;
+
   constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, 'https://api.deepseek.com', config, apiKeyResolver, LLMProvider.DEEPSEEK);
     this.config.extraParams = normalizeDeepSeekExtraParams(this.config.extraParams);
