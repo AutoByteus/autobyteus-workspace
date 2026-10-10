@@ -2,6 +2,7 @@ import type { BaseLLM, LLMInvocationOptions } from '../../llm/base.js';
 import { Message, MessageRole } from '../../llm/utils/messages.js';
 import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
 import { sanitizeMediaInputMessages } from '../../llm/utils/media-input-sanitizer.js';
+import { completionStatusOf } from '../../llm/utils/llm-response-finish.js';
 import { CompactionInvocationError, type CompactionExecutionMetadata, type CompactionSummaryMode } from '../../memory/compaction/compaction-execution.js';
 import type { ConversationSummaryPort, SummaryAttemptResult, SummaryRequestIdentity } from '../../memory/compaction/conversation-summary-port.js';
 import { estimateMessagesTokens } from '../../memory/compaction/message-budget-strategy.js';
@@ -83,7 +84,12 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
         signal.throwIfAborted();
         if (chunk.content) content += chunk.content;
         if (chunk.tool_calls?.length) hasToolCalls = true;
-        if (chunk.is_complete && chunk.usage) metadata = { ...metadata, usage: chunk.usage };
+        if (chunk.is_complete) {
+          if (chunk.usage) metadata = { ...metadata, usage: chunk.usage };
+          if (chunk.finish) {
+            metadata = { ...metadata, completionStatus: completionStatusOf(chunk.finish), completionReason: chunk.finish.providerReason };
+          }
+        }
       }
       if (metadata.usage) this.reportUsage(metadata.usage, identity);
       return { content, hasToolCalls, metadata };

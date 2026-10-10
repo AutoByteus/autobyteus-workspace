@@ -70,6 +70,24 @@ describe('ContextFileLocalPathResolver', () => {
     expect(
       resolver.resolve('/rest/drafts/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_token__notes.txt'),
     ).toBe(filePath);
+    expect(resolver.resolve('/rest/drafts/agent-org-runs/org-1/agent-runs/agent-1/context-files/ctx_token__notes.txt')).toBe(filePath);
+    expect(resolver.resolve('/rest/drafts/agent-collaborations/host-1/agent-runs/child-1/context-files/ctx_token__notes.txt?v=1')).toBe(filePath);
+    expect(resolver.resolve('http://localhost:8000/rest/drafts/agent-runs/temp-run/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(resolver.resolve('https://example.com/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/agent-runs/temp-run/context-files/%E0%A4%A')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/team-runs/team-1/members/no-root/context-files/ctx_token__notes.txt')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/team-runs/team-1/members/C/D/context-files/ctx_token__notes.txt')).toBeNull();
+    for (const traversal of [
+      '/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_token__notes.txt',
+      '/rest/drafts/agent-runs/%2E%2E/context-files/ctx_token__notes.txt',
+      '/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2Fsolution_designer/context-files/ctx_token__notes.txt',
+      '/rest/drafts/agent-runs/temp-run/context-files/%2E',
+      '/rest/runs/%2E%2E/context-files/ctx_token__notes.txt',
+      '/rest/team-runs/%2E%2E/agent-runs/designer-run/context-files/ctx_token__notes.txt',
+      '/rest/agent-org-runs/org/agent-runs/a%2Fb/context-files/ctx_token__notes.txt',
+      '/rest/agent-collaborations/%20host/agent-runs/child/context-files/ctx_token__notes.txt',
+    ]) {
+      expect(resolver.resolve(traversal), traversal).toBeNull();
+    }
   });
 });

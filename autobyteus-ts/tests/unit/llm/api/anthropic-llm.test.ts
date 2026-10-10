@@ -22,7 +22,8 @@ const buildModel = (name: string, value = name): LLMModel =>
     name,
     value,
     canonicalName: name,
-    provider: LLMProvider.ANTHROPIC
+    provider: LLMProvider.ANTHROPIC,
+    maxOutputTokens: 128_000
   });
 
 class AnthropicLLM extends ProductionAnthropicLLM {
@@ -56,7 +57,8 @@ const expectNoInternalRuntimeKwargs = (params: Record<string, unknown>) => {
 };
 
 async function* emptyStream() {
-  // No chunks needed; tests inspect the request payload.
+  // No content needed; tests inspect the request payload. A valid stream still ends with message_stop.
+  yield { type: 'message_stop' };
 }
 
 describe('AnthropicLLM', () => {

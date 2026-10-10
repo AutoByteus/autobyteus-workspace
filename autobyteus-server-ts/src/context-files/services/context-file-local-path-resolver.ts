@@ -2,11 +2,9 @@ import { assertContainedContextFileSync } from "./context-file-path-validation.j
 import fs from "node:fs";
 import path from "node:path";
 import {
-  parseDraftContextFileOwnerDescriptor,
-} from "../domain/context-file-owner-types.js";
-import {
+  parseDraftContextFileLocator,
   parseFinalContextFileOwnerDescriptor,
-  type ContextFileFinalOwnerDescriptor,
+  type ContextFileDraftOwnerDescriptor,
 } from "../domain/context-file-owner-types.js";
 import { ContextFileLayout } from "../store/context-file-layout.js";
 import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
@@ -18,13 +16,6 @@ const ORG_MEMBER_FINAL_ROUTE =
   /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const AGENT_COLLABORATION_MEMBER_FINAL_ROUTE =
   /^\/rest\/agent-collaborations\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
-const AGENT_DRAFT_ROUTE = /^\/rest\/drafts\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
-const AGENT_COLLABORATION_MEMBER_DRAFT_ROUTE =
-  /^\/rest\/drafts\/agent-collaborations\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
-const TEAM_MEMBER_DRAFT_ROUTE =
-  /^\/rest\/drafts\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
-const ORG_MEMBER_DRAFT_ROUTE =
-  /^\/rest\/drafts\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 
 const isLoopbackHostname = (hostname: string): boolean =>
   hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
@@ -76,45 +67,9 @@ export class ContextFileLocalPathResolver {
       return null;
     }
 
-    const agentDraftMatch = pathname.match(AGENT_DRAFT_ROUTE);
-    if (agentDraftMatch?.[1] && agentDraftMatch?.[2]) {
-      return this.resolveExistingDraftPath(
-        parseDraftContextFileOwnerDescriptor({
-          kind: "agent_draft",
-          draftRunId: decodePathSegment(agentDraftMatch[1]),
-        }),
-        decodePathSegment(agentDraftMatch[2]),
-      );
-    }
-
-    const teamDraftMatch = pathname.match(TEAM_MEMBER_DRAFT_ROUTE);
-    if (teamDraftMatch?.[1] && teamDraftMatch?.[2] && teamDraftMatch?.[3]) {
-      return this.resolveExistingDraftPath(
-        parseDraftContextFileOwnerDescriptor({
-          kind: "team_member_draft",
-          teamDraftId: decodePathSegment(teamDraftMatch[1]),
-          memberAddress: decodePathSegment(teamDraftMatch[2]),
-        }),
-        decodePathSegment(teamDraftMatch[3]),
-      );
-    }
-
-    const orgDraftMatch = pathname.match(ORG_MEMBER_DRAFT_ROUTE);
-    if (orgDraftMatch?.[1] && orgDraftMatch?.[2] && orgDraftMatch?.[3]) {
-      return this.resolveExistingDraftPath(parseDraftContextFileOwnerDescriptor({
-        kind: "org_member_draft",
-        orgRunId: decodePathSegment(orgDraftMatch[1]),
-        agentRunId: decodePathSegment(orgDraftMatch[2]),
-      }), decodePathSegment(orgDraftMatch[3]));
-    }
-
-    const collaborationDraftMatch = pathname.match(AGENT_COLLABORATION_MEMBER_DRAFT_ROUTE);
-    if (collaborationDraftMatch?.[1] && collaborationDraftMatch?.[2] && collaborationDraftMatch?.[3]) {
-      return this.resolveExistingDraftPath(parseDraftContextFileOwnerDescriptor({
-        kind: "agent_collaboration_member_draft",
-        hostRunId: decodePathSegment(collaborationDraftMatch[1]),
-        agentRunId: decodePathSegment(collaborationDraftMatch[2]),
-      }), decodePathSegment(collaborationDraftMatch[3]));
+    const draft = this.parseDraftLocator(pathname);
+    if (draft) {
+      return this.resolveExistingDraftPath(draft.owner, draft.storedFilename);
     }
 
     const agentMatch = pathname.match(AGENT_FINAL_ROUTE);
@@ -131,31 +86,31 @@ export class ContextFileLocalPathResolver {
     const teamMatch = pathname.match(TEAM_MEMBER_FINAL_ROUTE);
     if (teamMatch?.[1] && teamMatch?.[2] && teamMatch?.[3]) {
       return this.resolveExistingFinalPath(
-        parseFinalContextFileOwnerDescriptor({
+        {
           kind: "team_member_final",
           teamRunId: decodePathSegment(teamMatch[1]),
           agentRunId: decodePathSegment(teamMatch[2]),
-        }),
+        },
         decodePathSegment(teamMatch[3]),
       );
     }
 
     const orgMatch = pathname.match(ORG_MEMBER_FINAL_ROUTE);
     if (orgMatch?.[1] && orgMatch?.[2] && orgMatch?.[3]) {
-      return this.resolveExistingFinalPath(parseFinalContextFileOwnerDescriptor({
+      return this.resolveExistingFinalPath({
         kind: "org_member_final",
         orgRunId: decodePathSegment(orgMatch[1]),
         agentRunId: decodePathSegment(orgMatch[2]),
-      }), decodePathSegment(orgMatch[3]));
+      }, decodePathSegment(orgMatch[3]));
     }
 
     const collaborationMatch = pathname.match(AGENT_COLLABORATION_MEMBER_FINAL_ROUTE);
     if (collaborationMatch?.[1] && collaborationMatch?.[2] && collaborationMatch?.[3]) {
-      return this.resolveExistingFinalPath(parseFinalContextFileOwnerDescriptor({
+      return this.resolveExistingFinalPath({
         kind: "agent_collaboration_member_final",
         hostRunId: decodePathSegment(collaborationMatch[1]),
         agentRunId: decodePathSegment(collaborationMatch[2]),
-      }), decodePathSegment(collaborationMatch[3]));
+      }, decodePathSegment(collaborationMatch[3]));
     }
 
     return null;
@@ -182,12 +137,21 @@ export class ContextFileLocalPathResolver {
     return pathname.startsWith("/") ? pathname : null;
   }
 
+  private parseDraftLocator(pathname: string): ReturnType<typeof parseDraftContextFileLocator> {
+    try {
+      return parseDraftContextFileLocator(pathname);
+    } catch {
+      return null;
+    }
+  }
+
+  /** Parses the locator's owner through the codec; any malformed owner or file leaves the locator unresolved. */
   private resolveExistingFinalPath(
-    owner: ContextFileFinalOwnerDescriptor,
+    ownerInput: Record<string, string>,
     storedFilename: string,
   ): string | null {
     try {
-      const resolvedOwner = this.ownerResolver.resolveFinalOwnerSync(owner);
+      const resolvedOwner = this.ownerResolver.resolveFinalOwnerSync(parseFinalContextFileOwnerDescriptor(ownerInput));
       const filePath = this.layout.getFinalFilePath(resolvedOwner, storedFilename);
       const resolvedPath = path.resolve(filePath);
       assertContainedContextFileSync(this.layout.getMemoryRootDirPath(), resolvedPath);
@@ -198,7 +162,7 @@ export class ContextFileLocalPathResolver {
   }
 
   private resolveExistingDraftPath(
-    owner: ReturnType<typeof parseDraftContextFileOwnerDescriptor>,
+    owner: ContextFileDraftOwnerDescriptor,
     storedFilename: string,
   ): string | null {
     try {

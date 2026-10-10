@@ -38,6 +38,8 @@ export class AgentTurn {
   toolInvocationBatches: ToolInvocationBatch[] = [];
   activeToolInvocationBatch: ToolInvocationBatch | null = null;
   private readonly pendingToolApprovals = new Map<string, ToolInvocation>();
+  private llmCallSequence = 0;
+  private continuation = false;
   private executionPromise: Promise<TurnOutcome> | null = null;
   private settledOutcome: TurnOutcome | null = null;
   private settlementResolve!: (outcome: TurnOutcome) => void;
@@ -61,6 +63,21 @@ export class AgentTurn {
 
   get outcome(): TurnOutcome | null {
     return this.settledOutcome;
+  }
+
+  /** One number per LLM request attempt in this turn (unique call ids); gaps are allowed. */
+  nextLlmCallSequence(): number {
+    this.llmCallSequence += 1;
+    return this.llmCallSequence;
+  }
+
+  /** True once the runner started a same-turn continuation (after tool results or a recovery note). */
+  get isContinuation(): boolean {
+    return this.continuation;
+  }
+
+  beginContinuation(): void {
+    this.continuation = true;
   }
 
   get pendingToolApprovalsSnapshot(): Record<string, ToolInvocation> {

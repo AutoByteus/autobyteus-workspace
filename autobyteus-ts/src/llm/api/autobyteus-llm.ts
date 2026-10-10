@@ -88,7 +88,6 @@ export class AutobyteusLLM extends BaseLLM {
     const tokenUsage = toTokenUsage(responseRecord.token_usage, this.model);
 
     return new CompleteResponse({
-      completionStatus: 'unknown', completionReason: null,
       content: assistantMessage,
       usage: tokenUsage
     });

@@ -16,7 +16,8 @@ import type { LlmRequestRecoverySnapshot } from '../memory/llm-request-recovery.
 export type LlmRequestAssemblyIdentity = Readonly<{
   turnId: string;
   requestId: string;
-  isToolContinuation?: boolean;
+  /** Not the turn's first LLM call (a tool-result or recovery continuation): no pre-request compaction. */
+  isTurnContinuation?: boolean;
   signal: AbortSignal;
 }>;
 
@@ -48,9 +49,9 @@ export class LLMRequestAssembler {
       recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
     });
 
-    // Compaction runs only on independent turns. Its cached summary request replays the history
-    // under the current prefix, so reasoning bound to a changed prefix is removed first.
-    const compactionExecutor = identity.isToolContinuation ? null : this.pendingCompactionExecutor;
+    // Compaction runs only on a turn's first LLM call. Its cached summary request replays the
+    // history under the current prefix, so reasoning bound to a changed prefix is removed first.
+    const compactionExecutor = identity.isTurnContinuation ? null : this.pendingCompactionExecutor;
     if (compactionExecutor) this.bindRequestPrefix(requestTools);
     const didCompact = compactionExecutor
       ? await compactionExecutor.executeIfAuthorized({

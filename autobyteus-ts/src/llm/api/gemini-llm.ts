@@ -1,10 +1,16 @@
-import { completionFromReason } from './completion-status.js';
 import { GoogleGenAI, type ThinkingConfig } from '@google/genai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import {
+  buildFinish,
+  mapProviderFinish,
+  withToolCallsFinish,
+  type LlmFinishTable,
+  type LlmResponseFinish,
+} from '../utils/llm-response-finish.js';
 import { Message } from '../utils/messages.js';
 import { createGeminiTokenUsageObservation } from './gemini-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
@@ -38,6 +44,33 @@ const GEMINI_38_FILTERED_EXTRA_PARAM_KEYS = [
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
+/** Gemini `finishReason` → normalized finish. `MALFORMED_FUNCTION_CALL` and the rest are unmapped. */
+const GEMINI_FINISH_TABLE: LlmFinishTable = {
+  STOP: 'stop',
+  MAX_TOKENS: 'output_limit',
+  SAFETY: 'content_filter',
+  RECITATION: 'content_filter',
+  BLOCKLIST: 'content_filter',
+  PROHIBITED_CONTENT: 'content_filter',
+  SPII: 'content_filter',
+  IMAGE_SAFETY: 'content_filter',
+  IMAGE_PROHIBITED_CONTENT: 'content_filter',
+  IMAGE_RECITATION: 'content_filter',
+  IMAGE_OTHER: 'content_filter',
+};
+
+/** A candidate finish reason, else a blocked prompt (`promptFeedback.blockReason`) as filtered. */
+const geminiFinish = (
+  finishReason: unknown,
+  blockReason: unknown,
+  emittedToolCalls: boolean,
+): LlmResponseFinish | null => {
+  if (typeof finishReason !== 'string' && typeof blockReason === 'string' && blockReason) {
+    return buildFinish('content_filter', blockReason);
+  }
+  return withToolCallsFinish(mapProviderFinish(GEMINI_FINISH_TABLE, finishReason), emittedToolCalls);
+};
+
 const splitGeminiParts = (parts: Array<Record<string, unknown>> = []): { content: string; reasoning: string } => {
   let content = '';
   let reasoning = '';
@@ -53,6 +86,16 @@ const splitGeminiParts = (parts: Array<Record<string, unknown>> = []): { content
     }
   }
   return { content, reasoning };
+};
+
+/**
+ * Request-level `httpOptions` (e.g. from config extra params) replace the client's
+ * retry options in `@google/genai`, so a single-attempt call must also pin them here.
+ */
+const applySingleAttemptRetry = (config: Record<string, unknown>): void => {
+  const httpOptions = isRecord(config.httpOptions) ? config.httpOptions : {};
+  const retryOptions = isRecord(httpOptions.retryOptions) ? httpOptions.retryOptions : {};
+  config.httpOptions = { ...httpOptions, retryOptions: { ...retryOptions, attempts: 1 } };
 };
 
 export class GeminiLLM extends BaseLLM {
@@ -99,7 +142,7 @@ export class GeminiLLM extends BaseLLM {
       systemInstruction: this.systemMessage,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxOutputTokens: this.config.maxTokens ?? undefined,
+      maxOutputTokens: this.resolveMaxOutputTokens() ?? undefined,
       stopSequences: this.config.stopSequences ?? undefined,
       presencePenalty: this.config.presencePenalty ?? undefined,
       frequencyPenalty: this.config.frequencyPenalty ?? undefined
@@ -141,7 +184,8 @@ export class GeminiLLM extends BaseLLM {
       // Google documents lower-case wire values; the generated SDK enum is upper-case.
       thinkingConfig: { thinkingLevel, includeThoughts } as unknown as ThinkingConfig
     };
-    if (this.config.maxTokens !== null) config.maxOutputTokens = this.config.maxTokens;
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) config.maxOutputTokens = maxOutputTokens;
     if (this.config.stopSequences !== null) config.stopSequences = this.config.stopSequences;
     if (tools && tools.length > 0) config.tools = tools;
 
@@ -207,6 +251,9 @@ export class GeminiLLM extends BaseLLM {
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }
+    if (options.retryMode === 'single_attempt') {
+      applySingleAttemptRetry(config);
+    }
 
     const response = await client.models.generateContent({
       model: runtimeAdjustedModel,
@@ -225,7 +272,11 @@ export class GeminiLLM extends BaseLLM {
     }
 
     return new CompleteResponse({
-        ...completionFromReason(response.candidates?.[0]?.finishReason ?? response.promptFeedback?.blockReason, ['STOP'], ['MAX_TOKENS', 'SAFETY', 'RECITATION', 'LANGUAGE', 'OTHER', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII', 'MALFORMED_FUNCTION_CALL', 'IMAGE_SAFETY', 'IMAGE_PROHIBITED_CONTENT', 'IMAGE_OTHER', 'NO_IMAGE', 'IMAGE_RECITATION', 'UNEXPECTED_TOOL_CALL', 'TOO_MANY_TOOL_CALLS'], parts.some((part) => Boolean(part.functionCall))),
+      finish: geminiFinish(
+        response.candidates?.[0]?.finishReason,
+        response.promptFeedback?.blockReason,
+        parts.some((part) => Boolean(part.functionCall)),
+      ),
       content,
       reasoning: reasoning ?? null,
       usage: this.toTokenUsage(response.usageMetadata ?? null)
@@ -247,6 +298,9 @@ export class GeminiLLM extends BaseLLM {
     if (options.signal) {
       (config as any).abortSignal = options.signal;
     }
+    if (options.retryMode === 'single_attempt') {
+      applySingleAttemptRetry(config);
+    }
 
     const stream = await client.models.generateContentStream({
       model: runtimeAdjustedModel,
@@ -254,23 +308,28 @@ export class GeminiLLM extends BaseLLM {
       config
     });
 
-    let accumulatedContent = '';
-    let accumulatedReasoning = '';
     let nextToolCallIndex = 0;
+    let finishReason: unknown = null;
+    let blockReason: unknown = null;
+    let usageMetadata: unknown = null;
 
     for await (const chunk of stream) {
       let handledParts = false;
-      const parts = chunk.candidates?.[0]?.content?.parts ?? [];
+      const candidate = chunk.candidates?.[0];
+      if (candidate?.finishReason) finishReason = candidate.finishReason;
+      if (chunk.promptFeedback?.blockReason) blockReason = chunk.promptFeedback.blockReason;
+      // Usage metadata can arrive on several chunks; the last one is cumulative.
+      if (chunk.usageMetadata) usageMetadata = chunk.usageMetadata;
+
+      const parts = candidate?.content?.parts ?? [];
       if (parts.length) {
         handledParts = true;
         for (const part of parts) {
           const partText = (part as any)?.text;
           if (partText) {
             if ((part as any)?.thought) {
-              accumulatedReasoning += partText;
               yield new ChunkResponse({ content: '', reasoning: partText, is_complete: false });
             } else {
-              accumulatedContent += partText;
               yield new ChunkResponse({ content: partText, is_complete: false });
             }
           }
@@ -284,19 +343,16 @@ export class GeminiLLM extends BaseLLM {
       }
 
       if (!handledParts && chunk.text) {
-        accumulatedContent += chunk.text;
         yield new ChunkResponse({ content: chunk.text, is_complete: false });
-      }
-
-      if (chunk.usageMetadata) {
-        yield new ChunkResponse({
-          content: '',
-          is_complete: true,
-          usage: this.toTokenUsage(chunk.usageMetadata)
-        });
       }
     }
 
+    yield new ChunkResponse({
+      content: '',
+      is_complete: true,
+      usage: usageMetadata ? this.toTokenUsage(usageMetadata) : null,
+      finish: geminiFinish(finishReason, blockReason, nextToolCallIndex > 0),
+    });
   }
 
   async cleanup(): Promise<void> {

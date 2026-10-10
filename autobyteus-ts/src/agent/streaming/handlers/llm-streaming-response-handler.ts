@@ -91,26 +91,32 @@ export class LlmStreamingResponseHandler {
       return null;
     }
 
-    let parsedArgs: unknown = {};
+    // Never invent arguments: unusable ones mark the invocation so ToolPhase rejects it.
+    let parsedArgs: Record<string, unknown> = {};
+    let argumentsParseError: string | null = null;
     if (state.accumulatedArgs) {
       try {
-        parsedArgs = JSON.parse(state.accumulatedArgs);
+        const parsed: unknown = JSON.parse(state.accumulatedArgs);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          parsedArgs = parsed as Record<string, unknown>;
+        } else {
+          argumentsParseError = 'the arguments are not a JSON object';
+        }
       } catch (error) {
-        console.error(`Failed to parse native tool arguments for ${state.name}: ${error}`);
-        parsedArgs = {};
+        argumentsParseError = error instanceof Error ? error.message : String(error);
       }
     }
-    if (!parsedArgs || typeof parsedArgs !== 'object' || Array.isArray(parsedArgs)) {
-      console.warn(`Native tool call ${state.segmentId} produced non-object arguments for ${state.name}.`);
-      parsedArgs = {};
+    if (argumentsParseError) {
+      console.warn(`Native tool call ${state.segmentId} for ${state.name} has unusable arguments: ${argumentsParseError}`);
     }
 
     return new ToolInvocation(
       state.name,
-      parsedArgs as Record<string, unknown>,
+      parsedArgs,
       state.segmentId,
       this.turnId,
-      state.nativeToolCallContext
+      state.nativeToolCallContext,
+      { argumentsParseError }
     );
   }
 
@@ -358,47 +364,28 @@ export class LlmStreamingResponseHandler {
   }
 
   finalizeInterrupted(reason: string): SegmentEvent[] {
-    if (this.isFinalized) {
-      return [];
-    }
-    this.isFinalized = true;
-    const events: SegmentEvent[] = [];
-
-    if (this.textSegmentId) {
-      const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId, {
-        interrupted: true,
-        reason
-      });
-      this.emitEvent(endEvent);
-      events.push(endEvent);
-      this.textSegmentId = null;
-    }
-
-    for (const state of this.activeTools.values()) {
-      if (!state.segmentStarted) {
-        continue;
-      }
-      const metadata: Record<string, any> = {};
-      if (state.name) {
-        metadata.tool_name = state.name;
-      }
-      if (state.path) {
-        metadata.path = state.path;
-      }
-      const endEvent = SegmentEvent.end(this.turnId, state.segmentId, {
-        interrupted: true,
-        reason,
-        ...(Object.keys(metadata).length ? { metadata } : {})
-      });
-      this.emitEvent(endEvent);
-      events.push(endEvent);
-    }
-    this.activeTools.clear();
-
-    return events;
+    return this.finalizeAbandoned({ interrupted: true, reason }, { interrupted: true, reason });
   }
 
   finalizeFailed(error: string): SegmentEvent[] {
+    return this.finalizeAbandoned({ failed: true, error }, { failed: true, error });
+  }
+
+  /**
+   * The response hit the output limit: its text ends normally (it is kept), every tool
+   * call is discarded (its segment fails with `error`) and no invocation is recorded.
+   * Returns the discarded tool calls' names, known even when their arguments were cut.
+   */
+  finalizeOutputLimited(error: string): string[] {
+    const discardedToolNames = [...this.activeTools.values()]
+      .map((state) => state.name)
+      .filter((name) => Boolean(name));
+    this.finalizeAbandoned({}, { failed: true, error });
+    return discardedToolNames;
+  }
+
+  /** Ends the open text segment and every started tool segment without recording invocations. */
+  private finalizeAbandoned(textEnd: Record<string, unknown>, toolEnd: Record<string, unknown>): SegmentEvent[] {
     if (this.isFinalized) {
       return [];
     }
@@ -406,10 +393,7 @@ export class LlmStreamingResponseHandler {
     const events: SegmentEvent[] = [];
 
     if (this.textSegmentId) {
-      const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId, {
-        failed: true,
-        error
-      });
+      const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId, textEnd);
       this.emitEvent(endEvent);
       events.push(endEvent);
       this.textSegmentId = null;
@@ -427,8 +411,7 @@ export class LlmStreamingResponseHandler {
         metadata.path = state.path;
       }
       const endEvent = SegmentEvent.end(this.turnId, state.segmentId, {
-        failed: true,
-        error,
+        ...toolEnd,
         ...(Object.keys(metadata).length ? { metadata } : {})
       });
       this.emitEvent(endEvent);

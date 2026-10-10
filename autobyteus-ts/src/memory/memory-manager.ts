@@ -16,7 +16,6 @@ import type { SystemInstructionCaptureResult } from './models/system-instruction
 import { TurnTracker } from './turn-tracker.js';
 import { WorkingContext } from './working-context.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
-import { buildToolInteractions } from './tool-interaction-builder.js';
 import { AGENT_INTERRUPTED_TOOL_RESULT_CONTENT, type WorkingContextToolProtocolRepairResult } from './working-context-tool-protocol-repairer.js';
 import { ensureMemoryManagerWorkingContextToolProtocolSafe, type MemoryManagerToolProtocolSafetyInput } from './memory-manager-tool-protocol-safety.js';
 import type {
@@ -58,6 +57,7 @@ import { ToolTraceLifecycleState } from './tool-trace-lifecycle-state.js';
 import { findRecentRawTraceIds } from './recent-raw-trace-selector.js';
 import { requireAgentTurnScopeId, type MemoryProjectionScope } from './memory-projection-scope.js';
 import { getOperationBoundaryNoteContent, OPERATION_BOUNDARY_TRACE_TYPE } from './operation-boundary-trace.js';
+import { OUTPUT_LIMIT_RECOVERY_TRACE_TYPE } from './output-limit-recovery-trace.js';
 import {
   LlmRequestRecoveryBoundary,
   type LlmRequestRecoveryInput,
@@ -172,11 +172,7 @@ export class MemoryManager {
 
   getPendingCompactionRequest(): PendingCompactionRequest | null { return this.compactionCoordinator.getPending(); }
 
-  requirePendingCompactionRequest(): PendingCompactionRequest { return this.compactionCoordinator.requirePending(); }
-
   getPendingCompactionGate(): PendingCompactionGate { return this.compactionCoordinator.getPendingGate(); }
-
-  isCompactionAwaitingUserRetry(): boolean { return this.getPendingCompactionGate().kind === 'awaiting_user_retry'; }
 
   beginPendingCompactionAttempt(input: {
     operationId: string;
@@ -445,6 +441,12 @@ export class MemoryManager {
     return trace;
   }
 
+  /** Hidden recovery note: an `output_limit_recovery` trace (not replayed) plus a USER message linked to it. */
+  appendOutputLimitRecoveryNote(input: { turnId: string; content: string }): void {
+    const trace = this.appendRawTrace({ turnId: input.turnId, traceType: OUTPUT_LIMIT_RECOVERY_TRACE_TYPE, content: input.content, sourceEvent: 'OutputLimitRecovery' });
+    this.appendWorkingContextUserMessage(input.content, { turnId: input.turnId, rawTraceIds: [trace.id] });
+  }
+
   buildOperationBoundaryNote(input: OperationBoundaryNoteInput): string {
     const scopeId = requireAgentTurnScopeId(input.scope, 'MemoryManager.buildOperationBoundaryNote');
     const reasonText = input.reason ? ` Reason: ${input.reason}.` : '';
@@ -544,14 +546,6 @@ export class MemoryManager {
 
   private appendWorkingContextMessage(message: Message, options: WorkingContextAppendOptions = {}): void {
     this.workingContextController.append(message, options);
-  }
-
-  getToolInteractions(turnId?: string | null) {
-    let rawItems = this.listTurnRawTraceCorpusOrdered();
-    if (turnId) {
-      rawItems = rawItems.filter((item) => item.turnId === turnId);
-    }
-    return buildToolInteractions(rawItems);
   }
 
   private recordPhysicalToolTrace(trace: RawTraceItem): void {

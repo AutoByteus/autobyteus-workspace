@@ -60,12 +60,12 @@ class FakeMemoryManager {
 }
 
 describe('LLMRequestAssembler', () => {
-  it('defers pending compaction during an active tool continuation', async () => {
+  it('defers pending compaction during a same-turn continuation', async () => {
     const memoryManager = new FakeMemoryManager();
     const executor = { executeIfAuthorized: vi.fn(async () => true) };
     const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
     const request = await assembler.prepareRequest(null, {
-      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', isToolContinuation: true,
+      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', isTurnContinuation: true,
     } as any, undefined, []);
     expect(request.didCompact).toBe(false);
     expect(executor.executeIfAuthorized).not.toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe('LLMRequestAssembler', () => {
       const memoryManager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'agent_guard') });
       const toolsV1 = [{ name: 'run_bash', description: 'Run a command.' }];
       const toolsV2 = [{ name: 'run_bash', description: 'Run a shell command (schema reloaded).' }];
-      const identity = (turnId: string, isToolContinuation = false) => ({ turnId, requestId: `${turnId}:llm`, isToolContinuation, signal: new AbortController().signal });
+      const identity = (turnId: string, isTurnContinuation = false) => ({ turnId, requestId: `${turnId}:llm`, isTurnContinuation, signal: new AbortController().signal });
       await new LLMRequestAssembler(memoryManager).prepareRequest(new LLMUserMessage({ content: 'Start' }), identity('turn_1'), 'System prompt', toolsV1);
       memoryManager.ingestAssistantToolResponse(new CompleteResponse({ content: '', providerNativeAssistantTurn: { provider: 'anthropic', blocks: [
         { type: 'thinking', thinking: 'bound to toolsV1', signature: 'sig' },

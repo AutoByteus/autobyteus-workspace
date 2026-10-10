@@ -10,6 +10,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { buildFinish } from '../../../../src/llm/utils/llm-response-finish.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { LLMRequestAssembler } from '../../../../src/agent/llm-request-assembler.js';
 import { LlmPhaseSummaryPort, COMPACTION_CONVERSATION_RELEASE_TIMEOUT_MS } from '../../../../src/agent/loop/llm-phase-summary-port.js';
@@ -116,6 +117,17 @@ describe('LlmPhaseSummaryPort', () => {
     expect(kwargs).toEqual({ logicalConversationId: 'compaction_op_12_3' });
     expect(options).toEqual({ signal, turnId: 'turn_0007', retryMode: 'single_attempt' });
     expect(result.metadata.mode).toBe('transcript');
+  });
+
+  it('reports the stream\'s terminal finish as the attempt completion (truncation → incomplete)', async () => {
+    const llm = new ScriptedLLM();
+    llm.chunks = [
+      new ChunkResponse({ content: '<compaction_summary>cut' }),
+      new ChunkResponse({ content: '', is_complete: true, finish: buildFinish('output_limit', 'max_tokens') }),
+    ];
+    const port = new LlmPhaseSummaryPort({ agentId: AGENT_ID, llm, tools, requestCapacity: capacity(), notifier: null });
+    const result = await port.requestCachedSummary([new Message(MessageRole.USER, { content: 'hi' })], 'summarize', identity(), new AbortController().signal);
+    expect(result.metadata).toMatchObject({ completionStatus: 'incomplete', completionReason: 'max_tokens' });
   });
 
   it('rejects a transcript request that exceeds the input budget before any provider call', async () => {
