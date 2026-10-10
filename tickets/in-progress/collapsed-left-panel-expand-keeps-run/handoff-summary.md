@@ -15,7 +15,12 @@
   - The base had advanced 78 more commits to `033a6d780`, through v1.4.99-beta.8 and gemini-native-cache-hit.
   - Ticket records were checkpointed (`a4a98b712`) and the base was merged as `1f34735ed`, with no conflicts.
   - The new base commits do not touch this ticket's source, specs or probes. Only `autobyteus-web/docs/chat.md` and `TESTING.md` changed on both sides, and both merged automatically. This ticket's text is intact.
-- Verified candidate: the ticket branch HEAD that contains this file (the DR-003 delivery commit on top of `1f34735ed`).
+- Cancelled on 2026-10-09 (DR-004), reopened on 2026-10-10 (SR-006, DR-005):
+  - The Solution Designer recovered the branch and worktree at `900443b11`.
+  - IR-003 merged `origin/personal@d28c56d5d` (v1.4.99 stable) as `0604a9586`. It was a no-code re-verification: the 13 feature files are byte-identical to IR-002.
+  - API/E2E round 3 (API-REV-003) passed on that base.
+  - At DR-005 (fetched 2026-10-10) the branch is current: 0 commits behind `d28c56d5d`.
+- Verified candidate: the ticket branch HEAD that contains this file (the DR-005 delivery commit on top of `58df517c3`).
 - Classification: `task_size=Medium`, `architectural_risk=Low`.
 - Route: direct. Architecture review and test-code review are `N/A — not applicable`. A failure-origin code review (CR-001, CRR-001) ran after API/E2E round 1.
 
@@ -41,6 +46,7 @@
 - Test commits:
   - `db0ed1c3c`: baseline fix
   - `6923ca5b4` and `ca641f976`: API/E2E coverage
+  - `4fb0259dd` and `c708178d3`: round-3 baseline fixes (PMU-017 overflow polling; projects-navigation warm-up)
 - Docs:
   - `autobyteus-web/docs/workspace_layout.md` and `autobyteus-web/docs/chat.md` (implementation)
   - `TESTING.md` and `autobyteus-web/docs/projects.md` (delivery)
@@ -54,7 +60,9 @@
 | API/E2E (API-REV-002) | Pass, final confidence 95%. Full PMU suite pass. Projects navigation B-001..B-005. Chat draft rows D00–D14 on real Codex. Packaged isolated desktop DSK-001 (Agent, Team and Org hosts; New chat after a Team run). FAIL-001 resolved. |
 | Repository (API/E2E) | Web unit tests: 589 files / 4021 tests pass |
 | Delivery post-merge (`f8b1fb4ec`) | Web unit tests: 590 files / 4032 tests pass (`delivery-evidence/dr001-web-unit-full.log`). Full `test:e2e:project-manager-ux`: PMU-001..PMU-019 all pass, cleanup clean (`delivery-evidence/dr001-pmu-full/evidence.json`). The server was rebuilt first. |
-| Delivery re-integration (`1f34735ed`, DR-003) | Server rebuilt (EXIT=0). Web unit tests: 592 files / 4041 tests pass (`delivery-evidence/dr003-web-unit-full.log`). Full `test:e2e:project-manager-ux`: PMU-001..PMU-019 all pass, cleanup clean (`delivery-evidence/dr003-pmu-full/evidence.json`). |
+| API/E2E round 3 (API-REV-003, reopened, on `d28c56d5d`) | Pass, 95%. Web unit tests: 593 files / 4062 tests. PMU-001..PMU-019: 19/19. B-001..B-005 with a cold and a warm cache. D00–D14 on real Codex. DSK-001 in a rebuilt packaged app at `c708178d3` (`iso-62032-1caa`; stopped and removed). |
+| Delivery DR-005 | The branch is already current with `d28c56d5d`, so there was no merge and no rerun. Round 3 ran every check on this exact base and code, and only ticket artifacts have changed since. |
+| Delivery re-integration (`1f34735ed`, DR-003, superseded) | Server rebuilt (EXIT=0). Web unit tests: 592 files / 4041 tests pass (`delivery-evidence/dr003-web-unit-full.log`). Full `test:e2e:project-manager-ux`: PMU-001..PMU-019 all pass, cleanup clean (`delivery-evidence/dr003-pmu-full/evidence.json`). |
 
 ## How To Verify (desktop app)
 
@@ -97,7 +105,7 @@ pnpm --silent isolated-app start --build
 - Docs sync: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/docs-sync-report.md`
 - Release notes: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/release-notes.md`
 - Release/deployment report: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/release-deployment-report.md`
-- Delivery revision record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md` (DR-001)
+- Delivery revision record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md` (DR-001..DR-005)
 
 ## Outcome
 
@@ -105,5 +113,6 @@ pnpm --silent isolated-app start --build
   - The user first objected that folding and unfolding use different icons.
   - After going through the alternatives, the user withdrew the request: "After thinking for a long time, seems like the best option is still the tree option" (SR-005).
   - Requirements (SR-003) and design (SR-004) are unchanged. The verification steps above apply again.
-- User verification: pending (requested again after DR-003)
-- Finalization / release: pending user verification
+- **Cancelled (DR-004), 2026-10-09; reopened (SR-006, DR-005), 2026-10-10.** The user's words: "I still like the solution for the tree button. When I click the collapse, it should collapse. And then there is a tree button so I could click again to open the [workspaces] tree itself. The chat button is just for the chat page; if I want a new chat, I just click new chat." This is SR-003 unchanged.
+- User verification: pending (requested at DR-005)
+- Finalization / release: pending user verification. `personal` is at stable `v1.4.99`, so the user chooses the next version if a release is wanted.

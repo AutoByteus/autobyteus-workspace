@@ -10,11 +10,13 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run/tickets/in-progress/collapsed-left-panel-expand-keeps-run/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Current delivery revision ID: `DR-005`
 - Notes:
   - DR-002: halted on 2026-10-09 by the Solution Designer, after the user objected to the Workspaces icon design.
   - DR-003: resumed the same day. The user withdrew the request and kept the tree option (SR-005). Requirements and design are unchanged.
-  - Re-integrated and rechecked. Awaiting user verification.
+  - Re-integrated and rechecked.
+  - DR-004: cancelled by the user on 2026-10-09 and stopped. Nothing shipped. The Solution Designer did the cleanup.
+  - DR-005: reopened on 2026-10-10 (SR-006, SR-003 unchanged). The branch was recovered, IR-003 merged `d28c56d5d`, and API-REV-003 passed. Awaiting user verification.
 
 ## Initial Delivery Integration Refresh
 
@@ -53,7 +55,28 @@
   - `pnpm -C autobyteus-web test:nuxt --run`: 592 passed / 2 skipped files, 4041 passed / 3 skipped tests, EXIT=0 (`delivery-evidence/dr003-web-unit-full.log`)
   - `pnpm -C autobyteus-web test:e2e:project-manager-ux --output-dir delivery-evidence/dr003-pmu-full`: PMU-001..PMU-019 all pass, cleanup clean (`delivery-evidence/dr003-pmu-full/evidence.json`)
 - Post-integration verification result: `Passed`
-- Handoff state current with latest tracked remote base: `Yes` (as of `033a6d780`)
+- Handoff state current with latest tracked remote base: superseded by the DR-005 refresh below
+- Blocker: None
+
+### Refresh on the reopened package (DR-005, 2026-10-10)
+
+- Latest tracked remote base reference checked: `origin/personal@d28c56d5d` (v1.4.99 stable; fetched 2026-10-10)
+- Base advanced since previous refresh: `Yes` (19 commits beyond `033a6d780`). IR-003 had already integrated it as merge `0604a9586`.
+- New base commits integrated by delivery: `No`. Ticket HEAD `58df517c3` is 19 ahead and 0 behind.
+- Local checkpoint commit result: `Not needed`. The Solution Designer's in-progress edits to `requirements-doc.md` and `investigation-notes.md` were left unstaged and will be included at archive.
+- Integration method: `Already current`
+- Post-integration executable checks rerun by delivery: `No`
+- No-rerun rationale: API/E2E round 3 (API-REV-003) ran every executable check on exactly this base and code:
+  - unit tests: 593 files / 4062 tests
+  - PMU-001..PMU-019
+  - B-001..B-005
+  - D00–D14 on real Codex
+  - packaged DSK-001 at `c708178d3`
+
+  Since `c708178d3`, only ticket artifacts have changed.
+- Post-integration verification result: `Passed` (API-REV-003 evidence: `api-e2e-evidence/r3-pmu-full/evidence.json`, `api-e2e-evidence/isolated-desktop/r3-run-1/evidence.json`)
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes` (as of `d28c56d5d`)
 - Blocker: None
 
 ## User Verification
@@ -155,7 +178,10 @@
 - Repository finalization complete: `No`
 - Applicable release/deployment/rollout complete or not required: `No`
 - Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None. The DR-002 Requirement Gap was withdrawn by the user (SR-005). Awaiting user verification.
+- Unresolved blocker: None.
+  - The DR-002 Requirement Gap was withdrawn (SR-005).
+  - The DR-004 cancellation was reversed by the user's reopening (SR-006).
+  - Awaiting user verification.
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to `/solution_designer`: `No`
 - Terminal message/reference: —

@@ -61,6 +61,18 @@
   - `projects.md`: the PMU-018–019 pointer is intact.
 - Result: no further docs change needed.
 
+## Re-check On The Reopened Package (DR-005, 2026-10-10)
+
+- Integrated base: `origin/personal@d28c56d5d` (merged by IR-003 as `0604a9586`). HEAD is `58df517c3`.
+- The docs are unchanged since DR-003 and remain correct, because SR-003 and SR-004 are unchanged.
+- `TESTING.md` already carries the numbering that API/E2E round 3 asked for:
+  - PMU-017 = Cancelled Tasks
+  - PMU-018 = the strip journey from Task cards
+  - PMU-019 = other entries and the run-shown gate
+- The round-3 baseline fixes (PMU-017 waits for the 390 px layout to settle; the projects-navigation probe warms the dev server first) do not change what the documented cases prove.
+- The projects-navigation probe has no `TESTING.md` entry, so the optional warm-up note was not added.
+- Result: no docs change needed.
+
 ## Delivery Continuation
 
 - Result: `Pass`
