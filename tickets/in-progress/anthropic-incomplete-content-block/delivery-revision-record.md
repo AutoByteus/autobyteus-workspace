@@ -96,6 +96,6 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Why this delivery revision was recorded: the finalization and release round, including the release-tooling fix and the superseded v1.4.100-beta.1.
 - Next recipient/action:
   - The user confirms AC-009 on v1.5.0-beta.1, or says the earlier test already covered it.
-  - The user decides whether to delete v1.4.100-beta.1.
+  - v1.4.100-beta.1: withdrawn from GitHub (release and tag deleted) at the user's request. The Docker Hub tag and the App Store Connect build remain.
   - Then delivery archives the ticket, cleans up and returns the terminal package.
-- Remaining blockers, rollback concerns, or untested scope: AC-009; the v1.4.100-beta.1 decision. Residual risks are unchanged.
+- Remaining blockers, rollback concerns, or untested scope: AC-009. Residual risks are unchanged.

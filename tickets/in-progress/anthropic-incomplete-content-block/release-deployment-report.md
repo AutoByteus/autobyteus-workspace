@@ -122,7 +122,12 @@ Current delivery revision: `DR-004`.
 - **`v1.4.100-beta.1`** (superseded):
   - GitHub pre-release with 15 assets: Desktop and iOS, no Android APK.
   - Docker `:1.4.100-beta.1` = `sha256:b1414e6d…b1c`; `:beta` has moved on to 1.5.0-beta.1.
-  - Its release and tag are still published. Deleting them is irreversible, and the user has not yet chosen whether to do so.
+  - **Withdrawn 2026-10-10 at the user's request** ("delete because it does not follow best practice"): `gh release delete v1.4.100-beta.1 --yes --cleanup-tag`.
+    - The GitHub release and the remote tag are gone; the local tag is gone too.
+    - `releases/latest` is still `v1.4.99`, and `v1.5.0-beta.1` is unaffected.
+    - `next-beta` now gives `1.5.0-beta.2`.
+    - Log: `delivery-evidence/dr-004/v1.4.100-beta.1-withdrawal.log`.
+  - **Still outside GitHub**, and not removed: the Docker Hub tag `autobyteus/autobyteus-server:1.4.100-beta.1`, and the iOS build uploaded to App Store Connect by run `38037773962`. Removing the Docker tag needs Docker Hub credentials. An App Store Connect build cannot be deleted, only expired in TestFlight. Neither is offered to users through the beta channel: Docker `:beta` points to 1.5.0-beta.1.
 - Release/publication/deployment result: `Completed` for `v1.5.0-beta.1`.
 - Release notes handoff result: `Not required`. Beta mode publishes generated notes; `release-notes.md` stays as the ticket's user-facing summary for the next stable release.
 - Blocker: none.
@@ -174,6 +179,6 @@ Current delivery revision: `DR-004`.
 - Repository finalization complete: `Yes` (`26795afa0`, then release tooling `173098f2a`/`27cb8946f` and release `12f92f057` on `personal`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`v1.5.0-beta.1`)
 - Applicable safe cleanup complete or not required: `No`. Deferred until AC-009 is confirmed.
-- Unresolved blocker: AC-009 confirmation (ticket archive and cleanup). Also undecided: whether to withdraw `v1.4.100-beta.1`.
+- Unresolved blocker: AC-009 confirmation (ticket archive and cleanup). `v1.4.100-beta.1` has been withdrawn from GitHub.
 - Successful terminal package eligible for return: `No`, until the ticket is archived and cleanup is done.
 - Terminal package sent to `/solution_designer`: `No`
