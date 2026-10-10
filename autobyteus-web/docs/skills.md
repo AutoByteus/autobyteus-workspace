@@ -22,27 +22,46 @@ read/write behavior is determined by the underlying filesystem permissions.
 
 ## Local and GitHub Sources
 
-Open **Sources** to add a local folder or a public HTTPS GitHub repository-root
-URL. GitHub imports use the default branch; private repositories, branch/tree
-URLs and subfolder selection are not supported. A root `SKILL.md` imports one
-skill. Otherwise, immediate skill folders and conventional nested `skills/`
-collections are discovered. Invalid collection candidates are reported as
-skipped; an empty or conflicting repository is rejected as a whole.
+Open **Sources** to manage where skills come from. The dialog lists the sources
+as compact rows, Default first and then by path. Each row shows a folder or
+GitHub icon, a short name (`owner/repository` for GitHub; the last folder name
+for a folder, or `parent/skills` when that name is `skills`), the skill count
+(**No skills**, **1 skill**, **N skills**) and the full path or URL, truncated,
+with a tooltip and a copy button. Only the list scrolls; the add area and the
+**Done** footer stay in place. Esc, ×, **Done** and a click outside close the
+dialog, and focus returns to **Sources**.
 
-The modal checks GitHub metadata on open, and **Check again** retries a source.
-Checking does not download or replace installed files. **Update** requires
+The **Add skill source** input takes either a folder path or a public HTTPS
+GitHub repository-root URL. A value starting with `http://`, `https://`,
+`www.` or `github.com/` is imported as a GitHub repository, and the hint then
+shows the trust warning; any other value is added as a local folder. In the
+desktop app, **Browse…** opens the native folder picker and fills the input
+without adding it. The input is cleared after a successful add and kept when
+the add fails. GitHub imports use the default branch; private repositories,
+branch/tree URLs and subfolder selection are not supported. A root `SKILL.md`
+imports one skill. Otherwise, immediate skill folders and conventional nested
+`skills/` collections are discovered. Invalid collection candidates are
+reported as skipped; an empty or conflicting repository is rejected as a whole.
+
+The dialog checks GitHub sources every time it opens, so each GitHub row shows
+one status line (*Up to date*, *Update available*, *Check failed*, …). After a
+failed check, **Try again** runs the check once more. The installed and latest
+revisions, branch and last check time are in the status tooltip and in the
+Update confirmation. Checking does not download or replace installed files.
+**Update** appears for *Update available* and *Update failed* and requires
 confirmation: the entire downloaded copy is replaced, including local edits
 and upstream deletions. Failed preparation retains the previous usable copy.
 A post-commit cleanup warning means the update succeeded; it is not a rollback.
 Use local folders if you want to maintain your own edits.
 
-**Remove** deletes only a GitHub source's managed copy after confirmation.
-**Retry removal** completes an interrupted/failed removal after the reported
-filesystem problem is corrected. A source marked **Removal incomplete** is
-already excluded from the catalog, including after restart; retry does not
-remove unrelated local sources. Local removal only
-unlinks the folder, and the default source cannot be removed. Import only
-sources you trust; downloading a skill does not endorse its instructions.
+The trash button removes a source after confirmation; for a GitHub source it
+deletes only the managed copy. **Retry removal** completes an
+interrupted/failed removal after the reported filesystem problem is corrected.
+A source marked **Removal incomplete** is already excluded from the catalog,
+including after restart; retry does not remove unrelated local sources. Local
+removal only unlinks the folder, and the default source has no trash button.
+Import only sources you trust; downloading a skill does not endorse its
+instructions.
 
 Source changes refresh cards, name-based selections and transient file views.
 A later agent run uses the current catalog generation, including in the same
@@ -92,8 +111,8 @@ autobyteus-web/
 ├── components/skills/
 │   ├── SkillsList.vue                  # Skills listing with cards
 │   ├── SkillCard.vue                   # Individual skill card
-│   ├── SkillSourcesModal.vue           # Local/GitHub entry, checks and confirmations
-│   ├── SkillSourceRow.vue              # Source ownership, revisions, status and actions
+│   ├── SkillSourcesModal.vue           # Sources dialog: add input (folder/URL), Browse…, checks, confirmations, focus
+│   ├── SkillSourceRow.vue              # One source: name, count, path/URL + copy, GitHub status and actions
 │   ├── SkillDetail.vue                 # Skill explorer & file viewer
 │   ├── SkillDescriptionSummary.vue     # Compact description summary + inline More/Less disclosure
 │   ├── SkillNameConflictDialog.vue     # "Duplicate skill names" pop-up (D-19)
@@ -104,6 +123,8 @@ autobyteus-web/
 │   ├── skillSourcesStore.ts            # Source operations, pending state and diagnostics
 │   ├── skillNamesStore.ts              # Ignored copies, conflict pop-up state, tier-4 notices
 │   └── workspace.ts                    # Workspace registration (incl. skill workspaces)
+├── utils/skills/
+│   └── skillSourceDisplay.ts           # Short display name of a skill source
 └── graphql/
     ├── queries/skillQueries.ts
     └── mutations/skillMutations.ts

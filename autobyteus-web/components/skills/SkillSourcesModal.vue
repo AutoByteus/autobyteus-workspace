@@ -1,56 +1,108 @@
 <template>
-  <div class="dialog-overlay" @click.self="close" @keydown.esc="!confirmation && close()">
-    <section class="dialog" :inert="confirmation ? true : undefined" role="dialog" aria-modal="true" aria-labelledby="skill-sources-title">
-      <header>
-        <h3 id="skill-sources-title">{{ t('skills.components.skills.SkillSourcesModal.manage_skill_sources') }}</h3>
-        <button :aria-label="t('skills.sources.close')" class="close-btn" @click="close">×</button>
+  <div class="dialog-overlay fixed inset-0 z-40 flex items-center justify-center bg-slate-900/40 p-4" @click.self="close">
+    <section ref="panelRef" class="dialog flex max-h-[min(48rem,90vh)] w-full max-w-[45rem] flex-col overflow-hidden rounded-2xl bg-white shadow-xl focus:outline-none"
+      :inert="confirmation ? true : undefined" role="dialog" aria-modal="true" aria-labelledby="skill-sources-title" :aria-busy="busy" tabindex="-1"
+      data-testid="skill-sources-dialog" @keydown="handleKeydown">
+      <header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-100 py-4 pl-4 pr-3 sm:pl-6 sm:pr-4">
+        <h2 id="skill-sources-title" class="text-lg font-semibold text-slate-900">{{ t('skills.components.skills.SkillSourcesModal.manage_skill_sources') }}</h2>
+        <button type="button" :aria-label="t('skills.sources.close')" :title="t('skills.sources.close')"
+          class="close-btn inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          @click="close">
+          <Icon icon="heroicons:x-mark" class="h-5 w-5" aria-hidden="true" />
+        </button>
       </header>
-      <div class="content">
-        <p v-if="loading && !sources.length">{{ t('skills.components.skills.SkillSourcesModal.loading_sources') }}</p>
-        <p v-if="error || registryError" role="alert" class="error-alert">{{ error || registryError }}</p>
-        <p v-if="successMessage" role="status" class="success-alert">{{ successMessage }}</p>
-        <ul v-if="warnings.length" class="warning-alert" role="status"><li v-for="warning in warnings" :key="warning">{{ warning }}</li></ul>
-        <div class="sources-list">
+
+      <div class="sources-scroll min-h-0 flex-1 overflow-y-auto" data-testid="skill-sources-list">
+        <div v-if="loading && !sources.length" class="flex items-center justify-center gap-2 py-12 text-sm text-slate-500" role="status">
+          <Icon icon="svg-spinners:ring-resize" class="h-4 w-4 text-slate-400" aria-hidden="true" />
+          {{ t('skills.components.skills.SkillSourcesModal.loading_sources') }}
+        </div>
+        <ul v-else class="sources-list divide-y divide-slate-100 py-1" :aria-label="t('skills.sources.listLabel')">
           <SkillSourceRow v-for="source in sources" :key="source.sourceId" :source="source"
             :pending="pending[source.sourceId]" :disabled="busy"
             @check="check(source)" @update="confirmation = { action: 'update', source }"
             @remove="confirmation = { action: 'remove', source }" />
-        </div>
-        <div class="add-source-section">
-          <div class="input-modes" role="group" :aria-label="t('skills.sources.sourceType')">
-            <button :aria-pressed="mode === 'local'" :disabled="busy" @click="mode = 'local'">{{ t('skills.sources.local') }}</button>
-            <button :aria-pressed="mode === 'github'" :disabled="busy" @click="mode = 'github'">{{ t('skills.sources.github') }}</button>
-          </div>
-          <form @submit.prevent="handleAdd">
-            <label for="skill-source-input">{{ t(mode === 'github' ? 'skills.sources.repositoryUrl' : 'skills.components.skills.SkillSourcesModal.add_new_source_folder') }}</label>
-            <div class="input-group">
-              <input id="skill-source-input" v-model="newPath" :disabled="busy" type="text" autocomplete="off"
-                :placeholder="mode === 'github' ? 'https://github.com/owner/repository' : t('skills.components.skills.SkillSourcesModal.absolute_path_to_skills_folder')" />
-              <button class="btn-add" type="submit" :disabled="!newPath.trim() || busy">
-                {{ busy ? t('skills.sources.working') : t(mode === 'github' ? 'skills.sources.import' : 'skills.components.skills.SkillSourcesModal.add_folder') }}
-              </button>
-            </div>
-          </form>
-          <p class="hint">{{ t(mode === 'github' ? 'skills.sources.trust' : 'skills.components.skills.SkillSourcesModal.enter_the_absolute_path_to_a') }}</p>
-        </div>
+        </ul>
       </div>
-      <footer><button class="btn-done" @click="close">{{ t('skills.components.skills.SkillSourcesModal.done') }}</button></footer>
+
+      <div class="add-source-section shrink-0 border-t border-slate-200 px-4 pb-4 pt-3 sm:px-6">
+        <div v-if="error || registryError || successMessage || warnings.length" class="alerts mb-3 space-y-2">
+          <p v-if="error || registryError" role="alert" class="error-alert alert-bar border-red-200 bg-red-50 text-red-800">
+            <Icon icon="heroicons:exclamation-circle-20-solid" class="alert-icon text-red-500" aria-hidden="true" />
+            <span class="min-w-0">{{ error || registryError }}</span>
+          </p>
+          <p v-if="successMessage" role="status" class="success-alert alert-bar border-emerald-200 bg-emerald-50 text-emerald-900">
+            <Icon icon="heroicons:check-circle-20-solid" class="alert-icon text-emerald-500" aria-hidden="true" />
+            <span class="min-w-0">{{ successMessage }}</span>
+          </p>
+          <div v-if="warnings.length" role="status" class="warning-alert alert-bar border-amber-200 bg-amber-50 text-amber-900">
+            <Icon icon="heroicons:exclamation-triangle-20-solid" class="alert-icon text-amber-500" aria-hidden="true" />
+            <ul class="min-w-0 space-y-0.5"><li v-for="warning in warnings" :key="warning">{{ warning }}</li></ul>
+          </div>
+        </div>
+
+        <form @submit.prevent="handleAdd">
+          <label for="skill-source-input" class="mb-2 block text-[13px] font-medium text-slate-700">{{ t('skills.sources.addSource') }}</label>
+          <div class="input-group flex gap-2">
+            <input id="skill-source-input" ref="inputRef" v-model="newPath" :disabled="busy" type="text" autocomplete="off" spellcheck="false"
+              aria-describedby="skill-source-hint"
+              class="h-9 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 font-mono text-[13px] text-slate-900 placeholder:font-sans placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:bg-slate-50 disabled:text-slate-400"
+              :placeholder="t('skills.sources.inputPlaceholder')" />
+            <button v-if="pickerEligible" type="button" class="browse btn-secondary-sm" :disabled="busy || picking" @click="browse">
+              {{ t('skills.sources.browse') }}
+            </button>
+            <button class="btn-add btn-primary-sm" type="submit" :disabled="!newPath.trim() || busy">
+              <Icon v-if="scanning" icon="svg-spinners:ring-resize" class="h-4 w-4" aria-hidden="true" />
+              <Icon v-else icon="heroicons:plus" class="h-4 w-4" aria-hidden="true" />
+              {{ scanning ? t('skills.sources.working') : t('skills.sources.add') }}
+            </button>
+          </div>
+        </form>
+        <p id="skill-source-hint" class="hint mt-2 flex items-start gap-1.5 text-xs leading-5 text-slate-500" aria-live="polite">
+          <Icon v-if="isRepositoryUrl" icon="heroicons:shield-exclamation" class="mt-0.5 h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
+          <span>{{ t(isRepositoryUrl ? 'skills.sources.trust' : 'skills.sources.inputHint') }}</span>
+        </p>
+      </div>
+
+      <footer class="flex shrink-0 justify-end border-t border-slate-100 bg-slate-50 px-4 py-3 sm:px-6">
+        <button type="button" class="btn-done btn-secondary-sm" @click="close">{{ t('skills.components.skills.SkillSourcesModal.done') }}</button>
+      </footer>
     </section>
+
     <ConfirmationModal :show="!!confirmation" :pending="confirming"
       :title="t(confirmation?.action === 'update' ? 'skills.sources.updateTitle' : 'skills.components.skills.SkillSourcesModal.remove_skill_source')"
       :confirm-button-text="t(confirmation?.action === 'update' ? 'skills.sources.update' : 'skills.sources.remove')"
       variant="danger" @confirm="confirmAction" @cancel="confirmation = null">
-      <p class="confirm-copy">{{ confirmationMessage }}</p>
-      <p class="confirm-source">{{ confirmation?.source.github?.repositoryUrl ?? confirmation?.source.path }}</p>
+      <p class="confirm-copy text-sm leading-6 text-slate-600">{{ confirmationMessage }}</p>
+      <div v-if="confirmation" class="confirm-source mt-3 flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-slate-600 ring-1 ring-slate-200" aria-hidden="true">
+          <Icon :icon="confirmation.source.github ? 'mdi:github' : 'heroicons:folder'" class="h-4 w-4" />
+        </span>
+        <span class="min-w-0">
+          <span class="block truncate text-sm font-medium text-slate-900">{{ skillSourceDisplayName(confirmation.source) }}</span>
+          <span class="mt-0.5 block break-all font-mono text-[11.5px] leading-4 text-slate-500">{{ confirmation.source.github?.repositoryUrl ?? confirmation.source.path }}</span>
+          <span v-if="confirmation.action === 'update' && confirmation.source.github?.latestRevision" class="version-change mt-1.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-slate-600">
+            <span>{{ confirmation.source.github.defaultBranch }}</span>
+            <span class="font-mono text-[11.5px]" :title="confirmation.source.github.installedRevision">{{ confirmation.source.github.installedRevision.slice(0, 10) }}</span>
+            <Icon icon="heroicons:arrow-right-20-solid" class="h-3.5 w-3.5 text-slate-400" :aria-label="t('skills.sources.latest')" />
+            <span class="font-mono text-[11.5px] font-medium text-slate-900" :title="confirmation.source.github.latestRevision">{{ confirmation.source.github.latestRevision.slice(0, 10) }}</span>
+          </span>
+        </span>
+      </div>
     </ConfirmationModal>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
+import { Icon } from '@iconify/vue'
 import { useSkillSourcesStore, type SkillSource } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
 import { useSkillNamesStore } from '~/stores/skillNamesStore'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates'
+import { pickFolderPath } from '~/composables/useNativeFolderDialog'
+import { skillSourceDisplayName } from '~/utils/skills/skillSourceDisplay'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import SkillSourceRow from './SkillSourceRow.vue'
 
@@ -59,24 +111,68 @@ const emit = defineEmits(['close'])
 const store = useSkillSourcesStore()
 const skillStore = useSkillStore()
 const skillNames = useSkillNamesStore()
+const nodeContext = useWindowNodeContextStore()
 const { skillSources, loading, error, registryError, warnings, pending } = storeToRefs(store)
 const newPath = ref('')
-const mode = ref<'local' | 'github'>('local')
 const successMessage = ref('')
 const scanning = ref(false)
 const confirming = ref(false)
+const picking = ref(false)
 const confirmation = ref<{ action: 'update' | 'remove'; source: SkillSource } | null>(null)
+const panelRef = ref<HTMLElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null)
 const busy = computed(() => loading.value || scanning.value || Object.keys(pending.value).length > 0)
 const sources = computed(() => [...skillSources.value].sort((a, b) =>
   Number(b.isDefault) - Number(a.isDefault) || a.path.localeCompare(b.path)))
 const confirmationMessage = computed(() => t(confirmation.value?.action === 'update'
   ? 'skills.sources.updateWarning' : confirmation.value?.source.github
     ? 'skills.sources.removeWarning' : 'skills.sources.unlinkWarning'))
+// One input for both kinds: a web address is imported as a GitHub repository (the import validates it and
+// rejects non-GitHub or non-root URLs with its existing message); anything else is added as a local folder.
+const isRepositoryUrl = computed(() => /^\s*(https?:\/\/|www\.|github\.com\/)/i.test(newPath.value))
+// Browse… (DEC-002): the native folder picker, only where the workspace folder picker is offered.
+const pickerEligible = computed(() => canUseLocalFolderPicker({
+  isEmbeddedWindow: nodeContext.isEmbeddedWindow,
+  hasElectronFolderDialog: typeof window !== 'undefined' && typeof window.electronAPI?.showFolderDialog === 'function',
+}))
 
 function close() { if (!confirming.value) emit('close') }
+
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    if (!confirmation.value) { event.preventDefault(); close() }
+    return
+  }
+  if (event.key !== 'Tab' || !panelRef.value) return
+  const items = Array.from(panelRef.value.querySelectorAll<HTMLElement>(FOCUSABLE))
+  if (!items.length) return
+  const first = items[0]!, last = items[items.length - 1]!
+  const active = document.activeElement
+  if (event.shiftKey && (active === first || active === panelRef.value)) { event.preventDefault(); last.focus() }
+  else if (!event.shiftKey && active === last) { event.preventDefault(); first.focus() }
+}
+
+let returnFocus: HTMLElement | null = null
 onMounted(async () => {
+  returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  await nextTick()
+  panelRef.value?.focus()
   try { await store.fetchSkillSources(); await store.checkGitHubSources() } catch { /* visible store error */ }
 })
+onBeforeUnmount(() => { if (returnFocus?.isConnected) returnFocus.focus() })
+
+async function browse() {
+  if (picking.value || busy.value) return
+  picking.value = true
+  try {
+    const picked = await pickFolderPath()
+    if (picked) newPath.value = picked
+  } finally {
+    picking.value = false
+    inputRef.value?.focus()
+  }
+}
 
 async function refreshCatalog() {
   try {
@@ -90,7 +186,7 @@ async function handleAdd() {
   scanning.value = true
   successMessage.value = ''
   try {
-    await skillNames.runWithSkillNameChecks(() => mode.value === 'github'
+    await skillNames.runWithSkillNameChecks(() => isRepositoryUrl.value
       ? store.githubOperation('import', undefined, newPath.value.trim())
       : store.addSkillSource(newPath.value.trim()))
     newPath.value = ''
@@ -123,28 +219,18 @@ async function confirmAction() {
 }
 </script>
 <style scoped>
-.dialog-overlay { position: fixed; inset: 0; z-index: 40; background: #0008; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-.dialog { background: white; border-radius: 12px; width: 100%; max-width: 650px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px #0002; }
-header, footer { padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-header { border-bottom: 1px solid #e5e7eb; } h3 { margin: 0; font-size: 1.25rem; font-weight: 600; color: #111827; }
-.close-btn { font-size: 1.5rem; border: 0; padding: 0 .4rem; }
-.content { padding: 1.5rem; overflow-y: auto; min-height: 0; }
-.sources-list { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.5rem; }
-.error-alert, .success-alert, .warning-alert { padding: .75rem; border-radius: 6px; font-size: .875rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
-.error-alert { background: #fee2e2; color: #b91c1c; } .success-alert { background: #d1fae5; color: #065f46; }
-.warning-alert { background: #fef3c7; color: #92400e; }
-.add-source-section { border-top: 1px solid #e5e7eb; padding-top: 1.25rem; }
-.input-modes { display: flex; gap: .5rem; margin-bottom: 1rem; }
-button { border: 1px solid #d1d5db; border-radius: 6px; padding: .5rem .75rem; cursor: pointer; color: #374151; background: white; }
-button[aria-pressed="true"] { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; }
-button:disabled { opacity: .5; cursor: not-allowed; } button:focus-visible, input:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-label { display: block; font-size: .875rem; margin-bottom: .5rem; color: #374151; }
-.input-group { display: flex; gap: .5rem; }
-input { flex: 1; min-width: 0; border: 1px solid #d1d5db; border-radius: 6px; padding: .625rem; font-family: monospace; font-size: .875rem; }
-.btn-add { background: #059669; color: white; border-color: #059669; white-space: nowrap; }
-.hint { font-size: .75rem; line-height: 1.5; color: #6b7280; margin-top: .5rem; }
-footer { border-top: 1px solid #e5e7eb; justify-content: flex-end; }
-.btn-done { background: #2563eb; color: white; border-color: #2563eb; padding: .6rem 1.5rem; }
-.confirm-copy { font-size: .9rem; line-height: 1.5; color: #4b5563; } .confirm-source { margin-top: .5rem; font-family: monospace; font-size: .8rem; overflow-wrap: anywhere; }
-@media (max-width: 480px) { header, footer, .content { padding: 1rem; } .input-group { flex-direction: column; } h3 { font-size: 1.1rem; } }
+.alert-bar { display: flex; align-items: flex-start; gap: .5rem; border-width: 1px; border-radius: .5rem; padding: .375rem .75rem; font-size: .8125rem; line-height: 1.25rem; overflow-wrap: anywhere; }
+.alert-icon { margin-top: .125rem; height: 1rem; width: 1rem; flex-shrink: 0; }
+.btn-primary-sm { display: inline-flex; height: 2.25rem; flex-shrink: 0; align-items: center; gap: .375rem; border-radius: .5rem; background: #3b82f6; padding: 0 .875rem; font-size: .875rem; font-weight: 500; color: #fff; white-space: nowrap; transition: background-color .15s; }
+.btn-primary-sm:hover:not(:disabled) { background: #2563eb; }
+.btn-primary-sm:disabled { cursor: not-allowed; opacity: .5; }
+.btn-secondary-sm { display: inline-flex; height: 2.25rem; flex-shrink: 0; align-items: center; justify-content: center; border-radius: .5rem; border: 1px solid #e2e8f0; background: #fff; padding: 0 .875rem; font-size: .875rem; font-weight: 500; color: #334155; white-space: nowrap; transition: background-color .15s, border-color .15s; }
+.btn-secondary-sm:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; }
+.btn-secondary-sm:disabled { cursor: not-allowed; opacity: .5; }
+.btn-primary-sm:focus-visible, .btn-secondary-sm:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3b82f6; }
+@media (max-width: 520px) {
+  .input-group { flex-wrap: wrap; }
+  .input-group input { flex-basis: 100%; }
+  .input-group .btn-primary-sm { flex: 1; justify-content: center; }
+}
 </style>
