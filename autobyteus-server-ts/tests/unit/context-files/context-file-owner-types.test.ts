@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  assertStoredFilename,
   buildDraftContextFileLocator,
   buildFinalContextFileLocator,
-  getDisplayNameFromStoredFilename,
-  getStoredFilenameFromLocator,
+  ContextFileDescriptorError,
+  ContextFilePathContainmentError,
   parseDraftContextFileLocator,
   parseDraftContextFileOwnerDescriptor,
   parseFinalContextFileOwnerDescriptor,
@@ -29,7 +30,7 @@ describe('context-file-owner-types', () => {
     );
   });
 
-  it('preserves exact Team execution IDs and extracts stored filename/display name', () => {
+  it('preserves exact Team execution IDs', () => {
     const owner = parseFinalContextFileOwnerDescriptor({
       kind: 'team_member_final',
       teamRunId: 'team-1',
@@ -39,12 +40,6 @@ describe('context-file-owner-types', () => {
     expect(owner).not.toHaveProperty('memberRunId');
     const locator = buildFinalContextFileLocator(owner, 'ctx_abc123__diagram-final.png');
     expect(locator).toBe('/rest/team-runs/team-1/agent-runs/designer-run/context-files/ctx_abc123__diagram-final.png');
-    expect(getStoredFilenameFromLocator(locator)).toBe('ctx_abc123__diagram-final.png');
-    expect(getDisplayNameFromStoredFilename('ctx_abc123__diagram-final.png')).toBe('diagram-final.png');
-  });
-
-  it('rejects invalid stored filenames when extracting from locators', () => {
-    expect(getStoredFilenameFromLocator('/rest/runs/run-1/context-files/../../etc/passwd')).toBeNull();
   });
   it.each([
     {}, { agentRunId: '' }, { agentRunId: '../escape' }, { agentRunId: ' a' },
@@ -57,7 +52,7 @@ describe('context-file-owner-types', () => {
 
 
   describe('draft locator codec', () => {
-    const storedFilename = 'ctx_deadbeef__my notes (1).txt';
+    const storedFilename = 'ctx_deadbeef__my-notes_1.v2.txt';
     const owners: ContextFileDraftOwnerDescriptor[] = [
       { kind: 'agent_draft', draftRunId: 'temp-run-1' },
       { kind: 'team_member_draft', teamDraftId: 'team-1', memberAddress: '/C/D' as never },
@@ -107,8 +102,86 @@ describe('context-file-owner-types', () => {
       '/rest/drafts/team-runs/team-1/members/no-root/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-org-runs/org/agent-runs/%2E%2E/context-files/ctx_a__b.txt',
       '/rest/drafts/agent-collaborations/host/agent-runs/a%2Fb/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/%2E%2E/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_a__b.txt',
+      '/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2FA/context-files/ctx_a__b.txt',
+      '/rest/drafts/team-runs/%2E%2E/members/%2FA/context-files/ctx_a__b.txt',
+      '/rest/drafts/agent-runs/x/context-files/%2E',
+      '/rest/drafts/agent-runs/x/context-files/ctx_a__b%00.txt',
     ])('rejects a draft locator with an invalid owner or file: %s', (pathname) => {
       expect(() => parseDraftContextFileLocator(pathname)).toThrow();
     });
+  });
+
+  describe('owner identity rule (every owner ID field)', () => {
+    const legitimateIds = [
+      'solution_designer_0123456789abcdef0123456789abcdef',
+      'temp-1728555555555-3',
+      'temp-chat-1728555555555-12',
+      'team-draft-3f2b8c1e-9a4d-4e6f-8b7a-1c2d3e4f5a6b',
+      'old run with inner spaces',
+    ];
+    const rejectedIds = ['', '.', '..', 'a/b', 'a\\b', 'a\u0000b', ' padded', 'padded ', '../agent-runs/victim', 42, null, undefined];
+
+    const owners: Array<{ parse: (input: unknown) => unknown; base: Record<string, unknown>; fields: string[] }> = [
+      { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'agent_draft' }, fields: ['draftRunId'] },
+      { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'team_member_draft', memberAddress: '/team/lead' }, fields: ['teamDraftId'] },
+      { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'org_member_draft' }, fields: ['orgRunId', 'agentRunId'] },
+      { parse: parseDraftContextFileOwnerDescriptor, base: { kind: 'agent_collaboration_member_draft' }, fields: ['hostRunId', 'agentRunId'] },
+      { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'agent_final' }, fields: ['runId'] },
+      { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'team_member_final' }, fields: ['teamRunId', 'agentRunId'] },
+      { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'org_member_final' }, fields: ['orgRunId', 'agentRunId'] },
+      { parse: parseFinalContextFileOwnerDescriptor, base: { kind: 'agent_collaboration_member_final' }, fields: ['hostRunId', 'agentRunId'] },
+    ];
+    const valid = (owner: (typeof owners)[number], id: string) =>
+      Object.fromEntries([...Object.entries(owner.base), ...owner.fields.map((field) => [field, id])]);
+    const cases = owners.flatMap((owner) => owner.fields.map((field) => ({ owner, field, kind: owner.base.kind as string })));
+
+    it.each(cases)('$kind.$field accepts every legitimate ID format unchanged', ({ owner }) => {
+      for (const id of legitimateIds) {
+        expect(owner.parse(valid(owner, id))).toEqual(valid(owner, id));
+      }
+    });
+
+    it.each(cases)('$kind.$field rejects malformed or traversal IDs', ({ owner, field }) => {
+      for (const id of rejectedIds) {
+        expect(() => owner.parse({ ...valid(owner, 'ok'), [field]: id }), JSON.stringify(id)).toThrow(ContextFileDescriptorError);
+      }
+    });
+
+    // REQ-009 makes the two draft kinds exact; agent_final keeps its current shape (not in scope).
+    it.each(owners.filter((owner) => owner.base.kind !== 'agent_final').map((owner) => ({ owner, kind: owner.base.kind as string })))(
+      '$kind rejects unknown extra fields', ({ owner }) => {
+        expect(() => owner.parse({ ...valid(owner, 'ok'), extra: 1 })).toThrow(ContextFileDescriptorError);
+      },
+    );
+
+    it('keeps the canonical team address rule for memberAddress, including an encoded nested address', () => {
+      const owner = { kind: 'team_member_draft', teamDraftId: 'team-draft-1', memberAddress: '/delivery/lead' };
+      expect(parseDraftContextFileLocator(buildDraftContextFileLocator(owner as ContextFileDraftOwnerDescriptor, 'ctx_a__b.txt')))
+        .toEqual({ owner, storedFilename: 'ctx_a__b.txt' });
+      for (const memberAddress of ['lead', '/a//b', '/a/../b', '']) {
+        expect(() => parseDraftContextFileOwnerDescriptor({ ...owner, memberAddress })).toThrow();
+      }
+    });
+  });
+
+  describe('stored filename allowlist', () => {
+    it.each(['ctx_0123456789ab__notes.txt', 'ctx_0123456789ab__Quarterly_notes_2026.md', 'ctx_ab12__diagram-final.png', 'ctx_ab12__file'])(
+      'accepts the generated name %s', (name) => {
+        expect(assertStoredFilename(name)).toBe(name);
+      },
+    );
+
+    it.each(['', '.', '..', '...', 'a..b', 'a b', 'a:b', 'a\u0000b', ' ctx_a__b.txt', 'ctx_a__b.txt ', 'a/b', 'a\\b', 'notes (1).txt', 'é.txt'])(
+      'rejects %j', (name) => {
+        expect(() => assertStoredFilename(name)).toThrow(ContextFileDescriptorError);
+      },
+    );
+  });
+
+  it('treats a containment failure as a descriptor error', () => {
+    expect(new ContextFilePathContainmentError('x')).toBeInstanceOf(ContextFileDescriptorError);
   });
 });

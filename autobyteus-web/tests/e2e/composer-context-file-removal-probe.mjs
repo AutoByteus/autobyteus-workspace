@@ -313,6 +313,10 @@ const universalRoutes = async () => {
     otherOwner: path.join(ownerDir({ kind: 'agent_draft', draftRunId: 'victim' }), 'ctx_s3__sentinel.txt'),
   };
   for (const file of Object.values(sentinels)) { await fsp.mkdir(path.dirname(file), { recursive: true }); await fsp.writeFile(file, 'sentinel'); }
+  // A live draft in an existing owner folder: a dot-only filename would otherwise address that folder itself.
+  const keeperOwner = owners[0];
+  const keeper = await uploadDraft(keeperOwner, 'keeper.txt', 'keeper bytes');
+  const keeperFile = path.join(ownerDir(keeperOwner), keeper.storedFilename);
   const collab = `agent-collaborations/${world.agentRoot}/agent-runs`;
   const expectations = [
     // Invalid owner or file → 400 {detail}.
@@ -332,23 +336,29 @@ const universalRoutes = async () => {
     { path: '/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt', expect: [404] },
     { path: `/rest/drafts/agent-runs/${world.agentRoot}/context-files/../../agent-runs/victim/context-files/ctx_s3__sentinel.txt`, expect: [404] },
     { path: '/rest/drafts/agent-runs/../../../context_files/ctx_s2__sentinel.txt', expect: [404] },
-    // Pre-existing: an agent draft run id is trim-only validated (implementation handoff "Known Risks"); observed, not graded.
-    { path: '/rest/drafts/agent-runs/%2E%2E/context-files/ctx_s1__sentinel.txt', observeOnly: true },
-    { path: '/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_s2__sentinel.txt', observeOnly: true },
-    { path: '/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_s3__sentinel.txt', observeOnly: true },
+    // Traversal-shaped owner IDs and dot-only filenames (draft-run-id-validation) → 400 {detail}, nothing touched.
+    { path: '/rest/drafts/agent-runs/%2E%2E/context-files/ctx_s1__sentinel.txt', expect: [400] },
+    { path: '/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_s2__sentinel.txt', expect: [400] },
+    { path: '/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_s3__sentinel.txt', expect: [400] },
+    { path: '/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2Fsquad%2Freviewer/context-files/ctx_s3__sentinel.txt', expect: [400] },
+    { path: '/rest/drafts/team-runs/%2E%2E/members/%2Fsquad%2Freviewer/context-files/ctx_s1__sentinel.txt', expect: [400] },
+    // Final files are read-only (no DELETE route), so this row is GET only.
+    { path: '/rest/runs/%2E%2E/context-files/ctx_s1__sentinel.txt', expect: [400], methods: ['GET'] },
+    { path: `/rest/drafts/agent-runs/${world.agentRoot}/context-files/%2E`, expect: [400] },
   ];
   const mapping = [];
   for (const method of ['GET', 'DELETE']) {
-    for (const e of expectations) {
+    for (const e of expectations.filter((row) => !row.methods || row.methods.includes(method))) {
       const r = await rawRequest(method, e.path);
       let detail = null; try { detail = JSON.parse(r.body).detail ?? null; } catch { /* non-JSON */ }
-      mapping.push({ method, path: e.path, status: r.status, detail, expected: e.expect ?? 'observe' });
+      mapping.push({ method, path: e.path, status: r.status, detail, expected: e.expect });
     }
   }
-  const graded = mapping.filter((m) => Array.isArray(m.expected));
-  const wrong = graded.filter((m) => !m.expected.includes(m.status) || (m.status === 400 && typeof m.detail !== 'string'));
+  const wrong = mapping.filter((m) => !m.expected.includes(m.status) || (m.status === 400 && typeof m.detail !== 'string'));
   const sentinelState = {};
   for (const [k, file] of Object.entries(sentinels)) sentinelState[k] = await exists(file);
+  sentinelState.keeperDraft = await exists(keeperFile) && (await fsp.readFile(keeperFile, 'utf8')) === 'keeper bytes';
+  await rawRequest('DELETE', keeper.locator);
   // RU-3: a paired mobile credential authorizes a draft DELETE through the real route policy; a forged one does not.
   await fetch(`${stack.backendUrl}/rest/remote-access/settings`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phoneAccessEnabled: true }) });
   const serverBaseUrl = `http://192.168.77.10:${stack.backendPort}`;
@@ -369,7 +379,7 @@ const universalRoutes = async () => {
   for (const file of Object.values(sentinels)) await fsp.rm(file, { force: true });
   const result = { perKind, mapping, sentinelState, bearer };
   assert(wrong.length === 0, 'status mapping mismatch over real HTTP', { wrong, result });
-  assert(sentinelState.appDataLevel, 'a traversal path deleted a file outside the draft root', result);
+  assert(Object.values(sentinelState).every(Boolean), 'a traversal or dot-only path touched a file outside its own draft', result);
   assert(forgedDelete.status === 401 || forgedDelete.status === 403, 'forged bearer was not rejected', result);
   assert(keptAfterForged && bearerDelete.status === 204 && goneAfterBearer, 'bearer DELETE did not delete the draft', result);
   return result;

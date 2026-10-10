@@ -874,7 +874,11 @@ owner kinds. Cases:
 - CF-001: the universal `GET`/`DELETE /rest/drafts/*` routes over raw HTTP for
   every owner kind (upload → GET 200 → DELETE 204 → GET 404 → DELETE 204), the
   400/404 mapping, traversal-shaped paths that the Fastify `inject` tests cannot
-  express, and a paired mobile bearer credential (forged → 401).
+  express, and a paired mobile bearer credential (forged → 401). Traversal-shaped
+  owner IDs on `agent-runs`, `team-runs` and `/rest/runs/` (`%2E%2E`, `..%2F…`)
+  and a dot-only filename (`%2E`) against an existing owner folder must return
+  400 with `detail` and leave every sentinel (draft-root level, another owner,
+  app data, the owner's own draft) intact.
 - CF-002/CF-003/CF-006: real clipboard paste of an image, the `+` file chooser and
   a pasted workspace path, then × and Clear All, in a delegated Agent copy, a
   delegated Team-copy member and every other run kind. Each removal is checked

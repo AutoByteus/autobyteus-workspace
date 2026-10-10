@@ -175,6 +175,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       }
       return sendFile(filePath, reply);
     } catch (error) {
+      if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
       if (error instanceof StandaloneContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
       throw error;
     }
