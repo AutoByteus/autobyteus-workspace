@@ -123,15 +123,17 @@ export abstract class BaseLLM {
       if (chunk.content) accumulatedContent += chunk.content;
       if (chunk.reasoning) accumulatedReasoning += chunk.reasoning;
       
+      // Adapters yield exactly one terminal chunk, last, carrying usage and finish.
       if (chunk.is_complete) finalChunk = chunk;
-      
+
       yield chunk;
     }
 
     const completeResponse = new CompleteResponse({
       content: accumulatedContent,
       reasoning: accumulatedReasoning || null,
-      usage: finalChunk?.usage
+      usage: finalChunk?.usage,
+      finish: finalChunk?.finish ?? null,
     });
 
     await this.executeAfterHooks(messages, completeResponse, kwargs);

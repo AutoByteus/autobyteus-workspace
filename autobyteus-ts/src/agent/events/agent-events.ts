@@ -124,13 +124,14 @@ export class LLMUserMessageReadyEvent extends AgentOperationalEvent {
   }
 }
 
-export class ToolContinuationReadyEvent extends AgentOperationalEvent {
+/** A same-turn continuation (after tool results or an output-limit recovery note) is ready for the LLM. */
+export class TurnContinuationReadyEvent extends AgentOperationalEvent {
   turnId: string;
 
   constructor(turnId: string) {
     super();
     if (typeof turnId !== 'string' || !turnId.trim()) {
-      throw new Error('ToolContinuationReadyEvent requires a non-empty turnId.');
+      throw new Error('TurnContinuationReadyEvent requires a non-empty turnId.');
     }
     this.turnId = turnId.trim();
   }

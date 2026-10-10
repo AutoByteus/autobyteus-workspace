@@ -1,9 +1,9 @@
-import { completionFromReason } from './completion-status.js';
 import { Ollama } from 'ollama';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import { mapProviderFinish, withToolCallsFinish, type LlmFinishTable } from '../utils/llm-response-finish.js';
 import { buildLlmTokenUsageObservation, type LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { Message } from '../utils/messages.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
@@ -11,6 +11,12 @@ import { OllamaPromptRenderer } from '../prompt-renderers/ollama-prompt-renderer
 import { convertOllamaToolCalls } from '../converters/ollama-tool-call-converter.js';
 import { createLocalLongRunningFetch } from '../transport/local-long-running-fetch.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+
+/** Ollama `done_reason` → normalized finish. */
+const OLLAMA_FINISH_TABLE: LlmFinishTable = {
+  stop: 'stop',
+  length: 'output_limit',
+};
 
 export const createOllamaTokenUsageObservation = (
   response: unknown,
@@ -128,7 +134,9 @@ export class OllamaLLM extends BaseLLM {
     const usage = this.toTokenUsage(response);
 
       return new CompleteResponse({
-        ...completionFromReason(response.done_reason, response.done === true ? ['stop'] : [], ['length'], response.done === false || Boolean(response.message?.tool_calls?.length)),
+        finish: response.done === true
+          ? withToolCallsFinish(mapProviderFinish(OLLAMA_FINISH_TABLE, response.done_reason), Boolean(response.message?.tool_calls?.length))
+          : null,
         content: messageParts.content,
         reasoning: messageParts.reasoning,
         usage
@@ -149,15 +157,13 @@ export class OllamaLLM extends BaseLLM {
     try {
       const stream = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, true) as any);
 
-      let accumulatedMain = '';
-      let accumulatedReasoning = '';
       let inReasoning = false;
       let finalResponse: any = null;
+      let emittedToolCalls = false;
 
       for await (const part of stream as AsyncIterable<any>) {
         const explicitThinking = typeof part?.message?.thinking === 'string' ? part.message.thinking : '';
         if (explicitThinking) {
-          accumulatedReasoning += explicitThinking;
           yield new ChunkResponse({ content: '', reasoning: explicitThinking });
         }
 
@@ -176,10 +182,8 @@ export class OllamaLLM extends BaseLLM {
         }
 
         if (inReasoning) {
-          accumulatedReasoning += token;
           yield new ChunkResponse({ content: '', reasoning: token });
         } else {
-          accumulatedMain += token;
           if (token) {
             yield new ChunkResponse({ content: token, reasoning: null });
           }
@@ -187,6 +191,7 @@ export class OllamaLLM extends BaseLLM {
 
         const toolDeltas = convertOllamaToolCalls(part?.message?.tool_calls);
         if (toolDeltas) {
+          emittedToolCalls = true;
           yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolDeltas });
         }
 
@@ -200,7 +205,13 @@ export class OllamaLLM extends BaseLLM {
         usage = this.toTokenUsage(finalResponse);
       }
 
-      yield new ChunkResponse({ content: '', reasoning: null, is_complete: true, usage });
+      yield new ChunkResponse({
+        content: '',
+        reasoning: null,
+        is_complete: true,
+        usage,
+        finish: withToolCallsFinish(mapProviderFinish(OLLAMA_FINISH_TABLE, finalResponse?.done_reason), emittedToolCalls),
+      });
     } finally {
       options.signal?.removeEventListener('abort', abort);
     }

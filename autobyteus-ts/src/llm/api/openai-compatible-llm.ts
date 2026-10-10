@@ -1,10 +1,16 @@
-import { completionFromReason } from './completion-status.js';
 import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import {
+  buildFinish,
+  mapProviderFinish,
+  withToolCallsFinish,
+  type LlmFinishTable,
+  type LlmResponseFinish,
+} from '../utils/llm-response-finish.js';
 import { Message } from '../utils/messages.js';
 import { convertOpenAIToolCalls } from '../converters/openai-tool-call-converter.js';
 import { OpenAIChatRenderer } from '../prompt-renderers/openai-chat-renderer.js';
@@ -22,6 +28,15 @@ import { OpenAI as OpenAIClient } from 'openai';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mjs';
 import { ChatCompletionChunk } from 'openai/resources/chat/completions.mjs';
 
+/** OpenAI Chat Completions `finish_reason` → normalized finish. */
+export const OPENAI_CHAT_FINISH_TABLE: LlmFinishTable = {
+  stop: 'stop',
+  tool_calls: 'tool_calls',
+  function_call: 'tool_calls',
+  length: 'output_limit',
+  content_filter: 'content_filter',
+};
+
 export class OpenAICompatibleLLM extends BaseLLM {
   private clientPromise: Promise<OpenAIClient> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
@@ -32,6 +47,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
   protected _renderer: OpenAIChatRenderer;
   /** OpenAI's current name; providers that document only `max_tokens` override it. */
   protected readonly outputLimitParameter: OpenAICompatibleOutputLimitParameter = 'max_completion_tokens';
+  /** Providers that document extra `finish_reason` values extend this table. */
+  protected readonly finishTable: LlmFinishTable = OPENAI_CHAT_FINISH_TABLE;
 
   constructor(
     model: LLMModel,
@@ -110,6 +127,12 @@ export class OpenAICompatibleLLM extends BaseLLM {
     return null;
   }
 
+  private nonStreamingFinish(finishReason: unknown, message: Record<string, unknown>): LlmResponseFinish | null {
+    if (message.refusal) return buildFinish('content_filter', finishReason);
+    const calledTools = Boolean((message.tool_calls as unknown[] | undefined)?.length || message.function_call);
+    return withToolCallsFinish(mapProviderFinish(this.finishTable, finishReason), calledTools);
+  }
+
   protected getRequestConfig(_kwargs: Record<string, unknown>): LLMConfig {
     return this.config;
   }
@@ -148,7 +171,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
       const content = message.content || "";
       const reasoning = this.extractReasoningFromRecord(message);
       return new CompleteResponse({
-        ...completionFromReason(choice.finish_reason, ['stop'], ['length', 'content_filter', 'tool_calls', 'function_call'], Boolean(message.tool_calls?.length || message.function_call || message.refusal)),
+        finish: this.nonStreamingFinish(choice.finish_reason, message as unknown as Record<string, unknown>),
         content,
         reasoning,
         usage: this.createTokenUsage(response.usage),
@@ -176,36 +199,45 @@ export class OpenAICompatibleLLM extends BaseLLM {
       const client = await this.getClient();
       const stream = await client.chat.completions.create(params, requestOptions as any) as unknown as AsyncIterable<ChatCompletionChunk>;
       
+      let finishReason: string | null = null;
+      let emittedToolCalls = false;
+      let usage: LlmTokenUsageObservation | null = null;
       for await (const chunk of stream) {
         if (chunk.choices && chunk.choices.length > 0) {
-           const delta = chunk.choices[0].delta;
+          const choice = chunk.choices[0];
+          const delta = choice.delta;
+          // Some providers repeat or follow the reason with usage-only chunks; keep the last one.
+          if (choice.finish_reason) finishReason = choice.finish_reason;
 
-           const reasoning = this.extractReasoningFromRecord(delta);
-           if (reasoning) {
-             yield new ChunkResponse({ content: "", reasoning });
-           }
-           
-           // Handle content
-           if (delta.content) {
-             yield new ChunkResponse({ content: delta.content });
-           }
+          const reasoning = this.extractReasoningFromRecord(delta);
+          if (reasoning) {
+            yield new ChunkResponse({ content: "", reasoning });
+          }
 
-           // Handle tool calls
-           if (delta.tool_calls) {
-             const toolDeltas = convertOpenAIToolCalls(delta.tool_calls as any);
-             if (toolDeltas) {
-               yield new ChunkResponse({ content: "", tool_calls: toolDeltas });
-             }
-           }
+          if (delta?.content) {
+            yield new ChunkResponse({ content: delta.content });
+          }
+
+          if (delta?.tool_calls) {
+            const toolDeltas = convertOpenAIToolCalls(delta.tool_calls as any);
+            if (toolDeltas) {
+              emittedToolCalls = true;
+              yield new ChunkResponse({ content: "", tool_calls: toolDeltas });
+            }
+          }
         }
 
         if (chunk.usage) {
-           yield new ChunkResponse({ 
-             content: "", is_complete: true, usage: this.createTokenUsage(chunk.usage) 
-           });
+          usage = this.createTokenUsage(chunk.usage);
         }
       }
 
+      yield new ChunkResponse({
+        content: "",
+        is_complete: true,
+        usage,
+        finish: withToolCallsFinish(mapProviderFinish(this.finishTable, finishReason), emittedToolCalls),
+      });
     } catch (e) {
       throw e;
     }

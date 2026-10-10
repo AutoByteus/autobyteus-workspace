@@ -1,10 +1,15 @@
-import { completionFromReason } from './completion-status.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import {
+  mapProviderFinish,
+  withToolCallsFinish,
+  type LlmFinishTable,
+  type LlmResponseFinish,
+} from '../utils/llm-response-finish.js';
 import { AnthropicAssistantTurnAssembler } from './anthropic-assistant-turn-assembler.js';
 import { parseAnthropicAssistantTurn } from './anthropic-native-assistant-turn.js';
 import {
@@ -66,10 +71,27 @@ const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
 // `cache_control`, which only the adapter decides (from the invocation's cache scope).
 const ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS = new Set([...ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS, 'cache_control']);
 
+/** Anthropic `stop_reason` → normalized finish. `pause_turn` (server tools only) is unmapped. */
+const ANTHROPIC_FINISH_TABLE: LlmFinishTable = {
+  end_turn: 'stop',
+  stop_sequence: 'stop',
+  tool_use: 'tool_calls',
+  max_tokens: 'output_limit',
+  refusal: 'content_filter',
+  model_context_window_exceeded: 'context_window_exceeded',
+};
+
+/**
+ * Only a normal end (or an unreported one) yields a native turn. Any other stop may leave
+ * a block open (no `content_block_stop`), and a truncated turn must never be stored.
+ */
+const finishCompletesNativeTurn = (finish: LlmResponseFinish | null): boolean =>
+  finish === null || finish.reason === 'stop' || finish.reason === 'tool_calls';
+
 /** `@anthropic-ai/sdk` throws "Streaming is required" above ~21k `max_tokens` without a timeout. */
 const ANTHROPIC_NON_STREAMING_DEFAULT_MAX_TOKENS = 8192;
 
-const ANTHROPIC_SAMPLING_PARAM_KEYS =new Set(['temperature', 'top_p', 'top_k']);
+const ANTHROPIC_SAMPLING_PARAM_KEYS = new Set(['temperature', 'top_p', 'top_k']);
 const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools', 'cache_control']);
 
 type AnthropicModelRequestPolicy = {
@@ -307,12 +329,13 @@ export class AnthropicLLM extends BaseLLM {
         reasoning = split.thinking || null;
       }
 
+      const hasToolUse = response.content?.some((block) => block.type === 'tool_use') ?? false;
       return new CompleteResponse({
-        ...completionFromReason(response.stop_reason, ['end_turn', 'stop_sequence'], ['max_tokens', 'model_context_window_exceeded', 'tool_use', 'pause_turn', 'refusal'], response.content?.some((block) => block.type === 'tool_use')),
+        finish: withToolCallsFinish(mapProviderFinish(ANTHROPIC_FINISH_TABLE, response.stop_reason), hasToolUse),
         content: content ?? '',
         reasoning,
         usage: createAnthropicTokenUsageObservation(response.usage, this.model),
-        providerNativeAssistantTurn: response.content?.some((block) => block.type === 'tool_use')
+        providerNativeAssistantTurn: hasToolUse
           ? parseAnthropicAssistantTurn({ provider: 'anthropic', blocks: response.content })
           : null,
       });
@@ -339,12 +362,11 @@ export class AnthropicLLM extends BaseLLM {
       
       const usageAccumulator = createAnthropicUsageAccumulator();
       const nativeTurnAssembler = new AnthropicAssistantTurnAssembler();
-      let sawToolUse = false;
-      let completedNativeTurn = false;
+      let stopReason: string | null = null;
+      let sawMessageStop = false;
 
       for await (const event of stream as AsyncIterable<RawMessageStreamEvent>) {
         nativeTurnAssembler.accept(event);
-        if (event.type === 'content_block_start' && event.content_block.type === 'tool_use') sawToolUse = true;
         if (event.type === 'message_start' && event.message?.usage) {
           foldAnthropicUsage(usageAccumulator, event.message.usage);
         }
@@ -357,31 +379,37 @@ export class AnthropicLLM extends BaseLLM {
             yield new ChunkResponse({ content: '', reasoning: thinkingText });
           }
         }
-        
+
         const toolDeltas = convertAnthropicToolCall(event);
         if (toolDeltas) {
-           yield new ChunkResponse({ content: "", tool_calls: toolDeltas });
+          yield new ChunkResponse({ content: '', tool_calls: toolDeltas });
         }
-        
+
+        if (event.type === 'message_delta') {
+          stopReason = event.delta?.stop_reason ?? stopReason;
+          if (event.usage) foldAnthropicUsage(usageAccumulator, event.usage);
+        }
+
         if (event.type === 'message_stop') {
-          const turn = nativeTurnAssembler.complete();
-          completedNativeTurn = true;
-          if (turn?.blocks.some((block) => block.type === 'tool_use')) {
-            yield new ChunkResponse({ content: '', providerNativeAssistantTurn: turn });
+          sawMessageStop = true;
+          const finish = mapProviderFinish(ANTHROPIC_FINISH_TABLE, stopReason);
+          if (finishCompletesNativeTurn(finish)) {
+            // Strict: an unstopped block under a normal end is a protocol violation and throws.
+            const turn = nativeTurnAssembler.complete();
+            if (turn?.blocks.some((block) => block.type === 'tool_use')) {
+              yield new ChunkResponse({ content: '', providerNativeAssistantTurn: turn });
+            }
           }
-        }
-        
-        if (event.type === 'message_delta' && event.usage) {
-          foldAnthropicUsage(usageAccumulator, event.usage);
           yield new ChunkResponse({
-            content: "",
+            content: '',
             is_complete: true,
-            usage: createAnthropicTokenUsageObservationFromAccumulator(usageAccumulator, this.model)
+            usage: createAnthropicTokenUsageObservationFromAccumulator(usageAccumulator, this.model),
+            finish,
           });
         }
       }
-      if (sawToolUse && !completedNativeTurn) {
-        throw new Error('Anthropic tool-use stream ended before the native assistant turn was complete.');
+      if (!sawMessageStop) {
+        throw new Error('Anthropic stream ended before message_stop.');
       }
     } catch (e) {
       throw new Error(`Error in Anthropic streaming: ${e}`);

@@ -16,7 +16,8 @@ import type { LlmRequestRecoverySnapshot } from '../memory/llm-request-recovery.
 export type LlmRequestAssemblyIdentity = Readonly<{
   turnId: string;
   requestId: string;
-  isToolContinuation?: boolean;
+  /** Not the turn's first LLM call (a tool-result or recovery continuation): no pre-request compaction. */
+  isTurnContinuation?: boolean;
   getParentModelIdentifier: () => string;
   signal: AbortSignal;
 }>;
@@ -49,7 +50,7 @@ export class LLMRequestAssembler {
       recoverySourceEvent: 'LLMRequestAssembler.preCompaction',
     });
 
-    const didCompact = this.pendingCompactionExecutor && !identity.isToolContinuation
+    const didCompact = this.pendingCompactionExecutor && !identity.isTurnContinuation
       ? await this.pendingCompactionExecutor.executeIfAuthorized({
           executionSite: 'before_parent_request',
           turnId: identity.turnId,

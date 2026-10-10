@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   AgentErrorEvent,
-  ToolContinuationReadyEvent,
+  TurnContinuationReadyEvent,
   UserMessageReceivedEvent,
   ToolResultEvent,
   GenericEvent,
@@ -24,11 +24,11 @@ describe('Agent events', () => {
     expect(event.agentInputUserMessage).toBe(msg);
   });
 
-  it('stores native tool continuation turn id', () => {
-    const event = new ToolContinuationReadyEvent(' turn_123 ');
+  it('stores the same-turn continuation turn id', () => {
+    const event = new TurnContinuationReadyEvent(' turn_123 ');
     expect(event.turnId).toBe('turn_123');
-    expect(() => new ToolContinuationReadyEvent('')).toThrow(
-      'ToolContinuationReadyEvent requires a non-empty turnId.'
+    expect(() => new TurnContinuationReadyEvent('')).toThrow(
+      'TurnContinuationReadyEvent requires a non-empty turnId.'
     );
   });
 

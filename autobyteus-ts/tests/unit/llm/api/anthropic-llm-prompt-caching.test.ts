@@ -31,6 +31,7 @@ const conversation = [
 async function* completedStream() {
   yield { type: 'message_start', message: { usage: { input_tokens: 1, output_tokens: 0 } } };
   yield { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 1 } };
+  yield { type: 'message_stop' };
 }
 
 const lastRequest = (): Record<string, any> => mockCreate.mock.calls.at(-1)![0];

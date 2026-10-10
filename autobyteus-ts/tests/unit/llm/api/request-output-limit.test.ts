@@ -61,9 +61,13 @@ const withResponsesClient = (llm: OpenAILLM) => {
   return create;
 };
 
+async function* anthropicStopStream(): AsyncGenerator<Record<string, unknown>> {
+  yield { type: 'message_stop' };
+}
+
 const withAnthropicClient = (llm: AnthropicLLM) => {
   const create = vi.fn(async (params: Record<string, unknown>) => params.stream
-    ? emptyStream()
+    ? anthropicStopStream()
     : { stop_reason: 'end_turn', content: [{ type: 'text', text: 'ok' }], usage: { input_tokens: 1, output_tokens: 1 } });
   (llm as any).clientPromise = Promise.resolve({ messages: { create } });
   return create;
