@@ -1,0 +1,23 @@
+Updating autobyteus-web/package.json: 1.5.0-beta.1 -> 1.5.0
+Synced curated release notes to .github/release-notes/release-notes.md
+[release-v1.5.0 305685451] chore(release): bump workspace release version to 1.5.0
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 18 insertions(+), 24 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin release-v1.5.0
+  git push origin v1.5.0
+   e50826755..305685451  HEAD -> personal
+ * [new tag]             v1.5.0 -> v1.5.0
