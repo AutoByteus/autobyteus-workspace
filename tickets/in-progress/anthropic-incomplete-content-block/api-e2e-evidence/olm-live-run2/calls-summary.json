@@ -1,0 +1,34 @@
+[
+  {
+    "index": 0,
+    "phase": "OLM-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 31797,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "OLM-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 3,
+    "errorBody": null
+  }
+]

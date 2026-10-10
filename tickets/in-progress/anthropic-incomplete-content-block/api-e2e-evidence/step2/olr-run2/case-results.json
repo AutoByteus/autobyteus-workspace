@@ -1,0 +1,1299 @@
+[
+  {
+    "case": "OLR-E2E-001",
+    "name": "OLR-E2E-001: a write_file cut on the turn's first call is discarded and the turn recovers with the hidden note",
+    "state": "fail",
+    "errors": [
+      "sea-lines.md written after recovery: expected null not to be null"
+    ],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 400 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 0,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 1,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 2,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 3,
+          "phase": "OLR-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d11bc40a_c8da7556fce647aeb3254a53148b19cf"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 400 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryUserMessages": [
+        "Create the file sea-lines.md with exactly 40 lines. Line N (for every N from 1 to 40) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 400 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap."
+      ],
+      "noteMergedWithCurrentMessageConnector": true,
+      "fileLineCount": null,
+      "firstLine": null,
+      "lastLine": null,
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-57b76641-08d4-4081-910a-dfb227e1be72",
+          "dedupeKey": "agent_run_input:e2e:e2e-57b76641-08d4-4081-910a-dfb227e1be72",
+          "content": "Create the file sea-lines.md with exactly 40 lines. Line N (for every N from 1 to 40) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.",
+          "media": null,
+          "ts": 1791608889.437
+        }
+      ],
+      "usageCallIds": [
+        "turn_0001:llm:1",
+        "turn_0001:llm:2",
+        "turn_0001:llm:3",
+        "turn_0001:llm:4"
+      ]
+    },
+    "at": "2026-10-10T05:08:29.000Z"
+  },
+  {
+    "case": "OLR-E2E-002",
+    "name": "OLR-E2E-002: a write_file cut after a tool result recovers with a note that is not merged as the user's current message",
+    "state": "fail",
+    "errors": [
+      "expected 'System note: your previous response h…' not to contain 'The user\\'s current message is:'"
+    ],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 400 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 4,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 110,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 5,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 6,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 7,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 8,
+          "phase": "OLR-002",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 400
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 400,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_reader_writer_c8993900_7fdf1a1e51f142cdbd18069127741cc2"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 400 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "assistant",
+          "text": "",
+          "toolUses": 1,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "",
+          "toolUses": 0,
+          "toolResults": [
+            "\"1: Topic: the sea. Tone: calm. Each line names a different sea creature or coastal feature.\\n\""
+          ]
+        },
+        {
+          "role": "user",
+          "text": "System note: your previous response hit the output limit of 400 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 400 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 400 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": null
+    },
+    "at": "2026-10-10T05:08:52.838Z"
+  },
+  {
+    "case": "OLR-E2E-003",
+    "name": "OLR-E2E-003: a text-only cut keeps the partial text, resumes with the hidden note, and shows two assistant parts live and after reload",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": null,
+      "calls": [
+        {
+          "index": 9,
+          "phase": "OLR-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 10,
+          "phase": "OLR-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 11,
+          "phase": "OLR-003",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 139,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_chat_c9ff8b80_d7224d4519184651ad5575872dbd8093"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "user",
+          "text": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "assistant",
+          "text": "The history of lighthouses begins with the simple fires that ancient sailors lit on hilltops and headlands to guide vessels home. Long before anyone designed towers for the purpose, coastal communities knew that a visible flame could mean the difference between safe harbor and shipwreck. These early beacons were unreliable and dependent on constant tending, but they set out a principle that would last for millennia.\n\nThe most famous ancient lighthouse was the Pharos of Alexandria, completed around 280 BCE under the Ptolemaic dynasty. Rising perhaps more than one hundred meters, it was counted ",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "System note: output token limit hit. Resume directly from where your previous message stopped — no apology, no recap. Break remaining work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-8bebaa79-eb8a-4546-8bfe-455b7eddf24b",
+          "dedupeKey": "agent_run_input:e2e:e2e-8bebaa79-eb8a-4546-8bfe-455b7eddf24b",
+          "content": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "media": null,
+          "ts": 1791608932.906
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "The history of lighthouses begins with the simple fires that ancient sailors lit on hilltops and headlands to guide vessels home. Long before anyone designed towers for the purpose, coastal communities knew that a visible flame could mean the difference between safe harbor and shipwreck. These early beacons were unreliable and dependent on constant tending, but they set out a principle that would last for millennia.\n\nThe most famous ancient lighthouse was the Pharos of Alexandria, completed around 280 BCE under the Ptolemaic dynasty. Rising perhaps more than one hundred meters, it was counted among the Seven Wonders of the Ancient World. A fire burned at its summit, and accounts suggest that mirrors may have projected its light far out to sea. The Pharos stood for over a millennium before earthquakes finally brought it down. The Romans built lighthouses across their empire, from Ostia to Dover, and the T",
+          "media": null,
+          "ts": 1791608936.729
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "ower of Hercules in northern Spain, still in use today, is a lasting example of their engineering.\n\nAfter Rome fell, lighthouse building slowed across much of Europe, though monasteries and port towns sometimes kept beacons burning. Activity picked up again in the medieval and early modern periods as maritime trade grew. Italian city-states such as Genoa built towers to protect their merchant fleets. In 1611 the Cordouan lighthouse in France was completed, and it combined practical function with Renaissance grandeur.\n\nThe eighteenth and nineteenth centuries brought rapid technical progress. John Smeaton's Eddystone Lighthouse of 1759 used interlocking granite blocks to withstand the fierce seas off Plymouth, and it set a model for later offshore construction. Oil lamps with reflectors replaced open fires and candles. The most important advance came in 1822, when Augustin Fresnel",
+          "media": null,
+          "ts": 1791608941.192
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "introduced his stepped lens, which could focus light into a powerful beam visible for more than twenty miles. Fresnel lenses quickly spread to coastlines around the world.\n\nIn the twentieth century, electricity replaced oil and gas, and automation gradually removed the need for resident keepers. Today, satellite navigation has made many lighthouses less essential, but they remain treasured landmarks and symbols of guidance and safety.",
+          "media": null,
+          "ts": 1791608943.625
+        }
+      ]
+    },
+    "at": "2026-10-10T05:09:03.752Z"
+  },
+  {
+    "case": "OLR-E2E-004",
+    "name": "OLR-E2E-004: four cut responses in a row end the turn with LLM_OUTPUT_LIMIT_EXHAUSTED after 3 recoveries; the next message is valid",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 20 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 12,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 13,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 14,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 15,
+          "phase": "OLR-004",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "max_tokens"
+          ],
+          "maxReportedOutputTokens": 20,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_chat_c9ff8b80_56dc0424409b40f393cd28832fea7181"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 20 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "usageCallIds": [
+        "turn_0001:llm:1",
+        "turn_0001:llm:2",
+        "turn_0001:llm:3",
+        "turn_0001:llm:4"
+      ],
+      "followUpError": null,
+      "followUpCalls": [
+        {
+          "index": 16,
+          "phase": "OLR-004-next",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 20
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 4,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "followUpMessages": [
+        {
+          "role": "user",
+          "text": "Write a 300-word paragraph about the history of lighthouses.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 20 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.\n\nThe user'",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ]
+    },
+    "at": "2026-10-10T05:09:10.159Z"
+  },
+  {
+    "case": "OLR-E2E-009",
+    "name": "OLR-E2E-009: a tool call with malformed arguments does not run; the model gets the retry error and the turn continues",
+    "state": "fail",
+    "errors": [
+      "the turn continued: expected undefined to be truthy"
+    ],
+    "details": {
+      "error": {
+        "code": "LLM_PROVIDER_ERROR",
+        "message": "Error in Anthropic streaming: SyntaxError: Unexpected token '@', \"@@{\"path\":\"... is not valid JSON",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 17,
+          "phase": "OLR-009",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 134,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d11bc40a_2b6aed5b81c04eca9683a31cb387fcf6"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Error in Anthropic streaming: SyntaxError: Unexpected token '@', \"@@{\"path\":\"... is not valid JSON"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_PROVIDER_ERROR",
+          "message": "Error in Anthropic streaming: SyntaxError: Unexpected token '@', \"@@{\"path\":\"... is not valid JSON"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "retryToolResults": [],
+      "fileContent": null
+    },
+    "at": "2026-10-10T05:09:12.033Z"
+  },
+  {
+    "case": "OLR-E2E-009b",
+    "name": "OLR-E2E-009b: DeepSeek tool call with malformed arguments does not run; the model gets the retry error and the turn continues",
+    "state": "fail",
+    "errors": [
+      "ERROR frame: {\"code\":\"ToolExecution.Exception.write_file\",\"message\":\"Error executing tool 'write_file' (ID: call_00_fJLkj0BraeGOOZeVRzq98710): Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.\",\"details\":\"Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.\\n    at resolveFileToolPath (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/file/workspace-path-utils.ts:47:13)\\n    at FunctionalTool.writeFile [as _originalFunc] (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/file/write-file.ts:37:21)\\n    at FunctionalTool._execute (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/functional-tool.ts:95:19)\\n    at FunctionalTool.execute (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/base-tool.ts:284:18)\\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}: expected { type: 'ERROR', payload: { …(6) } }"
+    ],
+    "details": {
+      "error": {
+        "code": "ToolExecution.Exception.write_file",
+        "message": "Error executing tool 'write_file' (ID: call_00_fJLkj0BraeGOOZeVRzq98710): Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.",
+        "details": "Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.\n    at resolveFileToolPath (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/file/workspace-path-utils.ts:47:13)\n    at FunctionalTool.writeFile [as _originalFunc] (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/file/write-file.ts:37:21)\n    at FunctionalTool._execute (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/functional-tool.ts:95:19)\n    at FunctionalTool.execute (/Users/normy/autobyteus_org/autobyteus-worktrees/anthropic-incomplete-content-block-step2/autobyteus-ts/src/tools/base-tool.ts:284:18)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 18,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": true,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 99,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 19,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 54,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 20,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 99,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 21,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "tool_calls"
+          ],
+          "maxReportedOutputTokens": 83,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 22,
+          "phase": "OLR-009b",
+          "host": "api.deepseek.com",
+          "pathname": "/chat/completions",
+          "stream": true,
+          "limits": {
+            "max_tokens": 384000
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "stop"
+          ],
+          "maxReportedOutputTokens": 1,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_d11bc40a_66c24402771b40cfa648672fc7254ed5"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "error": "Your tool call was malformed and could not be parsed (Unexpected token '@', \"@@{\"path\":\"... is not valid JSON). Please retry.",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "failed"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "ERROR",
+          "code": "ToolExecution.Exception.write_file",
+          "message": "Error executing tool 'write_file' (ID: call_00_fJLkj0BraeGOOZeVRzq98710): Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state."
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "error": "Error executing tool 'write_file' (ID: call_00_fJLkj0BraeGOOZeVRzq98710): Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "failed"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "available"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "write_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "TOOL_LOG",
+          "tool_name": "read_file"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "retryToolResults": [
+        "Error: Your tool call was malformed and could not be parsed (Unexpected token '@', \"@@{\"path\":\"... is not valid JSON). Please retry."
+      ],
+      "fileContent": "hello"
+    },
+    "at": "2026-10-10T05:09:18.125Z"
+  },
+  {
+    "case": "OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected",
+    "name": "OLR-E2E-010: a compaction summary cut by its output limit reports incomplete with the provider reason and is rejected",
+    "state": "fail",
+    "errors": [
+      "Test timed out in 1200000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\"."
+    ],
+    "details": null,
+    "at": "2026-10-10T05:29:18.047Z"
+  }
+]

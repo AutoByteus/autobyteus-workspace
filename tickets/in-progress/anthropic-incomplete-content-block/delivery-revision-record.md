@@ -1,0 +1,77 @@
+# Delivery Revision Record — anthropic-incomplete-content-block
+
+The latest docs sync report, handoff summary, and release/publication/deployment report remain authoritative. This record keeps the baseline and each later delivery delta.
+
+## Revision Index
+
+| Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
+| --- | --- | --- | --- | --- |
+| DR-001 | CRR-002 delivery package (Step 1 of DEC-004) | N/A | Docs synced; held for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
+| DR-002 | CRR-006 delivery package (Step 2 of DEC-004) | DR-001: Step 1 held for verification, never answered | Steps 1+2 integrated on the Step 2 branch with the latest base; docs synced; held for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/dr-002/` |
+| DR-003 | CRR-009 test update (OpenAI/Gemini recovery cases) | DR-002: held for verification | Tests committed; TESTING row updated; held for user verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md`, `delivery-evidence/dr-003/` |
+
+## Revision Entries
+
+### DR-001 — Step 1 (real output limits) integrated, docs synced, held for user verification
+
+- Delivery round and trigger: first delivery round, triggered by the CRR-002 package from `code_reviewer`.
+- Triggering upstream report, verification, or evidence: `code-review-report.md` (CRR-001 Pass, 9.5/10; CRR-002 Pass), `api-e2e-execution-coverage-report.md` (API-REV-001 Pass, 95%), `api-e2e-test-review-report.md`.
+- Prior authoritative result: N/A
+- Current authoritative result: the branch is current with `origin/personal` @ `d28c56d5d` (no merge needed). The durable tests are committed locally as `9dc55702f` (harness baseline fix, own commit) and `1c694cfea` (gated live suite). Docs sync is done (`llm_module_design.md`, `llm_module_design_nodejs.md`, `TESTING.md`) along with the whitespace nit in `anthropic-llm.ts`. Unit tests (1887), build and the ungated skip check pass. Nothing is pushed.
+- Docs sync report: `docs-sync-report.md`
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: `Already current`; checks rerun and passed.
+- User verification/finalization state: waiting for user verification and the release choice. The ticket stays in `tickets/in-progress/` for Step 2. AC-009 is verified after release.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal return message/reference: —
+- Why this baseline or delivery revision was recorded: initial delivery baseline.
+- Next recipient/action: the user verifies and chooses a release, then delivery finalizes and releases.
+- Remaining blockers, rollback concerns, or untested scope: user verification. Residual risks are in `handoff-summary.md` (Qwen credential-blocked; several providers not live-checked; rate-limit accounting; ShellCommandExecutor race).
+
+### DR-002 — Steps 1 and 2 integrated with the latest base, docs synced, held for user verification
+
+- Delivery round and trigger: second delivery round, triggered by the CRR-006 Step 2 package from `code_reviewer`. Revisits DR-001.
+- Triggering upstream report, verification, or evidence: `code-review-report.md` (CRR-004 Pass 9.4; CRR-005 failure-origin review; CRR-006 Pass, re-confirmed by CRR-007), `api-e2e-execution-coverage-report.md` (API-REV-003 Pass, updated to 95.2% after the user put providers without keys out of scope), `api-e2e-test-review-report.md`.
+- Prior authoritative result: DR-001. Step 1 was integrated and docs-synced, and is held for user verification. The user never answered, and nothing was pushed or released.
+- Current authoritative result:
+  - The Step 1 docs sync is committed on the Step 1 branch (`2a395ee5f`).
+  - The Step 2 durable tests are committed (`2b93f0fc6`).
+  - The Step 1 branch was merged into Step 2 (`fca462b10`), then `origin/personal` @ `56530dfc6` (`547bd5b5e`). Both merges were clean.
+  - All checks pass on the merged state.
+  - The Step 2 docs sync is committed (`fd8e18b1c`).
+  - The release notes and handoff now cover both steps.
+  - Nothing is pushed.
+- Docs sync report: `docs-sync-report.md` (DR-002 section; DR-001 retained)
+- Handoff summary: `handoff-summary.md` (replaced for DR-002)
+- Release/publication/deployment report: `release-deployment-report.md` (DR-002)
+- Integration and post-integration verification: `Merge`; reruns passed (`delivery-evidence/dr-002/`).
+- User verification/finalization state: waiting. The user chooses between Steps 1+2 together (recommended) or Step 1 first, and picks the release mode. At finalization the ticket is committed under `tickets/in-progress/`, not archived (CRR-007). It moves to `tickets/done/` after the user has verified AC-009 on the release.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal return message/reference: —
+- Why this delivery revision was recorded: the Step 2 package arrived while Step 1 was still on hold. A single integrated, current handoff avoids finalizing an older state.
+- Next recipient/action: the user verifies and chooses; then delivery finalizes, releases and cleans up.
+- Remaining blockers, rollback concerns, or untested scope: user verification. Residual risks and follow-ups are listed in `handoff-summary.md`.
+
+- DR-002 in-round update (CRR-007, informational, no test or source change): Qwen, Kimi, Mistral and Ollama live checks are out of scope by user decision, 2026-10-10. API-REV-003 confidence is 95.2%. The archive plan is revised so the ticket stays in `tickets/in-progress/` until AC-009. `handoff-summary.md` and `release-deployment-report.md` were updated to match.
+
+### DR-003 — OpenAI/Gemini recovery cases committed, still held for user verification
+
+- Delivery round and trigger: CRR-009 update from `code_reviewer`. At the user's request, the live recovery suite now also covers OpenAI and Gemini. Revisits DR-002.
+- Triggering upstream report, verification, or evidence: `api-e2e-test-review-report.md` (round 4, CRR-009 Pass; TR-001 resolved), API-REV-003 addendum (95.2%), `api-e2e-evidence/step2/olr-tr001/` (4/4).
+- Prior authoritative result: DR-002, held for user verification.
+- Current authoritative result:
+  - `8f4ee1633` commits the updated harness and recovery suite.
+  - `f1d169674` updates the `TESTING.md` recovery row.
+  - The base is unchanged (`56530dfc6`).
+  - Server typecheck is clean, and the ungated suites skip 26 tests.
+  - Branch head `f1d169674`, not pushed.
+- Docs sync report: `docs-sync-report.md` (DR-003 note)
+- Handoff summary: `handoff-summary.md` (DR-003)
+- Release/publication/deployment report: `release-deployment-report.md` (DR-003)
+- Integration and post-integration verification: `Already current`. Typecheck and the skip check were rerun; product checks from DR-002 apply, because no source changed.
+- User verification/finalization state: waiting (the same two decisions). Not archived until AC-009.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Why this delivery revision was recorded: new durable test code entered the delivery candidate.
+- Next recipient/action: the user verifies and chooses.
+- Remaining blockers, rollback concerns, or untested scope: user verification. Residual risks are unchanged.

@@ -1,0 +1,1640 @@
+[
+  {
+    "index": 0,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 1029,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 2,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 905,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 3,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 898,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 4,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 881,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 5,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 895,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 6,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 136,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 7,
+    "phase": "OLR-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 92,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 8,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 9,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 10,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 11,
+    "phase": "OLR-011",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 400
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 400,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 12,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 111,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 13,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 14,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 1091,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 15,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 868,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 16,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 900,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 17,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 885,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 18,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 888,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 19,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 176,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 20,
+    "phase": "OLR-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 3,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 21,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 22,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 300,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 23,
+    "phase": "OLR-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 300
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 197,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 24,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 25,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 26,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 27,
+    "phase": "OLR-004",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "max_tokens"
+    ],
+    "maxReportedOutputTokens": 20,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 28,
+    "phase": "OLR-004-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 20
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 29,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 30,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 31,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 32,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 132,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 33,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 150,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 34,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 35,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 36,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 37,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 38,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 39,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 40,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 41,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 42,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 43,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 44,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 45,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 46,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 111,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 47,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 48,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 49,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 111,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 50,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 116,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 51,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 111,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 52,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 53,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 54,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 55,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 56,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 57,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 58,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 59,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 60,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 115,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 61,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 62,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 63,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 64,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 65,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 66,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 110,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 67,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 112,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 68,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 69,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 115,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 70,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 113,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 71,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 114,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 72,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 121,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 73,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 145,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 74,
+    "phase": "OLR-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 150
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 26,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 75,
+    "phase": "OLR-E2E-006",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "refusal"
+    ],
+    "maxReportedOutputTokens": 133,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 76,
+    "phase": "OLR-E2E-006-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 77,
+    "phase": "OLR-E2E-007",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "model_context_window_exceeded"
+    ],
+    "maxReportedOutputTokens": 132,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 78,
+    "phase": "OLR-E2E-007-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 79,
+    "phase": "OLR-008",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 134,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 80,
+    "phase": "OLR-008-next",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 81,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": true,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 100,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 82,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 100,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 83,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 49,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 84,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_calls"
+    ],
+    "maxReportedOutputTokens": 42,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 85,
+    "phase": "OLR-009b",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 86,
+    "phase": "OLR-010-T1",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1024
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 87,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 1024
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 88,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": false,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 89,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": false,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 90,
+    "phase": "OLR-010-T2",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": false,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  }
+]

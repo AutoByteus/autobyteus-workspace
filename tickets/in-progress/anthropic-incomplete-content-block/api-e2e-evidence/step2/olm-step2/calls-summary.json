@@ -1,0 +1,322 @@
+[
+  {
+    "index": 0,
+    "phase": "OLM-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "tool_use"
+    ],
+    "maxReportedOutputTokens": 31796,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "OLM-001",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 3,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 2,
+    "phase": "OLM-002",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": true,
+    "limits": {
+      "max_tokens": 4096
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 3,
+    "phase": "OLM-003",
+    "host": "api.anthropic.com",
+    "pathname": "/v1/messages",
+    "stream": false,
+    "limits": {
+      "max_tokens": 8192
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "end_turn"
+    ],
+    "maxReportedOutputTokens": 4,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 4,
+    "phase": "OLM-E2E-004",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:completed"
+    ],
+    "maxReportedOutputTokens": 5,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 5,
+    "phase": "OLM-E2E-005",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 384000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 3,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 6,
+    "phase": "OLM-E2E-006",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 128000
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 3,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 7,
+    "phase": "OLM-E2E-007",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 65536
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 8,
+    "phase": "OLM-E2E-008",
+    "host": "token-plan.ap-southeast-1.maas.aliyuncs.com",
+    "pathname": "/compatible-mode/v1/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_completion_tokens": 65536
+    },
+    "rewritten": false,
+    "status": 401,
+    "stopSignals": [],
+    "maxReportedOutputTokens": null,
+    "responseHasToolCall": false,
+    "errorBody": "{\"error\":{\"message\":\"Invalid API-key provided. For details, see: https://www.alibabacloud.com/help/en/model-studio/error-code#apikey-error\",\"id\":\"8c74df86-0f9b-462b-a93d-51968cfcbcf8\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}"
+  },
+  {
+    "index": 9,
+    "phase": "OLM-E2E-009",
+    "host": "api.x.ai",
+    "pathname": "/v1/chat/completions",
+    "stream": true,
+    "limits": {},
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "stop"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 10,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 11,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 12,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 13,
+    "phase": "OLM-010-DEEPSEEK",
+    "host": "api.deepseek.com",
+    "pathname": "/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 14,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 15,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 16,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 17,
+    "phase": "OLM-010-GLM",
+    "host": "open.bigmodel.cn",
+    "pathname": "/api/coding/paas/v4/chat/completions",
+    "stream": true,
+    "limits": {
+      "max_tokens": 24
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "length"
+    ],
+    "maxReportedOutputTokens": 24,
+    "responseHasToolCall": false,
+    "errorBody": null
+  }
+]
