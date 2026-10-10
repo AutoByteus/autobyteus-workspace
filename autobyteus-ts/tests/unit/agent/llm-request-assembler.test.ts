@@ -56,12 +56,12 @@ class FakeMemoryManager {
 }
 
 describe('LLMRequestAssembler', () => {
-  it('defers pending compaction during an active tool continuation', async () => {
+  it('defers pending compaction during a same-turn continuation', async () => {
     const memoryManager = new FakeMemoryManager();
     const executor = { executeIfAuthorized: vi.fn(async () => true) };
     const assembler = new LLMRequestAssembler(memoryManager as any, executor as any);
     const request = await assembler.prepareRequest(null, {
-      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', isToolContinuation: true,
+      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', isTurnContinuation: true,
     } as any, undefined, []);
     expect(request.didCompact).toBe(false);
     expect(executor.executeIfAuthorized).not.toHaveBeenCalled();

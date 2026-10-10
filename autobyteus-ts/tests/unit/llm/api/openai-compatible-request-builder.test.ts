@@ -31,6 +31,8 @@ describe('OpenAICompatibleRequestBuilder', () => {
       model: 'qwen-local',
       messages: [{ role: 'user', content: 'hi' }],
       config,
+      maxOutputTokens: 123,
+      outputLimitParameter: 'max_completion_tokens',
       stream: true,
       kwargs: {
         logicalConversationId: 'agent-1',
@@ -78,9 +80,27 @@ describe('OpenAICompatibleRequestBuilder', () => {
       model: 'model',
       messages: [],
       config: new LLMConfig(),
+      maxOutputTokens: null,
+      outputLimitParameter: 'max_completion_tokens',
       kwargs: { tool_choice: 'required' }
     }) as Record<string, unknown>;
 
     expect(params).not.toHaveProperty('tool_choice');
+    expect(params).not.toHaveProperty('max_completion_tokens');
+    expect(params).not.toHaveProperty('max_tokens');
+  });
+
+  it('sends the resolved output limit under the provider-specific parameter name', () => {
+    const params = OpenAICompatibleRequestBuilder.build({
+      model: 'model',
+      messages: [],
+      config: new LLMConfig({ maxTokens: 999 }),
+      maxOutputTokens: 384_000,
+      outputLimitParameter: 'max_tokens',
+    }) as unknown as Record<string, unknown>;
+
+    // The builder sends only the resolved value; it never reads config.maxTokens itself.
+    expect(params.max_tokens).toBe(384_000);
+    expect(params).not.toHaveProperty('max_completion_tokens');
   });
 });

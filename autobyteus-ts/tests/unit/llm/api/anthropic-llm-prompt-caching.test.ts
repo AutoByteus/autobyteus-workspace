@@ -18,7 +18,7 @@ const ONE_HOUR = { type: 'ephemeral', ttl: '1h' };
 const tools = [{ name: 'read_file', description: 'Read a file', input_schema: { type: 'object', properties: {} } }];
 
 const buildLlm = (value = 'claude-opus-5-5', config = new LLMConfig()) => new AnthropicLLM(
-  new LLMModel({ name: value, value, canonicalName: value, provider: LLMProvider.ANTHROPIC }),
+  new LLMModel({ name: value, value, canonicalName: value, provider: LLMProvider.ANTHROPIC, maxOutputTokens: 128_000 }),
   config,
   providerApiKeyResolver('synthetic-anthropic-key'),
 );
@@ -31,6 +31,7 @@ const conversation = [
 async function* completedStream() {
   yield { type: 'message_start', message: { usage: { input_tokens: 1, output_tokens: 0 } } };
   yield { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 1 } };
+  yield { type: 'message_stop' };
 }
 
 const lastRequest = (): Record<string, any> => mockCreate.mock.calls.at(-1)![0];

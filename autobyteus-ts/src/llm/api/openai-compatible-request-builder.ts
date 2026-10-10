@@ -12,10 +12,16 @@ import {
 
 export type OpenAICompatibleRequestParams = OpenAI.Chat.ChatCompletionCreateParams;
 
+/** The request field a provider honors for the output limit (verified per provider). */
+export type OpenAICompatibleOutputLimitParameter = 'max_completion_tokens' | 'max_tokens';
+
 export interface OpenAICompatibleRequestBuilderInput {
   model: string;
   messages: ChatCompletionMessageParam[];
   config: LLMConfig;
+  /** Resolved output limit (configured, else the model maximum); `null` omits it. */
+  maxOutputTokens: number | null;
+  outputLimitParameter: OpenAICompatibleOutputLimitParameter;
   kwargs?: Record<string, unknown>;
   stream?: boolean;
 }
@@ -36,6 +42,9 @@ export class OpenAICompatibleRequestBuilder {
     }
 
     OpenAICompatibleRequestBuilder.applyConfig(params, input.config);
+    if (input.maxOutputTokens !== null) {
+      params[input.outputLimitParameter] = input.maxOutputTokens;
+    }
     applySafeProviderRequestKwargs(params, input.config.extraParams);
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: CONTROLLED_KWARG_KEYS });
     OpenAICompatibleRequestBuilder.applyToolFields(params, kwargs);
@@ -58,9 +67,6 @@ export class OpenAICompatibleRequestBuilder {
     }
     if (hasProviderRequestValue(config.stopSequences)) {
       params.stop = config.stopSequences;
-    }
-    if (hasProviderRequestValue(config.maxTokens)) {
-      params.max_completion_tokens = config.maxTokens;
     }
   }
 

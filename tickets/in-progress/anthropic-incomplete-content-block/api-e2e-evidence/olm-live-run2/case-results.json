@@ -1,0 +1,51 @@
+[
+  {
+    "case": "OLM-E2E-001",
+    "name": "OLM-E2E-001: Anthropic unconfigured streams the model maximum and writes a file longer than 8,192 output tokens in one call",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "claude-opus-5-5",
+      "catalogMaxOutputTokens": 128000,
+      "error": null,
+      "calls": [
+        {
+          "index": 0,
+          "phase": "OLM-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "status": 200,
+          "stopSignals": [
+            "tool_use"
+          ],
+          "maxReportedOutputTokens": 31797,
+          "errorBody": null
+        },
+        {
+          "index": 1,
+          "phase": "OLM-001",
+          "host": "api.anthropic.com",
+          "pathname": "/v1/messages",
+          "stream": true,
+          "limits": {
+            "max_tokens": 128000
+          },
+          "status": 200,
+          "stopSignals": [
+            "end_turn"
+          ],
+          "maxReportedOutputTokens": 3,
+          "errorBody": null
+        }
+      ],
+      "toolCallOutputTokens": 31797,
+      "fileBytes": 107784,
+      "fileLines": 900
+    },
+    "at": "2026-10-10T04:33:02.176Z"
+  }
+]

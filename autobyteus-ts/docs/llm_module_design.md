@@ -266,6 +266,41 @@ business accounting.
 - **Provider token usage normalizers:** Live under `src/llm/api/*token-usage-normalizer.ts` and convert provider usage payloads into `LlmTokenUsageObservation`.
 - **Custom Extensions:** Can be registered via `registerExtension` for logging, rate limiting, or PII redaction when explicitly needed.
 
+### 4.4 Response Finish Contract
+
+Every response reports how it ended through one provider-neutral value,
+`LlmResponseFinish { reason, providerReason }`
+(`src/llm/utils/llm-response-finish.ts`). `reason` is one of `stop`,
+`tool_calls`, `output_limit`, `content_filter`, `context_window_exceeded` or
+`other`. `providerReason` keeps the provider's raw stop string. Nothing above
+the `BaseLLM` boundary reads provider stop strings.
+
+- **Adapter-owned tables.** Each adapter maps its provider's vocabulary through
+  its own `LlmFinishTable` with `mapProviderFinish`. A reason the provider did
+  not report becomes `null`; a reported reason that the table does not map
+  becomes `other` and gets normal handling (no recovery). A plain stop that
+  emitted tool calls is reported as `tool_calls` (`withToolCallsFinish`).
+- **Streaming.** An adapter yields exactly one terminal `ChunkResponse`, last,
+  that carries both the final `usage` and `finish`. Earlier chunks carry
+  neither. `BaseLLM.streamMessages` passes the terminal finish to after-hooks.
+- **Non-streaming.** `CompleteResponse.finish` carries the same value.
+- **Derived compaction fields.** `completionStatus` and `completionReason` are
+  read-only getters, not stored fields. `completionStatusOf(finish)` returns
+  `unknown` when the finish is unreported, `complete` for `stop`, and
+  `incomplete` for anything else. `completionReason` is the `providerReason`.
+
+| Adapter | Mapping |
+| --- | --- |
+| Anthropic | `end_turn`/`stop_sequence` → `stop`; `tool_use` → `tool_calls`; `max_tokens` → `output_limit`; `refusal` → `content_filter`; `model_context_window_exceeded` → `context_window_exceeded`. `stop_reason` and usage are recorded at `message_delta`. At `message_stop`, the strict block assembler runs only for `stop`, `tool_calls` or an unreported finish. In that case the native turn is yielded and then the terminal chunk. Under any other finish, an unfinished block builds no native turn. A stream that ends without `message_stop` throws and yields no terminal chunk. An open block under `end_turn`/`tool_use` still throws "Anthropic content block is incomplete." |
+| OpenAI Responses | `response.completed` → `stop`, `tool_calls` or `content_filter` (refusal output), by its output. `response.incomplete` maps `incomplete_details.reason`: `max_output_tokens` → `output_limit`, `content_filter` → `content_filter`. Streaming `response.failed` throws |
+| OpenAI-compatible | `stop` → `stop`; `tool_calls`/`function_call` → `tool_calls`; `length` → `output_limit`; `content_filter` → `content_filter`. The last `finish_reason` and the last usage (including a usage-only chunk) form the terminal chunk at stream end. GLM adds `sensitive` → `content_filter` and `model_context_window_exceeded` → `context_window_exceeded` |
+| Gemini | `STOP` → `stop`; `MAX_TOKENS` → `output_limit`; `SAFETY`, `RECITATION`, `BLOCKLIST`, `PROHIBITED_CONTENT`, `SPII` and `IMAGE_*` → `content_filter`. A blocked prompt (`promptFeedback.blockReason`) → `content_filter`. `MALFORMED_FUNCTION_CALL` is unmapped (`other`) |
+| Mistral | `stop` → `stop`; `tool_calls` → `tool_calls`; `length` → `output_limit`; `model_length` → `context_window_exceeded`; `error` throws |
+| Ollama | `done_reason` `stop` → `stop`, `length` → `output_limit` |
+
+The agent loop acts on the terminal finish; see `agent_memory_design.md` §8.1
+for output-limit recovery and coded refusal and context-window errors.
+
 ## 5. Directory Structure
 
 ```text
@@ -295,7 +330,21 @@ src/llm/
 `LLMConfig` controls model behavior:
 
 - **`temperature`**: Sampling randomness.
-- **`maxTokens`**: Output limit.
+- **`maxTokens`**: Configured output limit. When it is unset, requests use
+  the model's own maximum output tokens (`LLMModel.maxOutputTokens`, from the
+  catalog or live metadata), not a framework default. `BaseLLM.resolveMaxOutputTokens()`
+  (backed by `src/llm/utils/max-output-tokens.ts`) resolves this at request-build
+  time only: configured value, else model maximum, else `null`, in which case
+  the adapter omits the parameter and the provider default applies. It never
+  writes into `config.maxTokens`, so the input-token budget is unchanged. Each
+  adapter sends the resolved value under its provider's name: `max_tokens`
+  (Anthropic, Mistral), `max_output_tokens` (OpenAI Responses),
+  `maxOutputTokens` (Gemini), `num_predict` (Ollama), and the
+  OpenAI-compatible parameter described below. Anthropic exceptions: a
+  streaming request for a Claude model with no known maximum fails with an
+  error asking for a configured `max_tokens`, and non-streaming calls keep a
+  bounded 8192 default when unconfigured, because the Anthropic SDK refuses
+  large non-streaming limits.
 - **`systemMessage`**: Default system prompt.
 - **`pricingConfig`**: Built-in catalog API-price metadata. It can carry
   currency, trusted input/output/cache-read/cache-write prices, provider
@@ -337,8 +386,11 @@ semantics and lets standard fields reach the provider as accidental extras.
 For OpenAI-compatible Chat Completions providers, `OpenAICompatibleRequestBuilder`
 is the single request-body construction boundary. It maps `LLMConfig`
 generation controls to provider fields (`temperature`, `top_p`,
-`frequency_penalty`, `presence_penalty`, `stop`, and
-`max_completion_tokens`), merges `extraParams` for provider-specific extensions,
+`frequency_penalty`, `presence_penalty`, and `stop`). It also sends the
+resolved output limit (configured `maxTokens`, else the model maximum; omitted
+when neither is known) under the adapter-owned `outputLimitParameter`:
+`max_tokens` for DeepSeek and GLM, whose chat APIs document only that name,
+and `max_completion_tokens` for every other OpenAI-compatible adapter. It merges `extraParams` for provider-specific extensions,
 uses the shared provider-request kwarg sanitizer for framework-internal kwargs
 such as `logicalConversationId` and `requestId`, attaches `tools`, and passes
 `tool_choice` only when a lower-level direct caller explicitly supplies

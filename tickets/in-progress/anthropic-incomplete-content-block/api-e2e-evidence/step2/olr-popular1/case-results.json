@@ -1,0 +1,1842 @@
+[
+  {
+    "case": "OLR-E2E-012-OPENAI",
+    "name": "OLR-E2E-012 (OPENAI): an output-limited write_file response is recovered the same way (AC-011)",
+    "state": "fail",
+    "errors": [
+      "the hidden note: expected 'Create the file sea-lines.md with exa…' to match /^System note: /"
+    ],
+    "details": {
+      "model": "gpt-5.4-mini",
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 300 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 0,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:incomplete",
+            "max_output_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 1,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:incomplete",
+            "max_output_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 2,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:incomplete",
+            "max_output_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": true,
+          "errorBody": null
+        },
+        {
+          "index": 3,
+          "phase": "OLR-012-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:incomplete",
+            "max_output_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": true,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_e524ad9e_f9766ba4598840369224df8447800d85"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "tool_call"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "write_file"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "streaming"
+        },
+        {
+          "type": "SEGMENT_END",
+          "failed": true,
+          "error": "Discarded: the output limit was reached before this tool call was complete."
+        },
+        {
+          "type": "FILE_CHANGE",
+          "status": "pending"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 300 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "discardedIds": [
+        "call_cPgFMoNPn9ozXLaEyOpYhOY7",
+        "call_GdAbS1JsAiEtLCWTPBGzZ3rH",
+        "call_VzQttJUxbKXwTnsEdlDv6izp",
+        "call_PN1weT1SCZXB9BudC4WSvpRx"
+      ],
+      "executedIds": [],
+      "recoveryTail": [
+        {
+          "role": "system",
+          "text": "## Agent Identity\n\n- Name: output-limit-recovery-writer-e524ad9e\n- Description: Live native-runtime validation agent.\n\n### Responsibilities and Boundaries\n\nYou are a file-writing agent working in the workspace with tools.\nUse write_file to create a file and edit_file to change or extend an existing one.\nWhen a task is finished, reply with the single word done.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined ",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "Create the file sea-lines.md with exactly 40 lines. Line N (for every N from 1 to 40) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 300 tokens while generating a `write_file` tool call; the call was discarded and not executed. Break the work into smaller pieces (for example, write a large file in several smaller parts) and continue. Do not apologize or recap.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": null
+    },
+    "at": "2026-10-10T06:31:56.158Z"
+  },
+  {
+    "case": "OLR-E2E-013-OPENAI",
+    "name": "OLR-E2E-013 (OPENAI): a text-only cut keeps the partial text and resumes; parts are consecutive after reload (AC-005, AC-011)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "gpt-5.4-mini",
+      "error": null,
+      "calls": [
+        {
+          "index": 4,
+          "phase": "OLR-013-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:incomplete",
+            "max_output_tokens"
+          ],
+          "maxReportedOutputTokens": 300,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 5,
+          "phase": "OLR-013-OPENAI",
+          "host": "api.openai.com",
+          "pathname": "/v1/responses",
+          "stream": true,
+          "limits": {
+            "max_output_tokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "status:completed"
+          ],
+          "maxReportedOutputTokens": 299,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_chat_e2eae43f_62912a753fae4ddda2f73a9ead60e1e9"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "system",
+          "text": "## Agent Identity\n\n- Name: output-limit-recovery-chat-e2eae43f\n- Description: Live native-runtime validation agent.\n\n### Responsibilities and Boundaries\n\nYou are a helpful assistant. Answer the user's request directly.\n\n## Collaboration\n\n### Work Requests and Outcomes\n\nOn receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to t",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "assistant",
+          "text": "Lighthouses have guided sailors for thousands of years, making them among the oldest navigational aids in human history. Their earliest ancestors were simple fires lit on hills, headlands, or towers to warn of danger and help mariners find harbor after dark. One of the most famous ancient examples was the Lighthouse of Alexandria, built in Egypt in the third century BCE. Standing on the island of Pharos, it became a wonder of the ancient world and gave many later languages their word for lighthouse. Though it no longer exists, its reputation helped establish the lighthouse as a symbol of safe ",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "System note: output token limit hit. Resume directly from where your previous message stopped — no apology, no recap. Break remaining work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-ceece163-a379-4b3f-8fb5-364e8e3b78b1",
+          "dedupeKey": "agent_run_input:e2e:e2e-ceece163-a379-4b3f-8fb5-364e8e3b78b1",
+          "content": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "media": null,
+          "ts": 1791613916.244
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "Lighthouses have guided sailors for thousands of years, making them among the oldest navigational aids in human history. Their earliest ancestors were simple fires lit on hills, headlands, or towers to warn of danger and help mariners find harbor after dark. One of the most famous ancient examples was the Lighthouse of Alexandria, built in Egypt in the third century BCE. Standing on the island of Pharos, it became a wonder of the ancient world and gave many later languages their word for lighthouse. Though it no longer exists, its reputation helped establish the lighthouse as a symbol of safe passage.\n\nIn the Roman era, coastal towers with beacon fires appeared throughout the Mediterranean and parts of Europe. After the fall of Rome, lighthouse building continued in some regions, especially where trade remained active. Medieval lighthouses were often maintained by religious institutions, local rulers, or wealthy merchants, and many were little more than stone towers with open flames at the top. Their light was weak by modern standards, but even a small beacon could mean the difference between life and death for ships approaching rocky shores.\n\nThe great age of lighthouse construction began in the seventeenth and eighteenth centuries, when global trade expanded and navigation became more demanding. Engineers improved lighthouse design with stronger masonry towers and better lighting systems. A major breakthrough came in the early nineteenth century with the invention of the Fresnel lens, which used curved glass panels",
+          "media": null,
+          "ts": 1791613920.037
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "to focus and project light much farther than earlier lamps. This innovation transformed lighthouse effectiveness and made it possible to mark dangerous coastlines with remarkable precision.\n\nIn the nineteenth century, lighthouses became more specialized and technologically advanced. Some were built on isolated rocks, storm-beaten islands, or unstable shorelines, requiring ingenious engineering and heroic construction efforts. Lighthouse keepers played a vital role in this era. They trimmed wicks, cleaned lenses, fueled lamps, and maintained the structure through harsh weather and long periods of solitude. Their work was demanding and essential, and their lives became part of maritime folklore.\n\nBy the twentieth century, electricity, automation, and radio navigation began to change the role of lighthouses. Many were converted from manned stations to automated beacons, reducing the need for resident keepers. Radar, satellites, and electronic chart systems now guide most modern shipping, so the practical importance of lighthouses has diminished. Yet they remain deeply valuable as cultural landmarks, historical monuments, and symbols of endurance. Their tall white towers, often standing at the edge of cliffs or harbors, still capture the imagination.\n\nToday, lighthouses are preserved for many reasons: as heritage sites, as working aids in some places, and as reminders of a time when navigation depended on human skill, weather, and the steady beam of light against darkness.",
+          "media": null,
+          "ts": 1791613923.894
+        }
+      ]
+    },
+    "at": "2026-10-10T06:32:04.111Z"
+  },
+  {
+    "case": "OLR-E2E-012-GEMINI",
+    "name": "OLR-E2E-012 (GEMINI): an output-limited write_file response is recovered the same way (AC-011)",
+    "state": "fail",
+    "errors": [
+      "the hidden note: expected 'Create the file sea-lines.md with exa…' to match /^System note: /"
+    ],
+    "details": {
+      "model": "gemini-3.8-flash",
+      "error": {
+        "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+        "message": "The model's response hit the output limit of 300 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again.",
+        "error_scope": "turn",
+        "error_effect": "diagnostic",
+        "turn_id": "turn_0001"
+      },
+      "calls": [
+        {
+          "index": 6,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "MAX_TOKENS"
+          ],
+          "maxReportedOutputTokens": null,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 7,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "MAX_TOKENS"
+          ],
+          "maxReportedOutputTokens": null,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 8,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "MAX_TOKENS"
+          ],
+          "maxReportedOutputTokens": null,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 9,
+          "phase": "OLR-012-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "MAX_TOKENS"
+          ],
+          "maxReportedOutputTokens": null,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_writer_e524ad9e_69baf228c0d346d19143f702e7dd39cc"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ERROR",
+          "code": "LLM_OUTPUT_LIMIT_EXHAUSTED",
+          "message": "The model's response hit the output limit of 300 tokens 4 times in a row, so the turn stopped after 3 automatic recovery attempts. Ask for the work in smaller pieces (for example, write a large file in several parts) and send the request again."
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "discardedIds": [],
+      "executedIds": [],
+      "recoveryTail": [
+        {
+          "role": "user",
+          "text": "Create the file sea-lines.md with exactly 40 lines. Line N (for every N from 1 to 40) is \"Line N: \" followed by one different sentence of 12 to 16 words about the sea. Write every line in full.\n\nThe user's current message is:\n\nSystem note: your previous response hit the output limit of 300 tokens before producing any visible output, so nothing was kept. Answer again from the start, breaking the work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "fileLineCount": null
+    },
+    "at": "2026-10-10T06:32:23.738Z"
+  },
+  {
+    "case": "OLR-E2E-013-GEMINI",
+    "name": "OLR-E2E-013 (GEMINI): a text-only cut keeps the partial text and resumes; parts are consecutive after reload (AC-005, AC-011)",
+    "state": "pass",
+    "errors": [],
+    "details": {
+      "model": "gemini-3.8-flash",
+      "error": null,
+      "calls": [
+        {
+          "index": 10,
+          "phase": "OLR-013-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "MAX_TOKENS"
+          ],
+          "maxReportedOutputTokens": 296,
+          "responseHasToolCall": false,
+          "errorBody": null
+        },
+        {
+          "index": 11,
+          "phase": "OLR-013-GEMINI",
+          "host": "aiplatform.googleapis.com",
+          "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+          "stream": true,
+          "limits": {
+            "maxOutputTokens": 300
+          },
+          "rewritten": false,
+          "status": 200,
+          "stopSignals": [
+            "STOP"
+          ],
+          "maxReportedOutputTokens": 185,
+          "responseHasToolCall": false,
+          "errorBody": null
+        }
+      ],
+      "frames": [
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "SYSTEM_INSTRUCTIONS_SUPPLIED"
+        },
+        {
+          "type": "AGENT_COMMAND_ACK",
+          "status": {
+            "status": "initializing",
+            "recoverableBlock": null,
+            "agent_id": "output_limit_recovery_chat_e2eae43f_95f63842de2a421392be8a3b47240da1"
+          },
+          "state": "accepted"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "running"
+        },
+        {
+          "type": "TURN_STARTED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "SEGMENT_START",
+          "segment_type": "text"
+        },
+        {
+          "type": "SEGMENT_END"
+        },
+        {
+          "type": "TOKEN_USAGE_UPDATED"
+        },
+        {
+          "type": "ASSISTANT_COMPLETE"
+        },
+        {
+          "type": "TURN_COMPLETED"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "initializing"
+        },
+        {
+          "type": "AGENT_STATUS",
+          "status": "idle"
+        }
+      ],
+      "recoveryMessages": [
+        {
+          "role": "user",
+          "text": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "assistant",
+          "text": "Since the dawn of maritime navigation, humans have relied on coastal illumination to guide vessels safely past treacherous shores. The earliest aids to navigation were simple bonfires lit on prominent headlands and hilltops by coastal communities. These informal signals evolved into permanent architectural monuments during antiquity, most famously exemplified by the Pharos of Alexandria. Built in Egypt around 280 BCE, this towering stone colossus stood over one hundred meters tall, using wood fires and reflective mirrors to project light across the Mediterranean Sea. The Pharos established a s",
+          "toolUses": 0,
+          "toolResults": []
+        },
+        {
+          "role": "user",
+          "text": "System note: output token limit hit. Resume directly from where your previous message stopped — no apology, no recap. Break remaining work into smaller pieces.",
+          "toolUses": 0,
+          "toolResults": []
+        }
+      ],
+      "projection": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "e2e-38d0b442-ff60-4076-9cf8-062be3495e42",
+          "dedupeKey": "agent_run_input:e2e:e2e-38d0b442-ff60-4076-9cf8-062be3495e42",
+          "content": "Write an essay of about 330 words on the history of lighthouses. Plain paragraphs only: no title, headings or lists.",
+          "media": null,
+          "ts": 1791613943.812
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "Since the dawn of maritime navigation, humans have relied on coastal illumination to guide vessels safely past treacherous shores. The earliest aids to navigation were simple bonfires lit on prominent headlands and hilltops by coastal communities. These informal signals evolved into permanent architectural monuments during antiquity, most famously exemplified by the Pharos of Alexandria. Built in Egypt around 280 BCE, this towering stone colossus stood over one hundred meters tall, using wood fires and reflective mirrors to project light across the Mediterranean Sea. The Pharos established a structural model that Roman engineers replicated throughout their empire, constructing beacons from Dover to La Coruña to protect vital maritime trade routes.\n\nFollowing the collapse of classical civilizations, lighthouse development slowed considerably across medieval Europe, preserved primarily by monastic orders that tended brazier beacons atop isolated cliffs. The renaissance of maritime commerce in the seventeenth and eighteenth centuries, however, renewed the urgency for systematic navigational aids. Engineers confronted the formidable challenge of building resilient structures directly on wave-swept offshore reefs. John Smeaton achieved a major engineering breakthrough in 1759 with the third Eddystone Lighthouse off the English coast, using dovetailed granite masonry blocks inspired by the tapered trunk of an oak tree, establishing principles that still define modern offshore construction.\n\nThe nineteenth century revolutionized the optical power of lighthouses through rapid scientific innovation. In the 1820s, French physicist Augustin-Jean Fresnel invented a compound lens using concentric annular prisms that concentrated light into intense parallel",
+          "media": null,
+          "ts": 1791613947.671
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "beams, vastly increasing visibility over long distances while drastically reducing fuel consumption. Whale oil and colza oil soon gave way to vaporized kerosene burners, and eventually to electric arc lamps and incandescent bulbs. Clockwork rotation mechanisms enabled distinct flashing signatures, allowing mariners to positively identify specific coastlines in dense fog and absolute darkness. \n\nThe twentieth century brought sweeping technological changes that transformed lighthouse operations across the globe. Automation gradually eliminated the romantic yet demanding role of resident lighthouse keepers, replacing human vigilance with automated sun valves, diesel generators, electric timers, and computerized telemetry. By the early twenty-first century, almost all operational lighthouses were converted to fully automated, solar-powered sentinels monitored from distant administrative centers. Although modern satellite-based global positioning systems and radar now serve as the primary methods of oceanic orientation, lighthouses endure as essential physical fail-safes and cherished monuments to human ingenuity and maritime safety.",
+          "media": null,
+          "ts": 1791613951.108
+        }
+      ]
+    },
+    "at": "2026-10-10T06:32:31.375Z"
+  }
+]

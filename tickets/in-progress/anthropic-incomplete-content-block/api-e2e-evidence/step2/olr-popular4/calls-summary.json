@@ -1,0 +1,258 @@
+[
+  {
+    "index": 0,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 1,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 2,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 3,
+    "phase": "OLR-012-OPENAI",
+    "host": "api.openai.com",
+    "pathname": "/v1/responses",
+    "stream": true,
+    "limits": {
+      "max_output_tokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "status:incomplete",
+      "max_output_tokens"
+    ],
+    "maxReportedOutputTokens": 1200,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 4,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 364,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 5,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 216,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 6,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 537,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 7,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 175,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 8,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 26,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 9,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "MAX_TOKENS"
+    ],
+    "maxReportedOutputTokens": null,
+    "responseHasToolCall": false,
+    "errorBody": null
+  },
+  {
+    "index": 10,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 317,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 11,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 217,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 12,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 45,
+    "responseHasToolCall": true,
+    "errorBody": null
+  },
+  {
+    "index": 13,
+    "phase": "OLR-012-GEMINI",
+    "host": "aiplatform.googleapis.com",
+    "pathname": "/v1beta1/publishers/google/models/gemini-3.8-flash:streamGenerateContent",
+    "stream": true,
+    "limits": {
+      "maxOutputTokens": 1200
+    },
+    "rewritten": false,
+    "status": 200,
+    "stopSignals": [
+      "STOP"
+    ],
+    "maxReportedOutputTokens": 1,
+    "responseHasToolCall": false,
+    "errorBody": null
+  }
+]

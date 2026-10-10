@@ -1,4 +1,3 @@
-import { responsesCompletion } from './completion-status.js';
 import { OpenAI as OpenAIClient } from 'openai';
 import { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
@@ -6,6 +5,7 @@ import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { Message } from '../utils/messages.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import { buildFinish, mapProviderFinish, type LlmFinishTable, type LlmResponseFinish } from '../utils/llm-response-finish.js';
 import { ToolCallDelta } from '../utils/tool-call-delta.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { OpenAIResponsesRenderer } from '../prompt-renderers/openai-responses-renderer.js';
@@ -24,13 +24,41 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 
+/** `incomplete_details.reason` → normalized finish. */
+const RESPONSES_INCOMPLETE_FINISH_TABLE: LlmFinishTable = {
+  max_output_tokens: 'output_limit',
+  content_filter: 'content_filter',
+};
+
+const hasRefusalOutput = (outputItems: unknown[]): boolean => outputItems.some((item) =>
+  isRecord(item) && item.type === 'message'
+  && asArray(item.content).some((part) => isRecord(part) && part.type === 'refusal'));
+
+/**
+ * A Responses `response` object's finish. Completed: `stop`, or `tool_calls` / `content_filter`
+ * by its output, with `status` as the raw reason. Incomplete: by `incomplete_details.reason`.
+ */
+const responsesFinish = (response: unknown): LlmResponseFinish | null => {
+  if (!isRecord(response) || typeof response.status !== 'string') return null;
+  const output = asArray(response.output);
+  if (response.status === 'completed') {
+    if (hasRefusalOutput(output)) return buildFinish('content_filter', response.status);
+    const calledTools = output.some((item) => isRecord(item) && item.type === 'function_call');
+    return buildFinish(calledTools ? 'tool_calls' : 'stop', response.status);
+  }
+  const incompleteReason = isRecord(response.incomplete_details) ? response.incomplete_details.reason : null;
+  if (response.status === 'incomplete' && typeof incompleteReason === 'string' && incompleteReason) {
+    return mapProviderFinish(RESPONSES_INCOMPLETE_FINISH_TABLE, incompleteReason);
+  }
+  return buildFinish('other', response.status);
+};
+
 
 export class OpenAIResponsesLLM extends BaseLLM {
   private clientPromise: Promise<OpenAIClient> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
   private readonly apiKeyProviderId: string;
   private readonly baseUrl: string;
-  protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
   constructor(
@@ -44,7 +72,6 @@ export class OpenAIResponsesLLM extends BaseLLM {
     this.apiKeyResolver = apiKeyResolver;
     this.apiKeyProviderId = apiKeyProviderId;
     this.baseUrl = baseUrl;
-    this.maxTokens = config.maxTokens ?? null;
     this._renderer = new OpenAIResponsesRenderer();
   }
 
@@ -171,8 +198,9 @@ export class OpenAIResponsesLLM extends BaseLLM {
       input: formattedMessages
     };
 
-    if (this.maxTokens !== null) {
-      params.max_output_tokens = this.maxTokens;
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) {
+      params.max_output_tokens = maxOutputTokens;
     }
 
     const reasoningParam = this.buildReasoningParam();
@@ -203,7 +231,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
       const { content, reasoning } = this.extractOutputContent(response.output ?? []);
 
       return new CompleteResponse({
-        ...responsesCompletion(response),
+        finish: responsesFinish(response),
         content,
         reasoning: reasoning ?? null,
         usage: this.createTokenUsage(response.usage)
@@ -225,8 +253,9 @@ export class OpenAIResponsesLLM extends BaseLLM {
       stream: true
     };
 
-    if (this.maxTokens !== null) {
-      params.max_output_tokens = this.maxTokens;
+    const maxOutputTokens = this.resolveMaxOutputTokens();
+    if (maxOutputTokens !== null) {
+      params.max_output_tokens = maxOutputTokens;
     }
 
     const reasoningParam = this.buildReasoningParam();
@@ -261,9 +290,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
     >();
     const textDeltaSeen = new Set<string>();
     const summaryDeltaSeen = new Set<string>();
-
-    let accumulatedContent = '';
-    let accumulatedReasoning = '';
+    let yieldedTerminalChunk = false;
 
     try {
       const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
@@ -276,14 +303,12 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
         if (eventType === 'response.output_text.delta') {
           textDeltaSeen.add((event as any).item_id);
-          accumulatedContent += (event as any).delta ?? '';
           yield new ChunkResponse({ content: (event as any).delta ?? '', reasoning: null });
           continue;
         }
 
         if (eventType === 'response.output_text.done') {
           if (!textDeltaSeen.has((event as any).item_id)) {
-            accumulatedContent += (event as any).text ?? '';
             yield new ChunkResponse({ content: (event as any).text ?? '', reasoning: null });
           }
           continue;
@@ -291,14 +316,12 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
         if (eventType === 'response.reasoning_summary_text.delta') {
           summaryDeltaSeen.add((event as any).item_id);
-          accumulatedReasoning += (event as any).delta ?? '';
           yield new ChunkResponse({ content: '', reasoning: (event as any).delta ?? '' });
           continue;
         }
 
         if (eventType === 'response.reasoning_summary_text.done') {
           if (!summaryDeltaSeen.has((event as any).item_id)) {
-            accumulatedReasoning += (event as any).text ?? '';
             yield new ChunkResponse({ content: '', reasoning: (event as any).text ?? '' });
           }
           continue;
@@ -407,15 +430,42 @@ export class OpenAIResponsesLLM extends BaseLLM {
             }
           }
 
-          const tokenUsage = this.createTokenUsage(response?.usage ?? null);
-          yield new ChunkResponse({ content: '', reasoning: null, is_complete: true, usage: tokenUsage });
+          yield this.buildTerminalChunk(response);
+          yieldedTerminalChunk = true;
           continue;
         }
+
+        if (eventType === 'response.incomplete') {
+          // Cut function-call arguments were already streamed; the finish tells the agent loop.
+          yield this.buildTerminalChunk((event as any).response);
+          yieldedTerminalChunk = true;
+          continue;
+        }
+
+        if (eventType === 'response.failed') {
+          const failure = (event as any).response?.error;
+          throw new Error(failure?.message ?? `response failed${failure?.code ? ` (${failure.code})` : ''}`);
+        }
+      }
+      if (!yieldedTerminalChunk) {
+        yield new ChunkResponse({ content: '', reasoning: null, is_complete: true, usage: null, finish: null });
       }
 
     } catch (error: any) {
       throw new Error(`Error in OPENAI Responses API streaming: ${error?.message ?? error}`);
     }
+  }
+
+  /** The stream's single terminal chunk, from a `response.completed` or `response.incomplete` response. */
+  private buildTerminalChunk(response: unknown): ChunkResponse {
+    const usage = isRecord(response) && isRecord(response.usage) ? response.usage : null;
+    return new ChunkResponse({
+      content: '',
+      reasoning: null,
+      is_complete: true,
+      usage: this.createTokenUsage(usage),
+      finish: responsesFinish(response),
+    });
   }
 
   async cleanup(): Promise<void> {

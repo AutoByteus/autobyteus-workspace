@@ -1,9 +1,9 @@
-import { completionFromReason } from './completion-status.js';
 import { Mistral } from '@mistralai/mistralai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
+import { mapProviderFinish, withToolCallsFinish, type LlmFinishTable } from '../utils/llm-response-finish.js';
 import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { Message } from '../utils/messages.js';
@@ -16,16 +16,22 @@ import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-reso
 
 const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 
+/** Mistral `finishReason` → normalized finish (`error` fails the request instead). */
+const MISTRAL_FINISH_TABLE: LlmFinishTable = {
+  stop: 'stop',
+  tool_calls: 'tool_calls',
+  length: 'output_limit',
+  model_length: 'context_window_exceeded',
+};
+
 export class MistralLLM extends BaseLLM {
   private clientPromise: Promise<Mistral> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
-  protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
   constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
-    this.maxTokens = config.maxTokens ?? null;
     this._renderer = new MistralPromptRenderer();
   }
 
@@ -51,7 +57,7 @@ export class MistralLLM extends BaseLLM {
       messages: formattedMessages,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxTokens: this.maxTokens ?? undefined,
+      maxTokens: this.resolveMaxOutputTokens() ?? undefined,
     };
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
 
@@ -75,7 +81,10 @@ export class MistralLLM extends BaseLLM {
       }
 
       return new CompleteResponse({
-        ...completionFromReason(response.choices?.[0]?.finishReason, ['stop'], ['length', 'model_length', 'tool_calls', 'error'], Boolean(message?.toolCalls?.length)),
+        finish: withToolCallsFinish(
+          mapProviderFinish(MISTRAL_FINISH_TABLE, response.choices?.[0]?.finishReason),
+          Boolean(message?.toolCalls?.length),
+        ),
         content,
         usage: this.toTokenUsage(response.usage)
       });
@@ -91,7 +100,7 @@ export class MistralLLM extends BaseLLM {
       messages: formattedMessages,
       temperature: this.config.temperature,
       topP: this.config.topP ?? undefined,
-      maxTokens: this.maxTokens ?? undefined,
+      maxTokens: this.resolveMaxOutputTokens() ?? undefined,
       stream: true,
     };
     applySafeProviderRequestKwargs(params, kwargs, { controlledKeys: MISTRAL_CONTROLLED_KWARG_KEYS });
@@ -104,10 +113,14 @@ export class MistralLLM extends BaseLLM {
       const client = await this.getClient();
       const stream = await client.chat.stream(params, { ...(options.signal ? { signal: options.signal } : {}),
         ...(options.retryMode === 'single_attempt' ? { retries: { strategy: 'none' as const } } : {}) });
+      let finishReason: string | null = null;
+      let emittedToolCalls = false;
+      let usage: unknown = null;
       for await (const event of stream) {
         const chunk = event.data;
         const choice = chunk?.choices?.[0];
         const delta = choice?.delta;
+        if (choice?.finishReason) finishReason = choice.finishReason;
 
         if (delta?.content) {
           const text = typeof delta.content === 'string'
@@ -125,18 +138,23 @@ export class MistralLLM extends BaseLLM {
           const toolCalls = Array.isArray(delta.toolCalls) ? delta.toolCalls : null;
           const toolDeltas = convertMistralToolCalls(toolCalls);
           if (toolDeltas) {
+            emittedToolCalls = true;
             yield new ChunkResponse({ content: '', tool_calls: toolDeltas });
           }
         }
 
-        if (chunk?.usage) {
-          yield new ChunkResponse({
-            content: '',
-            is_complete: true,
-            usage: this.toTokenUsage(chunk.usage)
-          });
-        }
+        if (chunk?.usage) usage = chunk.usage;
       }
+
+      if (finishReason === 'error') {
+        throw new Error('Mistral stream ended with finish reason "error".');
+      }
+      yield new ChunkResponse({
+        content: '',
+        is_complete: true,
+        usage: usage ? this.toTokenUsage(usage) : null,
+        finish: withToolCallsFinish(mapProviderFinish(MISTRAL_FINISH_TABLE, finishReason), emittedToolCalls),
+      });
 
     } catch (error) {
       throw new Error(`Error in Mistral streaming: ${error}`);

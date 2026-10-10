@@ -14,7 +14,7 @@ import {
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
   LLMUserMessageReadyEvent,
-  ToolContinuationReadyEvent,
+  TurnContinuationReadyEvent,
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
@@ -92,7 +92,7 @@ export class AgentStatusDeriver {
     ) {
       return AgentStatus.PROCESSING_USER_INPUT;
     }
-    if (event instanceof LLMUserMessageReadyEvent || event instanceof ToolContinuationReadyEvent) {
+    if (event instanceof LLMUserMessageReadyEvent || event instanceof TurnContinuationReadyEvent) {
       if (currentStatus === AgentStatus.AWAITING_LLM_RESPONSE || currentStatus === AgentStatus.ERROR) {
         return currentStatus;
       }

@@ -6,8 +6,8 @@ import {
   LLMCompleteResponseReceivedEvent,
   LLMUserMessageReadyEvent,
   PendingToolInvocationEvent,
-  ToolContinuationReadyEvent,
   ToolResultEvent,
+  TurnContinuationReadyEvent,
   UserMessageReceivedEvent
 } from '../events/agent-events.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
@@ -15,7 +15,13 @@ import { AgentInputPipeline } from '../pipelines/agent-input-pipeline.js';
 import { LLMResponsePipeline } from '../pipelines/llm-response-pipeline.js';
 import { ToolResultPipeline } from '../pipelines/tool-result-pipeline.js';
 import { ToolContinuationInputBuilder } from './tool-continuation-input-builder.js';
-import { LlmPhase } from './llm-phase.js';
+import { LlmPhase, type LlmPhaseOutcome } from './llm-phase.js';
+import { CompleteResponse } from '../../llm/utils/response-types.js';
+import {
+  MAX_OUTPUT_LIMIT_RECOVERIES,
+  buildOutputLimitExhaustedMessage,
+  buildOutputLimitRecoveryNote,
+} from './output-limit-recovery.js';
 import { ToolPhase } from './tool-phase.js';
 import { buildToolLifecyclePayloadFromResult } from '../handlers/tool-lifecycle-payload.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
@@ -50,6 +56,7 @@ export class AgentTurnRunner {
       this.turn.executionScope.throwIfAborted({ kind: 'external_trigger_status' });
       let nextInput = await this.inputPipeline.processExternalTrigger(trigger, this.context, this.turn, this.notifier);
       this.turn.executionScope.throwIfAborted({ kind: 'input_pipeline' });
+      let consecutiveOutputLimitStops = 0;
 
       while (true) {
         this.turn.executionScope.throwIfAborted({ kind: 'turn_loop' });
@@ -57,6 +64,20 @@ export class AgentTurnRunner {
         this.turn.executionScope.throwIfAborted({ kind: 'llm_phase_ready_status' });
         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.notifier);
         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
+
+        if (llmOutcome.kind === 'output_limited') {
+          consecutiveOutputLimitStops += 1;
+          if (consecutiveOutputLimitStops > MAX_OUTPUT_LIMIT_RECOVERIES) {
+            return await this.completeWithOutputLimitExhausted(llmOutcome.outputTokenLimit);
+          }
+          this.recordOutputLimitRecoveryNote(llmOutcome);
+          this.turn.beginContinuation();
+          // Built here, not by the input pipeline: no processors and no user-message notification.
+          // The source event is carried only for the type and is not re-applied as a status event.
+          nextInput = { llmUserMessage: null, turnId, sourceEvent: nextInput.sourceEvent };
+          continue;
+        }
+        consecutiveOutputLimitStops = 0;
 
         if (llmOutcome.kind === 'compaction_blocked') {
           const recovery = this.context.state.compactionRecovery;
@@ -67,17 +88,7 @@ export class AgentTurnRunner {
         }
 
         if (llmOutcome.kind === 'final') {
-          await this.applyStatusEvent(
-            new LLMCompleteResponseReceivedEvent(llmOutcome.response, llmOutcome.isError ?? false, turnId)
-          );
-          this.turn.executionScope.throwIfAborted({ kind: 'pre_llm_response_pipeline' });
-          await this.llmResponsePipeline.processFinalResponse(llmOutcome.response, this.context, this.notifier, {
-            isError: llmOutcome.isError ?? false,
-            turnId
-          });
-          this.turn.executionScope.throwIfAborted({ kind: 'post_llm_response_pipeline' });
-          this.notifier?.notifyAgentTurnCompleted(turnId);
-          return { kind: 'completed', turnId };
+          return await this.completeWithFinalResponse(llmOutcome.response, llmOutcome.isError ?? false);
         }
 
         for (const invocation of llmOutcome.toolInvocations) {
@@ -121,6 +132,7 @@ export class AgentTurnRunner {
           source: 'native_api_ordered_batch'
         });
         const continuationInput = this.continuationInputBuilder.build(processedResults, turnId);
+        this.turn.beginContinuation();
         nextInput = await this.inputPipeline.processToolContinuation(
           continuationInput,
           this.context,
@@ -198,12 +210,48 @@ export class AgentTurnRunner {
     }
   }
 
+  private recordOutputLimitRecoveryNote(outcome: Extract<LlmPhaseOutcome, { kind: 'output_limited' }>): void {
+    const memoryManager = this.context.state.memoryManager;
+    if (!memoryManager) {
+      throw new Error(`Agent '${this.context.agentId}' requires a memory manager to record a recovery note.`);
+    }
+    memoryManager.appendOutputLimitRecoveryNote({
+      turnId: this.turn.turnId,
+      content: buildOutputLimitRecoveryNote({
+        discardedToolNames: outcome.truncatedToolNames,
+        keptText: Boolean(outcome.response.content),
+        limit: outcome.outputTokenLimit,
+      }),
+    });
+  }
+
+  /** The recovery attempts are used up: end the turn with a clear error (not ingested into memory). */
+  private async completeWithOutputLimitExhausted(limit: number | null): Promise<TurnOutcome> {
+    const message = buildOutputLimitExhaustedMessage(limit);
+    this.notifier?.notifyAgentErrorOutputGeneration({
+      code: 'LLM_OUTPUT_LIMIT_EXHAUSTED',
+      message,
+      classification: { scope: 'turn', effect: 'diagnostic', turnId: this.turn.turnId }
+    });
+    return this.completeWithFinalResponse(new CompleteResponse({ content: message }), true);
+  }
+
+  private async completeWithFinalResponse(response: CompleteResponse, isError: boolean): Promise<TurnOutcome> {
+    const turnId = this.turn.turnId;
+    await this.applyStatusEvent(new LLMCompleteResponseReceivedEvent(response, isError, turnId));
+    this.turn.executionScope.throwIfAborted({ kind: 'pre_llm_response_pipeline' });
+    await this.llmResponsePipeline.processFinalResponse(response, this.context, this.notifier, { isError, turnId });
+    this.turn.executionScope.throwIfAborted({ kind: 'post_llm_response_pipeline' });
+    this.notifier?.notifyAgentTurnCompleted(turnId);
+    return { kind: 'completed', turnId };
+  }
+
   private buildLlmPhaseReadyEvent(
     input: AgentInputPipelineResult,
     turnId: string
-  ): LLMUserMessageReadyEvent | ToolContinuationReadyEvent {
+  ): LLMUserMessageReadyEvent | TurnContinuationReadyEvent {
     if (input.llmUserMessage === null) {
-      return new ToolContinuationReadyEvent(turnId);
+      return new TurnContinuationReadyEvent(turnId);
     }
     return new LLMUserMessageReadyEvent(input.llmUserMessage, turnId);
   }

@@ -22,11 +22,23 @@ This project uses two different runtime concepts that previously both used the w
     `SenderType.TOOL` semantic/context carrier.
   - When no context-file media must be carried, `AgentInputPipeline` represents
     that absence as `llmUserMessage: null`; `AgentTurnRunner` emits
-    `ToolContinuationReadyEvent`, and the next request uses structured
+    `TurnContinuationReadyEvent`, and the next request uses structured
     provider-native tool-call/result history without adding an aggregate user
     message. If the continuation carries context-file media, the same batch
     stays in the outer turn but uses an appended user/media carrier with
     semantic completed-tool wording so the media can be sent.
+
+3. Turn continuation and LLM call identity
+- A turn continuation is a further LLM request in the same outer turn. There
+  are two kinds: a tool continuation after a tool batch, and an output-limit
+  recovery continuation after a cut response (see `agent_memory_design.md`
+  §8.1). Only `AgentTurnRunner` starts one, through `AgentTurn.beginContinuation()`,
+  and `AgentTurn.isContinuation` records it. The request assembler receives it
+  as `LlmRequestAssemblyIdentity.isTurnContinuation`, and the runner emits
+  `TurnContinuationReadyEvent` for both kinds.
+- `AgentTurn.nextLlmCallSequence()` allocates a unique call id
+  (`<turnId>:llm:<n>`) for every request attempt in `LlmPhase` before assembly.
+  Retries and recovery calls therefore never share a usage or idempotency key.
 
 ## Relationship
 

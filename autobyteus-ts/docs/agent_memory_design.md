@@ -299,6 +299,53 @@ durable. An accepted compaction is never rolled back. Every returned checkpoint
 settles exactly once; recovery returns one diagnostic and does not retry or
 select a fallback model.
 
+### 8.1 Output-Limit Recovery And Terminal Finish Errors
+
+`LlmPhase` acts on the response's terminal `LlmResponseFinish` (see
+`llm_module_design.md` §4.4):
+
+- **`content_filter` / `context_window_exceeded`.** These throw a coded error,
+  `LLM_RESPONSE_REFUSED` or `LLM_CONTEXT_WINDOW_EXCEEDED`, that names the
+  provider reason. The error goes through the normal rollback and
+  error-notification path. No tool runs and no recovery is attempted.
+- **`output_limit`.** The response is settled, not rolled back, in this order:
+  1. release the request checkpoint;
+  2. ingest one plain assistant message with the partial text only, with no
+     reasoning and no native turn. Nothing is ingested when there is no text;
+  3. `finalizeOutputLimited` (text ends normally; open tool calls are discarded
+     and never run);
+  4. end the reasoning segment;
+  5. emit the usage notification;
+  6. evaluate the compaction threshold (no `after_final_response` processing);
+  7. return an `output_limited` outcome with the discarded tool names and the
+     output limit.
+
+  A truncated response is never stored or replayed as a native provider turn.
+
+`AgentTurnRunner` owns the retry policy (`src/agent/loop/output-limit-recovery.ts`).
+It counts consecutive `output_limited` outcomes and resets the count after any
+other outcome. Up to `MAX_OUTPUT_LIMIT_RECOVERIES = 3` times in a row, it calls
+`MemoryManager.appendOutputLimitRecoveryNote({ turnId, content })` and then
+starts a same-turn recovery continuation with no new user input. The note
+comes in three variants:
+
+- a discarded tool call: names the tool and the limit and asks for smaller
+  pieces;
+- kept text: resume directly, with no apology or recap;
+- nothing kept: answer again from the start in smaller pieces.
+
+The note is recorded as an `output_limit_recovery` raw trace
+(`src/memory/output-limit-recovery-trace.ts`, source event
+`OutputLimitRecovery`). It is also recorded as a USER working-context message
+linked to that trace through `rawTraceIds` (composed-user provenance), before
+the next request's checkpoint. The model sees the note; history replay does
+not project this trace type, so users never see it. On the fourth consecutive
+cut, the turn ends with an `LLM_OUTPUT_LIMIT_EXHAUSTED` error notification. Its
+message names the limit and suggests smaller pieces. The turn completes through
+the same final/isError sequence as other errors, and the error is not ingested
+into memory. Snapshots stay versionless: the new trace type and note are
+additive, and existing snapshots are unchanged.
+
 ## 9. Shared Readable Value And Tool Policy
 
 `ReadableValueRenderer` and `CondensedToolCallRenderer` are core-owned,

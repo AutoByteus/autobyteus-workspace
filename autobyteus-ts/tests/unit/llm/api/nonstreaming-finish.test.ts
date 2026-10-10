@@ -29,17 +29,18 @@ const fixture=(family:string,reason:string|undefined)=>{
  }
  return {llm,send};
 };
-describe('normalized nonstream provider completion',()=>{
+describe('non-streaming finish and its completion projection',()=>{
  it.each([
- ['chat','stop','complete'],['chat','length','incomplete'],['chat','content_filter','incomplete'],['chat','tool_calls','incomplete'],['chat',undefined,'unknown'],
- ['responses','completed','complete'],['responses','incomplete','incomplete'],['responses','failed','incomplete'],['responses',undefined,'unknown'],
- ['anthropic','end_turn','complete'],['anthropic','max_tokens','incomplete'],['anthropic','pause_turn','incomplete'],['anthropic','refusal','incomplete'],['anthropic',undefined,'unknown'],
- ['gemini','STOP','complete'],['gemini','MAX_TOKENS','incomplete'],['gemini','SAFETY','incomplete'],['gemini',undefined,'unknown'],
- ['mistral','stop','complete'],['mistral','length','incomplete'],['mistral','tool_calls','incomplete'],['mistral',undefined,'unknown'],
- ['ollama','stop','complete'],['ollama','length','incomplete'],['ollama',undefined,'unknown'],['rpa','stop','unknown'],
- ])('%s %s becomes %s',async(family,reason,expected)=>{
+ ['chat','stop','complete','stop'],['chat','length','incomplete','output_limit'],['chat','content_filter','incomplete','content_filter'],['chat','tool_calls','incomplete','tool_calls'],['chat',undefined,'unknown',null],
+ ['responses','completed','complete','stop'],['responses','incomplete','incomplete','other'],['responses','failed','incomplete','other'],['responses',undefined,'unknown',null],
+ ['anthropic','end_turn','complete','stop'],['anthropic','max_tokens','incomplete','output_limit'],['anthropic','pause_turn','incomplete','other'],['anthropic','refusal','incomplete','content_filter'],['anthropic','model_context_window_exceeded','incomplete','context_window_exceeded'],['anthropic',undefined,'unknown',null],
+ ['gemini','STOP','complete','stop'],['gemini','MAX_TOKENS','incomplete','output_limit'],['gemini','SAFETY','incomplete','content_filter'],['gemini','OTHER','incomplete','other'],['gemini',undefined,'unknown',null],
+ ['mistral','stop','complete','stop'],['mistral','length','incomplete','output_limit'],['mistral','tool_calls','incomplete','tool_calls'],['mistral','model_length','incomplete','context_window_exceeded'],['mistral',undefined,'unknown',null],
+ ['ollama','stop','complete','stop'],['ollama','length','incomplete','output_limit'],['ollama',undefined,'unknown',null],['rpa','stop','unknown',null],
+ ])('%s %s becomes %s (finish %s)',async(family,reason,expected,finishReason)=>{
   const {llm,send}=fixture(family!,reason);const signal=new AbortController().signal;
   const result=await llm.sendMessages(messages,{logicalConversationId:'fresh-summary'},{signal});
+  expect(result.finish?.reason ?? null).toBe(finishReason);
   expect(result.completionStatus).toBe(expected);expect(result.completionReason).toBe(family==='rpa'?null:reason??null);
   expect(result.content).toBe('ok');expect(send).toHaveBeenCalledOnce();
   const payload=send.mock.calls[0][0];
@@ -54,7 +55,21 @@ describe('normalized nonstream provider completion',()=>{
  it('rejects tool/refusal output even when Responses claims completed',async()=>{
   const {llm,send}=fixture('responses','completed');
   send.mockResolvedValue({status:'completed',output:[{type:'function_call',name:'bad'}]});
-  expect((await llm.sendMessages(messages)).completionStatus).toBe('incomplete');
+  const result=await llm.sendMessages(messages);
+  expect(result.finish).toEqual({reason:'tool_calls',providerReason:'completed'});
+  expect(result.completionStatus).toBe('incomplete');
+ });
+ it('maps a Responses incomplete reason and an output-limited compaction summary stays incomplete (AR-004)',async()=>{
+  const {llm,send}=fixture('responses','incomplete');
+  send.mockResolvedValue({status:'incomplete',incomplete_details:{reason:'max_output_tokens'},output:[{type:'message',content:[{type:'output_text',text:'cut'}]}]});
+  const result=await llm.sendMessages(messages);
+  expect(result.finish).toEqual({reason:'output_limit',providerReason:'max_output_tokens'});
+  expect(result.completionStatus).toBe('incomplete');expect(result.completionReason).toBe('max_output_tokens');
+ });
+ it('reports chat refusal content as content_filter',async()=>{
+  const {llm,send}=fixture('chat','stop');
+  send.mockResolvedValue({choices:[{finish_reason:'stop',message:{content:'',refusal:'I cannot help.'}}]});
+  expect((await llm.sendMessages(messages)).finish).toEqual({reason:'content_filter',providerReason:'stop'});
  });
  it('does not infer completion from RPA complete-looking text or cleanup',async()=>{
   const {llm}=fixture('rpa','stop');await llm.sendMessages(messages,{logicalConversationId:'isolated'});

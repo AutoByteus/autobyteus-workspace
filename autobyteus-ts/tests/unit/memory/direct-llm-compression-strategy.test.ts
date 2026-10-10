@@ -5,6 +5,7 @@ import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
+import { buildFinish } from '../../../src/llm/utils/llm-response-finish.js';
 import { DirectLlmCompressionStrategy } from '../../../src/memory/compaction/direct-llm-compression-strategy.js';
 import { COMPACTION_SUMMARY_PROMPT } from '../../../src/memory/compaction/compaction-summary-prompt.js';
 import { COMPACTION_SUMMARY_HEADINGS, parseCompactionSummary, validateCompactionSummaryBody } from '../../../src/memory/compaction/compaction-summary-parser.js';
@@ -13,7 +14,7 @@ const body = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Keep /repo/check.t
 const tagged = `<compaction_summary>\n${body}\n</compaction_summary>`;
 const content = 'caller prepared\n' + 'x'.repeat(2500) + ' MIDDLE: do not deploy without approval ' + 'x'.repeat(2500);
 class Model extends BaseLLM {
-  send = vi.fn(async () => new CompleteResponse({ content: tagged, completionStatus: 'complete' }));
+  send = vi.fn(async () => new CompleteResponse({ content: tagged, finish: buildFinish('stop', 'end_turn') }));
   cleaned = vi.fn(async () => undefined);
   constructor(capacity: number | null = 100_000) {
     super(new LLMModel({ name: 'fixture', value: 'fixture', canonicalName: 'fixture', provider: LLMProvider.OPENAI, maxContextTokens: capacity }), new LLMConfig({ maxTokens: 8192 }));
@@ -78,7 +79,7 @@ describe('direct compression strategy', () => {
       const model = new Model(kind === 'capacity' ? 100 : 100_000); models.push(model);
       if (['401','429','503','timeout'].includes(kind)) model.send.mockRejectedValue(new Error(kind));
       else if (['empty','malformed'].includes(kind)) model.send.mockResolvedValue(new CompleteResponse({ content: kind === 'empty' ? '' : 'bad', reasoning: tagged }));
-      else if (kind === 'incomplete') model.send.mockResolvedValue(new CompleteResponse({ content: tagged, completionStatus: 'incomplete' }));
+      else if (kind === 'incomplete') model.send.mockResolvedValue(new CompleteResponse({ content: tagged, finish: buildFinish('output_limit', 'max_tokens') }));
       return model;
     });
     await expect(new DirectLlmCompressionStrategy(factory, execution()).compress(content)).rejects.toThrow();
