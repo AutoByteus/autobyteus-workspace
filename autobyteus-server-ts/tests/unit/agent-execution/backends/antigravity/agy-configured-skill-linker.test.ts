@@ -196,7 +196,8 @@ it.skipIf(!existsSync(path.join(actualTeam, "agents", "solution-designer", "skil
     const root = await fixture();
     const actual = path.join(actualTeam, "agents", "solution-designer", "skills", "solution-designer");
     const capsule = await create(root, [resolved("solution-designer", actual)], "fail", "actual");
-    for (const name of ["design-examples.md", "design-principles.md"]) {
+    // The shared design files are symlinks under the skill's references/ folder.
+    for (const name of ["references/design-examples.md", "references/design-principles.md"]) {
       const target = path.join(capsuleSkill(capsule.path, "solution-designer"), name);
       expect(await fs.readFile(target)).toEqual(await fs.readFile(path.join(actual, name)));
     }
