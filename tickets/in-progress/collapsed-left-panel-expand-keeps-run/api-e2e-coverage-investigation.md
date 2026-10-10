@@ -18,9 +18,9 @@ All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/c
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
+- Current API/E2E Revision ID: `API-REV-003`
 - API/E2E Test-Case Ledger: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 2
+- Current Investigation Round: 3
 - Trigger: round 1 — implementation handoff IR-001 (`1639cba95`); round 2 — IR-002 (`d0bf3db82`), Local Fix for CR-001 / FAIL-001
 - Prior Investigation Reviewed: none (first round)
 - Latest Authoritative Investigation: this file
@@ -246,6 +246,19 @@ Scored after the unit suite and before the browser/desktop runs.
   3. Full PMU.
   4. Rebuilt app + DSK-001 (with an Org host added).
 - Result: all Pass; see the execution coverage report (Pass, 95%).
+
+## Round 3 Delta (IR-003, new base)
+
+- Basis: reopened package SR-006 (SR-003/SR-004 unchanged); IR-003 is a no-code re-verification merged onto `origin/personal` `d28c56d5d`.
+- Verified independently:
+  - The feature files are byte-identical to `d0bf3db82`.
+  - The strip probe cases are identical apart from renumbering (PMU-018 and PMU-019).
+  - The base changed the Projects board, Task cards and the Projects panel (the entry path), two chat composer lines and the probe. It did not change the layout, left panel, tree or selection.
+- Coverage validity: all durable coverage is still valid. Two pre-existing probe flakes failed on the base as well and were fixed as test-only baseline commits:
+  - PMU-017's 390 px settle
+  - the projects-navigation dev-server warm-up
+- Plan: rerun the unit suite, full PMU, NAV-PROBE, CDR-LIVE and DSK-001 on a rebuilt app. Carry REAL-001 forward.
+- Result: all Pass; see the execution coverage report (round 3).
 
 ## Investigation Decision
 

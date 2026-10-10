@@ -11,19 +11,20 @@ All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/c
 - Supplemental Task Artifacts: Product `ui-ux-spec.md` + VIS-001..008 (`/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/collapsed-left-panel-expand-keeps-run/`); `handoff-architecture-design-complete.md`; `product-design-request.md`; `approval-request.md`
 - Design Review Report: `N/A — not applicable` (direct route)
 - Architecture Review Revision Record: `N/A — not applicable` (direct route)
-- Implementation Handoff: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-handoff.md` (IR-002)
-- Implementation Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-revision-record.md` (IR-001, IR-002)
+- Implementation Handoff: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-handoff.md` (IR-003)
+- Implementation Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-revision-record.md` (IR-001..IR-003)
+- Reopening handoff: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/handoff-reopened-sr-006.md` (SR-006; SR-003/SR-004 unchanged)
 - Code Review Report: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/code-review-report.md` (failure-origin review of FAIL-001, CR-001 `Local Fix`)
 - Code Review Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/code-review-revision-record.md` (CRR-001)
 - Delivery Revision Record: `N/A`
 - Coverage Investigation: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Execution Round: 2
-- Trigger: implementation IR-002 (`d0bf3db82`), the Local Fix for CR-001 / FAIL-001
-- Prior Round Reviewed: round 1 (API-REV-001, Fail, FAIL-001)
-- Latest Authoritative Round: 2
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Execution Round: 3
+- Trigger: implementation IR-003 (`95120f4d0`; no code change), the reopened package (SR-006) merged onto `origin/personal` `d28c56d5d` (merge `0604a9586`)
+- Prior Round Reviewed: round 2 (API-REV-002, Pass 95%, on the old base)
+- Latest Authoritative Round: 3
 
 ## Routing Classification
 
@@ -191,14 +192,37 @@ All relative paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/c
 | Leftover processes | — | `pgrep` | None |
 | Foreign record `iso-63369-6c20` | Not mine | None | Untouched |
 
+## Round 3 — Re-validation on the new base (API-REV-003)
+
+**Carry-forward decision**
+- The feature source files are byte-identical to the validated IR-002 (`git diff d0bf3db82..HEAD` over all 13 feature files is empty). The PMU strip cases are identical apart from renumbering (old PMU-017 is now **PMU-018**, old PMU-018 is now **PMU-019**; the new PMU-017 is task-closed-status's Cancelled Tasks case).
+- The base changed none of the layout, left panel, tree or selection code. It changed the Projects board, Task cards and the Projects panel (the Task-card entry path), two chat composer lines and the probe file.
+- So round-2 source conclusions carry forward. Every executable check was rerun on the new base, because base drift touched the entry paths. REAL-001 (the real-model journey, round 2) is carried forward without rerun: the feature is unchanged, and PMU-018 and DSK-001 re-exercise the same Task-card path.
+
+| Case ID | Round-3 Result | Evidence |
+| --- | --- | --- |
+| UNIT-FULL | Pass (593 files / 4062 tests) | `EV/r3-web-unit-full-run.log` |
+| PMU-FULL (PMU-001..PMU-019) | Pass 19/19; PMU-019 G/H focus on the Workspaces section | `EV/r3-pmu-full/evidence.json` |
+| PMU-017 (baseline) | Pass ×4 after the settle fix (`4fb0259dd`) | `EV/r3-pmu-017-run1..4/` |
+| NAV-PROBE | Pass cold and warm after the warm-up fix (`c708178d3`) | `EV/r3-projects-navigation-cold2/`, `-warm2/` |
+| CDR-LIVE (real Codex) | Pass 15/15; D11 reopen keeps `/chat?id=` | `EV/r3-chat-draft-rows/` |
+| DSK-001 (rebuilt app at `c708178d3`, `iso-62032-1caa`, 1512×913) | Pass: Agent/Team/Org hosts; New chat after a Team run keeps focus on the section | `EV/isolated-desktop/r3-run-1/` |
+
+**Baseline fixes (TESTING.md rule 9; test-only, own commits)**
+- `4fb0259dd` PMU-017 (not this feature): the 390 px step measured overflow once while the left panel was still docked (`{202, 70}`), and it failed intermittently on the unmodified base too. It now polls up to 5 s, and persistent overflow still fails.
+- `c708178d3` projects-navigation probe: a cold Vite dependency cache reloaded the page mid-B-003 (round 1 r2 and round 3, same signature). The probe now warms the dev server first (fixture routes, `/projects`, `/projects/new`, `/workspace`, `/chat`, then 5 s quiet). With the cache cleared, 2 reloads are absorbed during warm-up and B-001..B-005 pass.
+
+**Cleanup:** probe stacks stopped and roots removed; instance `iso-62032-1caa` stopped (ports released); `/tmp/clp-dsk-root-Ca5h` removed; no owned processes left. Processes from other worktrees were left untouched.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Final validation confidence: 95%
+- Result: `Pass` (round 3, on `origin/personal` `d28c56d5d`)
+- Final validation confidence: 95% (unchanged; same scorecard. Base drift is closed by the full reruns, and two pre-existing probe flakes are fixed)
 - Default 95% target met: `Yes`; no applicable category below 90%
-- Broader validation decision: `Required` — executed (browser + packaged desktop)
+- Broader validation decision: `Required`, executed (browser + rebuilt packaged desktop)
 - Critical acceptance criteria lacking direct proof: none
-- Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer` (direct route, Medium/Low, no test-code review)
+- Case numbering: this feature's probe cases are now **PMU-018** (strip journey) and **PMU-019** (other entries + run-shown gate)
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer`
 - Notes:
-  - Non-blocking requirement-wording note for the Solution Designer: REQ-005 and AC-002 mention a member opened from the right Team tab, which is messages-only in this product.
-  - Explicit user verification in the desktop app remains with delivery.
+  - `TESTING.md` should list PMU-018/PMU-019 under these numbers.
+  - The SR-006 user-verification step remains with delivery.

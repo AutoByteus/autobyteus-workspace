@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | implementation_engineer handoff IR-001 / round 1 | SR-004 (requirements SR-003), IR-001 | N/A | Fail / 89% |
 | API-REV-002 | implementation_engineer handoff IR-002 (Local Fix CR-001) / round 2 | SR-004, IR-002, CRR-001 | Fail / 89% | Pass / 95% |
+| API-REV-003 | implementation_engineer handoff IR-003 (reopened SR-006, new base) / round 3 | SR-006 (SR-003/SR-004 unchanged), IR-003 | Pass / 95% (old base) | Pass / 95% (new base) |
 
 ## Revision Entries
 
@@ -63,3 +64,26 @@ None.
   - history loads > 3 s are not scrolled (spec permits)
   - drawer, short window and zh-CN not rerun in the packaged app
   - the right Team-tab member open has no product trigger
+
+### API-REV-003 — Re-validation of the reopened package on the new base
+
+- Triggering role, report path, and round: implementation_engineer, `implementation-handoff.md` (IR-003, `95120f4d0`; merge `0604a9586` of `origin/personal` `d28c56d5d`), round 3
+- Triggering finding or case IDs: none (reopening after cancellation, SR-006); the implementation reported a PMU-017 baseline race
+- Related revision IDs: SR-006, IR-003; prior CRR-001, API-REV-002, DR-001..DR-003
+- Why recorded: the same feature on a new base
+- Coverage decisions or durable test paths changed (test-only baseline fixes):
+  - `project-manager-ux-probe.mjs` PMU-017 settle wait (`4fb0259dd`)
+  - `projects-primary-navigation-probe.mjs` dev-server warm-up (`c708178d3`)
+- Cases rechecked: UNIT-FULL, PMU-FULL (PMU-001..PMU-019), PMU-017 ×4, NAV-PROBE (cold + warm), CDR-LIVE, DSK-001 (rebuilt app). REAL-001 carried forward (feature byte-identical; same path re-exercised by PMU-018 and DSK-001).
+- Environment delta: rebuilt worktree app at `c708178d3`; instance `iso-62032-1caa` (restricted PATH, scripted AGY CLI in its own `.env`, 1512×913 window)
+
+#### Prior Failure Resolution
+
+None. API-REV-002 had no open failures.
+
+- Canonical artifacts and sections updated: execution coverage report (round-3 section, latest result), coverage investigation (round-3 delta), ledger (events 27–35)
+- Prior result and confidence: Pass, 95% (old base)
+- Current result and confidence: Pass, 95% (new base)
+- New or remaining failure IDs: none
+- Recommended owner: delivery_engineer
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-002
