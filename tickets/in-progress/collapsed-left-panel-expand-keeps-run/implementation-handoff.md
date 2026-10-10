@@ -4,6 +4,11 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
 
 ## Upstream Artifact Package
 
+- IR-003 trigger (reopened package): Solution Designer `handoff-reopened-sr-006.md` (SR-006).
+  - The user cancelled the package on 2026-10-09 and reopened it on 2026-10-10 with the tree-button direction.
+  - Requirements SR-003 are reinstated unchanged; design SR-004 is unchanged.
+  - The Product UI/UX spec is restored at its normal path (design repo `personal` @ `6fdf576`), byte-identical to `7a8e634`.
+
 - Review applicability and handoff-rule result: direct route. Solution Designer `get_handoff_rules` matched "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low", so independent architecture review was skipped.
 - Requirements doc: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/requirements-doc.md` (SR-003, Approved 2026-10-08)
 - Investigation notes: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/investigation-notes.md` (AF-001..AF-010)
@@ -21,6 +26,13 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
   - `api-e2e-evidence/pmu-018-r6/`, `api-e2e-evidence/isolated-desktop/run-4/`
 
 ## Current Implementation Summary
+
+**IR-003 (reopened, SR-006):**
+- No code change.
+- The recovered implementation is IR-002. Every feature source file is byte-identical to `d0bf3db82` (`git diff d0bf3db82 HEAD` over the feature files is empty), and it was validated by API-REV-002.
+- It still matches SR-003/SR-004: Workspaces only reopens the panel and reveals the open run; collapse is unchanged; page icons (incl. Chat → `/chat`) are unchanged; New chat is via the pencil. That is exactly the user's reopening direction.
+- Re-integrated `origin/personal` `d28c56d5d` (19 commits) as merge `0604a9586`, with no conflicts and no incoming change to any feature file, doc or probe used here.
+- Note for downstream: since `f8b1fb4ec`, this ticket's probe cases are **PMU-018** (strip journey) and **PMU-019** (other entries, incl. run-shown gate). PMU-017 is task-closed-status's Cancelled Tasks case.
 
 **IR-002 (CR-001 Local Fix):** the reveal (D-4) now acts only while a run is shown in the center.
 - `useRevealSelectedTreeRow(container, runShown)` returns early from `reveal()` when `runShown` is false: no scroll and no focus, so focus stays on the Workspaces section (D-3). A `watch(runShown)` reschedules the reveal inside the window if a run becomes shown, for example when its context registers.
@@ -44,13 +56,14 @@ All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-lef
 - The docked collapse button moves focus to the strip's Workspaces button (D-6).
 - Strings: en `Workspaces`, zh-CN `工作区`. Docs updated. Probes updated: chat-draft-rows D11 and its on-run Chat assertion, plus a new PMU-017.
 
-- Implementation cycle: `Rework` (IR-002 on top of the IR-001 baseline)
+- Implementation cycle: `Rework`. IR-003 re-verifies and re-integrates the recovered IR-002 implementation, which itself builds on the IR-001 baseline.
 - Implementation revision record: `tickets/in-progress/collapsed-left-panel-expand-keeps-run/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-004` (requirements basis SR-003)
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-006`, with design SR-004 and requirements SR-003, both unchanged
 - Related architecture-review revision IDs: `N/A`
 - Related code-review revision IDs: `CRR-001` (failure-origin review on the direct route)
-- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs (prior, before cancellation): `DR-001..DR-003`
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002` (Pass, on the old base)
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001` (from `FAIL-001`)
 
@@ -132,6 +145,11 @@ Probes:
 
 ## Known Risks
 
+- IR-003: the PMU-017 narrow-overflow step (task-closed-status) races the shell's docked→strip switch. It measures `project-detail` in the same frame as `setViewportSize`, while the left panel is still docked: `202/70`. Within a frame the shell switches to the strip and the board measures `340/340`.
+  - The failure reproduced on unmodified `origin/personal` `d28c56d5d`: Pass, Pass, Fail.
+  - Branch: Fail, Fail, Fail, Pass. Docked→strip timing measured identical on both.
+  - Implementation view: a pre-existing probe race, not caused by this change. API/E2E should classify it; a settle wait before that measurement would fix it.
+
 - R-001 (rows load after mount): covered by the 3 s window plus the D-5 pending rule; PMU-017 passed all three hosts. On a very slow history load (> 3 s) the row is still selected and expanded, but not scrolled. The spec allows that wait limit to vary.
 - D-5 pending rule: while a Team's focused member has no row yet, the team/workspace/definition expansions re-apply on each topology revision. Once the member row exists, the reveal is applied and a manual collapse is respected (unit-tested). A focused member that never gets a row is not a known product state.
 - R-004 (accepted): during "opening" (`/chat?id` before the context registers), neither Chat nor Workspaces is lit.
@@ -179,6 +197,14 @@ Probes:
 - Running the web suite while the server prebuild rebuilds those SDK `dist/` folders makes 4 Applications/Codex files fail to resolve the package. Rerunning after the build passes. TESTING.md warns about this for shared-output builds.
 
 ## Local Implementation Checks Run
+
+IR-003, new base `0604a9586`:
+- Setup: `pnpm install --frozen-lockfile`, `nuxt prepare`, server prebuild and build, all completed before any test ran.
+- Full `pnpm -C autobyteus-web test:nuxt --run`: 593 files passed, 2 skipped; 4062 tests passed, 5 skipped (`implementation-evidence/ir-003/web-unit-full-run.txt`).
+- Browser, owned stacks: PMU-015, PMU-016, PMU-018 and PMU-019 pass (`implementation-evidence/ir-003/pmu-017-018-019-evidence.json` plus screenshots).
+  - The rendered reveal still matches VIS-003/VIS-004/VIS-005: nested task-Team member, Org worker, run-shown gate on New chat.
+- PMU-017 (not this ticket's case) is flaky at its 390 px overflow step on both branch and base. See Known Risks and `implementation-evidence/ir-003/pmu-017-baseline-race.txt`.
+
 
 IR-002:
 - Affected specs (reveal composable incl. 2 new run-shown cases, tree panel and every spec that mounts it, AppLeftPanel incl. a new `runShown` wiring case, nav highlight, tree state, layout, route service, layouts): 36 files, 366 tests passed (`implementation-evidence/ir-002/unit-runs.txt`).

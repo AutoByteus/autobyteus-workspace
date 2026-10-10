@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer / `handoff-architecture-design-complete.md` / initial | N/A | `Initial Baseline` | SR-004 (requirements SR-003); ARCH-REV N/A; CRR N/A; API-REV N/A; DR N/A | Implemented; local checks and PMU-017 pass |
 | IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 (failure-origin review of API-REV-001 FAIL-001) | CR-001 | `Local Fix` | SR-004; ARCH-REV N/A; CRR-001; API-REV-001; DR N/A | Reveal gated on run shown; affected specs, PMU-017 and PMU-018 incl. G pass |
+| IR-003 | Solution Designer / `handoff-reopened-sr-006.md` / reopened package | N/A | `Re-verification / re-integration` (no code change) | SR-006 (SR-003/SR-004 unchanged); CRR-001; API-REV-002; DR-001..DR-003 (prior) | Recovered IR-002 verified unchanged; merged origin/personal d28c56d5d; full suite and PMU-018/019 pass |
 
 ## Revision Entries
 
@@ -78,4 +79,31 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Remaining limitations or risks:
   - DSK-001 (packaged desktop) was not rerun by implementation.
   - `/agents` and `/projects` activation after a run is covered by the same gate in unit tests only.
+
+### IR-003 — Reopened package: verify the recovered IR-002 and re-integrate (SR-006)
+
+- Triggering role, report path and round: Solution Designer, `tickets/in-progress/collapsed-left-panel-expand-keeps-run/handoff-reopened-sr-006.md`. Cancelled 2026-10-09; reopened 2026-10-10; branch recovered at `900443b11`.
+- Triggering finding IDs: N/A
+- Classification: re-verification and re-integration. There are no findings and no code change.
+- Prior authoritative result: IR-002 (`d0bf3db82`), validated by API-REV-002 (Pass). Delivery DR-003 was awaiting user verification when the package was cancelled.
+- Current authoritative result:
+  - The IR-002 implementation is byte-identical on the recovered branch and matches SR-003/SR-004 and the restored Product spec.
+  - It is re-integrated with `origin/personal` `d28c56d5d` as merge `0604a9586`, with no conflicts.
+- Related solution revision IDs: `SR-006` (SR-003 / SR-004 unchanged)
+- Related architecture-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-002`
+- Related delivery revision IDs: `DR-001..DR-003` (prior)
+- Why this revision is recorded: the package was reopened on a base that had moved 19 commits.
+- Approved behavior or requirement IDs affected: none changed. All of REQ-001..REQ-010 were re-checked.
+- Implementation delta: none in source. Merge only.
+- Changed files or areas: merge commit only; `implementation-evidence/ir-003/`; this record and the handoff.
+- Local validation and result:
+  - Full web suite: 4062 passed, 5 skipped.
+  - PMU-015, PMU-016, PMU-018 and PMU-019 pass.
+  - PMU-017 (another ticket's case) is flaky on both branch and base: a pre-existing race at its 390 px overflow step. Evidence in `implementation-evidence/ir-003/`.
+- Next recipient or routing: per `get_handoff_rules` (Medium/Low → direct API/E2E).
+- Remaining limitations or risks:
+  - DSK-001 and the user's desktop verification are still owned downstream.
+  - The PMU-017 race needs an API/E2E classification or probe fix.
 

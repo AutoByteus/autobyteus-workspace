@@ -1,0 +1,13 @@
+PMU-017 (Cancelled Tasks, task-closed-status; not this ticket's case) narrow-overflow step, 390x844.
+The failing measurement is always {scrollWidth: 202, clientWidth: 70}: project-detail measured while the
+left panel is still docked (320 px) in the same frame as setViewportSize. The shell then switches to the
+strip and the board measures 340/340 (instrumented run, branch).
+
+Plain PMU-017 runs (owned stacks, 2026-10-10):
+  branch 0604a9586 : Fail, Fail, Fail, Pass
+  base   d28c56d5d (origin/personal, detached worktree, removed afterwards): Pass, Pass, Fail (same 202/70 signature)
+Timing of docked->strip after setViewportSize (50 ms polling): identical on branch and base (docked at ~1 ms, strip by ~53 ms).
+Instrumented flow: branch measured at 8 ms after resize -> 340/340 ok; base at 3 ms -> 340/340 ok.
+
+Classification (implementation view): pre-existing race in the PMU-017 probe step (no wait for the shell
+to settle after resize); reproduced on unmodified base. PMU-018/PMU-019 (this ticket) pass.
