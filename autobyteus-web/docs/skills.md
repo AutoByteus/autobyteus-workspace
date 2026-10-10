@@ -29,7 +29,10 @@ for a folder, or `parent/skills` when that name is `skills`), the skill count
 (**No skills**, **1 skill**, **N skills**) and the full path or URL, truncated,
 with a tooltip and a copy button. Only the list scrolls; the add area and the
 **Done** footer stay in place. Esc, ×, **Done** and a click outside close the
-dialog, and focus returns to **Sources**.
+dialog, and focus returns to **Sources**. Focus moves into the dialog when it
+opens and Tab stays inside it. After a confirmation, an operation or a
+duplicate-name dialog ends, focus comes back into the dialog. Esc is ignored
+while a confirmation is open.
 
 The **Add skill source** input takes either a folder path or a public HTTPS
 GitHub repository-root URL. A value starting with `http://`, `https://`,

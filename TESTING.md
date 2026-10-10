@@ -792,7 +792,7 @@ Run from the repository root with installed workspace dependencies and Chrome:
 pnpm -C autobyteus-server-ts prebuild
 pnpm -C autobyteus-server-ts build
 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/skills tests/integration/skills tests/unit/skills --no-watch
-pnpm -C autobyteus-web test:nuxt components/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
+pnpm -C autobyteus-web test:nuxt components/skills utils/skills stores/__tests__/skillStore.spec.ts stores/__tests__/skillSourcesStore.spec.ts --run
 node autobyteus-web/tests/e2e/github-skill-sources-probe.mjs <fresh-output-directory>
 ```
 
