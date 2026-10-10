@@ -273,3 +273,11 @@ No closer `DESIGN*.md` exists under `autobyteus-web` (`find autobyteus-web -maxd
   - every strip icon only unfolds (two-click page navigation)
 - User decision (2026-10-09), verbatim: "After thinking for a long time, seems like the best option is still the tree option." The user also asked to have delivery resume.
 - Result: the change request is withdrawn. Requirements stay `Approved` at SR-003, the design at SR-004 is unchanged, and the validated build stands. Delivery is asked to resume from DR-002.
+
+## Cancellation And Reopening (2026-10-09 / 2026-10-10)
+
+- Cancelled 2026-10-09. The cleanup is described in SR-006.
+- Reopened 2026-10-10 by the user with the tree-button direction. It matches SR-003 exactly; see SR-006.
+- Recovery evidence: `git cat-file -t 900443b11` returned `commit`. `git worktree add -b codex/collapsed-left-panel-expand-keeps-run <worktree> 900443b11` restored the branch and all ticket artifacts.
+- `origin/personal@d28c56d5d` is 19 commits ahead; merge base `033a6d780`.
+- Product design repo: removal commit `8740ada`. The spec and VIS files are retrievable at `7a8e634`.

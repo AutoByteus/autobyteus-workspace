@@ -9,6 +9,7 @@
 | SR-003 | Requirements | User approval 2026-10-08 ("Like your suggestion. Let's do it.") | DEC-003, DEC-004, DEC-005 | Ready for Approval | Approved | REQ-008, AC-011 (DEC-005 wording); DEC-003/004/005 decided | Requirements Approved |
 | SR-004 | Design | Architecture design after SR-003 approval | AF-001..AF-010 | N/A (no design) | Design Ready; Medium/Low | All REQ/AC mapped; D-1..D-7 | Architecture Design Complete |
 | SR-005 | Evidence | User change request after trying the build (2026-10-09), withdrawn the same day | Requirement Gap raised, then withdrawn | Approved (SR-003); Design Ready (SR-004) | Approved (SR-003, unchanged); Design unchanged | None | Delivery asked to resume |
+| SR-006 | Mixed | Cancelled by the user 2026-10-09; reopened by the user 2026-10-10 with the tree-button direction | Cancellation; reopening | Approved (SR-003); Design Ready (SR-004) | Approved (SR-003 reinstated unchanged); Design unchanged (SR-004) | None | Branch recovered; direct route to implementation |
 
 ## Revision Entries
 
@@ -131,3 +132,30 @@
 - Downstream impact: delivery resumes from its DR-002 halt; the user's own request is the authority for it.
 - Applied route: `send_message_to` → `/software_engineering_team/delivery_engineer`, at the user's explicit request. No handoff rule covers this.
 - Next action: delivery continues with its completion gates (base refresh as needed, docs sync, user verification).
+
+### SR-006 — Cancellation, reopening and recovery
+
+- Phase and classification: Mixed (lifecycle). Intended behavior is unchanged.
+- Cancellation, 2026-10-09: the user said "Let's cancel these tickets. Let's remove these tickets." Then:
+  - delivery stopped
+  - Solution Designer removed the worktree and local branch (tip `900443b11`) and stopped instances `iso-50840-584c` and `iso-52024-c0a7`
+  - Product removed its design ticket from `autobyteus-web-design` `personal` in `8740ada` (fast-forward; history kept at 8491d5b/6478eec/744152a/7a8e634)
+  - The cancellation-record.md file was untracked and was lost with the worktree. Its content is summarized here.
+- Reopening, 2026-10-10: Project Task Manager relayed it (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`). User's words: "I still like the solution for the tree button. When I click the collapse, it should collapse. And then there is a tree button so I could click again to open the [workspaces] tree itself. The chat button is just for the chat page; if I want a new chat, I just click new chat."
+- Reconciliation with the approved basis: this is exactly SR-003.
+  - DEC-001 D: the strip Workspaces tree button only reopens the panel and never navigates.
+  - Collapse unchanged.
+  - DEC-002 a: page icons unchanged, so strip Chat → `/chat`, the Chat page (the New chat surface). The docked pencil and New chat remain the explicit way to start a chat.
+  - DEC-003/004 stay out of scope (not raised).
+  - DEC-005 is unchanged.
+  - The Project Task Manager's note calls this "DEC-001 option A". In this package's IDs it is option D (the tree button). Option A was the rejected panel-glyph toggle.
+- Approval: SR-003 is reinstated unchanged on the user's 2026-10-10 statement. No intended-behavior delta.
+- Recovery: the unreachable commit `900443b11` was intact. The branch `codex/collapsed-left-panel-expand-keeps-run` and the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-left-panel-expand-keeps-run` were recreated at it, restoring the full validated package:
+  - implementation
+  - code review
+  - API/E2E API-REV-002
+  - delivery DR-001..DR-003, awaiting user verification
+  - `origin/personal` is 19 commits ahead (`d28c56d5d`); merge base `033a6d780`.
+- Supplement: the Product UI/UX spec and VIS-001..008 are retrievable at design-repo commit `7a8e634` (`tickets/done/collapsed-left-panel-expand-keeps-run/`). Product Team is asked to restore the ticket on `personal`.
+- Route: per the handoff rules, Architecture Design Complete, Medium/Low → Implementation Engineer. Their job is to verify the recovered implementation against SR-003/SR-004, integrate the current base, re-run implementation-scoped checks and continue the normal downstream flow.
+- Remaining gaps: the base refresh, Product's spec restoration, and user verification.
